@@ -1,0 +1,6 @@
+bibentry(bibtype = "Manual",
+         title = "mirai: A minimalist async framework for R",
+         author = person("Charlie", "Gao"),
+         year = 2022,
+         note = sprintf("R package version %s", meta$Version),
+         url = "https://shikokuchuo.net/mirai/")

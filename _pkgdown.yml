@@ -1,0 +1,11 @@
+url: https://shikokuchuo.net/mirai/
+navbar:
+  right:
+  - icon: fa-github
+    href: https://github.com/shikokuchuo/mirai/
+  - icon: fa-cube
+    href: https://shikokuchuo.net/
+reference:
+- contents:
+  - mirai-package
+  - matches("^[a-zA-Z]*")
