@@ -42,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9000</span>
       </span>
     </div>
 
@@ -85,7 +85,7 @@
 <a class="anchor" aria-label="anchor" href="#mirai-"></a>
 </h1></div>
 <!-- badges: start -->
-<!-- badges: end -->
+
 <p>Minimalist async evaluation framework for R.</p>
 <p>未来 みらい mirai is the Japanese word for future.</p>
 <p>An extremely simple and lightweight method for concurrent / parallel code execution, built on the nanonext R package and NNG (Nanomsg Next Gen).</p>
@@ -105,16 +105,19 @@
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
-<p>Install the latest development version from Github:</p>
+<p>Install the latest release from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"shikokuchuo/mirai"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span><span class="op">)</span></code></pre></div>
+<p>or the development version from rOpenSci R-universe:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span>, repos <span class="op">=</span> <span class="st">"https://shikokuchuo.r-universe.dev"</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="use-cases">Use Cases<a class="anchor" aria-label="anchor" href="#use-cases"></a>
 </h3>
 <p>Minimise execution times by performing long-running tasks concurrently in separate processes.</p>
 <p>Ensure execution flow of the main process is not blocked.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></code></pre></div>
 <div class="section level4">
 <h4 id="example-1-compute-intensive-operations">Example 1: Compute-intensive Operations<a class="anchor" aria-label="anchor" href="#example-1-compute-intensive-operations"></a>
@@ -125,17 +128,17 @@
 <li>All named objects are passed through to a clean environment</li>
 </ul>
 <p>A ‘mirai’ object is returned immediately.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mirai</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">eval_mirai</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">+</span> <span class="va">m</span>, n <span class="op">=</span> <span class="fl">1e8</span>, m <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 
 <span class="va">mirai</span>
 <span class="co">#&gt; &lt; mirai &gt;</span>
 <span class="co">#&gt;  ~ use call_mirai() to resolve</span></code></pre></div>
 <p>Continue running code concurrent to the async operation.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># do more...</span></code></pre></div>
 <p>Use <code><a href="reference/call_mirai.html">call_mirai()</a></code> to retrieve the evaluated result when required.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">mirai</span><span class="op">)</span>
 
 <span class="va">mirai</span>
@@ -151,13 +154,13 @@
 <p>Processing high-frequency real-time data, writing results to file/database can be slow and potentially disrupt the execution flow.</p>
 <p>Cache data in memory and use <code><a href="reference/eval_mirai.html">eval_mirai()</a></code> to perform periodic write operations in a separate process.</p>
 <p>A ‘mirai’ object is returned immediately.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mirai</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">eval_mirai</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">x</span>, file <span class="op">=</span> <span class="va">file</span><span class="op">)</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1e8</span><span class="op">)</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Use <code><a href="reference/call_mirai.html">call_mirai()</a></code> to confirm the operation has completed.</p>
 <ul>
 <li>This will wait for the operation to complete if it is still ongoing</li>
 </ul>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">mirai</span><span class="op">)</span><span class="op">$</span><span class="va">value</span>
 <span class="co">#&gt; NULL</span></code></pre></div>
 <p>Above, the return value is called directly. NULL is the expected return value for <code><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv()</a></code>.</p>
@@ -166,7 +169,7 @@
 <div class="section level3">
 <h3 id="links">Links<a class="anchor" aria-label="anchor" href="#links"></a>
 </h3>
-<p>{mirai} website: <a href="https://shikokuchuo.net/mirai/" class="uri">https://shikokuchuo.net/mirai/</a><br></p>
+<p>{mirai} website: <a href="https://shikokuchuo.net/mirai/" class="uri">https://shikokuchuo.net/mirai/</a><br> {mirai} on CRAN: <a href="https://cran.r-project.org/package=mirai" class="external-link uri">https://cran.r-project.org/package=mirai</a></p>
 <p>{nanonext} website: <a href="https://shikokuchuo.net/nanonext/" class="external-link uri">https://shikokuchuo.net/nanonext/</a><br> {nanonext} on CRAN: <a href="https://cran.r-project.org/package=nanonext" class="external-link uri">https://cran.r-project.org/package=nanonext</a></p>
 <p>NNG website: <a href="https://nng.nanomsg.org/" class="external-link uri">https://nng.nanomsg.org/</a><br> NNG documentation: <a href="https://nng.nanomsg.org/man/tip/" class="external-link uri">https://nng.nanomsg.org/man/tip/</a><br></p>
 </div>
@@ -206,7 +209,14 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://CRAN.R-project.org/package=mirai" class="external-link"><img src="https://www.r-pkg.org/badges/version/mirai?color=112d4e" alt="CRAN status"></a></li>
+<li><a href="https://shikokuchuo.r-universe.dev" class="external-link"><img src="https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc" alt="mirai status badge"></a></li>
+<li><a href="https://github.com/shikokuchuo/mirai/actions" class="external-link"><img src="https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+</ul>
+</div>
 
   </div>
 </div>
