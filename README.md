@@ -4,6 +4,12 @@
 # mirai <a href="https://shikokuchuo.net/mirai/" alt="mirai"><img src="man/figures/logo.png" alt="mirai logo" align="right" width="120"/></a>
 
 <!-- badges: start -->
+
+[![CRAN
+status](https://www.r-pkg.org/badges/version/mirai?color=112d4e)](https://CRAN.R-project.org/package=mirai)
+[![mirai status
+badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc)](https://shikokuchuo.r-universe.dev)
+[![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
 <!-- badges: end -->
 
 Minimalist async evaluation framework for R.
@@ -36,10 +42,16 @@ zero package dependencies.
 
 ### Installation
 
-Install the latest development version from Github:
+Install the latest release from CRAN:
 
 ``` r
-remotes::install_github("shikokuchuo/mirai")
+install.packages("mirai")
+```
+
+or the development version from rOpenSci R-universe:
+
+``` r
+install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
 ```
 
 ### Use Cases
@@ -120,7 +132,8 @@ value for `write.csv()`.
 
 ### Links
 
-{mirai} website: <https://shikokuchuo.net/mirai/><br />
+{mirai} website: <https://shikokuchuo.net/mirai/><br /> {mirai} on CRAN:
+<https://cran.r-project.org/package=mirai>
 
 {nanonext} website: <https://shikokuchuo.net/nanonext/><br /> {nanonext}
 on CRAN: <https://cran.r-project.org/package=nanonext>
