@@ -4,7 +4,7 @@
 \encoding{UTF-8}
 \name{mirai-package}
 \alias{mirai-package}
-\title{mirai: A minimalist async framework for R}
+\title{mirai: Minimalist Async Evaluation Framework for R}
 \description{
 An extremely simple and lightweight method for concurrent / parallel code
     execution, built on the nanonext R package and NNG (Nanomsg Next Gen).

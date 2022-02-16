@@ -6,7 +6,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-A minimalist async evaluation framework for R.
+Minimalist async evaluation framework for R.
 
 未来 みらい mirai is the Japanese word for future.
 
