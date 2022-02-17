@@ -14,7 +14,7 @@ badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc)](https://sh
 
 Minimalist async evaluation framework for R.
 
-未来 みらい mirai is the Japanese word for future.
+未来 みらい mirai is Japanese for ‘future’.
 
 An extremely simple and lightweight method for concurrent / parallel
 code execution, built on the nanonext R package and NNG (Nanomsg Next

@@ -2,9 +2,9 @@
 
 #' mirai Server (Async Execution Daemon)
 #'
-#' Implements an executor/server to be run in the remote process. Awaits data,
-#'     evaluates an expression in an environment containing the supplied data,
-#'     and returns the result to the caller/client.
+#' Implements an executor/server for the remote process. Awaits data, evaluates
+#'     an expression in an environment containing the supplied data, and returns
+#'     the result to the caller/client.
 #'
 #' @inheritParams eval_mirai
 #'
