@@ -15,14 +15,17 @@
 #'
 exec <- function(url) {
 
-  sock <- socket(protocol = "rep", listen = url)
+  sock <- socket(protocol = "rep", dial = url)
   ctx <- context(sock)
-  on.exit(expr = send_aio(ctx, data = as.raw(0L), mode = "serial"))
+  on.exit(expr = {
+    send_aio(ctx, data = as.raw(0L), mode = "serial")
+    close(sock)
+  })
   envir <- recv_ctx(ctx, mode = "serial", keep.raw = FALSE)
   msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
   on.exit()
   send_ctx(ctx, data = msg, mode = "serial", echo = FALSE)
-  Sys.sleep(1L)
+  Sys.sleep(2L)
   close(sock)
 
 }
@@ -79,7 +82,7 @@ eval_mirai <- function(.expr, ...) {
   func <- sprintf("mirai::exec(%s)", deparse(url))
   system2(command = cmd, args = c("--vanilla", "-e", shQuote(func)),
           stdout = NULL, stderr = NULL, wait = FALSE)
-  sock <- socket(protocol = "req", dial = url)
+  sock <- socket(protocol = "req", listen = url)
   ctx <- context(sock)
   aio <- request(ctx, data = envir, send_mode = "serial", recv_mode = "serial", keep.raw = FALSE)
   mirai <- `class<-`(new.env(), "mirai")
