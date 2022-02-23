@@ -39,9 +39,12 @@ mirai$value
 mirai <- eval_mirai(as.matrix(df), df = data.frame())
 call_mirai(mirai)$value
 
-mirai <- eval_mirai(rnorm(n), n = 1e6)
+mirai <- eval_mirai({
+  res <- rnorm(n)
+  res / rev(res)
+}, n = 1e6)
 call_mirai(mirai)
-str(mirai$value)
+mirai$value
 }
 
 }

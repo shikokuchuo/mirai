@@ -4,30 +4,54 @@
 \alias{call_mirai}
 \title{Call mirai (Retrieve Value)}
 \usage{
-call_mirai(mirai)
+call_mirai(mirai, wait = TRUE)
 }
 \arguments{
 \item{mirai}{a 'mirai' object.}
+
+\item{wait}{[default TRUE] whether to wait for completion of the asynschronous
+operation (blocking) or else return immediately. [experimental]}
 }
 \value{
 The passed mirai (invisibly). The retrieved value is stored in
-    \code{$value}.
+    \code{$value}. If the mirai has yet to resolve, NULL will be returned
+    instead.
 }
 \description{
-Retrieve the value of a mirai (waiting for the the asynchronous operation to
-    resolve if it is still in progress).
+Retrieve the value of a mirai (optionally waiting for the the asynchronous
+    operation to resolve if it is still in progress).
 }
 \details{
-This function will wait for the async operation to complete if it is
-    still in progress.
+This function will by default wait for the async operation to
+    complete if it is still in progress. Specify the 'wait' argument to
+    modify this behaviour.
 
     If an error occured in evaluation, a nul byte \code{00} (or serialized
-    nul byte) will be returned.
+    nul byte) will be returned. \code{\link{is_nul_byte}} can be used to test
+    for a nul byte.
 
     The mirai updates itself in place, so do not assign the output of this
     function to avoid duplicates. To access the value of a mirai \code{x}
     directly, use \code{call_mirai(x)$value}.
 }
+\section{Non-waiting call}{
+
+
+    To query whether mirai \code{x} has resolved, test if
+    \code{call_mirai(x, wait = FALSE)} returns NULL. When the mirai resolves,
+    the mirai itself will be returned (invisibly) instead of NULL. The mirai's
+    return value may then be extracted using \code{x$value}.
+
+    It is inadvisable to try to extract the value of a mirai in one step using
+    a non-waiting call, unless it is impossible for your expression to return
+    NULL. This is as NULL$value is also NULL, hence it would otherwise not be
+    possible to distinguish between an unresolved mirai and a NULL return value.
+
+    This feature has the tag [experimental], which indicates that it remains
+    under development. Please note that the final implementation may differ
+    from the current version.
+}
+
 \examples{
 if (interactive()) {
 # Only run examples in interactive R sessions
@@ -41,9 +65,12 @@ mirai$value
 mirai <- eval_mirai(as.matrix(df), df = data.frame())
 call_mirai(mirai)$value
 
-mirai <- eval_mirai(rnorm(n), n = 1e6)
+mirai <- eval_mirai({
+  res <- rnorm(n)
+  res / rev(res)
+}, n = 1e6)
 call_mirai(mirai)
-str(mirai$value)
+mirai$value
 }
 
 }

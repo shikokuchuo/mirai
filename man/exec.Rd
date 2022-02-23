@@ -4,10 +4,7 @@
 \alias{exec}
 \title{mirai Server (Async Execution Daemon)}
 \usage{
-exec(expr, url)
-}
-\arguments{
-\item{expr}{an expression to evaluate in a new R process.}
+exec(url)
 }
 \value{
 Invisible NULL.

@@ -18,12 +18,15 @@
 #' @author Charlie Gao \email{charlie.gao@@shikokuchuo.net}
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
-#' @importFrom nanonext call_aio context recv_ctx request send_aio send_ctx
-#'     socket stop_aio
+#' @importFrom nanonext call_aio context is_nul_byte recv_ctx request send_aio
+#'     send_ctx socket stop_aio
 #' @importFrom stats runif
 #'
 #' @docType package
 #' @name mirai-package
 #'
 NULL
+
+#' @export
+nanonext::is_nul_byte
 
