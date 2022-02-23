@@ -51,7 +51,8 @@ install.packages("mirai")
 or the development version from rOpenSci R-universe:
 
 ``` r
-install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
+options(repos = c(shikokuchuo = 'https://shikokuchuo.r-universe.dev', CRAN = 'https://cloud.r-project.org'))
+install.packages("mirai")
 ```
 
 ### Use Cases
