@@ -72,8 +72,7 @@ exec <- function(url) {
 #'
 eval_mirai <- function(.expr, ...) {
 
-  mc <- match.call(expand.dots = FALSE)
-  arglist <- list(.expr = .subset2(mc, ".expr"), ...)
+  arglist <- list(.expr = substitute(.expr), ...)
   envir <- list2env(arglist)
   url <- sprintf("ipc:///tmp/n%.15f", runif(1L))
   cmd <- switch(.subset2(.Platform, "OS.type"),

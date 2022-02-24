@@ -1,6 +1,6 @@
 #' mirai: Minimalist Async Evaluation Framework for R
 #'
-#' An extremely simple and lightweight method for concurrent / parallel code
+#' Extremely simple and lightweight method for concurrent / parallel code
 #'     execution, built on 'nanonext' and 'NNG' (Nanomsg Next Gen) technology.
 #'     mirai is Japanese for 'future'.
 #'
