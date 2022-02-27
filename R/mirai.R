@@ -1,14 +1,14 @@
 # mirai ------------------------------------------------------------------------
 
-#' mirai Server (Async Execution Daemon)
+#' mirai Server (Async Executor)
 #'
 #' Implements an executor/server for the remote process. Awaits data, evaluates
 #'     an expression in an environment containing the supplied data, and returns
 #'     the result to the caller/client.
 #'
-#' @inheritParams eval_mirai
+#' @param url the internally assigned unique URL.
 #'
-#' @return Invisible NULL.
+#' @return Integer exit code.
 #'
 #' @keywords internal
 #' @export
@@ -37,7 +37,7 @@ exec <- function(url) {
 #'     the result.
 #'
 #' @param .expr an expression to evaluate in a new R process.
-#' @param ... named arguments specifying the variables contained in 'expr'.
+#' @param ... named arguments specifying the variables contained in '.expr'.
 #'
 #' @return A 'mirai' object.
 #'
@@ -72,22 +72,37 @@ exec <- function(url) {
 #'
 eval_mirai <- function(.expr, ...) {
 
-  arglist <- list(.expr = substitute(.expr), ...)
-  envir <- list2env(arglist)
-  url <- sprintf("ipc:///tmp/n%.15f", runif(1L))
-  cmd <- switch(.subset2(.Platform, "OS.type"),
-                unix = file.path(R.home("bin"), "Rscript"),
-                windows = file.path(R.home("bin"), "Rscript.exe"))
-  func <- sprintf("mirai::exec(%s)", deparse(url))
-  system2(command = cmd, args = c("--vanilla", "-e", shQuote(func)),
-          stdout = NULL, stderr = NULL, wait = FALSE)
-  sock <- socket(protocol = "req", listen = url)
-  ctx <- context(sock)
-  aio <- request(ctx, data = envir, send_mode = "serial", recv_mode = "serial", keep.raw = FALSE)
-  mirai <- `class<-`(new.env(), "mirai")
-  mirai[["aio"]] <- aio
-  mirai[["socket"]] <- sock
-  mirai
+  if (mirai(, 0L)) {
+
+    arglist <- list(.expr = substitute(.expr), ...)
+    envir <- list2env(arglist)
+    ctx <- context(mirai())
+    aio <- request(ctx, data = envir, send_mode = "serial", recv_mode = "serial", keep.raw = FALSE)
+    mirai <- `class<-`(new.env(), "mirai")
+    mirai[["aio"]] <- aio
+    mirai[["context"]] <- ctx
+    mirai
+
+  } else {
+
+    arglist <- list(.expr = substitute(.expr), ...)
+    envir <- list2env(arglist)
+    platform <- .subset2(.Platform, "OS.type")
+    cmd <- switch(platform,
+                  unix = file.path(R.home("bin"), "Rscript"),
+                  windows = file.path(R.home("bin"), "Rscript.exe"))
+    url <- sprintf("ipc:///tmp/n%.15f", runif(1L))
+    arg <- c("--vanilla", "-e", shQuote(sprintf("mirai::exec(%s)", deparse(url))))
+    system2(command = cmd, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
+    sock <- socket(protocol = "req", listen = url)
+    ctx <- context(sock)
+    aio <- request(ctx, data = envir, send_mode = "serial", recv_mode = "serial", keep.raw = FALSE)
+    mirai <- `class<-`(new.env(), "mirai")
+    mirai[["aio"]] <- aio
+    mirai[["socket"]] <- sock
+    mirai
+
+  }
 
 }
 
@@ -98,7 +113,7 @@ eval_mirai <- function(.expr, ...) {
 #'
 #' @param mirai a 'mirai' object.
 #' @param wait [default TRUE] whether to wait for completion of the asynschronous
-#'     operation (blocking) or else return immediately. [experimental]
+#'     operation (blocking) or else return immediately.
 #'
 #' @return The passed mirai (invisibly). The retrieved value is stored in
 #'     \code{$value}. If the mirai has yet to resolve, NULL will be returned
@@ -128,10 +143,6 @@ eval_mirai <- function(.expr, ...) {
 #'     NULL. This is as NULL$value is also NULL, hence it would otherwise not be
 #'     possible to distinguish between an unresolved mirai and a NULL return value.
 #'
-#'     This feature has the tag [experimental], which indicates that it remains
-#'     under development. Please note that the final implementation may differ
-#'     from the current version.
-#'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
@@ -157,15 +168,20 @@ eval_mirai <- function(.expr, ...) {
 #'
 call_mirai <- function(mirai, wait = TRUE) {
 
-  if (length(.subset2(mirai, "aio"))) {
+  if (!is.null(aio <- .subset2(mirai, "aio"))) {
     if (!missing(wait) && !isTRUE(wait)) {
-      is.null(call_aio(.subset2(mirai, "aio"), block = FALSE)) && return()
+      is.null(call_aio(aio, block = FALSE)) && return()
     } else {
-      call_aio(.subset2(mirai, "aio"))
+      call_aio(aio)
     }
-    close(.subset2(mirai, "socket"))
-    rm("socket", envir = mirai)
-    mirai[["value"]] <- .subset2(.subset2(mirai, "aio"), "data")
+    if (is.null(.subset2(mirai, "socket"))) {
+      close(.subset2(mirai, "context"))
+      rm("context", envir = mirai)
+    } else {
+      close(.subset2(mirai, "socket"))
+      rm("socket", envir = mirai)
+    }
+    mirai[["value"]] <- .subset2(aio, "data")
     rm("aio", envir = mirai)
   }
   invisible(mirai)
@@ -183,6 +199,151 @@ print.mirai <- function(x, ...) {
     cat(" - $value for evaluated result\n")
   }
   invisible(x)
+
+}
+
+#' mirai Server (Async Execution Daemon)
+#'
+#' Implements a persistent executor/server for the remote process. Awaits data,
+#'     evaluates an expression in an environment containing the supplied data,
+#'     and returns the result to the caller/client.
+#'
+#' @inheritParams exec
+#'
+#' @return Integer exit code.
+#'
+#' @keywords internal
+#' @export
+#'
+daemon <- function(url) {
+
+  sock <- socket(protocol = "rep", dial = url)
+  ctx <- context(sock)
+  on.exit(expr = {
+    send_aio(ctx, data = as.raw(0L), mode = "serial")
+    close(sock)
+    daemon(url)
+  })
+  while (TRUE) {
+    envir <- recv_ctx(ctx, mode = "serial", keep.raw = FALSE)
+    missing(envir) && break
+    msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
+    send_ctx(ctx, data = msg, mode = "serial", echo = FALSE)
+  }
+
+  on.exit()
+  send_aio(ctx, data = as.raw(1L), mode = "serial")
+  close(sock)
+
+}
+
+#' mirai (Daemon Manager)
+#'
+#' Set or view the number of daemons (background processes). Use this function
+#'     to create persistent background processes to send \code{\link{eval_mirai}}
+#'     requests. Setting
+#'     a positive number of daemons provides a more efficient solution for async
+#'     operations as new processes do not need to be spun up on an ad hoc basis.
+#'     [Experimental]
+#'
+#' @param set_daemons integer number of background processes.
+#' @param view_daemons without specifying 'set_daemons', specify any value to
+#'     view the number of currently active background processes e.g. \code{mirai(, 0)}.
+#'
+#' @return Without specifying any arguments, the 'nanoSocket' for connecting to
+#'     the background processes, or NULL if it has yet to be created. When
+#'     specifying 'set_daemons', the return value will depend on whether
+#'     background processes are created or destroyed (see details section). If
+#'     'set_daemons' is left blank but 'view_daemons' is specified, the integer
+#'     number of currently active daemons.
+#'
+#' @details Background processes will be created or destroyed as appropriate.
+#'     \itemize{
+#'     \item{If new processes are created, the return value will be the integer
+#'     number of created processes.}
+#'     \item{If processes are destroyed, the return value will be a list of the
+#'     exit signals from each destroyed process (an integer byte 1 on success).
+#'     This process will wait for confirmation to be received.}
+#'     \item{Otherwise NULL will be returned invisibly.}
+#'     }
+#'
+#'     Reverts to the default behaviour of creating a new background process for
+#'     each request if the number of daemons is set to 0.
+#'
+#'     Implementation note: uses the scalability protocols from the NNG library
+#'     to provide massively-scalable load-balancing. \code{\link{eval_mirai}}
+#'     requests are automatically routed to the optimal node based on
+#'     back-pressure and then in a round-robin fashion.
+#'
+#'     This feature has the tag [experimental], which indicates that it remains
+#'     under development. Please note that the final implementation may differ
+#'     from the current version.
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#' # To spin up 4 background processes
+#' mirai(4)
+#' # To view the number of active background processes
+#' mirai(, 0)
+#' # To destroy them all
+#' mirai(0)
+#' }
+#'
+#' @export
+#'
+mirai <- function(...) {
+
+  daemons <- 0L
+  url <- sock <- cmd <- arg <- NULL
+
+  function(set_daemons, view_daemons) {
+    if (missing(set_daemons)) {
+
+      if (missing(view_daemons)) sock else daemons
+
+    } else {
+
+      set_daemons <- as.integer(set_daemons)
+      set_daemons >= 0L || stop("number of daemons must be zero or greater")
+      if (is.null(url)) url <<- sprintf("ipc:///tmp/n%.15f", runif(1L))
+      if (is.null(sock)) sock <<- socket(protocol = "req", listen = url)
+      if (is.null(cmd)) cmd <<- switch(.subset2(.Platform, "OS.type"),
+                                      unix = file.path(R.home("bin"), "Rscript"),
+                                      windows = file.path(R.home("bin"), "Rscript.exe"))
+      if (is.null(arg)) arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::daemon(%s)", deparse(url))))
+
+      delta <- set_daemons - daemons
+
+      if (delta > 0L) {
+        created <- 0L
+        for (i in seq_len(delta)) {
+          system2(command = cmd, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
+          created <- created + 1L
+        }
+        daemons <<- daemons + created
+        created
+
+      } else if (delta < 0L) {
+        res <- vector(mode = "list", length = -delta)
+        for (i in seq_len(-delta)) {
+          ctx <- context(sock)
+          aio <- request(ctx, data = .mirai_scm(), send_mode = "serial", recv_mode = "serial", keep.raw = FALSE)
+          call_aio(aio, block = TRUE)
+          close(ctx)
+          if (!identical(aio$data, as.raw(1L))) message("failed to destroy process ", i)
+          res[[i]] <- aio$data
+          daemons <<- daemons - 1L
+        }
+        res
+
+      } else {
+        invisible()
+      }
+
+    }
+
+  }
 
 }
 

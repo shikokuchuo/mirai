@@ -10,7 +10,7 @@ call_mirai(mirai, wait = TRUE)
 \item{mirai}{a 'mirai' object.}
 
 \item{wait}{[default TRUE] whether to wait for completion of the asynschronous
-operation (blocking) or else return immediately. [experimental]}
+operation (blocking) or else return immediately.}
 }
 \value{
 The passed mirai (invisibly). The retrieved value is stored in
@@ -46,10 +46,6 @@ This function will by default wait for the async operation to
     a non-waiting call, unless it is impossible for your expression to return
     NULL. This is as NULL$value is also NULL, hence it would otherwise not be
     possible to distinguish between an unresolved mirai and a NULL return value.
-
-    This feature has the tag [experimental], which indicates that it remains
-    under development. Please note that the final implementation may differ
-    from the current version.
 }
 
 \examples{

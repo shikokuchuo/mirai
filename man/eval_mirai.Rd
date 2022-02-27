@@ -9,7 +9,7 @@ eval_mirai(.expr, ...)
 \arguments{
 \item{.expr}{an expression to evaluate in a new R process.}
 
-\item{...}{named arguments specifying the variables contained in 'expr'.}
+\item{...}{named arguments specifying the variables contained in '.expr'.}
 }
 \value{
 A 'mirai' object.

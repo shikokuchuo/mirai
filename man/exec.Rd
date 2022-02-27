@@ -2,12 +2,15 @@
 % Please edit documentation in R/mirai.R
 \name{exec}
 \alias{exec}
-\title{mirai Server (Async Execution Daemon)}
+\title{mirai Server (Async Executor)}
 \usage{
 exec(url)
 }
+\arguments{
+\item{url}{the internally assigned unique URL.}
+}
 \value{
-Invisible NULL.
+Integer exit code.
 }
 \description{
 Implements an executor/server for the remote process. Awaits data, evaluates

@@ -2,9 +2,12 @@
 
 S3method(print,mirai)
 export(call_mirai)
+export(daemon)
 export(eval_mirai)
 export(exec)
 export(is_nul_byte)
+export(mirai)
+importFrom(nanonext,.mirai_scm)
 importFrom(nanonext,call_aio)
 importFrom(nanonext,context)
 importFrom(nanonext,is_nul_byte)
