@@ -19,7 +19,11 @@ Retrieve the value of a mirai (waiting for the the asynchronous operation to
 }
 \details{
 This function will wait for the async operation to complete if still
-    in progress.
+    in progress (blocking).
+
+    Alternatively, the value of a mirai may be accessed
+    at any time at \code{$data}, and if yet to resolve, a value of logical NA
+    'unresolved value' will be returned instead.
 
     If an error occured in evaluation, a nul byte \code{00} (or serialized
     nul byte) will be returned. \code{\link{is_nul_byte}} can be used to test
@@ -28,18 +32,11 @@ This function will wait for the async operation to complete if still
     The mirai updates itself in place, so do not assign the output of this
     function to avoid duplicates. To access the value of a mirai \code{x}
     directly, use \code{call_mirai(x)$data}.
+
+    To query completion of a mirai, \code{\link{unresolved}} may also be used.
+    This returns TRUE only if the mirai is yet to resolve, and is suitable
+    for use in control flow statements such as \code{while} or \code{if}.
 }
-\section{Non-waiting call}{
-
-
-    The value of a mirai may be accessed at any time at \code{$data}, and if
-    it is yet to resolve, a value of logical NA 'unresolved value' will be
-    returned instead.
-
-    To query whether the evaluation of a mirai has completed,
-    \code{\link{is_resolved}} may also be used.
-}
-
 \examples{
 if (interactive()) {
 # Only run examples in interactive R sessions

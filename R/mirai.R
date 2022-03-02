@@ -41,9 +41,9 @@ exec <- function(url) {
 #'
 #' @return A 'mirai' object.
 #'
-#' @details This function will return immediately. The value of a mirai may be
-#'     accessed at any time at \code{$data}, and if it is yet to resolve, a
-#'     value of logical NA 'unresolved value' will be returned instead.
+#' @details This function will return a 'mirai' object immediately. The value of
+#'     a mirai may be accessed at any time at \code{$data}, and if yet to
+#'     resolve, a value of logical NA 'unresolved value' will be returned instead.
 #'
 #'     To call (and wait for) the result, use \code{\link{call_mirai}} on the
 #'     returned 'mirai' object.
@@ -116,7 +116,11 @@ eval_mirai <- function(.expr, ...) {
 #'     \code{$data}.
 #'
 #' @details This function will wait for the async operation to complete if still
-#'     in progress.
+#'     in progress (blocking).
+#'
+#'     Alternatively, the value of a mirai may be accessed
+#'     at any time at \code{$data}, and if yet to resolve, a value of logical NA
+#'     'unresolved value' will be returned instead.
 #'
 #'     If an error occured in evaluation, a nul byte \code{00} (or serialized
 #'     nul byte) will be returned. \code{\link{is_nul_byte}} can be used to test
@@ -126,14 +130,9 @@ eval_mirai <- function(.expr, ...) {
 #'     function to avoid duplicates. To access the value of a mirai \code{x}
 #'     directly, use \code{call_mirai(x)$data}.
 #'
-#' @section Non-waiting call:
-#'
-#'     The value of a mirai may be accessed at any time at \code{$data}, and if
-#'     it is yet to resolve, a value of logical NA 'unresolved value' will be
-#'     returned instead.
-#'
-#'     To query whether the evaluation of a mirai has completed,
-#'     \code{\link{is_resolved}} may also be used.
+#'     To query completion of a mirai, \code{\link{unresolved}} may also be used.
+#'     This returns TRUE only if the mirai is yet to resolve, and is suitable
+#'     for use in control flow statements such as \code{while} or \code{if}.
 #'
 #' @examples
 #' if (interactive()) {
@@ -172,7 +171,7 @@ call_mirai <- function(mirai) {
 #'
 print.mirai <- function(x, ...) {
 
-  cat("< mirai >\n - $data for evaluated result\n")
+  cat("< mirai >\n - $data for evaluated result\n", file = stdout())
   invisible(x)
 
 }
@@ -282,12 +281,14 @@ mirai <- function(...) {
 
       set_daemons <- as.integer(set_daemons)
       set_daemons >= 0L || stop("number of daemons must be zero or greater")
-      if (is.null(url)) url <<- sprintf("ipc:///tmp/n%.15f", runif(1L))
-      if (is.null(sock)) sock <<- socket(protocol = "req", listen = url)
-      if (is.null(cmd)) cmd <<- switch(.subset2(.Platform, "OS.type"),
-                                      unix = file.path(R.home("bin"), "Rscript"),
-                                      windows = file.path(R.home("bin"), "Rscript.exe"))
-      if (is.null(arg)) arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::daemon(%s)", deparse(url))))
+      if (is.null(url)) {
+        url <<- sprintf("ipc:///tmp/n%.15f", runif(1L))
+        sock <<- socket(protocol = "req", listen = url)
+        cmd <<- switch(.subset2(.Platform, "OS.type"),
+                       unix = file.path(R.home("bin"), "Rscript"),
+                       windows = file.path(R.home("bin"), "Rscript.exe"))
+        arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::daemon(%s)", deparse(url))))
+      }
 
       delta <- set_daemons - daemons
 
@@ -306,7 +307,7 @@ mirai <- function(...) {
           aio <- request(ctx, data = .mirai_scm(), send_mode = "serial", recv_mode = "serial", keep.raw = FALSE)
           call_aio(aio)
           close(ctx)
-          if (!identical(.subset2(aio, "data"), as.raw(1L))) message(Sys.time(), " [ process shutdown failure ] ", i)
+          if (!identical(.subset2(aio, "data"), as.raw(1L))) message(Sys.time(), " [ shutdown failure ] process: ", i)
           res[[i]] <- .subset2(aio, "data")
           daemons <<- daemons - 1L
         }

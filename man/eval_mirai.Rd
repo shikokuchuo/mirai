@@ -20,9 +20,9 @@ Evaluate an expression asynchronously in a new non-blocking R process. This
     the result.
 }
 \details{
-This function will return immediately. The value of a mirai may be
-    accessed at any time at \code{$data}, and if it is yet to resolve, a
-    value of logical NA 'unresolved value' will be returned instead.
+This function will return a 'mirai' object immediately. The value of
+    a mirai may be accessed at any time at \code{$data}, and if yet to
+    resolve, a value of logical NA 'unresolved value' will be returned instead.
 
     To call (and wait for) the result, use \code{\link{call_mirai}} on the
     returned 'mirai' object.
