@@ -20,8 +20,12 @@ Evaluate an expression asynchronously in a new non-blocking R process. This
     the result.
 }
 \details{
-This function will return immediately. To call the result, use
-    \code{\link{call_mirai}} on the returned 'mirai' object.
+This function will return immediately. The value of a mirai may be
+    accessed at any time at \code{$data}, and if it is yet to resolve, a
+    value of logical NA 'unresolved value' will be returned instead.
+
+    To call (and wait for) the result, use \code{\link{call_mirai}} on the
+    returned 'mirai' object.
 
     The expression '.expr' will be evaluated in a new R process in a clean
     environment consisting of the named objects passed as '...' only.
@@ -33,18 +37,17 @@ if (interactive()) {
 mirai <- eval_mirai(x + y + 1, x = 2, y = 3)
 mirai
 call_mirai(mirai)
-mirai
-mirai$value
+mirai$data
 
 mirai <- eval_mirai(as.matrix(df), df = data.frame())
-call_mirai(mirai)$value
+call_mirai(mirai)$data
 
 mirai <- eval_mirai({
   res <- rnorm(n)
   res / rev(res)
 }, n = 1e6)
 call_mirai(mirai)
-mirai$value
+mirai$data
 }
 
 }

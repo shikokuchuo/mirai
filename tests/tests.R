@@ -5,10 +5,10 @@ mirai <- eval_mirai({
   q / m
 }, m = 2L, n = 3L)
 invisible(!is.null(mirai$aio) || stop())
-invisible(!is.null(mirai$socket) || stop())
+invisible(!is.null(attr(mirai, "con")) || stop())
 invisible(inherits(call_mirai(mirai), "mirai") || stop())
-invisible(mirai$value == 3L || stop())
+invisible(mirai$data == 3L || stop())
 invisible(is.null(mirai$aio) || stop())
-invisible(is.null(mirai$socket) || stop())
+invisible(is.null(attr(mirai, "con")) || stop())
 invisible(identical(call_mirai(mirai), mirai) || stop())
 

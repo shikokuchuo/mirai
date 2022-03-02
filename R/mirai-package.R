@@ -18,8 +18,8 @@
 #' @author Charlie Gao \email{charlie.gao@@shikokuchuo.net}
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
-#' @importFrom nanonext call_aio context is_nul_byte recv_ctx request send_aio
-#'     send_ctx socket stop_aio .mirai_scm
+#' @importFrom nanonext call_aio context is_nul_byte is_resolved recv_ctx
+#'     request send_aio send_ctx socket stop_aio .mirai_scm
 #' @importFrom stats runif
 #'
 #' @docType package
@@ -40,4 +40,7 @@ NULL
 
 #' @export
 nanonext::is_nul_byte
+
+#' @export
+nanonext::is_resolved
 

@@ -41,8 +41,12 @@ exec <- function(url) {
 #'
 #' @return A 'mirai' object.
 #'
-#' @details This function will return immediately. To call the result, use
-#'     \code{\link{call_mirai}} on the returned 'mirai' object.
+#' @details This function will return immediately. The value of a mirai may be
+#'     accessed at any time at \code{$data}, and if it is yet to resolve, a
+#'     value of logical NA 'unresolved value' will be returned instead.
+#'
+#'     To call (and wait for) the result, use \code{\link{call_mirai}} on the
+#'     returned 'mirai' object.
 #'
 #'     The expression '.expr' will be evaluated in a new R process in a clean
 #'     environment consisting of the named objects passed as '...' only.
@@ -54,18 +58,17 @@ exec <- function(url) {
 #' mirai <- eval_mirai(x + y + 1, x = 2, y = 3)
 #' mirai
 #' call_mirai(mirai)
-#' mirai
-#' mirai$value
+#' mirai$data
 #'
 #' mirai <- eval_mirai(as.matrix(df), df = data.frame())
-#' call_mirai(mirai)$value
+#' call_mirai(mirai)$data
 #'
 #' mirai <- eval_mirai({
 #'   res <- rnorm(n)
 #'   res / rev(res)
 #' }, n = 1e6)
 #' call_mirai(mirai)
-#' mirai$value
+#' mirai$data
 #' }
 #'
 #' @export
@@ -78,10 +81,8 @@ eval_mirai <- function(.expr, ...) {
     envir <- list2env(arglist)
     ctx <- context(mirai())
     aio <- request(ctx, data = envir, send_mode = "serial", recv_mode = "serial", keep.raw = FALSE)
-    mirai <- `class<-`(new.env(), "mirai")
-    mirai[["aio"]] <- aio
-    mirai[["context"]] <- ctx
-    mirai
+    attr(aio, "con") <- ctx
+    `class<-`(aio, c("mirai", class(aio)))
 
   } else {
 
@@ -97,10 +98,8 @@ eval_mirai <- function(.expr, ...) {
     sock <- socket(protocol = "req", listen = url)
     ctx <- context(sock)
     aio <- request(ctx, data = envir, send_mode = "serial", recv_mode = "serial", keep.raw = FALSE)
-    mirai <- `class<-`(new.env(), "mirai")
-    mirai[["aio"]] <- aio
-    mirai[["socket"]] <- sock
-    mirai
+    attr(aio, "con") <- sock
+    `class<-`(aio, c("mirai", class(aio)))
 
   }
 
@@ -108,20 +107,16 @@ eval_mirai <- function(.expr, ...) {
 
 #' Call mirai (Retrieve Value)
 #'
-#' Retrieve the value of a mirai (optionally waiting for the the asynchronous
-#'     operation to resolve if it is still in progress).
+#' Retrieve the value of a mirai (waiting for the the asynchronous operation to
+#'     resolve if it is still in progress).
 #'
 #' @param mirai a 'mirai' object.
-#' @param wait [default TRUE] whether to wait for completion of the asynschronous
-#'     operation (blocking) or else return immediately.
 #'
 #' @return The passed mirai (invisibly). The retrieved value is stored in
-#'     \code{$value}. If the mirai has yet to resolve, NULL will be returned
-#'     instead.
+#'     \code{$data}.
 #'
-#' @details This function will by default wait for the async operation to
-#'     complete if it is still in progress. Specify the 'wait' argument to
-#'     modify this behaviour.
+#' @details This function will wait for the async operation to complete if still
+#'     in progress.
 #'
 #'     If an error occured in evaluation, a nul byte \code{00} (or serialized
 #'     nul byte) will be returned. \code{\link{is_nul_byte}} can be used to test
@@ -129,19 +124,16 @@ eval_mirai <- function(.expr, ...) {
 #'
 #'     The mirai updates itself in place, so do not assign the output of this
 #'     function to avoid duplicates. To access the value of a mirai \code{x}
-#'     directly, use \code{call_mirai(x)$value}.
+#'     directly, use \code{call_mirai(x)$data}.
 #'
 #' @section Non-waiting call:
 #'
-#'     To query whether mirai \code{x} has resolved, test if
-#'     \code{call_mirai(x, wait = FALSE)} returns NULL. When the mirai resolves,
-#'     the mirai itself will be returned (invisibly) instead of NULL. The mirai's
-#'     return value may then be extracted using \code{x$value}.
+#'     The value of a mirai may be accessed at any time at \code{$data}, and if
+#'     it is yet to resolve, a value of logical NA 'unresolved value' will be
+#'     returned instead.
 #'
-#'     It is inadvisable to try to extract the value of a mirai in one step using
-#'     a non-waiting call, unless it is impossible for your expression to return
-#'     NULL. This is as NULL$value is also NULL, hence it would otherwise not be
-#'     possible to distinguish between an unresolved mirai and a NULL return value.
+#'     To query whether the evaluation of a mirai has completed,
+#'     \code{\link{is_resolved}} may also be used.
 #'
 #' @examples
 #' if (interactive()) {
@@ -150,40 +142,29 @@ eval_mirai <- function(.expr, ...) {
 #' mirai <- eval_mirai(x + y + 1, x = 2, y = 3)
 #' mirai
 #' call_mirai(mirai)
-#' mirai
-#' mirai$value
+#' mirai$data
 #'
 #' mirai <- eval_mirai(as.matrix(df), df = data.frame())
-#' call_mirai(mirai)$value
+#' call_mirai(mirai)$data
 #'
 #' mirai <- eval_mirai({
 #'   res <- rnorm(n)
 #'   res / rev(res)
 #' }, n = 1e6)
 #' call_mirai(mirai)
-#' mirai$value
+#' mirai$data
 #' }
 #'
 #' @export
 #'
-call_mirai <- function(mirai, wait = TRUE) {
+call_mirai <- function(mirai) {
 
-  if (!is.null(aio <- .subset2(mirai, "aio"))) {
-    if (!missing(wait) && !isTRUE(wait)) {
-      is.null(call_aio(aio, block = FALSE)) && return()
-    } else {
-      call_aio(aio)
-    }
-    if (is.null(.subset2(mirai, "socket"))) {
-      close(.subset2(mirai, "context"))
-      rm("context", envir = mirai)
-    } else {
-      close(.subset2(mirai, "socket"))
-      rm("socket", envir = mirai)
-    }
-    mirai[["value"]] <- .subset2(aio, "data")
-    rm("aio", envir = mirai)
+  if (!is.null(attr(mirai, "con"))) {
+    call_aio(mirai)
+    close(attr(mirai, "con"))
+    attr(mirai, "con") <- NULL
   }
+
   invisible(mirai)
 
 }
@@ -192,12 +173,7 @@ call_mirai <- function(mirai, wait = TRUE) {
 #'
 print.mirai <- function(x, ...) {
 
-  cat("< mirai >\n")
-  if (length(.subset2(x, "aio"))) {
-    cat(" ~ use call_mirai() to resolve\n")
-  } else {
-    cat(" - $value for evaluated result\n")
-  }
+  cat("< mirai >\n - $data for evaluated result\n")
   invisible(x)
 
 }
@@ -218,17 +194,18 @@ print.mirai <- function(x, ...) {
 daemon <- function(url) {
 
   sock <- socket(protocol = "rep", dial = url)
-  ctx <- context(sock)
   on.exit(expr = {
     send_aio(ctx, data = as.raw(0L), mode = "serial")
     close(sock)
     daemon(url)
   })
   while (TRUE) {
+    ctx <- context(sock)
     envir <- recv_ctx(ctx, mode = "serial", keep.raw = FALSE)
     missing(envir) && break
     msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
     send_ctx(ctx, data = msg, mode = "serial", echo = FALSE)
+    close(ctx)
   }
 
   on.exit()
@@ -316,23 +293,22 @@ mirai <- function(...) {
       delta <- set_daemons - daemons
 
       if (delta > 0L) {
-        created <- 0L
+        original <- daemons
         for (i in seq_len(delta)) {
           system2(command = cmd, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
-          created <- created + 1L
+          daemons <<- daemons + 1L
         }
-        daemons <<- daemons + created
-        created
+        daemons - original
 
       } else if (delta < 0L) {
         res <- vector(mode = "list", length = -delta)
         for (i in seq_len(-delta)) {
           ctx <- context(sock)
           aio <- request(ctx, data = .mirai_scm(), send_mode = "serial", recv_mode = "serial", keep.raw = FALSE)
-          call_aio(aio, block = TRUE)
+          call_aio(aio)
           close(ctx)
-          if (!identical(aio$data, as.raw(1L))) message("failed to destroy process ", i)
-          res[[i]] <- aio$data
+          if (!identical(.subset2(aio, "data"), as.raw(1L))) message(Sys.time(), " [ process shutdown failure ] ", i)
+          res[[i]] <- .subset2(aio, "data")
           daemons <<- daemons - 1L
         }
         res

@@ -4,6 +4,7 @@
 \name{reexports}
 \alias{reexports}
 \alias{is_nul_byte}
+\alias{is_resolved}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -11,6 +12,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{nanonext}{\code{\link[nanonext]{is_nul_byte}}}
+  \item{nanonext}{\code{\link[nanonext]{is_nul_byte}}, \code{\link[nanonext]{is_resolved}}}
 }}
 

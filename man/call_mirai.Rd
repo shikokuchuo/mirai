@@ -4,27 +4,22 @@
 \alias{call_mirai}
 \title{Call mirai (Retrieve Value)}
 \usage{
-call_mirai(mirai, wait = TRUE)
+call_mirai(mirai)
 }
 \arguments{
 \item{mirai}{a 'mirai' object.}
-
-\item{wait}{[default TRUE] whether to wait for completion of the asynschronous
-operation (blocking) or else return immediately.}
 }
 \value{
 The passed mirai (invisibly). The retrieved value is stored in
-    \code{$value}. If the mirai has yet to resolve, NULL will be returned
-    instead.
+    \code{$data}.
 }
 \description{
-Retrieve the value of a mirai (optionally waiting for the the asynchronous
-    operation to resolve if it is still in progress).
+Retrieve the value of a mirai (waiting for the the asynchronous operation to
+    resolve if it is still in progress).
 }
 \details{
-This function will by default wait for the async operation to
-    complete if it is still in progress. Specify the 'wait' argument to
-    modify this behaviour.
+This function will wait for the async operation to complete if still
+    in progress.
 
     If an error occured in evaluation, a nul byte \code{00} (or serialized
     nul byte) will be returned. \code{\link{is_nul_byte}} can be used to test
@@ -32,20 +27,17 @@ This function will by default wait for the async operation to
 
     The mirai updates itself in place, so do not assign the output of this
     function to avoid duplicates. To access the value of a mirai \code{x}
-    directly, use \code{call_mirai(x)$value}.
+    directly, use \code{call_mirai(x)$data}.
 }
 \section{Non-waiting call}{
 
 
-    To query whether mirai \code{x} has resolved, test if
-    \code{call_mirai(x, wait = FALSE)} returns NULL. When the mirai resolves,
-    the mirai itself will be returned (invisibly) instead of NULL. The mirai's
-    return value may then be extracted using \code{x$value}.
+    The value of a mirai may be accessed at any time at \code{$data}, and if
+    it is yet to resolve, a value of logical NA 'unresolved value' will be
+    returned instead.
 
-    It is inadvisable to try to extract the value of a mirai in one step using
-    a non-waiting call, unless it is impossible for your expression to return
-    NULL. This is as NULL$value is also NULL, hence it would otherwise not be
-    possible to distinguish between an unresolved mirai and a NULL return value.
+    To query whether the evaluation of a mirai has completed,
+    \code{\link{is_resolved}} may also be used.
 }
 
 \examples{
@@ -55,18 +47,17 @@ if (interactive()) {
 mirai <- eval_mirai(x + y + 1, x = 2, y = 3)
 mirai
 call_mirai(mirai)
-mirai
-mirai$value
+mirai$data
 
 mirai <- eval_mirai(as.matrix(df), df = data.frame())
-call_mirai(mirai)$value
+call_mirai(mirai)$data
 
 mirai <- eval_mirai({
   res <- rnorm(n)
   res / rev(res)
 }, n = 1e6)
 call_mirai(mirai)
-mirai$value
+mirai$data
 }
 
 }
