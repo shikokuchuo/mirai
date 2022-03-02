@@ -57,7 +57,6 @@ exec <- function(url) {
 #'
 #' mirai <- eval_mirai(x + y + 1, x = 2, y = 3)
 #' mirai
-#' call_mirai(mirai)
 #' mirai$data
 #'
 #' mirai <- eval_mirai(as.matrix(df), df = data.frame())
@@ -98,6 +97,7 @@ eval_mirai <- function(.expr, ...) {
     sock <- socket(protocol = "req", listen = url)
     ctx <- context(sock)
     aio <- request(ctx, data = envir, send_mode = "serial", recv_mode = "serial", keep.raw = FALSE)
+    attr(sock, "context") <- ctx
     attr(aio, "con") <- sock
     `class<-`(aio, c("mirai", class(aio)))
 
@@ -141,7 +141,6 @@ eval_mirai <- function(.expr, ...) {
 #'
 #' mirai <- eval_mirai(x + y + 1, x = 2, y = 3)
 #' mirai
-#' call_mirai(mirai)
 #' mirai$data
 #'
 #' mirai <- eval_mirai(as.matrix(df), df = data.frame())

@@ -36,7 +36,6 @@ if (interactive()) {
 
 mirai <- eval_mirai(x + y + 1, x = 2, y = 3)
 mirai
-call_mirai(mirai)
 mirai$data
 
 mirai <- eval_mirai(as.matrix(df), df = data.frame())
