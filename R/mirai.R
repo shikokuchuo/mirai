@@ -80,7 +80,7 @@ eval_mirai <- function(.expr, ...) {
     envir <- list2env(arglist)
     ctx <- context(mirai())
     aio <- request(ctx, data = envir, send_mode = "serial", recv_mode = "serial", keep.raw = FALSE)
-    attr(aio, "con") <- ctx
+    `[[<-`(aio, "con", ctx)
     `class<-`(aio, c("mirai", class(aio)))
 
   } else {
@@ -98,7 +98,7 @@ eval_mirai <- function(.expr, ...) {
     ctx <- context(sock)
     aio <- request(ctx, data = envir, send_mode = "serial", recv_mode = "serial", keep.raw = FALSE)
     attr(sock, "context") <- ctx
-    attr(aio, "con") <- sock
+    `[[<-`(aio, "con", sock)
     `class<-`(aio, c("mirai", class(aio)))
 
   }
@@ -157,22 +157,13 @@ eval_mirai <- function(.expr, ...) {
 #'
 call_mirai <- function(mirai) {
 
-  if (!is.null(attr(mirai, "con"))) {
+  if (!is.null(.subset2(mirai, "con"))) {
     call_aio(mirai)
-    close(attr(mirai, "con"))
-    attr(mirai, "con") <- NULL
+    close(.subset2(mirai, "con"))
+    rm("con", envir = mirai)
   }
 
   invisible(mirai)
-
-}
-
-#' @export
-#'
-print.mirai <- function(x, ...) {
-
-  cat("< mirai >\n - $data for evaluated result\n", file = stdout())
-  invisible(x)
 
 }
 
@@ -320,6 +311,23 @@ mirai <- function(...) {
     }
 
   }
+
+}
+
+#' @export
+#'
+print.mirai <- function(x, ...) {
+
+  cat("< mirai >\n - $data for evaluated result\n", file = stdout())
+  invisible(x)
+
+}
+
+#' @export
+#'
+.DollarNames.mirai <- function(x, pattern) {
+
+  "data"
 
 }
 

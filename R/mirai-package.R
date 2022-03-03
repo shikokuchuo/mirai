@@ -21,6 +21,7 @@
 #' @importFrom nanonext call_aio context is_nul_byte recv_ctx request send_aio
 #'     send_ctx socket stop_aio unresolved .mirai_scm
 #' @importFrom stats runif
+#' @importFrom utils .DollarNames
 #'
 #' @docType package
 #' @name mirai-package
