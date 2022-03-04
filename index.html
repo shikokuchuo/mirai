@@ -94,10 +94,10 @@
 <h3 id="design-notes">Design Notes<a class="anchor" aria-label="anchor" href="#design-notes"></a>
 </h3>
 <p>Whilst frameworks for parallelisation exist for R, {mirai} is designed for simplicity.</p>
-<p>The package provides 2 functions:</p>
+<p>The package revolves around one single function:</p>
 <ul>
-<li><p><code><a href="reference/eval_mirai.html">eval_mirai()</a></code> to evaluate async</p></li>
-<li><p><code><a href="reference/call_mirai.html">call_mirai()</a></code> to call the result</p></li>
+<li>
+<code><a href="reference/eval_mirai.html">eval_mirai()</a></code> to send an expression for async evaluation, returning a ‘mirai’ which resolves automatically</li>
 </ul>
 <p>Demonstrates the capability of {nanonext} in providing a lightweight and robust cross-platform concurrency framework.</p>
 <p>{mirai} has a tiny pure R code base, relying on a single package - {nanonext}.</p>
@@ -115,10 +115,13 @@
 <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="use-cases">Use Cases<a class="anchor" aria-label="anchor" href="#use-cases"></a>
+<h3 id="demonstration">Demonstration<a class="anchor" aria-label="anchor" href="#demonstration"></a>
 </h3>
-<p>Minimise execution times by performing long-running tasks concurrently in separate processes.</p>
-<p>Ensure execution flow of the main process is not blocked.</p>
+<p>Use cases:</p>
+<ul>
+<li>minimise execution times by performing long-running tasks concurrently in separate processes</li>
+<li>ensure execution flow of the main process is not blocked</li>
+</ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></code></pre></div>
 <div class="section level4">
@@ -132,23 +135,23 @@
 <p>A ‘mirai’ object is returned immediately.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mirai</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">eval_mirai</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">+</span> <span class="va">m</span>, n <span class="op">=</span> <span class="fl">1e8</span>, m <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-
 <span class="va">mirai</span>
 <span class="co">#&gt; &lt; mirai &gt;</span>
-<span class="co">#&gt;  ~ use call_mirai() to resolve</span></code></pre></div>
+<span class="co">#&gt;  - $data for evaluated result</span>
+<span class="va">mirai</span><span class="op">$</span><span class="va">data</span>
+<span class="co">#&gt; &lt; unresolved: logi NA &gt;</span></code></pre></div>
+<p>The calculation is still ongoing hence an ‘unresolved’ logical NA value is returned initially.</p>
 <p>Continue running code concurrent to the async operation.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># do more...</span></code></pre></div>
-<p>Use <code><a href="reference/call_mirai.html">call_mirai()</a></code> to retrieve the evaluated result when required.</p>
+<p>When it completes, the ‘mirai’ will automatically return the evaluated result when queried.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">mirai</span><span class="op">)</span>
-
-<span class="va">mirai</span>
-<span class="co">#&gt; &lt; mirai &gt;</span>
-<span class="co">#&gt;  - $value for evaluated result</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">mirai</span><span class="op">$</span><span class="va">value</span><span class="op">)</span>
-<span class="co">#&gt; num [1:100000000] 1.485 -0.804 0.965 -0.128 -0.555 ...</span></code></pre></div>
+<code class="sourceCode R"><span class="va">mirai</span><span class="op">$</span><span class="va">data</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; num [1:100000000] 0.7568 2.7849 1.2031 -0.0133 1.5456 ...</span></code></pre></div>
+<p>Alternatively, explicitly call and wait for the result (blocking) using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">mirai</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; num [1:100000000] 0.7568 2.7849 1.2031 -0.0133 1.5456 ...</span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="example-2-io-bound-operations">Example 2: I/O-bound Operations<a class="anchor" aria-label="anchor" href="#example-2-io-bound-operations"></a>
@@ -156,16 +159,18 @@
 <p>Processing high-frequency real-time data, writing results to file/database can be slow and potentially disrupt the execution flow.</p>
 <p>Cache data in memory and use <code><a href="reference/eval_mirai.html">eval_mirai()</a></code> to perform periodic write operations in a separate process.</p>
 <p>A ‘mirai’ object is returned immediately.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mirai</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">eval_mirai</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">x</span>, file <span class="op">=</span> <span class="va">file</span><span class="op">)</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1e8</span><span class="op">)</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>Use <code><a href="reference/call_mirai.html">call_mirai()</a></code> to confirm the operation has completed.</p>
-<ul>
-<li>This will wait for the operation to complete if it is still ongoing</li>
-</ul>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">mirai</span><span class="op">)</span><span class="op">$</span><span class="va">value</span>
+<code class="sourceCode R"><span class="va">mirai</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">eval_mirai</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">x</span>, file <span class="op">=</span> <span class="va">file</span><span class="op">)</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1e8</span><span class="op">)</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>Use <code><a href="https://shikokuchuo.net/nanonext/reference/unresolved.html" class="external-link">unresolved()</a></code> to poll for completion on a periodic basis, whilst continuing to perform tasks.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/unresolved.html" class="external-link">unresolved</a></span><span class="op">(</span><span class="va">mirai</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  
+  <span class="co"># do stuff</span>
+  
+<span class="op">}</span>
+<span class="va">mirai</span><span class="op">$</span><span class="va">data</span>
 <span class="co">#&gt; NULL</span></code></pre></div>
-<p>Above, the return value is called directly. NULL is the expected return value for <code><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv()</a></code>.</p>
+<p>Peform other dependent tasks after confirming a successful write, such as performing the next write etc.</p>
 </div>
 </div>
 <div class="section level3">
