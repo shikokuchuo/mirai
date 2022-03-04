@@ -24,11 +24,10 @@ execution, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) technology.
 Whilst frameworks for parallelisation exist for R, {mirai} is designed
 for simplicity.
 
-The package provides 2 functions:
+The package revolves around one single function:
 
--   `eval_mirai()` to evaluate async
-
--   `call_mirai()` to call the result
+-   `eval_mirai()` to send an expression for async evaluation, returning
+    a ‘mirai’ which resolves automatically
 
 Demonstrates the capability of {nanonext} in providing a lightweight and
 robust cross-platform concurrency framework.
@@ -54,12 +53,13 @@ options(repos = c(shikokuchuo = 'https://shikokuchuo.r-universe.dev', CRAN = 'ht
 install.packages("mirai")
 ```
 
-### Use Cases
+### Demonstration
 
-Minimise execution times by performing long-running tasks concurrently
-in separate processes.
+Use cases:
 
-Ensure execution flow of the main process is not blocked.
+-   minimise execution times by performing long-running tasks
+    concurrently in separate processes
+-   ensure execution flow of the main process is not blocked
 
 ``` r
 library(mirai)
@@ -79,11 +79,15 @@ A ‘mirai’ object is returned immediately.
 
 ``` r
 mirai <- eval_mirai(rnorm(n) + m, n = 1e8, m = runif(1))
-
 mirai
 #> < mirai >
-#>  ~ use call_mirai() to resolve
+#>  - $data for evaluated result
+mirai$data
+#> < unresolved: logi NA >
 ```
+
+The calculation is still ongoing hence an ‘unresolved’ logical NA value
+is returned initially.
 
 Continue running code concurrent to the async operation.
 
@@ -91,17 +95,20 @@ Continue running code concurrent to the async operation.
 # do more...
 ```
 
-Use `call_mirai()` to retrieve the evaluated result when required.
+When it completes, the ‘mirai’ will automatically return the evaluated
+result when queried.
 
 ``` r
-call_mirai(mirai)
+mirai$data |> str()
+#> num [1:100000000] 0.7568 2.7849 1.2031 -0.0133 1.5456 ...
+```
 
-mirai
-#> < mirai >
-#>  - $value for evaluated result
+Alternatively, explicitly call and wait for the result (blocking) using
+`call_mirai()`.
 
-str(mirai$value)
-#> num [1:100000000] 1.485 -0.804 0.965 -0.128 -0.555 ...
+``` r
+call_mirai(mirai)$data |> str()
+#> num [1:100000000] 0.7568 2.7849 1.2031 -0.0133 1.5456 ...
 ```
 
 #### Example 2: I/O-bound Operations
@@ -118,17 +125,21 @@ A ‘mirai’ object is returned immediately.
 mirai <- eval_mirai(write.csv(x, file = file), x = rnorm(1e8), file = tempfile())
 ```
 
-Use `call_mirai()` to confirm the operation has completed.
-
--   This will wait for the operation to complete if it is still ongoing
+Use `unresolved()` to poll for completion on a periodic basis, whilst
+continuing to perform tasks.
 
 ``` r
-call_mirai(mirai)$value
+while (unresolved(mirai)) {
+  
+  # do stuff
+  
+}
+mirai$data
 #> NULL
 ```
 
-Above, the return value is called directly. NULL is the expected return
-value for `write.csv()`.
+Peform other dependent tasks after confirming a successful write, such
+as performing the next write etc.
 
 ### Links
 

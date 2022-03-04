@@ -34,7 +34,7 @@ NULL
 }
 
 .onUnload <- function(libpath) {
-  mirai(0L)
+  mirai(set_daemons = 0L)
   invisible()
 }
 

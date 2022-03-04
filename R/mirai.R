@@ -15,7 +15,7 @@
 #'
 . <- function(.) {
 
-  missing(.) && stop("this function is only to be called internally by the package")
+  missing(.) && stop("this function is for package internal use only")
   sock <- socket(protocol = "rep", dial = .)
   ctx <- context(sock)
   on.exit(expr = {
@@ -31,23 +31,31 @@
 
 }
 
-#' Eval mirai (Evaluate Async)
+#' mirai (Evaluate Async)
 #'
-#' Evaluate an expression asynchronously in a new non-blocking R process. This
-#'     function will return immediately with a mirai, which can be called for
-#'     the result.
+#' Evaluate an expression asynchronously in a new background R process. This
+#'     function will return immediately with a 'mirai', which will resolve to
+#'     the evaluated result once complete.
 #'
-#' @param .expr an expression to evaluate in a new R process.
+#' @param .expr an expression to evaluate in a new R process. This may be of
+#'     arbitrary length, wrapped in \{\} if necessary.
 #' @param ... named arguments specifying the variables contained in '.expr'.
 #'
 #' @return A 'mirai' object.
 #'
-#' @details This function will return a 'mirai' object immediately. The value of
-#'     a mirai may be accessed at any time at \code{$data}, and if yet to
-#'     resolve, a value of logical NA 'unresolved value' will be returned instead.
+#' @details This function will return a 'mirai' object immediately.
 #'
-#'     To call (and wait for) the result, use \code{\link{call_mirai}} on the
-#'     returned 'mirai' object.
+#'     The value of a 'mirai' may be accessed at any time at \code{$data}, and
+#'     if yet to resolve, an 'unresolved' logical NA value will be returned
+#'     instead.
+#'
+#'     \code{\link{unresolved}} may also be used, which returns TRUE only if a
+#'     'mirai' has yet to resolve and FALSE otherwise. This is suitable for use
+#'     in control flow statements such as \code{while} or \code{if}.
+#'
+#'     Alternatively, to call (and wait for) the result, use
+#'     \code{\link{call_mirai}} on the returned 'mirai' object. This will block
+#'     until the result is returned.
 #'
 #'     The expression '.expr' will be evaluated in a new R process in a clean
 #'     environment consisting of the named objects passed as '...' only.
@@ -56,26 +64,33 @@
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' mirai <- eval_mirai(x + y + 1, x = 2, y = 3)
-#' mirai
-#' mirai$data
+#' m <- eval_mirai(x + y + 1, x = 2, y = 3)
+#' m
+#' m$data
+#' Sys.sleep(0.2)
+#' m$data
 #'
-#' mirai <- eval_mirai(as.matrix(df), df = data.frame())
-#' call_mirai(mirai)$data
+#' m <- eval_mirai(as.matrix(df), df = data.frame())
+#' call_mirai(m)$data
 #'
-#' mirai <- eval_mirai({
+#' m <- eval_mirai({
 #'   res <- rnorm(n)
 #'   res / rev(res)
 #' }, n = 1e6)
-#' call_mirai(mirai)
-#' mirai$data
+#' while(unresolved(m)) {
+#'   cat("unresolved\n")
+#'   Sys.sleep(0.1)
+#' }
+#' m$data
+#'
 #' }
 #'
 #' @export
 #'
 eval_mirai <- function(.expr, ...) {
 
-  if (!is.null(avail <- attr(mirai(), "daemons")) && avail) {
+  missing(.expr) && stop("missing expression, perhaps wrap in {}?")
+  if (mirai(view_daemons = TRUE)) {
 
     arglist <- list(.expr = substitute(.expr), ...)
     envir <- list2env(arglist)
@@ -106,52 +121,60 @@ eval_mirai <- function(.expr, ...) {
 
 }
 
-#' Call mirai (Retrieve Value)
+#' mirai (Call Value)
 #'
-#' Retrieve the value of a mirai (waiting for the the asynchronous operation to
+#' Call the value of a 'mirai' (waiting for the the asynchronous operation to
 #'     resolve if it is still in progress).
 #'
 #' @param mirai a 'mirai' object.
 #'
-#' @return The passed mirai (invisibly). The retrieved value is stored in
+#' @return The passed 'mirai' (invisibly). The retrieved value is stored in
 #'     \code{$data}.
 #'
 #' @details This function will wait for the async operation to complete if still
 #'     in progress (blocking).
 #'
-#'     Alternatively, the value of a mirai may be accessed
-#'     at any time at \code{$data}, and if yet to resolve, a value of logical NA
-#'     'unresolved value' will be returned instead.
-#'
 #'     If an error occured in evaluation, a nul byte \code{00} (or serialized
 #'     nul byte) will be returned. \code{\link{is_nul_byte}} can be used to test
 #'     for a nul byte.
 #'
-#'     The mirai updates itself in place, so do not assign the output of this
-#'     function to avoid duplicates. To access the value of a mirai \code{x}
+#'     The 'mirai' updates itself in place, so do not assign the output of this
+#'     function to avoid duplicates. To access the value of a 'mirai' \code{x}
 #'     directly, use \code{call_mirai(x)$data}.
 #'
-#'     To query completion of a mirai, \code{\link{unresolved}} may also be used.
-#'     This returns TRUE only if the mirai is yet to resolve, and is suitable
-#'     for use in control flow statements such as \code{while} or \code{if}.
+#' @section Alternatively:
+#'
+#'     The value of a 'mirai' may be accessed at any time at \code{$data}, and
+#'     if yet to resolve, an 'unresolved' logical NA value will be returned
+#'     instead.
+#'
+#'     \code{\link{unresolved}} may also be used, which returns TRUE only if a
+#'     'mirai' has yet to resolve and FALSE otherwise. This is suitable for use
+#'     in control flow statements such as \code{while} or \code{if}.
 #'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' mirai <- eval_mirai(x + y + 1, x = 2, y = 3)
-#' mirai
-#' mirai$data
+#' m <- eval_mirai(x + y + 1, x = 2, y = 3)
+#' m
+#' m$data
+#' Sys.sleep(0.2)
+#' m$data
 #'
-#' mirai <- eval_mirai(as.matrix(df), df = data.frame())
-#' call_mirai(mirai)$data
+#' m <- eval_mirai(as.matrix(df), df = data.frame())
+#' call_mirai(m)$data
 #'
-#' mirai <- eval_mirai({
+#' m <- eval_mirai({
 #'   res <- rnorm(n)
 #'   res / rev(res)
 #' }, n = 1e6)
-#' call_mirai(mirai)
-#' mirai$data
+#' while(unresolved(m)) {
+#'   cat("unresolved\n")
+#'   Sys.sleep(0.1)
+#' }
+#' m$data
+#'
 #' }
 #'
 #' @export
@@ -183,7 +206,7 @@ call_mirai <- function(mirai) {
 #'
 .. <- function(.) {
 
-  missing(.) && stop("this function is only to be called internally by the package")
+  missing(.) && stop("this function is for package internal use only")
   sock <- socket(protocol = "rep", dial = .)
   on.exit(expr = {
     send_aio(ctx, data = as.raw(0L), mode = "serial")
@@ -205,22 +228,72 @@ call_mirai <- function(mirai) {
 
 }
 
-#' mirai (Daemon Manager)
+#' mirai (Stop Evaluation)
 #'
-#' Set the number of daemons (background processes). Use this function
-#'     to create persistent background processes to send \code{\link{eval_mirai}}
-#'     requests. Setting a positive number of daemons provides a potentially
-#'     more efficient solution for async operations as new processes do not need
-#'     to be spun up on an ad hoc basis. [Experimental]
+#' Stop evaluation of a mirai that is in progress.
 #'
-#' @param set_daemons integer number of background processes.
+#' @param mirai a 'mirai' object.
 #'
-#' @return The return value will depend on whether background processes are
-#'     created or destroyed (see details section). Without specifying any
-#'     arguments, the 'nanoSocket' for connecting to the background
-#'     processes, or NULL if it has yet to be created.
+#' @return Invisible NULL.
 #'
-#' @details Background processes will be created or destroyed as appropriate.
+#' @details Stops the asynchronous operation associated with 'mirai' by aborting,
+#'     and then waits for it to complete or to be completely aborted. The 'mirai'
+#'     is then deallocated and attempting to access the value at \code{$data}
+#'     will result in an error.
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' m <- eval_mirai(Sys.sleep(n), n = 5)
+#' stop_mirai(m)
+#'
+#' }
+#'
+#' @export
+#'
+stop_mirai <- function(mirai) {
+
+  if (!is.null(.subset2(mirai, "con"))) {
+    stop_aio(mirai)
+    close(.subset2(mirai, "con"))
+    rm("con", envir = mirai)
+  }
+  invisible()
+
+}
+
+#' mirai (Control Panel)
+#'
+#' Settings that controls the overall behaviour of \{mirai\}. Note that as all
+#'     arguments appear after '...', they must be specified explicitly and in
+#'     full (positional and partial matching do not apply). Specify a single
+#'     argument only: if more than one is specified, only the first will be
+#'     taken into account, in the order they appear in the argument list below.
+#'
+#' @param ... reserved.
+#' @param set_daemons set an integer number of background processes.
+#' @param view_daemons specify any value to return the current number of
+#'     background processes.
+#'
+#' @return Depending on specified parameters:
+#'     \itemize{
+#'     \item{'set_daemons': the return value will depend on whether background
+#'     processes are created or destroyed (see Daemons section).}
+#'     \item{'view_daemons': the integer number of background processes.}
+#'     \item{none: the 'nanoSocket' for connecting to the background processes,
+#'     or NULL if it has yet to be created.}
+#'     }
+#'
+#' @section Daemons:
+#'
+#'     Set or view the number of daemons (background processes). Create
+#'     persistent background processes to send \code{\link{eval_mirai}} requests.
+#'     Setting a positive number of daemons provides a potentially more efficient
+#'     solution for async operations as new processes do not need to be created
+#'     on an ad hoc basis. [Experimental]
+#'
+#'     Background processes will be created or destroyed as appropriate.
 #'     \itemize{
 #'     \item{If new processes are created, the return value will be the integer
 #'     number of created processes.}
@@ -240,10 +313,13 @@ call_mirai <- function(mirai) {
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
-#' # To spin up 4 background processes
-#' mirai(4)
+#'
+#' # To create 4 background processes
+#' mirai(set_daemons = 4)
+#' # To view the number of background processes
+#' mirai(view_daemons = TRUE)
 #' # To destroy them all
-#' mirai(0)
+#' mirai(set_daemons = 0)
 #' }
 #'
 #' @export
@@ -253,15 +329,19 @@ mirai <- function(...) {
   daemons <- 0L
   url <- sock <- cmd <- arg <- NULL
 
-  function(set_daemons) {
+  function(..., set_daemons, view_daemons) {
+
     if (missing(set_daemons)) {
 
-      sock
+      if (missing(view_daemons)) sock else daemons
 
     } else {
 
       set_daemons <- as.integer(set_daemons)
       set_daemons >= 0L || stop("number of daemons must be zero or greater")
+      delta <- set_daemons - daemons
+      delta == 0L && return(invisible())
+
       if (is.null(url)) {
         url <<- sprintf("ipc:///tmp/n%.15f", runif(1L))
         sock <<- socket(protocol = "req", listen = url)
@@ -271,35 +351,28 @@ mirai <- function(...) {
         arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::..(%s)", deparse(url))))
       }
 
-      delta <- set_daemons - daemons
-
       if (delta > 0L) {
-        original <- daemons
+        orig <- daemons
         for (i in seq_len(delta)) {
           system2(command = cmd, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
           daemons <<- daemons + 1L
         }
-        attr(sock, "daemons") <- daemons
-        daemons - original
+        daemons - orig
 
-      } else if (delta < 0L) {
+      } else {
         res <- vector(mode = "list", length = -delta)
         for (i in seq_len(-delta)) {
           ctx <- context(sock)
           aio <- request(ctx, data = .mirai_scm(), send_mode = "serial", recv_mode = "serial", keep.raw = FALSE)
           call_aio(aio)
           close(ctx)
-          if (!identical(.subset2(aio, "data"), as.raw(1L))) message(Sys.time(), " [ shutdown failure ] process: ", i)
+          if (!identical(.subset2(aio, "data"), as.raw(1L))) message(Sys.time(), " [ sigterm fail ] daemon: ", i)
           res[[i]] <- .subset2(aio, "data")
           daemons <<- daemons - 1L
         }
-        attr(sock, "daemons") <- daemons
         res
 
-      } else {
-        invisible()
       }
-
     }
 
   }

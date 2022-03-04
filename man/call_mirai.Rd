@@ -2,7 +2,7 @@
 % Please edit documentation in R/mirai.R
 \name{call_mirai}
 \alias{call_mirai}
-\title{Call mirai (Retrieve Value)}
+\title{mirai (Call Value)}
 \usage{
 call_mirai(mirai)
 }
@@ -10,50 +10,60 @@ call_mirai(mirai)
 \item{mirai}{a 'mirai' object.}
 }
 \value{
-The passed mirai (invisibly). The retrieved value is stored in
+The passed 'mirai' (invisibly). The retrieved value is stored in
     \code{$data}.
 }
 \description{
-Retrieve the value of a mirai (waiting for the the asynchronous operation to
+Call the value of a 'mirai' (waiting for the the asynchronous operation to
     resolve if it is still in progress).
 }
 \details{
 This function will wait for the async operation to complete if still
     in progress (blocking).
 
-    Alternatively, the value of a mirai may be accessed
-    at any time at \code{$data}, and if yet to resolve, a value of logical NA
-    'unresolved value' will be returned instead.
-
     If an error occured in evaluation, a nul byte \code{00} (or serialized
     nul byte) will be returned. \code{\link{is_nul_byte}} can be used to test
     for a nul byte.
 
-    The mirai updates itself in place, so do not assign the output of this
-    function to avoid duplicates. To access the value of a mirai \code{x}
+    The 'mirai' updates itself in place, so do not assign the output of this
+    function to avoid duplicates. To access the value of a 'mirai' \code{x}
     directly, use \code{call_mirai(x)$data}.
-
-    To query completion of a mirai, \code{\link{unresolved}} may also be used.
-    This returns TRUE only if the mirai is yet to resolve, and is suitable
-    for use in control flow statements such as \code{while} or \code{if}.
 }
+\section{Alternatively}{
+
+
+    The value of a 'mirai' may be accessed at any time at \code{$data}, and
+    if yet to resolve, an 'unresolved' logical NA value will be returned
+    instead.
+
+    \code{\link{unresolved}} may also be used, which returns TRUE only if a
+    'mirai' has yet to resolve and FALSE otherwise. This is suitable for use
+    in control flow statements such as \code{while} or \code{if}.
+}
+
 \examples{
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-mirai <- eval_mirai(x + y + 1, x = 2, y = 3)
-mirai
-mirai$data
+m <- eval_mirai(x + y + 1, x = 2, y = 3)
+m
+m$data
+Sys.sleep(0.2)
+m$data
 
-mirai <- eval_mirai(as.matrix(df), df = data.frame())
-call_mirai(mirai)$data
+m <- eval_mirai(as.matrix(df), df = data.frame())
+call_mirai(m)$data
 
-mirai <- eval_mirai({
+m <- eval_mirai({
   res <- rnorm(n)
   res / rev(res)
 }, n = 1e6)
-call_mirai(mirai)
-mirai$data
+while(unresolved(m)) {
+  cat("unresolved\n")
+  Sys.sleep(0.1)
+}
+m$data
+
 }
 
 }

@@ -2,28 +2,45 @@
 % Please edit documentation in R/mirai.R
 \name{mirai}
 \alias{mirai}
-\title{mirai (Daemon Manager)}
+\title{mirai (Control Panel)}
 \usage{
-mirai(set_daemons)
+mirai(..., set_daemons, view_daemons)
 }
 \arguments{
-\item{set_daemons}{integer number of background processes.}
+\item{...}{reserved.}
+
+\item{set_daemons}{set an integer number of background processes.}
+
+\item{view_daemons}{specify any value to return the current number of
+background processes.}
 }
 \value{
-The return value will depend on whether background processes are
-    created or destroyed (see details section). Without specifying any
-    arguments, the 'nanoSocket' for connecting to the background
-    processes, or NULL if it has yet to be created.
+Depending on specified parameters:
+    \itemize{
+    \item{'set_daemons': the return value will depend on whether background
+    processes are created or destroyed (see Daemons section).}
+    \item{'view_daemons': the integer number of background processes.}
+    \item{none: the 'nanoSocket' for connecting to the background processes,
+    or NULL if it has yet to be created.}
+    }
 }
 \description{
-Set the number of daemons (background processes). Use this function
-    to create persistent background processes to send \code{\link{eval_mirai}}
-    requests. Setting a positive number of daemons provides a potentially
-    more efficient solution for async operations as new processes do not need
-    to be spun up on an ad hoc basis. [Experimental]
+Settings that controls the overall behaviour of \{mirai\}. Note that as all
+    arguments appear after '...', they must be specified explicitly and in
+    full (positional and partial matching do not apply). Specify a single
+    argument only: if more than one is specified, only the first will be
+    taken into account, in the order they appear in the argument list below.
 }
-\details{
-Background processes will be created or destroyed as appropriate.
+\section{Daemons}{
+
+
+    Set or view the number of daemons (background processes). Create
+    persistent background processes to send \code{\link{eval_mirai}} requests.
+    Setting a positive number of daemons provides a potentially more efficient
+    solution for async operations as new processes do not need to be created
+    on an ad hoc basis. [Experimental]
+
+    Background processes will be created or destroyed as appropriate.
     \itemize{
     \item{If new processes are created, the return value will be the integer
     number of created processes.}
@@ -40,13 +57,17 @@ Background processes will be created or destroyed as appropriate.
     under development. Please note that the final implementation may differ
     from the current version.
 }
+
 \examples{
 if (interactive()) {
 # Only run examples in interactive R sessions
-# To spin up 4 background processes
-mirai(4)
+
+# To create 4 background processes
+mirai(set_daemons = 4)
+# To view the number of background processes
+mirai(view_daemons = TRUE)
 # To destroy them all
-mirai(0)
+mirai(set_daemons = 0)
 }
 
 }
