@@ -6,16 +6,17 @@
 #'     an expression in an environment containing the supplied data, and returns
 #'     the result to the caller/client.
 #'
-#' @param url the internally assigned unique URL.
+#' @param . the internally assigned unique URL.
 #'
 #' @return Integer exit code.
 #'
 #' @keywords internal
 #' @export
 #'
-exec <- function(url) {
+. <- function(.) {
 
-  sock <- socket(protocol = "rep", dial = url)
+  missing(.) && stop("this function is only to be called internally by the package")
+  sock <- socket(protocol = "rep", dial = .)
   ctx <- context(sock)
   on.exit(expr = {
     send_aio(ctx, data = as.raw(0L), mode = "serial")
@@ -92,7 +93,7 @@ eval_mirai <- function(.expr, ...) {
                   unix = file.path(R.home("bin"), "Rscript"),
                   windows = file.path(R.home("bin"), "Rscript.exe"))
     url <- sprintf("ipc:///tmp/n%.15f", runif(1L))
-    arg <- c("--vanilla", "-e", shQuote(sprintf("mirai::exec(%s)", deparse(url))))
+    arg <- c("--vanilla", "-e", shQuote(sprintf("mirai::.(%s)", deparse(url))))
     system2(command = cmd, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
     sock <- socket(protocol = "req", listen = url)
     ctx <- context(sock)
@@ -173,20 +174,21 @@ call_mirai <- function(mirai) {
 #'     evaluates an expression in an environment containing the supplied data,
 #'     and returns the result to the caller/client.
 #'
-#' @inheritParams exec
+#' @inheritParams .
 #'
 #' @return Integer exit code.
 #'
 #' @keywords internal
 #' @export
 #'
-daemon <- function(url) {
+.. <- function(.) {
 
-  sock <- socket(protocol = "rep", dial = url)
+  missing(.) && stop("this function is only to be called internally by the package")
+  sock <- socket(protocol = "rep", dial = .)
   on.exit(expr = {
     send_aio(ctx, data = as.raw(0L), mode = "serial")
     close(sock)
-    daemon(url)
+    ..(.)
   })
   while (TRUE) {
     ctx <- context(sock)
@@ -266,7 +268,7 @@ mirai <- function(...) {
         cmd <<- switch(.subset2(.Platform, "OS.type"),
                        unix = file.path(R.home("bin"), "Rscript"),
                        windows = file.path(R.home("bin"), "Rscript.exe"))
-        arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::daemon(%s)", deparse(url))))
+        arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::..(%s)", deparse(url))))
       }
 
       delta <- set_daemons - daemons
@@ -310,14 +312,6 @@ print.mirai <- function(x, ...) {
 
   cat("< mirai >\n - $data for evaluated result\n", file = stdout())
   invisible(x)
-
-}
-
-#' @export
-#'
-.DollarNames.mirai <- function(x, pattern = "") {
-
-  grep(pattern, "data", value = TRUE, fixed = TRUE)
 
 }
 
