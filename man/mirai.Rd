@@ -4,29 +4,23 @@
 \alias{mirai}
 \title{mirai (Daemon Manager)}
 \usage{
-mirai(set_daemons, view_daemons)
+mirai(set_daemons)
 }
 \arguments{
 \item{set_daemons}{integer number of background processes.}
-
-\item{view_daemons}{without specifying 'set_daemons', specify any value to
-view the number of currently active background processes e.g. \code{mirai(, 0)}.}
 }
 \value{
-Without specifying any arguments, the 'nanoSocket' for connecting to
-    the background processes, or NULL if it has yet to be created. When
-    specifying 'set_daemons', the return value will depend on whether
-    background processes are created or destroyed (see details section). If
-    'set_daemons' is left blank but 'view_daemons' is specified, the integer
-    number of currently active daemons.
+The return value will depend on whether background processes are
+    created or destroyed (see details section). Without specifying any
+    arguments, the 'nanoSocket' for connecting to the background
+    processes, or NULL if it has yet to be created.
 }
 \description{
-Set or view the number of daemons (background processes). Use this function
+Set the number of daemons (background processes). Use this function
     to create persistent background processes to send \code{\link{eval_mirai}}
-    requests. Setting
-    a positive number of daemons provides a more efficient solution for async
-    operations as new processes do not need to be spun up on an ad hoc basis.
-    [Experimental]
+    requests. Setting a positive number of daemons provides a potentially
+    more efficient solution for async operations as new processes do not need
+    to be spun up on an ad hoc basis. [Experimental]
 }
 \details{
 Background processes will be created or destroyed as appropriate.
@@ -39,13 +33,8 @@ Background processes will be created or destroyed as appropriate.
     \item{Otherwise NULL will be returned invisibly.}
     }
 
-    Reverts to the default behaviour of creating a new background process for
-    each request if the number of daemons is set to 0.
-
-    Implementation note: uses the scalability protocols from the NNG library
-    to provide massively-scalable load-balancing. \code{\link{eval_mirai}}
-    requests are automatically routed to the optimal node based on
-    back-pressure and then in a round-robin fashion.
+    mirai will revert to the default behaviour of creating a new background
+    process for each request if the number of daemons is set to 0.
 
     This feature has the tag [experimental], which indicates that it remains
     under development. Please note that the final implementation may differ
@@ -56,8 +45,6 @@ if (interactive()) {
 # Only run examples in interactive R sessions
 # To spin up 4 background processes
 mirai(4)
-# To view the number of active background processes
-mirai(, 0)
 # To destroy them all
 mirai(0)
 }
