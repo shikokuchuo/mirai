@@ -26,12 +26,10 @@ for simplicity.
 
 Use:
 
--   `mirai()` to create a ‘mirai’ object.
+    `mirai()` to create a ‘mirai’ object.
 
-A ‘mirai’ evaluates an arbitrary expression asynchronously.
-
-Initially returns a logical NA value, resolving automatically upon
-completion.
+This function returns immediately. A ‘mirai’ evaluates an arbitrary
+expression asynchronously, resolving automatically upon completion.
 
 \~\~
 
@@ -39,8 +37,8 @@ Demonstrates the capability of {nanonext} in providing a lightweight and
 robust cross-platform concurrency framework.
 
 {mirai} has a tiny pure R code base, relying on a single package -
-{nanonext}. {nanonext} itself is a lightweight wrapper for the NNG C
-library with zero package dependencies.
+{nanonext}, which is itself a lightweight wrapper for the NNG C library
+with zero package dependencies.
 
 ### Installation
 
@@ -53,8 +51,7 @@ install.packages("mirai")
 or the development version from rOpenSci R-universe:
 
 ``` r
-options(repos = c(shikokuchuo = 'https://shikokuchuo.r-universe.dev', CRAN = 'https://cloud.r-project.org'))
-install.packages("mirai")
+install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
 ```
 
 ### Demonstration
@@ -144,6 +141,7 @@ while (unresolved(m)) {
 }
 #> while unresolved
 #> while unresolved
+#> while unresolved
 
 # perform actions which depend on the 'mirai' value outside the while loop
 m$data
@@ -153,6 +151,41 @@ m$data
 Here the resolved value is `NULL`, the expected return value for
 `write.csv()`. Now actions which depend on this confirmation may be
 processed, for example the next write.
+
+### Daemons
+
+Daemons or persistent background processes may be set to receive ‘mirai’
+requests.
+
+Setting a positive number of daemons provides a potentially more
+efficient solution for ‘mirai’ requests as new processes no longer need
+to be created on an ad hoc basis.
+
+``` r
+# create 8 daemons
+daemons(8)
+#> [1] 8
+
+# query the number of active daemons
+daemons("view")
+#> [1] 8
+```
+
+The current implementation is low-level and ensures tasks are
+evenly-distributed amongst daemons but does not actively manage a task
+queue. This robust and resource-light approach is particularly
+well-suited to a set of similar-length tasks, or where the number of
+tasks executed does not exceed the number of available daemons at any
+one time.
+
+Set the number of daemons to zero again to revert to the default
+behaviour of creating a new background process for each ‘mirai’ request.
+
+``` r
+# reset to zero
+daemons(0)
+#> [1] -8
+```
 
 ### Links
 

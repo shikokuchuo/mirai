@@ -1,7 +1,7 @@
 Package: mirai
 Type: Package
 Title: Minimalist Async Evaluation Framework for R
-Version: 0.1.0.9006
+Version: 0.1.0.9007
 Description: Extremely simple and lightweight method for concurrent /
     parallel code execution, built on 'nanonext' and 'NNG' (Nanomsg Next Gen)
     technology.
@@ -18,5 +18,5 @@ Encoding: UTF-8
 Depends: 
     R (>= 2.4)
 Imports: 
-    nanonext (>= 0.2.0.9008)
+    nanonext (>= 0.3.0)
 RoxygenNote: 7.1.2

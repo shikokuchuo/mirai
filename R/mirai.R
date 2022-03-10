@@ -275,33 +275,33 @@ stop_mirai <- function(mirai) {
 #' Set or view the number of daemons (background processes). Create persistent
 #'     background processes to send \code{\link{mirai}} requests. Setting a
 #'     positive number of daemons provides a potentially more efficient solution
-#'     for async operations as new processes do not need to be created on an ad
-#'     hoc basis.
+#'     for async operations as new processes no longer need to be created on an
+#'     ad hoc basis.
 #'
 #' @param ... an integer number to set the number of daemons. 'view' to view the
 #'     currently set number of daemons.
 #'
 #' @return Depending on the specified ... parameter:
 #'     \itemize{
-#'     \item{integer: the return value will depend on whether background
-#'     processes are created or destroyed (see details section).}
-#'     \item{'view': the integer number of background processes.}
-#'     \item{missing: the 'nanoSocket' for connecting to the background processes,
-#'     or NULL if it has yet to be created.}
+#'     \item{integer: integer net change in number of daemons, with daemons
+#'     created or destroyed accordingly.}
+#'     \item{'view': integer number of currently set daemons.}
+#'     \item{missing: the 'nanoSocket' for connecting to the daemons, or NULL if
+#'     it has yet to be created.}
 #'     }
 #'
-#' @details Background processes will be created or destroyed as appropriate.
-#'     \itemize{
-#'     \item{If new processes are created, the return value will be the integer
-#'     number of created processes.}
-#'     \item{If processes are destroyed, the return value will be a list of the
-#'     exit signals from each destroyed process (an integer byte 1 on success).
-#'     This process will wait for confirmation to be received.}
-#'     \item{Otherwise NULL will be returned invisibly.}
-#'     }
+#' @details \{mirai\} will revert to the default behaviour of creating a new
+#'     background process for each request if the number of daemons is set to 0.
+#'     It is recommended to shut down daemons once no longer in use by setting
+#'     \code{daemons(0)} to ensure that all processes are completed and resources
+#'     are properly freed.
 #'
-#'     mirai will revert to the default behaviour of creating a new background
-#'     process for each request if the number of daemons is set to 0.
+#'     The current implementation is low-level and ensures tasks are
+#'     evenly-distributed amongst daemons but does not actively manage a task
+#'     queue. This approach provides a resource-light and robust solution,
+#'     well-suited to executing a set of similar-length tasks, or where the
+#'     number of tasks executed does not exceed the number of available daemons
+#'     at any one time.
 #'
 #' @examples
 #' if (interactive()) {
@@ -335,7 +335,7 @@ daemons <- function(...) {
       set <- as.integer(..1)
       set >= 0L || stop("number of daemons must be zero or greater")
       delta <- set - proc
-      delta == 0L && return(invisible())
+      delta == 0L && return(0L)
 
       if (is.null(url)) {
         url <<- sprintf("ipc:///tmp/n%.15f", runif(1L))
@@ -356,15 +356,18 @@ daemons <- function(...) {
         proc - orig
 
       } else {
-        res <- vector(mode = "list", length = -delta)
+        res <- 0L
         for (i in seq_len(-delta)) {
           ctx <- context(sock)
           aio <- request(ctx, data = .mirai_scm(), send_mode = "serial", recv_mode = "serial", keep.raw = FALSE)
           call_aio(aio)
           close(ctx)
-          if (!identical(.subset2(aio, "data"), as.raw(1L))) message(Sys.time(), " [ sigterm fail ] daemon: ", i)
-          res[[i]] <- .subset2(aio, "data")
-          proc <<- proc - 1L
+          if (identical(.subset2(aio, "data"), as.raw(1L))) {
+            res <- res - 1L
+            proc <<- proc - 1L
+          } else {
+            message(Sys.time(), " [ sigterm fail ] daemon: ", i)
+          }
         }
         attr(sock, "daemons") <- proc
         res

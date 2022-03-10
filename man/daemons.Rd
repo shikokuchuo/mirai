@@ -13,37 +13,33 @@ currently set number of daemons.}
 \value{
 Depending on the specified ... parameter:
     \itemize{
-    \item{integer: the return value will depend on whether background
-    processes are created or destroyed (see details section).}
-    \item{'view': the integer number of background processes.}
-    \item{missing: the 'nanoSocket' for connecting to the background processes,
-    or NULL if it has yet to be created.}
+    \item{integer: integer net change in number of daemons, with daemons
+    created or destroyed accordingly.}
+    \item{'view': integer number of currently set daemons.}
+    \item{missing: the 'nanoSocket' for connecting to the daemons, or NULL if
+    it has yet to be created.}
     }
 }
 \description{
 Set or view the number of daemons (background processes). Create persistent
     background processes to send \code{\link{mirai}} requests. Setting a
     positive number of daemons provides a potentially more efficient solution
-    for async operations as new processes do not need to be created on an ad
-    hoc basis. [Experimental]
+    for async operations as new processes no longer need to be created on an
+    ad hoc basis.
 }
 \details{
-Background processes will be created or destroyed as appropriate.
-    \itemize{
-    \item{If new processes are created, the return value will be the integer
-    number of created processes.}
-    \item{If processes are destroyed, the return value will be a list of the
-    exit signals from each destroyed process (an integer byte 1 on success).
-    This process will wait for confirmation to be received.}
-    \item{Otherwise NULL will be returned invisibly.}
-    }
+\{mirai\} will revert to the default behaviour of creating a new
+    background process for each request if the number of daemons is set to 0.
+    It is recommended to shut down daemons once no longer in use by setting
+    \code{daemons(0)} to ensure that all processes are completed and resources
+    are properly freed.
 
-    mirai will revert to the default behaviour of creating a new background
-    process for each request if the number of daemons is set to 0.
-
-    This feature has the tag [experimental], which indicates that it remains
-    under development. Please note that the final implementation may differ
-    from the current version.
+    The current implementation is low-level and ensures tasks are
+    evenly-distributed amongst daemons but does not actively manage a task
+    queue. This approach provides a resource-light and robust solution,
+    well-suited to executing a set of similar-length tasks, or where the
+    number of tasks executed does not exceed the number of available daemons
+    at any one time.
 }
 \examples{
 if (interactive()) {
