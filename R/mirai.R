@@ -60,24 +60,26 @@
 #'     The expression '.expr' will be evaluated in a new R process in a clean
 #'     environment consisting of the named objects passed as '...' only.
 #'
+#'     \code{\link{mirai}} is an alias for \code{\link{eval_mirai}}.
+#'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' m <- eval_mirai(x + y + 1, x = 2, y = 3)
+#' m <- mirai(x + y + 1, x = 2, y = 3)
 #' m
 #' m$data
 #' Sys.sleep(0.2)
 #' m$data
 #'
-#' m <- eval_mirai(as.matrix(df), df = data.frame())
+#' m <- mirai(as.matrix(df), df = data.frame())
 #' call_mirai(m)$data
 #'
-#' m <- eval_mirai({
+#' m <- mirai({
 #'   res <- rnorm(n)
 #'   res / rev(res)
 #' }, n = 1e6)
-#' while(unresolved(m)) {
+#' while (unresolved(m)) {
 #'   cat("unresolved\n")
 #'   Sys.sleep(0.1)
 #' }
@@ -90,11 +92,11 @@
 eval_mirai <- function(.expr, ...) {
 
   missing(.expr) && stop("missing expression, perhaps wrap in {}?")
-  if (mirai(view_daemons = TRUE)) {
+  if (!is.null(proc <- attr(daemons(), "daemons")) && proc) {
 
     arglist <- list(.expr = substitute(.expr), ...)
     envir <- list2env(arglist)
-    ctx <- context(mirai())
+    ctx <- context(daemons())
     aio <- request(ctx, data = envir, send_mode = "serial", recv_mode = "serial", keep.raw = FALSE)
     `[[<-`(aio, "con", ctx)
     `class<-`(aio, c("mirai", class(aio)))
@@ -120,6 +122,11 @@ eval_mirai <- function(.expr, ...) {
   }
 
 }
+
+#' @rdname eval_mirai
+#' @export
+#'
+mirai <- eval_mirai
 
 #' mirai (Call Value)
 #'
@@ -156,20 +163,20 @@ eval_mirai <- function(.expr, ...) {
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' m <- eval_mirai(x + y + 1, x = 2, y = 3)
+#' m <- mirai(x + y + 1, x = 2, y = 3)
 #' m
 #' m$data
 #' Sys.sleep(0.2)
 #' m$data
 #'
-#' m <- eval_mirai(as.matrix(df), df = data.frame())
+#' m <- mirai(as.matrix(df), df = data.frame())
 #' call_mirai(m)$data
 #'
-#' m <- eval_mirai({
+#' m <- mirai({
 #'   res <- rnorm(n)
 #'   res / rev(res)
 #' }, n = 1e6)
-#' while(unresolved(m)) {
+#' while (unresolved(m)) {
 #'   cat("unresolved\n")
 #'   Sys.sleep(0.1)
 #' }
@@ -245,7 +252,7 @@ call_mirai <- function(mirai) {
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' m <- eval_mirai(Sys.sleep(n), n = 5)
+#' m <- mirai(Sys.sleep(n), n = 5)
 #' stop_mirai(m)
 #'
 #' }
@@ -263,37 +270,27 @@ stop_mirai <- function(mirai) {
 
 }
 
-#' mirai (Control Panel)
+#' daemons (Background Processes)
 #'
-#' Settings that controls the overall behaviour of \{mirai\}. Note that as all
-#'     arguments appear after '...', they must be specified explicitly and in
-#'     full (positional and partial matching do not apply). Specify a single
-#'     argument only: if more than one is specified, only the first will be
-#'     taken into account, in the order they appear in the argument list below.
+#' Set or view the number of daemons (background processes). Create persistent
+#'     background processes to send \code{\link{mirai}} requests. Setting a
+#'     positive number of daemons provides a potentially more efficient solution
+#'     for async operations as new processes do not need to be created on an ad
+#'     hoc basis.
 #'
-#' @param ... reserved.
-#' @param set_daemons set an integer number of background processes.
-#' @param view_daemons specify any value to return the current number of
-#'     background processes.
+#' @param ... an integer number to set the number of daemons. 'view' to view the
+#'     currently set number of daemons.
 #'
-#' @return Depending on specified parameters:
+#' @return Depending on the specified ... parameter:
 #'     \itemize{
-#'     \item{'set_daemons': the return value will depend on whether background
-#'     processes are created or destroyed (see Daemons section).}
-#'     \item{'view_daemons': the integer number of background processes.}
-#'     \item{none: the 'nanoSocket' for connecting to the background processes,
+#'     \item{integer: the return value will depend on whether background
+#'     processes are created or destroyed (see details section).}
+#'     \item{'view': the integer number of background processes.}
+#'     \item{missing: the 'nanoSocket' for connecting to the background processes,
 #'     or NULL if it has yet to be created.}
 #'     }
 #'
-#' @section Daemons:
-#'
-#'     Set or view the number of daemons (background processes). Create
-#'     persistent background processes to send \code{\link{eval_mirai}} requests.
-#'     Setting a positive number of daemons provides a potentially more efficient
-#'     solution for async operations as new processes do not need to be created
-#'     on an ad hoc basis. [Experimental]
-#'
-#'     Background processes will be created or destroyed as appropriate.
+#' @details Background processes will be created or destroyed as appropriate.
 #'     \itemize{
 #'     \item{If new processes are created, the return value will be the integer
 #'     number of created processes.}
@@ -306,40 +303,38 @@ stop_mirai <- function(mirai) {
 #'     mirai will revert to the default behaviour of creating a new background
 #'     process for each request if the number of daemons is set to 0.
 #'
-#'     This feature has the tag [experimental], which indicates that it remains
-#'     under development. Please note that the final implementation may differ
-#'     from the current version.
-#'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
 #' # To create 4 background processes
-#' mirai(set_daemons = 4)
+#' daemons(4)
 #' # To view the number of background processes
-#' mirai(view_daemons = TRUE)
+#' daemons("view")
 #' # To destroy them all
-#' mirai(set_daemons = 0)
+#' daemons(0)
 #' }
 #'
 #' @export
 #'
-mirai <- function(...) {
+daemons <- function(...) {
 
-  daemons <- 0L
+  proc <- 0L
   url <- sock <- cmd <- arg <- NULL
 
-  function(..., set_daemons, view_daemons) {
+  function(...) {
 
-    if (missing(set_daemons)) {
+    if (missing(...)) {
 
-      if (missing(view_daemons)) sock else daemons
+      sock
 
     } else {
 
-      set_daemons <- as.integer(set_daemons)
-      set_daemons >= 0L || stop("number of daemons must be zero or greater")
-      delta <- set_daemons - daemons
+      identical(..1, "view") && return(if (is.null(d <- attr(sock, "daemons"))) 0L else d)
+
+      set <- as.integer(..1)
+      set >= 0L || stop("number of daemons must be zero or greater")
+      delta <- set - proc
       delta == 0L && return(invisible())
 
       if (is.null(url)) {
@@ -352,12 +347,13 @@ mirai <- function(...) {
       }
 
       if (delta > 0L) {
-        orig <- daemons
+        orig <- proc
         for (i in seq_len(delta)) {
           system2(command = cmd, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
-          daemons <<- daemons + 1L
+          proc <<- proc + 1L
         }
-        daemons - orig
+        attr(sock, "daemons") <- proc
+        proc - orig
 
       } else {
         res <- vector(mode = "list", length = -delta)
@@ -368,8 +364,9 @@ mirai <- function(...) {
           close(ctx)
           if (!identical(.subset2(aio, "data"), as.raw(1L))) message(Sys.time(), " [ sigterm fail ] daemon: ", i)
           res[[i]] <- .subset2(aio, "data")
-          daemons <<- daemons - 1L
+          proc <<- proc - 1L
         }
+        attr(sock, "daemons") <- proc
         res
 
       }

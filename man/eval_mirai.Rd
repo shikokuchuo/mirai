@@ -2,9 +2,12 @@
 % Please edit documentation in R/mirai.R
 \name{eval_mirai}
 \alias{eval_mirai}
+\alias{mirai}
 \title{mirai (Evaluate Async)}
 \usage{
 eval_mirai(.expr, ...)
+
+mirai(.expr, ...)
 }
 \arguments{
 \item{.expr}{an expression to evaluate in a new R process. This may be of
@@ -37,25 +40,27 @@ This function will return a 'mirai' object immediately.
 
     The expression '.expr' will be evaluated in a new R process in a clean
     environment consisting of the named objects passed as '...' only.
+
+    \code{\link{mirai}} is an alias for \code{\link{eval_mirai}}.
 }
 \examples{
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-m <- eval_mirai(x + y + 1, x = 2, y = 3)
+m <- mirai(x + y + 1, x = 2, y = 3)
 m
 m$data
 Sys.sleep(0.2)
 m$data
 
-m <- eval_mirai(as.matrix(df), df = data.frame())
+m <- mirai(as.matrix(df), df = data.frame())
 call_mirai(m)$data
 
-m <- eval_mirai({
+m <- mirai({
   res <- rnorm(n)
   res / rev(res)
 }, n = 1e6)
-while(unresolved(m)) {
+while (unresolved(m)) {
   cat("unresolved\n")
   Sys.sleep(0.1)
 }

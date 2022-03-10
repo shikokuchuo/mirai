@@ -28,13 +28,13 @@
 NULL
 
 .onLoad <- function(libname, pkgname) {
-  mirai <- mirai()
-  mirai <<- mirai
+  daemons <- daemons()
+  daemons <<- daemons
   invisible()
 }
 
 .onUnload <- function(libpath) {
-  mirai(set_daemons = 0L)
+  daemons(0L)
   invisible()
 }
 
