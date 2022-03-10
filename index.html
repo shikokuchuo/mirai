@@ -43,7 +43,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9007</span>
       </span>
     </div>
 
@@ -93,15 +93,11 @@
 <p>~~</p>
 <p>Whilst frameworks for parallelisation exist for R, {mirai} is designed for simplicity.</p>
 <p>Use:</p>
-<ul>
-<li>
-<code><a href="reference/eval_mirai.html">mirai()</a></code> to create a ‘mirai’ object.</li>
-</ul>
-<p>A ‘mirai’ evaluates an arbitrary expression asynchronously.</p>
-<p>Initially returns a logical NA value, resolving automatically upon completion.</p>
+<p>    <code><a href="reference/eval_mirai.html">mirai()</a></code> to create a ‘mirai’ object.</p>
+<p>This function returns immediately. A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving automatically upon completion.</p>
 <p>~~</p>
 <p>Demonstrates the capability of {nanonext} in providing a lightweight and robust cross-platform concurrency framework.</p>
-<p>{mirai} has a tiny pure R code base, relying on a single package - {nanonext}. {nanonext} itself is a lightweight wrapper for the NNG C library with zero package dependencies.</p>
+<p>{mirai} has a tiny pure R code base, relying on a single package - {nanonext}, which is itself a lightweight wrapper for the NNG C library with zero package dependencies.</p>
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
@@ -110,8 +106,7 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span><span class="op">)</span></code></pre></div>
 <p>or the development version from rOpenSci R-universe:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>shikokuchuo <span class="op">=</span> <span class="st">'https://shikokuchuo.r-universe.dev'</span>, CRAN <span class="op">=</span> <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span>, repos <span class="op">=</span> <span class="st">"https://shikokuchuo.r-universe.dev"</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="demonstration">Demonstration<a class="anchor" aria-label="anchor" href="#demonstration"></a>
@@ -172,12 +167,33 @@
 <span class="op">}</span>
 <span class="co">#&gt; while unresolved</span>
 <span class="co">#&gt; while unresolved</span>
+<span class="co">#&gt; while unresolved</span>
 
 <span class="co"># perform actions which depend on the 'mirai' value outside the while loop</span>
 <span class="va">m</span><span class="op">$</span><span class="va">data</span>
 <span class="co">#&gt; NULL</span></code></pre></div>
 <p>Here the resolved value is <code>NULL</code>, the expected return value for <code><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv()</a></code>. Now actions which depend on this confirmation may be processed, for example the next write.</p>
 </div>
+</div>
+<div class="section level3">
+<h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
+</h3>
+<p>Daemons or persistent background processes may be set to receive ‘mirai’ requests.</p>
+<p>Setting a positive number of daemons provides a potentially more efficient solution for ‘mirai’ requests as new processes no longer need to be created on an ad hoc basis.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># create 8 daemons</span>
+<span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">8</span><span class="op">)</span>
+<span class="co">#&gt; [1] 8</span>
+
+<span class="co"># query the number of active daemons</span>
+<span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="st">"view"</span><span class="op">)</span>
+<span class="co">#&gt; [1] 8</span></code></pre></div>
+<p>The current implementation is low-level and ensures tasks are evenly-distributed amongst daemons but does not actively manage a task queue. This robust and resource-light approach is particularly well-suited to a set of similar-length tasks, or where the number of tasks executed does not exceed the number of available daemons at any one time.</p>
+<p>Set the number of daemons to zero again to revert to the default behaviour of creating a new background process for each ‘mirai’ request.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># reset to zero</span>
+<span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>
+<span class="co">#&gt; [1] -8</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="links">Links<a class="anchor" aria-label="anchor" href="#links"></a>
