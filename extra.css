@@ -1,3 +1,16 @@
+body {
+  font-family: system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+}
+
+a { color: #0043ce; }
+a:hover { text-decoration: underline; }
+
 .navbar-default {
+  background-color: #ffffff;
+}
+
+.label-default {
+  color: #001d6c;
   background-color: #ffffff;
 }
