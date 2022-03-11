@@ -12,33 +12,18 @@ badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc)](https://sh
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
 <!-- badges: end -->
 
-Minimalist async evaluation framework for R.
-
-未来 みらい mirai is Japanese for ‘future’.
-
-Extremely simple and lightweight method for concurrent / parallel code
-execution, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) technology.
-
-\~\~
-
-Whilst frameworks for parallelisation exist for R, {mirai} is designed
-for simplicity.
-
-Use:
-
-    `mirai()` to create a ‘mirai’ object.
-
-This function returns immediately. A ‘mirai’ evaluates an arbitrary
-expression asynchronously, resolving automatically upon completion.
-
-\~\~
-
-Demonstrates the capability of {nanonext} in providing a lightweight and
-robust cross-platform concurrency framework.
-
-{mirai} has a tiny pure R code base, relying on a single package -
-{nanonext}, which is itself a lightweight wrapper for the NNG C library
-with zero package dependencies.
+Minimalist async evaluation framework for R. <br /><br /> 未来 みらい
+mirai is Japanese for ‘future’. <br /><br /> Extremely simple and
+lightweight method for concurrent / parallel code execution, built on
+‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) technology. <br /><br /> \~\~
+<br /><br /> Whilst frameworks for parallelisation exist for R, {mirai}
+is designed for simplicity. <br /><br /><br /> Use:    `mirai()` to
+return a ‘mirai’ object immediately. <br /><br /><br /> A ‘mirai’
+evaluates an arbitrary expression asynchronously, resolving
+automatically upon completion. <br /><br /> \~\~ <br /><br /> {mirai}
+has a tiny code base and relies on a single package - {nanonext}, a
+lightweight wrapper for the NNG C library with zero package
+dependencies.
 
 ### Installation
 
@@ -174,9 +159,8 @@ daemons("view")
 The current implementation is low-level and ensures tasks are
 evenly-distributed amongst daemons but does not actively manage a task
 queue. This robust and resource-light approach is particularly
-well-suited to a set of similar-length tasks, or where the number of
-tasks executed does not exceed the number of available daemons at any
-one time.
+well-suited to working with similar-length tasks, or where the number of
+tasks does not exceed the number of available daemons at any one time.
 
 Set the number of daemons to zero again to revert to the default
 behaviour of creating a new background process for each ‘mirai’ request.

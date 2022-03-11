@@ -16,7 +16,7 @@
 . <- function(.) {
 
   missing(.) && stop("this function is for package internal use only")
-  sock <- socket(protocol = "rep", dial = .)
+  sock <- socket(protocol = "rep", dial = ., autostart = TRUE)
   ctx <- context(sock)
   on.exit(expr = {
     send_aio(ctx, data = as.raw(0L), mode = "serial")
@@ -112,7 +112,7 @@ eval_mirai <- function(.expr, ...) {
     url <- sprintf("ipc:///tmp/n%.15f", runif(1L))
     arg <- c("--vanilla", "-e", shQuote(sprintf("mirai::.(%s)", deparse(url))))
     system2(command = cmd, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
-    sock <- socket(protocol = "req", listen = url)
+    sock <- socket(protocol = "req", listen = url, autostart = TRUE)
     ctx <- context(sock)
     aio <- request(ctx, data = envir, send_mode = "serial", recv_mode = "serial", keep.raw = FALSE)
     attr(sock, "context") <- ctx
@@ -214,7 +214,7 @@ call_mirai <- function(mirai) {
 .. <- function(.) {
 
   missing(.) && stop("this function is for package internal use only")
-  sock <- socket(protocol = "rep", dial = .)
+  sock <- socket(protocol = "rep", dial = ., autostart = TRUE)
   on.exit(expr = {
     send_aio(ctx, data = as.raw(0L), mode = "serial")
     close(sock)
@@ -298,9 +298,9 @@ stop_mirai <- function(mirai) {
 #'
 #'     The current implementation is low-level and ensures tasks are
 #'     evenly-distributed amongst daemons but does not actively manage a task
-#'     queue. This approach provides a resource-light and robust solution,
-#'     well-suited to executing a set of similar-length tasks, or where the
-#'     number of tasks executed does not exceed the number of available daemons
+#'     queue. This approach provides a robust and resource-light solution,
+#'     in particular well-suited to working with similar-length tasks, or where
+#'     the number of tasks does not exceed the number of available daemons
 #'     at any one time.
 #'
 #' @examples
@@ -339,7 +339,7 @@ daemons <- function(...) {
 
       if (is.null(url)) {
         url <<- sprintf("ipc:///tmp/n%.15f", runif(1L))
-        sock <<- socket(protocol = "req", listen = url)
+        sock <<- socket(protocol = "req", listen = url, autostart = TRUE)
         cmd <<- switch(.subset2(.Platform, "OS.type"),
                        unix = file.path(R.home("bin"), "Rscript"),
                        windows = file.path(R.home("bin"), "Rscript.exe"))
@@ -366,7 +366,7 @@ daemons <- function(...) {
             res <- res - 1L
             proc <<- proc - 1L
           } else {
-            message(Sys.time(), " [ sigterm fail ] daemon: ", i)
+            message(sprintf("%s [ shutdown fail ] daemon: %d", format.POSIXct(Sys.time()), i))
           }
         }
         attr(sock, "daemons") <- proc

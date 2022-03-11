@@ -36,9 +36,9 @@ Set or view the number of daemons (background processes). Create persistent
 
     The current implementation is low-level and ensures tasks are
     evenly-distributed amongst daemons but does not actively manage a task
-    queue. This approach provides a resource-light and robust solution,
-    well-suited to executing a set of similar-length tasks, or where the
-    number of tasks executed does not exceed the number of available daemons
+    queue. This approach provides a robust and resource-light solution,
+    in particular well-suited to working with similar-length tasks, or where
+    the number of tasks does not exceed the number of available daemons
     at any one time.
 }
 \examples{
