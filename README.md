@@ -12,18 +12,28 @@ badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc)](https://sh
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
 <!-- badges: end -->
 
-Minimalist async evaluation framework for R. <br /><br /> 未来 みらい
-mirai is Japanese for ‘future’. <br /><br /> Extremely simple and
-lightweight method for concurrent / parallel code execution, built on
-‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) technology. <br /><br /> \~\~
-<br /><br /> Whilst frameworks for parallelisation exist for R, {mirai}
-is designed for simplicity. <br /><br /><br /> Use:    `mirai()` to
-return a ‘mirai’ object immediately. <br /><br /><br /> A ‘mirai’
-evaluates an arbitrary expression asynchronously, resolving
-automatically upon completion. <br /><br /> \~\~ <br /><br /> {mirai}
-has a tiny code base and relies on a single package - {nanonext}, a
-lightweight wrapper for the NNG C library with zero package
-dependencies.
+Minimalist async evaluation framework for R.
+
+未来 みらい mirai is Japanese for ‘future’.
+
+Extremely simple and lightweight method for concurrent / parallel code
+execution, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) technology.
+
+\~\~
+
+Whilst frameworks for parallelisation exist for R, {mirai} is designed
+for simplicity.
+
+Use:    `mirai()` to return a ‘mirai’ object immediately.
+
+A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving
+automatically upon completion.
+
+\~\~
+
+{mirai} has a tiny code base and relies on a single package -
+{nanonext}, a lightweight wrapper for the NNG C library with zero
+package dependencies.
 
 ### Installation
 
