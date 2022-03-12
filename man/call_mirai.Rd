@@ -25,9 +25,8 @@ This function will wait for the async operation to complete if still
     nul byte) will be returned. \code{\link{is_nul_byte}} can be used to test
     for a nul byte.
 
-    The 'mirai' updates itself in place, so do not assign the output of this
-    function to avoid duplicates. To access the value of a 'mirai' \code{x}
-    directly, use \code{call_mirai(x)$data}.
+    The 'mirai' updates itself in place, so to access the value of a 'mirai'
+    \code{x} directly, use \code{call_mirai(x)$data}.
 }
 \section{Alternatively}{
 
