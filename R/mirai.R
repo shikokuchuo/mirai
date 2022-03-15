@@ -10,7 +10,7 @@
 #'
 #' @return Integer exit code.
 #'
-#' @keywords internal
+#' @noRd
 #' @export
 #'
 . <- function(.) {
@@ -45,13 +45,12 @@
 #'
 #' @details This function will return a 'mirai' object immediately.
 #'
-#'     The value of a 'mirai' may be accessed at any time at \code{$data}, and
-#'     if yet to resolve, an 'unresolved' logical NA value will be returned
-#'     instead.
+#'     The value of a 'mirai' may be accessed at any time at \code{$value}, and
+#'     if yet to resolve, an 'unresolved' logical NA will be returned instead.
 #'
-#'     \code{\link{unresolved}} may also be used, which returns TRUE only if a
-#'     'mirai' has yet to resolve and FALSE otherwise. This is suitable for use
-#'     in control flow statements such as \code{while} or \code{if}.
+#'     \code{\link{unresolved}} may also be used on a 'mirai', which returns TRUE
+#'     only if a 'mirai' has yet to resolve and FALSE otherwise. This is suitable
+#'     for use in control flow statements such as \code{while} or \code{if}.
 #'
 #'     Alternatively, to call (and wait for) the result, use
 #'     \code{\link{call_mirai}} on the returned 'mirai' object. This will block
@@ -68,12 +67,12 @@
 #'
 #' m <- mirai(x + y + 1, x = 2, y = 3)
 #' m
-#' m$data
+#' m$value
 #' Sys.sleep(0.2)
-#' m$data
+#' m$value
 #'
 #' m <- mirai(as.matrix(df), df = data.frame())
-#' call_mirai(m)$data
+#' call_mirai(m)$value
 #'
 #' m <- mirai({
 #'   res <- rnorm(n)
@@ -83,7 +82,7 @@
 #'   cat("unresolved\n")
 #'   Sys.sleep(0.1)
 #' }
-#' m$data
+#' m$value
 #'
 #' }
 #'
@@ -98,7 +97,18 @@ eval_mirai <- function(.expr, ...) {
     envir <- list2env(arglist)
     ctx <- context(daemons())
     aio <- request(ctx, data = envir, send_mode = "serial", recv_mode = "serial", keep.raw = FALSE)
-    `[[<-`(aio, "con", ctx)
+    unresolv <- TRUE
+    cache <- NULL
+    makeActiveBinding(sym = "value", fun = function(x) {
+      if (unresolv) {
+        unresolved(res <- .subset2(aio, "data")) && return(res)
+        cache <<- res
+        unresolv <<- FALSE
+        rm("data", "con", "keep.raw", "aio", envir = aio)
+      }
+      cache
+    }, env = aio)
+    aio[["con"]] <- ctx
     `class<-`(aio, c("mirai", class(aio)))
 
   } else {
@@ -115,8 +125,19 @@ eval_mirai <- function(.expr, ...) {
     sock <- socket(protocol = "req", listen = url, autostart = TRUE)
     ctx <- context(sock)
     aio <- request(ctx, data = envir, send_mode = "serial", recv_mode = "serial", keep.raw = FALSE)
+    unresolv <- TRUE
+    cache <- NULL
+    makeActiveBinding(sym = "value", fun = function(x) {
+      if (unresolv) {
+        unresolved(res <- .subset2(aio, "data")) && return(res)
+        cache <<- res
+        unresolv <<- FALSE
+        rm("data", "con", "keep.raw", "aio", envir = aio)
+      }
+      cache
+    }, env = aio)
     attr(sock, "context") <- ctx
-    `[[<-`(aio, "con", sock)
+    aio[["con"]] <- sock
     `class<-`(aio, c("mirai", class(aio)))
 
   }
@@ -130,8 +151,8 @@ mirai <- eval_mirai
 
 #' mirai (Call Value)
 #'
-#' Call the value of a 'mirai' (waiting for the the asynchronous operation to
-#'     resolve if it is still in progress).
+#' Call the value of a 'mirai', waiting for the the asynchronous operation to
+#'     resolve if it is still in progress.
 #'
 #' @param mirai a 'mirai' object.
 #'
@@ -146,17 +167,16 @@ mirai <- eval_mirai
 #'     for a nul byte.
 #'
 #'     The 'mirai' updates itself in place, so to access the value of a 'mirai'
-#'     \code{x} directly, use \code{call_mirai(x)$data}.
+#'     \code{x} directly, use \code{call_mirai(x)$value}.
 #'
 #' @section Alternatively:
 #'
-#'     The value of a 'mirai' may be accessed at any time at \code{$data}, and
-#'     if yet to resolve, an 'unresolved' logical NA value will be returned
-#'     instead.
+#'     The value of a 'mirai' may be accessed at any time at \code{$value}, and
+#'     if yet to resolve, an 'unresolved' logical NA will be returned instead.
 #'
-#'     \code{\link{unresolved}} may also be used, which returns TRUE only if a
-#'     'mirai' has yet to resolve and FALSE otherwise. This is suitable for use
-#'     in control flow statements such as \code{while} or \code{if}.
+#'     \code{\link{unresolved}} may also be used on a 'mirai', and returns TRUE
+#'     only if a 'mirai' has yet to resolve and FALSE otherwise. This is suitable
+#'     for use in control flow statements such as \code{while} or \code{if}.
 #'
 #' @examples
 #' if (interactive()) {
@@ -164,12 +184,12 @@ mirai <- eval_mirai
 #'
 #' m <- mirai(x + y + 1, x = 2, y = 3)
 #' m
-#' m$data
+#' m$value
 #' Sys.sleep(0.2)
-#' m$data
+#' m$value
 #'
 #' m <- mirai(as.matrix(df), df = data.frame())
-#' call_mirai(m)$data
+#' call_mirai(m)$value
 #'
 #' m <- mirai({
 #'   res <- rnorm(n)
@@ -179,7 +199,7 @@ mirai <- eval_mirai
 #'   cat("unresolved\n")
 #'   Sys.sleep(0.1)
 #' }
-#' m$data
+#' m$value
 #'
 #' }
 #'
@@ -189,10 +209,8 @@ call_mirai <- function(mirai) {
 
   if (!is.null(.subset2(mirai, "con"))) {
     call_aio(mirai)
-    close(.subset2(mirai, "con"))
-    rm("con", envir = mirai)
+    .subset2(mirai, "value")
   }
-
   invisible(mirai)
 
 }
@@ -207,7 +225,7 @@ call_mirai <- function(mirai) {
 #'
 #' @return Integer exit code.
 #'
-#' @keywords internal
+#' @noRd
 #' @export
 #'
 .. <- function(.) {
@@ -244,7 +262,7 @@ call_mirai <- function(mirai) {
 #'
 #' @details Stops the asynchronous operation associated with 'mirai' by aborting,
 #'     and then waits for it to complete or to be completely aborted. The 'mirai'
-#'     is then deallocated and attempting to access the value at \code{$data}
+#'     is then deallocated and attempting to access the value at \code{$value}
 #'     will result in an error.
 #'
 #' @examples
@@ -262,8 +280,7 @@ stop_mirai <- function(mirai) {
 
   if (!is.null(.subset2(mirai, "con"))) {
     stop_aio(mirai)
-    close(.subset2(mirai, "con"))
-    rm("con", envir = mirai)
+    rm("con", "keep.raw", envir = mirai)
   }
   invisible()
 
@@ -277,30 +294,30 @@ stop_mirai <- function(mirai) {
 #'     for async operations as new processes no longer need to be created on an
 #'     ad hoc basis.
 #'
-#' @param ... an integer number to set the number of daemons. 'view' to view the
+#' @param ... an integer to set the number of daemons. 'view' to view the
 #'     currently set number of daemons.
 #'
 #' @return Depending on the specified ... parameter:
 #'     \itemize{
-#'     \item{integer: integer net change in number of daemons, with daemons
-#'     created or destroyed accordingly.}
+#'     \item{integer: integer change in number of daemons (created or destroyed).}
 #'     \item{'view': integer number of currently set daemons.}
 #'     \item{missing: the 'nanoSocket' for connecting to the daemons, or NULL if
-#'     it has yet to be created.}
+#'     it is yet to be created.}
 #'     }
 #'
 #' @details \{mirai\} will revert to the default behaviour of creating a new
 #'     background process for each request if the number of daemons is set to 0.
-#'     It is recommended to shut down daemons once no longer in use by setting
-#'     \code{daemons(0)} to ensure that all processes are completed and resources
-#'     are properly freed.
+#'
+#'     It is highly recommended to shut down daemons by setting \code{daemons(0)}
+#'     or explicitly unloading the package before exiting your R session. This
+#'     will ensure that all processes exit cleanly and resources are freed.
 #'
 #'     The current implementation is low-level and ensures tasks are
-#'     evenly-distributed amongst daemons but does not actively manage a task
-#'     queue. This approach provides a robust and resource-light solution,
-#'     in particular well-suited to working with similar-length tasks, or where
-#'     the number of tasks does not exceed the number of available daemons
-#'     at any one time.
+#'     evenly-distributed amongst daemons without actively managing a task queue.
+#'     This approach provides a robust and resource-light solution, particularly
+#'     well-suited to working with similar-length tasks, or where the number of
+#'     concurrent tasks typically does not exceed the number of available
+#'     daemons.
 #'
 #' @examples
 #' if (interactive()) {
@@ -382,8 +399,16 @@ daemons <- function(...) {
 #'
 print.mirai <- function(x, ...) {
 
-  cat("< mirai >\n - $data for evaluated result\n", file = stdout())
+  cat("< mirai >\n - $value for evaluated result\n", file = stdout())
   invisible(x)
+
+}
+
+#' @export
+#'
+.DollarNames.mirai <- function(x, pattern = "") {
+
+  grep(pattern, "value", value = TRUE, fixed = TRUE)
 
 }
 

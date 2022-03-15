@@ -31,9 +31,8 @@ automatically upon completion.
 
 \~\~
 
-{mirai} has a tiny code base and relies on a single package -
-{nanonext}, a lightweight wrapper for the NNG C library with zero
-package dependencies.
+{mirai} has a tiny code base, relying solely on {nanonext}, a
+lightweight wrapper for the NNG C library with no package dependencies.
 
 ### Installation
 
@@ -80,8 +79,8 @@ m <- mirai({
 }, n = 1e8, m = runif(1))
 m
 #> < mirai >
-#>  - $data for evaluated result
-m$data
+#>  - $value for evaluated result
+m$value
 #> 'unresolved' logi NA
 ```
 
@@ -96,7 +95,7 @@ Upon completion, the ‘mirai’ automatically resolves to the evaluated
 result.
 
 ``` r
-m$data |> str()
+m$value |> str()
 #> num [1:100000000] 2.263 -2.907 0.365 0.522 -0.229 ...
 ```
 
@@ -104,7 +103,7 @@ Alternatively, explicitly call and wait for the result (blocking) using
 `call_mirai()`.
 
 ``` r
-call_mirai(m)$data |> str()
+call_mirai(m)$value |> str()
 #> num [1:100000000] 2.263 -2.907 0.365 0.522 -0.229 ...
 ```
 
@@ -139,7 +138,7 @@ while (unresolved(m)) {
 #> while unresolved
 
 # perform actions which depend on the 'mirai' value outside the while loop
-m$data
+m$value
 #> NULL
 ```
 
@@ -167,10 +166,11 @@ daemons("view")
 ```
 
 The current implementation is low-level and ensures tasks are
-evenly-distributed amongst daemons but does not actively manage a task
+evenly-distributed amongst daemons without actively managing a task
 queue. This robust and resource-light approach is particularly
 well-suited to working with similar-length tasks, or where the number of
-tasks does not exceed the number of available daemons at any one time.
+concurrent tasks typically does not exceed the number of available
+daemons.
 
 Set the number of daemons to zero again to revert to the default
 behaviour of creating a new background process for each ‘mirai’ request.

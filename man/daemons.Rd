@@ -7,17 +7,16 @@
 daemons(...)
 }
 \arguments{
-\item{...}{an integer number to set the number of daemons. 'view' to view the
+\item{...}{an integer to set the number of daemons. 'view' to view the
 currently set number of daemons.}
 }
 \value{
 Depending on the specified ... parameter:
     \itemize{
-    \item{integer: integer net change in number of daemons, with daemons
-    created or destroyed accordingly.}
+    \item{integer: integer change in number of daemons (created or destroyed).}
     \item{'view': integer number of currently set daemons.}
     \item{missing: the 'nanoSocket' for connecting to the daemons, or NULL if
-    it has yet to be created.}
+    it is yet to be created.}
     }
 }
 \description{
@@ -30,16 +29,17 @@ Set or view the number of daemons (background processes). Create persistent
 \details{
 \{mirai\} will revert to the default behaviour of creating a new
     background process for each request if the number of daemons is set to 0.
-    It is recommended to shut down daemons once no longer in use by setting
-    \code{daemons(0)} to ensure that all processes are completed and resources
-    are properly freed.
+
+    It is highly recommended to shut down daemons by setting \code{daemons(0)}
+    or explicitly unloading the package before exiting your R session. This
+    will ensure that all processes exit cleanly and resources are freed.
 
     The current implementation is low-level and ensures tasks are
-    evenly-distributed amongst daemons but does not actively manage a task
-    queue. This approach provides a robust and resource-light solution,
-    in particular well-suited to working with similar-length tasks, or where
-    the number of tasks does not exceed the number of available daemons
-    at any one time.
+    evenly-distributed amongst daemons without actively managing a task queue.
+    This approach provides a robust and resource-light solution, particularly
+    well-suited to working with similar-length tasks, or where the number of
+    concurrent tasks typically does not exceed the number of available
+    daemons.
 }
 \examples{
 if (interactive()) {

@@ -18,7 +18,7 @@ Stop evaluation of a mirai that is in progress.
 \details{
 Stops the asynchronous operation associated with 'mirai' by aborting,
     and then waits for it to complete or to be completely aborted. The 'mirai'
-    is then deallocated and attempting to access the value at \code{$data}
+    is then deallocated and attempting to access the value at \code{$value}
     will result in an error.
 }
 \examples{
