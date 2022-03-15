@@ -21,7 +21,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9007</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
       </span>
     </div>
 
@@ -73,30 +73,29 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>...</dt>
-<dd><p>an integer number to set the number of daemons. 'view' to view the
+<dd><p>an integer to set the number of daemons. 'view' to view the
 currently set number of daemons.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Depending on the specified ... parameter:</p><ul><li><p>integer: integer net change in number of daemons, with daemons
-    created or destroyed accordingly.</p></li>
+    <p>Depending on the specified ... parameter:</p><ul><li><p>integer: integer change in number of daemons (created or destroyed).</p></li>
 <li><p>'view': integer number of currently set daemons.</p></li>
 <li><p>missing: the 'nanoSocket' for connecting to the daemons, or NULL if
-    it has yet to be created.</p></li>
+    it is yet to be created.</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
     <p>{mirai} will revert to the default behaviour of creating a new
-    background process for each request if the number of daemons is set to 0.
-    It is recommended to shut down daemons once no longer in use by setting
-    <code>daemons(0)</code> to ensure that all processes are completed and resources
-    are properly freed.</p>
+    background process for each request if the number of daemons is set to 0.</p>
+<p>It is highly recommended to shut down daemons by setting <code>daemons(0)</code>
+    or explicitly unloading the package before exiting your R session. This
+    will ensure that all processes exit cleanly and resources are freed.</p>
 <p>The current implementation is low-level and ensures tasks are
-    evenly-distributed amongst daemons but does not actively manage a task
-    queue. This approach provides a robust and resource-light solution,
-    in particular well-suited to working with similar-length tasks, or where
-    the number of tasks does not exceed the number of available daemons
-    at any one time.</p>
+    evenly-distributed amongst daemons without actively managing a task queue.
+    This approach provides a robust and resource-light solution, particularly
+    well-suited to working with similar-length tasks, or where the number of
+    concurrent tasks typically does not exceed the number of available
+    daemons.</p>
     </div>
 
     <div id="ref-examples">
