@@ -1,3 +1,7 @@
+# mirai 0.1.1.9000 (development)
+
+* Switch to abstract sockets on Linux.
+
 # mirai 0.1.1
 
 * `mirai()` added as an alias for `eval_mirai()`; supports evaluating arbitrary length expressions wrapped in `{}`.

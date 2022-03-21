@@ -115,12 +115,13 @@ eval_mirai <- function(.expr, ...) {
 
     arglist <- list(.expr = substitute(.expr), ...)
     envir <- list2env(arglist)
-    platform <- .subset2(.Platform, "OS.type")
-    cmd <- switch(platform,
-                  unix = file.path(R.home("bin"), "Rscript"),
-                  windows = file.path(R.home("bin"), "Rscript.exe"))
-    url <- sprintf("ipc:///tmp/n%.15f", runif(1L))
+    url <- switch(.miraisysname,
+                  Linux = sprintf("abstract://n%.15f", runif(1L)),
+                  sprintf("ipc:///tmp/n%.15f", runif(1L)))
     arg <- c("--vanilla", "-e", shQuote(sprintf("mirai::.(%s)", deparse(url))))
+    cmd <- switch(.miraisysname,
+                  Windows = file.path(R.home("bin"), "Rscript.exe"),
+                  file.path(R.home("bin"), "Rscript"))
     system2(command = cmd, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
     sock <- socket(protocol = "req", listen = url, autostart = TRUE)
     ctx <- context(sock)
@@ -354,12 +355,14 @@ daemons <- function(...) {
       delta == 0L && return(0L)
 
       if (is.null(url)) {
-        url <<- sprintf("ipc:///tmp/n%.15f", runif(1L))
+        url <<- switch(.miraisysname,
+                      Linux = sprintf("abstract://n%.15f", runif(1L)),
+                      sprintf("ipc:///tmp/n%.15f", runif(1L)))
         sock <<- socket(protocol = "req", listen = url, autostart = TRUE)
-        cmd <<- switch(.subset2(.Platform, "OS.type"),
-                       unix = file.path(R.home("bin"), "Rscript"),
-                       windows = file.path(R.home("bin"), "Rscript.exe"))
         arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::..(%s)", deparse(url))))
+        cmd <<- switch(.miraisysname,
+                       Windows = file.path(R.home("bin"), "Rscript.exe"),
+                       file.path(R.home("bin"), "Rscript"))
       }
 
       if (delta > 0L) {

@@ -31,6 +31,7 @@ NULL
 .onLoad <- function(libname, pkgname) {
   daemons <- daemons()
   daemons <<- daemons
+  .miraisysname <<- .subset2(Sys.info(), "sysname")
   invisible()
 }
 
@@ -44,4 +45,6 @@ nanonext::is_nul_byte
 
 #' @export
 nanonext::unresolved
+
+.miraisysname <- NULL
 
