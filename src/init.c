@@ -30,12 +30,7 @@ SEXP mirai_create(SEXP aio, SEXP value) {
 
 }
 
-SEXP mirai_active_aio(SEXP xptr) {
-    return Rf_ScalarLogical(R_ExternalPtrAddr(xptr) != NULL);
-}
-
 static const R_CallMethodDef CallEntries[] = {
-  {"mirai_active_aio", (DL_FUNC) &mirai_active_aio, 1},
   {"mirai_create", (DL_FUNC) &mirai_create, 2},
   {"mirai_scm", (DL_FUNC) &mirai_scm, 0},
   {NULL, NULL, 0}

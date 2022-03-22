@@ -184,11 +184,7 @@ mirai <- eval_mirai
 #'
 call_mirai <- function(mirai) {
 
-  if (.Call(mirai_active_aio, .subset2(mirai, "aio"))) {
-    call_aio(mirai)
-    .subset2(mirai, "data")
-  }
-  invisible(mirai)
+  call_aio(mirai)
 
 }
 
@@ -255,10 +251,7 @@ call_mirai <- function(mirai) {
 #'
 stop_mirai <- function(mirai) {
 
-  if (.Call(mirai_active_aio, .subset2(mirai, "aio"))) {
-    stop_aio(mirai)
-  }
-  invisible()
+  stop_aio(mirai)
 
 }
 
