@@ -79,8 +79,8 @@ m <- mirai({
 }, n = 1e8, m = runif(1))
 m
 #> < mirai >
-#>  - $value for evaluated result
-m$value
+#>  - $data for evaluated result
+m$data
 #> 'unresolved' logi NA
 ```
 
@@ -95,16 +95,16 @@ Upon completion, the ‘mirai’ automatically resolves to the evaluated
 result.
 
 ``` r
-m$value |> str()
-#> num [1:100000000] 2.263 -2.907 0.365 0.522 -0.229 ...
+m$data |> str()
+#> num [1:100000000] -0.1131 -0.5111 0.0879 -458.1725 0.0982 ...
 ```
 
 Alternatively, explicitly call and wait for the result (blocking) using
 `call_mirai()`.
 
 ``` r
-call_mirai(m)$value |> str()
-#> num [1:100000000] 2.263 -2.907 0.365 0.522 -0.229 ...
+call_mirai(m)$data |> str()
+#> num [1:100000000] -0.1131 -0.5111 0.0879 -458.1725 0.0982 ...
 ```
 
 #### Example 2: I/O-bound Operations
@@ -138,7 +138,7 @@ while (unresolved(m)) {
 #> while unresolved
 
 # perform actions which depend on the 'mirai' value outside the while loop
-m$value
+m$data
 #> NULL
 ```
 

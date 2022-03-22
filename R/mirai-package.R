@@ -19,9 +19,9 @@
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
 #' @importFrom nanonext call_aio context is_nul_byte recv_ctx request send_aio
-#'     send_ctx socket stop_aio unresolved .mirai_scm
+#'     send_ctx socket stop_aio unresolved
 #' @importFrom stats runif
-#' @importFrom utils .DollarNames
+#' @useDynLib mirai, .registration = TRUE
 #'
 #' @docType package
 #' @name mirai-package

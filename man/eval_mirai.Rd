@@ -26,7 +26,7 @@ Evaluate an expression asynchronously in a new background R process. This
 \details{
 This function will return a 'mirai' object immediately.
 
-    The value of a 'mirai' may be accessed at any time at \code{$value}, and
+    The value of a 'mirai' may be accessed at any time at \code{$data}, and
     if yet to resolve, an 'unresolved' logical NA will be returned instead.
 
     \code{\link{unresolved}} may also be used on a 'mirai', which returns TRUE
@@ -48,12 +48,12 @@ if (interactive()) {
 
 m <- mirai(x + y + 1, x = 2, y = 3)
 m
-m$value
+m$data
 Sys.sleep(0.2)
-m$value
+m$data
 
 m <- mirai(as.matrix(df), df = data.frame())
-call_mirai(m)$value
+call_mirai(m)$data
 
 m <- mirai({
   res <- rnorm(n)
@@ -63,7 +63,7 @@ while (unresolved(m)) {
   cat("unresolved\n")
   Sys.sleep(0.1)
 }
-m$value
+m$data
 
 }
 
