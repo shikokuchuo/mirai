@@ -13,7 +13,7 @@ static void RegisterSymbols(void) {
   nano_StateSymbol = Rf_install("state");
 }
 
-SEXP mirai_scm() {
+SEXP mirai_scm(void) {
   return R_MissingArg;
 }
 

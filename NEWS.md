@@ -1,7 +1,7 @@
 # mirai 0.1.1.9001 (development)
 
 * The value of a mirai is now stored at `$data` to optimally align with the underlying implementation.
-* Package now contains C code and requires compilation when installing from source.
+* Package now contains C code (requires compilation), using weak references for simpler management of resources.
 * Switch to abstract sockets on Linux.
 
 # mirai 0.1.1
