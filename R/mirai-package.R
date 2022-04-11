@@ -18,10 +18,9 @@
 #' @author Charlie Gao \email{charlie.gao@@shikokuchuo.net}
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
-#' @importFrom nanonext call_aio context is_nul_byte recv_ctx request send_aio
-#'     send_ctx socket stop_aio unresolved
+#' @importFrom nanonext call_aio context is_nul_byte recv request send send_aio
+#'     socket stop_aio unresolved .mirai_scm
 #' @importFrom stats runif
-#' @useDynLib mirai, .registration = TRUE
 #'
 #' @docType package
 #' @name mirai-package

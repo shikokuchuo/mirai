@@ -1,3 +1,7 @@
+# mirai 0.2.0.9000 (development)
+
+* Back to a pure R implementation, made possible by enhancements in nanonext.
+
 # mirai 0.2.0
 
 * The value of a mirai is now stored at `$data` to optimally align with the underlying implementation.
