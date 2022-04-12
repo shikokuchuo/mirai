@@ -1,6 +1,7 @@
 # mirai 0.2.0.9000 (development)
 
-* Back to a pure R implementation, made possible by enhancements in nanonext.
+* Back to a pure R implementation thanks to enhanced internal design of nanonext.
+* Adds auxiliary function `is_mirai()` to test if an object is a mirai.
 
 # mirai 0.2.0
 

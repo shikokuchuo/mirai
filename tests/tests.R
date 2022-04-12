@@ -8,4 +8,4 @@ m <- eval_mirai({
 nanotest(inherits(call_mirai(m), "mirai"))
 nanotest(m$data == 3L)
 nanotest(identical(call_mirai(m), m))
-
+nanotest(is_mirai(m) == TRUE)

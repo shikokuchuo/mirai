@@ -11,7 +11,6 @@
 #' @return Integer exit code.
 #'
 #' @noRd
-#' @export
 #'
 . <- function(.) {
 
@@ -107,7 +106,7 @@ eval_mirai <- function(.expr, ...) {
     url <- switch(.miraisysname,
                   Linux = sprintf("abstract://n%.15f", runif(1L)),
                   sprintf("ipc:///tmp/n%.15f", runif(1L)))
-    arg <- c("--vanilla", "-e", shQuote(sprintf("mirai::.(%s)", deparse(url))))
+    arg <- c("--vanilla", "-e", shQuote(sprintf("mirai:::.(%s)", deparse(url))))
     cmd <- switch(.miraisysname,
                   Windows = file.path(R.home("bin"), "Rscript.exe"),
                   file.path(R.home("bin"), "Rscript"))
@@ -184,11 +183,7 @@ mirai <- eval_mirai
 #'
 #' @export
 #'
-call_mirai <- function(mirai) {
-
-  call_aio(mirai)
-
-}
+call_mirai <- function(mirai) call_aio(mirai)
 
 #' mirai Server (Async Execution Daemon)
 #'
@@ -201,7 +196,6 @@ call_mirai <- function(mirai) {
 #' @return Integer exit code.
 #'
 #' @noRd
-#' @export
 #'
 .. <- function(.) {
 
@@ -251,11 +245,30 @@ call_mirai <- function(mirai) {
 #'
 #' @export
 #'
-stop_mirai <- function(mirai) {
+stop_mirai <- function(mirai) stop_aio(mirai)
 
-  stop_aio(mirai)
-
-}
+#' Is mirai
+#'
+#' Is the object a mirai.
+#'
+#' @param x an object.
+#'
+#' @return Logical value TRUE or FALSE.
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' df <- data.frame()
+#' m <- mirai(as.matrix(df), df = df)
+#' is_mirai(m)
+#' is_mirai(df)
+#'
+#' }
+#'
+#' @export
+#'
+is_mirai <- function(x) inherits(x, "mirai")
 
 #' daemons (Background Processes)
 #'
@@ -329,7 +342,7 @@ daemons <- function(...) {
                       Linux = sprintf("abstract://n%.15f", runif(1L)),
                       sprintf("ipc:///tmp/n%.15f", runif(1L)))
         sock <<- socket(protocol = "req", listen = url, autostart = TRUE)
-        arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::..(%s)", deparse(url))))
+        arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai:::..(%s)", deparse(url))))
         cmd <<- switch(.miraisysname,
                        Windows = file.path(R.home("bin"), "Rscript.exe"),
                        file.path(R.home("bin"), "Rscript"))
