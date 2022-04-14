@@ -30,10 +30,6 @@ Set or view the number of daemons (background processes). Create persistent
 \{mirai\} will revert to the default behaviour of creating a new
     background process for each request if the number of daemons is set to 0.
 
-    It is highly recommended to shut down daemons by setting \code{daemons(0)}
-    or explicitly unloading the package before exiting your R session. This
-    will ensure that all processes exit cleanly and resources are freed.
-
     The current implementation is low-level and ensures tasks are
     evenly-distributed amongst daemons without actively managing a task queue.
     This approach provides a robust and resource-light solution, particularly

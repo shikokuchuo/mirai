@@ -1,3 +1,7 @@
+# mirai 0.4.0.9000
+
+* Now exits cleanly when daemons have not been explicitly zeroed prior to ending an R session.
+
 # mirai 0.4.0
 
 * Back to a pure R implementation thanks to enhanced internal design at nanonext.
