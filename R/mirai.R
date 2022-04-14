@@ -14,7 +14,6 @@
 #'
 . <- function(.) {
 
-  missing(.) && stop("this function is for package internal use only")
   sock <- socket(protocol = "rep", dial = ., autostart = TRUE)
   ctx <- context(sock)
   on.exit(expr = {
@@ -199,7 +198,6 @@ call_mirai <- function(mirai) call_aio(mirai)
 #'
 .. <- function(.) {
 
-  missing(.) && stop("this function is for package internal use only")
   sock <- socket(protocol = "rep", dial = ., autostart = TRUE)
   on.exit(expr = {
     send_aio(ctx, data = as.raw(0L), mode = "serial")

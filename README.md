@@ -189,5 +189,4 @@ daemons(0)
 {nanonext} website: <https://shikokuchuo.net/nanonext/><br /> {nanonext}
 on CRAN: <https://cran.r-project.org/package=nanonext>
 
-NNG website: <https://nng.nanomsg.org/><br /> NNG documentation:
-<https://nng.nanomsg.org/man/tip/><br />
+NNG website: <https://nng.nanomsg.org/><br />
