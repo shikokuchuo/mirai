@@ -17,7 +17,7 @@
   sock <- socket(protocol = "rep", dial = ., autostart = TRUE)
   ctx <- context(sock)
   on.exit(expr = {
-    send_aio(ctx, data = as.raw(0L), mode = "serial")
+    send(ctx, data = as.raw(0L), mode = "serial", echo = FALSE)
     close(sock)
   })
   envir <- recv(ctx, mode = "serial", keep.raw = FALSE)
@@ -200,7 +200,7 @@ call_mirai <- function(mirai) call_aio(mirai)
 
   sock <- socket(protocol = "rep", dial = ., autostart = TRUE)
   on.exit(expr = {
-    send_aio(ctx, data = as.raw(0L), mode = "serial")
+    send(ctx, data = as.raw(0L), mode = "serial", echo = FALSE)
     close(sock)
     ..(.)
   })
@@ -214,7 +214,7 @@ call_mirai <- function(mirai) call_aio(mirai)
   }
 
   on.exit()
-  send_aio(ctx, data = as.raw(1L), mode = "raw")
+  send(ctx, data = 0L, mode = "raw", echo = FALSE)
   close(sock)
 
 }
@@ -325,7 +325,7 @@ daemons <- function(...) {
     } else {
 
       identical(..1, "view") && return(if (is.null(d <- attr(sock, "daemons"))) 0L else d)
-
+      is.numeric(..1) || stop("provide an integer to set daemons or 'view' to view daemons")
       set <- as.integer(..1)
       set >= 0L || stop("number of daemons must be zero or greater")
       delta <- set - proc
@@ -353,21 +353,21 @@ daemons <- function(...) {
         proc - orig
 
       } else {
-        res <- 0L
+        halt <- 0L
         for (i in seq_len(-delta)) {
           ctx <- context(sock)
-          aio <- request(ctx, data = .mirai_scm(), send_mode = "serial", recv_mode = "raw", keep.raw = FALSE)
-          call_aio(aio)
-          close(ctx)
-          if (identical(.subset2(aio, "data"), as.raw(1L))) {
-            res <- res - 1L
-            proc <<- proc - 1L
+          res <- request(ctx, data = .mirai_scm(), send_mode = "serial",
+                         recv_mode = "integer", keep.raw = FALSE)
+          if (.subset2(call_aio(res), "data")) {
+            warning(sprintf("daemon %d shutdown failed", i))
           } else {
-            message(sprintf("%s [ shutdown fail ] daemon: %d", format.POSIXct(Sys.time()), i))
+            halt <- halt - 1L
+            proc <<- proc - 1L
           }
+          close(ctx)
         }
         attr(sock, "daemons") <- proc
-        res
+        halt
 
       }
     }
