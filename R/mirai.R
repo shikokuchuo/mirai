@@ -214,7 +214,6 @@ call_mirai <- function(mirai) call_aio(mirai)
   }
 
   on.exit()
-  send(ctx, data = 0L, mode = "raw", echo = FALSE)
   close(sock)
 
 }
@@ -356,9 +355,8 @@ daemons <- function(...) {
         halt <- 0L
         for (i in seq_len(-delta)) {
           ctx <- context(sock)
-          res <- request(ctx, data = .mirai_scm(), send_mode = "serial",
-                         recv_mode = "integer", keep.raw = FALSE)
-          if (.subset2(call_aio(res), "data")) {
+          res <- send_aio(ctx, data = .mirai_scm(), mode = "serial", timeout = 2000L)
+          if (.subset2(call_aio(res), "result")) {
             warning(sprintf("daemon %d shutdown failed", i))
           } else {
             halt <- halt - 1L
