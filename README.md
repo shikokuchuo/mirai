@@ -19,20 +19,16 @@ Minimalist async evaluation framework for R.
 Extremely simple and lightweight method for concurrent / parallel code
 execution, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) technology.
 
-\~\~
+<br /><br /> Whilst frameworks for parallelisation exist for R, {mirai}
+is designed for simplicity.
 
-Whilst frameworks for parallelisation exist for R, {mirai} is designed
-for simplicity.
-
-Use:    `mirai()` to return a ‘mirai’ object immediately.
+`mirai()` returns a ‘mirai’ object immediately.
 
 A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving
-automatically upon completion.
+automatically upon completion. <br /><br /><br />
 
-\~\~
-
-{mirai} has a tiny code base, relying solely on {nanonext}, a
-lightweight wrapper for the NNG C library with no package dependencies.
+{mirai} has a tiny pure R code base, relying solely on {nanonext}, a
+lightweight binding for the NNG C library with no package dependencies.
 
 ### Installation
 
@@ -62,11 +58,11 @@ library(mirai)
 
 #### Example 1: Compute-intensive Operations
 
-Multiple long computes (model fits etc.) would take more time than if
-performed concurrently on available computing cores.
+Multiple long computes (model fits etc.) can be performed in parallel on
+available computing cores.
 
-Use `mirai()` to evaluate an expression in a separate R process
-asynchronously.
+Use `mirai()` to evaluate an expression asynchronously in a separate R
+process.
 
 -   All named objects are passed through to a clean environment
 
@@ -77,109 +73,107 @@ m <- mirai({
   res <- rnorm(n) + m
   res / rev(res)
 }, n = 1e8, m = runif(1))
+
 m
 #> < mirai >
 #>  - $data for evaluated result
+```
+
+The ‘mirai’ yields an ‘unresolved’ logical NA value whilst the async
+operation is ongoing.
+
+``` r
 m$data
 #> 'unresolved' logi NA
 ```
 
-The ‘mirai’ yields an ‘unresolved’ logical NA value whilst the async
-operation is still ongoing.
-
-``` r
-# continue running code concurrently...
-```
-
-Upon completion, the ‘mirai’ automatically resolves to the evaluated
+Upon completion, the ‘mirai’ resolves automatically to the evaluated
 result.
 
 ``` r
 m$data |> str()
-#> num [1:100000000] -0.1131 -0.5111 0.0879 -458.1725 0.0982 ...
+#>  num [1:100000000] 0.0934 0.4201 0.0961 3.6469 -0.5886 ...
 ```
 
-Alternatively, explicitly call and wait for the result (blocking) using
+Alternatively, explicitly call and wait for the result using
 `call_mirai()`.
 
 ``` r
 call_mirai(m)$data |> str()
-#> num [1:100000000] -0.1131 -0.5111 0.0879 -458.1725 0.0982 ...
+#>  num [1:100000000] 0.0934 0.4201 0.0961 3.6469 -0.5886 ...
 ```
 
 #### Example 2: I/O-bound Operations
 
-Processing high-frequency real-time data, writing results to
-file/database can be slow and potentially disrupt the execution flow.
+High-frequency real-time data cannot be written to file/database
+synchronously without disrupting the execution flow.
 
 Cache data in memory and use `mirai()` to perform periodic write
-operations in a separate process.
+operations concurrently in a separate process.
 
 A ‘mirai’ object is returned immediately.
 
 ``` r
-m <- mirai(write.csv(x, file = file), x = rnorm(1e8), file = tempfile())
+m <- mirai(write.csv(x, file = file), x = rnorm(1e6), file = tempfile())
 ```
 
-Auxiliary function `unresolved()` may be used in control flow statements
-to perform actions which depend on resolution of the ‘mirai’, both
-before and after. This means there is no need to actually wait (block)
-for a ‘mirai’ to resolve, as the example below demonstrates.
+`unresolved()` may be used in control flow statements to perform actions
+which depend on resolution of the ‘mirai’, both before and after.
+
+This means there is no need to actually wait (block) for a ‘mirai’ to
+resolve, as the example below demonstrates.
 
 ``` r
 # unresolved() queries for resolution itself so no need to use it again within the while loop
 
 while (unresolved(m)) {
-  # do stuff before checking resolution again
   cat("while unresolved\n")
+  Sys.sleep(0.5)
 }
 #> while unresolved
 #> while unresolved
-#> while unresolved
 
-# perform actions which depend on the 'mirai' value outside the while loop
-m$data
-#> NULL
+cat("Write complete:", is.null(m$data))
+#> Write complete: TRUE
 ```
 
-Here the resolved value is `NULL`, the expected return value for
-`write.csv()`. Now actions which depend on this confirmation may be
-processed, for example the next write.
+Now actions which depend on the resolution may be processed, for example
+the next write.
 
 ### Daemons
 
 Daemons or persistent background processes may be set to receive ‘mirai’
 requests.
 
-Setting a positive number of daemons provides a potentially more
-efficient solution for ‘mirai’ requests as new processes no longer need
-to be created on an ad hoc basis.
+This is potentially more efficient as new processes no longer need to be
+created on an ad hoc basis.
 
 ``` r
 # create 8 daemons
 daemons(8)
 #> [1] 8
 
-# query the number of active daemons
+# view the number of active daemons
 daemons("view")
 #> [1] 8
 ```
 
 The current implementation is low-level and ensures tasks are
 evenly-distributed amongst daemons without actively managing a task
-queue. This robust and resource-light approach is particularly
-well-suited to working with similar-length tasks, or where the number of
-concurrent tasks typically does not exceed the number of available
-daemons.
+queue.
 
-Set the number of daemons to zero again to revert to the default
-behaviour of creating a new background process for each ‘mirai’ request.
+This robust and resource-light approach is particularly well-suited to
+working with similar-length tasks, or where the number of concurrent
+tasks typically does not exceed the number of available daemons.
 
 ``` r
 # reset to zero
 daemons(0)
 #> [1] -8
 ```
+
+Set the number of daemons to zero again to revert to the default
+behaviour of creating a new background process for each ‘mirai’ request.
 
 ### Links
 

@@ -1,6 +1,7 @@
-# mirai 0.4.0.9000
+# mirai 0.4.1
 
-* Now exits cleanly when daemons have not been explicitly zeroed prior to ending an R session.
+* Exits cleanly when daemons have not been explicitly zeroed prior to ending an R session.
+* Fixes possible hang on Windows when shutting down daemons.
 
 # mirai 0.4.0
 
