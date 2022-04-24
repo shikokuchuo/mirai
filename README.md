@@ -10,6 +10,8 @@ status](https://www.r-pkg.org/badges/version/mirai?color=112d4e)](https://CRAN.R
 [![mirai status
 badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc)](https://shikokuchuo.r-universe.dev)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
+[![Codecov test
+coverage](https://codecov.io/gh/shikokuchuo/mirai/branch/main/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/mirai)
 <!-- badges: end -->
 
 Minimalist async evaluation framework for R.
@@ -92,7 +94,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.0934 0.4201 0.0961 3.6469 -0.5886 ...
+#>  num [1:100000000] -1.108 6.937 3.308 -0.874 -0.197 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -100,7 +102,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.0934 0.4201 0.0961 3.6469 -0.5886 ...
+#>  num [1:100000000] -1.108 6.937 3.308 -0.874 -0.197 ...
 ```
 
 #### Example 2: I/O-bound Operations
