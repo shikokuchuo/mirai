@@ -5,15 +5,19 @@
 \alias{mirai}
 \title{mirai (Evaluate Async)}
 \usage{
-eval_mirai(.expr, ...)
+eval_mirai(.expr, ..., .timeout)
 
-mirai(.expr, ...)
+mirai(.expr, ..., .timeout)
 }
 \arguments{
 \item{.expr}{an expression to evaluate in a new R process. This may be of
 arbitrary length, wrapped in \{\} if necessary.}
 
 \item{...}{named arguments specifying the variables contained in '.expr'.}
+
+\item{.timeout}{(optional) integer value in milliseconds. A 'mirai' will
+resolve to an 'errorValue' 5 (timed out) if evaluation exceeds this
+timeout.}
 }
 \value{
 A 'mirai' object.
@@ -52,7 +56,7 @@ m$data
 Sys.sleep(0.2)
 m$data
 
-m <- mirai(as.matrix(df), df = data.frame())
+m <- mirai(as.matrix(df), df = data.frame(), .timeout = 1000)
 call_mirai(m)$data
 
 m <- mirai({

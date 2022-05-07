@@ -1,3 +1,7 @@
+# mirai 0.4.1.9000
+
+* Add '.timeout' argument to `mirai()` to ensure a mirai always resolves even if the child process crashes etc.
+
 # mirai 0.4.1
 
 * Exits cleanly when daemons have not been explicitly zeroed prior to ending an R session.

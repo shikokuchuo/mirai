@@ -94,7 +94,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -1.108 6.937 3.308 -0.874 -0.197 ...
+#>  num [1:100000000] -0.484 -0.619 -2.201 -0.434 3.023 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -102,7 +102,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -1.108 6.937 3.308 -0.874 -0.197 ...
+#>  num [1:100000000] -0.484 -0.619 -2.201 -0.434 3.023 ...
 ```
 
 #### Example 2: I/O-bound Operations
@@ -132,6 +132,7 @@ while (unresolved(m)) {
   cat("while unresolved\n")
   Sys.sleep(0.5)
 }
+#> while unresolved
 #> while unresolved
 #> while unresolved
 

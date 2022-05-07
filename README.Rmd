@@ -120,7 +120,6 @@ m <- mirai(write.csv(x, file = file), x = rnorm(1e6), file = tempfile())
 This means there is no need to actually wait (block) for a 'mirai' to resolve, as the example below demonstrates.
 
 ```{r call2}
-
 # unresolved() queries for resolution itself so no need to use it again within the while loop
 
 while (unresolved(m)) {
