@@ -39,8 +39,7 @@
 #'     arbitrary length, wrapped in \{\} if necessary.
 #' @param ... named arguments specifying the variables contained in '.expr'.
 #' @param .timeout (optional) integer value in milliseconds. A 'mirai' will
-#'     resolve to an 'errorValue' 5 (timed out) if evaluation exceeds this
-#'     timeout.
+#'     resolve to an 'errorValue' 5 (timed out) if evaluation exceeds this limit.
 #'
 #' @return A 'mirai' object.
 #'
@@ -63,9 +62,6 @@
 #'     \code{\link{mirai}} is an alias for \code{\link{eval_mirai}}.
 #'
 #' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
 #' m <- mirai(x + y + 1, x = 2, y = 3)
 #' m
 #' m$data
@@ -83,9 +79,7 @@
 #'   cat("unresolved\n")
 #'   Sys.sleep(0.1)
 #' }
-#' m$data
-#'
-#' }
+#' str(m$data)
 #'
 #' @export
 #'
@@ -181,7 +175,7 @@ mirai <- eval_mirai
 #'   cat("unresolved\n")
 #'   Sys.sleep(0.1)
 #' }
-#' m$data
+#' str(m$data)
 #'
 #' }
 #'
@@ -240,8 +234,8 @@ call_mirai <- function(mirai) call_aio(mirai)
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' m <- mirai(Sys.sleep(n), n = 5)
-#' stop_mirai(m)
+#' s <- mirai(Sys.sleep(n), n = 5)
+#' stop_mirai(s)
 #'
 #' }
 #'
@@ -261,8 +255,7 @@ stop_mirai <- function(mirai) stop_aio(mirai)
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' df <- data.frame()
-#' m <- mirai(as.matrix(df), df = df)
+#' m <- mirai(as.matrix(df), df = data.frame())
 #' is_mirai(m)
 #' is_mirai(df)
 #'
@@ -310,6 +303,7 @@ is_mirai <- function(x) inherits(x, "mirai")
 #' daemons("view")
 #' # Reset to zero
 #' daemons(0)
+#'
 #' }
 #'
 #' @export

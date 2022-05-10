@@ -25,8 +25,8 @@ Stops the asynchronous operation associated with 'mirai' by aborting,
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-m <- mirai(Sys.sleep(n), n = 5)
-stop_mirai(m)
+s <- mirai(Sys.sleep(n), n = 5)
+stop_mirai(s)
 
 }
 

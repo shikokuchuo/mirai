@@ -60,7 +60,7 @@ while (unresolved(m)) {
   cat("unresolved\n")
   Sys.sleep(0.1)
 }
-m$data
+str(m$data)
 
 }
 

@@ -1,6 +1,7 @@
 # mirai 0.4.1.9000
 
-* Add '.timeout' argument to `mirai()` to ensure a mirai always resolves even if the child process crashes etc.
+* Implements the `%>>%` deferred evaluation pipe.
+* Adds '.timeout' argument to `mirai()` to ensure a mirai always resolves even if the child process crashes etc.
 
 # mirai 0.4.1
 

@@ -16,8 +16,7 @@ arbitrary length, wrapped in \{\} if necessary.}
 \item{...}{named arguments specifying the variables contained in '.expr'.}
 
 \item{.timeout}{(optional) integer value in milliseconds. A 'mirai' will
-resolve to an 'errorValue' 5 (timed out) if evaluation exceeds this
-timeout.}
+resolve to an 'errorValue' 5 (timed out) if evaluation exceeds this limit.}
 }
 \value{
 A 'mirai' object.
@@ -47,9 +46,6 @@ This function will return a 'mirai' object immediately.
     \code{\link{mirai}} is an alias for \code{\link{eval_mirai}}.
 }
 \examples{
-if (interactive()) {
-# Only run examples in interactive R sessions
-
 m <- mirai(x + y + 1, x = 2, y = 3)
 m
 m$data
@@ -67,8 +63,6 @@ while (unresolved(m)) {
   cat("unresolved\n")
   Sys.sleep(0.1)
 }
-m$data
-
-}
+str(m$data)
 
 }
