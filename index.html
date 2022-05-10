@@ -136,11 +136,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span><span class="op">$</span><span class="va">data</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt;  num [1:100000000] -0.484 -0.619 -2.201 -0.434 3.023 ...</span></code></pre></div>
+<span class="co">#&gt;  num [1:100000000] 0.253 -1.534 -0.807 0.134 -0.345 ...</span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt;  num [1:100000000] -0.484 -0.619 -2.201 -0.434 3.023 ...</span></code></pre></div>
+<span class="co">#&gt;  num [1:100000000] 0.253 -1.534 -0.807 0.134 -0.345 ...</span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="example-2-io-bound-operations">Example 2: I/O-bound Operations<a class="anchor" aria-label="anchor" href="#example-2-io-bound-operations"></a>
@@ -188,6 +188,30 @@
 <span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>
 <span class="co">#&gt; [1] -8</span></code></pre></div>
 <p>Set the number of daemons to zero again to revert to the default behaviour of creating a new background process for each ‘mirai’ request.</p>
+</div>
+<div class="section level3">
+<h3 id="deferred-evaluation-pipe">Deferred Evaluation Pipe<a class="anchor" aria-label="anchor" href="#deferred-evaluation-pipe"></a>
+</h3>
+<p>{mirai} implements a deferred evaluation pipe <code>%&gt;&gt;%</code> for working with potentially unresolved values.</p>
+<p>Pipe a mirai <code>$data</code> value forward into a function or series of functions and it either evaluates or returns an ‘unresolvedExpr’.</p>
+<p>The result may be queried at <code>$data</code>, which will return another ‘unresolvedExpr’ whilst unresolved. However when the original value resolves, the ‘unresolvedExpr’ will simultaneously resolve into a ‘resolvedExpr’, for which the evaluated result will be available at <code>$data</code>.</p>
+<p>It is possible to use <code><a href="https://shikokuchuo.net/nanonext/reference/unresolved.html" class="external-link">unresolved()</a></code> around a ‘unresolvedExpr’ or its <code>$data</code> element to test for resolution, as in the example below.</p>
+<p>The pipe operator semantics are similar to R’s base pipe <code>|&gt;</code>:</p>
+<p><code>x %&gt;&gt;% f</code> is equivalent to <code>f(x)</code> <br><code>x %&gt;&gt;% f()</code> is equivalent to <code>f(x)</code> <br><code>x %&gt;&gt;% f(y)</code> is equivalent to <code>f(x, y)</code></p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span>; <span class="fl">1</span><span class="op">}</span><span class="op">)</span>
+<span class="va">b</span> <span class="op">&lt;-</span> <span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op"><a href="reference/grapes-greater-than-greater-than-grapes.html">%&gt;&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="reference/grapes-greater-than-greater-than-grapes.html">%&gt;&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">b</span>
+<span class="co">#&gt; &lt; unresolvedExpr &gt;</span>
+<span class="co">#&gt;  - $data to query resolution</span>
+<span class="va">b</span><span class="op">$</span><span class="va">data</span>
+<span class="co">#&gt; &lt; unresolvedExpr &gt;</span>
+<span class="co">#&gt;  - $data to query resolution</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+<span class="va">b</span><span class="op">$</span><span class="va">data</span>
+<span class="co">#&gt; [1] "1" "2" "3"</span>
+<span class="va">b</span>
+<span class="co">#&gt; &lt; resolvedExpr: $data &gt;</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="links">Links<a class="anchor" aria-label="anchor" href="#links"></a>
