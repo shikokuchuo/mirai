@@ -162,7 +162,7 @@ Set the number of daemons to zero again to revert to the default behaviour of cr
 
 {mirai} implements a deferred evaluation pipe `%>>%` for working with potentially unresolved values.
 
-Pipe a mirai `$data` value forward into a function or series of functions and it either evaluates or returns an 'unresolvedExpr'.
+Pipe a mirai `$data` value forward into a function or series of functions and it initially returns an 'unresolvedExpr'.
 
 The result may be queried at `$data`, which will return another 'unresolvedExpr' whilst unresolved. However when the original value resolves, the 'unresolvedExpr' will simultaneously resolve into a 'resolvedExpr', for which the evaluated result will be available at `$data`. 
 

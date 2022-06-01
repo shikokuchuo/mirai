@@ -94,7 +94,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.253 -1.534 -0.807 0.134 -0.345 ...
+#>  num [1:100000000] 1.61 8.78e+01 3.45e-04 1.01 1.01e+01 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -102,7 +102,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.253 -1.534 -0.807 0.134 -0.345 ...
+#>  num [1:100000000] 1.61 8.78e+01 3.45e-04 1.01 1.01e+01 ...
 ```
 
 #### Example 2: I/O-bound Operations
@@ -184,7 +184,7 @@ behaviour of creating a new background process for each ‘mirai’ request.
 potentially unresolved values.
 
 Pipe a mirai `$data` value forward into a function or series of
-functions and it either evaluates or returns an ‘unresolvedExpr’.
+functions and it initially returns an ‘unresolvedExpr’.
 
 The result may be queried at `$data`, which will return another
 ‘unresolvedExpr’ whilst unresolved. However when the original value

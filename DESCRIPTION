@@ -6,11 +6,14 @@ Description: Extremely simple and lightweight method for concurrent /
     parallel code execution, built on 'nanonext' and 'NNG' (Nanomsg Next Gen)
     technology.
 Authors@R: 
-    person(given = "Charlie",
-           family = "Gao",
-           role = c("aut", "cre"),
-           email = "charlie.gao@shikokuchuo.net",
-           comment = c(ORCID = "0000-0002-0750-061X"))
+    c(person(given = "Charlie",
+             family = "Gao",
+             role = c("aut", "cre"),
+             email = "charlie.gao@shikokuchuo.net",
+             comment = c(ORCID = "0000-0002-0750-061X")),
+      person(given = "Hibiki AI Limited",
+             email = "info@hibiki-ai.com",
+             role = "cph"))
 License: GPL (>= 3)
 BugReports: https://github.com/shikokuchuo/mirai/issues
 URL: https://shikokuchuo.net/mirai/, https://github.com/shikokuchuo/mirai/
@@ -19,4 +22,4 @@ Depends:
     R (>= 2.4)
 Imports: 
     nanonext (>= 0.4.0)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
