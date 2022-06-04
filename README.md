@@ -94,7 +94,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 1.61 8.78e+01 3.45e-04 1.01 1.01e+01 ...
+#>  num [1:100000000] 2.63633 -0.00718 -9.86963 0.62214 2.5463 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -102,7 +102,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 1.61 8.78e+01 3.45e-04 1.01 1.01e+01 ...
+#>  num [1:100000000] 2.63633 -0.00718 -9.86963 0.62214 2.5463 ...
 ```
 
 #### Example 2: I/O-bound Operations
@@ -225,3 +225,9 @@ b
 on CRAN: <https://cran.r-project.org/package=nanonext>
 
 NNG website: <https://nng.nanomsg.org/><br />
+
+–
+
+Please note that this project is released with a [Contributor Code of
+Conduct](https://shikokuchuo.net/mirai/CODE_OF_CONDUCT.html). By
+participating in this project you agree to abide by its terms.
