@@ -46,6 +46,9 @@ This function will return a 'mirai' object immediately.
     \code{\link{mirai}} is an alias for \code{\link{eval_mirai}}.
 }
 \examples{
+if (interactive()) {
+# Only run examples in interactive R sessions
+
 m <- mirai(x + y + 1, x = 2, y = 3)
 m
 m$data
@@ -64,5 +67,7 @@ while (unresolved(m)) {
   Sys.sleep(0.1)
 }
 str(m$data)
+
+}
 
 }

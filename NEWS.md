@@ -1,4 +1,4 @@
-# mirai 0.4.1.9000
+# mirai 0.5.0
 
 * Implements the `%>>%` deferred evaluation pipe.
 * Adds '.timeout' argument to `mirai()` to ensure a mirai always resolves even if the child process crashes etc.
