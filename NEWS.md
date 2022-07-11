@@ -1,5 +1,7 @@
 # mirai 0.5.0.9000 (development)
 
+* Internal optimisations.
+
 # mirai 0.5.0
 
 * Implements the `%>>%` deferred evaluation pipe.

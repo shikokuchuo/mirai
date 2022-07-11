@@ -122,8 +122,8 @@ eval_mirai <- function(.expr, ..., .timeout) {
     arglist <- list(.expr = substitute(.expr), ...)
     envir <- list2env(arglist)
     url <- switch(daemons(NULL),
-                  Linux = sprintf("abstract://n%.15f", runif(1L)),
-                  sprintf("ipc:///tmp/n%.15f", runif(1L)))
+                  Linux = sprintf("abstract://n%.f", random()),
+                  sprintf("ipc:///tmp/n%.f", random()))
     arg <- c("--vanilla", "-e", shQuote(sprintf("mirai:::.(%s)", deparse(url))))
     cmd <- switch(daemons(NULL),
                   Windows = file.path(R.home("bin"), "Rscript.exe"),
@@ -351,8 +351,8 @@ daemons <- function(...) {
 
       if (is.null(url)) {
         url <<- switch(sysname,
-                       Linux = sprintf("abstract://n%.15f", runif(1L)),
-                       sprintf("ipc:///tmp/n%.15f", runif(1L)))
+                       Linux = sprintf("abstract://n%.f", random()),
+                       sprintf("ipc:///tmp/n%.f", random()))
         sock <<- socket(protocol = "req", listen = url, autostart = TRUE)
         arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai:::..(%s)", deparse(url))))
         cmd <<- switch(sysname,
