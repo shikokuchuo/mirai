@@ -1,6 +1,6 @@
 # mirai 0.5.0.9000 (development)
 
-* Internal optimisations.
+* Internal optimisations requiring nanonext >= 0.5.2.
 
 # mirai 0.5.0
 

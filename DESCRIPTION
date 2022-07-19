@@ -22,4 +22,4 @@ Depends:
     R (>= 2.4)
 Imports: 
     nanonext (>= 0.5.2)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1

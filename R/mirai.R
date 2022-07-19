@@ -40,7 +40,7 @@
   msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
   on.exit()
   send(ctx, data = msg, mode = "serial", echo = FALSE)
-  Sys.sleep(2L)
+  msleep(2000L)
   close(sock)
 
 }
