@@ -33,13 +33,13 @@
   sock <- socket(protocol = "rep", dial = ., autostart = TRUE)
   ctx <- context(sock)
   on.exit(expr = {
-    send(ctx, data = as.raw(0L), mode = "serial", echo = FALSE)
+    send(ctx, data = `class<-`(geterrmessage(), "mirai_error"), mode = 1L, echo = FALSE)
     close(sock)
   })
-  envir <- recv(ctx, mode = "serial", keep.raw = FALSE)
+  envir <- recv(ctx, mode = 1L, keep.raw = FALSE)
   msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
   on.exit()
-  send(ctx, data = msg, mode = "serial", echo = FALSE)
+  send(ctx, data = msg, mode = 1L, echo = FALSE)
   msleep(2000L)
   close(sock)
 
@@ -112,7 +112,7 @@ eval_mirai <- function(.expr, ..., .timeout) {
     arglist <- list(.expr = substitute(.expr), ...)
     envir <- list2env(arglist)
     ctx <- context(daemons())
-    aio <- request(ctx, data = envir, send_mode = "serial", recv_mode = "serial",
+    aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L,
                    timeout = if (missing(.timeout)) -2L else .timeout, keep.raw = FALSE)
     `attr<-`(.subset2(aio, "aio"), "ctx", ctx)
     `class<-`(aio, c("mirai", "recvAio"))
@@ -131,7 +131,7 @@ eval_mirai <- function(.expr, ..., .timeout) {
     system2(command = cmd, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
     sock <- socket(protocol = "req", listen = url, autostart = TRUE)
     ctx <- context(sock)
-    aio <- request(ctx, data = envir, send_mode = "serial", recv_mode = "serial",
+    aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L,
                    timeout = if (missing(.timeout)) -2L else .timeout, keep.raw = FALSE)
     `attr<-`(.subset2(aio, "aio"), "ctx", ctx)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
@@ -220,16 +220,16 @@ call_mirai <- function(mirai) call_aio(mirai)
 
   sock <- socket(protocol = "rep", dial = ., autostart = TRUE)
   on.exit(expr = {
-    send(ctx, data = as.raw(0L), mode = "serial", echo = FALSE)
+    send(ctx, data = `class<-`(geterrmessage(), "mirai_error"), mode = 1L, echo = FALSE)
     close(sock)
     ..(.)
   })
   repeat {
     ctx <- context(sock)
-    envir <- recv(ctx, mode = "serial", keep.raw = FALSE)
+    envir <- recv(ctx, mode = 1L, keep.raw = FALSE)
     missing(envir) && break
     msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
-    send(ctx, data = msg, mode = "serial", echo = FALSE)
+    send(ctx, data = msg, mode = 1L, echo = FALSE)
     close(ctx)
   }
 
@@ -372,7 +372,7 @@ daemons <- function(...) {
         halt <- 0L
         for (i in seq_len(-delta)) {
           ctx <- context(sock)
-          res <- send_aio(ctx, data = .mirai_scm(), mode = "serial", timeout = 2000L)
+          res <- send_aio(ctx, data = .mirai_scm(), mode = 1L, timeout = 2000L)
           if (.subset2(call_aio(res), "result")) {
             warning(sprintf("daemon %d shutdown failed", i))
           } else {
@@ -402,4 +402,37 @@ print.mirai <- function(x, ...) {
   invisible(x)
 
 }
+
+#' @export
+#'
+print.mirai_error <- function(x, ...) {
+
+  cat(x, file = stderr())
+  invisible(x)
+
+}
+
+#' Is mirai_error
+#'
+#' Is the object a 'mirai_error'. When execution fails in a mirai process, the
+#'     error message is returned as a character string classed as 'mirai_error'.
+#'     To test for timeouts, \code{\link{is_error_value}} should be used instead.
+#'
+#' @param x an object.
+#'
+#' @return Logical value TRUE or FALSE.
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' m <- mirai(stop())
+#' call_mirai(m)
+#' is_mirai_error(m$data)
+#'
+#' }
+#'
+#' @export
+#'
+is_mirai_error <- function(x) inherits(x, "mirai_error")
 

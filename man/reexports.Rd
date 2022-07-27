@@ -3,7 +3,7 @@
 \docType{import}
 \name{reexports}
 \alias{reexports}
-\alias{is_nul_byte}
+\alias{is_error_value}
 \alias{unresolved}
 \title{Objects exported from other packages}
 \keyword{internal}
@@ -12,6 +12,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{nanonext}{\code{\link[nanonext]{is_nul_byte}}, \code{\link[nanonext]{unresolved}}}
+  \item{nanonext}{\code{\link[nanonext]{is_error_value}}, \code{\link[nanonext]{unresolved}}}
 }}
 
