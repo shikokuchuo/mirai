@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2.9002</span>
       </span>
     </div>
 
@@ -82,9 +82,11 @@
     <h2>Details</h2>
     <p>This function will wait for the async operation to complete if still
     in progress (blocking).</p>
-<p>If an error occured in evaluation, a nul byte <code>00</code> (or serialized
-    nul byte) will be returned. <code>is_nul_byte</code> can be used to test
-    for a nul byte.</p>
+<p>If an error occurs in evaluation, the error message is returned as a
+    character string of class 'miraiError' and 'errorValue'.
+    <code><a href="is_mirai_error.html">is_mirai_error</a></code> can be used to test for this, otherwise
+    <code><a href="https://shikokuchuo.net/nanonext/reference/is_error_value.html" class="external-link">is_error_value</a></code> will also include other errors such as
+    timeouts.</p>
 <p>The 'mirai' updates itself in place, so to access the value of a 'mirai'
     <code>x</code> directly, use <code>call_mirai(x)$data</code>.</p>
     </div>

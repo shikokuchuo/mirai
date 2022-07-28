@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2.9002</span>
       </span>
     </div>
 
@@ -54,11 +54,11 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.5.2.9001" id="mirai-0529001">mirai 0.5.2.9001<a class="anchor" aria-label="anchor" href="#mirai-0529001"></a></h2>
-<ul><li>Now returns error messages occurring inside a mirai as an object of class ‘mirai_error’, rather than just a nul byte.</li>
+<h2 class="page-header" data-toc-text="0.5.2.9002" id="mirai-0529002">mirai 0.5.2.9002<a class="anchor" aria-label="anchor" href="#mirai-0529002"></a></h2>
+<ul><li>Now returns error messages from inside a mirai as a character string of class ‘miraiError’ and ‘errorValue’, rather than just a nul byte.</li>
 <li>Utility function <code><a href="../reference/is_mirai_error.html">is_mirai_error()</a></code> should be used in place of is_nul_byte(), which is no longer re-exported.</li>
 <li>
-<code><a href="https://shikokuchuo.net/nanonext/reference/is_error_value.html" class="external-link">is_error_value()</a></code> re-exported from nanonext to test for timeout errors where the ‘.timeout’ argument has been used.</li>
+<code><a href="https://shikokuchuo.net/nanonext/reference/is_error_value.html" class="external-link">is_error_value()</a></code> re-exported from ‘nanonext’ to test for all errors, including timeouts where the ‘.timeout’ argument has been used.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.5.2" id="mirai-052">mirai 0.5.2<small>2022-07-21</small><a class="anchor" aria-label="anchor" href="#mirai-052"></a></h2>
