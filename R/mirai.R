@@ -33,8 +33,7 @@
   sock <- socket(protocol = "rep", dial = ., autostart = TRUE)
   ctx <- context(sock)
   on.exit(expr = {
-    send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")),
-         mode = 1L, echo = FALSE)
+    send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")), mode = 1L, echo = FALSE)
     close(sock)
   })
   envir <- recv(ctx, mode = 1L, keep.raw = FALSE)
@@ -55,8 +54,9 @@
 #' @param .expr an expression to evaluate in a new R process. This may be of
 #'     arbitrary length, wrapped in \{\} if necessary.
 #' @param ... named arguments specifying the variables contained in '.expr'.
-#' @param .timeout (optional) integer value in milliseconds. A 'mirai' will
-#'     resolve to an 'errorValue' 5 (timed out) if evaluation exceeds this limit.
+#' @param .timeout [default NULL] integer value in milliseconds or NULL for no
+#'     timeout. A 'mirai' will resolve to an 'errorValue' 5 (timed out) if
+#'     evaluation exceeds this limit.
 #'
 #' @return A 'mirai' object.
 #'
@@ -111,7 +111,7 @@
 #'
 #' @export
 #'
-eval_mirai <- function(.expr, ..., .timeout) {
+eval_mirai <- function(.expr, ..., .timeout = NULL) {
 
   missing(.expr) && stop("missing expression, perhaps wrap in {}?")
   if (!is.null(proc <- attr(daemons(), "daemons")) && proc) {
@@ -119,8 +119,7 @@ eval_mirai <- function(.expr, ..., .timeout) {
     arglist <- list(.expr = substitute(.expr), ...)
     envir <- list2env(arglist)
     ctx <- context(daemons())
-    aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L,
-                   timeout = if (missing(.timeout)) -2L else .timeout, keep.raw = FALSE)
+    aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout, keep.raw = FALSE)
     `attr<-`(.subset2(aio, "aio"), "ctx", ctx)
     `class<-`(aio, c("mirai", "recvAio"))
 
@@ -138,8 +137,7 @@ eval_mirai <- function(.expr, ..., .timeout) {
     system2(command = cmd, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
     sock <- socket(protocol = "req", listen = url, autostart = TRUE)
     ctx <- context(sock)
-    aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L,
-                   timeout = if (missing(.timeout)) -2L else .timeout, keep.raw = FALSE)
+    aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout, keep.raw = FALSE)
     `attr<-`(.subset2(aio, "aio"), "ctx", ctx)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
     `class<-`(aio, c("mirai", "recvAio"))
