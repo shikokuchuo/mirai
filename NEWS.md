@@ -1,8 +1,8 @@
-# mirai 0.5.2.9001
+# mirai 0.5.2.9002
 
-* Now returns error messages occurring inside a mirai as an object of class 'mirai_error', rather than just a nul byte.
+* Now returns error messages from inside a mirai as a character string of class 'miraiError' and 'errorValue', rather than just a nul byte.
 * Utility function `is_mirai_error()` should be used in place of is_nul_byte(), which is no longer re-exported.
-* `is_error_value()` re-exported from nanonext to test for timeout errors where the '.timeout' argument has been used.
+* `is_error_value()` re-exported from 'nanonext' to test for all errors, including timeouts where the '.timeout' argument has been used.
 
 # mirai 0.5.2
 

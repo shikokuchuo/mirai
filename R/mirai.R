@@ -33,7 +33,8 @@
   sock <- socket(protocol = "rep", dial = ., autostart = TRUE)
   ctx <- context(sock)
   on.exit(expr = {
-    send(ctx, data = `class<-`(geterrmessage(), "mirai_error"), mode = 1L, echo = FALSE)
+    send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")),
+         mode = 1L, echo = FALSE)
     close(sock)
   })
   envir <- recv(ctx, mode = 1L, keep.raw = FALSE)
@@ -74,6 +75,12 @@
 #'
 #'     The expression '.expr' will be evaluated in a new R process in a clean
 #'     environment consisting of the named objects passed as '...' only.
+#'
+#'     If an error occurs in evaluation, the error message is returned as a
+#'     character string of class 'miraiError' and 'errorValue'.
+#'     \code{\link{is_mirai_error}} can be used to test for this, otherwise
+#'     \code{\link{is_error_value}} will also include other errors such as
+#'     timeouts.
 #'
 #'     \code{\link{mirai}} is an alias for \code{\link{eval_mirai}}.
 #'
@@ -159,9 +166,11 @@ mirai <- eval_mirai
 #' @details This function will wait for the async operation to complete if still
 #'     in progress (blocking).
 #'
-#'     If an error occured in evaluation, a nul byte \code{00} (or serialized
-#'     nul byte) will be returned. \code{\link{is_nul_byte}} can be used to test
-#'     for a nul byte.
+#'     If an error occurs in evaluation, the error message is returned as a
+#'     character string of class 'miraiError' and 'errorValue'.
+#'     \code{\link{is_mirai_error}} can be used to test for this, otherwise
+#'     \code{\link{is_error_value}} will also include other errors such as
+#'     timeouts.
 #'
 #'     The 'mirai' updates itself in place, so to access the value of a 'mirai'
 #'     \code{x} directly, use \code{call_mirai(x)$data}.
@@ -220,7 +229,7 @@ call_mirai <- function(mirai) call_aio(mirai)
 
   sock <- socket(protocol = "rep", dial = ., autostart = TRUE)
   on.exit(expr = {
-    send(ctx, data = `class<-`(geterrmessage(), "mirai_error"), mode = 1L, echo = FALSE)
+    send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")), mode = 1L, echo = FALSE)
     close(sock)
     ..(.)
   })
@@ -405,22 +414,23 @@ print.mirai <- function(x, ...) {
 
 #' @export
 #'
-print.mirai_error <- function(x, ...) {
+print.miraiError <- function(x, ...) {
 
   cat(x, file = stderr())
   invisible(x)
 
 }
 
-#' Is mirai_error
+#' Is mirai Error
 #'
-#' Is the object a 'mirai_error'. When execution fails in a mirai process, the
-#'     error message is returned as a character string classed as 'mirai_error'.
-#'     To test for timeouts, \code{\link{is_error_value}} should be used instead.
+#' Is the object a 'miraiError'. When execution fails in a mirai process, the
+#'     error message is returned as a character string classed as 'miraiError'
+#'     and 'errorValue'. To test for all possible errors, including timeouts
+#'     for example, \code{\link{is_error_value}} should be used instead.
 #'
 #' @param x an object.
 #'
-#' @return Logical value TRUE or FALSE.
+#' @return Logical value TRUE if 'x' is of class 'miraiError', FALSE otherwise.
 #'
 #' @examples
 #' if (interactive()) {
@@ -434,5 +444,5 @@ print.mirai_error <- function(x, ...) {
 #'
 #' @export
 #'
-is_mirai_error <- function(x) inherits(x, "mirai_error")
+is_mirai_error <- function(x) inherits(x, "miraiError")
 

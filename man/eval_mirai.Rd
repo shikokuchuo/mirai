@@ -43,6 +43,12 @@ This function will return a 'mirai' object immediately.
     The expression '.expr' will be evaluated in a new R process in a clean
     environment consisting of the named objects passed as '...' only.
 
+    If an error occurs in evaluation, the error message is returned as a
+    character string of class 'miraiError' and 'errorValue'.
+    \code{\link{is_mirai_error}} can be used to test for this, otherwise
+    \code{\link{is_error_value}} will also include other errors such as
+    timeouts.
+
     \code{\link{mirai}} is an alias for \code{\link{eval_mirai}}.
 }
 \examples{

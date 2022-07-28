@@ -21,9 +21,11 @@ Call the value of a 'mirai', waiting for the the asynchronous operation to
 This function will wait for the async operation to complete if still
     in progress (blocking).
 
-    If an error occured in evaluation, a nul byte \code{00} (or serialized
-    nul byte) will be returned. \code{\link{is_nul_byte}} can be used to test
-    for a nul byte.
+    If an error occurs in evaluation, the error message is returned as a
+    character string of class 'miraiError' and 'errorValue'.
+    \code{\link{is_mirai_error}} can be used to test for this, otherwise
+    \code{\link{is_error_value}} will also include other errors such as
+    timeouts.
 
     The 'mirai' updates itself in place, so to access the value of a 'mirai'
     \code{x} directly, use \code{call_mirai(x)$data}.

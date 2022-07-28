@@ -2,7 +2,7 @@
 % Please edit documentation in R/mirai.R
 \name{is_mirai_error}
 \alias{is_mirai_error}
-\title{Is mirai_error}
+\title{Is mirai Error}
 \usage{
 is_mirai_error(x)
 }
@@ -10,12 +10,13 @@ is_mirai_error(x)
 \item{x}{an object.}
 }
 \value{
-Logical value TRUE or FALSE.
+Logical value TRUE if 'x' is of class 'miraiError', FALSE otherwise.
 }
 \description{
-Is the object a 'mirai_error'. When execution fails in a mirai process, the
-    error message is returned as a character string classed as 'mirai_error'.
-    To test for timeouts, \code{\link{is_error_value}} should be used instead.
+Is the object a 'miraiError'. When execution fails in a mirai process, the
+    error message is returned as a character string classed as 'miraiError'
+    and 'errorValue'. To test for all possible errors, including timeouts
+    for example, \code{\link{is_error_value}} should be used instead.
 }
 \examples{
 if (interactive()) {
