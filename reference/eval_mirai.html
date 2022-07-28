@@ -63,9 +63,9 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">eval_mirai</span><span class="op">(</span><span class="va">.expr</span>, <span class="va">...</span>, <span class="va">.timeout</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">eval_mirai</span><span class="op">(</span><span class="va">.expr</span>, <span class="va">...</span>, .timeout <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">mirai</span><span class="op">(</span><span class="va">.expr</span>, <span class="va">...</span>, <span class="va">.timeout</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">mirai</span><span class="op">(</span><span class="va">.expr</span>, <span class="va">...</span>, .timeout <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -80,8 +80,9 @@ arbitrary length, wrapped in {} if necessary.</p></dd>
 
 
 <dt>.timeout</dt>
-<dd><p>(optional) integer value in milliseconds. A 'mirai' will
-resolve to an 'errorValue' 5 (timed out) if evaluation exceeds this limit.</p></dd>
+<dd><p>[default NULL] integer value in milliseconds or NULL for no
+timeout. A 'mirai' will resolve to an 'errorValue' 5 (timed out) if
+evaluation exceeds this limit.</p></dd>
 
 </dl></div>
     <div id="value">
