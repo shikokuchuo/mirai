@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2.9003</span>
       </span>
     </div>
 
@@ -63,9 +63,9 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">eval_mirai</span><span class="op">(</span><span class="va">.expr</span>, <span class="va">...</span>, .timeout <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">eval_mirai</span><span class="op">(</span><span class="va">.expr</span>, <span class="va">...</span>, .args <span class="op">=</span> <span class="cn">NULL</span>, .timeout <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">mirai</span><span class="op">(</span><span class="va">.expr</span>, <span class="va">...</span>, .timeout <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">mirai</span><span class="op">(</span><span class="va">.expr</span>, <span class="va">...</span>, .args <span class="op">=</span> <span class="cn">NULL</span>, .timeout <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -76,11 +76,16 @@ arbitrary length, wrapped in {} if necessary.</p></dd>
 
 
 <dt>...</dt>
-<dd><p>named arguments specifying the variables contained in '.expr'.</p></dd>
+<dd><p>(optional) named arguments specifying variables contained in '.expr'.</p></dd>
+
+
+<dt>.args</dt>
+<dd><p>(optional) list or vector supplying arguments to '.expr' (used
+in addition to or instead of named arguments specified as '...').</p></dd>
 
 
 <dt>.timeout</dt>
-<dd><p>[default NULL] integer value in milliseconds or NULL for no
+<dd><p>(optional) integer value in milliseconds or NULL for no
 timeout. A 'mirai' will resolve to an 'errorValue' 5 (timed out) if
 evaluation exceeds this limit.</p></dd>
 
@@ -103,7 +108,8 @@ evaluation exceeds this limit.</p></dd>
     <code><a href="call_mirai.html">call_mirai</a></code> on the returned 'mirai' object. This will block
     until the result is returned.</p>
 <p>The expression '.expr' will be evaluated in a new R process in a clean
-    environment consisting of the named objects passed as '...' only.</p>
+    environment consisting of the named objects passed as '...' only (along
+    with objects in the list '.args', if supplied).</p>
 <p>If an error occurs in evaluation, the error message is returned as a
     character string of class 'miraiError' and 'errorValue'.
     <code><a href="is_mirai_error.html">is_mirai_error</a></code> can be used to test for this, otherwise
@@ -123,7 +129,9 @@ evaluation exceeds this limit.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">mirai</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span>, df <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="op">)</span>, .timeout <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">df1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">df2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">3</span>, b <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">mirai</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">df1</span>, <span class="va">df2</span><span class="op">)</span><span class="op">)</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">df1</span>, <span class="va">df2</span><span class="op">)</span>, .timeout <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">mirai</span><span class="op">(</span><span class="op">{</span></span></span>
