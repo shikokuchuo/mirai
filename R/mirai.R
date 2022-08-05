@@ -53,8 +53,10 @@
 #'
 #' @param .expr an expression to evaluate in a new R process. This may be of
 #'     arbitrary length, wrapped in \{\} if necessary.
-#' @param ... named arguments specifying the variables contained in '.expr'.
-#' @param .timeout [default NULL] integer value in milliseconds or NULL for no
+#' @param ... (optional) named arguments specifying variables contained in '.expr'.
+#' @param .args (optional) list or vector supplying arguments to '.expr' (used
+#'     in addition to or instead of named arguments specified as '...').
+#' @param .timeout (optional) integer value in milliseconds or NULL for no
 #'     timeout. A 'mirai' will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
 #'
@@ -74,7 +76,8 @@
 #'     until the result is returned.
 #'
 #'     The expression '.expr' will be evaluated in a new R process in a clean
-#'     environment consisting of the named objects passed as '...' only.
+#'     environment consisting of the named objects passed as '...' only (along
+#'     with objects in the list '.args', if supplied).
 #'
 #'     If an error occurs in evaluation, the error message is returned as a
 #'     character string of class 'miraiError' and 'errorValue'.
@@ -94,7 +97,9 @@
 #' Sys.sleep(0.2)
 #' m$data
 #'
-#' m <- mirai(as.matrix(df), df = data.frame(), .timeout = 1000)
+#' df1 <- data.frame(a = 1, b = 2)
+#' df2 <- data.frame(a = 3, b = 1)
+#' m <- mirai(as.matrix(rbind(df1, df2)), .args = list(df1, df2), .timeout = 1000)
 #' call_mirai(m)$data
 #'
 #' m <- mirai({
@@ -111,12 +116,14 @@
 #'
 #' @export
 #'
-eval_mirai <- function(.expr, ..., .timeout = NULL) {
+eval_mirai <- function(.expr, ..., .args = NULL, .timeout = NULL) {
 
   missing(.expr) && stop("missing expression, perhaps wrap in {}?")
   if (!is.null(proc <- attr(daemons(), "daemons")) && proc) {
 
     arglist <- list(.expr = substitute(.expr), ...)
+    if (length(.args))
+      arglist <- c(arglist, `names<-`(.args, lapply(`[[<-`(substitute(.args), 1L, NULL), deparse)))
     envir <- list2env(arglist)
     ctx <- context(daemons())
     aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout, keep.raw = FALSE)
@@ -126,6 +133,8 @@ eval_mirai <- function(.expr, ..., .timeout = NULL) {
   } else {
 
     arglist <- list(.expr = substitute(.expr), ...)
+    if (length(.args))
+      arglist <- c(arglist, `names<-`(.args, lapply(`[[<-`(substitute(.args), 1L, NULL), deparse)))
     envir <- list2env(arglist)
     url <- switch(daemons(NULL),
                   Linux = sprintf("abstract://n%.f", random()),
@@ -192,7 +201,9 @@ mirai <- eval_mirai
 #' Sys.sleep(0.2)
 #' m$data
 #'
-#' m <- mirai(as.matrix(df), df = data.frame())
+#' df1 <- data.frame(a = 1, b = 2)
+#' df2 <- data.frame(a = 3, b = 1)
+#' m <- mirai(as.matrix(rbind(df1, df2)), .args = list(df1, df2), .timeout = 1000)
 #' call_mirai(m)$data
 #'
 #' m <- mirai({

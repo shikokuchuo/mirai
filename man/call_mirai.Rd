@@ -51,7 +51,9 @@ m$data
 Sys.sleep(0.2)
 m$data
 
-m <- mirai(as.matrix(df), df = data.frame())
+df1 <- data.frame(a = 1, b = 2)
+df2 <- data.frame(a = 3, b = 1)
+m <- mirai(as.matrix(rbind(df1, df2)), .args = list(df1, df2), .timeout = 1000)
 call_mirai(m)$data
 
 m <- mirai({

@@ -5,17 +5,20 @@
 \alias{mirai}
 \title{mirai (Evaluate Async)}
 \usage{
-eval_mirai(.expr, ..., .timeout = NULL)
+eval_mirai(.expr, ..., .args = NULL, .timeout = NULL)
 
-mirai(.expr, ..., .timeout = NULL)
+mirai(.expr, ..., .args = NULL, .timeout = NULL)
 }
 \arguments{
 \item{.expr}{an expression to evaluate in a new R process. This may be of
 arbitrary length, wrapped in \{\} if necessary.}
 
-\item{...}{named arguments specifying the variables contained in '.expr'.}
+\item{...}{(optional) named arguments specifying variables contained in '.expr'.}
 
-\item{.timeout}{[default NULL] integer value in milliseconds or NULL for no
+\item{.args}{(optional) list or vector supplying arguments to '.expr' (used
+in addition to or instead of named arguments specified as '...').}
+
+\item{.timeout}{(optional) integer value in milliseconds or NULL for no
 timeout. A 'mirai' will resolve to an 'errorValue' 5 (timed out) if
 evaluation exceeds this limit.}
 }
@@ -42,7 +45,8 @@ This function will return a 'mirai' object immediately.
     until the result is returned.
 
     The expression '.expr' will be evaluated in a new R process in a clean
-    environment consisting of the named objects passed as '...' only.
+    environment consisting of the named objects passed as '...' only (along
+    with objects in the list '.args', if supplied).
 
     If an error occurs in evaluation, the error message is returned as a
     character string of class 'miraiError' and 'errorValue'.
@@ -62,7 +66,9 @@ m$data
 Sys.sleep(0.2)
 m$data
 
-m <- mirai(as.matrix(df), df = data.frame(), .timeout = 1000)
+df1 <- data.frame(a = 1, b = 2)
+df2 <- data.frame(a = 3, b = 1)
+m <- mirai(as.matrix(rbind(df1, df2)), .args = list(df1, df2), .timeout = 1000)
 call_mirai(m)$data
 
 m <- mirai({
