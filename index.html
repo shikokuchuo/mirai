@@ -89,10 +89,23 @@
 <p>Minimalist async evaluation framework for R.</p>
 <p>未来 みらい mirai is Japanese for ‘future’.</p>
 <p>Extremely simple and lightweight method for concurrent / parallel code execution, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) technology.</p>
-<p><br><br> Whilst frameworks for parallelisation exist for R, {mirai} is designed for simplicity.</p>
+<p>Whilst frameworks for parallelisation exist for R, {mirai} is designed for simplicity.</p>
 <p><code><a href="reference/eval_mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately.</p>
-<p>A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving automatically upon completion. <br><br><br></p>
+<p>A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving automatically upon completion.</p>
 <p>{mirai} has a tiny pure R code base, relying solely on {nanonext}, a lightweight binding for the NNG C library with no package dependencies.</p>
+<div class="section level3">
+<h3 id="table-of-contents">Table of Contents<a class="anchor" aria-label="anchor" href="#table-of-contents"></a>
+</h3>
+<ol style="list-style-type: decimal">
+<li><a href="#installation">Installation</a></li>
+<li><a href="#example-1-compute-intensive-operations">Example 1: Compute-intensive Operations</a></li>
+<li><a href="#example-2-io-bound-operations">Example 2: I/O-bound Operations</a></li>
+<li><a href="#daemons">Daemons</a></li>
+<li><a href="#deferred-evaluation-pipe">Deferred Evaluation Pipe</a></li>
+<li><a href="#errors-and-timeouts">Errors and Timeouts</a></li>
+<li><a href="#links">Links</a></li>
+</ol>
+</div>
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
@@ -102,26 +115,19 @@
 <p>or the development version from rOpenSci R-universe:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span>, repos <span class="op">=</span> <span class="st">"https://shikokuchuo.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
+<p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
-<h3 id="demonstration">Demonstration<a class="anchor" aria-label="anchor" href="#demonstration"></a>
+<h3 id="example-1-compute-intensive-operations">Example 1: Compute-intensive Operations<a class="anchor" aria-label="anchor" href="#example-1-compute-intensive-operations"></a>
 </h3>
-<p>Use cases:</p>
-<ul>
-<li>minimise execution times by performing long-running tasks concurrently in separate processes</li>
-<li>ensure execution flow of the main process is not blocked</li>
-</ul>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span></code></pre></div>
-<div class="section level4">
-<h4 id="example-1-compute-intensive-operations">Example 1: Compute-intensive Operations<a class="anchor" aria-label="anchor" href="#example-1-compute-intensive-operations"></a>
-</h4>
+<p>Use case: minimise execution times by performing long-running tasks concurrently in separate processes.</p>
 <p>Multiple long computes (model fits etc.) can be performed in parallel on available computing cores.</p>
-<p>Use <code><a href="reference/eval_mirai.html">mirai()</a></code> to evaluate an expression asynchronously in a separate R process.</p>
-<ul><li>All named objects are passed through to a clean environment</li></ul>
+<p>Use <code><a href="reference/eval_mirai.html">mirai()</a></code> to evaluate an expression asynchronously in a separate, clean R process.</p>
 <p>A ‘mirai’ object is returned immediately.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span></span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">+</span> <span class="va">m</span></span>
 <span>  <span class="va">res</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="op">}</span>, n <span class="op">=</span> <span class="fl">1e8</span>, m <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
@@ -129,30 +135,39 @@
 <span><span class="va">m</span></span>
 <span><span class="co">#&gt; &lt; mirai &gt;</span></span>
 <span><span class="co">#&gt;  - $data for evaluated result</span></span></code></pre></div>
+<p>Above, all named objects are passed through to the mirai.</p>
 <p>The ‘mirai’ yields an ‘unresolved’ logical NA value whilst the async operation is ongoing.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; 'unresolved' logi NA</span></span></code></pre></div>
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.401 1.029 3.28 -0.369 -0.171 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 2.101 2.344 1.402 0.773 4.098 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.401 1.029 3.28 -0.369 -0.171 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 2.101 2.344 1.402 0.773 4.098 ...</span></span></code></pre></div>
+<p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
-<div class="section level4">
-<h4 id="example-2-io-bound-operations">Example 2: I/O-bound Operations<a class="anchor" aria-label="anchor" href="#example-2-io-bound-operations"></a>
-</h4>
+<div class="section level3">
+<h3 id="example-2-io-bound-operations">Example 2: I/O-bound Operations<a class="anchor" aria-label="anchor" href="#example-2-io-bound-operations"></a>
+</h3>
+<p>Use case: ensure execution flow of the main process is not blocked.</p>
 <p>High-frequency real-time data cannot be written to file/database synchronously without disrupting the execution flow.</p>
 <p>Cache data in memory and use <code><a href="reference/eval_mirai.html">mirai()</a></code> to perform periodic write operations concurrently in a separate process.</p>
 <p>A ‘mirai’ object is returned immediately.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">x</span>, file <span class="op">=</span> <span class="va">file</span><span class="op">)</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1e6</span><span class="op">)</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Below, <code>.args</code> accepts a list of objects already present in the calling environment to be passed to the mirai.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1e6</span><span class="op">)</span></span>
+<span><span class="va">file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">x</span>, file <span class="op">=</span> <span class="va">file</span><span class="op">)</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">file</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><code><a href="https://shikokuchuo.net/nanonext/reference/unresolved.html" class="external-link">unresolved()</a></code> may be used in control flow statements to perform actions which depend on resolution of the ‘mirai’, both before and after.</p>
 <p>This means there is no need to actually wait (block) for a ‘mirai’ to resolve, as the example below demonstrates.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># unresolved() queries for resolution itself so no need to use it again within the while loop</span></span>
 <span></span>
 <span><span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/unresolved.html" class="external-link">unresolved</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -165,14 +180,14 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Write complete:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Write complete: TRUE</span></span></code></pre></div>
 <p>Now actions which depend on the resolution may be processed, for example the next write.</p>
-</div>
+<p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
 </h3>
 <p>Daemons or persistent background processes may be set to receive ‘mirai’ requests.</p>
-<p>This is potentially more efficient as new processes no longer need to be created on an ad hoc basis.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<p>This is potentially more efficient as new processes no longer need to be created on an <em>ad hoc</em> basis.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create 8 daemons</span></span>
 <span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">8</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 8</span></span>
@@ -182,11 +197,12 @@
 <span><span class="co">#&gt; [1] 8</span></span></code></pre></div>
 <p>The current implementation is low-level and ensures tasks are evenly-distributed amongst daemons without actively managing a task queue.</p>
 <p>This robust and resource-light approach is particularly well-suited to working with similar-length tasks, or where the number of concurrent tasks typically does not exceed the number of available daemons.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># reset to zero</span></span>
 <span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] -8</span></span></code></pre></div>
 <p>Set the number of daemons to zero again to revert to the default behaviour of creating a new background process for each ‘mirai’ request.</p>
+<p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
 <h3 id="deferred-evaluation-pipe">Deferred Evaluation Pipe<a class="anchor" aria-label="anchor" href="#deferred-evaluation-pipe"></a>
@@ -197,7 +213,7 @@
 <p>It is possible to use <code><a href="https://shikokuchuo.net/nanonext/reference/unresolved.html" class="external-link">unresolved()</a></code> around a ‘unresolvedExpr’ or its <code>$data</code> element to test for resolution, as in the example below.</p>
 <p>The pipe operator semantics are similar to R’s base pipe <code>|&gt;</code>:</p>
 <p><code>x %&gt;&gt;% f</code> is equivalent to <code>f(x)</code> <br><code>x %&gt;&gt;% f()</code> is equivalent to <code>f(x)</code> <br><code>x %&gt;&gt;% f(y)</code> is equivalent to <code>f(x, y)</code></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span>; <span class="fl">1</span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="va">b</span> <span class="op">&lt;-</span> <span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op"><a href="reference/grapes-greater-than-greater-than-grapes.html">%&gt;&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="reference/grapes-greater-than-greater-than-grapes.html">%&gt;&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">b</span></span>
@@ -211,6 +227,40 @@
 <span><span class="co">#&gt; [1] "1" "2" "3"</span></span>
 <span><span class="va">b</span></span>
 <span><span class="co">#&gt; &lt; resolvedExpr: $data &gt;</span></span></code></pre></div>
+<p><a href="#table-of-contents">« Back to ToC</a></p>
+</div>
+<div class="section level3">
+<h3 id="errors-and-timeouts">Errors and Timeouts<a class="anchor" aria-label="anchor" href="#errors-and-timeouts"></a>
+</h3>
+<p>If execution in a mirai fails, the error message is returned as a character string of class ‘miraiError’ and ‘errorValue’ to facilitate debugging.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"occurred with a custom message"</span>, call. <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/capture.output.html" class="external-link">capture.output</a></span><span class="op">(</span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span><span class="op">$</span><span class="va">data</span>, type <span class="op">=</span> <span class="st">"message"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Error: occurred with a custom message"</span></span>
+<span></span>
+<span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/capture.output.html" class="external-link">capture.output</a></span><span class="op">(</span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span><span class="op">$</span><span class="va">data</span>, type <span class="op">=</span> <span class="st">"message"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Error in mirai() : missing expression, perhaps wrap in {}?"</span></span>
+<span><span class="co">#&gt; [2] "Calls: &lt;Anonymous&gt; -&gt; eval -&gt; eval -&gt; mirai"</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/is_mirai_error.html">is_mirai_error</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/is_error_value.html" class="external-link">is_error_value</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p><em>Note: capture.output() is used above for the sole purpose of capturing stderr() when knitting Rmd.</em></p>
+<p>If execution of a mirai surpasses the timeout set via the <code>.timeout</code> argument, the mirai will resolve to an <code>errorValue</code>. This can, amongst other things, guard against mirai processes which have the potential to hang and never return.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/msleep.html" class="external-link">msleep</a></span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span>, .timeout <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m3</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
+<span><span class="co">#&gt; Warning in (function (x) : 5 | Timed out</span></span>
+<span><span class="co">#&gt; 'errorValue' int 5</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/is_mirai_error.html">is_mirai_error</a></span><span class="op">(</span><span class="va">m3</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span>
+<span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/is_error_value.html" class="external-link">is_error_value</a></span><span class="op">(</span><span class="va">m3</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p><code><a href="https://shikokuchuo.net/nanonext/reference/is_error_value.html" class="external-link">is_error_value()</a></code> tests for both mirai execution errors and timeouts. <code><a href="reference/is_mirai_error.html">is_mirai_error()</a></code> tests for just mirai execution errors.</p>
+<p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
 <h3 id="links">Links<a class="anchor" aria-label="anchor" href="#links"></a>
@@ -218,6 +268,7 @@
 <p>{mirai} website: <a href="https://shikokuchuo.net/mirai/" class="uri">https://shikokuchuo.net/mirai/</a><br> {mirai} on CRAN: <a href="https://cran.r-project.org/package=mirai" class="external-link uri">https://cran.r-project.org/package=mirai</a></p>
 <p>{nanonext} website: <a href="https://shikokuchuo.net/nanonext/" class="external-link uri">https://shikokuchuo.net/nanonext/</a><br> {nanonext} on CRAN: <a href="https://cran.r-project.org/package=nanonext" class="external-link uri">https://cran.r-project.org/package=nanonext</a></p>
 <p>NNG website: <a href="https://nng.nanomsg.org/" class="external-link uri">https://nng.nanomsg.org/</a><br></p>
+<p><a href="#table-of-contents">« Back to ToC</a></p>
 <p>–</p>
 <p>Please note that this project is released with a <a href="https://shikokuchuo.net/mirai/CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
 </div>
