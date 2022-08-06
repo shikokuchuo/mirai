@@ -27,15 +27,23 @@ Minimalist async evaluation framework for R.
 
 Extremely simple and lightweight method for concurrent / parallel code execution, built on 'nanonext' and 'NNG' (Nanomsg Next Gen) technology.
 
-<br /><br />
 Whilst frameworks for parallelisation exist for R, {mirai} is designed for simplicity.
 
 `mirai()` returns a 'mirai' object immediately.
 
 A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving automatically upon completion.
-<br /><br /><br />
 
 {mirai} has a tiny pure R code base, relying solely on {nanonext}, a lightweight binding for the NNG C library with no package dependencies.
+
+### Table of Contents
+
+1. [Installation](#installation)
+2. [Example 1: Compute-intensive Operations](#example-1-compute-intensive-operations)
+3. [Example 2: I/O-bound Operations](#example-2-io-bound-operations)
+4. [Daemons](#daemons)
+5. [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
+6. [Errors and Timeouts](#errors-and-timeouts)
+7. [Links](#links)
 
 ### Installation
 
@@ -51,28 +59,21 @@ or the development version from rOpenSci R-universe:
 install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
 ```
 
-### Demonstration
+[&laquo; Back to ToC](#table-of-contents)
 
-Use cases:
+### Example 1: Compute-intensive Operations
 
-- minimise execution times by performing long-running tasks concurrently in separate processes
-- ensure execution flow of the main process is not blocked
-
-```{r example}
-library(mirai)
-```
-
-#### Example 1: Compute-intensive Operations
+Use case: minimise execution times by performing long-running tasks concurrently in separate processes.
 
 Multiple long computes (model fits etc.) can be performed in parallel on available computing cores.
 
-Use `mirai()` to evaluate an expression asynchronously in a separate R process.
-
-- All named objects are passed through to a clean environment
+Use `mirai()` to evaluate an expression asynchronously in a separate, clean R process.
 
 A 'mirai' object is returned immediately.
 
 ```{r exec}
+library(mirai)
+
 m <- mirai({
   res <- rnorm(n) + m
   res / rev(res)
@@ -80,6 +81,8 @@ m <- mirai({
 
 m
 ```
+
+Above, all named objects are passed through to the mirai.
 
 The 'mirai' yields an 'unresolved' logical NA value whilst the async operation is ongoing.
 
@@ -102,16 +105,27 @@ Alternatively, explicitly call and wait for the result using `call_mirai()`.
 call_mirai(m)$data |> str()
 ```
 
-#### Example 2: I/O-bound Operations
+[&laquo; Back to ToC](#table-of-contents)
+
+### Example 2: I/O-bound Operations
+
+Use case: ensure execution flow of the main process is not blocked.
 
 High-frequency real-time data cannot be written to file/database synchronously without disrupting the execution flow.
 
-Cache data in memory and use `mirai()` to perform periodic write operations concurrently in a separate process. 
+Cache data in memory and use `mirai()` to perform periodic write operations concurrently in a separate process.
 
 A 'mirai' object is returned immediately.
 
+Below, `.args` accepts a list of objects already present in the calling environment to be passed to the mirai.
+
 ```{r exec2}
-m <- mirai(write.csv(x, file = file), x = rnorm(1e6), file = tempfile())
+library(mirai)
+
+x <- rnorm(1e6)
+file <- tempfile()
+
+m <- mirai(write.csv(x, file = file), .args = list(x, file))
 ```
 
 `unresolved()` may be used in control flow statements to perform actions which depend on resolution of the 'mirai', both before and after.
@@ -132,11 +146,13 @@ cat("Write complete:", is.null(m$data))
 
 Now actions which depend on the resolution may be processed, for example the next write.
 
+[&laquo; Back to ToC](#table-of-contents)
+
 ### Daemons
 
 Daemons or persistent background processes may be set to receive 'mirai' requests.
 
-This is potentially more efficient as new processes no longer need to be created on an ad hoc basis.
+This is potentially more efficient as new processes no longer need to be created on an *ad hoc* basis.
 
 ```{r daemons}
 # create 8 daemons
@@ -156,6 +172,8 @@ daemons(0)
 ```
 
 Set the number of daemons to zero again to revert to the default behaviour of creating a new background process for each 'mirai' request.
+
+[&laquo; Back to ToC](#table-of-contents)
 
 ### Deferred Evaluation Pipe
 
@@ -183,6 +201,39 @@ b$data
 b
 ```
 
+[&laquo; Back to ToC](#table-of-contents)
+
+### Errors and Timeouts
+
+If execution in a mirai fails, the error message is returned as a character string of class 'miraiError' and 'errorValue' to facilitate debugging.
+
+```{r errorexample}
+m1 <- mirai(stop("occurred with a custom message", call. = FALSE))
+capture.output(call_mirai(m1)$data, type = "message")
+
+m2 <- mirai(mirai())
+capture.output(call_mirai(m2)$data, type = "message")
+
+is_mirai_error(m2$data)
+is_error_value(m2$data)
+```
+
+*Note: capture.output() is used above for the sole purpose of capturing stderr() when knitting Rmd.*
+
+If execution of a mirai surpasses the timeout set via the `.timeout` argument, the mirai will resolve to an `errorValue`. This can, amongst other things, guard against mirai processes which have the potential to hang and never return.
+
+```{r timeouts}
+m3 <- mirai(nanonext::msleep(1000), .timeout = 500)
+call_mirai(m3)$data
+
+is_mirai_error(m3$data)
+is_error_value(m3$data)
+```
+
+`is_error_value()` tests for both mirai execution errors and timeouts. `is_mirai_error()` tests for just mirai execution errors.
+
+[&laquo; Back to ToC](#table-of-contents)
+
 ### Links
 
 {mirai} website: <https://shikokuchuo.net/mirai/><br />
@@ -192,6 +243,8 @@ b
 {nanonext} on CRAN: <https://cran.r-project.org/package=nanonext>
 
 NNG website: <https://nng.nanomsg.org/><br />
+
+[&laquo; Back to ToC](#table-of-contents)
 
 --
 

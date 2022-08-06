@@ -19,16 +19,27 @@ Minimalist async evaluation framework for R.
 Extremely simple and lightweight method for concurrent / parallel code
 execution, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) technology.
 
-<br /><br /> Whilst frameworks for parallelisation exist for R, {mirai}
-is designed for simplicity.
+Whilst frameworks for parallelisation exist for R, {mirai} is designed
+for simplicity.
 
 `mirai()` returns a ‘mirai’ object immediately.
 
 A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving
-automatically upon completion. <br /><br /><br />
+automatically upon completion.
 
 {mirai} has a tiny pure R code base, relying solely on {nanonext}, a
 lightweight binding for the NNG C library with no package dependencies.
+
+### Table of Contents
+
+1.  [Installation](#installation)
+2.  [Example 1: Compute-intensive
+    Operations](#example-1-compute-intensive-operations)
+3.  [Example 2: I/O-bound Operations](#example-2-io-bound-operations)
+4.  [Daemons](#daemons)
+5.  [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
+6.  [Errors and Timeouts](#errors-and-timeouts)
+7.  [Links](#links)
 
 ### Installation
 
@@ -44,31 +55,24 @@ or the development version from rOpenSci R-universe:
 install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
 ```
 
-### Demonstration
+[« Back to ToC](#table-of-contents)
 
-Use cases:
+### Example 1: Compute-intensive Operations
 
--   minimise execution times by performing long-running tasks
-    concurrently in separate processes
--   ensure execution flow of the main process is not blocked
-
-``` r
-library(mirai)
-```
-
-#### Example 1: Compute-intensive Operations
+Use case: minimise execution times by performing long-running tasks
+concurrently in separate processes.
 
 Multiple long computes (model fits etc.) can be performed in parallel on
 available computing cores.
 
-Use `mirai()` to evaluate an expression asynchronously in a separate R
-process.
-
--   All named objects are passed through to a clean environment
+Use `mirai()` to evaluate an expression asynchronously in a separate,
+clean R process.
 
 A ‘mirai’ object is returned immediately.
 
 ``` r
+library(mirai)
+
 m <- mirai({
   res <- rnorm(n) + m
   res / rev(res)
@@ -78,6 +82,8 @@ m
 #> < mirai >
 #>  - $data for evaluated result
 ```
+
+Above, all named objects are passed through to the mirai.
 
 The ‘mirai’ yields an ‘unresolved’ logical NA value whilst the async
 operation is ongoing.
@@ -92,7 +98,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.401 1.029 3.28 -0.369 -0.171 ...
+#>  num [1:100000000] 2.101 2.344 1.402 0.773 4.098 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -100,10 +106,14 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.401 1.029 3.28 -0.369 -0.171 ...
+#>  num [1:100000000] 2.101 2.344 1.402 0.773 4.098 ...
 ```
 
-#### Example 2: I/O-bound Operations
+[« Back to ToC](#table-of-contents)
+
+### Example 2: I/O-bound Operations
+
+Use case: ensure execution flow of the main process is not blocked.
 
 High-frequency real-time data cannot be written to file/database
 synchronously without disrupting the execution flow.
@@ -113,8 +123,16 @@ operations concurrently in a separate process.
 
 A ‘mirai’ object is returned immediately.
 
+Below, `.args` accepts a list of objects already present in the calling
+environment to be passed to the mirai.
+
 ``` r
-m <- mirai(write.csv(x, file = file), x = rnorm(1e6), file = tempfile())
+library(mirai)
+
+x <- rnorm(1e6)
+file <- tempfile()
+
+m <- mirai(write.csv(x, file = file), .args = list(x, file))
 ```
 
 `unresolved()` may be used in control flow statements to perform actions
@@ -140,13 +158,15 @@ cat("Write complete:", is.null(m$data))
 Now actions which depend on the resolution may be processed, for example
 the next write.
 
+[« Back to ToC](#table-of-contents)
+
 ### Daemons
 
 Daemons or persistent background processes may be set to receive ‘mirai’
 requests.
 
 This is potentially more efficient as new processes no longer need to be
-created on an ad hoc basis.
+created on an *ad hoc* basis.
 
 ``` r
 # create 8 daemons
@@ -174,6 +194,8 @@ daemons(0)
 
 Set the number of daemons to zero again to revert to the default
 behaviour of creating a new background process for each ‘mirai’ request.
+
+[« Back to ToC](#table-of-contents)
 
 ### Deferred Evaluation Pipe
 
@@ -213,6 +235,55 @@ b
 #> < resolvedExpr: $data >
 ```
 
+[« Back to ToC](#table-of-contents)
+
+### Errors and Timeouts
+
+If execution in a mirai fails, the error message is returned as a
+character string of class ‘miraiError’ and ‘errorValue’ to facilitate
+debugging.
+
+``` r
+m1 <- mirai(stop("occurred with a custom message", call. = FALSE))
+capture.output(call_mirai(m1)$data, type = "message")
+#> [1] "Error: occurred with a custom message"
+
+m2 <- mirai(mirai())
+capture.output(call_mirai(m2)$data, type = "message")
+#> [1] "Error in mirai() : missing expression, perhaps wrap in {}?"
+#> [2] "Calls: <Anonymous> -> eval -> eval -> mirai"
+
+is_mirai_error(m2$data)
+#> [1] TRUE
+is_error_value(m2$data)
+#> [1] TRUE
+```
+
+*Note: capture.output() is used above for the sole purpose of capturing
+stderr() when knitting Rmd.*
+
+If execution of a mirai surpasses the timeout set via the `.timeout`
+argument, the mirai will resolve to an `errorValue`. This can, amongst
+other things, guard against mirai processes which have the potential to
+hang and never return.
+
+``` r
+m3 <- mirai(nanonext::msleep(1000), .timeout = 500)
+call_mirai(m3)$data
+#> Warning in (function (x) : 5 | Timed out
+#> 'errorValue' int 5
+
+is_mirai_error(m3$data)
+#> [1] FALSE
+is_error_value(m3$data)
+#> [1] TRUE
+```
+
+`is_error_value()` tests for both mirai execution errors and timeouts.
+`is_mirai_error()` tests for just mirai execution errors.
+
+[« Back to ToC](#table-of-contents)
+
 ### Links
 
 {mirai} website: <https://shikokuchuo.net/mirai/><br /> {mirai} on CRAN:
@@ -222,6 +293,8 @@ b
 on CRAN: <https://cran.r-project.org/package=nanonext>
 
 NNG website: <https://nng.nanomsg.org/><br />
+
+[« Back to ToC](#table-of-contents)
 
 –
 
