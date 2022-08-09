@@ -123,7 +123,7 @@ eval_mirai <- function(.expr, ..., .args = NULL, .timeout = NULL) {
 
     arglist <- list(.expr = substitute(.expr), ...)
     if (length(.args))
-      arglist <- c(arglist, `names<-`(.args, lapply(`[[<-`(substitute(.args), 1L, NULL), deparse)))
+      arglist <- c(arglist, `names<-`(.args, as.character(substitute(.args)[-1L])))
     envir <- list2env(arglist)
     ctx <- context(daemons())
     aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout, keep.raw = FALSE)
@@ -134,7 +134,7 @@ eval_mirai <- function(.expr, ..., .args = NULL, .timeout = NULL) {
 
     arglist <- list(.expr = substitute(.expr), ...)
     if (length(.args))
-      arglist <- c(arglist, `names<-`(.args, lapply(`[[<-`(substitute(.args), 1L, NULL), deparse)))
+      arglist <- c(arglist, `names<-`(.args, as.character(substitute(.args)[-1L])))
     envir <- list2env(arglist)
     url <- switch(daemons(NULL),
                   Linux = sprintf("abstract://n%.f", random()),
