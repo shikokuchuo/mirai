@@ -98,7 +98,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 1.693 0.504 0.136 2.77 0.608 ...
+#>  num [1:100000000] -0.494 -1.362 -0.154 0.848 0.524 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -106,7 +106,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 1.693 0.504 0.136 2.77 0.608 ...
+#>  num [1:100000000] -0.494 -1.362 -0.154 0.848 0.524 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -239,22 +239,18 @@ b
 
 ### Errors and Timeouts
 
-If execution in a mirai fails, the error message and call are returned
-in a list of class ‘miraiError’ and ‘errorValue’ to facilitate
+If execution in a mirai fails, the error message is returned as a
+character string of class ‘miraiError’ and ‘errorValue’ to facilitate
 debugging.
 
 ``` r
 m1 <- mirai(stop("occurred with a custom message", call. = FALSE))
-call_mirai(m1)$data
-#> 'miraiError' 'errorValue' list
-#> $message: occurred with a custom message
-#> $call: NULL
+cat(call_mirai(m1)$data)
+#> Error: occurred with a custom message
 
 m2 <- mirai(mirai())
-call_mirai(m2)$data
-#> 'miraiError' 'errorValue' list
-#> $message: missing expression, perhaps wrap in {}?
-#> $call: mirai()
+cat(call_mirai(m2)$data)
+#> Error in mirai(): missing expression, perhaps wrap in {}?
 
 is_mirai_error(m2$data)
 #> [1] TRUE

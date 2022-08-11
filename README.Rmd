@@ -205,14 +205,14 @@ b
 
 ### Errors and Timeouts
 
-If execution in a mirai fails, the error message and call are returned in a list of class 'miraiError' and 'errorValue' to facilitate debugging.
+If execution in a mirai fails, the error message is returned as a character string of class 'miraiError' and 'errorValue' to facilitate debugging.
 
 ```{r errorexample}
 m1 <- mirai(stop("occurred with a custom message", call. = FALSE))
-call_mirai(m1)$data
+cat(call_mirai(m1)$data)
 
 m2 <- mirai(mirai())
-call_mirai(m2)$data
+cat(call_mirai(m2)$data)
 
 is_mirai_error(m2$data)
 is_error_value(m2$data)

@@ -50,7 +50,7 @@ This function will return a 'mirai' object immediately.
 
     If an error occurs in evaluation, the error message is returned as a
     character string of class 'miraiError' and 'errorValue'.
-    \code{\link{is_mirai_error}} can be used to test for this, otherwise
+    \code{\link{is_mirai_error}} may be used to test for this, otherwise
     \code{\link{is_error_value}} will also include other errors such as
     timeouts.
 

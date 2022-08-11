@@ -34,7 +34,7 @@
   ctx <- context(sock)
   envir <- recv(ctx, mode = 1L, keep.raw = FALSE)
   msg <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir),
-                  error = function(e) `class<-`(e, c("miraiError", "errorValue")))
+                  error = function(e) `class<-`(as.character(e), c("miraiError", "errorValue")))
   send(ctx, data = msg, mode = 1L, echo = FALSE)
   msleep(2000L)
   close(sock)
@@ -77,7 +77,7 @@
 #'
 #'     If an error occurs in evaluation, the error message is returned as a
 #'     character string of class 'miraiError' and 'errorValue'.
-#'     \code{\link{is_mirai_error}} can be used to test for this, otherwise
+#'     \code{\link{is_mirai_error}} may be used to test for this, otherwise
 #'     \code{\link{is_error_value}} will also include other errors such as
 #'     timeouts.
 #'
@@ -171,7 +171,7 @@ mirai <- eval_mirai
 #'
 #'     If an error occurs in evaluation, the error message is returned as a
 #'     character string of class 'miraiError' and 'errorValue'.
-#'     \code{\link{is_mirai_error}} can be used to test for this, otherwise
+#'     \code{\link{is_mirai_error}} may be used to test for this, otherwise
 #'     \code{\link{is_error_value}} will also include other errors such as
 #'     timeouts.
 #'
@@ -239,7 +239,7 @@ call_mirai <- function(mirai) call_aio(mirai)
     envir <- recv(ctx, mode = 1L, keep.raw = FALSE)
     missing(envir) && break
     msg <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir),
-                    error = function(e) `class<-`(e, c("miraiError", "errorValue")))
+                    error = function(e) `class<-`(as.character(e), c("miraiError", "errorValue")))
     send(ctx, data = msg, mode = 1L, echo = FALSE)
     close(ctx)
   }
@@ -417,18 +417,17 @@ print.mirai <- function(x, ...) {
 #'
 print.miraiError <- function(x, ...) {
 
-  cat(sprintf("'miraiError' 'errorValue' list\n$message: %s\n$call: %s",
-              .subset2(x, "message"), deparse(.subset2(x, "call"))), file = stdout())
+  cat(x, file = stderr())
   invisible(x)
 
 }
 
 #' Is mirai Error
 #'
-#' Is the object a 'miraiError'. When execution fails in a mirai process, the
-#'     error message is returned as a character string classed as 'miraiError'
-#'     and 'errorValue'. To test for all possible errors, including timeouts
-#'     for example, \code{\link{is_error_value}} should be used instead.
+#' Is the object a 'miraiError'. When execution in a mirai process fails, the
+#'     error message is returned as a character string of class 'miraiError' and
+#'     'errorValue'. To test for all errors, including timeouts etc.,
+#'     \code{\link{is_error_value}} should be used instead.
 #'
 #' @param x an object.
 #'
