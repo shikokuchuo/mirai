@@ -57,7 +57,7 @@
 <h2 class="page-header" data-toc-text="0.5.2.9003" id="mirai-0529003">mirai 0.5.2.9003<a class="anchor" aria-label="anchor" href="#mirai-0529003"></a></h2>
 <ul><li>
 <code><a href="../reference/eval_mirai.html">mirai()</a></code> gains a ‘.args’ argument for passing a list of objects already in the calling environment, allowing for example <code>mirai(func(x, y, z), .args = list(x, y, z))</code> rather than having to specify <code>mirai(func(x, y, z), x = x, y = y, z = z)</code>.</li>
-<li>Error messages are now returned from inside a mirai as a character string of class ‘miraiError’ and ‘errorValue’, rather than just a nul byte. Utility function <code><a href="../reference/is_mirai_error.html">is_mirai_error()</a></code> should be used in place of <code>is_nul_byte()</code>, which is no longer re-exported.</li>
+<li>Errors from inside a mirai will now return a list of the error message and call of class ‘miraiError’ and ‘errorValue’, rather than just a nul byte. Utility function <code><a href="../reference/is_mirai_error.html">is_mirai_error()</a></code> should be used in place of <code>is_nul_byte()</code>, which is no longer re-exported.</li>
 <li>
 <code><a href="https://shikokuchuo.net/nanonext/reference/is_error_value.html" class="external-link">is_error_value()</a></code> re-exported from ‘nanonext’ to test for all errors, including timeouts where the ‘.timeout’ argument has been used.</li>
 </ul></div>
