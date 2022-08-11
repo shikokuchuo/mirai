@@ -32,13 +32,9 @@
 
   sock <- socket(protocol = "rep", dial = ., autostart = TRUE)
   ctx <- context(sock)
-  on.exit(expr = {
-    send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")), mode = 1L, echo = FALSE)
-    close(sock)
-  })
   envir <- recv(ctx, mode = 1L, keep.raw = FALSE)
-  msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
-  on.exit()
+  msg <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir),
+                  error = function(e) `class<-`(e, c("miraiError", "errorValue")))
   send(ctx, data = msg, mode = 1L, echo = FALSE)
   msleep(2000L)
   close(sock)
@@ -237,21 +233,17 @@ call_mirai <- function(mirai) call_aio(mirai)
 .. <- function(.) {
 
   sock <- socket(protocol = "rep", dial = ., autostart = TRUE)
-  on.exit(expr = {
-    send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")), mode = 1L, echo = FALSE)
-    close(sock)
-    ..(.)
-  })
+
   repeat {
     ctx <- context(sock)
     envir <- recv(ctx, mode = 1L, keep.raw = FALSE)
     missing(envir) && break
-    msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
+    msg <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir),
+                    error = function(e) `class<-`(e, c("miraiError", "errorValue")))
     send(ctx, data = msg, mode = 1L, echo = FALSE)
     close(ctx)
   }
 
-  on.exit()
   close(sock)
 
 }
@@ -425,7 +417,8 @@ print.mirai <- function(x, ...) {
 #'
 print.miraiError <- function(x, ...) {
 
-  cat(x, file = stderr())
+  cat(sprintf("'miraiError' 'errorValue' list\n$message: %s\n$call: %s",
+              .subset2(x, "message"), deparse(.subset2(x, "call"))), file = stdout())
   invisible(x)
 
 }

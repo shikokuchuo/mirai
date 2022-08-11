@@ -205,22 +205,20 @@ b
 
 ### Errors and Timeouts
 
-If execution in a mirai fails, the error message is returned as a character string of class 'miraiError' and 'errorValue' to facilitate debugging.
+If execution in a mirai fails, the error message and call are returned in a list of class 'miraiError' and 'errorValue' to facilitate debugging.
 
 ```{r errorexample}
 m1 <- mirai(stop("occurred with a custom message", call. = FALSE))
-capture.output(call_mirai(m1)$data, type = "message")
+call_mirai(m1)$data
 
 m2 <- mirai(mirai())
-capture.output(call_mirai(m2)$data, type = "message")
+call_mirai(m2)$data
 
 is_mirai_error(m2$data)
 is_error_value(m2$data)
 ```
 
-*Note: capture.output() is used above for the sole purpose of capturing stderr() when knitting Rmd.*
-
-If execution of a mirai surpasses the timeout set via the `.timeout` argument, the mirai will resolve to an `errorValue`. This can, amongst other things, guard against mirai processes which have the potential to hang and never return.
+If execution of a mirai surpasses the timeout set via the `.timeout` argument, the mirai will resolve to an `errorValue`. This can, amongst other things, guard against mirai processes that hang and never return.
 
 ```{r timeouts}
 m3 <- mirai(nanonext::msleep(1000), .timeout = 500)

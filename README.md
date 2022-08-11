@@ -98,7 +98,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 2.101 2.344 1.402 0.773 4.098 ...
+#>  num [1:100000000] 1.693 0.504 0.136 2.77 0.608 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -106,7 +106,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 2.101 2.344 1.402 0.773 4.098 ...
+#>  num [1:100000000] 1.693 0.504 0.136 2.77 0.608 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -239,19 +239,22 @@ b
 
 ### Errors and Timeouts
 
-If execution in a mirai fails, the error message is returned as a
-character string of class ‘miraiError’ and ‘errorValue’ to facilitate
+If execution in a mirai fails, the error message and call are returned
+in a list of class ‘miraiError’ and ‘errorValue’ to facilitate
 debugging.
 
 ``` r
 m1 <- mirai(stop("occurred with a custom message", call. = FALSE))
-capture.output(call_mirai(m1)$data, type = "message")
-#> [1] "Error: occurred with a custom message"
+call_mirai(m1)$data
+#> 'miraiError' 'errorValue' list
+#> $message: occurred with a custom message
+#> $call: NULL
 
 m2 <- mirai(mirai())
-capture.output(call_mirai(m2)$data, type = "message")
-#> [1] "Error in mirai() : missing expression, perhaps wrap in {}?"
-#> [2] "Calls: <Anonymous> -> eval -> eval -> mirai"
+call_mirai(m2)$data
+#> 'miraiError' 'errorValue' list
+#> $message: missing expression, perhaps wrap in {}?
+#> $call: mirai()
 
 is_mirai_error(m2$data)
 #> [1] TRUE
@@ -259,13 +262,9 @@ is_error_value(m2$data)
 #> [1] TRUE
 ```
 
-*Note: capture.output() is used above for the sole purpose of capturing
-stderr() when knitting Rmd.*
-
 If execution of a mirai surpasses the timeout set via the `.timeout`
 argument, the mirai will resolve to an `errorValue`. This can, amongst
-other things, guard against mirai processes which have the potential to
-hang and never return.
+other things, guard against mirai processes that hang and never return.
 
 ``` r
 m3 <- mirai(nanonext::msleep(1000), .timeout = 500)
