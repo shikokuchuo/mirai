@@ -98,7 +98,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -0.494 -1.362 -0.154 0.848 0.524 ...
+#>  num [1:100000000] 0.99 2.26 -17.23 -0.96 -3.1 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -106,7 +106,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.494 -1.362 -0.154 0.848 0.524 ...
+#>  num [1:100000000] 0.99 2.26 -17.23 -0.96 -3.1 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -250,7 +250,8 @@ cat(call_mirai(m1)$data)
 
 m2 <- mirai(mirai())
 cat(call_mirai(m2)$data)
-#> Error in mirai(): missing expression, perhaps wrap in {}?
+#> Error in mirai() : missing expression, perhaps wrap in {}?
+#> Calls: <Anonymous> -> eval -> eval -> mirai
 
 is_mirai_error(m2$data)
 #> [1] TRUE

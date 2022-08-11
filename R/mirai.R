@@ -32,10 +32,14 @@
 
   sock <- socket(protocol = "rep", dial = ., autostart = TRUE)
   ctx <- context(sock)
+  on.exit(expr = {
+    send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")), mode = 1L, echo = FALSE)
+    close(sock)
+  })
   envir <- recv(ctx, mode = 1L, keep.raw = FALSE)
-  msg <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir),
-                  error = function(e) `class<-`(as.character(e), c("miraiError", "errorValue")))
+  msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
   send(ctx, data = msg, mode = 1L, echo = FALSE)
+  on.exit()
   msleep(2000L)
   close(sock)
 
@@ -119,7 +123,7 @@ eval_mirai <- function(.expr, ..., .args = NULL, .timeout = NULL) {
 
     arglist <- list(.expr = substitute(.expr), ...)
     if (length(.args))
-      arglist <- c(arglist, `names<-`(.args, as.character(substitute(.args)[-1L])))
+      arglist <- c(arglist, `names<-`(.args, as.character.default(substitute(.args)[-1L])))
     envir <- list2env(arglist)
     ctx <- context(daemons())
     aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout, keep.raw = FALSE)
@@ -130,7 +134,7 @@ eval_mirai <- function(.expr, ..., .args = NULL, .timeout = NULL) {
 
     arglist <- list(.expr = substitute(.expr), ...)
     if (length(.args))
-      arglist <- c(arglist, `names<-`(.args, as.character(substitute(.args)[-1L])))
+      arglist <- c(arglist, `names<-`(.args, as.character.default(substitute(.args)[-1L])))
     envir <- list2env(arglist)
     url <- switch(daemons(NULL),
                   Linux = sprintf("abstract://n%.f", random()),
@@ -233,17 +237,24 @@ call_mirai <- function(mirai) call_aio(mirai)
 .. <- function(.) {
 
   sock <- socket(protocol = "rep", dial = ., autostart = TRUE)
+  ctx <- context(sock)
+  on.exit(expr = {
+    send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")), mode = 1L, echo = FALSE)
+    close(sock)
+    rm(list = ls())
+    ..(.)
+  })
 
   repeat {
-    ctx <- context(sock)
     envir <- recv(ctx, mode = 1L, keep.raw = FALSE)
     missing(envir) && break
-    msg <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir),
-                    error = function(e) `class<-`(as.character(e), c("miraiError", "errorValue")))
+    msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
     send(ctx, data = msg, mode = 1L, echo = FALSE)
     close(ctx)
+    ctx <- context(sock)
   }
 
+  on.exit()
   close(sock)
 
 }
