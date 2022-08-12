@@ -101,7 +101,7 @@ evaluation exceeds this limit.</p></dd>
     <p>This function will return a 'mirai' object immediately.</p>
 <p>The value of a 'mirai' may be accessed at any time at <code>$data</code>, and
     if yet to resolve, an 'unresolved' logical NA will be returned instead.</p>
-<p><code><a href="https://shikokuchuo.net/nanonext/reference/unresolved.html" class="external-link">unresolved</a></code> may also be used on a 'mirai', which returns TRUE
+<p><code><a href="unresolved.html">unresolved</a></code> may also be used on a 'mirai', which returns TRUE
     only if a 'mirai' has yet to resolve and FALSE otherwise. This is suitable
     for use in control flow statements such as <code>while</code> or <code>if</code>.</p>
 <p>Alternatively, to call (and wait for) the result, use
@@ -113,7 +113,7 @@ evaluation exceeds this limit.</p></dd>
 <p>If an error occurs in evaluation, the error message is returned as a
     character string of class 'miraiError' and 'errorValue'.
     <code><a href="is_mirai_error.html">is_mirai_error</a></code> may be used to test for this, otherwise
-    <code><a href="https://shikokuchuo.net/nanonext/reference/is_error_value.html" class="external-link">is_error_value</a></code> will also include other errors such as
+    <code><a href="is_error_value.html">is_error_value</a></code> will also include other errors such as
     timeouts.</p>
 <p><code>mirai</code> is an alias for <code>eval_mirai</code>.</p>
     </div>
@@ -138,7 +138,7 @@ evaluation exceeds this limit.</p></dd>
 <span class="r-in"><span>  <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">res</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span>, n <span class="op">=</span> <span class="fl">1e6</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/unresolved.html" class="external-link">unresolved</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="unresolved.html">unresolved</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"unresolved\n"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>

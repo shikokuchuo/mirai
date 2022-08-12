@@ -143,11 +143,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.2799 -0.0126 1.0613 3.7819 2.7064 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 1.4735 -1.7795 -0.3405 -4.1733 0.0306 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.2799 -0.0126 1.0613 3.7819 2.7064 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 1.4735 -1.7795 -0.3405 -4.1733 0.0306 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -165,12 +165,12 @@
 <span><span class="va">file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">x</span>, file <span class="op">=</span> <span class="va">file</span><span class="op">)</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">file</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><code><a href="https://shikokuchuo.net/nanonext/reference/unresolved.html" class="external-link">unresolved()</a></code> may be used in control flow statements to perform actions which depend on resolution of the ‘mirai’, both before and after.</p>
+<p><code><a href="reference/unresolved.html">unresolved()</a></code> may be used in control flow statements to perform actions which depend on resolution of the ‘mirai’, both before and after.</p>
 <p>This means there is no need to actually wait (block) for a ‘mirai’ to resolve, as the example below demonstrates.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># unresolved() queries for resolution itself so no need to use it again within the while loop</span></span>
 <span></span>
-<span><span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/unresolved.html" class="external-link">unresolved</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="reference/unresolved.html">unresolved</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"while unresolved\n"</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -210,7 +210,7 @@
 <p>{mirai} implements a deferred evaluation pipe <code>%&gt;&gt;%</code> for working with potentially unresolved values.</p>
 <p>Pipe a mirai <code>$data</code> value forward into a function or series of functions and it initially returns an ‘unresolvedExpr’.</p>
 <p>The result may be queried at <code>$data</code>, which will return another ‘unresolvedExpr’ whilst unresolved. However when the original value resolves, the ‘unresolvedExpr’ will simultaneously resolve into a ‘resolvedExpr’, for which the evaluated result will be available at <code>$data</code>.</p>
-<p>It is possible to use <code><a href="https://shikokuchuo.net/nanonext/reference/unresolved.html" class="external-link">unresolved()</a></code> around a ‘unresolvedExpr’ or its <code>$data</code> element to test for resolution, as in the example below.</p>
+<p>It is possible to use <code><a href="reference/unresolved.html">unresolved()</a></code> around a ‘unresolvedExpr’ or its <code>$data</code> element to test for resolution, as in the example below.</p>
 <p>The pipe operator semantics are similar to R’s base pipe <code>|&gt;</code>:</p>
 <p><code>x %&gt;&gt;% f</code> is equivalent to <code>f(x)</code> <br><code>x %&gt;&gt;% f()</code> is equivalent to <code>f(x)</code> <br><code>x %&gt;&gt;% f(y)</code> is equivalent to <code>f(x, y)</code></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -245,7 +245,7 @@
 <span></span>
 <span><span class="fu"><a href="reference/is_mirai_error.html">is_mirai_error</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
-<span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/is_error_value.html" class="external-link">is_error_value</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/is_error_value.html">is_error_value</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>If execution of a mirai surpasses the timeout set via the <code>.timeout</code> argument, the mirai will resolve to an <code>errorValue</code>. This can, amongst other things, guard against mirai processes that hang and never return.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -256,9 +256,9 @@
 <span></span>
 <span><span class="fu"><a href="reference/is_mirai_error.html">is_mirai_error</a></span><span class="op">(</span><span class="va">m3</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
-<span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/is_error_value.html" class="external-link">is_error_value</a></span><span class="op">(</span><span class="va">m3</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/is_error_value.html">is_error_value</a></span><span class="op">(</span><span class="va">m3</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<p><code><a href="https://shikokuchuo.net/nanonext/reference/is_error_value.html" class="external-link">is_error_value()</a></code> tests for both mirai execution errors and timeouts. <code><a href="reference/is_mirai_error.html">is_mirai_error()</a></code> tests for just mirai execution errors.</p>
+<p><code><a href="reference/is_error_value.html">is_error_value()</a></code> tests for both mirai execution errors and timeouts. <code><a href="reference/is_mirai_error.html">is_mirai_error()</a></code> tests for just mirai execution errors.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
