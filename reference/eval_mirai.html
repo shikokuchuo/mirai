@@ -63,9 +63,9 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">eval_mirai</span><span class="op">(</span><span class="va">.expr</span>, <span class="va">...</span>, .args <span class="op">=</span> <span class="cn">NULL</span>, .timeout <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">eval_mirai</span><span class="op">(</span><span class="va">.expr</span>, <span class="va">...</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, .timeout <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">mirai</span><span class="op">(</span><span class="va">.expr</span>, <span class="va">...</span>, .args <span class="op">=</span> <span class="cn">NULL</span>, .timeout <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">mirai</span><span class="op">(</span><span class="va">.expr</span>, <span class="va">...</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, .timeout <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -80,8 +80,8 @@ arbitrary length, wrapped in {} if necessary.</p></dd>
 
 
 <dt>.args</dt>
-<dd><p>(optional) list or vector supplying arguments to '.expr' (used
-in addition to or instead of named arguments specified as '...').</p></dd>
+<dd><p>(optional) list supplying arguments to '.expr' (used in addition
+to or instead of named arguments specified as '...').</p></dd>
 
 
 <dt>.timeout</dt>
