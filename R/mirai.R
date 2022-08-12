@@ -365,7 +365,12 @@ daemons <- function(...) {
       sysname
 
     } else if (is.numeric(..1)) {
-      set <- as.integer(..1)
+      if (length(..1) > 1L) {
+        set <- as.integer(..1[1L])
+        warning("vector specified, only using first element")
+      } else {
+        set <- as.integer(..1)
+      }
       set >= 0L || stop("number of daemons must be zero or greater")
       delta <- set - proc
       delta == 0L && return(0L)
@@ -406,11 +411,11 @@ daemons <- function(...) {
         halt
       }
 
-    } else if (..1 == "view") {
+    } else if (is.character(..1) && ..1 == "view") {
       if (is.null(d <- attr(sock, "daemons"))) 0L else d
 
     } else {
-      stop("specify an integer to set daemons or 'view' to view daemons")
+      stop("specify an integer value to set daemons or 'view' to view daemons")
     }
   }
 }
