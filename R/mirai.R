@@ -54,8 +54,8 @@
 #' @param .expr an expression to evaluate in a new R process. This may be of
 #'     arbitrary length, wrapped in \{\} if necessary.
 #' @param ... (optional) named arguments specifying variables contained in '.expr'.
-#' @param .args (optional) list or vector supplying arguments to '.expr' (used
-#'     in addition to or instead of named arguments specified as '...').
+#' @param .args (optional) list supplying arguments to '.expr' (used in addition
+#'     to or instead of named arguments specified as '...').
 #' @param .timeout (optional) integer value in milliseconds or NULL for no
 #'     timeout. A 'mirai' will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
@@ -116,7 +116,7 @@
 #'
 #' @export
 #'
-eval_mirai <- function(.expr, ..., .args = NULL, .timeout = NULL) {
+eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
 
   missing(.expr) && stop("missing expression, perhaps wrap in {}?")
   if (!is.null(proc <- attr(daemons(), "daemons")) && proc) {

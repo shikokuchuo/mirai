@@ -5,9 +5,9 @@
 \alias{mirai}
 \title{mirai (Evaluate Async)}
 \usage{
-eval_mirai(.expr, ..., .args = NULL, .timeout = NULL)
+eval_mirai(.expr, ..., .args = list(), .timeout = NULL)
 
-mirai(.expr, ..., .args = NULL, .timeout = NULL)
+mirai(.expr, ..., .args = list(), .timeout = NULL)
 }
 \arguments{
 \item{.expr}{an expression to evaluate in a new R process. This may be of
@@ -15,8 +15,8 @@ arbitrary length, wrapped in \{\} if necessary.}
 
 \item{...}{(optional) named arguments specifying variables contained in '.expr'.}
 
-\item{.args}{(optional) list or vector supplying arguments to '.expr' (used
-in addition to or instead of named arguments specified as '...').}
+\item{.args}{(optional) list supplying arguments to '.expr' (used in addition
+to or instead of named arguments specified as '...').}
 
 \item{.timeout}{(optional) integer value in milliseconds or NULL for no
 timeout. A 'mirai' will resolve to an 'errorValue' 5 (timed out) if
