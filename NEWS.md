@@ -2,7 +2,8 @@
 
 * `mirai()` gains a '.args' argument for passing a list of objects already in the calling environment, allowing for example `mirai(func(x, y, z), .args = list(x, y, z))` rather than having to specify `mirai(func(x, y, z), x = x, y = y, z = z)`.
 * Errors from inside a mirai will now return the error message as a character string of class 'miraiError' and 'errorValue', rather than just a nul byte. Utility function `is_mirai_error()` should be used in place of `is_nul_byte()`, which is no longer re-exported.
-* `is_error_value()` re-exported from 'nanonext' to test for all errors, including timeouts where the '.timeout' argument has been used.
+* `is_error_value()` can be used to test for all errors, including timeouts where the '.timeout' argument has been used.
+* All re-exports from 'nanonext' have been brought in-package for better documentation.
 
 # mirai 0.5.2
 

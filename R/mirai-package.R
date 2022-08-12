@@ -53,9 +53,3 @@ NULL
   invisible()
 }
 
-#' @export
-nanonext::is_error_value
-
-#' @export
-nanonext::unresolved
-

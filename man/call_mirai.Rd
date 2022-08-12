@@ -4,10 +4,10 @@
 \alias{call_mirai}
 \title{mirai (Call Value)}
 \usage{
-call_mirai(mirai)
+call_mirai(aio)
 }
 \arguments{
-\item{mirai}{a 'mirai' object.}
+\item{aio}{a 'mirai' (mirai are also aio objects).}
 }
 \value{
 The passed 'mirai' (invisibly). The retrieved value is stored in
