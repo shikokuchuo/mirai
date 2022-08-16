@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.5.2.9003" id="mirai-0529003">mirai 0.5.2.9003<a class="anchor" aria-label="anchor" href="#mirai-0529003"></a></h2>
+<h2 class="page-header" data-toc-text="0.5.3" id="mirai-053">mirai 0.5.3<a class="anchor" aria-label="anchor" href="#mirai-053"></a></h2>
 <ul><li>
 <code><a href="../reference/eval_mirai.html">mirai()</a></code> gains a ‘.args’ argument for passing a list of objects already in the calling environment, allowing for example <code>mirai(func(x, y, z), .args = list(x, y, z))</code> rather than having to specify <code>mirai(func(x, y, z), x = x, y = y, z = z)</code>.</li>
 <li>Errors from inside a mirai will now return the error message as a character string of class ‘miraiError’ and ‘errorValue’, rather than just a nul byte. Utility function <code><a href="../reference/is_mirai_error.html">is_mirai_error()</a></code> should be used in place of <code>is_nul_byte()</code>, which is no longer re-exported.</li>
