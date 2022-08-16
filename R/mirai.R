@@ -167,8 +167,7 @@ mirai <- eval_mirai
 #'
 #' @param aio a 'mirai' (mirai are also aio objects).
 #'
-#' @return The passed 'mirai' (invisibly). The retrieved value is stored in
-#'     \code{$data}.
+#' @return The passed 'mirai' (invisibly). The retrieved value is stored at \code{$data}.
 #'
 #' @details This function will wait for the async operation to complete if still
 #'     in progress (blocking).

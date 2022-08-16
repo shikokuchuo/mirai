@@ -10,8 +10,7 @@ call_mirai(aio)
 \item{aio}{a 'mirai' (mirai are also aio objects).}
 }
 \value{
-The passed 'mirai' (invisibly). The retrieved value is stored in
-    \code{$data}.
+The passed 'mirai' (invisibly). The retrieved value is stored at \code{$data}.
 }
 \description{
 Call the value of a 'mirai', waiting for the the asynchronous operation to
