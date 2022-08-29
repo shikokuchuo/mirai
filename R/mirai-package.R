@@ -42,6 +42,8 @@
 #'
 NULL
 
+.sysname <- .subset2(Sys.info(), "sysname")
+
 .onLoad <- function(libname, pkgname) {
   daemons <- daemons()
   daemons <<- daemons

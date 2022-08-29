@@ -1,3 +1,5 @@
+# mirai 0.5.3.9000 (development)
+
 # mirai 0.5.3
 
 * `mirai()` gains a '.args' argument for passing a list of objects already in the calling environment, allowing for example `mirai(func(x, y, z), .args = list(x, y, z))` rather than having to specify `mirai(func(x, y, z), x = x, y = y, z = z)`.
