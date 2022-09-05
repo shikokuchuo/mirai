@@ -81,6 +81,13 @@ while (unresolved(m)) {
 }
 str(m$data)
 
+file <- tempfile()
+cat("r <- rnorm(n)", file = file)
+n <- 10L
+m <- mirai({source(file, local = TRUE); r}, .args = list(file, n))
+call_mirai(m)[["data"]]
+unlink(file)
+
 }
 
 }
