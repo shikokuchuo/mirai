@@ -7,7 +7,7 @@
 stop_mirai(aio)
 }
 \arguments{
-\item{aio}{a 'mirai' (mirai are also aio objects).}
+\item{aio}{a 'mirai' (also an 'aio' object).}
 }
 \value{
 Invisible NULL.

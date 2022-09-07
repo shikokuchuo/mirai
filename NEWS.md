@@ -1,4 +1,6 @@
-# mirai 0.5.3.9000 (development)
+# mirai 0.5.3.9001 (development)
+
+* Internal enhancements to `daemons()` interface requiring nanonext >= 0.5.5.
 
 # mirai 0.5.3
 

@@ -172,7 +172,7 @@ mirai <- eval_mirai
 #' Call the value of a 'mirai', waiting for the the asynchronous operation to
 #'     resolve if it is still in progress.
 #'
-#' @param aio a 'mirai' (mirai are also aio objects).
+#' @param aio a 'mirai' (also an 'aio' object).
 #'
 #' @return The passed 'mirai' (invisibly). The retrieved value is stored at \code{$data}.
 #'
@@ -250,21 +250,20 @@ call_mirai <- call_aio
 .. <- function(.) {
 
   sock <- socket(protocol = "rep", dial = .)
-  ctx <- context(sock)
-  on.exit(expr = {
-    send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")), mode = 1L, echo = FALSE)
-    close(sock)
-    rm(list = ls())
-    ..(.)
-  })
 
   repeat {
+    on.exit(expr = close(sock))
+    ctx <- context(sock)
     envir <- recv(ctx, mode = 1L, keep.raw = FALSE)
-    missing(envir) && break
+    on.exit(expr = {
+      send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")), mode = 1L, echo = FALSE)
+      close(sock)
+      rm(list = ls())
+      ..(.)
+    })
     msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
     send(ctx, data = msg, mode = 1L, echo = FALSE)
     close(ctx)
-    ctx <- context(sock)
   }
 
   on.exit()
@@ -276,7 +275,7 @@ call_mirai <- call_aio
 #'
 #' Stop evaluation of a mirai that is in progress.
 #'
-#' @param aio a 'mirai' (mirai are also aio objects).
+#' @param aio a 'mirai' (also an 'aio' object).
 #'
 #' @return Invisible NULL.
 #'
@@ -407,7 +406,7 @@ daemons <- function(...) {
         halt <- 0L
         for (i in seq_len(-delta)) {
           ctx <- context(sock)
-          res <- send_aio(ctx, data = .mirai_scm(), mode = 1L, timeout = 2000L)
+          res <- send_aio(ctx, data = .mirai_scm2(), mode = 1L, timeout = 2000L)
           if (.subset2(call_aio(res), "result")) {
             warning(sprintf("daemon %d shutdown failed", i))
           } else {
