@@ -406,7 +406,7 @@ daemons <- function(...) {
         halt <- 0L
         for (i in seq_len(-delta)) {
           ctx <- context(sock)
-          res <- send_aio(ctx, data = .mirai_scm2(), mode = 1L, timeout = 2000L)
+          res <- send_aio(ctx, data = .__scm__., mode = 2L, timeout = 2000L)
           if (.subset2(call_aio(res), "result")) {
             warning(sprintf("daemon %d shutdown failed", i))
           } else {
