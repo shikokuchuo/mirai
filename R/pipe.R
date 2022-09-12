@@ -58,7 +58,7 @@
 #' b <- m$data %>>% c(2, 3) %>>% as.character()
 #' b
 #' b$data
-#' Sys.sleep(1)
+#' call_mirai(m)
 #' b$data
 #' b
 #'
@@ -73,7 +73,7 @@
     env <- `class<-`(new.env(), c("unresolvedExpr", "unresolvedValue"))
     makeActiveBinding(sym = "data", fun = function(x) {
       if (is.null(data)) {
-        data <- eval(mc, envir = parent.frame(), enclos = .GlobalEnv)
+        data <- eval(mc, envir = parent.frame(), enclos = NULL)
         if (!inherits(data, "unresolvedExpr")) `class<-`(env, "resolvedExpr")
       }
       data
@@ -83,11 +83,11 @@
     x <- substitute(x)
     y <- substitute(f)
     if (is.symbol(y)) {
-      eval(as.call(c(y, x)), envir = parent.frame(2L), enclos = .GlobalEnv)
+      eval(as.call(c(y, x)), envir = parent.frame(2L), enclos = NULL)
     } else {
       f <- y[[1L]]
       y[[1L]] <- NULL
-      eval(as.call(c(f, x, y)), envir = parent.frame(2L), enclos = .GlobalEnv)
+      eval(as.call(c(f, x, y)), envir = parent.frame(2L), enclos = NULL)
     }
   }
 }

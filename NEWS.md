@@ -1,6 +1,6 @@
 # mirai 0.5.3.9002 (development)
 
-* Internal enhancements to `daemons()`.
+* Internal enhancements to `daemons()` and `%>>%` deferred evaluation pipe.
 
 # mirai 0.5.3
 

@@ -53,7 +53,7 @@ m <- mirai({Sys.sleep(0.5); 1})
 b <- m$data \%>>\% c(2, 3) \%>>\% as.character()
 b
 b$data
-Sys.sleep(1)
+call_mirai(m)
 b$data
 b
 
