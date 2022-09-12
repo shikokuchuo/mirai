@@ -126,7 +126,7 @@
 eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
 
   missing(.expr) && stop("missing expression, perhaps wrap in {}?")
-  if (!is.null(proc <- attr(daemons(), "daemons")) && proc) {
+  if (length(proc <- attr(daemons(), "daemons")) && proc) {
 
     arglist <- list(.expr = substitute(.expr), ...)
     if (length(.args))
@@ -366,6 +366,7 @@ daemons <- function(...) {
 
   proc <- 0L
   url <- sock <- cmd <- arg <- NULL
+  notsetup <- TRUE
 
   function(...) {
 
@@ -383,16 +384,17 @@ daemons <- function(...) {
       delta <- set - proc
       delta == 0L && return(0L)
 
-      if (is.null(url)) {
+      if (notsetup) {
         url <<- switch(.sysname,
                        Linux = sprintf("abstract://n%.f", random()),
                        sprintf("ipc:///tmp/n%.f", random()))
         sock <<- socket(protocol = "req", listen = url)
+        reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
         arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai:::..(%s)", deparse(url))))
         cmd <<- switch(.sysname,
                        Windows = file.path(R.home("bin"), "Rscript.exe"),
                        file.path(R.home("bin"), "Rscript"))
-        reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
+        notsetup <<- FALSE
       }
       if (delta > 0L) {
         orig <- proc
@@ -420,7 +422,7 @@ daemons <- function(...) {
       }
 
     } else if (is.character(..1) && ..1 == "view") {
-      if (is.null(d <- attr(sock, "daemons"))) 0L else d
+      if (length(d <- attr(sock, "daemons"))) d else 0L
 
     } else {
       stop("specify an integer value to set daemons or 'view' to view daemons")
