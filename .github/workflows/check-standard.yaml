@@ -18,11 +18,11 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-latest,   r: 'release'}
+          - {os: ubuntu-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest, r: 'release'}
+          - {os: ubuntu-latest, r: 'oldrel-1'}
+          - {os: macOS-latest,  r: 'release'}
           - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'oldrel-1'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -38,11 +38,6 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
-
-      - name: Add r-universe to repos
-        run: |
-          cat("\noptions(repos=c(shikokuchuo='https://shikokuchuo.r-universe.dev',CRAN ='https://cloud.r-project.org'))\n", file = "~/.Rprofile", append = TRUE)
-        shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:

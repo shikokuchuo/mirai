@@ -1,6 +1,8 @@
+# mirai 0.6.0.9000 (development)
+
 # mirai 0.6.0
 
-* Notice: older package versions will no longer be supported by 'nanonext' >= 0.6.0. Please ensure you are using the latest version of 'mirai' or else refrain from uprading 'nanonext'.
+* Notice: older package versions will no longer be supported by 'nanonext' >= 0.6.0. Please ensure you are using the latest version of 'mirai' or else refrain from upgrading 'nanonext'.
 * Internal enhancements to `daemons()` and `%>>%` deferred evaluation pipe.
 
 # mirai 0.5.3
