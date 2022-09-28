@@ -33,12 +33,12 @@
   sock <- socket(protocol = "rep", dial = .)
   ctx <- context(sock)
   on.exit(expr = {
-    send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")), mode = 1L, echo = FALSE)
+    send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")), mode = 1L)
     close(sock)
   })
-  envir <- recv(ctx, mode = 1L, keep.raw = FALSE)
+  envir <- recv(ctx, mode = 1L)
   msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
-  send(ctx, data = msg, mode = 1L, echo = FALSE)
+  send(ctx, data = msg, mode = 1L)
   on.exit()
   msleep(2000L)
   close(sock)
@@ -133,7 +133,7 @@ eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
       arglist <- c(arglist, `names<-`(.args, as.character.default(substitute(.args)[-1L])))
     envir <- list2env(arglist)
     ctx <- context(daemons())
-    aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout, keep.raw = FALSE)
+    aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "ctx", ctx)
     `class<-`(aio, c("mirai", "recvAio"))
 
@@ -153,7 +153,7 @@ eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
     system2(command = cmd, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
     sock <- socket(protocol = "req", listen = url)
     ctx <- context(sock)
-    aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout, keep.raw = FALSE)
+    aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "ctx", ctx)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
     `class<-`(aio, c("mirai", "recvAio"))
@@ -254,15 +254,15 @@ call_mirai <- call_aio
   repeat {
     on.exit(expr = close(sock))
     ctx <- context(sock)
-    envir <- recv(ctx, mode = 1L, keep.raw = FALSE)
+    envir <- recv(ctx, mode = 1L)
     on.exit(expr = {
-      send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")), mode = 1L, echo = FALSE)
+      send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")), mode = 1L)
       close(sock)
       rm(list = ls())
       ..(.)
     })
     msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
-    send(ctx, data = msg, mode = 1L, echo = FALSE)
+    send(ctx, data = msg, mode = 1L)
     close(ctx)
   }
 

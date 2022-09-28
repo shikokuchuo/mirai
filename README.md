@@ -98,7 +98,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.976 0.733 0.88 3.023 0.693 ...
+#>  num [1:100000000] -0.354 1.154 1.225 4.327 0.726 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -106,7 +106,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.976 0.733 0.88 3.023 0.693 ...
+#>  num [1:100000000] -0.354 1.154 1.225 4.327 0.726 ...
 ```
 
 [« Back to ToC](#table-of-contents)
