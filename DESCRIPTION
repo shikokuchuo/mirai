@@ -19,7 +19,7 @@ BugReports: https://github.com/shikokuchuo/mirai/issues
 URL: https://shikokuchuo.net/mirai/, https://github.com/shikokuchuo/mirai/
 Encoding: UTF-8
 Depends: 
-    R (>= 3.6)
+    R (>= 2.5)
 Imports: 
     nanonext (>= 0.5.5.9010)
 RoxygenNote: 7.2.1
