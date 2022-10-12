@@ -154,8 +154,7 @@ eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
     sock <- socket(protocol = "req", listen = url)
     ctx <- context(sock)
     aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
-    `attr<-`(.subset2(aio, "aio"), "ctx", ctx)
-    `attr<-`(.subset2(aio, "aio"), "sock", sock)
+    `attr<-`(`attr<-`(.subset2(aio, "aio"), "ctx", ctx), "sock", sock)
     `class<-`(aio, c("mirai", "recvAio"))
 
   }
