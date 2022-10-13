@@ -7,14 +7,20 @@
 daemons(...)
 }
 \arguments{
-\item{...}{either an integer to set the number of daemons, or 'view' to view
-the number of currently active daemons.}
+\item{...}{either an integer to set the number of daemons, a character client
+URL e.g. 'tcp://192.168.0.2:5555' at which daemon processes started
+manually using \code{.(.)} should connect to, or 'view' to view the
+number of currently active daemons.}
 }
 \value{
 Depending on the specified \code{...} parameter:
     \itemize{
     \item{integer: integer change in number of daemons (created or destroyed).}
     \item{'view': integer number of currently set daemons.}
+    \item{character: 1L if successful, representing the assumed number of
+    connected daemons.}
+    \item{NULL: inivisible NULL, closing existing connections and resetting
+    the 'nanoSocket' to NULL.}
     \item{missing: the 'nanoSocket' for connecting to the daemons, or NULL if
     it is yet to be created.}
     }
@@ -22,12 +28,20 @@ Depending on the specified \code{...} parameter:
 \description{
 Set or view the number of daemons (background processes). Create persistent
     background processes to receive \code{\link{mirai}} requests. This
-    provides a potentially more efficient solution for async operations as
-    new processes no longer need to be created on an ad hoc basis.
+    provides an efficient solution for async operations on a local machine as
+    well as allowing requests to be sent across a network.
 }
 \details{
 \{mirai\} will revert to the default behaviour of creating a new
     background process for each request if the number of daemons is set to 0.
+
+    Setting a custom client URL automatically sets the number of daemons to 1.
+    If more daemon processes are connected, set the number of daemons using
+    \code{daemons()} specifying an integer value. This ensures that daemon
+    processes are exited correctly, otherwise they need to be managed manually.
+
+    Daemons provide a potentially more efficient solution for async operations
+    as new processes no longer need to be created on an ad hoc basis.
 
     The current implementation is low-level and ensures tasks are
     evenly-distributed amongst daemons without actively managing a task queue.

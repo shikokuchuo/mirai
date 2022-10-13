@@ -48,7 +48,7 @@ NULL
 }
 
 .onUnload <- function(libpath) {
-  invisible(daemons(0L))
+  daemons(NULL)
 }
 
 .sysname <- .subset2(Sys.info(), "sysname")
