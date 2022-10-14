@@ -2,19 +2,22 @@
 % Please edit documentation in R/mirai.R
 \name{.}
 \alias{.}
-\title{mirai Server (Async Execution Daemon)}
+\title{mirai Server (Async Executor [Daemon])}
 \usage{
-.(.)
+.(., .. = TRUE)
 }
 \arguments{
 \item{.}{the client URL specifying the transport and address as a character
-string e.g. 'tcp://192.168.0.2:5555'}
+string e.g. 'tcp://192.168.0.2:5555'.}
+
+\item{..}{[default TRUE] launch as a persistent daemon or, if FALSE, an
+ephemeral process.}
 }
 \value{
-Integer exit code.
+Integer exit code, zero upon success.
 }
 \description{
-Implements a persistent executor/server for the remote process. Awaits data,
+Implements a [persistent] executor/server for the remote process. Awaits data,
     evaluates an expression in an environment containing the supplied data,
     and returns the result to the caller/client.
 }

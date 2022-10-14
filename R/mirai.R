@@ -16,68 +16,59 @@
 
 # mirai ------------------------------------------------------------------------
 
-#' mirai Server (Async Executor)
+#' mirai Server (Async Executor [Daemon])
 #'
-#' Implements an executor/server for the remote process. Awaits data, evaluates
-#'     an expression in an environment containing the supplied data, and returns
-#'     the result to the caller/client.
-#'
-#' @param . the internally assigned unique URL.
-#'
-#' @return Integer exit code.
-#'
-#' @noRd
-#'
-.. <- function(.) {
-
-  sock <- socket(protocol = "rep", dial = .)
-  ctx <- context(sock)
-  on.exit(expr = {
-    send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")), mode = 1L)
-    close(sock)
-  })
-  envir <- recv(ctx, mode = 1L)
-  msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
-  send(ctx, data = msg, mode = 1L)
-  on.exit()
-  msleep(2000L)
-  close(sock)
-
-}
-
-#' mirai Server (Async Execution Daemon)
-#'
-#' Implements a persistent executor/server for the remote process. Awaits data,
+#' Implements a [persistent] executor/server for the remote process. Awaits data,
 #'     evaluates an expression in an environment containing the supplied data,
 #'     and returns the result to the caller/client.
 #'
 #' @param . the client URL specifying the transport and address as a character
-#'     string e.g. 'tcp://192.168.0.2:5555'
+#'     string e.g. 'tcp://192.168.0.2:5555'.
+#' @param .. [default TRUE] launch as a persistent daemon or, if FALSE, an
+#'     ephemeral process.
 #'
-#' @return Integer exit code.
+#' @return Integer exit code, zero upon success.
 #'
 #' @export
 #'
-. <- function(.) {
+. <- function(., .. = TRUE) {
 
   sock <- socket(protocol = "rep", dial = .)
 
-  repeat {
-    on.exit(expr = close(sock))
+  if (..) {
+
+    repeat {
+      on.exit(expr = close(sock))
+      ctx <- context(sock)
+      envir <- recv(ctx, mode = 1L)
+      on.exit(expr = {
+        send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")), mode = 1L)
+        close(sock)
+        rm(list = ls())
+        .(.)
+      })
+      msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
+      send(ctx, data = msg, mode = 1L)
+      close(ctx)
+    }
+
+    on.exit()
+
+  } else {
+
     ctx <- context(sock)
-    envir <- recv(ctx, mode = 1L)
     on.exit(expr = {
       send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")), mode = 1L)
       close(sock)
-      rm(list = ls())
-      .(.)
     })
+    envir <- recv(ctx, mode = 1L)
     msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
     send(ctx, data = msg, mode = 1L)
-    close(ctx)
+    on.exit()
+    msleep(2000L)
+
   }
 
-  on.exit()
   close(sock)
 
 }
@@ -183,7 +174,7 @@ eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
     url <- switch(.sysname,
                   Linux = sprintf("abstract://n%.f", random()),
                   sprintf("ipc:///tmp/n%.f", random()))
-    arg <- c("--vanilla", "-e", shQuote(sprintf("mirai:::..(%s)", deparse(url))))
+    arg <- c("--vanilla", "-e", shQuote(sprintf("mirai::.(%s,FALSE)", deparse(url))))
     cmd <- switch(.sysname,
                   Windows = file.path(R.home("bin"), "Rscript.exe"),
                   file.path(R.home("bin"), "Rscript"))
