@@ -22,7 +22,7 @@
 #'     evaluates an expression in an environment containing the supplied data,
 #'     and returns the result to the caller/client.
 #'
-#' @param . the client URL specifying the transport and address as a character
+#' @param .url the client URL specifying the transport and address as a character
 #'     string e.g. 'tcp://192.168.0.2:5555'.
 #' @param .. [default TRUE] launch as a persistent daemon or, if FALSE, an
 #'     ephemeral process.
@@ -31,9 +31,9 @@
 #'
 #' @export
 #'
-. <- function(., .. = TRUE) {
+. <- function(.url, .. = TRUE) {
 
-  sock <- socket(protocol = "rep", dial = .)
+  sock <- socket(protocol = "rep", dial = .url)
 
   if (..) {
 
@@ -45,7 +45,7 @@
         send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")), mode = 1L)
         close(sock)
         rm(list = ls())
-        .(.)
+        .(.url)
       })
       msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
       send(ctx, data = msg, mode = 1L)
@@ -317,33 +317,39 @@ is_mirai <- function(x) inherits(x, "mirai")
 #'     provides an efficient solution for async operations on a local machine as
 #'     well as allowing requests to be sent across a network.
 #'
-#' @param ... either an integer to set the number of daemons, a character client
-#'     URL e.g. 'tcp://192.168.0.2:5555' at which daemon processes started
-#'     manually using \code{.(.)} should connect to, or 'view' to view the
-#'     number of currently active daemons.
+#' @param n integer number of daemons to set | NULL to close existing connections
+#'     and reset | 'view' to view the current number of daemons.
+#' @param .url character client URL e.g. 'tcp://192.168.0.2:5555' at which daemon
+#'     processes started manually using \code{.()} should connect to.
 #'
-#' @return Depending on the specified \code{...} parameter:
+#' @return Depending on 'n' specified:
 #'     \itemize{
 #'     \item{integer: integer change in number of daemons (created or destroyed).}
-#'     \item{'view': integer number of currently set daemons.}
-#'     \item{character: 1L if successful, representing the assumed number of
-#'     connected daemons.}
 #'     \item{NULL: inivisible NULL, closing existing connections and resetting
-#'     the 'nanoSocket' to NULL.}
-#'     \item{missing: the 'nanoSocket' for connecting to the daemons, or NULL if
-#'     it is yet to be created.}
+#'     the socket.}
+#'     \item{'view': integer number of currently set daemons.}
 #'     }
 #'
 #' @details \{mirai\} will revert to the default behaviour of creating a new
 #'     background process for each request if the number of daemons is set to 0.
 #'
-#'     Setting a custom client URL automatically sets the number of daemons to 1.
-#'     If more daemon processes are connected, set the number of daemons using
-#'     \code{daemons()} specifying an integer value. This ensures that daemon
-#'     processes are exited correctly, otherwise they need to be managed manually.
+#'     Setting a custom client URL automatically sets the number of daemons to 1,
+#'     unless 'n' is otherwise specified. If only a character string is provided
+#'     as an argument, this is taken to be the client URL and 'n' is set to 1 by
+#'     default.
+#'
+#'     Calling \code{daemons()} without any arguments returns the 'nanoSocket'
+#'     for connecting to the daemons, or NULL if it is yet to be created.
+#'
+#' @section Information:
 #'
 #'     Daemons provide a potentially more efficient solution for async operations
 #'     as new processes no longer need to be created on an ad hoc basis.
+#'
+#'     Setting a client URL also allows tasks to be distributed across the
+#'     network. The network togology is that server daemons dial into the client
+#'     socket, such that network resources may be easily added or removed at any
+#'     time.
 #'
 #'     The current implementation is low-level and ensures tasks are
 #'     evenly-distributed amongst daemons without actively managing a task queue.
@@ -367,90 +373,98 @@ is_mirai <- function(x) inherits(x, "mirai")
 #'
 #' @export
 #'
-daemons <- function(...) {
+daemons <- function(n, .url) {
 
   proc <- 0L
   url <- sock <- cmd <- arg <- NULL
   default <- TRUE
 
-  function(...) {
+  function(n, .url) {
 
-    if (missing(...)) {
-      sock
-
-    } else if (is.numeric(..1)) {
-      if (length(..1) > 1L) {
-        set <- as.integer(..1[1L])
-        warning("vector specified, only using first element")
-      } else {
-        set <- as.integer(..1)
-      }
-      set >= 0L || stop("number of daemons must be zero or greater")
-      delta <- set - proc
-      delta == 0L && return(0L)
-
-      if (is.null(sock)) {
-        url <<- switch(.sysname,
-                       Linux = sprintf("abstract://n%.f", random()),
-                       sprintf("ipc:///tmp/n%.f", random()))
-        sock <<- socket(protocol = "req", listen = url)
-        reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
-        arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::.(%s)", deparse(url))))
-        cmd <<- switch(.sysname,
-                       Windows = file.path(R.home("bin"), "Rscript.exe"),
-                       file.path(R.home("bin"), "Rscript"))
-      }
-      if (delta > 0L) {
-        orig <- proc
-        for (i in seq_len(delta)) {
-          if (default)
-            system2(command = cmd, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
-          proc <<- proc + 1L
-        }
-        attr(sock, "daemons") <- proc
-        proc - orig
-      } else {
-        halt <- 0L
-        for (i in seq_len(-delta)) {
-          ctx <- context(sock)
-          res <- send_aio(ctx, data = .__scm__., mode = 2L, timeout = 2000L)
-          if (.subset2(call_aio(res), "result")) {
-            warning(sprintf("daemon %d shutdown failed", i))
-          } else {
-            halt <- halt - 1L
-            proc <<- proc - 1L
-          }
-          close(ctx)
-        }
-        attr(sock, "daemons") <- proc
-        halt
-      }
-
-    } else if (is.character(..1)) {
-      if (..1 == "view") {
-        if (length(d <- attr(sock, "daemons"))) d else 0L
-      } else {
+    if (missing(.url)) {
+      missing(n) && return(sock)
+      if (is.character(n)) {
+        n == "view" && return(if (length(d <- attr(sock, "daemons"))) d else 0L)
         if (length(sock) && default) {
-          daemons(0L)
+          daemons(n = 0L)
           close(sock)
         }
-        sock <<- `attr<-`(socket(protocol = "req", listen = ..1), "daemons", 1L)
+        sock <<- socket(protocol = "req", listen = n)
         default <<- FALSE
-        proc <<- 1L
+        n <- 1L
       }
+    } else {
+      if (is.character(.url)) {
+        if (length(sock) && default) {
+          daemons(n = 0L)
+          close(sock)
+        }
+        sock <<- socket(protocol = "req", listen = .url)
+        default <<- FALSE
+      }
+      if (missing(n))
+        n <- 1L
+    }
 
-    } else if (is.null(..1)) {
+    is.null(n) && {
       if (length(sock)) {
-        daemons(0L)
+        daemons(n = 0L)
         close(sock)
         sock <<- NULL
         default <<- TRUE
       }
-      invisible()
-
-    } else {
-      stop("specify an integer value to set daemons or 'view' to view daemons")
+      return(invisible())
     }
+
+    !is.numeric(n) && stop("invalid inputs")
+
+    if (length(n) > 1L) {
+      set <- as.integer(n[1L])
+      warning("vector specified, only using first element")
+    } else {
+      set <- as.integer(n)
+    }
+    set >= 0L || stop("number of daemons must be zero or greater")
+    delta <- set - proc
+    delta == 0L && return(0L)
+
+    if (is.null(sock)) {
+      url <<- switch(.sysname,
+                     Linux = sprintf("abstract://n%.f", random()),
+                     sprintf("ipc:///tmp/n%.f", random()))
+      sock <<- socket(protocol = "req", listen = url)
+      reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
+      arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::.(%s)", deparse(url))))
+      cmd <<- switch(.sysname,
+                     Windows = file.path(R.home("bin"), "Rscript.exe"),
+                     file.path(R.home("bin"), "Rscript"))
+    }
+    if (delta > 0L) {
+      orig <- proc
+      for (i in seq_len(delta)) {
+        if (default)
+          system2(command = cmd, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
+        proc <<- proc + 1L
+      }
+      attr(sock, "daemons") <- proc
+      proc - orig
+    } else {
+      halt <- 0L
+      for (i in seq_len(-delta)) {
+        ctx <- context(sock)
+        res <- send_aio(ctx, data = .__scm__., mode = 2L, timeout = 2000L)
+        if (.subset2(call_aio(res), "result")) {
+          warning(sprintf("daemon %d shutdown failed", i))
+        } else {
+          halt <- halt - 1L
+          proc <<- proc - 1L
+        }
+        close(ctx)
+      }
+      attr(sock, "daemons") <- proc
+      halt
+    }
+
   }
 }
 

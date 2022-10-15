@@ -4,10 +4,10 @@
 \alias{.}
 \title{mirai Server (Async Executor [Daemon])}
 \usage{
-.(., .. = TRUE)
+.(.url, .. = TRUE)
 }
 \arguments{
-\item{.}{the client URL specifying the transport and address as a character
+\item{.url}{the client URL specifying the transport and address as a character
 string e.g. 'tcp://192.168.0.2:5555'.}
 
 \item{..}{[default TRUE] launch as a persistent daemon or, if FALSE, an
