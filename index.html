@@ -19,9 +19,9 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
 <meta property="og:title" content="Minimalist Async Evaluation Framework for R">
-<meta property="og:description" content="Extremely simple and lightweight method for concurrent /
-    parallel code execution, built on nanonext and NNG (Nanomsg Next Gen)
-    technology.">
+<meta property="og:description" content="Extremely simple and lightweight method for parallelism and
+    concurrent code execution, locally or distributed across the network, built
+    on nanonext and NNG (Nanomsg Next Gen) technology.">
 <meta property="og:image" content="https://shikokuchuo.net/mirai/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -88,10 +88,10 @@
 <!-- badges: start -->
 <p>Minimalist async evaluation framework for R.</p>
 <p>未来 みらい mirai is Japanese for ‘future’.</p>
-<p>Extremely simple and lightweight method for concurrent / parallel code execution, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) technology.</p>
+<p>Extremely simple and lightweight method for parallelism and concurrent code execution, locally or distributed across the network, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) technology.</p>
 <p>Whilst frameworks for parallelisation exist for R, {mirai} is designed for simplicity.</p>
 <p><code><a href="reference/eval_mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately.</p>
-<p>A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving automatically upon completion.</p>
+<p>A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving automatically upon completion. The asynchronous task runs in persistent or ephemeral processes spawned locally or distributed across the network.</p>
 <p>{mirai} has a tiny pure R code base, relying solely on {nanonext}, a lightweight binding for the NNG C library with no package dependencies.</p>
 <div class="section level3">
 <h3 id="table-of-contents">Table of Contents<a class="anchor" aria-label="anchor" href="#table-of-contents"></a>
@@ -101,6 +101,7 @@
 <li><a href="#example-1-compute-intensive-operations">Example 1: Compute-intensive Operations</a></li>
 <li><a href="#example-2-io-bound-operations">Example 2: I/O-bound Operations</a></li>
 <li><a href="#daemons">Daemons</a></li>
+<li><a href="#distributed-computing">Distributed Computing</a></li>
 <li><a href="#deferred-evaluation-pipe">Deferred Evaluation Pipe</a></li>
 <li><a href="#errors-and-timeouts">Errors and Timeouts</a></li>
 <li><a href="#links">Links</a></li>
@@ -143,11 +144,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 6.733 -1.447 1.627 1.63 0.812 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -2.351 -7.858 -0.264 -1.92 2.502 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 6.733 -1.447 1.627 1.63 0.812 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -2.351 -7.858 -0.264 -1.92 2.502 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -205,6 +206,27 @@
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
+<h3 id="distributed-computing">Distributed Computing<a class="anchor" aria-label="anchor" href="#distributed-computing"></a>
+</h3>
+<p>Through the <code><a href="reference/daemons.html">daemons()</a></code> interface, tasks may also be sent to server processes on the network for computation, rather than on the local machine.</p>
+<p>Simply set the ‘.url’ argument to the client network address (or leave blank to listen on all interfaces on the host) and a port that is able to accept incoming connections, for example:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>.url <span class="op">=</span> <span class="st">"tcp://:5555"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
+<p>The network topology is such that the client listens at the above address, and distributes tasks to all server processes that are connected into it.</p>
+<p>On the server, run something like the following from a suitable shell to set up a remote daemon process, where ‘192.168.0.2’ is the network IP address of the client:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::.("tcp://192.168.0.2:5555")'</span></span></code></pre></div>
+<p>Network resources can be added and removed as required. Tasks are automatically distributed to all available server processes.</p>
+<p>To reset all connections and clear the socket:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in (function (.) : 5 | Timed out</span></span>
+<span><span class="co">#&gt; Warning in daemons(n = 0L): daemon 1 shutdown - process may be busy or need to</span></span>
+<span><span class="co">#&gt; be manually terminated</span></span></code></pre></div>
+<p>Note: the above warning occurs as no server processes were actually connected in this example.</p>
+<p><a href="#table-of-contents">« Back to ToC</a></p>
+</div>
+<div class="section level3">
 <h3 id="deferred-evaluation-pipe">Deferred Evaluation Pipe<a class="anchor" aria-label="anchor" href="#deferred-evaluation-pipe"></a>
 </h3>
 <p>{mirai} implements a deferred evaluation pipe <code>%&gt;&gt;%</code> for working with potentially unresolved values.</p>
@@ -213,7 +235,7 @@
 <p>It is possible to use <code><a href="reference/unresolved.html">unresolved()</a></code> around a ‘unresolvedExpr’ or its <code>$data</code> element to test for resolution, as in the example below.</p>
 <p>The pipe operator semantics are similar to R’s base pipe <code>|&gt;</code>:</p>
 <p><code>x %&gt;&gt;% f</code> is equivalent to <code>f(x)</code> <br><code>x %&gt;&gt;% f()</code> is equivalent to <code>f(x)</code> <br><code>x %&gt;&gt;% f(y)</code> is equivalent to <code>f(x, y)</code></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span>; <span class="fl">1</span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="va">b</span> <span class="op">&lt;-</span> <span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op"><a href="reference/grapes-greater-than-greater-than-grapes.html">%&gt;&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="reference/grapes-greater-than-greater-than-grapes.html">%&gt;&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">b</span></span>
@@ -233,7 +255,7 @@
 <h3 id="errors-and-timeouts">Errors and Timeouts<a class="anchor" aria-label="anchor" href="#errors-and-timeouts"></a>
 </h3>
 <p>If execution in a mirai fails, the error message is returned as a character string of class ‘miraiError’ and ‘errorValue’ to facilitate debugging.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"occurred with a custom message"</span>, call. <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Error: occurred with a custom message</span></span>
@@ -248,7 +270,7 @@
 <span><span class="fu"><a href="reference/is_error_value.html">is_error_value</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>If execution of a mirai surpasses the timeout set via the <code>.timeout</code> argument, the mirai will resolve to an <code>errorValue</code>. This can, amongst other things, guard against mirai processes that hang and never return.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/msleep.html" class="external-link">msleep</a></span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span>, .timeout <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m3</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; Warning in (function (.) : 5 | Timed out</span></span>
