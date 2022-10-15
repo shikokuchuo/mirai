@@ -65,43 +65,54 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">daemons</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">daemons</span><span class="op">(</span><span class="va">n</span>, <span class="va">.url</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>...</dt>
-<dd><p>either an integer to set the number of daemons, a character client
-URL e.g. 'tcp://192.168.0.2:5555' at which daemon processes started
-manually using <code>.(.)</code> should connect to, or 'view' to view the
-number of currently active daemons.</p></dd>
+    <dl><dt>n</dt>
+<dd><p>integer number of daemons to set | NULL to close existing connections
+and reset | 'view' to view the current number of daemons.</p></dd>
+
+
+<dt>.url</dt>
+<dd><p>character client URL e.g. 'tcp://192.168.0.2:5555' at which daemon
+processes started manually using <code><a href="dot-.html">.()</a></code> should connect to.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     
 
-<p>Depending on the specified <code>...</code> parameter:</p>
+<p>Depending on 'n' specified:</p>
 <p></p>
 <ul><li><p>integer: integer change in number of daemons (created or destroyed).</p></li>
-<li><p>'view': integer number of currently set daemons.</p></li>
-<li><p>character: 1L if successful, representing the assumed number of
-    connected daemons.</p></li>
 <li><p>NULL: inivisible NULL, closing existing connections and resetting
-    the 'nanoSocket' to NULL.</p></li>
-<li><p>missing: the 'nanoSocket' for connecting to the daemons, or NULL if
-    it is yet to be created.</p></li>
+    the socket.</p></li>
+<li><p>'view': integer number of currently set daemons.</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
     <p>{mirai} will revert to the default behaviour of creating a new
     background process for each request if the number of daemons is set to 0.</p>
-<p>Setting a custom client URL automatically sets the number of daemons to 1.
-    If more daemon processes are connected, set the number of daemons using
-    <code>daemons()</code> specifying an integer value. This ensures that daemon
-    processes are exited correctly, otherwise they need to be managed manually.</p>
+<p>Setting a custom client URL automatically sets the number of daemons to 1,
+    unless 'n' is otherwise specified. If only a character string is provided
+    as an argument, this is taken to be the client URL and 'n' is set to 1 by
+    default.</p>
+<p>Calling <code>daemons()</code> without any arguments returns the 'nanoSocket'
+    for connecting to the daemons, or NULL if it is yet to be created.</p>
+    </div>
+    <div id="information">
+    <h2>Information</h2>
+    
+
+
 <p>Daemons provide a potentially more efficient solution for async operations
     as new processes no longer need to be created on an ad hoc basis.</p>
+<p>Setting a client URL also allows tasks to be distributed across the
+    network. The network togology is that server daemons dial into the client
+    socket, such that network resources may be easily added or removed at any
+    time.</p>
 <p>The current implementation is low-level and ensures tasks are
     evenly-distributed amongst daemons without actively managing a task queue.
     This approach provides a robust and resource-light solution, particularly
