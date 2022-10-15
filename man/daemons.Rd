@@ -2,7 +2,7 @@
 % Please edit documentation in R/mirai.R
 \name{daemons}
 \alias{daemons}
-\title{daemons (Background Processes)}
+\title{daemons (Background and Remote Processes)}
 \usage{
 daemons(n, .url)
 }
@@ -10,8 +10,11 @@ daemons(n, .url)
 \item{n}{integer number of daemons to set | NULL to close existing connections
 and reset | 'view' to view the current number of daemons.}
 
-\item{.url}{character client URL e.g. 'tcp://192.168.0.2:5555' at which server
-processes started using \code{.()} should connect to.}
+\item{.url}{character client URL and port accepting incoming connections e.g.
+'tcp://192.168.0.2:5555' at which server processes started using \code{.()}
+should connect to. To listen to port 5555 (for example) on all interfaces
+on the host, specify one of 'tcp://:5555', 'tcp://*:5555' or
+'tcp://0.0.0.0:5555'.}
 }
 \value{
 Depending on 'n' specified:
@@ -23,7 +26,7 @@ Depending on 'n' specified:
     }
 }
 \description{
-Set or view the number of daemons (background processes). Create persistent
+Set or view the number of daemons (server processes). Create persistent
     background processes to receive \code{\link{mirai}} requests. This
     provides an efficient solution for async operations on a local machine as
     well as allowing requests to be sent across a network.

@@ -16,8 +16,9 @@ Minimalist async evaluation framework for R.
 
 未来 みらい mirai is Japanese for ‘future’.
 
-Extremely simple and lightweight method for concurrent / parallel code
-execution, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) technology.
+Extremely simple and lightweight method for parallelism and concurrent
+code execution, locally or distributed across the network, built on
+‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) technology.
 
 Whilst frameworks for parallelisation exist for R, {mirai} is designed
 for simplicity.
@@ -25,7 +26,9 @@ for simplicity.
 `mirai()` returns a ‘mirai’ object immediately.
 
 A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving
-automatically upon completion.
+automatically upon completion. The asynchronous task runs in persistent
+or ephemeral processes spawned locally or distributed across the
+network.
 
 {mirai} has a tiny pure R code base, relying solely on {nanonext}, a
 lightweight binding for the NNG C library with no package dependencies.
@@ -37,9 +40,10 @@ lightweight binding for the NNG C library with no package dependencies.
     Operations](#example-1-compute-intensive-operations)
 3.  [Example 2: I/O-bound Operations](#example-2-io-bound-operations)
 4.  [Daemons](#daemons)
-5.  [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
-6.  [Errors and Timeouts](#errors-and-timeouts)
-7.  [Links](#links)
+5.  [Distributed Computing](#distributed-computing)
+6.  [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
+7.  [Errors and Timeouts](#errors-and-timeouts)
+8.  [Links](#links)
 
 ### Installation
 
@@ -98,7 +102,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 6.733 -1.447 1.627 1.63 0.812 ...
+#>  num [1:100000000] -2.351 -7.858 -0.264 -1.92 2.502 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -106,7 +110,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 6.733 -1.447 1.627 1.63 0.812 ...
+#>  num [1:100000000] -2.351 -7.858 -0.264 -1.92 2.502 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -194,6 +198,48 @@ daemons(0)
 
 Set the number of daemons to zero again to revert to the default
 behaviour of creating a new background process for each ‘mirai’ request.
+
+[« Back to ToC](#table-of-contents)
+
+### Distributed Computing
+
+Through the `daemons()` interface, tasks may also be sent to server
+processes on the network for computation, rather than on the local
+machine.
+
+Simply set the ‘.url’ argument to the client network address (or leave
+blank to listen on all interfaces on the host) and a port that is able
+to accept incoming connections, for example:
+
+``` r
+daemons(.url = "tcp://:5555")
+#> [1] 1
+```
+
+The network topology is such that the client listens at the above
+address, and distributes tasks to all server processes that are
+connected into it.
+
+On the server, run something like the following from a suitable shell to
+set up a remote daemon process, where ‘192.168.0.2’ is the network IP
+address of the client:
+
+    Rscript -e 'mirai::.("tcp://192.168.0.2:5555")'
+
+Network resources can be added and removed as required. Tasks are
+automatically distributed to all available server processes.
+
+To reset all connections and clear the socket:
+
+``` r
+daemons(NULL)
+#> Warning in (function (.) : 5 | Timed out
+#> Warning in daemons(n = 0L): daemon 1 shutdown - process may be busy or need to
+#> be manually terminated
+```
+
+Note: the above warning occurs as no server processes were actually
+connected in this example.
 
 [« Back to ToC](#table-of-contents)
 

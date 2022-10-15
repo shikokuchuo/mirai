@@ -22,8 +22,8 @@
 #'     evaluates an expression in an environment containing the supplied data,
 #'     and returns the result to the caller/client.
 #'
-#' @param .url the client URL specifying the transport and address as a character
-#'     string e.g. 'tcp://192.168.0.2:5555'.
+#' @param .url the client URL and port to connect to as a character string e.g.
+#'     'tcp://192.168.0.2:5555'.
 #' @param .. [default TRUE] launch as a persistent daemon or, if FALSE, an
 #'     ephemeral process.
 #'
@@ -310,17 +310,20 @@ stop_mirai <- stop_aio
 #'
 is_mirai <- function(x) inherits(x, "mirai")
 
-#' daemons (Background Processes)
+#' daemons (Background and Remote Processes)
 #'
-#' Set or view the number of daemons (background processes). Create persistent
+#' Set or view the number of daemons (server processes). Create persistent
 #'     background processes to receive \code{\link{mirai}} requests. This
 #'     provides an efficient solution for async operations on a local machine as
 #'     well as allowing requests to be sent across a network.
 #'
 #' @param n integer number of daemons to set | NULL to close existing connections
 #'     and reset | 'view' to view the current number of daemons.
-#' @param .url character client URL e.g. 'tcp://192.168.0.2:5555' at which server
-#'     processes started using \code{.()} should connect to.
+#' @param .url character client URL and port accepting incoming connections e.g.
+#'     'tcp://192.168.0.2:5555' at which server processes started using \code{.()}
+#'     should connect to. To listen to port 5555 (for example) on all interfaces
+#'     on the host, specify one of 'tcp://:5555', 'tcp://*:5555' or
+#'     'tcp://0.0.0.0:5555'.
 #'
 #' @return Depending on 'n' specified:
 #'     \itemize{
