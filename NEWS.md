@@ -1,7 +1,7 @@
-# mirai 0.6.0.9200 (development)
+# mirai 0.6.0.9300 (development)
 
-* `daemons()` now takes 'n' and '.url' arguments. '.url' is a custom client URL allowing mirai tasks to be distributed across networks. Comptability with existing usage is maintained.
-* The server function `.()` is exported for creating daemon processes on network resources.
+* `daemons()` now takes 'n' and '.url' arguments. '.url' is a custom client URL allowing mirai tasks to be distributed across networks. Compatibility with previous interface is maintained.
+* The server function `.()` is exported for creating daemon or ephemeral processes on network resources.
 * Improvements to performance and stability requiring nanonext >= 0.6.0.
 
 # mirai 0.6.0

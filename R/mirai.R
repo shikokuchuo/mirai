@@ -452,7 +452,7 @@ daemons <- function(n, .url) {
         ctx <- context(sock)
         res <- send_aio(ctx, data = .__scm__., mode = 2L, timeout = 2000L)
         if (.subset2(call_aio(res), "result"))
-          warning(sprintf("daemon %d shutdown failed - process may need to be manually terminated", i))
+          warning(sprintf("daemon %d shutdown - process may be busy or need to be manually terminated", i))
         halt <- halt - 1L
         proc <<- proc - 1L
         close(ctx)
