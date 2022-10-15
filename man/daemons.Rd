@@ -10,8 +10,8 @@ daemons(n, .url)
 \item{n}{integer number of daemons to set | NULL to close existing connections
 and reset | 'view' to view the current number of daemons.}
 
-\item{.url}{character client URL e.g. 'tcp://192.168.0.2:5555' at which daemon
-processes started manually using \code{.()} should connect to.}
+\item{.url}{character client URL e.g. 'tcp://192.168.0.2:5555' at which server
+processes started using \code{.()} should connect to.}
 }
 \value{
 Depending on 'n' specified:

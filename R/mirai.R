@@ -319,8 +319,8 @@ is_mirai <- function(x) inherits(x, "mirai")
 #'
 #' @param n integer number of daemons to set | NULL to close existing connections
 #'     and reset | 'view' to view the current number of daemons.
-#' @param .url character client URL e.g. 'tcp://192.168.0.2:5555' at which daemon
-#'     processes started manually using \code{.()} should connect to.
+#' @param .url character client URL e.g. 'tcp://192.168.0.2:5555' at which server
+#'     processes started using \code{.()} should connect to.
 #'
 #' @return Depending on 'n' specified:
 #'     \itemize{
@@ -416,16 +416,14 @@ daemons <- function(n, .url) {
       return(invisible())
     }
 
-    !is.numeric(n) && stop("invalid inputs")
+    !is.numeric(n) && stop("invalid inputs - please specify 'n' and/or '.url'")
 
     if (length(n) > 1L) {
-      set <- as.integer(n[1L])
-      warning("vector specified, only using first element")
-    } else {
-      set <- as.integer(n)
+      n <- n[1L]
+      warning("vector specified for 'n', only using first element")
     }
-    set >= 0L || stop("number of daemons must be zero or greater")
-    delta <- set - proc
+    n >= 0L || stop("'n' must be zero or greater")
+    delta <- as.integer(n) - proc
     delta == 0L && return(0L)
 
     if (is.null(sock)) {
@@ -453,12 +451,10 @@ daemons <- function(n, .url) {
       for (i in seq_len(-delta)) {
         ctx <- context(sock)
         res <- send_aio(ctx, data = .__scm__., mode = 2L, timeout = 2000L)
-        if (.subset2(call_aio(res), "result")) {
-          warning(sprintf("daemon %d shutdown failed", i))
-        } else {
-          halt <- halt - 1L
-          proc <<- proc - 1L
-        }
+        if (.subset2(call_aio(res), "result"))
+          warning(sprintf("daemon %d shutdown failed - process may need to be manually terminated", i))
+        halt <- halt - 1L
+        proc <<- proc - 1L
         close(ctx)
       }
       attr(sock, "daemons") <- proc
