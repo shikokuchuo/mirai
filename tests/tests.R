@@ -3,10 +3,12 @@ nanotest <- function(x) invisible(x || stop())
 
 nanotest(daemons("view") == 0L)
 nanotest(daemons(1L) == 1L)
+n <- 3L
 m <- mirai({
+  Sys.sleep(0.1)
   q <- m + n + 1L
   q / m
-}, m = 2L, n = 3L)
+}, m = 2L, .args = list(n))
 b <- m$data %>>% rnorm %>>% as.character()
 nanotest(inherits(call_mirai(m), "mirai"))
 nanotest(m$data == 3L)
@@ -15,7 +17,7 @@ nanotest(is_mirai(m))
 nanotest(length(b$data) == 3L)
 nanotest(is.character(b$data))
 df <- data.frame(a = 1, b = 2)
-dm <- eval_mirai(as.matrix(df), .args = list(df), .timeout = 2000)
+dm <- eval_mirai(as.matrix(df), .args = list(df), .timeout = 1000L)
 nanotest(is_mirai(call_mirai(dm)))
 nanotest(!unresolved(dm))
 nanotest(is.matrix(dm$data))
@@ -26,3 +28,4 @@ nanotest(daemons("view") == 1L)
 nanotest(daemons(0L) == -1L)
 nanotest(daemons("view") == 0L)
 Sys.sleep(2L)
+

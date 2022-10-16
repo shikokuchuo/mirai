@@ -52,8 +52,6 @@
       close(ctx)
     }
 
-    on.exit()
-
   } else {
 
     ctx <- context(sock)
@@ -64,11 +62,11 @@
     envir <- recv(ctx, mode = 1L)
     msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
     send(ctx, data = msg, mode = 1L)
-    on.exit()
     msleep(2000L)
 
   }
 
+  on.exit()
   close(sock)
 
 }
@@ -388,30 +386,29 @@ daemons <- function(n, .url) {
       missing(n) && return(sock)
       if (is.character(n)) {
         n == "view" && return(if (length(d <- attr(sock, "daemons"))) d else 0L)
-        if (length(sock) && default) {
-          daemons(n = 0L)
-          close(sock)
-        }
-        sock <<- socket(protocol = "req", listen = n)
-        default <<- FALSE
+        .url <- n
         n <- 1L
+      } else {
+        .url <- NULL
       }
-    } else {
-      if (is.character(.url)) {
-        if (length(sock) && default) {
-          daemons(n = 0L)
-          close(sock)
-        }
-        sock <<- socket(protocol = "req", listen = .url)
-        default <<- FALSE
-      }
-      if (missing(n))
-        n <- 1L
     }
+
+    if (is.character(.url)) {
+      if (length(sock) && default) {
+        daemons(0L)
+        close(sock)
+      }
+      sock <<- socket(protocol = "req", listen = .url)
+      reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
+      default <<- FALSE
+    }
+
+    if (missing(n))
+      n <- 1L
 
     is.null(n) && {
       if (length(sock)) {
-        daemons(n = 0L)
+        daemons(0L)
         close(sock)
         sock <<- NULL
         default <<- TRUE
