@@ -91,7 +91,7 @@
 <p>Simple and lightweight method for parallelism and concurrent code execution, local or distributed across the network, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) technology.</p>
 <p><code><a href="reference/eval_mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately.</p>
 <p>A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving automatically upon completion. The asynchronous task runs in an ephemeral or persistent process, spawned locally or distributed across the network.</p>
-<p>{mirai} has a tiny pure R code base, relying solely on {nanonext}, a high-performance binding for the ‘NNG’ C library with no further package dependencies.</p>
+<p>{mirai} has a tiny pure R code base, relying solely on {nanonext}, a high-performance binding for the ‘NNG’ C library with zero package dependencies.</p>
 <div class="section level3">
 <h3 id="table-of-contents">Table of Contents<a class="anchor" aria-label="anchor" href="#table-of-contents"></a>
 </h3>
@@ -143,11 +143,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.655 2.299 -1.445 -16.854 0.477 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.105 0.442 0.524 2.33 0.369 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.655 2.299 -1.445 -16.854 0.477 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.105 0.442 0.524 2.33 0.369 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -207,16 +207,16 @@
 <div class="section level3">
 <h3 id="distributed-computing">Distributed Computing<a class="anchor" aria-label="anchor" href="#distributed-computing"></a>
 </h3>
-<p>Through the <code><a href="reference/daemons.html">daemons()</a></code> interface, tasks may also be sent to server processes on the network for computation, rather than on the local machine.</p>
-<p>Simply set the ‘.url’ argument to the client network address (or leave blank to listen on all interfaces on the host) and a port that is able to accept incoming connections, for example:</p>
+<p>Through the <code><a href="reference/daemons.html">daemons()</a></code> interface, tasks may also be sent for computation to server processes on the network.</p>
+<p>Specify the ‘.url’ argument as the client network address (or leave blank to listen on all interfaces on the host) and a port that is able to accept incoming connections, for example:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>.url <span class="op">=</span> <span class="st">"tcp://:5555"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
 <p>The network topology is such that the client listens at the above address, and distributes tasks to all server processes that are connected into it.</p>
-<p>On the server, run something like the following from a suitable shell to set up a remote daemon process, where ‘192.168.0.2’ is the network IP address of the client:</p>
+<p>On the server, run the following from a suitable shell to set up a remote daemon process (here ‘192.168.0.2’ is the network IP address of the client):</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::.("tcp://192.168.0.2:5555")'</span></span></code></pre></div>
 <p>Network resources can be added and removed as required. Tasks are automatically distributed to all available server processes.</p>
-<p>To reset all connections and clear the socket:</p>
+<p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in (function (.) : 5 | Timed out</span></span>
@@ -341,7 +341,7 @@
 <li><a href="https://CRAN.R-project.org/package=mirai" class="external-link"><img src="https://www.r-pkg.org/badges/version/mirai?color=112d4e" alt="CRAN status"></a></li>
 <li><a href="https://shikokuchuo.r-universe.dev" class="external-link"><img src="https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc" alt="mirai status badge"></a></li>
 <li><a href="https://github.com/shikokuchuo/mirai/actions" class="external-link"><img src="https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://codecov.io/gh/shikokuchuo/mirai" class="external-link"><img src="https://codecov.io/gh/shikokuchuo/mirai/branch/main/graph/badge.svg" alt="codecov"></a></li>
+<li><a href="https://app.codecov.io/gh/shikokuchuo/mirai" class="external-link"><img src="https://codecov.io/gh/shikokuchuo/mirai/branch/main/graph/badge.svg" alt="codecov"></a></li>
 </ul>
 </div>
 
