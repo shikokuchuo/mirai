@@ -1,10 +1,10 @@
 Package: mirai
 Type: Package
 Title: Minimalist Async Evaluation Framework for R
-Version: 0.6.0.9300
-Description: Extremely simple and lightweight method for parallelism and
-    concurrent code execution, locally or distributed across the network, built
-    on 'nanonext' and 'NNG' (Nanomsg Next Gen) technology.
+Version: 0.6.0.9400
+Description: Simple and lightweight method for parallelism and concurrent code
+    execution, local or distributed across the network, built on 'nanonext' and
+    'NNG' (Nanomsg Next Gen) technology.
 Authors@R: 
     c(person(given = "Charlie",
              family = "Gao",

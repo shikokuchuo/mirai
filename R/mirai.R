@@ -399,7 +399,6 @@ daemons <- function(n, .url) {
         close(sock)
       }
       sock <<- socket(protocol = "req", listen = .url)
-      reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       default <<- FALSE
     }
 
@@ -431,7 +430,6 @@ daemons <- function(n, .url) {
                      Linux = sprintf("abstract://n%.f", random()),
                      sprintf("ipc:///tmp/n%.f", random()))
       sock <<- socket(protocol = "req", listen = url)
-      reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::.(%s)", deparse(url))))
       cmd <<- switch(.sysname,
                      Windows = file.path(R.home("bin"), "Rscript.exe"),

@@ -16,22 +16,20 @@ Minimalist async evaluation framework for R.
 
 未来 みらい mirai is Japanese for ‘future’.
 
-Extremely simple and lightweight method for parallelism and concurrent
-code execution, locally or distributed across the network, built on
-‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) technology.
-
-Whilst frameworks for parallelisation exist for R, {mirai} is designed
-for simplicity.
+Simple and lightweight method for parallelism and concurrent code
+execution, local or distributed across the network, built on ‘nanonext’
+and ‘NNG’ (Nanomsg Next Gen) technology.
 
 `mirai()` returns a ‘mirai’ object immediately.
 
 A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving
-automatically upon completion. The asynchronous task runs in persistent
-or ephemeral processes spawned locally or distributed across the
-network.
+automatically upon completion. The asynchronous task runs in an
+ephemeral or persistent process, spawned locally or distributed across
+the network.
 
 {mirai} has a tiny pure R code base, relying solely on {nanonext}, a
-lightweight binding for the NNG C library with no package dependencies.
+high-performance binding for the ‘NNG’ C library with no further package
+dependencies.
 
 ### Table of Contents
 
@@ -102,7 +100,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -2.351 -7.858 -0.264 -1.92 2.502 ...
+#>  num [1:100000000] 0.741 1.472 0.376 1.479 1.543 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -110,7 +108,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -2.351 -7.858 -0.264 -1.92 2.502 ...
+#>  num [1:100000000] 0.741 1.472 0.376 1.479 1.543 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -234,8 +232,8 @@ To reset all connections and clear the socket:
 ``` r
 daemons(NULL)
 #> Warning in (function (.) : 5 | Timed out
-#> Warning in daemons(n = 0L): daemon 1 shutdown - process may be busy or need to
-#> be manually terminated
+#> Warning in daemons(0L): daemon 1 shutdown - process may be busy or need to be
+#> manually terminated
 ```
 
 Note: the above warning occurs as no server processes were actually
