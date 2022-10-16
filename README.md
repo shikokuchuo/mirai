@@ -10,7 +10,7 @@ status](https://www.r-pkg.org/badges/version/mirai?color=112d4e)](https://CRAN.R
 [![mirai status
 badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc)](https://shikokuchuo.r-universe.dev)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
-[![codecov](https://codecov.io/gh/shikokuchuo/mirai/branch/main/graph/badge.svg)](https://codecov.io/gh/shikokuchuo/mirai)
+[![codecov](https://codecov.io/gh/shikokuchuo/mirai/branch/main/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/mirai)
 <!-- badges: end -->
 
 Minimalist async evaluation framework for R.
@@ -29,7 +29,7 @@ ephemeral or persistent process, spawned locally or distributed across
 the network.
 
 {mirai} has a tiny pure R code base, relying solely on {nanonext}, a
-high-performance binding for the ‘NNG’ C library with no further package
+high-performance binding for the ‘NNG’ C library with zero package
 dependencies.
 
 ### Table of Contents
@@ -101,7 +101,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.655 2.299 -1.445 -16.854 0.477 ...
+#>  num [1:100000000] -0.105 0.442 0.524 2.33 0.369 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -109,7 +109,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.655 2.299 -1.445 -16.854 0.477 ...
+#>  num [1:100000000] -0.105 0.442 0.524 2.33 0.369 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -202,11 +202,10 @@ behaviour of creating a new background process for each ‘mirai’ request.
 
 ### Distributed Computing
 
-Through the `daemons()` interface, tasks may also be sent to server
-processes on the network for computation, rather than on the local
-machine.
+Through the `daemons()` interface, tasks may also be sent for
+computation to server processes on the network.
 
-Simply set the ‘.url’ argument to the client network address (or leave
+Specify the ‘.url’ argument as the client network address (or leave
 blank to listen on all interfaces on the host) and a port that is able
 to accept incoming connections, for example:
 
@@ -219,16 +218,16 @@ The network topology is such that the client listens at the above
 address, and distributes tasks to all server processes that are
 connected into it.
 
-On the server, run something like the following from a suitable shell to
-set up a remote daemon process, where ‘192.168.0.2’ is the network IP
-address of the client:
+On the server, run the following from a suitable shell to set up a
+remote daemon process (here ‘192.168.0.2’ is the network IP address of
+the client):
 
     Rscript -e 'mirai::.("tcp://192.168.0.2:5555")'
 
 Network resources can be added and removed as required. Tasks are
 automatically distributed to all available server processes.
 
-To reset all connections and clear the socket:
+To reset all connections and revert to default behaviour:
 
 ``` r
 daemons(NULL)

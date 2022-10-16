@@ -32,7 +32,7 @@ Simple and lightweight method for parallelism and concurrent code execution, loc
 
 A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving automatically upon completion. The asynchronous task runs in an ephemeral or persistent process, spawned locally or distributed across the network.
 
-{mirai} has a tiny pure R code base, relying solely on {nanonext}, a high-performance binding for the 'NNG' C library with no further package dependencies.
+{mirai} has a tiny pure R code base, relying solely on {nanonext}, a high-performance binding for the 'NNG' C library with zero package dependencies.
 
 ### Table of Contents
 
@@ -177,9 +177,9 @@ Set the number of daemons to zero again to revert to the default behaviour of cr
 
 ### Distributed Computing
 
-Through the `daemons()` interface, tasks may also be sent to server processes on the network for computation, rather than on the local machine.
+Through the `daemons()` interface, tasks may also be sent for computation to server processes on the network.
 
-Simply set the '.url' argument to the client network address (or leave blank to listen on all interfaces on the host) and a port that is able to accept incoming connections, for example:
+Specify the '.url' argument as the client network address (or leave blank to listen on all interfaces on the host) and a port that is able to accept incoming connections, for example:
 
 ```{r remote}
 daemons(.url = "tcp://:5555")
@@ -187,7 +187,7 @@ daemons(.url = "tcp://:5555")
 
 The network topology is such that the client listens at the above address, and distributes tasks to all server processes that are connected into it.
 
-On the server, run something like the following from a suitable shell to set up a remote daemon process, where '192.168.0.2' is the network IP address of the client:
+On the server, run the following from a suitable shell to set up a remote daemon process (here '192.168.0.2' is the network IP address of the client):
 
 ```
 Rscript -e 'mirai::.("tcp://192.168.0.2:5555")'
@@ -195,7 +195,7 @@ Rscript -e 'mirai::.("tcp://192.168.0.2:5555")'
 
 Network resources can be added and removed as required. Tasks are automatically distributed to all available server processes.
 
-To reset all connections and clear the socket:
+To reset all connections and revert to default behaviour:
 
 ```{r reset}
 daemons(NULL)
