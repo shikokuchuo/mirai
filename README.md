@@ -17,9 +17,9 @@ Minimalist async evaluation framework for R.
 
 未来 みらい mirai is Japanese for ‘future’.
 
-Simple and lightweight method for parallelism and concurrent code
-execution, local or distributed across the network, built on ‘nanonext’
-and ‘NNG’ (Nanomsg Next Gen) technology.
+Simple and lightweight parallelism and concurrent code execution, local
+or distributed across the network, built on ‘nanonext’ and ‘NNG’
+(Nanomsg Next Gen) technology.
 
 `mirai()` returns a ‘mirai’ object immediately.
 
@@ -101,7 +101,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.5684 0.0801 -0.2233 -0.1602 -8.6791 ...
+#>  num [1:100000000] -3.559 -10.271 -1.417 -0.459 8.613 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -109,7 +109,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.5684 0.0801 -0.2233 -0.1602 -8.6791 ...
+#>  num [1:100000000] -3.559 -10.271 -1.417 -0.459 8.613 ...
 ```
 
 [« Back to ToC](#table-of-contents)

@@ -35,10 +35,8 @@ Set or view the number of daemons (server processes). Create persistent
 \{mirai\} will revert to the default behaviour of creating a new
     background process for each request if the number of daemons is set to 0.
 
-    Setting a custom client URL automatically sets the number of daemons to 1,
-    unless 'n' is otherwise specified. If only a character string is provided
-    as an argument, this is taken to be the client URL and 'n' is set to 1 by
-    default.
+    Setting a custom client URL without specifying 'n' will use a default 'n'
+    of 1.
 
     Calling \code{daemons()} without any arguments returns the 'nanoSocket'
     for connecting to the daemons, or NULL if it is yet to be created.

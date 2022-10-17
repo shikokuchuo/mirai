@@ -26,7 +26,7 @@ Minimalist async evaluation framework for R.
 
 未来 みらい mirai is Japanese for 'future'.
 
-Simple and lightweight method for parallelism and concurrent code execution, local or distributed across the network, built on 'nanonext' and 'NNG' (Nanomsg Next Gen) technology.
+Simple and lightweight parallelism and concurrent code execution, local or distributed across the network, built on 'nanonext' and 'NNG' (Nanomsg Next Gen) technology.
 
 `mirai()` returns a 'mirai' object immediately.
 
