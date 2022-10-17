@@ -7,8 +7,8 @@
 daemons(n, .url)
 }
 \arguments{
-\item{n}{integer number of daemons to set | NULL to close existing connections
-and reset | 'view' to view the current number of daemons.}
+\item{n}{integer number of daemons to set | 'view' to view the current number
+of daemons.}
 
 \item{.url}{(optional) for distributing tasks across the network: character
 client URL and port accepting incoming connections e.g.
@@ -21,8 +21,6 @@ on the host, specify one of 'tcp://:5555', 'tcp://*:5555' or
 Depending on 'n' specified:
     \itemize{
     \item{integer: integer change in number of daemons (created or destroyed).}
-    \item{NULL: inivisible NULL, closing existing connections and resetting
-    the socket.}
     \item{'view': integer number of currently set daemons.}
     }
 }
@@ -33,11 +31,12 @@ Set or view the number of daemons (server processes). Create persistent
     provides the interface for distributing requests across the network.
 }
 \details{
-\{mirai\} will revert to the default behaviour of creating a new
-    background process for each request if the number of daemons is set to 0,
-    or reset using NULL.
+Set 'n' to 0 to reset all daemon connections. \{mirai\} will revert
+    to the default behaviour of creating a new background process for each
+    request.
 
-    Specifying a custom client URL without 'n' will use a default 'n' of 1.
+    Specifying a custom client URL without 'n' (or 'n' < 1) will default to a
+    value for 'n' of 1.
 
     Calling \code{daemons()} without any arguments returns the 'nanoSocket'
     for connecting to the daemons, or NULL if it is yet to be created.

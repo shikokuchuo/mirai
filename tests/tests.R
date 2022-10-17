@@ -34,8 +34,8 @@ me$data
 nanotest(daemons("view") == 1L)
 nanotest(daemons(0L) == -1L)
 nanotest(daemons("view") == 0L)
-nanotest(daemons(n = 0, .url = "tcp://:5555") == 0L)
-nanotest(is.null(daemons(NULL)))
+nanotest(daemons(n = 0L, .url = "tcp://:5555") == 1L)
+nanotest(suppressWarnings(daemons(0L)) == -1L)
 nanotest(is.null(daemons()))
 Sys.sleep(2L)
 m

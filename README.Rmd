@@ -198,10 +198,10 @@ Network resources can be added and removed as required. Tasks are automatically 
 To reset all connections and revert to default behaviour:
 
 ```{r reset}
-daemons(NULL)
+daemons(0)
 ```
 
-Note: the above warning occurs as no server processes were actually connected in this example.
+Note: the above warning occurs as no server processes were actually connected in creating this example.
 
 [&laquo; Back to ToC](#table-of-contents)
 
