@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9600</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9700</span>
       </span>
     </div>
 
@@ -71,8 +71,8 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>n</dt>
-<dd><p>integer number of daemons to set | NULL to close existing connections
-and reset | 'view' to view the current number of daemons.</p></dd>
+<dd><p>integer number of daemons to set | 'view' to view the current number
+of daemons.</p></dd>
 
 
 <dt>.url</dt>
@@ -91,16 +91,15 @@ on the host, specify one of 'tcp://:5555', 'tcp://*:5555' or
 <p>Depending on 'n' specified:</p>
 <p></p>
 <ul><li><p>integer: integer change in number of daemons (created or destroyed).</p></li>
-<li><p>NULL: inivisible NULL, closing existing connections and resetting
-    the socket.</p></li>
 <li><p>'view': integer number of currently set daemons.</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
-    <p>{mirai} will revert to the default behaviour of creating a new
-    background process for each request if the number of daemons is set to 0,
-    or reset using NULL.</p>
-<p>Specifying a custom client URL without 'n' will use a default 'n' of 1.</p>
+    <p>Set 'n' to 0 to reset all daemon connections. {mirai} will revert
+    to the default behaviour of creating a new background process for each
+    request.</p>
+<p>Specifying a custom client URL without 'n' (or 'n' &lt; 1) will default to a
+    value for 'n' of 1.</p>
 <p>Calling <code>daemons()</code> without any arguments returns the 'nanoSocket'
     for connecting to the daemons, or NULL if it is yet to be created.</p>
     </div>
