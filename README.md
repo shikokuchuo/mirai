@@ -101,7 +101,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -3.559 -10.271 -1.417 -0.459 8.613 ...
+#>  num [1:100000000] 0.6344 -4.4782 -0.0979 -0.311 -0.1305 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -109,7 +109,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -3.559 -10.271 -1.417 -0.459 8.613 ...
+#>  num [1:100000000] 0.6344 -4.4782 -0.0979 -0.311 -0.1305 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -222,7 +222,7 @@ On the server, run the following from a suitable shell to set up a
 remote daemon process (here ‘192.168.0.2’ is the network IP address of
 the client):
 
-    Rscript -e 'mirai::.("tcp://192.168.0.2:5555")'
+    Rscript --vanilla -e 'mirai::.("tcp://192.168.0.2:5555")'
 
 Network resources can be added and removed as required. Tasks are
 automatically distributed to all available server processes.

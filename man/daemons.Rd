@@ -10,7 +10,8 @@ daemons(n, .url)
 \item{n}{integer number of daemons to set | NULL to close existing connections
 and reset | 'view' to view the current number of daemons.}
 
-\item{.url}{character client URL and port accepting incoming connections e.g.
+\item{.url}{(optional) for distributing tasks across the network: character
+client URL and port accepting incoming connections e.g.
 'tcp://192.168.0.2:5555' at which server processes started using \code{.()}
 should connect to. To listen to port 5555 (for example) on all interfaces
 on the host, specify one of 'tcp://:5555', 'tcp://*:5555' or
@@ -27,30 +28,29 @@ Depending on 'n' specified:
 }
 \description{
 Set or view the number of daemons (server processes). Create persistent
-    background processes to receive \code{\link{mirai}} requests. This
-    provides an efficient solution for async operations on a local machine as
-    well as allowing requests to be sent across a network.
+    background processes to receive \code{\link{mirai}} requests, providing
+    an efficient solution for async operations on a local machine. Also
+    provides the interface for distributing requests across the network.
 }
 \details{
 \{mirai\} will revert to the default behaviour of creating a new
-    background process for each request if the number of daemons is set to 0.
+    background process for each request if the number of daemons is set to 0,
+    or reset using NULL.
 
-    Setting a custom client URL without specifying 'n' will use a default 'n'
-    of 1.
+    Specifying a custom client URL without 'n' will use a default 'n' of 1.
 
     Calling \code{daemons()} without any arguments returns the 'nanoSocket'
     for connecting to the daemons, or NULL if it is yet to be created.
 }
-\section{Information}{
+\section{About}{
 
 
     Daemons provide a potentially more efficient solution for async operations
     as new processes no longer need to be created on an ad hoc basis.
 
-    Setting a client URL also allows tasks to be distributed across the
-    network. The network togology is that server daemons dial into the client
-    socket, such that network resources may be easily added or removed at any
-    time.
+    Specifying '.url' also allows tasks to be distributed across the network.
+    The network togology is that server daemons dial into the client socket,
+    such that network resources may be easily added or removed at any time.
 
     The current implementation is low-level and ensures tasks are
     evenly-distributed amongst daemons without actively managing a task queue.
