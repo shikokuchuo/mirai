@@ -431,14 +431,15 @@ daemons <- function(n, .url) {
       for (i in seq_len(-delta)) {
         ctx <- context(sock)
         res <- send_aio(ctx, data = .__scm__., mode = 2L, timeout = 2000L)
-        if (.subset2(call_aio(res), "result"))
-          warning(sprintf("daemon %d shutdown - process may be busy or need to be manually terminated", i))
+        if (suppressWarnings(.subset2(call_aio(res), "result")))
+          warning(sprintf("daemon %d shutdown timed out - may need manual termination", i))
         proc <<- proc - 1L
         close(ctx)
       }
       if (proc == 0L) {
         close(sock)
         sock <<- NULL
+        gc(verbose = FALSE, full = TRUE)
       }
     }
     delta
