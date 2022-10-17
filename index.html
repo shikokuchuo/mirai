@@ -143,11 +143,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.3828 57.0533 18.7296 0.2118 -0.0231 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 4.199 5.496 0.718 0.15 -57.468 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.3828 57.0533 18.7296 0.2118 -0.0231 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 4.199 5.496 0.718 0.15 -57.468 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -219,9 +219,7 @@
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in (function (.) : 5 | Timed out</span></span>
-<span><span class="co">#&gt; Warning in daemons(0): daemon 1 shutdown - process may be busy or need to be</span></span>
-<span><span class="co">#&gt; manually terminated</span></span>
+<span><span class="co">#&gt; Warning in daemons(0): daemon 1 shutdown timed out - may need manual termination</span></span>
 <span><span class="co">#&gt; [1] -1</span></span></code></pre></div>
 <p>Note: the above warning occurs as no server processes were actually connected in creating this example.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
