@@ -35,36 +35,32 @@
 
   sock <- socket(protocol = "rep", dial = .url)
 
-  if (..) {
-
+  if (..)
     repeat {
       on.exit(expr = close(sock))
       ctx <- context(sock)
       envir <- recv(ctx, mode = 1L)
       on.exit(expr = {
-        send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")), mode = 1L)
+        send(ctx, data = `class<-`(geterrmessage(), .errorclass), mode = 1L)
         close(sock)
         rm(list = ls())
         .(.url)
       })
-      send(ctx, data = eval(expr = .subset2(envir, ".expr"), envir = envir), mode = 1L)
+      data <- eval(expr = .subset2(envir, ".expr"), envir = envir)
+      send(ctx, data = data, mode = 1L)
       close(ctx)
     }
 
-  } else {
-
-    ctx <- context(sock)
-    on.exit(expr = {
-      send(ctx, data = `class<-`(geterrmessage(), c("miraiError", "errorValue")), mode = 1L)
-      close(sock)
-    })
-    envir <- recv(ctx, mode = 1L)
-    send(ctx, data = eval(expr = .subset2(envir, ".expr"), envir = envir), mode = 1L)
-    on.exit()
-    msleep(2000L)
-
-  }
-
+  ctx <- context(sock)
+  on.exit(expr = {
+    send(ctx, data = `class<-`(geterrmessage(), .errorclass), mode = 1L)
+    close(sock)
+  })
+  envir <- recv(ctx, mode = 1L)
+  data <- eval(expr = .subset2(envir, ".expr"), envir = envir)
+  send(ctx, data = data, mode = 1L)
+  on.exit()
+  msleep(2000L)
   close(sock)
 
 }
@@ -150,21 +146,17 @@
 eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
 
   missing(.expr) && stop("missing expression, perhaps wrap in {}?")
-  if (length(daemons())) {
 
-    arglist <- list(.expr = substitute(.expr), ...)
-    if (length(.args))
-      arglist <- c(arglist, `names<-`(.args, as.character.default(substitute(.args)[-1L])))
+  arglist <- list(.expr = substitute(.expr), ...)
+  if (length(.args))
+    arglist <- c(arglist, `names<-`(.args, as.character.default(substitute(.args)[-1L])))
+
+  if (length(daemons())) {
     ctx <- context(daemons())
     aio <- request(ctx, data = list2env(arglist), send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "ctx", ctx)
-    `class<-`(aio, c("mirai", "recvAio"))
 
   } else {
-
-    arglist <- list(.expr = substitute(.expr), ...)
-    if (length(.args))
-      arglist <- c(arglist, `names<-`(.args, as.character.default(substitute(.args)[-1L])))
     url <- sprintf(.urlfmt, random())
     system2(command = .command,
             args = c("--vanilla", "-e", shQuote(sprintf("mirai::.(%s,FALSE)", deparse(url)))),
@@ -173,9 +165,9 @@ eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
     ctx <- context(sock)
     aio <- request(ctx, data = list2env(arglist), send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(`attr<-`(.subset2(aio, "aio"), "ctx", ctx), "sock", sock)
-    `class<-`(aio, c("mirai", "recvAio"))
-
   }
+
+  `class<-`(aio, .miraiclass)
 
 }
 
@@ -372,12 +364,10 @@ daemons <- function(n, .url) {
   function(n, .url) {
 
     if (missing(.url)) {
-
       missing(n) && return(sock)
       is.character(n) && n == "view" && return(proc)
 
     } else if (is.character(.url)) {
-
       if (missing(n) || n < 1L)
         n <- 1L
       if (length(sock))
@@ -433,6 +423,7 @@ daemons <- function(n, .url) {
         gc(verbose = FALSE, full = TRUE)
       }
     }
+
     delta
 
   }

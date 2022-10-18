@@ -1,4 +1,4 @@
-# mirai 0.6.0.9702 (development)
+# mirai 0.6.0.9703 (development)
 
 * `daemons()` now takes 'n' and '.url' arguments. '.url' is an optional client URL allowing mirai tasks to be distributed across the network. Compatibility with existing interface is retained.
 * The server function `.()` is exported for creating daemon / ephemeral processes on network resources.
