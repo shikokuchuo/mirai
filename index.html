@@ -43,7 +43,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9700</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9701</span>
       </span>
     </div>
 
@@ -143,11 +143,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 4.199 5.496 0.718 0.15 -57.468 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.0353 3.9109 0.106 5.9053 -0.062 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 4.199 5.496 0.718 0.15 -57.468 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.0353 3.9109 0.106 5.9053 -0.062 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -219,7 +219,7 @@
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in daemons(0): daemon 1 shutdown timed out - may need manual termination</span></span>
+<span><span class="co">#&gt; Warning in daemons(0): 1 daemon shutdowns timed out (may require manual action)</span></span>
 <span><span class="co">#&gt; [1] -1</span></span></code></pre></div>
 <p>Note: the above warning occurs as no server processes were actually connected in creating this example.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
