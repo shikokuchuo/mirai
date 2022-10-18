@@ -35,21 +35,20 @@
 
   sock <- socket(protocol = "rep", dial = .url)
 
-  if (..)
-    repeat {
-      on.exit(expr = close(sock))
-      ctx <- context(sock)
-      envir <- recv(ctx, mode = 1L)
-      on.exit(expr = {
-        send(ctx, data = `class<-`(geterrmessage(), .errorclass), mode = 1L)
-        close(sock)
-        rm(list = ls())
-        .(.url)
-      })
-      data <- eval(expr = .subset2(envir, ".expr"), envir = envir)
-      send(ctx, data = data, mode = 1L)
-      close(ctx)
-    }
+  .. && repeat {
+    on.exit(expr = close(sock))
+    ctx <- context(sock)
+    envir <- recv(ctx, mode = 1L)
+    on.exit(expr = {
+      send(ctx, data = `class<-`(geterrmessage(), .errorclass), mode = 1L)
+      close(sock)
+      rm(list = ls())
+      .(.url)
+    })
+    data <- eval(expr = .subset2(envir, ".expr"), envir = envir)
+    send(ctx, data = data, mode = 1L)
+    close(ctx)
+  }
 
   ctx <- context(sock)
   on.exit(expr = {
