@@ -47,8 +47,7 @@
         rm(list = ls())
         .(.url)
       })
-      msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
-      send(ctx, data = msg, mode = 1L)
+      send(ctx, data = eval(expr = .subset2(envir, ".expr"), envir = envir), mode = 1L)
       close(ctx)
     }
 
@@ -60,8 +59,7 @@
       close(sock)
     })
     envir <- recv(ctx, mode = 1L)
-    msg <- eval(expr = .subset2(envir, ".expr"), envir = envir)
-    send(ctx, data = msg, mode = 1L)
+    send(ctx, data = eval(expr = .subset2(envir, ".expr"), envir = envir), mode = 1L)
     on.exit()
     msleep(2000L)
 
@@ -157,9 +155,8 @@ eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
     arglist <- list(.expr = substitute(.expr), ...)
     if (length(.args))
       arglist <- c(arglist, `names<-`(.args, as.character.default(substitute(.args)[-1L])))
-    envir <- list2env(arglist)
     ctx <- context(daemons())
-    aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    aio <- request(ctx, data = list2env(arglist), send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "ctx", ctx)
     `class<-`(aio, c("mirai", "recvAio"))
 
@@ -168,18 +165,13 @@ eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
     arglist <- list(.expr = substitute(.expr), ...)
     if (length(.args))
       arglist <- c(arglist, `names<-`(.args, as.character.default(substitute(.args)[-1L])))
-    envir <- list2env(arglist)
-    url <- switch(.sysname,
-                  Linux = sprintf("abstract://n%.f", random()),
-                  sprintf("ipc:///tmp/n%.f", random()))
-    arg <- c("--vanilla", "-e", shQuote(sprintf("mirai::.(%s,FALSE)", deparse(url))))
-    cmd <- switch(.sysname,
-                  Windows = file.path(R.home("bin"), "Rscript.exe"),
-                  file.path(R.home("bin"), "Rscript"))
-    system2(command = cmd, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
+    url <- sprintf(.urlfmt, random())
+    system2(command = .command,
+            args = c("--vanilla", "-e", shQuote(sprintf("mirai::.(%s,FALSE)", deparse(url)))),
+            stdout = NULL, stderr = NULL, wait = FALSE)
     sock <- socket(protocol = "req", listen = url)
     ctx <- context(sock)
-    aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    aio <- request(ctx, data = list2env(arglist), send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(`attr<-`(.subset2(aio, "aio"), "ctx", ctx), "sock", sock)
     `class<-`(aio, c("mirai", "recvAio"))
 
@@ -374,7 +366,7 @@ is_mirai <- function(x) inherits(x, "mirai")
 daemons <- function(n, .url) {
 
   proc <- 0L
-  url <- sock <- cmd <- arg <- NULL
+  url <- sock <- arg <- NULL
   local <- TRUE
 
   function(n, .url) {
@@ -409,22 +401,17 @@ daemons <- function(n, .url) {
     delta == 0L && return(delta)
 
     if (is.null(sock)) {
-      url <<- switch(.sysname,
-                     Linux = sprintf("abstract://n%.f", random()),
-                     sprintf("ipc:///tmp/n%.f", random()))
+      url <<- sprintf(.urlfmt, random())
       sock <<- socket(protocol = "req", listen = url)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::.(%s)", deparse(url))))
-      cmd <<- switch(.sysname,
-                     Windows = file.path(R.home("bin"), "Rscript.exe"),
-                     file.path(R.home("bin"), "Rscript"))
       local <<- TRUE
     }
 
     if (delta > 0L) {
       if (local) {
         for (i in seq_len(delta))
-          system2(command = cmd, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
+          system2(command = .command, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
       }
       proc <<- proc + delta
 

@@ -1,5 +1,6 @@
 library(mirai)
 nanotest <- function(x) invisible(x || stop())
+nanotesterr <- function(x) invisible(tryCatch(x, error = function(e) TRUE) || stop())
 
 nanotest(daemons("view") == 0L)
 if (mirai:::.sysname == "Windows")
@@ -38,7 +39,7 @@ nanotest(daemons(n = 0L, .url = "tcp://:5555") == 1L)
 nanotest(daemons(0L) == -1L)
 nanotest(is.null(daemons()))
 Sys.sleep(2L)
-nanotest(tryCatch(daemons("test"), error = function(e) TRUE))
-nanotest(tryCatch(daemons(.url = 0L), error = function(e) TRUE))
+nanotesterr(daemons("test"))
+nanotesterr(daemons(.url = 0L))
 m
 
