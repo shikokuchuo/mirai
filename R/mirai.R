@@ -422,20 +422,27 @@ daemons <- function(n, .url) {
     }
 
     if (delta > 0L) {
-      for (i in seq_len(delta)) {
-        if (local)
+      if (local) {
+        for (i in seq_len(delta))
           system2(command = cmd, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
-        proc <<- proc + 1L
       }
+      proc <<- proc + delta
+
     } else {
+      out <- 0L
+      warn <- getOption("warn")
+      options(warn = -1L)
       for (i in seq_len(-delta)) {
         ctx <- context(sock)
         res <- send_aio(ctx, data = .__scm__., mode = 2L, timeout = 2000L)
-        if (suppressWarnings(.subset2(call_aio(res), "result")))
-          warning(sprintf("daemon %d shutdown timed out - may need manual termination", i))
-        proc <<- proc - 1L
+        if (.subset2(call_aio(res), "result"))
+          out <- out + 1L
         close(ctx)
       }
+      options(warn = warn)
+      proc <<- proc + delta
+      if (out)
+        warning(sprintf("%d daemon shutdowns timed out (may require manual action)", out))
       if (proc == 0L) {
         close(sock)
         sock <<- NULL

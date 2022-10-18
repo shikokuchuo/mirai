@@ -101,7 +101,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 4.199 5.496 0.718 0.15 -57.468 ...
+#>  num [1:100000000] -0.0353 3.9109 0.106 5.9053 -0.062 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -109,7 +109,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 4.199 5.496 0.718 0.15 -57.468 ...
+#>  num [1:100000000] -0.0353 3.9109 0.106 5.9053 -0.062 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -231,7 +231,7 @@ To reset all connections and revert to default behaviour:
 
 ``` r
 daemons(0)
-#> Warning in daemons(0): daemon 1 shutdown timed out - may need manual termination
+#> Warning in daemons(0): 1 daemon shutdowns timed out (may require manual action)
 #> [1] -1
 ```
 
