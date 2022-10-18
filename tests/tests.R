@@ -3,7 +3,7 @@ nanotest <- function(x) invisible(x || stop())
 
 nanotest(daemons("view") == 0L)
 if (mirai:::.sysname == "Windows")
-  nanotest(suppressWarnings(daemons(c(1L, 2L))) == 1L)
+  nanotest(daemons(c(1L, 2L)) == 1L)
 n <- 3L
 m <- mirai({
   Sys.sleep(0.1)
@@ -20,7 +20,7 @@ nanotest(length(b$data) == 3L)
 nanotest(is.character(b$data))
 b
 if (mirai:::.sysname != "Windows")
-  nanotest(suppressWarnings(daemons(c(1L, 2L))) == 1L)
+  nanotest(daemons(c(1L, 2L)) == 1L)
 df <- data.frame(a = 1, b = 2)
 dm <- eval_mirai(as.matrix(df), .args = list(df), .timeout = 1000L)
 nanotest(is_mirai(call_mirai(dm)))
@@ -35,7 +35,10 @@ nanotest(daemons("view") == 1L)
 nanotest(daemons(0L) == -1L)
 nanotest(daemons("view") == 0L)
 nanotest(daemons(n = 0L, .url = "tcp://:5555") == 1L)
-nanotest(suppressWarnings(daemons(0L)) == -1L)
+nanotest(daemons(0L) == -1L)
 nanotest(is.null(daemons()))
 Sys.sleep(2L)
+nanotest(tryCatch(daemons("test"), error = function(e) TRUE))
+nanotest(tryCatch(daemons(.url = 0L), error = function(e) TRUE))
 m
+
