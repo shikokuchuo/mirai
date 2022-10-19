@@ -152,7 +152,7 @@ eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
   } else {
     url <- sprintf(.urlfmt, random())
     system2(command = .command,
-            args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s,FALSE)", deparse(url)))),
+            args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s,0)", deparse(url)))),
             stdout = NULL, stderr = NULL, wait = FALSE)
     sock <- socket(protocol = "req", listen = url)
     ctx <- context(sock)
@@ -436,7 +436,7 @@ print.mirai <- function(x, ...) {
 #'
 print.miraiError <- function(x, ...) {
 
-  cat(x, file = stderr())
+  cat("'miraiError' chr ", x, "\n", file = stdout())
   invisible(x)
 
 }
@@ -517,6 +517,6 @@ is_error_value <- is_error_value
 # internals --------------------------------------------------------------------
 
 mk_mirai_error <- function(e) `class<-`(if (length(call <- .subset2(e, "call")))
-  sprintf("Error in %s: %s\n", deparse(call, nlines = 1L), .subset2(e, "message")) else
-    sprintf("Error: %s\n", .subset2(e, "message")), .errorclass)
+  sprintf("Error in %s: %s", deparse(call, nlines = 1L), .subset2(e, "message")) else
+    sprintf("Error: %s", .subset2(e, "message")), .errorclass)
 

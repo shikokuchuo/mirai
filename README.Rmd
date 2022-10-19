@@ -239,10 +239,10 @@ If execution in a mirai fails, the error message is returned as a character stri
 
 ```{r errorexample}
 m1 <- mirai(stop("occurred with a custom message", call. = FALSE))
-cat(call_mirai(m1)$data)
+call_mirai(m1)$data
 
 m2 <- mirai(mirai())
-cat(call_mirai(m2)$data)
+call_mirai(m2)$data
 
 is_mirai_error(m2$data)
 is_error_value(m2$data)
