@@ -43,8 +43,7 @@
 NULL
 
 .onLoad <- function(libname, pkgname) {
-  daemons <- daemons()
-  daemons <<- daemons
+  daemons <<- daemons()
 }
 
 .onUnload <- function(libpath) {

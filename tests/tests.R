@@ -33,9 +33,9 @@ nanotest(daemons("view") == 0L)
 nanotest(daemons(n = 0L, .url = sprintf(mirai:::.urlfmt, 01010101)) == 1L)
 nanotest(daemons(0L) == -1L)
 nanotest(is.null(daemons()))
-Sys.sleep(2L)
 nanotesterr(daemons("test"))
 nanotesterr(daemons(.url = 0L))
+Sys.sleep(1L)
 me$data
 m
 b
