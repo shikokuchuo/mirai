@@ -117,7 +117,7 @@ Cache data in memory and use `mirai()` to perform periodic write operations conc
 
 A 'mirai' object is returned immediately.
 
-Below, `.args` accepts a list of objects already present in the calling environment to be passed to the mirai.
+Below, '.args' accepts a list of objects already present in the calling environment to be passed to the mirai.
 
 ```{r exec2}
 library(mirai)

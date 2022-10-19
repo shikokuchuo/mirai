@@ -7,8 +7,8 @@
 unresolved(aio)
 }
 \arguments{
-\item{aio}{A 'mirai' or mirai value stored in \code{$data} (mirai are also
-aio objects).}
+\item{aio}{A 'mirai' or mirai value stored in \code{$data} (mirai are nanonext
+'aio' objects).}
 }
 \value{
 Logical TRUE or FALSE.

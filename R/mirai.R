@@ -166,122 +166,6 @@ eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
 #'
 mirai <- eval_mirai
 
-#' mirai (Call Value)
-#'
-#' Call the value of a 'mirai', waiting for the the asynchronous operation to
-#'     resolve if it is still in progress.
-#'
-#' @param aio a 'mirai' (also an 'aio' object).
-#'
-#' @return The passed 'mirai' (invisibly). The retrieved value is stored at \code{$data}.
-#'
-#' @details This function will wait for the async operation to complete if still
-#'     in progress (blocking).
-#'
-#'     If an error occurs in evaluation, the error message is returned as a
-#'     character string of class 'miraiError' and 'errorValue'.
-#'     \code{\link{is_mirai_error}} may be used to test for this, otherwise
-#'     \code{\link{is_error_value}} will also include other errors such as
-#'     timeouts.
-#'
-#'     The 'mirai' updates itself in place, so to access the value of a 'mirai'
-#'     \code{x} directly, use \code{call_mirai(x)$data}.
-#'
-#' @section Alternatively:
-#'
-#'     The value of a 'mirai' may be accessed at any time at \code{$data}, and
-#'     if yet to resolve, an 'unresolved' logical NA will be returned instead.
-#'
-#'     \code{\link{unresolved}} may also be used on a 'mirai', and returns TRUE
-#'     only if a 'mirai' has yet to resolve and FALSE otherwise. This is suitable
-#'     for use in control flow statements such as \code{while} or \code{if}.
-#'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
-#' m <- mirai(x + y + 1, x = 2, y = 3)
-#' m
-#' m$data
-#' Sys.sleep(0.2)
-#' m$data
-#'
-#' df1 <- data.frame(a = 1, b = 2)
-#' df2 <- data.frame(a = 3, b = 1)
-#' m <- mirai(as.matrix(rbind(df1, df2)), .args = list(df1, df2), .timeout = 1000)
-#' call_mirai(m)$data
-#'
-#' m <- mirai({
-#'   res <- rnorm(n)
-#'   res / rev(res)
-#' }, n = 1e6)
-#' while (unresolved(m)) {
-#'   cat("unresolved\n")
-#'   Sys.sleep(0.1)
-#' }
-#' str(m$data)
-#'
-#' file <- tempfile()
-#' cat("r <- rnorm(n)", file = file)
-#' n <- 10L
-#' m <- mirai({source(file, local = TRUE); r}, .args = list(file, n))
-#' call_mirai(m)[["data"]]
-#' unlink(file)
-#'
-#' }
-#'
-#' @export
-#'
-call_mirai <- call_aio
-
-#' mirai (Stop Evaluation)
-#'
-#' Stop evaluation of a mirai that is in progress.
-#'
-#' @param aio a 'mirai' (also an 'aio' object).
-#'
-#' @return Invisible NULL.
-#'
-#' @details Stops the asynchronous operation associated with 'mirai' by aborting,
-#'     and then waits for it to complete or to be completely aborted. The 'mirai'
-#'     is then deallocated and attempting to access the value at \code{$data}
-#'     will result in an error.
-#'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
-#' s <- mirai(Sys.sleep(n), n = 5)
-#' stop_mirai(s)
-#'
-#' }
-#'
-#' @export
-#'
-stop_mirai <- stop_aio
-
-#' Is mirai
-#'
-#' Is the object a mirai.
-#'
-#' @param x an object.
-#'
-#' @return Logical value TRUE or FALSE.
-#'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
-#' m <- mirai(as.matrix(df), df = data.frame())
-#' is_mirai(m)
-#' is_mirai(df)
-#'
-#' }
-#'
-#' @export
-#'
-is_mirai <- function(x) inherits(x, "mirai")
-
 #' daemons (Background and Remote Processes)
 #'
 #' Set or view the number of daemons (server processes). Create persistent
@@ -373,7 +257,6 @@ daemons <- function(n, .url) {
 
     is.numeric(n) || stop("invalid input - non-numeric value supplied for 'n'")
     n >= 0L || stop("'n' must be zero or greater")
-
     delta <- as.integer(n) - proc
     delta == 0L && return(delta)
 
@@ -384,7 +267,6 @@ daemons <- function(n, .url) {
       arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(url))))
       local <<- TRUE
     }
-
     if (delta > 0L) {
       if (local) {
         for (i in seq_len(delta))
@@ -416,56 +298,107 @@ daemons <- function(n, .url) {
   }
 }
 
-#' @export
+#' mirai (Call Value)
 #'
-print.mirai <- function(x, ...) {
-
-  cat("< mirai >\n - $data for evaluated result\n", file = stdout())
-  invisible(x)
-
-}
-
-#' @export
+#' Call the value of a 'mirai', waiting for the the asynchronous operation to
+#'     resolve if it is still in progress.
 #'
-print.miraiError <- function(x, ...) {
-
-  cat("'miraiError' chr ", x, "\n", file = stdout())
-  invisible(x)
-
-}
-
-#' Is mirai Error
+#' @param aio a 'mirai' (mirai are nanonext 'aio' objects).
 #'
-#' Is the object a 'miraiError'. When execution in a mirai process fails, the
-#'     error message is returned as a character string of class 'miraiError' and
-#'     'errorValue'. To test for all errors, including timeouts etc.,
-#'     \code{\link{is_error_value}} should be used instead.
+#' @return The passed 'mirai' (invisibly). The retrieved value is stored at \code{$data}.
 #'
-#' @param x an object.
+#' @details This function will wait for the async operation to complete if still
+#'     in progress (blocking).
 #'
-#' @return Logical value TRUE if 'x' is of class 'miraiError', FALSE otherwise.
+#'     If an error occurs in evaluation, the error message is returned as a
+#'     character string of class 'miraiError' and 'errorValue'.
+#'     \code{\link{is_mirai_error}} may be used to test for this, otherwise
+#'     \code{\link{is_error_value}} will also include other errors such as
+#'     timeouts.
+#'
+#'     The 'mirai' updates itself in place, so to access the value of a 'mirai'
+#'     \code{x} directly, use \code{call_mirai(x)$data}.
+#'
+#' @section Alternatively:
+#'
+#'     The value of a 'mirai' may be accessed at any time at \code{$data}, and
+#'     if yet to resolve, an 'unresolved' logical NA will be returned instead.
+#'
+#'     \code{\link{unresolved}} may also be used on a 'mirai', and returns TRUE
+#'     only if a 'mirai' has yet to resolve and FALSE otherwise. This is suitable
+#'     for use in control flow statements such as \code{while} or \code{if}.
 #'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' m <- mirai(stop())
-#' call_mirai(m)
-#' is_mirai_error(m$data)
+#' m <- mirai(x + y + 1, x = 2, y = 3)
+#' m
+#' m$data
+#' Sys.sleep(0.2)
+#' m$data
+#'
+#' df1 <- data.frame(a = 1, b = 2)
+#' df2 <- data.frame(a = 3, b = 1)
+#' m <- mirai(as.matrix(rbind(df1, df2)), .args = list(df1, df2), .timeout = 1000)
+#' call_mirai(m)$data
+#'
+#' m <- mirai({
+#'   res <- rnorm(n)
+#'   res / rev(res)
+#' }, n = 1e6)
+#' while (unresolved(m)) {
+#'   cat("unresolved\n")
+#'   Sys.sleep(0.1)
+#' }
+#' str(m$data)
+#'
+#' file <- tempfile()
+#' cat("r <- rnorm(n)", file = file)
+#' n <- 10L
+#' m <- mirai({source(file, local = TRUE); r}, .args = list(file, n))
+#' call_mirai(m)[["data"]]
+#' unlink(file)
 #'
 #' }
 #'
 #' @export
 #'
-is_mirai_error <- function(x) inherits(x, "miraiError")
+call_mirai <- call_aio
+
+#' mirai (Stop Evaluation)
+#'
+#' Stop evaluation of a mirai that is in progress.
+#'
+#' @param aio a 'mirai' (mirai are nanonext 'aio' objects).
+#'
+#' @return Invisible NULL.
+#'
+#' @details Stops the asynchronous operation associated with 'mirai' by aborting,
+#'     and then waits for it to complete or to be completely aborted. The 'mirai'
+#'     is then deallocated and attempting to access the value at \code{$data}
+#'     will result in an error.
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' s <- mirai(Sys.sleep(n), n = 5)
+#' stop_mirai(s)
+#'
+#' }
+#'
+#' @export
+#'
+stop_mirai <- stop_aio
 
 #' Query if a Mirai is Unresolved
 #'
 #' Query whether a mirai or mirai value remains unresolved. Unlike
 #'     \code{\link{call_mirai}}, this function does not wait for completion.
 #'
-#' @param aio A 'mirai' or mirai value stored in \code{$data} (mirai are also
-#'     aio objects).
+#' @param aio A 'mirai' or mirai value stored in \code{$data} (mirai are nanonext
+#'     'aio' objects).
 #'
 #' @return Logical TRUE or FALSE.
 #'
@@ -506,6 +439,67 @@ unresolved <- unresolved
 #' @export
 #'
 is_error_value <- is_error_value
+
+#' Is mirai
+#'
+#' Is the object a mirai.
+#'
+#' @param x an object.
+#'
+#' @return Logical value TRUE or FALSE.
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' m <- mirai(as.matrix(df), df = data.frame())
+#' is_mirai(m)
+#' is_mirai(df)
+#'
+#' }
+#'
+#' @export
+#'
+is_mirai <- function(x) inherits(x, "mirai")
+
+#' Is mirai Error
+#'
+#' Is the object a 'miraiError'. When execution in a mirai process fails, the
+#'     error message is returned as a character string of class 'miraiError' and
+#'     'errorValue'. To test for all errors, including timeouts etc.,
+#'     \code{\link{is_error_value}} should be used instead.
+#'
+#' @param x an object.
+#'
+#' @return Logical value TRUE if 'x' is of class 'miraiError', FALSE otherwise.
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' m <- mirai(stop())
+#' call_mirai(m)
+#' is_mirai_error(m$data)
+#'
+#' }
+#'
+#' @export
+#'
+is_mirai_error <- function(x) inherits(x, "miraiError")
+
+#' @export
+#'
+print.mirai <- function(x, ...) {
+  cat("< mirai >\n - $data for evaluated result\n", file = stdout())
+  invisible(x)
+}
+
+#' @export
+#'
+print.miraiError <- function(x, ...) {
+  cat("'miraiError' chr ", x, "\n", file = stdout())
+  invisible(x)
+}
 
 # internals --------------------------------------------------------------------
 

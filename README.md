@@ -101,7 +101,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.0105 24.7102 0.2075 11.365 0.105 ...
+#>  num [1:100000000] 0.582 0.571 29.254 0.205 0.387 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -109,7 +109,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.0105 24.7102 0.2075 11.365 0.105 ...
+#>  num [1:100000000] 0.582 0.571 29.254 0.205 0.387 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -126,7 +126,7 @@ operations concurrently in a separate process.
 
 A ‘mirai’ object is returned immediately.
 
-Below, `.args` accepts a list of objects already present in the calling
+Below, ‘.args’ accepts a list of objects already present in the calling
 environment to be passed to the mirai.
 
 ``` r

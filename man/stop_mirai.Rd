@@ -7,7 +7,7 @@
 stop_mirai(aio)
 }
 \arguments{
-\item{aio}{a 'mirai' (also an 'aio' object).}
+\item{aio}{a 'mirai' (mirai are nanonext 'aio' objects).}
 }
 \value{
 Invisible NULL.
