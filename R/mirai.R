@@ -34,33 +34,23 @@
 . <- function(.url, .. = TRUE) {
 
   sock <- socket(protocol = "rep", dial = .url)
+  on.exit(expr = close(sock))
 
   .. && repeat {
-    on.exit(expr = close(sock))
     ctx <- context(sock)
     envir <- recv(ctx, mode = 1L)
-    on.exit(expr = {
-      send(ctx, data = `class<-`(geterrmessage(), .errorclass), mode = 1L)
-      close(sock)
-      rm(list = ls())
-      .(.url)
-    })
-    data <- eval(expr = .subset2(envir, ".expr"), envir = envir)
+    data <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir),
+                     error = function(e) mk_error(e))
     send(ctx, data = data, mode = 1L)
     close(ctx)
   }
 
   ctx <- context(sock)
-  on.exit(expr = {
-    send(ctx, data = `class<-`(geterrmessage(), .errorclass), mode = 1L)
-    close(sock)
-  })
   envir <- recv(ctx, mode = 1L)
-  data <- eval(expr = .subset2(envir, ".expr"), envir = envir)
+  data <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir),
+                   error = function(e) mk_error(e))
   send(ctx, data = data, mode = 1L)
-  on.exit()
   msleep(2000L)
-  close(sock)
 
 }
 
@@ -518,4 +508,13 @@ unresolved <- unresolved
 #' @export
 #'
 is_error_value <- is_error_value
+
+# internals --------------------------------------------------------------------
+
+mk_error <- function(e) {
+  call <- .subset2(e, "call")
+  msg <- if (length(call)) sprintf("Error in %s: %s", deparse(call, nlines = 1L), .subset2(e, "message")) else
+    sprintf("Error: %s", .subset2(e, "message"))
+  `class<-`(msg, .errorclass)
+}
 
