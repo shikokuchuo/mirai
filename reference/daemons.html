@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9800</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9900</span>
       </span>
     </div>
 
@@ -78,10 +78,10 @@ of daemons.</p></dd>
 <dt>.url</dt>
 <dd><p>(optional) for distributing tasks across the network: character
 client URL and port accepting incoming connections e.g.
-'tcp://192.168.0.2:5555' at which server processes started using <code><a href="dot-.html">.()</a></code>
-should connect to. To listen to port 5555 (for example) on all interfaces
-on the host, specify one of 'tcp://:5555', 'tcp://*:5555' or
-'tcp://0.0.0.0:5555'.</p></dd>
+'tcp://192.168.0.2:5555' at which server processes started using
+<code><a href="server.html">server</a></code> should connect to. To listen to port 5555 (for example)
+on all interfaces on the host, specify one of 'tcp://:5555',
+'tcp://*:5555' or 'tcp://0.0.0.0:5555'.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -111,8 +111,9 @@ on the host, specify one of 'tcp://:5555', 'tcp://*:5555' or
 <p>Daemons provide a potentially more efficient solution for async operations
     as new processes no longer need to be created on an ad hoc basis.</p>
 <p>Specifying '.url' also allows tasks to be distributed across the network.
-    The network togology is that server daemons dial into the client socket,
-    such that network resources may be easily added or removed at any time.</p>
+    The network topology is such that server daemons dial into the client
+    socket. In this way, network resources may be easily added or removed at
+    any time.</p>
 <p>The current implementation is low-level and ensures tasks are
     evenly-distributed amongst daemons without actively managing a task queue.
     This approach provides a robust and resource-light solution, particularly
