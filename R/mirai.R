@@ -24,19 +24,25 @@
 #'
 #' @param .url the client URL and port to connect to as a character string e.g.
 #'     'tcp://192.168.0.2:5555'.
-#' @param .. [default TRUE] launch as a persistent daemon or, if FALSE, an
+#' @param daemon [default TRUE] launch as a persistent daemon or, if FALSE, an
 #'     ephemeral process.
 #'
 #' @return Invisible NULL.
 #'
+#' @section About:
+#'
+#'     The network topology is such that server daemons dial into the client
+#'     socket. In this way, network resources may be easily added or removed at
+#'     any time.
+#'
 #' @export
 #'
-. <- function(.url, .. = TRUE) {
+server <- function(.url, daemon = TRUE) {
 
   sock <- socket(protocol = "rep", dial = .url)
   on.exit(expr = close(sock))
 
-  .. && repeat {
+  daemon && repeat {
     ctx <- context(sock)
     envir <- recv(ctx, mode = 1L)
     data <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir), error = mk_mirai_error)
@@ -146,7 +152,7 @@ eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
   } else {
     url <- sprintf(.urlfmt, random())
     system2(command = .command,
-            args = c("--vanilla", "-e", shQuote(sprintf("mirai::.(%s,FALSE)", deparse(url)))),
+            args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s,FALSE)", deparse(url)))),
             stdout = NULL, stderr = NULL, wait = FALSE)
     sock <- socket(protocol = "req", listen = url)
     ctx <- context(sock)
@@ -290,10 +296,10 @@ is_mirai <- function(x) inherits(x, "mirai")
 #'     of daemons.
 #' @param .url (optional) for distributing tasks across the network: character
 #'     client URL and port accepting incoming connections e.g.
-#'     'tcp://192.168.0.2:5555' at which server processes started using \code{.()}
-#'     should connect to. To listen to port 5555 (for example) on all interfaces
-#'     on the host, specify one of 'tcp://:5555', 'tcp://*:5555' or
-#'     'tcp://0.0.0.0:5555'.
+#'     'tcp://192.168.0.2:5555' at which server processes started using
+#'     \code{\link{server}} should connect to. To listen to port 5555 (for example)
+#'     on all interfaces on the host, specify one of 'tcp://:5555',
+#'     'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
 #'
 #' @return Depending on 'n' specified:
 #'     \itemize{
@@ -317,8 +323,9 @@ is_mirai <- function(x) inherits(x, "mirai")
 #'     as new processes no longer need to be created on an ad hoc basis.
 #'
 #'     Specifying '.url' also allows tasks to be distributed across the network.
-#'     The network togology is that server daemons dial into the client socket,
-#'     such that network resources may be easily added or removed at any time.
+#'     The network topology is such that server daemons dial into the client
+#'     socket. In this way, network resources may be easily added or removed at
+#'     any time.
 #'
 #'     The current implementation is low-level and ensures tasks are
 #'     evenly-distributed amongst daemons without actively managing a task queue.
@@ -381,7 +388,7 @@ daemons <- function(n, .url) {
       url <<- sprintf(.urlfmt, random())
       sock <<- socket(protocol = "req", listen = url)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
-      arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::.(%s)", deparse(url))))
+      arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(url))))
       local <<- TRUE
     }
 
