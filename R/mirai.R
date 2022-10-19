@@ -27,7 +27,7 @@
 #' @param .. [default TRUE] launch as a persistent daemon or, if FALSE, an
 #'     ephemeral process.
 #'
-#' @return Integer exit code, zero upon success.
+#' @return Invisible NULL.
 #'
 #' @export
 #'
@@ -39,16 +39,14 @@
   .. && repeat {
     ctx <- context(sock)
     envir <- recv(ctx, mode = 1L)
-    data <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir),
-                     error = function(e) mk_error(e))
+    data <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir), error = mk_mirai_error)
     send(ctx, data = data, mode = 1L)
     close(ctx)
   }
 
   ctx <- context(sock)
   envir <- recv(ctx, mode = 1L)
-  data <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir),
-                   error = function(e) mk_error(e))
+  data <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir), error = mk_mirai_error)
   send(ctx, data = data, mode = 1L)
   msleep(2000L)
 
@@ -511,10 +509,7 @@ is_error_value <- is_error_value
 
 # internals --------------------------------------------------------------------
 
-mk_error <- function(e) {
-  call <- .subset2(e, "call")
-  msg <- if (length(call)) sprintf("Error in %s: %s", deparse(call, nlines = 1L), .subset2(e, "message")) else
-    sprintf("Error: %s", .subset2(e, "message"))
-  `class<-`(msg, .errorclass)
-}
+mk_mirai_error <- function(e) `class<-`(if (length(call <- .subset2(e, "call")))
+  sprintf("Error in %s: %s\n", deparse(call, nlines = 1L), .subset2(e, "message")) else
+    sprintf("Error: %s\n", .subset2(e, "message")), .errorclass)
 

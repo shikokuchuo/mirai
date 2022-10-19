@@ -14,7 +14,7 @@
 ephemeral process.}
 }
 \value{
-Integer exit code, zero upon success.
+Invisible NULL.
 }
 \description{
 Implements a [persistent] executor/server for the remote process. Awaits data,
