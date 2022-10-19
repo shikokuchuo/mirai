@@ -101,7 +101,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 28.12 4.13 12.55 1.22 -2.85 ...
+#>  num [1:100000000] 0.0105 24.7102 0.2075 11.365 0.105 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -109,7 +109,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 28.12 4.13 12.55 1.22 -2.85 ...
+#>  num [1:100000000] 0.0105 24.7102 0.2075 11.365 0.105 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -302,8 +302,8 @@ is_error_value(m2$data)
 #> [1] TRUE
 ```
 
-If execution of a mirai surpasses the timeout set via the `.timeout`
-argument, the mirai will resolve to an `errorValue`. This can, amongst
+If execution of a mirai surpasses the timeout set via the ‘.timeout’
+argument, the mirai will resolve to an ‘errorValue’. This can, amongst
 other things, guard against mirai processes that hang and never return.
 
 ``` r

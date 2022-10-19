@@ -42,18 +42,15 @@ server <- function(.url, daemon = TRUE) {
   sock <- socket(protocol = "rep", dial = .url)
   on.exit(expr = close(sock))
 
-  daemon && repeat {
+  repeat {
     ctx <- context(sock)
     envir <- recv(ctx, mode = 1L)
     data <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir), error = mk_mirai_error)
     send(ctx, data = data, mode = 1L)
     close(ctx)
+    daemon || break
   }
 
-  ctx <- context(sock)
-  envir <- recv(ctx, mode = 1L)
-  data <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir), error = mk_mirai_error)
-  send(ctx, data = data, mode = 1L)
   msleep(2000L)
 
 }
@@ -375,10 +372,6 @@ daemons <- function(n, .url) {
     }
 
     is.numeric(n) || stop("invalid input - non-numeric value supplied for 'n'")
-    if (length(n) > 1L) {
-      n <- n[1L]
-      warning("vector specified for 'n', only using first element")
-    }
     n >= 0L || stop("'n' must be zero or greater")
 
     delta <- as.integer(n) - proc
