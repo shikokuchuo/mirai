@@ -43,7 +43,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9703</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0.9800</span>
       </span>
     </div>
 
@@ -143,11 +143,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 3.399 2.848 0.189 0.881 -28.134 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.51115 -0.41362 3.82246 -0.6283 -0.00177 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 3.399 2.848 0.189 0.881 -28.134 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.51115 -0.41362 3.82246 -0.6283 -0.00177 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -260,8 +260,7 @@
 <span></span>
 <span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in mirai() : missing expression, perhaps wrap in {}?</span></span>
-<span><span class="co">#&gt; Calls: &lt;Anonymous&gt; -&gt; eval -&gt; eval -&gt; mirai</span></span>
+<span><span class="co">#&gt; Error in mirai(): missing expression, perhaps wrap in {}?</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/is_mirai_error.html">is_mirai_error</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
