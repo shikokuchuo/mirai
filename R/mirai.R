@@ -46,7 +46,7 @@ server <- function(.url, daemon = TRUE) {
     ctx <- context(sock)
     envir <- recv(ctx, mode = 1L)
     data <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir),
-                     error = mk_mirai_error, interrupt = function(x) NULL)
+                     error = mk_mirai_error, interrupt = mk_interrupt_error)
     send(ctx, data = data, mode = 1L)
     close(ctx)
     daemon || break
@@ -507,4 +507,6 @@ print.miraiError <- function(x, ...) {
 mk_mirai_error <- function(e) `class<-`(if (length(call <- .subset2(e, "call")))
   sprintf("Error in %s: %s", deparse(call, nlines = 1L), .subset2(e, "message")) else
     sprintf("Error: %s", .subset2(e, "message")), .errorclass)
+
+mk_interrupt_error <- function(e) `class<-`("", .errorclass)
 

@@ -1,6 +1,6 @@
 # mirai 0.7.0.9000 (development)
 
-* Allow user interrupts of `call_mirai()` again (regression in 0.7.0).
+* Allow user interrupts of `call_mirai()` again (regression in 0.7.0), returning a 'miraiError'.
 
 # mirai 0.7.0
 
