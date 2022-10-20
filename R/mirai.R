@@ -45,7 +45,8 @@ server <- function(.url, daemon = TRUE) {
   repeat {
     ctx <- context(sock)
     envir <- recv(ctx, mode = 1L)
-    data <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir), error = mk_mirai_error)
+    data <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir),
+                     error = mk_mirai_error, interrupt = function(x) NULL)
     send(ctx, data = data, mode = 1L)
     close(ctx)
     daemon || break

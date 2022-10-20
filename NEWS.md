@@ -1,3 +1,7 @@
+# mirai 0.7.0.9000 (development)
+
+* Allow user interrupts of `call_mirai()` again (regression in 0.7.0).
+
 # mirai 0.7.0
 
 * `daemons()` now takes 'n' and '.url' arguments. '.url' is an optional client URL allowing mirai tasks to be distributed across the network. Compatibility with existing interface is retained.
