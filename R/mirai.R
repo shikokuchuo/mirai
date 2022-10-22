@@ -243,7 +243,8 @@ daemons <- function(n, .url) {
       missing(n) && return(sock)
       is.character(n) && n == "view" && return(proc)
 
-    } else if (is.character(.url)) {
+    } else {
+      is.character(.url) || stop("non-character value supplied for '.url'")
       if (missing(n) || n < 1L)
         n <- 1L
       if (length(sock))
@@ -252,11 +253,9 @@ daemons <- function(n, .url) {
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       local <<- FALSE
 
-    } else {
-      stop("invalid input - non-character value supplied for '.url'")
     }
 
-    is.numeric(n) || stop("invalid input - non-numeric value supplied for 'n'")
+    is.numeric(n) || stop("non-numeric value supplied for 'n'")
     n >= 0L || stop("'n' must be zero or greater")
     delta <- as.integer(n) - proc
     delta == 0L && return(delta)
@@ -269,10 +268,9 @@ daemons <- function(n, .url) {
       local <<- TRUE
     }
     if (delta > 0L) {
-      if (local) {
+      if (local)
         for (i in seq_len(delta))
           system2(command = .command, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
-      }
       proc <<- proc + delta
 
     } else {
@@ -491,15 +489,19 @@ is_mirai_error <- function(x) inherits(x, "miraiError")
 #' @export
 #'
 print.mirai <- function(x, ...) {
+
   cat("< mirai >\n - $data for evaluated result\n", file = stdout())
   invisible(x)
+
 }
 
 #' @export
 #'
 print.miraiError <- function(x, ...) {
+
   cat("'miraiError' chr ", x, "\n", file = stdout())
   invisible(x)
+
 }
 
 # internals --------------------------------------------------------------------

@@ -42,13 +42,9 @@
 #'
 NULL
 
-.onLoad <- function(libname, pkgname) {
-  daemons <<- daemons()
-}
+.onLoad <- function(libname, pkgname) daemons <<- daemons()
 
-.onUnload <- function(libpath) {
-  invisible(daemons(0L))
-}
+.onUnload <- function(libpath) invisible(daemons(0L))
 
 .miraiclass <- c("mirai", "recvAio")
 .errorclass <- c("miraiError", "errorValue")

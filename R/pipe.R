@@ -95,14 +95,18 @@
 #' @export
 #'
 print.unresolvedExpr <- function(x, ...) {
+
   cat("< unresolvedExpr >\n - $data to query resolution\n", file = stdout())
   invisible(x)
+
 }
 
 #' @export
 #'
 print.resolvedExpr <- function(x, ...) {
+
   cat("< resolvedExpr: $data >\n", file = stdout())
   invisible(x)
+
 }
 
