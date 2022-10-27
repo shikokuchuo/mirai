@@ -101,7 +101,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.582 0.571 29.254 0.205 0.387 ...
+#>  num [1:100000000] -0.5258 0.693 0.7596 0.8798 0.0418 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -109,7 +109,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.582 0.571 29.254 0.205 0.387 ...
+#>  num [1:100000000] -0.5258 0.693 0.7596 0.8798 0.0418 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -309,8 +309,7 @@ other things, guard against mirai processes that hang and never return.
 ``` r
 m3 <- mirai(nanonext::msleep(1000), .timeout = 500)
 call_mirai(m3)$data
-#> Warning in (function (.) : 5 | Timed out
-#> 'errorValue' int 5
+#> 'errorValue' int 5 | Timed out
 
 is_mirai_error(m3$data)
 #> [1] FALSE

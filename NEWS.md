@@ -1,6 +1,7 @@
-# mirai 0.7.0.9000 (development)
+# mirai 0.7.0.9200 (development)
 
 * Allow user interrupts of `call_mirai()` again (regression in 0.7.0), returning a 'miraiError'.
+* Returned 'errorValues' e.g. mirai timeouts are no longer accompanied by a warning (change in nanonext 0.7.0).
 
 # mirai 0.7.0
 
