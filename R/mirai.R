@@ -445,7 +445,7 @@ is_error_value <- is_error_value
 #'
 #' @param x an object.
 #'
-#' @return Logical value TRUE or FALSE.
+#' @return Logical value TRUE if 'x' is of class 'mirai', FALSE otherwise.
 #'
 #' @examples
 #' if (interactive()) {
@@ -499,7 +499,7 @@ print.mirai <- function(x, ...) {
 #'
 print.miraiError <- function(x, ...) {
 
-  cat("'miraiError' chr ", x, "\n", file = stdout())
+  cat(sprintf("'miraiError' chr %s\n", x), file = stdout())
   invisible(x)
 
 }

@@ -10,7 +10,7 @@ is_mirai(x)
 \item{x}{an object.}
 }
 \value{
-Logical value TRUE or FALSE.
+Logical value TRUE if 'x' is of class 'mirai', FALSE otherwise.
 }
 \description{
 Is the object a mirai.
