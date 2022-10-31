@@ -43,7 +43,6 @@ Sys.sleep(1L)
 me$data
 m
 b
-r <- `class<-`("", "miraiInterrupt")
+nanotest(is_mirai_interrupt(r <- mirai:::mk_interrupt_error()))
 r
-nanotest(is_mirai_interrupt(r))
 

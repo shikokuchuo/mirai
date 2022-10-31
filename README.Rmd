@@ -42,7 +42,7 @@ A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving automa
 4. [Daemons](#daemons)
 5. [Distributed Computing](#distributed-computing)
 6. [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
-7. [Errors and Timeouts](#errors-and-timeouts)
+7. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
 8. [Links](#links)
 
 ### Installation
@@ -233,7 +233,7 @@ b
 
 [&laquo; Back to ToC](#table-of-contents)
 
-### Errors and Timeouts
+### Errors, Interrupts and Timeouts
 
 If execution in a mirai fails, the error message is returned as a character string of class 'miraiError' and 'errorValue' to facilitate debugging. `is_mirai_error()` can be used to test for mirai execution errors.
 
@@ -248,6 +248,12 @@ is_mirai_error(m2$data)
 is_error_value(m2$data)
 ```
 
+If during a `call_mirai()` an interrupt e.g. ctrl+c is sent, the mirai will resolve to an empty character string of class 'miraiInterrupt' and 'errorValue'. `is_mirai_interrupt()` may be used to test for such interrupts. 
+
+```{r interruptexample}
+is_mirai_interrupt(m2$data)
+```
+
 If execution of a mirai surpasses the timeout set via the '.timeout' argument, the mirai will resolve to an 'errorValue'. This can, amongst other things, guard against mirai processes that hang and never return.
 
 ```{r timeouts}
@@ -255,10 +261,11 @@ m3 <- mirai(nanonext::msleep(1000), .timeout = 500)
 call_mirai(m3)$data
 
 is_mirai_error(m3$data)
+is_mirai_interrupt(m3$data)
 is_error_value(m3$data)
 ```
 
-If during a `call_mirai()` an interrupt e.g. ctrl+c is sent, the mirai will resolve to an empty character string of class 'miraiInterrupt' and 'errorValue'. `is_mirai_interrupt()` may be used to test for such interrupts. 
+
 
 `is_error_value()` tests for all mirai execution errors, user interrupts and timeouts. 
 

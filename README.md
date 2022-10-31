@@ -41,7 +41,7 @@ dependencies.
 4.  [Daemons](#daemons)
 5.  [Distributed Computing](#distributed-computing)
 6.  [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
-7.  [Errors and Timeouts](#errors-and-timeouts)
+7.  [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
 8.  [Links](#links)
 
 ### Installation
@@ -101,7 +101,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 1.486 0.274 2.104 0.514 -1.126 ...
+#>  num [1:100000000] 4.704 0.608 0.502 -1.361 0.213 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -109,7 +109,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 1.486 0.274 2.104 0.514 -1.126 ...
+#>  num [1:100000000] 4.704 0.608 0.502 -1.361 0.213 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -281,7 +281,7 @@ b
 
 [« Back to ToC](#table-of-contents)
 
-### Errors and Timeouts
+### Errors, Interrupts and Timeouts
 
 If execution in a mirai fails, the error message is returned as a
 character string of class ‘miraiError’ and ‘errorValue’ to facilitate
@@ -303,6 +303,16 @@ is_error_value(m2$data)
 #> [1] TRUE
 ```
 
+If during a `call_mirai()` an interrupt e.g. ctrl+c is sent, the mirai
+will resolve to an empty character string of class ‘miraiInterrupt’ and
+‘errorValue’. `is_mirai_interrupt()` may be used to test for such
+interrupts.
+
+``` r
+is_mirai_interrupt(m2$data)
+#> [1] FALSE
+```
+
 If execution of a mirai surpasses the timeout set via the ‘.timeout’
 argument, the mirai will resolve to an ‘errorValue’. This can, amongst
 other things, guard against mirai processes that hang and never return.
@@ -314,14 +324,11 @@ call_mirai(m3)$data
 
 is_mirai_error(m3$data)
 #> [1] FALSE
+is_mirai_interrupt(m3$data)
+#> [1] FALSE
 is_error_value(m3$data)
 #> [1] TRUE
 ```
-
-If during a `call_mirai()` an interrupt e.g. ctrl+c is sent, the mirai
-will resolve to an empty character string ’’ of class ‘miraiInterrupt’
-and ‘errorValue’. `is_mirai_interrupt()` may be used to test for such
-interrupts.
 
 `is_error_value()` tests for all mirai execution errors, user interrupts
 and timeouts.
