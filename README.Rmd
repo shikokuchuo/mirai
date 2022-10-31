@@ -235,7 +235,7 @@ b
 
 ### Errors and Timeouts
 
-If execution in a mirai fails, the error message is returned as a character string of class 'miraiError' and 'errorValue' to facilitate debugging.
+If execution in a mirai fails, the error message is returned as a character string of class 'miraiError' and 'errorValue' to facilitate debugging. `is_mirai_error()` can be used to test for mirai execution errors.
 
 ```{r errorexample}
 m1 <- mirai(stop("occurred with a custom message", call. = FALSE))
@@ -258,7 +258,9 @@ is_mirai_error(m3$data)
 is_error_value(m3$data)
 ```
 
-`is_error_value()` tests for both mirai execution errors and timeouts. `is_mirai_error()` tests for just mirai execution errors.
+If during a `call_mirai()` an interrupt e.g. ctrl+c is sent, the mirai will resolve to an empty character string of class 'miraiInterrupt' and 'errorValue'. `is_mirai_interrupt()` may be used to test for such interrupts. 
+
+`is_error_value()` tests for all mirai execution errors, user interrupts and timeouts. 
 
 [&laquo; Back to ToC](#table-of-contents)
 

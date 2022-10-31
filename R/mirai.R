@@ -486,6 +486,32 @@ is_mirai <- function(x) inherits(x, "mirai")
 #'
 is_mirai_error <- function(x) inherits(x, "miraiError")
 
+#' Is mirai Interrupt
+#'
+#' Is the object a 'miraiInterrupt'. When a mirai is sent a user interrupt, e.g.
+#'     by ctrl+c during an ongoing \code{\link{call_mirai}}, the mirai will
+#'     resolve to an empty character string classed as 'miraiInterrupt' and
+#'     'errorValue'. To test for all errors, including timeouts etc.,
+#'     \code{\link{is_error_value}} should be used instead.
+#'
+#' @param x an object.
+#'
+#' @return Logical value TRUE if 'x' is of class 'miraiInterrupt', FALSE otherwise.
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' m <- mirai(stop())
+#' call_mirai(m)
+#' is_mirai_interrupt(m$data)
+#'
+#' }
+#'
+#' @export
+#'
+is_mirai_interrupt <- function(x) inherits(x, "miraiInterrupt")
+
 #' @export
 #'
 print.mirai <- function(x, ...) {
@@ -504,11 +530,20 @@ print.miraiError <- function(x, ...) {
 
 }
 
+#' @export
+#'
+print.miraiInterrupt <- function(x, ...) {
+
+  cat("'miraiInterrupt' chr", file = stdout())
+  invisible(x)
+
+}
+
 # internals --------------------------------------------------------------------
 
 mk_mirai_error <- function(e) `class<-`(if (length(call <- .subset2(e, "call")))
   sprintf("Error in %s: %s", deparse(call, nlines = 1L), .subset2(e, "message")) else
     sprintf("Error: %s", .subset2(e, "message")), .errorclass)
 
-mk_interrupt_error <- function(e) `class<-`("", .errorclass)
+mk_interrupt_error <- function(e) `class<-`("", .interruptclass)
 

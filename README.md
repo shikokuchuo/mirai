@@ -101,7 +101,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -0.5258 0.693 0.7596 0.8798 0.0418 ...
+#>  num [1:100000000] 1.486 0.274 2.104 0.514 -1.126 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -109,7 +109,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.5258 0.693 0.7596 0.8798 0.0418 ...
+#>  num [1:100000000] 1.486 0.274 2.104 0.514 -1.126 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -285,16 +285,17 @@ b
 
 If execution in a mirai fails, the error message is returned as a
 character string of class ‘miraiError’ and ‘errorValue’ to facilitate
-debugging.
+debugging. `is_mirai_error()` can be used to test for mirai execution
+errors.
 
 ``` r
 m1 <- mirai(stop("occurred with a custom message", call. = FALSE))
 call_mirai(m1)$data
-#> 'miraiError' chr  Error: occurred with a custom message
+#> 'miraiError' chr Error: occurred with a custom message
 
 m2 <- mirai(mirai())
 call_mirai(m2)$data
-#> 'miraiError' chr  Error in mirai(): missing expression, perhaps wrap in {}?
+#> 'miraiError' chr Error in mirai(): missing expression, perhaps wrap in {}?
 
 is_mirai_error(m2$data)
 #> [1] TRUE
@@ -317,8 +318,13 @@ is_error_value(m3$data)
 #> [1] TRUE
 ```
 
-`is_error_value()` tests for both mirai execution errors and timeouts.
-`is_mirai_error()` tests for just mirai execution errors.
+If during a `call_mirai()` an interrupt e.g. ctrl+c is sent, the mirai
+will resolve to an empty character string ’’ of class ‘miraiInterrupt’
+and ‘errorValue’. `is_mirai_interrupt()` may be used to test for such
+interrupts.
+
+`is_error_value()` tests for all mirai execution errors, user interrupts
+and timeouts.
 
 [« Back to ToC](#table-of-contents)
 

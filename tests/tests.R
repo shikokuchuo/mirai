@@ -23,6 +23,7 @@ nanotest(is.character(b$data))
 nanotest(daemons(1L) == 1L)
 me <- mirai(mirai())
 nanotest(is_mirai_error(call_mirai(me)$data))
+nanotest(!is_mirai_interrupt(me$data))
 nanotest(is_error_value(me[["data"]]))
 df <- data.frame(a = 1, b = 2)
 dm <- eval_mirai(as.matrix(df), .args = list(df), .timeout = 1000L)
@@ -42,4 +43,7 @@ Sys.sleep(1L)
 me$data
 m
 b
+r <- `class<-`("", "miraiInterrupt")
+r
+nanotest(is_mirai_interrupt(r))
 
