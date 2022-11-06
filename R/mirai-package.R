@@ -48,7 +48,7 @@ NULL
 
 .miraiclass <- c("mirai", "recvAio")
 .errorclass <- c("miraiError", "errorValue")
-.interruptclass <- c("miraiInterrupt", "errorValue")
+.interrupt <- `class<-`("", c("miraiInterrupt", "errorValue"))
 .sysname <- .subset2(Sys.info(), "sysname")
 .command <- switch(.sysname,
                    Windows = file.path(R.home("bin"), "Rscript.exe"),

@@ -278,7 +278,7 @@ daemons <- function(n, .url) {
       for (i in seq_len(-delta)) {
         ctx <- context(sock)
         res <- send_aio(ctx, data = .__scm__., mode = 2L, timeout = 2000L)
-        if (suppressWarnings(.subset2(call_aio(res), "result")))
+        if (.subset2(call_aio(res), "result"))
           out <- out + 1L
         close(ctx)
       }
@@ -545,5 +545,5 @@ mk_mirai_error <- function(e) `class<-`(if (length(call <- .subset2(e, "call")))
   sprintf("Error in %s: %s", deparse(call, nlines = 1L), .subset2(e, "message")) else
     sprintf("Error: %s", .subset2(e, "message")), .errorclass)
 
-mk_interrupt_error <- function(e) `class<-`("", .interruptclass)
+mk_interrupt_error <- function(e) .interrupt
 
