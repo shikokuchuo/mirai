@@ -10,13 +10,13 @@ eval_mirai(.expr, ..., .args = list(), .timeout = NULL)
 mirai(.expr, ..., .args = list(), .timeout = NULL)
 }
 \arguments{
-\item{.expr}{an expression to evaluate in a new R process. This may be of
+\item{.expr}{an expression to evaluate asynchronously. This may be of
 arbitrary length, wrapped in \{\} if necessary.}
 
-\item{...}{(optional) named arguments specifying variables contained in '.expr'.}
+\item{...}{(optional) named arguments specifying objects referenced in '.expr'.}
 
-\item{.args}{(optional) list supplying arguments to '.expr' (used in addition
-to or instead of named arguments specified as '...').}
+\item{.args}{(optional) list supplying objects referenced in '.expr' (used in
+addition to or instead of named arguments specified as '...').}
 
 \item{.timeout}{(optional) integer value in milliseconds or NULL for no
 timeout. A 'mirai' will resolve to an 'errorValue' 5 (timed out) if
@@ -26,9 +26,10 @@ evaluation exceeds this limit.}
 A 'mirai' object.
 }
 \description{
-Evaluate an expression asynchronously in a new background R process. This
-    function will return immediately with a 'mirai', which will resolve to
-    the evaluated result once complete.
+Evaluate an expression asynchronously in a new background R process or
+    existing daemon (local or on the network). This function will return
+    immediately with a 'mirai', which will resolve to the evaluated result
+    once complete.
 }
 \details{
 This function will return a 'mirai' object immediately.
@@ -36,23 +37,25 @@ This function will return a 'mirai' object immediately.
     The value of a 'mirai' may be accessed at any time at \code{$data}, and
     if yet to resolve, an 'unresolved' logical NA will be returned instead.
 
-    \code{\link{unresolved}} may also be used on a 'mirai', which returns TRUE
-    only if a 'mirai' has yet to resolve and FALSE otherwise. This is suitable
-    for use in control flow statements such as \code{while} or \code{if}.
+    \code{\link{unresolved}} may be used on a 'mirai', returning TRUE if a
+    'mirai' has yet to resolve and FALSE otherwise. This is suitable for use
+    in control flow statements such as \code{while} or \code{if}.
 
     Alternatively, to call (and wait for) the result, use
     \code{\link{call_mirai}} on the returned 'mirai' object. This will block
-    until the result is returned.
+    until the result is returned. If interrupted with e.g. ctrl+c, the mirai
+    will resolve into an object of class 'miraiInterrupt' and 'errorValue'.
+    \code{\link{is_mirai_interrupt}} may be used to test for such objects.
 
-    The expression '.expr' will be evaluated in a new R process in a clean
-    environment consisting of the named objects passed as '...' only (along
-    with objects in the list '.args', if supplied).
+    The expression '.expr' will be evaluated in a separate R process in a
+    clean environment consisting only of the named objects passed as '...' or
+    in the list supplied to '.args', as applicable.
 
     If an error occurs in evaluation, the error message is returned as a
     character string of class 'miraiError' and 'errorValue'.
     \code{\link{is_mirai_error}} may be used to test for this, otherwise
     \code{\link{is_error_value}} will also include other errors such as
-    timeouts.
+    interrupts or timeouts.
 
     \code{\link{mirai}} is an alias for \code{\link{eval_mirai}}.
 }

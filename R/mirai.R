@@ -58,15 +58,16 @@ server <- function(.url, daemon = TRUE) {
 
 #' mirai (Evaluate Async)
 #'
-#' Evaluate an expression asynchronously in a new background R process. This
-#'     function will return immediately with a 'mirai', which will resolve to
-#'     the evaluated result once complete.
+#' Evaluate an expression asynchronously in a new background R process or
+#'     existing daemon (local or on the network). This function will return
+#'     immediately with a 'mirai', which will resolve to the evaluated result
+#'     once complete.
 #'
-#' @param .expr an expression to evaluate in a new R process. This may be of
+#' @param .expr an expression to evaluate asynchronously. This may be of
 #'     arbitrary length, wrapped in \{\} if necessary.
-#' @param ... (optional) named arguments specifying variables contained in '.expr'.
-#' @param .args (optional) list supplying arguments to '.expr' (used in addition
-#'     to or instead of named arguments specified as '...').
+#' @param ... (optional) named arguments specifying objects referenced in '.expr'.
+#' @param .args (optional) list supplying objects referenced in '.expr' (used in
+#'     addition to or instead of named arguments specified as '...').
 #' @param .timeout (optional) integer value in milliseconds or NULL for no
 #'     timeout. A 'mirai' will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
@@ -78,23 +79,25 @@ server <- function(.url, daemon = TRUE) {
 #'     The value of a 'mirai' may be accessed at any time at \code{$data}, and
 #'     if yet to resolve, an 'unresolved' logical NA will be returned instead.
 #'
-#'     \code{\link{unresolved}} may also be used on a 'mirai', which returns TRUE
-#'     only if a 'mirai' has yet to resolve and FALSE otherwise. This is suitable
-#'     for use in control flow statements such as \code{while} or \code{if}.
+#'     \code{\link{unresolved}} may be used on a 'mirai', returning TRUE if a
+#'     'mirai' has yet to resolve and FALSE otherwise. This is suitable for use
+#'     in control flow statements such as \code{while} or \code{if}.
 #'
 #'     Alternatively, to call (and wait for) the result, use
 #'     \code{\link{call_mirai}} on the returned 'mirai' object. This will block
-#'     until the result is returned.
+#'     until the result is returned. If interrupted with e.g. ctrl+c, the mirai
+#'     will resolve into an object of class 'miraiInterrupt' and 'errorValue'.
+#'     \code{\link{is_mirai_interrupt}} may be used to test for such objects.
 #'
-#'     The expression '.expr' will be evaluated in a new R process in a clean
-#'     environment consisting of the named objects passed as '...' only (along
-#'     with objects in the list '.args', if supplied).
+#'     The expression '.expr' will be evaluated in a separate R process in a
+#'     clean environment consisting only of the named objects passed as '...' or
+#'     in the list supplied to '.args', as applicable.
 #'
 #'     If an error occurs in evaluation, the error message is returned as a
 #'     character string of class 'miraiError' and 'errorValue'.
 #'     \code{\link{is_mirai_error}} may be used to test for this, otherwise
 #'     \code{\link{is_error_value}} will also include other errors such as
-#'     timeouts.
+#'     interrupts or timeouts.
 #'
 #'     \code{\link{mirai}} is an alias for \code{\link{eval_mirai}}.
 #'
@@ -169,10 +172,11 @@ mirai <- eval_mirai
 
 #' daemons (Background and Remote Processes)
 #'
-#' Set or view the number of daemons (server processes). Create persistent
-#'     background processes to receive \code{\link{mirai}} requests, providing
-#'     an efficient solution for async operations on a local machine. Also
-#'     provides the interface for distributing requests across the network.
+#' Set or view the number of 'daemons' or persistent background server processes
+#'     receiving \code{\link{mirai}} requests. These are automatically created
+#'     on a local machine, or alternatively a client URL may be set to receive
+#'     connections from servers started with \code{\link{server}}, for
+#'     distributing tasks across the network.
 #'
 #' @param n integer number of daemons to set | 'view' to view the current number
 #'     of daemons.
@@ -205,9 +209,9 @@ mirai <- eval_mirai
 #'     as new processes no longer need to be created on an ad hoc basis.
 #'
 #'     Specifying '.url' also allows tasks to be distributed across the network.
-#'     The network topology is such that server daemons dial into the client
-#'     socket. In this way, network resources may be easily added or removed at
-#'     any time.
+#'     The network topology is such that server daemons (started with
+#'     \code{\link{server}}) dial into the client. In this way, network resources
+#'     may be added or removed at any time.
 #'
 #'     The current implementation is low-level and ensures tasks are
 #'     evenly-distributed amongst daemons without actively managing a task queue.

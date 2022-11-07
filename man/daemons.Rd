@@ -25,10 +25,11 @@ Depending on 'n' specified:
     }
 }
 \description{
-Set or view the number of daemons (server processes). Create persistent
-    background processes to receive \code{\link{mirai}} requests, providing
-    an efficient solution for async operations on a local machine. Also
-    provides the interface for distributing requests across the network.
+Set or view the number of 'daemons' or persistent background server processes
+    receiving \code{\link{mirai}} requests. These are automatically created
+    on a local machine, or alternatively a client URL may be set to receive
+    connections from servers started with \code{\link{server}}, for
+    distributing tasks across the network.
 }
 \details{
 Set 'n' to 0 to reset all daemon connections. \{mirai\} will revert
@@ -48,9 +49,9 @@ Set 'n' to 0 to reset all daemon connections. \{mirai\} will revert
     as new processes no longer need to be created on an ad hoc basis.
 
     Specifying '.url' also allows tasks to be distributed across the network.
-    The network topology is such that server daemons dial into the client
-    socket. In this way, network resources may be easily added or removed at
-    any time.
+    The network topology is such that server daemons (started with
+    \code{\link{server}}) dial into the client. In this way, network resources
+    may be added or removed at any time.
 
     The current implementation is low-level and ensures tasks are
     evenly-distributed amongst daemons without actively managing a task queue.
