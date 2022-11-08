@@ -15,13 +15,12 @@ badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc)](https://sh
 
 Minimalist async evaluation framework for R.
 
-未来 みらい mirai is Japanese for ‘future’.
+Simple and lightweight parallel code execution, local or distributed
+across the network, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen)
+technology.
 
-Simple and lightweight parallelism and concurrent code execution, local
-or distributed across the network, built on ‘nanonext’ and ‘NNG’
-(Nanomsg Next Gen) technology.
-
-`mirai()` returns a ‘mirai’ object immediately.
+`mirai()` returns a ‘mirai’ object immediately. ‘mirai’ (未来 みらい) is
+Japanese for ‘future’.
 
 A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving
 automatically upon completion. The asynchronous task runs in an
@@ -29,8 +28,8 @@ ephemeral or persistent process, spawned locally or distributed across
 the network.
 
 {mirai} has a tiny pure R code base, relying solely on {nanonext}, a
-high-performance binding for the ‘NNG’ C library with zero package
-dependencies.
+high-performance binding for the ‘NNG’ C messaging library with zero
+package dependencies.
 
 ### Table of Contents
 
@@ -101,7 +100,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 2.313 1.854 -1.577 2.262 0.668 ...
+#>  num [1:100000000] -2.917 -0.348 -0.929 1.501 0.363 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -109,7 +108,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 2.313 1.854 -1.577 2.262 0.668 ...
+#>  num [1:100000000] -2.917 -0.348 -0.929 1.501 0.363 ...
 ```
 
 [« Back to ToC](#table-of-contents)

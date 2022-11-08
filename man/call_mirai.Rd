@@ -20,11 +20,17 @@ Call the value of a 'mirai', waiting for the the asynchronous operation to
 This function will wait for the async operation to complete if still
     in progress (blocking).
 
+    A blocking call can be interrupted with e.g. ctrl+c, in which case the
+    mirai will resolve into an object of class 'miraiInterrupt' and
+    'errorValue'. \code{\link{is_mirai_interrupt}} may be used to test for
+    such cases.
+
     If an error occurs in evaluation, the error message is returned as a
     character string of class 'miraiError' and 'errorValue'.
-    \code{\link{is_mirai_error}} may be used to test for this, otherwise
-    \code{\link{is_error_value}} will also include other errors such as
-    timeouts.
+    \code{\link{is_mirai_error}} may be used to test for this.
+
+    \code{\link{is_error_value}} will test for mirai errors as well as
+    interrupts and timeouts.
 
     The 'mirai' updates itself in place, so to access the value of a 'mirai'
     \code{x} directly, use \code{call_mirai(x)$data}.

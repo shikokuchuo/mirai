@@ -43,9 +43,7 @@ This function will return a 'mirai' object immediately.
 
     Alternatively, to call (and wait for) the result, use
     \code{\link{call_mirai}} on the returned 'mirai' object. This will block
-    until the result is returned. If interrupted with e.g. ctrl+c, the mirai
-    will resolve into an object of class 'miraiInterrupt' and 'errorValue'.
-    \code{\link{is_mirai_interrupt}} may be used to test for such objects.
+    until the result is returned (although interruptible with e.g. ctrl+c).
 
     The expression '.expr' will be evaluated in a separate R process in a
     clean environment consisting only of the named objects passed as '...' or
@@ -53,9 +51,10 @@ This function will return a 'mirai' object immediately.
 
     If an error occurs in evaluation, the error message is returned as a
     character string of class 'miraiError' and 'errorValue'.
-    \code{\link{is_mirai_error}} may be used to test for this, otherwise
-    \code{\link{is_error_value}} will also include other errors such as
-    interrupts or timeouts.
+    \code{\link{is_mirai_error}} may be used to test for this.
+
+    \code{\link{is_error_value}} will test for mirai errors as well as
+    interrupts and timeouts.
 
     \code{\link{mirai}} is an alias for \code{\link{eval_mirai}}.
 }

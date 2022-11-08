@@ -2,7 +2,7 @@
 
 * Allow user interrupts of `call_mirai()` again (regression in 0.7.0), now returning a 'miraiInterrupt'.
 * Adds auxiliary function `is_mirai_interrupt()` to test if an object is a 'miraiInterrupt'.
-* Returned 'errorValues' e.g. mirai timeouts are no longer accompanied by a warning (change in nanonext 0.7.0).
+* Changes in nanonext >= 0.7.0: returned 'errorValues' e.g. mirai timeouts are no longer accompanied by warnings.
 * Internal performance enhancements.
 
 # mirai 0.7.0

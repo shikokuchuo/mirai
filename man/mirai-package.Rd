@@ -6,9 +6,10 @@
 \alias{mirai-package}
 \title{mirai: Minimalist Async Evaluation Framework for R}
 \description{
-Simple and lightweight parallelism and concurrent code execution, local or
-    distributed across the network, built on 'nanonext' and 'NNG' (Nanomsg
-    Next Gen) technology. mirai is Japanese for 'future'.
+Simple and lightweight parallel code execution, local or distributed across
+    the network, built on 'nanonext' and 'NNG' (Nanomsg Next Gen) technology.
+    A 'mirai' (Japanese for 'future') evaluates an arbitrary expression
+    asynchronously, resolving automatically upon completion.
 }
 \section{Links}{
 
