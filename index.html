@@ -19,9 +19,10 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
 <meta property="og:title" content="Minimalist Async Evaluation Framework for R">
-<meta property="og:description" content="Simple and lightweight parallelism and concurrent code execution,
-    local or distributed across the network, built on nanonext and NNG
-    (Nanomsg Next Gen) technology.">
+<meta property="og:description" content="Simple and lightweight parallel code execution, local or
+    distributed across the network, built on nanonext and NNG (Nanomsg Next
+    Gen) technology. A mirai evaluates an arbitrary expression asynchronously,
+    resolving automatically upon completion.">
 <meta property="og:image" content="https://shikokuchuo.net/mirai/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -88,11 +89,10 @@
 <!-- badges: start -->
 
 <p>Minimalist async evaluation framework for R.</p>
-<p>未来 みらい mirai is Japanese for ‘future’.</p>
-<p>Simple and lightweight parallelism and concurrent code execution, local or distributed across the network, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) technology.</p>
-<p><code><a href="reference/eval_mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately.</p>
+<p>Simple and lightweight parallel code execution, local or distributed across the network, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) technology.</p>
+<p><code><a href="reference/eval_mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately. ‘mirai’ (未来 みらい) is Japanese for ‘future’.</p>
 <p>A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving automatically upon completion. The asynchronous task runs in an ephemeral or persistent process, spawned locally or distributed across the network.</p>
-<p>{mirai} has a tiny pure R code base, relying solely on {nanonext}, a high-performance binding for the ‘NNG’ C library with zero package dependencies.</p>
+<p>{mirai} has a tiny pure R code base, relying solely on {nanonext}, a high-performance binding for the ‘NNG’ C messaging library with zero package dependencies.</p>
 <div class="section level3">
 <h3 id="table-of-contents">Table of Contents<a class="anchor" aria-label="anchor" href="#table-of-contents"></a>
 </h3>
@@ -144,11 +144,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 2.313 1.854 -1.577 2.262 0.668 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -2.917 -0.348 -0.929 1.501 0.363 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 2.313 1.854 -1.577 2.262 0.668 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -2.917 -0.348 -0.929 1.501 0.363 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">

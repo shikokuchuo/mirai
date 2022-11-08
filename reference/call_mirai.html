@@ -80,11 +80,15 @@
     <h2>Details</h2>
     <p>This function will wait for the async operation to complete if still
     in progress (blocking).</p>
+<p>A blocking call can be interrupted with e.g. ctrl+c, in which case the
+    mirai will resolve into an object of class 'miraiInterrupt' and
+    'errorValue'. <code><a href="is_mirai_interrupt.html">is_mirai_interrupt</a></code> may be used to test for
+    such cases.</p>
 <p>If an error occurs in evaluation, the error message is returned as a
     character string of class 'miraiError' and 'errorValue'.
-    <code><a href="is_mirai_error.html">is_mirai_error</a></code> may be used to test for this, otherwise
-    <code><a href="is_error_value.html">is_error_value</a></code> will also include other errors such as
-    timeouts.</p>
+    <code><a href="is_mirai_error.html">is_mirai_error</a></code> may be used to test for this.</p>
+<p><code><a href="is_error_value.html">is_error_value</a></code> will test for mirai errors as well as
+    interrupts and timeouts.</p>
 <p>The 'mirai' updates itself in place, so to access the value of a 'mirai'
     <code>x</code> directly, use <code>call_mirai(x)$data</code>.</p>
     </div>
