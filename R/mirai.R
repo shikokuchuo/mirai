@@ -59,7 +59,7 @@ server <- function(.url, daemon = TRUE) {
 #' mirai (Evaluate Async)
 #'
 #' Evaluate an expression asynchronously in a new background R process or
-#'     existing daemon (local or on the network). This function will return
+#'     persistent daemon (local or remote). This function will return
 #'     immediately with a 'mirai', which will resolve to the evaluated result
 #'     once complete.
 #'
@@ -88,15 +88,15 @@ server <- function(.url, daemon = TRUE) {
 #'     until the result is returned (although interruptible with e.g. ctrl+c).
 #'
 #'     The expression '.expr' will be evaluated in a separate R process in a
-#'     clean environment consisting only of the named objects passed as '...' or
-#'     in the list supplied to '.args', as applicable.
+#'     clean environment consisting only of the named objects passed as '...'
+#'     and/or the list supplied to '.args'.
 #'
 #'     If an error occurs in evaluation, the error message is returned as a
 #'     character string of class 'miraiError' and 'errorValue'.
 #'     \code{\link{is_mirai_error}} may be used to test for this.
 #'
-#'     \code{\link{is_error_value}} will test for mirai errors as well as
-#'     interrupts and timeouts.
+#'     \code{\link{is_error_value}} tests for all error conditions including
+#'     'mirai' errors, interrupts, and timeouts.
 #'
 #'     \code{\link{mirai}} is an alias for \code{\link{eval_mirai}}.
 #'
@@ -169,13 +169,13 @@ eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
 #'
 mirai <- eval_mirai
 
-#' daemons (Background and Remote Processes)
+#' daemons (Persistent Server Processes)
 #'
-#' Set or view the number of 'daemons' or persistent background server processes
-#'     receiving \code{\link{mirai}} requests. These are automatically created
-#'     on a local machine, or alternatively a client URL may be set to receive
-#'     connections from servers started with \code{\link{server}}, for
-#'     distributing tasks across the network.
+#' Set or view the number of 'daemons' or persistent server processes receiving
+#'     \code{\link{mirai}} requests. These are, by default, automatically
+#'     created on the local machine. Alternatively, a client URL may be set to
+#'     receive connections from remote servers started with \code{\link{server}},
+#'     for distributing tasks across the network.
 #'
 #' @param n integer number of daemons to set | 'view' to view the current number
 #'     of daemons.
@@ -191,26 +191,35 @@ mirai <- eval_mirai
 #'     \item{integer: integer change in number of daemons (created or destroyed).}
 #'     \item{'view': integer number of currently set daemons.}
 #'     }
+#'     Calling \code{daemons()} without any arguments returns the 'nanoSocket'
+#'     for connecting to the daemons, or NULL if it is yet to be created.
 #'
 #' @details Set 'n' to 0 to reset all daemon connections. \{mirai\} will revert
 #'     to the default behaviour of creating a new background process for each
 #'     request.
 #'
-#'     Specifying a custom client URL without 'n' (or 'n' < 1) will default to a
-#'     value for 'n' of 1.
+#'     Specifying '.url' without 'n' assumes a value for 'n' of 1. After setting
+#'     '.url', further calls specifying 'n' can be used to update the number of
+#'     connected daemons (this is not strictly necessary as the number of
+#'     connections is detected automatically, but will ensure that the correct
+#'     number of shutdown signals are sent when the session is ended).
 #'
-#'     Calling \code{daemons()} without any arguments returns the 'nanoSocket'
-#'     for connecting to the daemons, or NULL if it is yet to be created.
+#'     Setting a new '.url' value will attempt to shutdown existing daemons
+#'     connected to the exisitng address before opening a connection at the new
+#'     address.
 #'
 #' @section About:
 #'
-#'     Daemons provide a potentially more efficient solution for async operations
-#'     as new processes no longer need to be created on an ad hoc basis.
+#'     Daemons provide a potentially more efficient solution for asynchronous
+#'     operations as new processes no longer need to be created on an ad hoc
+#'     basis.
 #'
 #'     Specifying '.url' also allows tasks to be distributed across the network.
 #'     The network topology is such that server daemons (started with
-#'     \code{\link{server}}) dial into the client. In this way, network resources
-#'     may be added or removed at any time.
+#'     \code{\link{server}}) dial into the client, which listens at the '.url'
+#'     address. In this way, network resources may be added or removed at any
+#'     time and the client automatically distributes tasks to all available
+#'     resources.
 #'
 #'     The current implementation is low-level and ensures tasks are
 #'     evenly-distributed amongst daemons without actively managing a task queue.
@@ -223,8 +232,8 @@ mirai <- eval_mirai
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' # Create 4 daemons
-#' daemons(4)
+#' # Create 2 daemons
+#' daemons(2)
 #' # View the number of active daemons
 #' daemons("view")
 #' # Reset to zero
@@ -312,17 +321,17 @@ daemons <- function(n, .url) {
 #' @details This function will wait for the async operation to complete if still
 #'     in progress (blocking).
 #'
-#'     A blocking call can be interrupted with e.g. ctrl+c, in which case the
-#'     mirai will resolve into an object of class 'miraiInterrupt' and
-#'     'errorValue'. \code{\link{is_mirai_interrupt}} may be used to test for
-#'     such cases.
+#'     A blocking call can be sent a user interrupt with e.g. ctrl+c. If the
+#'     ongoing execution in the 'mirai' is interruptible, it will resolve into
+#'     an object of class 'miraiInterrupt' and 'errorValue'.
+#'     \code{\link{is_mirai_interrupt}} may be used to handle such cases.
 #'
 #'     If an error occurs in evaluation, the error message is returned as a
 #'     character string of class 'miraiError' and 'errorValue'.
 #'     \code{\link{is_mirai_error}} may be used to test for this.
 #'
-#'     \code{\link{is_error_value}} will test for mirai errors as well as
-#'     interrupts and timeouts.
+#'     \code{\link{is_error_value}} tests for all error conditions including
+#'     'mirai' errors, interrupts, and timeouts.
 #'
 #'     The 'mirai' updates itself in place, so to access the value of a 'mirai'
 #'     \code{x} directly, use \code{call_mirai(x)$data}.
@@ -332,9 +341,9 @@ daemons <- function(n, .url) {
 #'     The value of a 'mirai' may be accessed at any time at \code{$data}, and
 #'     if yet to resolve, an 'unresolved' logical NA will be returned instead.
 #'
-#'     \code{\link{unresolved}} may also be used on a 'mirai', and returns TRUE
-#'     only if a 'mirai' has yet to resolve and FALSE otherwise. This is suitable
-#'     for use in control flow statements such as \code{while} or \code{if}.
+#'     Using \code{\link{unresolved}} on a 'mirai' returns TRUE only if a 'mirai'
+#'     has yet to resolve and FALSE otherwise. This is suitable for use in
+#'     control flow statements such as \code{while} or \code{if}.
 #'
 #' @examples
 #' if (interactive()) {
@@ -422,7 +431,7 @@ stop_mirai <- stop_aio
 #'
 #' m <- mirai(Sys.sleep(0.1))
 #' unresolved(m)
-#' Sys.sleep(0.5)
+#' Sys.sleep(0.3)
 #' unresolved(m)
 #'
 #' }

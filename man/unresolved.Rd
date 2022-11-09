@@ -30,7 +30,7 @@ if (interactive()) {
 
 m <- mirai(Sys.sleep(0.1))
 unresolved(m)
-Sys.sleep(0.5)
+Sys.sleep(0.3)
 unresolved(m)
 
 }

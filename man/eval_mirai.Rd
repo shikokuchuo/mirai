@@ -27,7 +27,7 @@ A 'mirai' object.
 }
 \description{
 Evaluate an expression asynchronously in a new background R process or
-    existing daemon (local or on the network). This function will return
+    persistent daemon (local or remote). This function will return
     immediately with a 'mirai', which will resolve to the evaluated result
     once complete.
 }
@@ -46,15 +46,15 @@ This function will return a 'mirai' object immediately.
     until the result is returned (although interruptible with e.g. ctrl+c).
 
     The expression '.expr' will be evaluated in a separate R process in a
-    clean environment consisting only of the named objects passed as '...' or
-    in the list supplied to '.args', as applicable.
+    clean environment consisting only of the named objects passed as '...'
+    and/or the list supplied to '.args'.
 
     If an error occurs in evaluation, the error message is returned as a
     character string of class 'miraiError' and 'errorValue'.
     \code{\link{is_mirai_error}} may be used to test for this.
 
-    \code{\link{is_error_value}} will test for mirai errors as well as
-    interrupts and timeouts.
+    \code{\link{is_error_value}} tests for all error conditions including
+    'mirai' errors, interrupts, and timeouts.
 
     \code{\link{mirai}} is an alias for \code{\link{eval_mirai}}.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/mirai.R
 \name{daemons}
 \alias{daemons}
-\title{daemons (Background and Remote Processes)}
+\title{daemons (Persistent Server Processes)}
 \usage{
 daemons(n, .url)
 }
@@ -23,35 +23,44 @@ Depending on 'n' specified:
     \item{integer: integer change in number of daemons (created or destroyed).}
     \item{'view': integer number of currently set daemons.}
     }
+    Calling \code{daemons()} without any arguments returns the 'nanoSocket'
+    for connecting to the daemons, or NULL if it is yet to be created.
 }
 \description{
-Set or view the number of 'daemons' or persistent background server processes
-    receiving \code{\link{mirai}} requests. These are automatically created
-    on a local machine, or alternatively a client URL may be set to receive
-    connections from servers started with \code{\link{server}}, for
-    distributing tasks across the network.
+Set or view the number of 'daemons' or persistent server processes receiving
+    \code{\link{mirai}} requests. These are, by default, automatically
+    created on the local machine. Alternatively, a client URL may be set to
+    receive connections from remote servers started with \code{\link{server}},
+    for distributing tasks across the network.
 }
 \details{
 Set 'n' to 0 to reset all daemon connections. \{mirai\} will revert
     to the default behaviour of creating a new background process for each
     request.
 
-    Specifying a custom client URL without 'n' (or 'n' < 1) will default to a
-    value for 'n' of 1.
+    Specifying '.url' without 'n' assumes a value for 'n' of 1. After setting
+    '.url', further calls specifying 'n' can be used to update the number of
+    connected daemons (this is not strictly necessary as the number of
+    connections is detected automatically, but will ensure that the correct
+    number of shutdown signals are sent when the session is ended).
 
-    Calling \code{daemons()} without any arguments returns the 'nanoSocket'
-    for connecting to the daemons, or NULL if it is yet to be created.
+    Setting a new '.url' value will attempt to shutdown existing daemons
+    connected to the exisitng address before opening a connection at the new
+    address.
 }
 \section{About}{
 
 
-    Daemons provide a potentially more efficient solution for async operations
-    as new processes no longer need to be created on an ad hoc basis.
+    Daemons provide a potentially more efficient solution for asynchronous
+    operations as new processes no longer need to be created on an ad hoc
+    basis.
 
     Specifying '.url' also allows tasks to be distributed across the network.
     The network topology is such that server daemons (started with
-    \code{\link{server}}) dial into the client. In this way, network resources
-    may be added or removed at any time.
+    \code{\link{server}}) dial into the client, which listens at the '.url'
+    address. In this way, network resources may be added or removed at any
+    time and the client automatically distributes tasks to all available
+    resources.
 
     The current implementation is low-level and ensures tasks are
     evenly-distributed amongst daemons without actively managing a task queue.
@@ -65,8 +74,8 @@ Set 'n' to 0 to reset all daemon connections. \{mirai\} will revert
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-# Create 4 daemons
-daemons(4)
+# Create 2 daemons
+daemons(2)
 # View the number of active daemons
 daemons("view")
 # Reset to zero
