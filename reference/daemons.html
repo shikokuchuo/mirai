@@ -104,11 +104,11 @@ on all interfaces on the host, specify one of 'tcp://:5555',
     request.</p>
 <p>Specifying '.url' without 'n' assumes a value for 'n' of 1. After setting
     '.url', further calls specifying 'n' can be used to update the number of
-    connected daemons (this is not strictly necessary as the number of
-    connections is detected automatically, but will ensure that the correct
-    number of shutdown signals are sent when the session is ended).</p>
+    connected daemons (this is not strictly necessary as daemons are detected
+    automatically, but will ensure that the correct number of shutdown signals
+    are sent when the session is ended).</p>
 <p>Setting a new '.url' value will attempt to shutdown existing daemons
-    connected to the exisitng address before opening a connection at the new
+    connected at the existing address before opening a connection at the new
     address.</p>
     </div>
     <div id="about">
@@ -123,8 +123,7 @@ on all interfaces on the host, specify one of 'tcp://:5555',
     The network topology is such that server daemons (started with
     <code><a href="server.html">server</a></code>) dial into the client, which listens at the '.url'
     address. In this way, network resources may be added or removed at any
-    time and the client automatically distributes tasks to all available
-    resources.</p>
+    time. The client automatically distributes tasks to all available servers.</p>
 <p>The current implementation is low-level and ensures tasks are
     evenly-distributed amongst daemons without actively managing a task queue.
     This approach provides a robust and resource-light solution, particularly

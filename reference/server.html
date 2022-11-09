@@ -89,9 +89,10 @@ ephemeral process.</p></dd>
     
 
 
-<p>The network topology is such that server daemons dial into the client
-    socket. In this way, network resources may be easily added or removed at
-    any time.</p>
+<p>The network topology is such that server daemons dial into the client,
+    which listens at the '.url' address. In this way, network resources may
+    be added or removed at any time and the client automatically distributes
+    tasks to all available servers.</p>
     </div>
 
   </div>
