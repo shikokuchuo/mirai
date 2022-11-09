@@ -31,9 +31,10 @@
 #'
 #' @section About:
 #'
-#'     The network topology is such that server daemons dial into the client
-#'     socket. In this way, network resources may be easily added or removed at
-#'     any time.
+#'     The network topology is such that server daemons dial into the client,
+#'     which listens at the '.url' address. In this way, network resources may
+#'     be added or removed at any time and the client automatically distributes
+#'     tasks to all available servers.
 #'
 #' @export
 #'
@@ -200,12 +201,12 @@ mirai <- eval_mirai
 #'
 #'     Specifying '.url' without 'n' assumes a value for 'n' of 1. After setting
 #'     '.url', further calls specifying 'n' can be used to update the number of
-#'     connected daemons (this is not strictly necessary as the number of
-#'     connections is detected automatically, but will ensure that the correct
-#'     number of shutdown signals are sent when the session is ended).
+#'     connected daemons (this is not strictly necessary as daemons are detected
+#'     automatically, but will ensure that the correct number of shutdown signals
+#'     are sent when the session is ended).
 #'
 #'     Setting a new '.url' value will attempt to shutdown existing daemons
-#'     connected to the exisitng address before opening a connection at the new
+#'     connected at the existing address before opening a connection at the new
 #'     address.
 #'
 #' @section About:
@@ -218,8 +219,7 @@ mirai <- eval_mirai
 #'     The network topology is such that server daemons (started with
 #'     \code{\link{server}}) dial into the client, which listens at the '.url'
 #'     address. In this way, network resources may be added or removed at any
-#'     time and the client automatically distributes tasks to all available
-#'     resources.
+#'     time. The client automatically distributes tasks to all available servers.
 #'
 #'     The current implementation is low-level and ensures tasks are
 #'     evenly-distributed amongst daemons without actively managing a task queue.
@@ -314,7 +314,7 @@ daemons <- function(n, .url) {
 #' Call the value of a 'mirai', waiting for the the asynchronous operation to
 #'     resolve if it is still in progress.
 #'
-#' @param aio a 'mirai' (mirai are nanonext 'aio' objects).
+#' @param aio a 'mirai'.
 #'
 #' @return The passed 'mirai' (invisibly). The retrieved value is stored at \code{$data}.
 #'
@@ -385,9 +385,9 @@ call_mirai <- call_aio
 
 #' mirai (Stop Evaluation)
 #'
-#' Stop evaluation of a mirai that is in progress.
+#' Stop evaluation of a 'mirai' that is in progress.
 #'
-#' @param aio a 'mirai' (mirai are nanonext 'aio' objects).
+#' @param aio a 'mirai'.
 #'
 #' @return Invisible NULL.
 #'
@@ -411,11 +411,10 @@ stop_mirai <- stop_aio
 
 #' Query if a Mirai is Unresolved
 #'
-#' Query whether a mirai or mirai value remains unresolved. Unlike
+#' Query whether a 'mirai' or 'mirai' value remains unresolved. Unlike
 #'     \code{\link{call_mirai}}, this function does not wait for completion.
 #'
-#' @param aio A 'mirai' or mirai value stored in \code{$data} (mirai are nanonext
-#'     'aio' objects).
+#' @param aio A 'mirai' or 'mirai' value stored at \code{$data}.
 #'
 #' @return Logical TRUE or FALSE.
 #'
@@ -442,9 +441,9 @@ unresolved <- unresolved
 
 #' Is Error Value
 #'
-#' Is the object an error value, such as a mirai timeout, a 'miraiError' from
-#'     failed execution within a mirai or a 'miraiInterrupt' resulting from the
-#'     user interrupt of an ongoing mirai evaluation.
+#' Is the object an error value, such as a 'mirai' timeout, a 'miraiError' from
+#'     failed execution within a 'mirai' or a 'miraiInterrupt' resulting from
+#'     the user interrupt of an ongoing 'mirai' evaluation.
 #'
 #' @param x an object.
 #'
@@ -459,7 +458,7 @@ is_error_value <- is_error_value
 
 #' Is mirai
 #'
-#' Is the object a mirai.
+#' Is the object a 'mirai'.
 #'
 #' @param x an object.
 #'
@@ -481,9 +480,9 @@ is_mirai <- function(x) inherits(x, "mirai")
 
 #' Is mirai Error
 #'
-#' Is the object a 'miraiError'. When execution in a mirai process fails, the
+#' Is the object a 'miraiError'. When execution in a 'mirai' process fails, the
 #'     error message is returned as a character string of class 'miraiError' and
-#'     'errorValue'. To test for all errors, including timeouts etc.,
+#'     'errorValue'. To test for all error conditions, including timeouts etc.,
 #'     \code{\link{is_error_value}} should be used instead.
 #'
 #' @param x an object.
@@ -506,10 +505,10 @@ is_mirai_error <- function(x) inherits(x, "miraiError")
 
 #' Is mirai Interrupt
 #'
-#' Is the object a 'miraiInterrupt'. When a mirai is sent a user interrupt, e.g.
-#'     by ctrl+c during an ongoing \code{\link{call_mirai}}, the mirai will
+#' Is the object a 'miraiInterrupt'. When a 'mirai' is sent a user interrupt,
+#'     e.g. by ctrl+c during an ongoing \code{\link{call_mirai}}, the mirai will
 #'     resolve to an empty character string classed as 'miraiInterrupt' and
-#'     'errorValue'. To test for all errors, including timeouts etc.,
+#'     'errorValue'. To test for all error conditions, including timeouts etc.,
 #'     \code{\link{is_error_value}} should be used instead.
 #'
 #' @param x an object.

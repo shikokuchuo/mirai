@@ -40,12 +40,12 @@ Set 'n' to 0 to reset all daemon connections. \{mirai\} will revert
 
     Specifying '.url' without 'n' assumes a value for 'n' of 1. After setting
     '.url', further calls specifying 'n' can be used to update the number of
-    connected daemons (this is not strictly necessary as the number of
-    connections is detected automatically, but will ensure that the correct
-    number of shutdown signals are sent when the session is ended).
+    connected daemons (this is not strictly necessary as daemons are detected
+    automatically, but will ensure that the correct number of shutdown signals
+    are sent when the session is ended).
 
     Setting a new '.url' value will attempt to shutdown existing daemons
-    connected to the exisitng address before opening a connection at the new
+    connected at the existing address before opening a connection at the new
     address.
 }
 \section{About}{
@@ -59,8 +59,7 @@ Set 'n' to 0 to reset all daemon connections. \{mirai\} will revert
     The network topology is such that server daemons (started with
     \code{\link{server}}) dial into the client, which listens at the '.url'
     address. In this way, network resources may be added or removed at any
-    time and the client automatically distributes tasks to all available
-    resources.
+    time. The client automatically distributes tasks to all available servers.
 
     The current implementation is low-level and ensures tasks are
     evenly-distributed amongst daemons without actively managing a task queue.

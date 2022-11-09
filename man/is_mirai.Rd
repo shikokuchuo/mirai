@@ -13,7 +13,7 @@ is_mirai(x)
 Logical value TRUE if 'x' is of class 'mirai', FALSE otherwise.
 }
 \description{
-Is the object a mirai.
+Is the object a 'mirai'.
 }
 \examples{
 if (interactive()) {

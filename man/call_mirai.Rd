@@ -7,7 +7,7 @@
 call_mirai(aio)
 }
 \arguments{
-\item{aio}{a 'mirai' (mirai are nanonext 'aio' objects).}
+\item{aio}{a 'mirai'.}
 }
 \value{
 The passed 'mirai' (invisibly). The retrieved value is stored at \code{$data}.

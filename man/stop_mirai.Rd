@@ -7,13 +7,13 @@
 stop_mirai(aio)
 }
 \arguments{
-\item{aio}{a 'mirai' (mirai are nanonext 'aio' objects).}
+\item{aio}{a 'mirai'.}
 }
 \value{
 Invisible NULL.
 }
 \description{
-Stop evaluation of a mirai that is in progress.
+Stop evaluation of a 'mirai' that is in progress.
 }
 \details{
 Stops the asynchronous operation associated with 'mirai' by aborting,

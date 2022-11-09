@@ -24,8 +24,9 @@ Implements a [persistent] executor/server for the remote process. Awaits data,
 \section{About}{
 
 
-    The network topology is such that server daemons dial into the client
-    socket. In this way, network resources may be easily added or removed at
-    any time.
+    The network topology is such that server daemons dial into the client,
+    which listens at the '.url' address. In this way, network resources may
+    be added or removed at any time and the client automatically distributes
+    tasks to all available servers.
 }
 

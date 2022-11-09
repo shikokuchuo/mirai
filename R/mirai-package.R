@@ -21,6 +21,17 @@
 #'     A 'mirai' (Japanese for 'future') evaluates an arbitrary expression
 #'     asynchronously, resolving automatically upon completion.
 #'
+#' @section Implementation:
+#'
+#'     'mirai' also inherit from the class 'recvAio' and are asynchronous
+#'     message receive objects using the \{nanonext\} framework.
+#'
+#'     Functions \code{\link{call_mirai}}, \code{\link{stop_mirai}} and
+#'     \code{\link{unresolved}} are directly assigned from 'nanonext' for
+#'     efficiency. As a result, their argument name remains 'aio' instead of
+#'     'mirai'. This should be of no practical significance as they all take a
+#'     single argument, hence normal usage precludes use of the argument name.
+#'
 #' @section Links:
 #'
 #'     mirai website: \url{https://shikokuchuo.net/mirai/}\cr

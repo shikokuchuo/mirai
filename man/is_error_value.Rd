@@ -13,9 +13,9 @@ is_error_value(x)
 Logical value TRUE if 'x' is of class 'errorValue', FALSE otherwise.
 }
 \description{
-Is the object an error value, such as a mirai timeout, a 'miraiError' from
-    failed execution within a mirai or a 'miraiInterrupt' resulting from the
-    user interrupt of an ongoing mirai evaluation.
+Is the object an error value, such as a 'mirai' timeout, a 'miraiError' from
+    failed execution within a 'mirai' or a 'miraiInterrupt' resulting from
+    the user interrupt of an ongoing 'mirai' evaluation.
 }
 \examples{
 is_error_value(1L)

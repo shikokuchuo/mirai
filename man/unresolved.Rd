@@ -7,14 +7,13 @@
 unresolved(aio)
 }
 \arguments{
-\item{aio}{A 'mirai' or mirai value stored in \code{$data} (mirai are nanonext
-'aio' objects).}
+\item{aio}{A 'mirai' or 'mirai' value stored at \code{$data}.}
 }
 \value{
 Logical TRUE or FALSE.
 }
 \description{
-Query whether a mirai or mirai value remains unresolved. Unlike
+Query whether a 'mirai' or 'mirai' value remains unresolved. Unlike
     \code{\link{call_mirai}}, this function does not wait for completion.
 }
 \details{
