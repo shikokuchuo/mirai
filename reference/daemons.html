@@ -21,7 +21,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0.9600</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.1</span>
       </span>
     </div>
 
@@ -81,8 +81,8 @@ of daemons.</p></dd>
 <dd><p>(optional) for distributing tasks across the network: character
 client URL and port accepting incoming connections e.g.
 'tcp://192.168.0.2:5555' at which server processes started using
-<code><a href="server.html">server</a></code> should connect to. To listen to port 5555 (for example)
-on all interfaces on the host, specify one of 'tcp://:5555',
+<code><a href="server.html">server</a></code> should connect to. To listen to port 5555 (for
+example) on all interfaces on the host, specify one of 'tcp://:5555',
 'tcp://*:5555' or 'tcp://0.0.0.0:5555'.</p></dd>
 
 </dl></div>
@@ -119,8 +119,8 @@ on all interfaces on the host, specify one of 'tcp://:5555',
 <p>Daemons provide a potentially more efficient solution for asynchronous
     operations as new processes no longer need to be created on an ad hoc
     basis.</p>
-<p>Specifying '.url' also allows tasks to be distributed across the network.
-    The network topology is such that server daemons (started with
+<p>Specifying '.url' allows tasks to be distributed across the network. The
+    network topology is such that server daemons (started with
     <code><a href="server.html">server</a></code>) dial into the client, which listens at the '.url'
     address. In this way, network resources may be added or removed at any
     time. The client automatically distributes tasks to all available servers.</p>

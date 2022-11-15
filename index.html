@@ -19,10 +19,12 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
 <meta property="og:title" content="Minimalist Async Evaluation Framework for R">
-<meta property="og:description" content="Simple and lightweight parallel code execution, local or
-    distributed across the network, built on nanonext and NNG (Nanomsg Next
-    Gen) technology. A mirai evaluates an arbitrary expression asynchronously,
-    resolving automatically upon completion.">
+<meta property="og:description" content="Lightweight parallel code execution, local or distributed across
+    the network. Designed for simplicity, a mirai evaluates an arbitrary
+    expression asynchronously, resolving automatically upon completion.
+    Built on nanonext and NNG (Nanomsg Next Gen) scalability protocols,
+    defaults to the optimal choice of abstract sockets, Unix domain sockets or
+    named pipes in addition to TCP/IP.">
 <meta property="og:image" content="https://shikokuchuo.net/mirai/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -44,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0.9600</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.1</span>
       </span>
     </div>
 
@@ -89,10 +91,12 @@
 <!-- badges: start -->
 
 <p>Minimalist async evaluation framework for R.</p>
-<p>Simple and lightweight parallel code execution, local or distributed across the network, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) technology.</p>
+<p>Lightweight parallel code execution, local or distributed across the network.</p>
+<p>Designed for simplicity, a ‘mirai’ evaluates an arbitrary expression asynchronously, resolving automatically upon completion.</p>
+<p>Built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) scalability protocols, defaults to the optimal choice of abstract sockets, Unix domain sockets or named pipes in addition to TCP/IP.</p>
 <p><code><a href="reference/eval_mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately. ‘mirai’ (未来 みらい) is Japanese for ‘future’.</p>
-<p>A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving automatically upon completion. The asynchronous task runs in an ephemeral or persistent process, spawned locally or distributed across the network.</p>
-<p>{mirai} has a tiny pure R code base, relying solely on {nanonext}, a high-performance binding for the ‘NNG’ C messaging library with zero package dependencies.</p>
+<p>The asynchronous ‘mirai’ task runs in an ephemeral or persistent process, spawned locally or distributed across the network.</p>
+<p>{mirai} has a tiny pure R code base, relying solely on {nanonext}, a high-performance binding for the ‘NNG’ (Nanomsg Next Gen) C library with zero package dependencies.</p>
 <div class="section level3">
 <h3 id="table-of-contents">Table of Contents<a class="anchor" aria-label="anchor" href="#table-of-contents"></a>
 </h3>
@@ -144,11 +148,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.189 2.9015 0.155 -0.0762 1.9546 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -4.121 2.237 0.326 3.123 -4.802 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.189 2.9015 0.155 -0.0762 1.9546 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -4.121 2.237 0.326 3.123 -4.802 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -209,12 +213,12 @@
 <h3 id="distributed-computing">Distributed Computing<a class="anchor" aria-label="anchor" href="#distributed-computing"></a>
 </h3>
 <p>Through the <code><a href="reference/daemons.html">daemons()</a></code> interface, tasks may also be sent for computation to server processes on the network.</p>
-<p>Specify the ‘.url’ argument as the client network address (or leave blank to listen on all interfaces on the host) and a port that is able to accept incoming connections, for example:</p>
+<p>Specify the ‘.url’ argument as the client network address e.g. ‘192.168.0.2’ and a port that is able to accept incoming connections, or use ‘0.0.0.0’ to listen on all interfaces on the host, for example:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>.url <span class="op">=</span> <span class="st">"tcp://:5555"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>.url <span class="op">=</span> <span class="st">"tcp://0.0.0.0:5555"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
-<p>The network topology is such that the client listens at the above address, and distributes tasks to all server processes that are connected into it.</p>
-<p>On the server, the <code><a href="reference/server.html">server()</a></code> function may be called from a suitable shell (e.g. using Rscript as in the case below) to set up a remote daemon process (here ‘192.168.0.2’ is the network IP address of the client):</p>
+<p>The network topology is such that the client listens at the above address, and distributes tasks to all connected server processes.</p>
+<p>On the server side, the <code><a href="reference/server.html">server()</a></code> function may be called from an R session, or Rscript from a suitable shell, to set up a remote daemon process that connects to the client network IP address (‘192.168.0.2’ in the example below):</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5555")'</span></span></code></pre></div>
 <p>Network resources can be added and removed as required. Tasks are automatically distributed to all available server processes.</p>
 <p>To reset all connections and revert to default behaviour:</p>
@@ -290,6 +294,7 @@
 <h3 id="links">Links<a class="anchor" aria-label="anchor" href="#links"></a>
 </h3>
 <p>{mirai} website: <a href="https://shikokuchuo.net/mirai/" class="uri">https://shikokuchuo.net/mirai/</a><br> {mirai} on CRAN: <a href="https://cran.r-project.org/package=mirai" class="external-link uri">https://cran.r-project.org/package=mirai</a></p>
+<p>Listed in CRAN Task View: <br> - High Performance Computing: <a href="https://cran.r-project.org/view=HighPerformanceComputing" class="external-link uri">https://cran.r-project.org/view=HighPerformanceComputing</a></p>
 <p>{nanonext} website: <a href="https://shikokuchuo.net/nanonext/" class="external-link uri">https://shikokuchuo.net/nanonext/</a><br> {nanonext} on CRAN: <a href="https://cran.r-project.org/package=nanonext" class="external-link uri">https://cran.r-project.org/package=nanonext</a></p>
 <p>NNG website: <a href="https://nng.nanomsg.org/" class="external-link uri">https://nng.nanomsg.org/</a><br></p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>

@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0.9600</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.1</span>
       </span>
     </div>
 
@@ -88,7 +88,7 @@ addition to or instead of named arguments specified as '...').</p></dd>
 
 <dt>.timeout</dt>
 <dd><p>(optional) integer value in milliseconds or NULL for no
-timeout. A 'mirai' will resolve to an 'errorValue' 5 (timed out) if
+timeout. A mirai will resolve to an 'errorValue' 5 (timed out) if
 evaluation exceeds this limit.</p></dd>
 
 </dl></div>
@@ -101,14 +101,14 @@ evaluation exceeds this limit.</p></dd>
     <div id="details">
     <h2>Details</h2>
     <p>This function will return a 'mirai' object immediately.</p>
-<p>The value of a 'mirai' may be accessed at any time at <code>$data</code>, and
+<p>The value of a mirai may be accessed at any time at <code>$data</code>, and
     if yet to resolve, an 'unresolved' logical NA will be returned instead.</p>
-<p><code><a href="unresolved.html">unresolved</a></code> may be used on a 'mirai', returning TRUE if a
+<p><code><a href="unresolved.html">unresolved</a></code> may be used on a mirai, returning TRUE if a
     'mirai' has yet to resolve and FALSE otherwise. This is suitable for use
     in control flow statements such as <code>while</code> or <code>if</code>.</p>
-<p>Alternatively, to call (and wait for) the result, use
-    <code><a href="call_mirai.html">call_mirai</a></code> on the returned 'mirai' object. This will block
-    until the result is returned (although interruptible with e.g. ctrl+c).</p>
+<p>Alternatively, to call (and wait for) the result, use <code><a href="call_mirai.html">call_mirai</a></code>
+    on the returned mirai. This will block until the result is returned
+    (although interruptible with e.g. ctrl+c).</p>
 <p>The expression '.expr' will be evaluated in a separate R process in a
     clean environment consisting only of the named objects passed as '...'
     and/or the list supplied to '.args'.</p>
