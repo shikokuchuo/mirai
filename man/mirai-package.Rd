@@ -6,22 +6,24 @@
 \alias{mirai-package}
 \title{mirai: Minimalist Async Evaluation Framework for R}
 \description{
-Simple and lightweight parallel code execution, local or distributed across
-    the network, built on 'nanonext' and 'NNG' (Nanomsg Next Gen) technology.
-    A 'mirai' (Japanese for 'future') evaluates an arbitrary expression
-    asynchronously, resolving automatically upon completion.
+Lightweight parallel code execution, local or distributed across the network.
+    Designed for simplicity, a 'mirai' evaluates an arbitrary expression
+    asynchronously, resolving automatically upon completion. Built on
+    'nanonext' and 'NNG' (Nanomsg Next Gen) scalability protocols, defaults
+    to the optimal choice of abstract sockets, Unix domain sockets or named
+    pipes in addition to TCP/IP.
 }
-\section{Implementation}{
+\section{Notes}{
 
 
-    'mirai' also inherit from the class 'recvAio' and are asynchronous
-    message receive objects using the \{nanonext\} framework.
+    For local mirai processes, the default transport for intra-process
+    communications is platform-dependent: abstract sockets on Linux, Unix
+    domain sockets on MacOS, Solaris and other POSIX platforms, and named
+    pipes on Windows.
 
-    Functions \code{\link{call_mirai}}, \code{\link{stop_mirai}} and
-    \code{\link{unresolved}} are directly assigned from 'nanonext' for
-    efficiency. As a result, their argument name remains 'aio' instead of
-    'mirai'. This should be of no practical significance as they all take a
-    single argument, hence normal usage precludes use of the argument name.
+    This may be overriden if required by specifying a custom client URL in
+    the \code{\link{daemons}} interface, and starting server processes
+    manually with \code{\link{server}} on the same machine.
 }
 
 \section{Links}{

@@ -10,12 +10,12 @@ is_mirai_interrupt(x)
 \item{x}{an object.}
 }
 \value{
-Logical value TRUE if 'x' is of class 'miraiInterrupt', FALSE otherwise.
+Logical TRUE if 'x' is of class 'miraiInterrupt', FALSE otherwise.
 }
 \description{
-Is the object a 'miraiInterrupt'. When a 'mirai' is sent a user interrupt,
-    e.g. by ctrl+c during an ongoing \code{\link{call_mirai}}, the mirai will
-    resolve to an empty character string classed as 'miraiInterrupt' and
+Is the object a 'miraiInterrupt'. When a mirai is sent a user interrupt,
+    e.g. by ctrl+c during an ongoing \code{\link{call_mirai}}, the mirai
+    will resolve to an empty character string classed as 'miraiInterrupt' and
     'errorValue'. To test for all error conditions, including timeouts etc.,
     \code{\link{is_error_value}} should be used instead.
 }

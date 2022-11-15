@@ -13,8 +13,8 @@ of daemons.}
 \item{.url}{(optional) for distributing tasks across the network: character
 client URL and port accepting incoming connections e.g.
 'tcp://192.168.0.2:5555' at which server processes started using
-\code{\link{server}} should connect to. To listen to port 5555 (for example)
-on all interfaces on the host, specify one of 'tcp://:5555',
+\code{\link{server}} should connect to. To listen to port 5555 (for
+example) on all interfaces on the host, specify one of 'tcp://:5555',
 'tcp://*:5555' or 'tcp://0.0.0.0:5555'.}
 }
 \value{
@@ -55,8 +55,8 @@ Set 'n' to 0 to reset all daemon connections. \{mirai\} will revert
     operations as new processes no longer need to be created on an ad hoc
     basis.
 
-    Specifying '.url' also allows tasks to be distributed across the network.
-    The network topology is such that server daemons (started with
+    Specifying '.url' allows tasks to be distributed across the network. The
+    network topology is such that server daemons (started with
     \code{\link{server}}) dial into the client, which listens at the '.url'
     address. In this way, network resources may be added or removed at any
     time. The client automatically distributes tasks to all available servers.

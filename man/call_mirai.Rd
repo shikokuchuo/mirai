@@ -7,13 +7,13 @@
 call_mirai(aio)
 }
 \arguments{
-\item{aio}{a 'mirai'.}
+\item{aio}{a 'mirai' object.}
 }
 \value{
-The passed 'mirai' (invisibly). The retrieved value is stored at \code{$data}.
+The passed mirai (invisibly). The retrieved value is stored at \code{$data}.
 }
 \description{
-Call the value of a 'mirai', waiting for the the asynchronous operation to
+Call the value of a mirai, waiting for the the asynchronous operation to
     resolve if it is still in progress.
 }
 \details{
@@ -21,7 +21,7 @@ This function will wait for the async operation to complete if still
     in progress (blocking).
 
     A blocking call can be sent a user interrupt with e.g. ctrl+c. If the
-    ongoing execution in the 'mirai' is interruptible, it will resolve into
+    ongoing execution in the mirai is interruptible, it will resolve into
     an object of class 'miraiInterrupt' and 'errorValue'.
     \code{\link{is_mirai_interrupt}} may be used to handle such cases.
 
@@ -30,18 +30,18 @@ This function will wait for the async operation to complete if still
     \code{\link{is_mirai_error}} may be used to test for this.
 
     \code{\link{is_error_value}} tests for all error conditions including
-    'mirai' errors, interrupts, and timeouts.
+    mirai errors, interrupts, and timeouts.
 
-    The 'mirai' updates itself in place, so to access the value of a 'mirai'
+    The mirai updates itself in place, so to access the value of a mirai
     \code{x} directly, use \code{call_mirai(x)$data}.
 }
 \section{Alternatively}{
 
 
-    The value of a 'mirai' may be accessed at any time at \code{$data}, and
+    The value of a mirai may be accessed at any time at \code{$data}, and
     if yet to resolve, an 'unresolved' logical NA will be returned instead.
 
-    Using \code{\link{unresolved}} on a 'mirai' returns TRUE only if a 'mirai'
+    Using \code{\link{unresolved}} on a mirai returns TRUE only if a mirai
     has yet to resolve and FALSE otherwise. This is suitable for use in
     control flow statements such as \code{while} or \code{if}.
 }

@@ -1,4 +1,4 @@
-# mirai 0.7.0.9600
+# mirai 0.7.1
 
 * Allow user interrupts of `call_mirai()` again (regression in 0.7.0), now returning a 'miraiInterrupt'.
 * Adds auxiliary function `is_mirai_interrupt()` to test if an object is a 'miraiInterrupt'.

@@ -15,21 +15,25 @@ badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc)](https://sh
 
 Minimalist async evaluation framework for R.
 
-Simple and lightweight parallel code execution, local or distributed
-across the network, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen)
-technology.
+Lightweight parallel code execution, local or distributed across the
+network.
+
+Designed for simplicity, a ‘mirai’ evaluates an arbitrary expression
+asynchronously, resolving automatically upon completion.
+
+Built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) scalability protocols,
+defaults to the optimal choice of abstract sockets, Unix domain sockets
+or named pipes in addition to TCP/IP.
 
 `mirai()` returns a ‘mirai’ object immediately. ‘mirai’ (未来 みらい) is
 Japanese for ‘future’.
 
-A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving
-automatically upon completion. The asynchronous task runs in an
-ephemeral or persistent process, spawned locally or distributed across
-the network.
+The asynchronous ‘mirai’ task runs in an ephemeral or persistent
+process, spawned locally or distributed across the network.
 
 {mirai} has a tiny pure R code base, relying solely on {nanonext}, a
-high-performance binding for the ‘NNG’ C messaging library with zero
-package dependencies.
+high-performance binding for the ‘NNG’ (Nanomsg Next Gen) C library with
+zero package dependencies.
 
 ### Table of Contents
 
@@ -100,7 +104,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -0.189 2.9015 0.155 -0.0762 1.9546 ...
+#>  num [1:100000000] -4.121 2.237 0.326 3.123 -4.802 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -108,7 +112,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.189 2.9015 0.155 -0.0762 1.9546 ...
+#>  num [1:100000000] -4.121 2.237 0.326 3.123 -4.802 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -204,23 +208,23 @@ behaviour of creating a new background process for each ‘mirai’ request.
 Through the `daemons()` interface, tasks may also be sent for
 computation to server processes on the network.
 
-Specify the ‘.url’ argument as the client network address (or leave
-blank to listen on all interfaces on the host) and a port that is able
-to accept incoming connections, for example:
+Specify the ‘.url’ argument as the client network address
+e.g. ‘192.168.0.2’ and a port that is able to accept incoming
+connections, or use ‘0.0.0.0’ to listen on all interfaces on the host,
+for example:
 
 ``` r
-daemons(.url = "tcp://:5555")
+daemons(.url = "tcp://0.0.0.0:5555")
 #> [1] 1
 ```
 
 The network topology is such that the client listens at the above
-address, and distributes tasks to all server processes that are
-connected into it.
+address, and distributes tasks to all connected server processes.
 
-On the server, the `server()` function may be called from a suitable
-shell (e.g. using Rscript as in the case below) to set up a remote
-daemon process (here ‘192.168.0.2’ is the network IP address of the
-client):
+On the server side, the `server()` function may be called from an R
+session, or Rscript from a suitable shell, to set up a remote daemon
+process that connects to the client network IP address (‘192.168.0.2’ in
+the example below):
 
     Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555")'
 
@@ -338,6 +342,9 @@ and timeouts.
 
 {mirai} website: <https://shikokuchuo.net/mirai/><br /> {mirai} on CRAN:
 <https://cran.r-project.org/package=mirai>
+
+Listed in CRAN Task View: <br /> - High Performance Computing:
+<https://cran.r-project.org/view=HighPerformanceComputing>
 
 {nanonext} website: <https://shikokuchuo.net/nanonext/><br /> {nanonext}
 on CRAN: <https://cran.r-project.org/package=nanonext>

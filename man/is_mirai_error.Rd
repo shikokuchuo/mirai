@@ -10,10 +10,10 @@ is_mirai_error(x)
 \item{x}{an object.}
 }
 \value{
-Logical value TRUE if 'x' is of class 'miraiError', FALSE otherwise.
+Logical TRUE if 'x' is of class 'miraiError', FALSE otherwise.
 }
 \description{
-Is the object a 'miraiError'. When execution in a 'mirai' process fails, the
+Is the object a 'miraiError'. When execution in a mirai process fails, the
     error message is returned as a character string of class 'miraiError' and
     'errorValue'. To test for all error conditions, including timeouts etc.,
     \code{\link{is_error_value}} should be used instead.

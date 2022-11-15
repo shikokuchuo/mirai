@@ -24,13 +24,17 @@ knitr::opts_chunk$set(
 
 Minimalist async evaluation framework for R.
 
-Simple and lightweight parallel code execution, local or distributed across the network, built on 'nanonext' and 'NNG' (Nanomsg Next Gen) technology.
+Lightweight parallel code execution, local or distributed across the network.
+
+Designed for simplicity, a 'mirai' evaluates an arbitrary expression asynchronously, resolving automatically upon completion.
+
+Built on 'nanonext' and 'NNG' (Nanomsg Next Gen) scalability protocols, defaults to the optimal choice of abstract sockets, Unix domain sockets or named pipes in addition to TCP/IP.
 
 `mirai()` returns a 'mirai' object immediately. 'mirai' (未来 みらい) is Japanese for 'future'.
 
-A ‘mirai’ evaluates an arbitrary expression asynchronously, resolving automatically upon completion. The asynchronous task runs in an ephemeral or persistent process, spawned locally or distributed across the network.
+The asynchronous 'mirai' task runs in an ephemeral or persistent process, spawned locally or distributed across the network.
 
-{mirai} has a tiny pure R code base, relying solely on {nanonext}, a high-performance binding for the 'NNG' C messaging library with zero package dependencies.
+{mirai} has a tiny pure R code base, relying solely on {nanonext}, a high-performance binding for the 'NNG' (Nanomsg Next Gen) C library with zero package dependencies.
 
 ### Table of Contents
 
@@ -177,15 +181,15 @@ Set the number of daemons to zero again to revert to the default behaviour of cr
 
 Through the `daemons()` interface, tasks may also be sent for computation to server processes on the network.
 
-Specify the '.url' argument as the client network address (or leave blank to listen on all interfaces on the host) and a port that is able to accept incoming connections, for example:
+Specify the '.url' argument as the client network address e.g. '192.168.0.2' and a port that is able to accept incoming connections, or use '0.0.0.0' to listen on all interfaces on the host, for example:
 
 ```{r remote}
-daemons(.url = "tcp://:5555")
+daemons(.url = "tcp://0.0.0.0:5555")
 ```
 
-The network topology is such that the client listens at the above address, and distributes tasks to all server processes that are connected into it.
+The network topology is such that the client listens at the above address, and distributes tasks to all connected server processes.
 
-On the server, the `server()` function may be called from a suitable shell (e.g. using Rscript as in the case below) to set up a remote daemon process (here '192.168.0.2' is the network IP address of the client):
+On the server side, the `server()` function may be called from an R session, or Rscript from a suitable shell, to set up a remote daemon process that connects to the client network IP address ('192.168.0.2' in the example below):
 
 ```
 Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555")'
@@ -273,6 +277,9 @@ is_error_value(m3$data)
 
 {mirai} website: <https://shikokuchuo.net/mirai/><br />
 {mirai} on CRAN: <https://cran.r-project.org/package=mirai>
+
+Listed in CRAN Task View: <br />
+- High Performance Computing: <https://cran.r-project.org/view=HighPerformanceComputing>
 
 {nanonext} website: <https://shikokuchuo.net/nanonext/><br />
 {nanonext} on CRAN: <https://cran.r-project.org/package=nanonext>

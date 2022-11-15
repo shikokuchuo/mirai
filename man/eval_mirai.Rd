@@ -19,7 +19,7 @@ arbitrary length, wrapped in \{\} if necessary.}
 addition to or instead of named arguments specified as '...').}
 
 \item{.timeout}{(optional) integer value in milliseconds or NULL for no
-timeout. A 'mirai' will resolve to an 'errorValue' 5 (timed out) if
+timeout. A mirai will resolve to an 'errorValue' 5 (timed out) if
 evaluation exceeds this limit.}
 }
 \value{
@@ -34,16 +34,16 @@ Evaluate an expression asynchronously in a new background R process or
 \details{
 This function will return a 'mirai' object immediately.
 
-    The value of a 'mirai' may be accessed at any time at \code{$data}, and
+    The value of a mirai may be accessed at any time at \code{$data}, and
     if yet to resolve, an 'unresolved' logical NA will be returned instead.
 
-    \code{\link{unresolved}} may be used on a 'mirai', returning TRUE if a
+    \code{\link{unresolved}} may be used on a mirai, returning TRUE if a
     'mirai' has yet to resolve and FALSE otherwise. This is suitable for use
     in control flow statements such as \code{while} or \code{if}.
 
-    Alternatively, to call (and wait for) the result, use
-    \code{\link{call_mirai}} on the returned 'mirai' object. This will block
-    until the result is returned (although interruptible with e.g. ctrl+c).
+    Alternatively, to call (and wait for) the result, use \code{\link{call_mirai}}
+    on the returned mirai. This will block until the result is returned
+    (although interruptible with e.g. ctrl+c).
 
     The expression '.expr' will be evaluated in a separate R process in a
     clean environment consisting only of the named objects passed as '...'
