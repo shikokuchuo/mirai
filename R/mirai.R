@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of mirai.
 #
@@ -152,10 +152,10 @@ eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
 
   } else {
     url <- sprintf(.urlfmt, random())
+    sock <- socket(protocol = "req", listen = url)
     system2(command = .command,
             args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s,0)", deparse(url)))),
             stdout = NULL, stderr = NULL, wait = FALSE)
-    sock <- socket(protocol = "req", listen = url)
     ctx <- context(sock)
     aio <- request(ctx, data = list2env(arglist), send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(`attr<-`(.subset2(aio, "aio"), "ctx", ctx), "sock", sock)
