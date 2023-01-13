@@ -300,7 +300,7 @@ daemons <- function(n, .url) {
       if (proc == 0L) {
         close(sock)
         sock <<- NULL
-        gc(verbose = FALSE, full = TRUE)
+        gc(verbose = FALSE)
       }
     }
 
@@ -552,7 +552,7 @@ print.miraiError <- function(x, ...) {
 #'
 print.miraiInterrupt <- function(x, ...) {
 
-  cat("'miraiInterrupt' chr", file = stdout())
+  cat("'miraiInterrupt' chr ''", file = stdout())
   invisible(x)
 
 }
