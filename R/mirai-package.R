@@ -63,11 +63,10 @@ NULL
 .miraiclass <- c("mirai", "recvAio")
 .errorclass <- c("miraiError", "errorValue")
 .interrupt <- `class<-`("", c("miraiInterrupt", "errorValue"))
-.sysname <- .subset2(Sys.info(), "sysname")
-.command <- switch(.sysname,
+.command <- switch(.subset2(Sys.info(), "sysname"),
                    Windows = file.path(R.home("bin"), "Rscript.exe"),
                    file.path(R.home("bin"), "Rscript"))
-.urlfmt <- switch(.sysname,
+.urlfmt <- switch(.subset2(Sys.info(), "sysname"),
                   Linux = "abstract://n%.f",
                   Windows = "ipc://n%.f",
                   "ipc:///tmp/n%.f")

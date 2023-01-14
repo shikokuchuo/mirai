@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of mirai.
 #
@@ -70,7 +70,7 @@
   if (unresolved(x)) {
     mc <- match.call()
     data <- NULL
-    env <- `class<-`(new.env(), c("unresolvedExpr", "unresolvedValue"))
+    env <- `class<-`(new.env(hash = FALSE), c("unresolvedExpr", "unresolvedValue"))
     makeActiveBinding(sym = "data", fun = function(x) {
       if (is.null(data)) {
         data <- eval(mc, envir = parent.frame(), enclos = NULL)

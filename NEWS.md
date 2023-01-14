@@ -1,6 +1,6 @@
 # mirai 0.7.1.9000 (development)
 
-* Internal enhancements.
+* Internal performance enhancements.
 
 # mirai 0.7.1
 
