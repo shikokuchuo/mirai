@@ -21,7 +21,7 @@
 #'     asynchronously, resolving automatically upon completion. Built on
 #'     'nanonext' and 'NNG' (Nanomsg Next Gen), uses scalability protocols not
 #'     subject to R connection limits and transports faster than TCP/IP where
-#'     suitable.
+#'     applicable.
 #'
 #' @section Notes:
 #'
