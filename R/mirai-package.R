@@ -19,9 +19,9 @@
 #' Lightweight parallel code execution, local or distributed across the network.
 #'     Designed for simplicity, a 'mirai' evaluates an arbitrary expression
 #'     asynchronously, resolving automatically upon completion. Built on
-#'     'nanonext' and 'NNG' (Nanomsg Next Gen) scalability protocols, defaults
-#'     to the optimal choice of abstract sockets, Unix domain sockets or named
-#'     pipes in addition to TCP/IP.
+#'     'nanonext' and 'NNG' (Nanomsg Next Gen), uses scalability protocols not
+#'     subject to R connection limits and transports faster than TCP/IP where
+#'     suitable.
 #'
 #' @section Notes:
 #'
