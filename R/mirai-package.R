@@ -60,9 +60,6 @@ NULL
 
 .onUnload <- function(libpath) invisible(daemons(0L))
 
-.miraiclass <- c("mirai", "recvAio")
-.errorclass <- c("miraiError", "errorValue")
-.interrupt <- `class<-`("", c("miraiInterrupt", "errorValue"))
 .command <- switch(.subset2(Sys.info(), "sysname"),
                    Windows = file.path(R.home("bin"), "Rscript.exe"),
                    file.path(R.home("bin"), "Rscript"))
@@ -70,7 +67,4 @@ NULL
                   Linux = "abstract://n%.f",
                   Windows = "ipc://n%.f",
                   "ipc:///tmp/n%.f")
-.__scm__. <- as.raw(c(0x58, 0x0a, 0x00, 0x00, 0x00, 0x03, 0x00, 0x04, 0x02,
-                      0x01, 0x00, 0x03, 0x05, 0x00, 0x00, 0x00, 0x00, 0x05,
-                      0x55, 0x54, 0x46, 0x2d, 0x38, 0x00, 0x00, 0x00, 0xfc))
 

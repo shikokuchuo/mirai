@@ -161,7 +161,7 @@ eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
     `attr<-`(`attr<-`(.subset2(aio, "aio"), "ctx", ctx), "sock", sock)
   }
 
-  `class<-`(aio, .miraiclass)
+  `class<-`(aio, c("mirai", "recvAio"))
 
 }
 
@@ -248,6 +248,7 @@ daemons <- function(n, .url) {
   proc <- 0L
   url <- sock <- arg <- NULL
   local <- TRUE
+  .__scm__. <-
 
   function(n, .url) {
 
@@ -289,7 +290,12 @@ daemons <- function(n, .url) {
       out <- 0L
       for (i in seq_len(-delta)) {
         ctx <- context(sock)
-        res <- send_aio(ctx, data = .__scm__., mode = 2L, timeout = 2000L)
+        res <- send_aio(ctx,
+                        data = as.raw(c(0x58, 0x0a, 0x00, 0x00, 0x00, 0x03, 0x00, 0x04, 0x02,
+                                        0x01, 0x00, 0x03, 0x05, 0x00, 0x00, 0x00, 0x00, 0x05,
+                                        0x55, 0x54, 0x46, 0x2d, 0x38, 0x00, 0x00, 0x00, 0xfc)),
+                        mode = 2L,
+                        timeout = 2000L)
         if (.subset2(call_aio(res), "result"))
           out <- out + 1L
         close(ctx)
@@ -561,7 +567,7 @@ print.miraiInterrupt <- function(x, ...) {
 
 mk_mirai_error <- function(e) `class<-`(if (length(call <- .subset2(e, "call")))
   sprintf("Error in %s: %s", deparse(call, nlines = 1L), .subset2(e, "message")) else
-    sprintf("Error: %s", .subset2(e, "message")), .errorclass)
+    sprintf("Error: %s", .subset2(e, "message")), c("miraiError", "errorValue"))
 
-mk_interrupt_error <- function(e) .interrupt
+mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
 
