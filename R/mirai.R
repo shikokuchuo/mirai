@@ -248,7 +248,6 @@ daemons <- function(n, .url) {
   proc <- 0L
   url <- sock <- arg <- NULL
   local <- TRUE
-  .__scm__. <-
 
   function(n, .url) {
 

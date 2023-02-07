@@ -60,9 +60,10 @@ NULL
 
 .onUnload <- function(libpath) invisible(daemons(0L))
 
-.command <- switch(.subset2(Sys.info(), "sysname"),
-                   Windows = file.path(R.home("bin"), "Rscript.exe"),
-                   file.path(R.home("bin"), "Rscript"))
+.command <- file.path(R.home("bin"), switch(.subset2(.Platform, "OS.type"),
+                                            windows = "Rscript.exe",
+                                            "Rscript"))
+
 .urlfmt <- switch(.subset2(Sys.info(), "sysname"),
                   Linux = "abstract://n%.f",
                   Windows = "ipc://n%.f",
