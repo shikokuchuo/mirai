@@ -4,11 +4,10 @@
 \alias{daemons}
 \title{daemons (Persistent Server Processes)}
 \usage{
-daemons(n, .url)
+daemons(n, .url, q = FALSE)
 }
 \arguments{
-\item{n}{integer number of daemons to set | 'view' to view the current number
-of daemons.}
+\item{n}{integer number of daemons to set.}
 
 \item{.url}{(optional) for distributing tasks across the network: character
 client URL and port accepting incoming connections e.g.
@@ -16,13 +15,13 @@ client URL and port accepting incoming connections e.g.
 \code{\link{server}} should connect to. To listen to port 5555 (for
 example) on all interfaces on the host, specify one of 'tcp://:5555',
 'tcp://*:5555' or 'tcp://0.0.0.0:5555'.}
+
+\item{q}{[default FALSE] logical value whether to maintain an active queue /
+task scheduler. This requires resources to maintain, however ensures
+optimal allocation of tasks to daemons (see section 'About' below).}
 }
 \value{
-Depending on 'n' specified:
-    \itemize{
-    \item{integer: integer change in number of daemons (created or destroyed).}
-    \item{'view': integer number of currently set daemons.}
-    }
+Integer change in number of daemons (created or destroyed).
     Calling \code{daemons()} without any arguments returns the 'nanoSocket'
     for connecting to the daemons, or NULL if it is yet to be created.
 }
@@ -30,8 +29,8 @@ Depending on 'n' specified:
 Set or view the number of 'daemons' or persistent server processes receiving
     \code{\link{mirai}} requests. These are, by default, automatically
     created on the local machine. Alternatively, a client URL may be set to
-    receive connections from remote servers started with \code{\link{server}},
-    for distributing tasks across the network.
+    receive connections from remote servers started with \code{\link{server}}
+    or \code{\link{serverq}}, for distributing tasks across the network.
 }
 \details{
 Set 'n' to 0 to reset all daemon connections. \{mirai\} will revert
@@ -61,12 +60,17 @@ Set 'n' to 0 to reset all daemon connections. \{mirai\} will revert
     address. In this way, network resources may be added or removed at any
     time. The client automatically distributes tasks to all available servers.
 
-    The current implementation is low-level and ensures tasks are
-    evenly-distributed amongst daemons without actively managing a task queue.
-    This approach provides a robust and resource-light solution, particularly
-    well-suited to working with similar-length tasks, or where the number of
-    concurrent tasks typically does not exceed the number of available
-    daemons.
+    The default implementation without active queue management is low-level
+    and ensures tasks are evenly-distributed amongst daemons. This approach
+    provides a robust and resource-light solution, particularly suited to
+    working with similar-length tasks, or where the number of concurrent
+    tasks typically does not exceed the number of available daemons.
+
+    Otherwise, specify \code{q = TRUE} to run an active queue. This consumes
+    additional resources, however ensures that tasks are allocated efficiently
+    across all available daemons and are run as soon as resources become
+    available. Note that changing the number of daemons in an active queue
+    requires resetting them to zero prior to specifying a revised number.
 }
 
 \examples{
@@ -75,8 +79,6 @@ if (interactive()) {
 
 # Create 2 daemons
 daemons(2)
-# View the number of active daemons
-daemons("view")
 # Reset to zero
 daemons(0)
 

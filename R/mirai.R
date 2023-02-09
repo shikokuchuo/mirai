@@ -175,23 +175,21 @@ mirai <- eval_mirai
 #' Set or view the number of 'daemons' or persistent server processes receiving
 #'     \code{\link{mirai}} requests. These are, by default, automatically
 #'     created on the local machine. Alternatively, a client URL may be set to
-#'     receive connections from remote servers started with \code{\link{server}},
-#'     for distributing tasks across the network.
+#'     receive connections from remote servers started with \code{\link{server}}
+#'     or \code{\link{serverq}}, for distributing tasks across the network.
 #'
-#' @param n integer number of daemons to set | 'view' to view the current number
-#'     of daemons.
+#' @param n integer number of daemons to set.
 #' @param .url (optional) for distributing tasks across the network: character
 #'     client URL and port accepting incoming connections e.g.
 #'     'tcp://192.168.0.2:5555' at which server processes started using
 #'     \code{\link{server}} should connect to. To listen to port 5555 (for
 #'     example) on all interfaces on the host, specify one of 'tcp://:5555',
 #'     'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
+#' @param q [default FALSE] logical value whether to maintain an active queue /
+#'     task scheduler. This requires resources to maintain, however ensures
+#'     optimal allocation of tasks to daemons (see section 'About' below).
 #'
-#' @return Depending on 'n' specified:
-#'     \itemize{
-#'     \item{integer: integer change in number of daemons (created or destroyed).}
-#'     \item{'view': integer number of currently set daemons.}
-#'     }
+#' @return Integer change in number of daemons (created or destroyed).
 #'     Calling \code{daemons()} without any arguments returns the 'nanoSocket'
 #'     for connecting to the daemons, or NULL if it is yet to be created.
 #'
@@ -221,12 +219,17 @@ mirai <- eval_mirai
 #'     address. In this way, network resources may be added or removed at any
 #'     time. The client automatically distributes tasks to all available servers.
 #'
-#'     The current implementation is low-level and ensures tasks are
-#'     evenly-distributed amongst daemons without actively managing a task queue.
-#'     This approach provides a robust and resource-light solution, particularly
-#'     well-suited to working with similar-length tasks, or where the number of
-#'     concurrent tasks typically does not exceed the number of available
-#'     daemons.
+#'     The default implementation without active queue management is low-level
+#'     and ensures tasks are evenly-distributed amongst daemons. This approach
+#'     provides a robust and resource-light solution, particularly suited to
+#'     working with similar-length tasks, or where the number of concurrent
+#'     tasks typically does not exceed the number of available daemons.
+#'
+#'     Otherwise, specify \code{q = TRUE} to run an active queue. This consumes
+#'     additional resources, however ensures that tasks are allocated efficiently
+#'     across all available daemons and are run as soon as resources become
+#'     available. Note that changing the number of daemons in an active queue
+#'     requires resetting them to zero prior to specifying a revised number.
 #'
 #' @examples
 #' if (interactive()) {
@@ -234,8 +237,6 @@ mirai <- eval_mirai
 #'
 #' # Create 2 daemons
 #' daemons(2)
-#' # View the number of active daemons
-#' daemons("view")
 #' # Reset to zero
 #' daemons(0)
 #'
@@ -243,17 +244,16 @@ mirai <- eval_mirai
 #'
 #' @export
 #'
-daemons <- function(n, .url) {
+daemons <- function(n, .url, q) {
 
   proc <- 0L
   url <- sock <- arg <- NULL
   local <- TRUE
 
-  function(n, .url) {
+  function(n, .url, q = FALSE) {
 
     if (missing(.url)) {
       missing(n) && return(sock)
-      is.character(n) && n == "view" && return(proc)
 
     } else {
       is.character(.url) || stop("non-character value supplied for '.url'")
@@ -264,7 +264,6 @@ daemons <- function(n, .url) {
       sock <<- socket(protocol = "req", listen = .url)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       local <<- FALSE
-
     }
 
     is.numeric(n) || stop("non-numeric value supplied for 'n'")
@@ -276,9 +275,16 @@ daemons <- function(n, .url) {
       url <<- sprintf(.urlfmt, random())
       sock <<- socket(protocol = "req", listen = url)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
-      arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(url))))
-      local <<- TRUE
+      if (q) {
+        arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::serverq(%d,%s)", n, deparse(url))))
+        system2(command = .command, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
+        local <<- FALSE
+      } else {
+        arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(url))))
+        local <<- TRUE
+      }
     }
+
     if (delta > 0L) {
       if (local)
         for (i in seq_len(delta))
@@ -289,13 +295,8 @@ daemons <- function(n, .url) {
       out <- 0L
       for (i in seq_len(-delta)) {
         ctx <- context(sock)
-        res <- send_aio(ctx,
-                        data = as.raw(c(0x58, 0x0a, 0x00, 0x00, 0x00, 0x03, 0x00, 0x04, 0x02,
-                                        0x01, 0x00, 0x03, 0x05, 0x00, 0x00, 0x00, 0x00, 0x05,
-                                        0x55, 0x54, 0x46, 0x2d, 0x38, 0x00, 0x00, 0x00, 0xfc)),
-                        mode = 2L,
-                        timeout = 2000L)
-        if (.subset2(call_aio(res), "result"))
+        res <- send(ctx, data = .__scm__., mode = 2L, block = 2000L)
+        if (res)
           out <- out + 1L
         close(ctx)
       }
@@ -313,6 +314,19 @@ daemons <- function(n, .url) {
 
   }
 }
+
+#' View Daemons
+#'
+#' View the number of currently active 'daemons' or persistent server processes.
+#'
+#' @return Integer number of daemons.
+#'
+#' @examples
+#' daemons_view()
+#'
+#' @export
+#'
+daemons_view <- function() .subset2(environment(daemons), "proc")
 
 #' mirai (Call Value)
 #'

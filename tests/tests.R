@@ -5,7 +5,7 @@ nanotestn <- function(x) invisible(is.null(x) || stop())
 nanotesterr <- function(x, e = "")
   invisible(grepl(e, tryCatch(x, error = identity)[["message"]], fixed = TRUE) || stop())
 
-nanotest(daemons("view") == 0L)
+nanotest(daemons_view() == 0L)
 n <- 3L
 m <- mirai({
   Sys.sleep(0.1)
@@ -31,9 +31,9 @@ nanotest(is_mirai(call_mirai(dm)))
 nanotest(!unresolved(dm))
 nanotest(is.matrix(dm$data))
 nanotestn(stop_mirai(dm))
-nanotest(daemons("view") == 1L)
+nanotest(daemons_view() == 1L)
 nanotest(daemons(0L) == -1L)
-nanotest(daemons("view") == 0L)
+nanotest(daemons_view() == 0L)
 nanotest(daemons(n = 0L, .url = sprintf(mirai:::.urlfmt, runif(1, 1000000, 9999999))) == 1L)
 nanotestw(daemons(0L) == -1L)
 nanotestn(daemons())
@@ -45,4 +45,10 @@ m
 b
 nanotest(is_mirai_interrupt(r <- mirai:::mk_interrupt_error()))
 r
+if (Sys.getenv("NOT_CRAN") == "true") {
+  nanotest(daemons(1, q = TRUE) == 1L)
+  mq <- mirai("queue")
+  nanotest(call_mirai(mq)$data == "queue")
+  nanotest(daemons(0) == -1L)
+}
 

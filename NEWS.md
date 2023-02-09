@@ -1,5 +1,10 @@
 # mirai 0.7.2.9000 (development)
 
+* `daemons()` implements the argument 'q' for running an active queue (task scheduler).
+* `serverq()` is the corresponding back-end component, and can be run on remote resources.
+* `daemons_view()` implemented to view the current number of daemons, replacing the previous `daemons("view")` functionality.
+* Internal performance enhancements.
+
 # mirai 0.7.2
 
 * Internal performance enhancements.
