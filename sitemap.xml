@@ -25,6 +25,9 @@
     <loc>https://shikokuchuo.net/mirai/reference/daemons.html</loc>
   </url>
   <url>
+    <loc>https://shikokuchuo.net/mirai/reference/daemons_view.html</loc>
+  </url>
+  <url>
     <loc>https://shikokuchuo.net/mirai/reference/eval_mirai.html</loc>
   </url>
   <url>
@@ -50,6 +53,9 @@
   </url>
   <url>
     <loc>https://shikokuchuo.net/mirai/reference/server.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/mirai/reference/serverq.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/mirai/reference/stop_mirai.html</loc>
