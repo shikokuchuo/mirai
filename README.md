@@ -104,7 +104,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 8.479 -0.754 -0.528 1.056 -13.149 ...
+#>  num [1:100000000] 0.667 -0.522 1.359 -0.978 -22.49 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -112,7 +112,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 8.479 -0.754 -0.528 1.056 -13.149 ...
+#>  num [1:100000000] 0.667 -0.522 1.359 -0.978 -22.49 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -180,17 +180,21 @@ daemons(8)
 #> [1] 8
 
 # view the number of active daemons
-daemons("view")
+daemons_view()
 #> [1] 8
 ```
 
-The current implementation is low-level and ensures tasks are
+The default implementation is low-level and ensures tasks are
 evenly-distributed amongst daemons without actively managing a task
-queue.
+queue. This robust and resource-light approach is particularly
+well-suited to working with similar-length tasks, or where the number of
+concurrent tasks typically does not exceed the number of available
+daemons.
 
-This robust and resource-light approach is particularly well-suited to
-working with similar-length tasks, or where the number of concurrent
-tasks typically does not exceed the number of available daemons.
+Alternatively, specify `q = TRUE` to maintain an active queue (task
+scheduler). This consumes additional resources, however ensures optimal
+allocation of tasks to daemons such that they are run as soon as
+resources become available.
 
 ``` r
 # reset to zero
@@ -230,6 +234,10 @@ the example below):
 
 Network resources can be added and removed as required. Tasks are
 automatically distributed to all available server processes.
+
+Alternatively, use the `serverq()` function to allocate an active queue
+over a cluster of daemon processes on the server instead of a single
+instance.
 
 To reset all connections and revert to default behaviour:
 
