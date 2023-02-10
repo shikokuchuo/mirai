@@ -27,5 +27,5 @@ jobs:
           needs: coverage
 
       - name: Test coverage
-        run: Sys.setenv(NOT_CRAN = "true"); covr::codecov(quiet = FALSE)
+        run: Sys.setenv(NOT_CRAN = "set"); covr::codecov(quiet = FALSE)
         shell: Rscript {0}

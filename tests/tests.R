@@ -37,7 +37,7 @@ nanotest(daemons_view() == 0L)
 nanotest(daemons(n = 0L, .url = sprintf(mirai:::.urlfmt, runif(1, 1000000, 9999999))) == 1L)
 nanotestw(daemons(0L) == -1L)
 nanotestn(daemons())
-if (Sys.getenv("NOT_CRAN") == "true") {
+if (Sys.getenv("NOT_CRAN") == "set") {
   nanotest(daemons(1, q = TRUE) == 1L)
   mq <- mirai("queue")
   nanotest(call_mirai(mq)$data == "queue")
