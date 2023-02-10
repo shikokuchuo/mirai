@@ -80,9 +80,9 @@
 <dd><p>(optional) for distributing tasks across the network: character
 client URL and port accepting incoming connections e.g.
 'tcp://192.168.0.2:5555' at which server processes started using
-<code><a href="server.html">server</a></code> should connect to. To listen to port 5555 (for
-example) on all interfaces on the host, specify one of 'tcp://:5555',
-'tcp://*:5555' or 'tcp://0.0.0.0:5555'.</p></dd>
+<code><a href="server.html">server</a></code> or <code><a href="serverq.html">serverq</a></code> should connect to. To
+listen to port 5555 (for example) on all interfaces on the host, specify
+one of 'tcp://:5555', 'tcp://*:5555' or 'tcp://0.0.0.0:5555'.</p></dd>
 
 
 <dt>q</dt>
@@ -123,19 +123,32 @@ optimal allocation of tasks to daemons (see section 'About' below).</p></dd>
     basis.</p>
 <p>Specifying '.url' allows tasks to be distributed across the network. The
     network topology is such that server daemons (started with
-    <code><a href="server.html">server</a></code>) dial into the client, which listens at the '.url'
-    address. In this way, network resources may be added or removed at any
-    time. The client automatically distributes tasks to all available servers.</p>
-<p>The default implementation without active queue management is low-level
-    and ensures tasks are evenly-distributed amongst daemons. This approach
-    provides a robust and resource-light solution, particularly suited to
-    working with similar-length tasks, or where the number of concurrent
-    tasks typically does not exceed the number of available daemons.</p>
-<p>Otherwise, specify <code>q = TRUE</code> to run an active queue. This consumes
-    additional resources, however ensures that tasks are allocated efficiently
-    across all available daemons and are run as soon as resources become
-    available. Note that changing the number of daemons in an active queue
-    requires resetting them to zero prior to specifying a revised number.</p>
+    <code><a href="server.html">server</a></code> or <code><a href="serverq.html">serverq</a></code>) dial into the client,
+    which listens at the '.url' address. In this way, network resources may
+    be added or removed at any time. The client automatically distributes
+    tasks to all available servers.</p>
+<p>The default implementation with <code>q = FALSE</code> is low-level and ensures
+    tasks are evenly-distributed amongst daemons. This provides a robust and
+    resource-light approach, particularly suited to working with
+    similar-length tasks, or where the number of concurrent tasks typically
+    does not exceed available daemons.</p>
+<p>Alternatively, specifying <code>q = TRUE</code> maintains an active queue. This
+    consumes additional resources, however ensures optimal allocation of
+    tasks to daemons such that they are run as soon as resources become
+    available. Note that modifying the number of daemons in an active queue
+    requires a reset to zero prior to specifying a revised number.</p>
+    </div>
+    <div id="timeouts">
+    <h2>Timeouts</h2>
+    
+
+
+<p>Note: specifying the <code>.timeout</code> argument when evaluating a 'mirai'
+    will always cause the user function to return, however the process may not
+    have completed and still be ongoing in the daemon. In such situations, an
+    active queue may be prefereable so that new tasks are not assigned to
+    those daemons, however performance will still be degraded if they remain
+    in use.</p>
     </div>
 
     <div id="ref-examples">

@@ -69,12 +69,8 @@
 
 
 <dt>.url</dt>
-<dd><p>(optional) for distributing tasks across the network: character
-client URL and port accepting incoming connections e.g.
-'tcp://192.168.0.2:5555' at which server processes started using
-<code><a href="server.html">server</a></code> should connect to. To listen to port 5555 (for
-example) on all interfaces on the host, specify one of 'tcp://:5555',
-'tcp://*:5555' or 'tcp://0.0.0.0:5555'.</p></dd>
+<dd><p>the client URL and port to connect to as a character string e.g.
+'tcp://192.168.0.2:5555'.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -82,6 +78,17 @@ example) on all interfaces on the host, specify one of 'tcp://:5555',
     
 
 <p>Invisible NULL.</p>
+    </div>
+    <div id="about">
+    <h2>About</h2>
+    
+
+
+<p>The network topology is such that this server queue dials into the client,
+    which listens at the '.url' address. A server queue launches a cluster of
+    'n' daemons, and relays messages back and forth from the client. A server
+    queue may be used in combination with other servers or server queues and
+    the client automatically distributes tasks to all available resources.</p>
     </div>
 
   </div>

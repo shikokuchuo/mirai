@@ -148,11 +148,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.667 -0.522 1.359 -0.978 -22.49 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.963 0.707 -10.998 0.821 -3.957 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.667 -0.522 1.359 -0.978 -22.49 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.963 0.707 -10.998 0.821 -3.957 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -200,8 +200,8 @@
 <span><span class="co"># view the number of active daemons</span></span>
 <span><span class="fu"><a href="reference/daemons_view.html">daemons_view</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 8</span></span></code></pre></div>
-<p>The default implementation is low-level and ensures tasks are evenly-distributed amongst daemons without actively managing a task queue. This robust and resource-light approach is particularly well-suited to working with similar-length tasks, or where the number of concurrent tasks typically does not exceed the number of available daemons.</p>
-<p>Alternatively, specify <code>q = TRUE</code> to maintain an active queue (task scheduler). This consumes additional resources, however ensures optimal allocation of tasks to daemons such that they are run as soon as resources become available.</p>
+<p>The default implementation with <code>q = FALSE</code> is low-level and ensures tasks are evenly-distributed amongst daemons. This provides a robust and resource-light approach, particularly suited to working with similar-length tasks, or where the number of concurrent tasks typically does not exceed available daemons.</p>
+<p>Alternatively, specifying <code>q = TRUE</code> maintains an active queue (task scheduler). This consumes additional resources, however ensures optimal allocation of tasks to daemons such that they are run as soon as resources become available.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># reset to zero</span></span>
 <span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
@@ -218,10 +218,9 @@
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>.url <span class="op">=</span> <span class="st">"tcp://0.0.0.0:5555"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
 <p>The network topology is such that the client listens at the above address, and distributes tasks to all connected server processes.</p>
-<p>On the server side, the <code><a href="reference/server.html">server()</a></code> function may be called from an R session, or Rscript from a suitable shell, to set up a remote daemon process that connects to the client network IP address (‘192.168.0.2’ in the example below):</p>
+<p>On the server, <code><a href="reference/server.html">server()</a></code> or <code><a href="reference/serverq.html">serverq()</a></code> may be called from an R session, or Rscript from a suitable shell, to set up a remote daemon process, or cluster, that connects to the client network IP address (‘192.168.0.2’ in the example below):</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5555")'</span></span></code></pre></div>
 <p>Network resources can be added and removed as required. Tasks are automatically distributed to all available server processes.</p>
-<p>Alternatively, use the <code><a href="reference/serverq.html">serverq()</a></code> function to allocate an active queue over a cluster of daemon processes on the server instead of a single instance.</p>
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
