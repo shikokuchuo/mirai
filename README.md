@@ -104,7 +104,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.667 -0.522 1.359 -0.978 -22.49 ...
+#>  num [1:100000000] -0.963 0.707 -10.998 0.821 -3.957 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -112,7 +112,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.667 -0.522 1.359 -0.978 -22.49 ...
+#>  num [1:100000000] -0.963 0.707 -10.998 0.821 -3.957 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -184,14 +184,13 @@ daemons_view()
 #> [1] 8
 ```
 
-The default implementation is low-level and ensures tasks are
-evenly-distributed amongst daemons without actively managing a task
-queue. This robust and resource-light approach is particularly
-well-suited to working with similar-length tasks, or where the number of
-concurrent tasks typically does not exceed the number of available
-daemons.
+The default implementation with `q = FALSE` is low-level and ensures
+tasks are evenly-distributed amongst daemons. This provides a robust and
+resource-light approach, particularly suited to working with
+similar-length tasks, or where the number of concurrent tasks typically
+does not exceed available daemons.
 
-Alternatively, specify `q = TRUE` to maintain an active queue (task
+Alternatively, specifying `q = TRUE` maintains an active queue (task
 scheduler). This consumes additional resources, however ensures optimal
 allocation of tasks to daemons such that they are run as soon as
 resources become available.
@@ -225,19 +224,15 @@ daemons(.url = "tcp://0.0.0.0:5555")
 The network topology is such that the client listens at the above
 address, and distributes tasks to all connected server processes.
 
-On the server side, the `server()` function may be called from an R
+On the server, `server()` or `serverq()` may be called from an R
 session, or Rscript from a suitable shell, to set up a remote daemon
-process that connects to the client network IP address (‘192.168.0.2’ in
-the example below):
+process, or cluster, that connects to the client network IP address
+(‘192.168.0.2’ in the example below):
 
     Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555")'
 
 Network resources can be added and removed as required. Tasks are
 automatically distributed to all available server processes.
-
-Alternatively, use the `serverq()` function to allocate an active queue
-over a cluster of daemon processes on the server instead of a single
-instance.
 
 To reset all connections and revert to default behaviour:
 

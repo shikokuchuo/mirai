@@ -9,12 +9,8 @@ serverq(n, .url)
 \arguments{
 \item{n}{integer number of daemons to set.}
 
-\item{.url}{(optional) for distributing tasks across the network: character
-client URL and port accepting incoming connections e.g.
-'tcp://192.168.0.2:5555' at which server processes started using
-\code{\link{server}} should connect to. To listen to port 5555 (for
-example) on all interfaces on the host, specify one of 'tcp://:5555',
-'tcp://*:5555' or 'tcp://0.0.0.0:5555'.}
+\item{.url}{the client URL and port to connect to as a character string e.g.
+'tcp://192.168.0.2:5555'.}
 }
 \value{
 Invisible NULL.
@@ -22,3 +18,13 @@ Invisible NULL.
 \description{
 Implements an active queue / task scheduler, directing a cluster of daemons.
 }
+\section{About}{
+
+
+    The network topology is such that this server queue dials into the client,
+    which listens at the '.url' address. A server queue launches a cluster of
+    'n' daemons, and relays messages back and forth from the client. A server
+    queue may be used in combination with other servers or server queues and
+    the client automatically distributes tasks to all available resources.
+}
+

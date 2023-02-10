@@ -182,9 +182,9 @@ mirai <- eval_mirai
 #' @param .url (optional) for distributing tasks across the network: character
 #'     client URL and port accepting incoming connections e.g.
 #'     'tcp://192.168.0.2:5555' at which server processes started using
-#'     \code{\link{server}} should connect to. To listen to port 5555 (for
-#'     example) on all interfaces on the host, specify one of 'tcp://:5555',
-#'     'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
+#'     \code{\link{server}} or \code{\link{serverq}} should connect to. To
+#'     listen to port 5555 (for example) on all interfaces on the host, specify
+#'     one of 'tcp://:5555', 'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
 #' @param q [default FALSE] logical value whether to maintain an active queue /
 #'     task scheduler. This requires resources to maintain, however ensures
 #'     optimal allocation of tasks to daemons (see section 'About' below).
@@ -215,21 +215,31 @@ mirai <- eval_mirai
 #'
 #'     Specifying '.url' allows tasks to be distributed across the network. The
 #'     network topology is such that server daemons (started with
-#'     \code{\link{server}}) dial into the client, which listens at the '.url'
-#'     address. In this way, network resources may be added or removed at any
-#'     time. The client automatically distributes tasks to all available servers.
+#'     \code{\link{server}} or \code{\link{serverq}}) dial into the client,
+#'     which listens at the '.url' address. In this way, network resources may
+#'     be added or removed at any time. The client automatically distributes
+#'     tasks to all available servers.
 #'
-#'     The default implementation without active queue management is low-level
-#'     and ensures tasks are evenly-distributed amongst daemons. This approach
-#'     provides a robust and resource-light solution, particularly suited to
-#'     working with similar-length tasks, or where the number of concurrent
-#'     tasks typically does not exceed the number of available daemons.
+#'     The default implementation with \code{q = FALSE} is low-level and ensures
+#'     tasks are evenly-distributed amongst daemons. This provides a robust and
+#'     resource-light approach, particularly suited to working with
+#'     similar-length tasks, or where the number of concurrent tasks typically
+#'     does not exceed available daemons.
 #'
-#'     Otherwise, specify \code{q = TRUE} to run an active queue. This consumes
-#'     additional resources, however ensures that tasks are allocated efficiently
-#'     across all available daemons and are run as soon as resources become
-#'     available. Note that changing the number of daemons in an active queue
-#'     requires resetting them to zero prior to specifying a revised number.
+#'     Alternatively, specifying \code{q = TRUE} maintains an active queue. This
+#'     consumes additional resources, however ensures optimal allocation of
+#'     tasks to daemons such that they are run as soon as resources become
+#'     available. Note that modifying the number of daemons in an active queue
+#'     requires a reset to zero prior to specifying a revised number.
+#'
+#' @section Timeouts:
+#'
+#'     Note: specifying the \code{.timeout} argument when evaluating a 'mirai'
+#'     will always cause the user function to return, however the process may not
+#'     have completed and still be ongoing in the daemon. In such situations, an
+#'     active queue may be prefereable so that new tasks are not assigned to
+#'     those daemons, however performance will still be degraded if they remain
+#'     in use.
 #'
 #' @examples
 #' if (interactive()) {

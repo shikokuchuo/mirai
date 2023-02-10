@@ -20,9 +20,18 @@
 #'
 #' Implements an active queue / task scheduler, directing a cluster of daemons.
 #'
+#' @inheritParams server
 #' @inheritParams daemons
 #'
 #' @return Invisible NULL.
+#'
+#' @section About:
+#'
+#'     The network topology is such that this server queue dials into the client,
+#'     which listens at the '.url' address. A server queue launches a cluster of
+#'     'n' daemons, and relays messages back and forth from the client. A server
+#'     queue may be used in combination with other servers or server queues and
+#'     the client automatically distributes tasks to all available resources.
 #'
 #' @export
 #'
@@ -51,7 +60,7 @@ serverq <- function(n, .url) {
 
   repeat {
 
-    free <- which(unlist(lapply(cluster, .subset2, 3L)))
+    free <- which(unlist(lapply(cluster, .subset2, "free")))
 
     if (length(free))
       for (q in free)
@@ -60,7 +69,7 @@ serverq <- function(n, .url) {
             ctx <- context(cluster[[q]][["sock"]])
             queue[[i]][["rctx"]] <- ctx
             queue[[i]][["res"]] <- request(ctx, data = queue[[i]][["req"]][["data"]], send_mode = 1L, recv_mode = 1L)
-            queue[[i]][["cluster"]] <- q
+            queue[[i]][["daemon"]] <- q
             cluster[[q]][["free"]] <- FALSE
             break
           }
@@ -68,7 +77,7 @@ serverq <- function(n, .url) {
     for (i in seq_len(n))
       if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
         send(queue[[i]][["ctx"]], data = queue[[i]][["res"]][["data"]], mode = 1L)
-        q <- queue[[i]][["cluster"]]
+        q <- queue[[i]][["daemon"]]
         cluster[[q]][["free"]] <- TRUE
         ctx <- context(sock)
         req <- recv_aio(ctx, mode = 1L)
