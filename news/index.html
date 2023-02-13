@@ -61,6 +61,7 @@
 <code><a href="../reference/serverq.html">serverq()</a></code> is the corresponding function for launching a cluster of daemons, and can be run on remote resources.</li>
 <li>
 <code><a href="../reference/daemons_view.html">daemons_view()</a></code> implemented to view the current number of daemons, replacing the previous <code>daemons("view")</code> functionality.</li>
+<li>Invalid URLs provided to <code><a href="../reference/server.html">server()</a></code>, <code><a href="../reference/serverq.html">serverq()</a></code> and <code><a href="../reference/daemons.html">daemons()</a></code> will now error and return in a timely fashion instead of potentially causing a hang.</li>
 <li>Internal performance enhancements.</li>
 </ul></div>
     <div class="section level2">
