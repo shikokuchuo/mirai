@@ -40,8 +40,9 @@
 #'
 server <- function(.url, daemon = TRUE) {
 
-  sock <- socket(protocol = "rep", dial = .url)
+  sock <- socket(protocol = "rep")
   on.exit(expr = close(sock))
+  dial(sock, url = .url) && stop()
 
   repeat {
     ctx <- context(sock)
@@ -271,7 +272,12 @@ daemons <- function(n, .url, q) {
         n <- 1L
       if (length(sock))
         daemons(0L)
-      sock <<- socket(protocol = "req", listen = .url)
+      sock <<- socket(protocol = "req")
+      listen(sock, url = .url) && {
+        close(sock)
+        sock <<- NULL
+        stop()
+      }
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       local <<- FALSE
     }

@@ -43,6 +43,9 @@ if (Sys.getenv("NOT_CRAN") == "set") {
   nanotest(call_mirai(mq)$data == "queue")
   nanotest(daemons(0) == -1L)
 }
+nanotesterr(daemons(1, "URL"))
+nanotesterr(daemons(1, 1), "non-character")
+nanotesterr(serverq(1, "URL"))
 nanotesterr(daemons("test"), "non-numeric")
 nanotesterr(daemons(.url = 0L), "non-character")
 Sys.sleep(1L)

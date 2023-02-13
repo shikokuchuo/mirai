@@ -3,6 +3,7 @@
 * `daemons()` implements the argument 'q' for running an active queue (task scheduler).
 * `serverq()` is the corresponding function for launching a cluster of daemons, and can be run on remote resources.
 * `daemons_view()` implemented to view the current number of daemons, replacing the previous `daemons("view")` functionality.
+* Invalid URLs provided to `server()`, `serverq()` and `daemons()` will now error and return in a timely fashion instead of potentially causing a hang.
 * Internal performance enhancements.
 
 # mirai 0.7.2

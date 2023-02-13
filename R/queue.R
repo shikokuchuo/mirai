@@ -18,7 +18,8 @@
 
 #' mirai Server Queue
 #'
-#' Implements an active queue / task scheduler, directing a cluster of daemons.
+#' Implements an active queue / task scheduler, launching and directing a
+#'     cluster of daemons.
 #'
 #' @inheritParams server
 #' @inheritParams daemons
@@ -37,16 +38,18 @@
 #'
 serverq <- function(n, .url) {
 
-  sock <- socket(protocol = "rep", dial = .url)
+  sock <- socket(protocol = "rep")
   on.exit(expr = close(sock))
+  dial(sock, url = .url) && stop()
   queue <- vector(mode = "list", length = n)
   cluster <- vector(mode = "list", length = n)
 
   for (i in seq_len(n)) {
     url <- sprintf(.urlfmt, random())
     socko <- socket(protocol = "req", listen = url)
-    arg <- c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(url))))
-    system2(command = .command, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
+    system2(command = .command,
+            args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(url)))),
+            stdout = NULL, stderr = NULL, wait = FALSE)
     cluster[[i]] <- list(url = url, sock = socko, free = TRUE)
     ctx <- context(sock)
     req <- recv_aio(ctx, mode = 1L)

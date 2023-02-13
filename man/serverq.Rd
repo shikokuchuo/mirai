@@ -16,7 +16,8 @@ serverq(n, .url)
 Invisible NULL.
 }
 \description{
-Implements an active queue / task scheduler, directing a cluster of daemons.
+Implements an active queue / task scheduler, launching and directing a
+    cluster of daemons.
 }
 \section{About}{
 
