@@ -62,7 +62,7 @@ serverq <- function(n, .url) {
 
     free <- which(unlist(lapply(cluster, .subset2, "free")))
 
-    msleep(if (length(free) == n) 10L else 5L)
+    msleep(if (length(free) == n) 50L else 5L)
 
     if (length(free))
       for (q in free)
