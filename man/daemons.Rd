@@ -4,62 +4,57 @@
 \alias{daemons}
 \title{daemons (Persistent Server Processes)}
 \usage{
-daemons(n, .url, q = FALSE)
+daemons(..., q = FALSE)
 }
 \arguments{
-\item{n}{integer number of daemons to set.}
+\item{...}{\emph{(depending on the type of argument supplied)}
 
-\item{.url}{(optional) for distributing tasks across the network: character
-client URL and port accepting incoming connections e.g.
-'tcp://192.168.0.2:5555' at which server processes started using
-\code{\link{server}} or \code{\link{serverq}} should connect to. To
-listen to port 5555 (for example) on all interfaces on the host, specify
-one of 'tcp://:5555', 'tcp://*:5555' or 'tcp://0.0.0.0:5555'.}
+    \strong{numeric}: integer number of local daemons to set.
 
-\item{q}{[default FALSE] logical value whether to maintain an active queue /
-task scheduler. This requires resources to maintain, however ensures
-optimal allocation of tasks to daemons (see section 'About' below).}
+    \strong{character}: for distributing tasks across the network: the client
+    URL and port accepting incoming connections e.g. 'tcp://192.168.0.2:5555'
+    at which server processes started using \code{\link{server}} or
+    \code{\link{serverq}} should connect to. For example to listen to port
+    5555 on all interfaces on the host, specify either 'tcp://:5555',
+    'tcp://*:5555' or 'tcp://0.0.0.0:5555'.}
+
+\item{q}{[default FALSE] (applicable only for local daemons) logical value
+whether to maintain an active queue. This requires resources to maintain,
+however ensures optimal allocation of tasks to daemons (see section 'Local
+Daemons' below).}
 }
 \value{
-Integer change in number of daemons (created or destroyed).
+Integer number of daemons set (1L if supplying a client URL).
     Calling \code{daemons()} without any arguments returns the 'nanoSocket'
     for connecting to the daemons, or NULL if it is yet to be created.
 }
 \description{
-Set or view the number of 'daemons' or persistent server processes receiving
-    \code{\link{mirai}} requests. These are, by default, automatically
-    created on the local machine. Alternatively, a client URL may be set to
-    receive connections from remote servers started with \code{\link{server}}
-    or \code{\link{serverq}}, for distributing tasks across the network.
+Set 'daemons' or persistent server processes receiving \code{\link{mirai}}
+    requests. These are, by default, automatically created on the local
+    machine. Alternatively, a client URL may be set to receive connections
+    from remote servers started with \code{\link{server}} or
+    \code{\link{serverq}} for distributing tasks across the network.
 }
 \details{
-Set 'n' to 0 to reset all daemon connections. \{mirai\} will revert
-    to the default behaviour of creating a new background process for each
-    request.
+Use \code{daemons(0)} to reset all daemon connections at any time.
+    \{mirai\} will revert to the default behaviour of creating a new
+    background process for each request.
 
-    Specifying '.url' without 'n' assumes a value for 'n' of 1. After setting
-    '.url', further calls specifying 'n' can be used to update the number of
-    connected daemons (this is not strictly necessary as daemons are detected
-    automatically, but will ensure that the correct number of shutdown signals
-    are sent when the session is ended).
+    When specifying a client URL, all daemons dialing into the client are
+    detected automatically and resources may be added or removed dynamically.
+    Further specifying a numeric number of daemons has no effect, with the
+    exception that \code{daemons(0)} will always attempt to shutdown all
+    connected daemons.
 
-    Setting a new '.url' value will attempt to shutdown existing daemons
-    connected at the existing address before opening a connection at the new
-    address.
+    Setting a new client URL will attempt to shutdown all daemons connected
+    at the existing address before opening a connection at the new address.
 }
-\section{About}{
+\section{Local Daemons}{
 
 
     Daemons provide a potentially more efficient solution for asynchronous
     operations as new processes no longer need to be created on an ad hoc
     basis.
-
-    Specifying '.url' allows tasks to be distributed across the network. The
-    network topology is such that server daemons (started with
-    \code{\link{server}} or \code{\link{serverq}}) dial into the client,
-    which listens at the '.url' address. In this way, network resources may
-    be added or removed at any time. The client automatically distributes
-    tasks to all available servers.
 
     The default implementation with \code{q = FALSE} is low-level and ensures
     tasks are evenly-distributed amongst daemons. This provides a robust and
@@ -72,6 +67,17 @@ Set 'n' to 0 to reset all daemon connections. \{mirai\} will revert
     tasks to daemons such that they are run as soon as resources become
     available. Note that modifying the number of daemons in an active queue
     requires a reset to zero prior to specifying a revised number.
+}
+
+\section{Distributed Computing}{
+
+
+    Specifying a client URL allows tasks to be distributed across the network.
+    The network topology is such that server daemons (started with
+    \code{\link{server}} or \code{\link{serverq}}) dial into the client,
+    which listens at the client URL. In this way, network resources may
+    be added or removed at any time. The client automatically distributes
+    tasks to all connected servers.
 }
 
 \section{Timeouts}{

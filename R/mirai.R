@@ -40,9 +40,8 @@
 #'
 server <- function(.url, daemon = TRUE) {
 
-  sock <- socket(protocol = "rep")
+  sock <- socket(protocol = "rep", dial = .url)
   on.exit(expr = close(sock))
-  dial(sock, url = .url) && stop()
 
   repeat {
     ctx <- context(sock)
@@ -55,6 +54,83 @@ server <- function(.url, daemon = TRUE) {
   }
 
   msleep(2000L)
+
+}
+
+#' mirai Server Queue
+#'
+#' Implements an active queue / task scheduler, launching and directing a cluster
+#'     of daemons.
+#'
+#' @param n integer number of daemons to set.
+#' @inheritParams server
+#'
+#' @return Invisible NULL.
+#'
+#' @section About:
+#'
+#'     The network topology is such that this server queue dials into the client,
+#'     which listens at the '.url' address. A server queue launches and directs
+#'     a cluster of 'n' daemons and relays messages back and forth from the
+#'     client. A server queue may be used in combination with other servers or
+#'     server queues and the client automatically distributes tasks to all
+#'     connected resources.
+#'
+#' @export
+#'
+serverq <- function(n, .url) {
+
+  sock <- socket(protocol = "rep", dial = .url)
+  on.exit(expr = close(sock))
+  queue <- vector(mode = "list", length = n)
+  servers <- vector(mode = "list", length = n)
+
+  for (i in seq_len(n)) {
+    url <- sprintf(.urlfmt, random())
+    socko <- socket(protocol = "req", listen = url)
+    system2(command = .command,
+            args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(url)))),
+            stdout = NULL, stderr = NULL, wait = FALSE)
+    servers[[i]] <- list(url = url, sock = socko, free = TRUE)
+    ctx <- context(sock)
+    req <- recv_aio(ctx, mode = 1L)
+    queue[[i]] <- list(ctx = ctx, req = req)
+  }
+
+  on.exit(expr = for (i in seq_len(n)) {
+    send(servers[[i]][["sock"]], data = .__scm__., mode = 2L)
+    close(servers[[i]][["sock"]])
+  }, add = TRUE)
+
+  repeat {
+
+    free <- which(unlist(lapply(servers, .subset2, "free")))
+
+    msleep(if (length(free) == n) 50L else 5L)
+
+    if (length(free))
+      for (q in free)
+        for (i in seq_len(n))
+          if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
+            ctx <- context(servers[[q]][["sock"]])
+            queue[[i]][["rctx"]] <- ctx
+            queue[[i]][["res"]] <- request(ctx, data = queue[[i]][["req"]][["data"]], send_mode = 1L, recv_mode = 1L)
+            queue[[i]][["daemon"]] <- q
+            servers[[q]][["free"]] <- FALSE
+            break
+          }
+
+    for (i in seq_len(n))
+      if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
+        send(queue[[i]][["ctx"]], data = queue[[i]][["res"]][["data"]], mode = 1L)
+        q <- queue[[i]][["daemon"]]
+        servers[[q]][["free"]] <- TRUE
+        ctx <- context(sock)
+        req <- recv_aio(ctx, mode = 1L)
+        queue[[i]] <- list(ctx = ctx, req = req)
+      }
+
+  }
 
 }
 
@@ -173,53 +249,50 @@ mirai <- eval_mirai
 
 #' daemons (Persistent Server Processes)
 #'
-#' Set or view the number of 'daemons' or persistent server processes receiving
-#'     \code{\link{mirai}} requests. These are, by default, automatically
-#'     created on the local machine. Alternatively, a client URL may be set to
-#'     receive connections from remote servers started with \code{\link{server}}
-#'     or \code{\link{serverq}}, for distributing tasks across the network.
+#' Set 'daemons' or persistent server processes receiving \code{\link{mirai}}
+#'     requests. These are, by default, automatically created on the local
+#'     machine. Alternatively, a client URL may be set to receive connections
+#'     from remote servers started with \code{\link{server}} or
+#'     \code{\link{serverq}} for distributing tasks across the network.
 #'
-#' @param n integer number of daemons to set.
-#' @param .url (optional) for distributing tasks across the network: character
-#'     client URL and port accepting incoming connections e.g.
-#'     'tcp://192.168.0.2:5555' at which server processes started using
-#'     \code{\link{server}} or \code{\link{serverq}} should connect to. To
-#'     listen to port 5555 (for example) on all interfaces on the host, specify
-#'     one of 'tcp://:5555', 'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
-#' @param q [default FALSE] logical value whether to maintain an active queue /
-#'     task scheduler. This requires resources to maintain, however ensures
-#'     optimal allocation of tasks to daemons (see section 'About' below).
+#' @param ... \emph{(depending on the type of argument supplied)}
 #'
-#' @return Integer change in number of daemons (created or destroyed).
+#'     \strong{numeric}: integer number of local daemons to set.
+#'
+#'     \strong{character}: for distributing tasks across the network: the client
+#'     URL and port accepting incoming connections e.g. 'tcp://192.168.0.2:5555'
+#'     at which server processes started using \code{\link{server}} or
+#'     \code{\link{serverq}} should connect to. For example to listen to port
+#'     5555 on all interfaces on the host, specify either 'tcp://:5555',
+#'     'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
+#'
+#' @param q [default FALSE] (applicable only for local daemons) logical value
+#'     whether to maintain an active queue. This requires resources to maintain,
+#'     however ensures optimal allocation of tasks to daemons (see section 'Local
+#'     Daemons' below).
+#'
+#' @return Integer number of daemons set (1L if supplying a client URL).
 #'     Calling \code{daemons()} without any arguments returns the 'nanoSocket'
 #'     for connecting to the daemons, or NULL if it is yet to be created.
 #'
-#' @details Set 'n' to 0 to reset all daemon connections. \{mirai\} will revert
-#'     to the default behaviour of creating a new background process for each
-#'     request.
+#' @details Use \code{daemons(0)} to reset all daemon connections at any time.
+#'     \{mirai\} will revert to the default behaviour of creating a new
+#'     background process for each request.
 #'
-#'     Specifying '.url' without 'n' assumes a value for 'n' of 1. After setting
-#'     '.url', further calls specifying 'n' can be used to update the number of
-#'     connected daemons (this is not strictly necessary as daemons are detected
-#'     automatically, but will ensure that the correct number of shutdown signals
-#'     are sent when the session is ended).
+#'     When specifying a client URL, all daemons dialing into the client are
+#'     detected automatically and resources may be added or removed dynamically.
+#'     Further specifying a numeric number of daemons has no effect, with the
+#'     exception that \code{daemons(0)} will always attempt to shutdown all
+#'     connected daemons.
 #'
-#'     Setting a new '.url' value will attempt to shutdown existing daemons
-#'     connected at the existing address before opening a connection at the new
-#'     address.
+#'     Setting a new client URL will attempt to shutdown all daemons connected
+#'     at the existing address before opening a connection at the new address.
 #'
-#' @section About:
+#' @section Local Daemons:
 #'
 #'     Daemons provide a potentially more efficient solution for asynchronous
 #'     operations as new processes no longer need to be created on an ad hoc
 #'     basis.
-#'
-#'     Specifying '.url' allows tasks to be distributed across the network. The
-#'     network topology is such that server daemons (started with
-#'     \code{\link{server}} or \code{\link{serverq}}) dial into the client,
-#'     which listens at the '.url' address. In this way, network resources may
-#'     be added or removed at any time. The client automatically distributes
-#'     tasks to all available servers.
 #'
 #'     The default implementation with \code{q = FALSE} is low-level and ensures
 #'     tasks are evenly-distributed amongst daemons. This provides a robust and
@@ -232,6 +305,15 @@ mirai <- eval_mirai
 #'     tasks to daemons such that they are run as soon as resources become
 #'     available. Note that modifying the number of daemons in an active queue
 #'     requires a reset to zero prior to specifying a revised number.
+#'
+#' @section Distributed Computing:
+#'
+#'     Specifying a client URL allows tasks to be distributed across the network.
+#'     The network topology is such that server daemons (started with
+#'     \code{\link{server}} or \code{\link{serverq}}) dial into the client,
+#'     which listens at the client URL. In this way, network resources may
+#'     be added or removed at any time. The client automatically distributes
+#'     tasks to all connected servers.
 #'
 #' @section Timeouts:
 #'
@@ -255,37 +337,33 @@ mirai <- eval_mirai
 #'
 #' @export
 #'
-daemons <- function(n, .url, q) {
+daemons <- function(..., q) {
 
   proc <- 0L
   url <- sock <- arg <- NULL
   local <- TRUE
 
-  function(n, .url, q = FALSE) {
+  function(..., q = FALSE) {
 
-    if (missing(.url)) {
-      missing(n) && return(sock)
+    ...length() || return(sock)
 
-    } else {
-      is.character(.url) || stop("non-character value supplied for '.url'")
-      if (missing(n) || n < 1L)
-        n <- 1L
+    if (is.numeric(..1)) {
+      n <- as.integer(..1)
+      n >= 0L || stop("the number of daemons must be zero or greater")
+      delta <- n - proc
+
+    } else if (is.character(..1)) {
       if (length(sock))
         daemons(0L)
-      sock <<- socket(protocol = "req")
-      listen(sock, url = .url) && {
-        close(sock)
-        sock <<- NULL
-        stop()
-      }
+      sock <<- socket(protocol = "req", listen = ..1)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
+      proc <<- delta <- 1L
       local <<- FALSE
+    } else {
+      stop("a numeric or character value must be supplied for '...'")
     }
 
-    is.numeric(n) || stop("non-numeric value supplied for 'n'")
-    n >= 0L || stop("'n' must be zero or greater")
-    delta <- as.integer(n) - proc
-    delta == 0L && return(delta)
+    delta == 0L && return(proc)
 
     if (is.null(sock)) {
       url <<- sprintf(.urlfmt, random())
@@ -294,6 +372,7 @@ daemons <- function(n, .url, q) {
       if (q) {
         arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::serverq(%d,%s)", n, deparse(url))))
         system2(command = .command, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
+        proc <<- n
         local <<- FALSE
       } else {
         arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(url))))
@@ -302,23 +381,31 @@ daemons <- function(n, .url, q) {
     }
 
     if (delta > 0L) {
-      if (local)
+      if (local) {
         for (i in seq_len(delta))
           system2(command = .command, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
-      proc <<- proc + delta
+        proc <<- proc + delta
+      }
 
     } else {
-      out <- 0L
-      for (i in seq_len(-delta)) {
-        ctx <- context(sock)
-        res <- send(ctx, data = .__scm__., mode = 2L, block = 2000L)
-        if (res)
-          out <- out + 1L
-        close(ctx)
+      if (!local && n == 0L) {
+        proc <<- as.integer(getstat(sock, "pipes"))
+        delta <- -proc
+        local <<- TRUE
       }
-      proc <<- proc + delta
-      if (out)
-        warning(sprintf("%d daemon shutdowns timed out (may require manual action)", out))
+      if (local) {
+        out <- 0L
+        for (i in seq_len(-delta)) {
+          ctx <- context(sock)
+          res <- send(ctx, data = .__scm__., mode = 2L, block = 2000L)
+          if (res)
+            out <- out + 1L
+          close(ctx)
+        }
+        proc <<- proc + delta
+        if (out)
+          warning(sprintf("%d daemon shutdowns timed out (may require manual action)", out))
+      }
       if (proc == 0L) {
         close(sock)
         sock <<- NULL
@@ -326,7 +413,7 @@ daemons <- function(n, .url, q) {
       }
     }
 
-    delta
+    proc
 
   }
 }
@@ -335,14 +422,25 @@ daemons <- function(n, .url, q) {
 #'
 #' View the number of currently active 'daemons' or persistent server processes.
 #'
-#' @return Integer number of daemons.
+#' @return A named list comprising: \itemize{
+#'     \item{\code{daemons}} {- integer number of daemons set.}
+#'     \item{\code{connections}} {- integer number of active connections at the
+#'     client URL.}
+#'     }
+#'
+#' @details Note: for an active queue, the number of connections will always be
+#'     1L as only the queue connects to the client. When using a client URL, the
+#'     number of daemons will always show as 1L, however the connections will
+#'     reflect the number of actual connected servers.
 #'
 #' @examples
 #' daemons_view()
 #'
 #' @export
 #'
-daemons_view <- function() .subset2(environment(daemons), "proc")
+daemons_view <- function()
+  list(daemons = .subset2(environment(daemons), "proc"),
+       connections = if (length(daemons())) as.integer(getstat(daemons(), "pipes")) else 0)
 
 #' mirai (Call Value)
 #'

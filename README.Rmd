@@ -159,7 +159,13 @@ This is potentially more efficient as new processes no longer need to be created
 ```{r daemons}
 # create 8 daemons
 daemons(8)
+```
 
+```{r daemons2, include=FALSE}
+Sys.sleep(0.5)
+```
+
+```{r daemons3}
 # view the number of active daemons
 daemons_view()
 ```
@@ -168,7 +174,7 @@ The default implementation with `q = FALSE` is low-level and ensures tasks are e
 
 Alternatively, specifying `q = TRUE` maintains an active queue (task scheduler). This consumes additional resources, however ensures optimal allocation of tasks to daemons such that they are run as soon as resources become available.
 
-```{r daemons2}
+```{r daemons4}
 # reset to zero
 daemons(0)
 ```
@@ -181,7 +187,7 @@ Set the number of daemons to zero again to revert to the default behaviour of cr
 
 Through the `daemons()` interface, tasks may also be sent for computation to server processes on the network.
 
-Specify the '.url' argument as the client network address e.g. '192.168.0.2' and a port that is able to accept incoming connections, or use '0.0.0.0' to listen on all interfaces on the host, for example:
+Specify as a character string the client network address and a port that is able to accept incoming connections, or use '0.0.0.0' to listen on all interfaces on the host, for example:
 
 ```{r remote}
 daemons(.url = "tcp://0.0.0.0:5555")
@@ -189,11 +195,12 @@ daemons(.url = "tcp://0.0.0.0:5555")
 
 The network topology is such that the client listens at the above address, and distributes tasks to all connected server processes.
 
-On the server, `server()` or `serverq()` may be called from an R session, or Rscript from a suitable shell, to set up a remote daemon process, or cluster, that connects to the client network IP address ('192.168.0.2' in the example below):
+On the server, `server()` or `serverq()` may be called from an R session, or Rscript from a suitable shell, to set up a remote daemon process, or cluster of processes, that connects to the client network IP address ('192.168.0.2' in the example below):
 
 ```
 Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555")'
 ```
+
 Network resources can be added and removed as required. Tasks are automatically distributed to all available server processes.
 
 To reset all connections and revert to default behaviour:
@@ -201,8 +208,6 @@ To reset all connections and revert to default behaviour:
 ```{r reset}
 daemons(0)
 ```
-
-Note: the above warning occurs as no server processes were actually connected in creating this example.
 
 [&laquo; Back to ToC](#table-of-contents)
 
@@ -265,8 +270,6 @@ is_mirai_error(m3$data)
 is_mirai_interrupt(m3$data)
 is_error_value(m3$data)
 ```
-
-
 
 `is_error_value()` tests for all mirai execution errors, user interrupts and timeouts. 
 

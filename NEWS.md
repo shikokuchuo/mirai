@@ -1,9 +1,11 @@
-# mirai 0.7.2.9000 (development)
+# mirai 0.7.2.9001 (development)
 
+* `daemons()` interface has been simplified with a `...` argument. Please note that this is a breaking change and only upgrade when ready.
 * `daemons()` implements the argument 'q' for running an active queue (task scheduler).
-* `serverq()` is the corresponding function for launching a cluster of daemons, and can be run on remote resources.
-* `daemons_view()` implemented to view the current number of daemons, replacing the previous `daemons("view")` functionality.
-* Invalid URLs provided to `server()`, `serverq()` and `daemons()` will now error and return in a timely fashion instead of potentially causing a hang.
+* `serverq()` is the corresponding server function for launching an actively-managed cluster of daemons, and can be run on remote resources.
+* `daemons_view()` implemented as an improved method of viewing the current number of daemons / active connections, replacing the previous `daemons("view")` functionality.
+* Invalid URLs provided to `server()` and `daemons()` will now error and return in a timely fashion instead of potentially causing a hang.
+* Requires nanonext >= 0.7.3.9001.
 * Internal performance enhancements.
 
 # mirai 0.7.2

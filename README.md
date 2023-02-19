@@ -104,7 +104,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -0.963 0.707 -10.998 0.821 -3.957 ...
+#>  num [1:100000000] 4.587 -1.375 -1.299 0.463 0.185 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -112,7 +112,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.963 0.707 -10.998 0.821 -3.957 ...
+#>  num [1:100000000] 4.587 -1.375 -1.299 0.463 0.185 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -178,9 +178,15 @@ created on an *ad hoc* basis.
 # create 8 daemons
 daemons(8)
 #> [1] 8
+```
 
+``` r
 # view the number of active daemons
 daemons_view()
+#> $daemons
+#> [1] 8
+#> 
+#> $connections
 #> [1] 8
 ```
 
@@ -198,7 +204,7 @@ resources become available.
 ``` r
 # reset to zero
 daemons(0)
-#> [1] -8
+#> [1] 0
 ```
 
 Set the number of daemons to zero again to revert to the default
@@ -211,10 +217,9 @@ behaviour of creating a new background process for each ‘mirai’ request.
 Through the `daemons()` interface, tasks may also be sent for
 computation to server processes on the network.
 
-Specify the ‘.url’ argument as the client network address
-e.g. ‘192.168.0.2’ and a port that is able to accept incoming
-connections, or use ‘0.0.0.0’ to listen on all interfaces on the host,
-for example:
+Specify as a character string the client network address and a port that
+is able to accept incoming connections, or use ‘0.0.0.0’ to listen on
+all interfaces on the host, for example:
 
 ``` r
 daemons(.url = "tcp://0.0.0.0:5555")
@@ -226,8 +231,8 @@ address, and distributes tasks to all connected server processes.
 
 On the server, `server()` or `serverq()` may be called from an R
 session, or Rscript from a suitable shell, to set up a remote daemon
-process, or cluster, that connects to the client network IP address
-(‘192.168.0.2’ in the example below):
+process, or cluster of processes, that connects to the client network IP
+address (‘192.168.0.2’ in the example below):
 
     Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555")'
 
@@ -238,12 +243,8 @@ To reset all connections and revert to default behaviour:
 
 ``` r
 daemons(0)
-#> Warning in daemons(0): 1 daemon shutdowns timed out (may require manual action)
-#> [1] -1
+#> [1] 0
 ```
-
-Note: the above warning occurs as no server processes were actually
-connected in creating this example.
 
 [« Back to ToC](#table-of-contents)
 

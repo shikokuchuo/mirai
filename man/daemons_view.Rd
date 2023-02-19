@@ -7,10 +7,20 @@
 daemons_view()
 }
 \value{
-Integer number of daemons.
+A named list comprising: \itemize{
+    \item{\code{daemons}} {- integer number of daemons set.}
+    \item{\code{connections}} {- integer number of active connections at the
+    client URL.}
+    }
 }
 \description{
 View the number of currently active 'daemons' or persistent server processes.
+}
+\details{
+Note: for an active queue, the number of connections will always be
+    1L as only the queue connects to the client. When using a client URL, the
+    number of daemons will always show as 1L, however the connections will
+    reflect the number of actual connected servers.
 }
 \examples{
 daemons_view()
