@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9001</span>
       </span>
     </div>
 
@@ -54,14 +54,17 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.2.9000" id="mirai-0729000-development">mirai 0.7.2.9000 (development)<a class="anchor" aria-label="anchor" href="#mirai-0729000-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.7.2.9001" id="mirai-0729001-development">mirai 0.7.2.9001 (development)<a class="anchor" aria-label="anchor" href="#mirai-0729001-development"></a></h2>
 <ul><li>
+<code><a href="../reference/daemons.html">daemons()</a></code> interface has been simplified with a <code>...</code> argument. Please note that this is a breaking change and only upgrade when ready.</li>
+<li>
 <code><a href="../reference/daemons.html">daemons()</a></code> implements the argument ‘q’ for running an active queue (task scheduler).</li>
 <li>
-<code><a href="../reference/serverq.html">serverq()</a></code> is the corresponding function for launching a cluster of daemons, and can be run on remote resources.</li>
+<code><a href="../reference/serverq.html">serverq()</a></code> is the corresponding server function for launching an actively-managed cluster of daemons, and can be run on remote resources.</li>
 <li>
-<code><a href="../reference/daemons_view.html">daemons_view()</a></code> implemented to view the current number of daemons, replacing the previous <code>daemons("view")</code> functionality.</li>
-<li>Invalid URLs provided to <code><a href="../reference/server.html">server()</a></code>, <code><a href="../reference/serverq.html">serverq()</a></code> and <code><a href="../reference/daemons.html">daemons()</a></code> will now error and return in a timely fashion instead of potentially causing a hang.</li>
+<code><a href="../reference/daemons_view.html">daemons_view()</a></code> implemented as an improved method of viewing the current number of daemons / active connections, replacing the previous <code>daemons("view")</code> functionality.</li>
+<li>Invalid URLs provided to <code><a href="../reference/server.html">server()</a></code> and <code><a href="../reference/daemons.html">daemons()</a></code> will now error and return in a timely fashion instead of potentially causing a hang.</li>
+<li>Requires nanonext &gt;= 0.7.3.9001.</li>
 <li>Internal performance enhancements.</li>
 </ul></div>
     <div class="section level2">

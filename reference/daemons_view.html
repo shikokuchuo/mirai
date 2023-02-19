@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9001</span>
       </span>
     </div>
 
@@ -66,13 +66,27 @@
     <h2>Value</h2>
     
 
-<p>Integer number of daemons.</p>
+<p>A named list comprising:</p><ul><li><p><code>daemons</code> - integer number of daemons set.</p></li>
+<li><p><code>connections</code> - integer number of active connections at the
+    client URL.</p></li>
+</ul></div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>Note: for an active queue, the number of connections will always be
+    1L as only the queue connects to the client. When using a client URL, the
+    number of daemons will always show as 1L, however the connections will
+    reflect the number of actual connected servers.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">daemons_view</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $daemons</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $connections</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
