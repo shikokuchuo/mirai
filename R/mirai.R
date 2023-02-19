@@ -440,7 +440,7 @@ daemons <- function(..., q) {
 #'
 daemons_view <- function()
   list(daemons = .subset2(environment(daemons), "proc"),
-       connections = if (length(daemons())) as.integer(getstat(daemons(), "pipes")) else 0)
+       connections = if (length(daemons())) as.integer(getstat(daemons(), "pipes")) else 0L)
 
 #' mirai (Call Value)
 #'
