@@ -1,4 +1,4 @@
-# mirai 0.7.2.9001 (development)
+# mirai 0.7.2.9002 (development)
 
 * `daemons()` interface has been simplified with a `...` argument. Please note that this is a breaking change and only upgrade when ready.
 * `daemons()` implements the argument 'q' for running an active queue (task scheduler).

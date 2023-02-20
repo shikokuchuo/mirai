@@ -389,7 +389,7 @@ daemons <- function(..., q) {
 
     } else {
       if (!local && n == 0L) {
-        proc <<- as.integer(getstat(sock, "pipes"))
+        proc <<- as.integer(stat(sock, "pipes"))
         delta <- -proc
         local <<- TRUE
       }
@@ -440,7 +440,7 @@ daemons <- function(..., q) {
 #'
 daemons_view <- function()
   list(daemons = .subset2(environment(daemons), "proc"),
-       connections = if (length(daemons())) as.integer(getstat(daemons(), "pipes")) else 0L)
+       connections = if (length(daemons())) as.integer(stat(daemons(), "pipes")) else 0L)
 
 #' mirai (Call Value)
 #'

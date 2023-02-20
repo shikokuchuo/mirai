@@ -48,8 +48,8 @@
 #' @author Charlie Gao \email{charlie.gao@@shikokuchuo.net}
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
-#' @importFrom nanonext call_aio context getstat is_error_value msleep random
-#'     recv recv_aio request send socket stop_aio unresolved
+#' @importFrom nanonext call_aio context is_error_value msleep random recv
+#'     recv_aio request send socket stat stop_aio unresolved
 #'
 #' @docType package
 #' @name mirai-package
