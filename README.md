@@ -43,8 +43,8 @@ zero package dependencies.
 3.  [Example 2: I/O-bound Operations](#example-2-io-bound-operations)
 4.  [Daemons](#daemons)
 5.  [Distributed Computing](#distributed-computing)
-6.  [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
-7.  [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
+6.  [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
+7.  [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
 8.  [Links](#links)
 
 ### Installation
@@ -104,7 +104,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 4.587 -1.375 -1.299 0.463 0.185 ...
+#>  num [1:100000000] 0.49 0.613 -1.05 -1.045 4.273 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -112,7 +112,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 4.587 -1.375 -1.299 0.463 0.185 ...
+#>  num [1:100000000] 0.49 0.613 -1.05 -1.045 4.273 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -174,14 +174,21 @@ requests.
 This is potentially more efficient as new processes no longer need to be
 created on an *ad hoc* basis.
 
+##### Passive Queue (default)
+
+Call daemons() with the number of daemons to launch.
+
 ``` r
-# create 8 daemons
 daemons(8)
 #> [1] 8
 ```
 
+Call `daemons_view()` to view the number of daemons, and also the number
+of active connections. In the default implementation, the background
+processes connect directly into the client and the number of daemons and
+connections will be the same.
+
 ``` r
-# view the number of active daemons
 daemons_view()
 #> $daemons
 #> [1] 8
@@ -190,54 +197,106 @@ daemons_view()
 #> [1] 8
 ```
 
-The default implementation with `q = FALSE` is low-level and ensures
-tasks are evenly-distributed amongst daemons. This provides a robust and
-resource-light approach, particularly suited to working with
-similar-length tasks, or where the number of concurrent tasks typically
-does not exceed available daemons.
-
-Alternatively, specifying `q = TRUE` maintains an active queue (task
-scheduler). This consumes additional resources, however ensures optimal
-allocation of tasks to daemons such that they are run as soon as
-resources become available.
+This low-level implementation ensures tasks are evenly-distributed
+amongst daemons, and provides a robust and resource-light solution. This
+is particularly suited to working with similar-length tasks, or where
+the number of concurrent tasks typically does not exceed the number of
+available daemons.
 
 ``` r
-# reset to zero
 daemons(0)
 #> [1] 0
 ```
 
-Set the number of daemons to zero again to revert to the default
-behaviour of creating a new background process for each ‘mirai’ request.
+Set the number of daemons to zero to reset. This reverts to the default
+of creating a new background process for each ‘mirai’ request.
+
+##### Active Queue
+
+Specifying the argument `q = TRUE` provides access to an alternative
+approach, which implements an active queue (task scheduler).
+
+``` r
+daemons(8, q = TRUE)
+#> [1] 8
+```
+
+Calling `daemons_view()` shows 8 daemons, but only one connection. This
+is as the queue now acts as a bridge between the client and individual
+daemon processes.
+
+``` r
+daemons_view()
+#> $daemons
+#> [1] 8
+#> 
+#> $connections
+#> [1] 1
+```
+
+The queue consumes additional resources, however ensures optimal
+allocation of tasks to daemons such that they are run as soon as
+resources become available.
+
+``` r
+daemons(0)
+#> [1] 0
+```
+
+Set the number of daemons to zero to reset.
 
 [« Back to ToC](#table-of-contents)
 
 ### Distributed Computing
 
-Through the `daemons()` interface, tasks may also be sent for
-computation to server processes on the network.
+The `daemons()` interface may also be used to send tasks for computation
+to server processes on the network.
 
-Specify as a character string the client network address and a port that
-is able to accept incoming connections, or use ‘0.0.0.0’ to listen on
-all interfaces on the host, for example:
+Instead of specifying a numeric value, instead specify as a character
+string the client network address and a port that is able to accept
+incoming connections.
+
+For example if your local network address is ‘192.168.0.2’, make sure
+that a port e.g. ‘5555’ is available for inbound connections from the
+local network.
+
+Alternatively, simply supply a colon followed by the port number to
+listen on all interfaces on the host, for example:
 
 ``` r
-daemons(.url = "tcp://0.0.0.0:5555")
+# daemons("tcp://192.168.0.2:5555")
+daemons("tcp://:5555")
 #> [1] 1
 ```
 
 The network topology is such that the client listens at the above
 address, and distributes tasks to all connected server processes.
 
-On the server, `server()` or `serverq()` may be called from an R
-session, or Rscript from a suitable shell, to set up a remote daemon
-process, or cluster of processes, that connects to the client network IP
-address (‘192.168.0.2’ in the example below):
+On the server, `server()` may be called from an R session, or an Rscript
+invocation. This sets up a remote daemon process that connects to the
+client network IP address and receives tasks:
 
     Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555")'
 
-Network resources can be added and removed as required. Tasks are
-automatically distributed to all available server processes.
+Alternatively, use `serverq()` to launch a queue directing a cluster of
+\[8\] daemons:
+
+    Rscript --vanilla -e 'mirai::serverq(8,"tcp://192.168.0.2:5555")'
+
+Calling `daemons_view()` will now always show one daemon. However
+network resources may be added and removed as required, and tasks are
+automatically distributed to all available server processes. The number
+of connections will show the actual number of instances connected into
+the client (2 in the example below).
+
+``` r
+daemons_view()
+#> $daemons
+#> [1] 1
+#> 
+#> $connections
+#> [1] 1
+```
 
 To reset all connections and revert to default behaviour:
 
@@ -246,45 +305,8 @@ daemons(0)
 #> [1] 0
 ```
 
-[« Back to ToC](#table-of-contents)
-
-### Deferred Evaluation Pipe
-
-{mirai} implements a deferred evaluation pipe `%>>%` for working with
-potentially unresolved values.
-
-Pipe a mirai `$data` value forward into a function or series of
-functions and it initially returns an ‘unresolvedExpr’.
-
-The result may be queried at `$data`, which will return another
-‘unresolvedExpr’ whilst unresolved. However when the original value
-resolves, the ‘unresolvedExpr’ will simultaneously resolve into a
-‘resolvedExpr’, for which the evaluated result will be available at
-`$data`.
-
-It is possible to use `unresolved()` around a ‘unresolvedExpr’ or its
-`$data` element to test for resolution, as in the example below.
-
-The pipe operator semantics are similar to R’s base pipe `|>`:
-
-`x %>>% f` is equivalent to `f(x)` <br /> `x %>>% f()` is equivalent to
-`f(x)` <br /> `x %>>% f(y)` is equivalent to `f(x, y)`
-
-``` r
-m <- mirai({Sys.sleep(0.5); 1})
-b <- m$data %>>% c(2, 3) %>>% as.character()
-b
-#> < unresolvedExpr >
-#>  - $data to query resolution
-b$data
-#> < unresolvedExpr >
-#>  - $data to query resolution
-Sys.sleep(1)
-b$data
-#> [1] "1" "2" "3"
-b
-#> < resolvedExpr: $data >
-```
+This also sends an exit signal to connected server instances so that
+they exit automatically.
 
 [« Back to ToC](#table-of-contents)
 
@@ -339,6 +361,46 @@ is_error_value(m3$data)
 
 `is_error_value()` tests for all mirai execution errors, user interrupts
 and timeouts.
+
+[« Back to ToC](#table-of-contents)
+
+### Deferred Evaluation Pipe
+
+{mirai} implements a deferred evaluation pipe `%>>%` for working with
+potentially unresolved values.
+
+Pipe a mirai `$data` value forward into a function or series of
+functions and it initially returns an ‘unresolvedExpr’.
+
+The result may be queried at `$data`, which will return another
+‘unresolvedExpr’ whilst unresolved. However when the original value
+resolves, the ‘unresolvedExpr’ will simultaneously resolve into a
+‘resolvedExpr’, for which the evaluated result will be available at
+`$data`.
+
+It is possible to use `unresolved()` around a ‘unresolvedExpr’ or its
+`$data` element to test for resolution, as in the example below.
+
+The pipe operator semantics are similar to R’s base pipe `|>`:
+
+`x %>>% f` is equivalent to `f(x)` <br /> `x %>>% f()` is equivalent to
+`f(x)` <br /> `x %>>% f(y)` is equivalent to `f(x, y)`
+
+``` r
+m <- mirai({Sys.sleep(0.5); 1})
+b <- m$data %>>% c(2, 3) %>>% as.character()
+b
+#> < unresolvedExpr >
+#>  - $data to query resolution
+b$data
+#> < unresolvedExpr >
+#>  - $data to query resolution
+Sys.sleep(1)
+b$data
+#> [1] "1" "2" "3"
+b
+#> < resolvedExpr: $data >
+```
 
 [« Back to ToC](#table-of-contents)
 
