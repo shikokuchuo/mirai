@@ -104,7 +104,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.49 0.613 -1.05 -1.045 4.273 ...
+#>  num [1:100000000] -30.854 3.754 4.278 0.152 -1.162 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -112,7 +112,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.49 0.613 -1.05 -1.045 4.273 ...
+#>  num [1:100000000] -30.854 3.754 4.278 0.152 -1.162 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -272,6 +272,8 @@ daemons("tcp://:5555")
 The network topology is such that the client listens at the above
 address, and distributes tasks to all connected server processes.
 
+–
+
 On the server, `server()` may be called from an R session, or an Rscript
 invocation. This sets up a remote daemon process that connects to the
 client network IP address and receives tasks:
@@ -283,11 +285,13 @@ Alternatively, use `serverq()` to launch a queue directing a cluster of
 
     Rscript --vanilla -e 'mirai::serverq(8,"tcp://192.168.0.2:5555")'
 
-Calling `daemons_view()` will now always show one daemon. However
-network resources may be added and removed as required, and tasks are
-automatically distributed to all available server processes. The number
-of connections will show the actual number of instances connected into
-the client (2 in the example below).
+–
+
+Back on the client, calling `daemons_view()` will now always show one
+daemon. However network resources may be added and removed as required,
+and tasks are automatically distributed to all server processes. The
+number of connections will show the actual number of instances connected
+to the client (2 in the example below).
 
 ``` r
 daemons_view()
@@ -295,7 +299,7 @@ daemons_view()
 #> [1] 1
 #> 
 #> $connections
-#> [1] 1
+#> [1] 2
 ```
 
 To reset all connections and revert to default behaviour:

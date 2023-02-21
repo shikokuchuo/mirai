@@ -226,6 +226,8 @@ daemons("tcp://:5555")
 
 The network topology is such that the client listens at the above address, and distributes tasks to all connected server processes.
 
+--
+
 On the server, `server()` may be called from an R session, or an Rscript invocation. This sets up a remote daemon process that connects to the client network IP address and receives tasks:
 
 ```
@@ -238,10 +240,12 @@ Alternatively, use `serverq()` to launch a queue directing a cluster of [8] daem
 Rscript --vanilla -e 'mirai::serverq(8,"tcp://192.168.0.2:5555")'
 ```
 
-Calling `daemons_view()` will now always show one daemon. However network resources may be added and removed as required, and tasks are automatically distributed to all available server processes. The number of connections will show the actual number of instances connected into the client (2 in the example below).
+--
+
+Back on the client, calling `daemons_view()` will now always show one daemon. However network resources may be added and removed as required, and tasks are automatically distributed to all server processes. The number of connections will show the actual number of instances connected to the client (2 in the example below).
 
 ```{r remotes, include=FALSE}
-Sys.sleep(0.5)
+Sys.sleep(1)
 ```
 ```{r remotev}
 daemons_view()
