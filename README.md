@@ -104,7 +104,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -30.854 3.754 4.278 0.152 -1.162 ...
+#>  num [1:100000000] 0.116 -5.305 -0.588 -1.377 0.957 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -112,7 +112,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -30.854 3.754 4.278 0.152 -1.162 ...
+#>  num [1:100000000] 0.116 -5.305 -0.588 -1.377 0.957 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -183,13 +183,14 @@ daemons(8)
 #> [1] 8
 ```
 
-Call `daemons_view()` to view the number of daemons, and also the number
-of active connections. In the default implementation, the background
-processes connect directly into the client and the number of daemons and
+Call `daemons()` with a logical argument (`NA`, `TRUE` or `FALSE`) to
+view the current status i.e. number of daemons, and number of active
+connections. In the default implementation, the background processes
+connect directly into the client and the number of daemons and
 connections will be the same.
 
 ``` r
-daemons_view()
+daemons(NA)
 #> $daemons
 #> [1] 8
 #> 
@@ -221,12 +222,12 @@ daemons(8, q = TRUE)
 #> [1] 8
 ```
 
-Calling `daemons_view()` shows 8 daemons, but only one connection. This
-is as the queue now acts as a bridge between the client and individual
+Requesting the status shows 8 daemons, but only one connection. This is
+as the queue now acts as a bridge between the client and individual
 daemon processes.
 
 ``` r
-daemons_view()
+daemons(NA)
 #> $daemons
 #> [1] 8
 #> 
@@ -266,7 +267,7 @@ listen on all interfaces on the host, for example:
 ``` r
 # daemons("tcp://192.168.0.2:5555")
 daemons("tcp://:5555")
-#> [1] 1
+#> [1] NA
 ```
 
 The network topology is such that the client listens at the above
@@ -287,16 +288,16 @@ Alternatively, use `serverq()` to launch a queue directing a cluster of
 
 –
 
-Back on the client, calling `daemons_view()` will now always show one
-daemon. However network resources may be added and removed as required,
-and tasks are automatically distributed to all server processes. The
-number of connections will show the actual number of instances connected
-to the client (2 in the example below).
+On the client, requesting the status will show daemons as `NA` as the
+number was not specified. However network resources may be added and
+removed as required, and tasks are automatically distributed to all
+server processes. The number of connections will show the actual number
+of instances connected to the client (2 in the example below).
 
 ``` r
-daemons_view()
+daemons(TRUE)
 #> $daemons
-#> [1] 1
+#> [1] NA
 #> 
 #> $connections
 #> [1] 2

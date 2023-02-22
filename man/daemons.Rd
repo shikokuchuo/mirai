@@ -16,7 +16,9 @@ daemons(..., q = FALSE)
     at which server processes started using \code{\link{server}} or
     \code{\link{serverq}} should connect to. For example to listen to port
     5555 on all interfaces on the host, specify either 'tcp://:5555',
-    'tcp://*:5555' or 'tcp://0.0.0.0:5555'.}
+    'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
+
+    \strong{logical}: to view the currrent status, specify NA, TRUE or FALSE.}
 
 \item{q}{[default FALSE] (applicable only for local daemons) logical value
 whether to maintain an active queue. This requires resources to maintain,
@@ -24,7 +26,18 @@ however ensures optimal allocation of tasks to daemons (see section 'Local
 Daemons' below).}
 }
 \value{
-Integer number of daemons set (1L if supplying a client URL).
+Setting daemons: integer number of daemons set (NA if supplying a
+    client URL).
+
+    Viewing current status: a named list comprising: \itemize{
+    \item{\code{daemons}} {- integer number of daemons set.}
+    \item{\code{connections}} {- integer number of active connections at the
+    client URL.}
+    }
+    Note: for an active queue, the number of connections is 1L as only the
+    queue connects to the client. Using a client URL, daemons will show as NA,
+    however connections will reflect the number of actual connected servers.
+
     Calling \code{daemons()} without any arguments returns the 'nanoSocket'
     for connecting to the daemons, or NULL if it is yet to be created.
 }
@@ -97,6 +110,10 @@ if (interactive()) {
 
 # Create 2 daemons
 daemons(2)
+
+# View status
+daemons(NA)
+
 # Reset to zero
 daemons(0)
 

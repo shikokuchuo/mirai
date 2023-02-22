@@ -266,12 +266,25 @@ mirai <- eval_mirai
 #'     5555 on all interfaces on the host, specify either 'tcp://:5555',
 #'     'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
 #'
+#'     \strong{logical}: to view the currrent status, specify NA, TRUE or FALSE.
+#'
 #' @param q [default FALSE] (applicable only for local daemons) logical value
 #'     whether to maintain an active queue. This requires resources to maintain,
 #'     however ensures optimal allocation of tasks to daemons (see section 'Local
 #'     Daemons' below).
 #'
-#' @return Integer number of daemons set (1L if supplying a client URL).
+#' @return Setting daemons: integer number of daemons set (NA if supplying a
+#'     client URL).
+#'
+#'     Viewing current status: a named list comprising: \itemize{
+#'     \item{\code{daemons}} {- integer number of daemons set.}
+#'     \item{\code{connections}} {- integer number of active connections at the
+#'     client URL.}
+#'     }
+#'     Note: for an active queue, the number of connections is 1L as only the
+#'     queue connects to the client. Using a client URL, daemons will show as NA,
+#'     however connections will reflect the number of actual connected servers.
+#'
 #'     Calling \code{daemons()} without any arguments returns the 'nanoSocket'
 #'     for connecting to the daemons, or NULL if it is yet to be created.
 #'
@@ -330,6 +343,10 @@ mirai <- eval_mirai
 #'
 #' # Create 2 daemons
 #' daemons(2)
+#'
+#' # View status
+#' daemons(NA)
+#'
 #' # Reset to zero
 #' daemons(0)
 #'
@@ -350,20 +367,24 @@ daemons <- function(..., q) {
     if (is.numeric(..1)) {
       n <- as.integer(..1)
       n >= 0L || stop("the number of daemons must be zero or greater")
-      delta <- n - proc
+      delta <- if (is.na(proc)) -1L else n - proc
+      delta == 0L && return(proc)
 
     } else if (is.character(..1)) {
       if (length(sock))
         daemons(0L)
       sock <<- socket(protocol = "req", listen = ..1)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
-      proc <<- delta <- 1L
       local <<- FALSE
+      return(proc <<- NA)
+    } else if (is.logical(..1)) {
+      return(
+        list(daemons = .subset2(environment(daemons), "proc"),
+             connections = if (length(daemons())) as.integer(stat(daemons(), "pipes")) else 0L)
+      )
     } else {
-      stop("a numeric or character value must be supplied for '...'")
+      stop("a numeric, character or logical value must be supplied for '...'")
     }
-
-    delta == 0L && return(proc)
 
     if (is.null(sock)) {
       url <<- sprintf(.urlfmt, random())
@@ -376,7 +397,6 @@ daemons <- function(..., q) {
         local <<- FALSE
       } else {
         arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(url))))
-        local <<- TRUE
       }
     }
 
@@ -417,30 +437,6 @@ daemons <- function(..., q) {
 
   }
 }
-
-#' View Daemons
-#'
-#' View the number of currently active 'daemons' or persistent server processes.
-#'
-#' @return A named list comprising: \itemize{
-#'     \item{\code{daemons}} {- integer number of daemons set.}
-#'     \item{\code{connections}} {- integer number of active connections at the
-#'     client URL.}
-#'     }
-#'
-#' @details Note: for an active queue, the number of connections will always be
-#'     1L as only the queue connects to the client. When using a client URL, the
-#'     number of daemons will always show as 1L, however the connections will
-#'     reflect the number of actual connected servers.
-#'
-#' @examples
-#' daemons_view()
-#'
-#' @export
-#'
-daemons_view <- function()
-  list(daemons = .subset2(environment(daemons), "proc"),
-       connections = if (length(daemons())) as.integer(stat(daemons(), "pipes")) else 0L)
 
 #' mirai (Call Value)
 #'
