@@ -5,7 +5,7 @@
 * `server()` gains the argument 'n' for launching an actively-managed cluster of daemons on remote resources.
 * `eval_mirai()` is now removed as an alias for `mirai()`.
 * Invalid URLs provided to `server()` and `daemons()` will now error and return in a timely fashion instead of potentially causing a hang.
-* Requires nanonext >= 0.7.3.9002.
+* Requires nanonext >= 0.7.3.9002 and R >= 3.5.
 * Internal performance enhancements.
 
 # mirai 0.7.2
