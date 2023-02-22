@@ -284,11 +284,11 @@
 <span></span>
 <span><span class="fu"><a href="reference/is_mirai_error.html">is_mirai_error</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
-<span><span class="fu"><a href="reference/is_error_value.html">is_error_value</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/is_mirai_error.html">is_error_value</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<p>If during a <code><a href="reference/call_mirai.html">call_mirai()</a></code> an interrupt e.g. ctrl+c is sent, the mirai will resolve to an empty character string of class ‘miraiInterrupt’ and ‘errorValue’. <code><a href="reference/is_mirai_interrupt.html">is_mirai_interrupt()</a></code> may be used to test for such interrupts.</p>
+<p>If during a <code><a href="reference/call_mirai.html">call_mirai()</a></code> an interrupt e.g. ctrl+c is sent, the mirai will resolve to an empty character string of class ‘miraiInterrupt’ and ‘errorValue’. <code><a href="reference/is_mirai_error.html">is_mirai_interrupt()</a></code> may be used to test for such interrupts.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/is_mirai_interrupt.html">is_mirai_interrupt</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/is_mirai_error.html">is_mirai_interrupt</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
 <p>If execution of a mirai surpasses the timeout set via the ‘.timeout’ argument, the mirai will resolve to an ‘errorValue’. This can, amongst other things, guard against mirai processes that hang and never return.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
@@ -298,11 +298,11 @@
 <span></span>
 <span><span class="fu"><a href="reference/is_mirai_error.html">is_mirai_error</a></span><span class="op">(</span><span class="va">m3</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
-<span><span class="fu"><a href="reference/is_mirai_interrupt.html">is_mirai_interrupt</a></span><span class="op">(</span><span class="va">m3</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/is_mirai_error.html">is_mirai_interrupt</a></span><span class="op">(</span><span class="va">m3</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
-<span><span class="fu"><a href="reference/is_error_value.html">is_error_value</a></span><span class="op">(</span><span class="va">m3</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/is_mirai_error.html">is_error_value</a></span><span class="op">(</span><span class="va">m3</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<p><code><a href="reference/is_error_value.html">is_error_value()</a></code> tests for all mirai execution errors, user interrupts and timeouts.</p>
+<p><code><a href="reference/is_mirai_error.html">is_error_value()</a></code> tests for all mirai execution errors, user interrupts and timeouts.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">

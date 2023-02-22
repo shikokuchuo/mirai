@@ -83,11 +83,11 @@
 <p>A blocking call can be sent a user interrupt with e.g. ctrl+c. If the
     ongoing execution in the mirai is interruptible, it will resolve into
     an object of class 'miraiInterrupt' and 'errorValue'.
-    <code><a href="is_mirai_interrupt.html">is_mirai_interrupt</a></code> may be used to handle such cases.</p>
+    <code><a href="is_mirai_error.html">is_mirai_interrupt</a></code> may be used to handle such cases.</p>
 <p>If an error occurs in evaluation, the error message is returned as a
     character string of class 'miraiError' and 'errorValue'.
     <code><a href="is_mirai_error.html">is_mirai_error</a></code> may be used to test for this.</p>
-<p><code><a href="is_error_value.html">is_error_value</a></code> tests for all error conditions including
+<p><code><a href="is_mirai_error.html">is_error_value</a></code> tests for all error conditions including
     mirai errors, interrupts, and timeouts.</p>
 <p>The mirai updates itself in place, so to access the value of a mirai
     <code>x</code> directly, use <code>call_mirai(x)$data</code>.</p>
