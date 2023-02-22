@@ -158,8 +158,6 @@ server <- function(.url, n = NULL, daemon = TRUE) {
 #'     \code{\link{is_error_value}} tests for all error conditions including
 #'     'mirai' errors, interrupts, and timeouts.
 #'
-#'     \code{\link{mirai}} is an alias for \code{\link{eval_mirai}}.
-#'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
@@ -196,7 +194,7 @@ server <- function(.url, n = NULL, daemon = TRUE) {
 #'
 #' @export
 #'
-eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
+mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
 
   missing(.expr) && stop("missing expression, perhaps wrap in {}?")
 
@@ -223,11 +221,6 @@ eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
   `class<-`(aio, c("mirai", "recvAio"))
 
 }
-
-#' @rdname eval_mirai
-#' @export
-#'
-mirai <- eval_mirai
 
 #' daemons (Persistent Server Processes)
 #'
