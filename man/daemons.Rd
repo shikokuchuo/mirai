@@ -13,10 +13,9 @@ daemons(..., q = FALSE)
 
     \strong{character}: for distributing tasks across the network: the client
     URL and port accepting incoming connections e.g. 'tcp://192.168.0.2:5555'
-    at which server processes started using \code{\link{server}} or
-    \code{\link{serverq}} should connect to. For example to listen to port
-    5555 on all interfaces on the host, specify either 'tcp://:5555',
-    'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
+    at which server processes started using \code{\link{server}} should
+    connect to. For example to listen to port 5555 on all interfaces on the
+    host, specify either 'tcp://:5555', 'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
 
     \strong{logical}: to view the currrent status, specify NA, TRUE or FALSE.}
 
@@ -45,8 +44,8 @@ Setting daemons: integer number of daemons set (NA if supplying a
 Set 'daemons' or persistent server processes receiving \code{\link{mirai}}
     requests. These are, by default, automatically created on the local
     machine. Alternatively, a client URL may be set to receive connections
-    from remote servers started with \code{\link{server}} or
-    \code{\link{serverq}} for distributing tasks across the network.
+    from remote servers started with \code{\link{server}} for distributing
+    tasks across the network.
 }
 \details{
 Use \code{daemons(0)} to reset all daemon connections at any time.
@@ -87,10 +86,9 @@ Use \code{daemons(0)} to reset all daemon connections at any time.
 
     Specifying a client URL allows tasks to be distributed across the network.
     The network topology is such that server daemons (started with
-    \code{\link{server}} or \code{\link{serverq}}) dial into the client,
-    which listens at the client URL. In this way, network resources may
-    be added or removed at any time. The client automatically distributes
-    tasks to all connected servers.
+    \code{\link{server}}) dial into the client, which listens at the client
+    URL. In this way, network resources may be easily added or removed at any
+    time. The client automatically distributes tasks to all connected servers.
 }
 
 \section{Timeouts}{

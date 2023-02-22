@@ -24,24 +24,83 @@
 #'
 #' @param .url the client URL and port to connect to as a character string e.g.
 #'     'tcp://192.168.0.2:5555'.
+#' @param n [default NULL] if specified as an integer or numeric value,
+#'     implements an active queue (task scheduler), launching and directing a
+#'     cluster of 'n' daemons.
 #' @param daemon [default TRUE] launch as a persistent daemon or, if FALSE, an
 #'     ephemeral process.
 #'
 #' @return Invisible NULL.
 #'
-#' @section About:
+#' @details The network topology is such that server daemons dial into the
+#'     client, which listens at the '.url' address. In this way, network
+#'     resources may be easily added or removed at any time and the client
+#'     automatically distributes tasks to all available servers.
 #'
-#'     The network topology is such that server daemons dial into the client,
-#'     which listens at the '.url' address. In this way, network resources may
-#'     be added or removed at any time and the client automatically distributes
-#'     tasks to all available servers.
+#'     If specifying 'n', an active server queue is launched which directs a
+#'     cluster of 'n' daemons and relays messages back and forth from the client.
+#'     A server queue may be used in combination with other servers or server
+#'     queues.
 #'
 #' @export
 #'
-server <- function(.url, daemon = TRUE) {
+server <- function(.url, n = NULL, daemon = TRUE) {
 
   sock <- socket(protocol = "rep", dial = .url)
   on.exit(expr = close(sock))
+
+  is.numeric(n) && {
+
+    n <- as.integer(n)
+    queue <- vector(mode = "list", length = n)
+    servers <- vector(mode = "list", length = n)
+
+    for (i in seq_len(n)) {
+      url <- sprintf(.urlfmt, random())
+      socko <- socket(protocol = "req", listen = url)
+      system2(command = .command,
+              args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(url)))),
+              stdout = NULL, stderr = NULL, wait = FALSE)
+      servers[[i]] <- list(url = url, sock = socko, free = TRUE)
+      ctx <- context(sock)
+      req <- recv_aio(ctx, mode = 1L)
+      queue[[i]] <- list(ctx = ctx, req = req)
+    }
+
+    on.exit(expr = for (i in seq_len(n)) {
+      send(servers[[i]][["sock"]], data = .__scm__., mode = 2L)
+      close(servers[[i]][["sock"]])
+    }, add = TRUE)
+
+    repeat {
+
+      free <- which(unlist(lapply(servers, .subset2, "free")))
+      msleep(if (length(free) == n) 50L else 5L)
+
+      if (length(free))
+        for (q in free)
+          for (i in seq_len(n))
+            if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
+              ctx <- context(servers[[q]][["sock"]])
+              queue[[i]][["rctx"]] <- ctx
+              queue[[i]][["res"]] <- request(ctx, data = queue[[i]][["req"]][["data"]], send_mode = 1L, recv_mode = 1L)
+              queue[[i]][["daemon"]] <- q
+              servers[[q]][["free"]] <- FALSE
+              break
+            }
+
+      for (i in seq_len(n))
+        if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
+          send(queue[[i]][["ctx"]], data = queue[[i]][["res"]][["data"]], mode = 1L)
+          q <- queue[[i]][["daemon"]]
+          servers[[q]][["free"]] <- TRUE
+          ctx <- context(sock)
+          req <- recv_aio(ctx, mode = 1L)
+          queue[[i]] <- list(ctx = ctx, req = req)
+        }
+    }
+
+  }
 
   repeat {
     ctx <- context(sock)
@@ -54,83 +113,6 @@ server <- function(.url, daemon = TRUE) {
   }
 
   msleep(2000L)
-
-}
-
-#' mirai Server Queue
-#'
-#' Implements an active queue / task scheduler, launching and directing a cluster
-#'     of daemons.
-#'
-#' @param n integer number of daemons to set.
-#' @inheritParams server
-#'
-#' @return Invisible NULL.
-#'
-#' @section About:
-#'
-#'     The network topology is such that this server queue dials into the client,
-#'     which listens at the '.url' address. A server queue launches and directs
-#'     a cluster of 'n' daemons and relays messages back and forth from the
-#'     client. A server queue may be used in combination with other servers or
-#'     server queues and the client automatically distributes tasks to all
-#'     connected resources.
-#'
-#' @export
-#'
-serverq <- function(n, .url) {
-
-  sock <- socket(protocol = "rep", dial = .url)
-  on.exit(expr = close(sock))
-  queue <- vector(mode = "list", length = n)
-  servers <- vector(mode = "list", length = n)
-
-  for (i in seq_len(n)) {
-    url <- sprintf(.urlfmt, random())
-    socko <- socket(protocol = "req", listen = url)
-    system2(command = .command,
-            args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(url)))),
-            stdout = NULL, stderr = NULL, wait = FALSE)
-    servers[[i]] <- list(url = url, sock = socko, free = TRUE)
-    ctx <- context(sock)
-    req <- recv_aio(ctx, mode = 1L)
-    queue[[i]] <- list(ctx = ctx, req = req)
-  }
-
-  on.exit(expr = for (i in seq_len(n)) {
-    send(servers[[i]][["sock"]], data = .__scm__., mode = 2L)
-    close(servers[[i]][["sock"]])
-  }, add = TRUE)
-
-  repeat {
-
-    free <- which(unlist(lapply(servers, .subset2, "free")))
-
-    msleep(if (length(free) == n) 50L else 5L)
-
-    if (length(free))
-      for (q in free)
-        for (i in seq_len(n))
-          if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
-            ctx <- context(servers[[q]][["sock"]])
-            queue[[i]][["rctx"]] <- ctx
-            queue[[i]][["res"]] <- request(ctx, data = queue[[i]][["req"]][["data"]], send_mode = 1L, recv_mode = 1L)
-            queue[[i]][["daemon"]] <- q
-            servers[[q]][["free"]] <- FALSE
-            break
-          }
-
-    for (i in seq_len(n))
-      if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
-        send(queue[[i]][["ctx"]], data = queue[[i]][["res"]][["data"]], mode = 1L)
-        q <- queue[[i]][["daemon"]]
-        servers[[q]][["free"]] <- TRUE
-        ctx <- context(sock)
-        req <- recv_aio(ctx, mode = 1L)
-        queue[[i]] <- list(ctx = ctx, req = req)
-      }
-
-  }
 
 }
 
@@ -231,7 +213,7 @@ eval_mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
     url <- sprintf(.urlfmt, random())
     sock <- socket(protocol = "req", listen = url)
     system2(command = .command,
-            args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s,0)", deparse(url)))),
+            args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s,,0)", deparse(url)))),
             stdout = NULL, stderr = NULL, wait = FALSE)
     ctx <- context(sock)
     aio <- request(ctx, data = list2env(arglist), send_mode = 1L, recv_mode = 1L, timeout = .timeout)
@@ -252,8 +234,8 @@ mirai <- eval_mirai
 #' Set 'daemons' or persistent server processes receiving \code{\link{mirai}}
 #'     requests. These are, by default, automatically created on the local
 #'     machine. Alternatively, a client URL may be set to receive connections
-#'     from remote servers started with \code{\link{server}} or
-#'     \code{\link{serverq}} for distributing tasks across the network.
+#'     from remote servers started with \code{\link{server}} for distributing
+#'     tasks across the network.
 #'
 #' @param ... \emph{(depending on the type of argument supplied)}
 #'
@@ -261,10 +243,9 @@ mirai <- eval_mirai
 #'
 #'     \strong{character}: for distributing tasks across the network: the client
 #'     URL and port accepting incoming connections e.g. 'tcp://192.168.0.2:5555'
-#'     at which server processes started using \code{\link{server}} or
-#'     \code{\link{serverq}} should connect to. For example to listen to port
-#'     5555 on all interfaces on the host, specify either 'tcp://:5555',
-#'     'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
+#'     at which server processes started using \code{\link{server}} should
+#'     connect to. For example to listen to port 5555 on all interfaces on the
+#'     host, specify either 'tcp://:5555', 'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
 #'
 #'     \strong{logical}: to view the currrent status, specify NA, TRUE or FALSE.
 #'
@@ -323,10 +304,9 @@ mirai <- eval_mirai
 #'
 #'     Specifying a client URL allows tasks to be distributed across the network.
 #'     The network topology is such that server daemons (started with
-#'     \code{\link{server}} or \code{\link{serverq}}) dial into the client,
-#'     which listens at the client URL. In this way, network resources may
-#'     be added or removed at any time. The client automatically distributes
-#'     tasks to all connected servers.
+#'     \code{\link{server}}) dial into the client, which listens at the client
+#'     URL. In this way, network resources may be easily added or removed at any
+#'     time. The client automatically distributes tasks to all connected servers.
 #'
 #' @section Timeouts:
 #'
@@ -391,7 +371,7 @@ daemons <- function(..., q) {
       sock <<- socket(protocol = "req", listen = url)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       if (q) {
-        arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::serverq(%d,%s)", n, deparse(url))))
+        arg <<- c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s,%d)", deparse(url), n)))
         system2(command = .command, args = arg, stdout = NULL, stderr = NULL, wait = FALSE)
         proc <<- n
         local <<- FALSE

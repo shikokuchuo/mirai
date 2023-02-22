@@ -49,7 +49,7 @@ if (Sys.getenv("NOT_CRAN") == "set") {
 nanotesterr(daemons("URL"), "argument")
 nanotesterr(daemons(-1), "zero")
 nanotesterr(daemons(raw(0L)), "numeric, character or logical")
-nanotesterr(serverq(1, "URL"), "argument")
+nanotesterr(server("URL"), "argument")
 nanotest(daemons(0L) == 0L)
 Sys.sleep(2.1)
 me$data

@@ -104,7 +104,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.116 -5.305 -0.588 -1.377 0.957 ...
+#>  num [1:100000000] -0.412 -0.467 1.412 1.821 3.366 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -112,7 +112,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.116 -5.305 -0.588 -1.377 0.957 ...
+#>  num [1:100000000] -0.412 -0.467 1.412 1.821 3.366 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -276,15 +276,15 @@ address, and distributes tasks to all connected server processes.
 –
 
 On the server, `server()` may be called from an R session, or an Rscript
-invocation. This sets up a remote daemon process that connects to the
-client network IP address and receives tasks:
+invocation from a shell. This sets up a remote daemon process that
+connects to the client network IP address and receives tasks:
 
     Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555")'
 
-Alternatively, use `serverq()` to launch a queue directing a cluster of
-\[8\] daemons:
+Alternatively, specify ‘n’ to launch an active server queue directing a
+cluster of ‘n’ daemons:
 
-    Rscript --vanilla -e 'mirai::serverq(8,"tcp://192.168.0.2:5555")'
+    Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555",n=8)'
 
 –
 
