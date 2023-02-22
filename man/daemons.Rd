@@ -18,8 +18,8 @@ daemons(...)
     URL and port accepting incoming connections as a character string e.g.
     'tcp://192.168.0.2:5555' (see 'Distributed Computing' below).
 
-    \strong{logical}: for viewing the currrent status, specify any logical
-    value (NA, TRUE or FALSE).}
+    \strong{missing}: for viewing the currrent status, specify
+    \code{daemons()} with no arguments.}
 }
 \value{
 Setting daemons: integer number of daemons set (NA if supplying a
@@ -33,9 +33,6 @@ Setting daemons: integer number of daemons set (NA if supplying a
     Note: for an active queue, the number of connections is 1L as only the
     queue connects to the client. Using a client URL, daemons will show as NA,
     however connections will reflect the actual number of connected servers.
-
-    Calling \code{daemons()} without any arguments returns the 'nanoSocket'
-    for connecting to the daemons, or NULL if it is yet to be created.
 }
 \description{
 Set 'daemons' or persistent server processes receiving \code{\link{mirai}}
@@ -115,7 +112,7 @@ if (interactive()) {
 daemons(2)
 
 # View status
-daemons(NA)
+daemons()
 
 # Reset to zero
 daemons(0)
@@ -124,7 +121,7 @@ daemons(0)
 daemons(2, q)
 
 # View status
-daemons(NA)
+daemons()
 
 # Reset to zero
 daemons(0)

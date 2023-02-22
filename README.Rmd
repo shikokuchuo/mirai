@@ -168,10 +168,10 @@ daemons(8)
 Sys.sleep(0.5)
 ```
 
-To view the current status, call `daemons()` with a logical argument (`NA`, `TRUE` or `FALSE`). This provides the number of daemons and active connections.
+To view the current status, call `daemons()` with no arguments. This provides the number of daemons and active connections.
 
 ```{r daemons3}
-daemons(NA)
+daemons()
 ```
 
 In the default implementation, the background processes connect directly into the client and the number of daemons and connections are the same.
@@ -198,7 +198,7 @@ Sys.sleep(0.5)
 Requesting the status now shows 8 daemons, but only one connection. This is as the queue now sits in the middle, relaying messages between the client and individual daemon processes.
 
 ```{r daemonsqv}
-daemons(NA)
+daemons()
 ```
 
 The queue consumes additional resources, however ensures optimal allocation of tasks to daemons such that they are run as soon as resources become available.
@@ -253,7 +253,7 @@ On the client, requesting the status will show daemons as `NA`. However network 
 Sys.sleep(1)
 ```
 ```{r remotev}
-daemons(TRUE)
+daemons()
 ```
 
 To reset all connections and revert to default behaviour:

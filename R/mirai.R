@@ -202,8 +202,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
   if (length(.args))
     arglist <- c(arglist, `names<-`(.args, as.character.default(substitute(.args)[-1L])))
 
-  if (length(daemons())) {
-    ctx <- context(daemons())
+  if (length(daemons(,))) {
+    ctx <- context(daemons(,))
     aio <- request(ctx, data = list2env(arglist), send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "ctx", ctx)
 
@@ -216,6 +216,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
     ctx <- context(sock)
     aio <- request(ctx, data = list2env(arglist), send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(`attr<-`(.subset2(aio, "aio"), "ctx", ctx), "sock", sock)
+
   }
 
   `class<-`(aio, c("mirai", "recvAio"))
@@ -241,8 +242,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
 #'     URL and port accepting incoming connections as a character string e.g.
 #'     'tcp://192.168.0.2:5555' (see 'Distributed Computing' below).
 #'
-#'     \strong{logical}: for viewing the currrent status, specify any logical
-#'     value (NA, TRUE or FALSE).
+#'     \strong{missing}: for viewing the currrent status, specify
+#'     \code{daemons()} with no arguments.
 #'
 #' @return Setting daemons: integer number of daemons set (NA if supplying a
 #'     client URL).
@@ -255,9 +256,6 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
 #'     Note: for an active queue, the number of connections is 1L as only the
 #'     queue connects to the client. Using a client URL, daemons will show as NA,
 #'     however connections will reflect the actual number of connected servers.
-#'
-#'     Calling \code{daemons()} without any arguments returns the 'nanoSocket'
-#'     for connecting to the daemons, or NULL if it is yet to be created.
 #'
 #' @details Use \code{daemons(0)} to reset all daemon connections at any time.
 #'     \{mirai\} will revert to the default behaviour of creating a new
@@ -323,7 +321,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
 #' daemons(2)
 #'
 #' # View status
-#' daemons(NA)
+#' daemons()
 #'
 #' # Reset to zero
 #' daemons(0)
@@ -332,7 +330,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
 #' daemons(2, q)
 #'
 #' # View status
-#' daemons(NA)
+#' daemons()
 #'
 #' # Reset to zero
 #' daemons(0)
@@ -349,22 +347,25 @@ daemons <- function(...) {
 
   function(...) {
 
-    ...length() || return(sock)
+    ...length() || return(
+      list(daemons = .subset2(environment(daemons), "proc"),
+           connections = if (length(daemons(,))) as.integer(stat(daemons(,), "pipes")) else 0L)
+    )
 
-    is.character(..1) && {
+    missing(..1) && return(sock)
+
+    is.numeric(..1) || {
+
+      is.character(..1) ||
+        stop("a numeric, character or missing value must be supplied for '...'")
       if (length(sock)) daemons(0L)
       sock <<- socket(protocol = "req", listen = ..1)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       local <<- FALSE
       return(proc <<- NA)
+
     }
 
-    is.logical(..1) && return(
-      list(daemons = .subset2(environment(daemons), "proc"),
-           connections = if (length(daemons())) as.integer(stat(daemons(), "pipes")) else 0L)
-    )
-
-    is.numeric(..1) || stop("a numeric, character or logical value must be supplied for '...'")
     n <- as.integer(..1)
     n >= 0L || stop("the number of daemons must be zero or greater")
     delta <- if (is.na(proc)) -1L else n - proc

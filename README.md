@@ -104,7 +104,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 2.621 -1.002 0.833 -0.264 -1.041 ...
+#>  num [1:100000000] -2.1289 12.20874 -0.00232 1.75893 -0.72364 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -112,7 +112,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 2.621 -1.002 0.833 -0.264 -1.041 ...
+#>  num [1:100000000] -2.1289 12.20874 -0.00232 1.75893 -0.72364 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -183,12 +183,11 @@ daemons(8)
 #> [1] 8
 ```
 
-To view the current status, call `daemons()` with a logical argument
-(`NA`, `TRUE` or `FALSE`). This provides the number of daemons and
-active connections.
+To view the current status, call `daemons()` with no arguments. This
+provides the number of daemons and active connections.
 
 ``` r
-daemons(NA)
+daemons()
 #> $daemons
 #> [1] 8
 #> 
@@ -228,7 +227,7 @@ is as the queue now sits in the middle, relaying messages between the
 client and individual daemon processes.
 
 ``` r
-daemons(NA)
+daemons()
 #> $daemons
 #> [1] 8
 #> 
@@ -298,7 +297,7 @@ connections will show the actual number of instances connected to the
 client (2 in the example below).
 
 ``` r
-daemons(TRUE)
+daemons()
 #> $daemons
 #> [1] NA
 #> 
