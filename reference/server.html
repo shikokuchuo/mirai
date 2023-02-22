@@ -63,7 +63,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">server</span><span class="op">(</span><span class="va">.url</span>, daemon <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">server</span><span class="op">(</span><span class="va">.url</span>, n <span class="op">=</span> <span class="cn">NULL</span>, daemon <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -71,6 +71,12 @@
     <dl><dt>.url</dt>
 <dd><p>the client URL and port to connect to as a character string e.g.
 'tcp://192.168.0.2:5555'.</p></dd>
+
+
+<dt>n</dt>
+<dd><p>[default NULL] if specified as an integer or numeric value,
+implements an active queue (task scheduler), launching and directing a
+cluster of 'n' daemons.</p></dd>
 
 
 <dt>daemon</dt>
@@ -84,15 +90,16 @@ ephemeral process.</p></dd>
 
 <p>Invisible NULL.</p>
     </div>
-    <div id="about">
-    <h2>About</h2>
-    
-
-
-<p>The network topology is such that server daemons dial into the client,
-    which listens at the '.url' address. In this way, network resources may
-    be added or removed at any time and the client automatically distributes
-    tasks to all available servers.</p>
+    <div id="details">
+    <h2>Details</h2>
+    <p>The network topology is such that server daemons dial into the
+    client, which listens at the '.url' address. In this way, network
+    resources may be easily added or removed at any time and the client
+    automatically distributes tasks to all available servers.</p>
+<p>If specifying 'n', an active server queue is launched which directs a
+    cluster of 'n' daemons and relays messages back and forth from the client.
+    A server queue may be used in combination with other servers or server
+    queues.</p>
     </div>
 
   </div>

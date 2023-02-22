@@ -148,11 +148,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.116 -5.305 -0.588 -1.377 0.957 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.412 -0.467 1.412 1.821 3.366 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.116 -5.305 -0.588 -1.377 0.957 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.412 -0.467 1.412 1.821 3.366 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -249,10 +249,10 @@
 <span><span class="co">#&gt; [1] NA</span></span></code></pre></div>
 <p>The network topology is such that the client listens at the above address, and distributes tasks to all connected server processes.</p>
 <p>–</p>
-<p>On the server, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation. This sets up a remote daemon process that connects to the client network IP address and receives tasks:</p>
+<p>On the server, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation from a shell. This sets up a remote daemon process that connects to the client network IP address and receives tasks:</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5555")'</span></span></code></pre></div>
-<p>Alternatively, use <code><a href="reference/serverq.html">serverq()</a></code> to launch a queue directing a cluster of [8] daemons:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::serverq(8,"tcp://192.168.0.2:5555")'</span></span></code></pre></div>
+<p>Alternatively, specify ‘n’ to launch an active server queue directing a cluster of ‘n’ daemons:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5555",n=8)'</span></span></code></pre></div>
 <p>–</p>
 <p>On the client, requesting the status will show daemons as <code>NA</code> as the number was not specified. However network resources may be added and removed as required, and tasks are automatically distributed to all server processes. The number of connections will show the actual number of instances connected to the client (2 in the example below).</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
