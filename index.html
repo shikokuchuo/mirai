@@ -148,11 +148,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 2.621 -1.002 0.833 -0.264 -1.041 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -2.1289 12.20874 -0.00232 1.75893 -0.72364 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 2.621 -1.002 0.833 -0.264 -1.041 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -2.1289 12.20874 -0.00232 1.75893 -0.72364 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -199,9 +199,9 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">8</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 8</span></span></code></pre></div>
-<p>To view the current status, call <code><a href="reference/daemons.html">daemons()</a></code> with a logical argument (<code>NA</code>, <code>TRUE</code> or <code>FALSE</code>). This provides the number of daemons and active connections.</p>
+<p>To view the current status, call <code><a href="reference/daemons.html">daemons()</a></code> with no arguments. This provides the number of daemons and active connections.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt; [1] 8</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -223,7 +223,7 @@
 <span><span class="co">#&gt; [1] 8</span></span></code></pre></div>
 <p>Requesting the status now shows 8 daemons, but only one connection. This is as the queue now sits in the middle, relaying messages between the client and individual daemon processes.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt; [1] 8</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -258,7 +258,7 @@
 <p>–</p>
 <p>On the client, requesting the status will show daemons as <code>NA</code>. However network resources may be added and removed as required, and tasks are automatically distributed to all server processes. The number of connections will show the actual number of instances connected to the client (2 in the example below).</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt; [1] NA</span></span>
 <span><span class="co">#&gt; </span></span>

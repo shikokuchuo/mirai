@@ -81,8 +81,8 @@
 <p><strong>character</strong>: for distributing tasks across the network: the client
     URL and port accepting incoming connections as a character string e.g.
     'tcp://192.168.0.2:5555' (see 'Distributed Computing' below).</p>
-<p><strong>logical</strong>: for viewing the currrent status, specify any logical
-    value (NA, TRUE or FALSE).</p></dd>
+<p><strong>missing</strong>: for viewing the currrent status, specify
+    <code>daemons()</code> with no arguments.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -99,10 +99,6 @@
 </ul><p>Note: for an active queue, the number of connections is 1L as only the
     queue connects to the client. Using a client URL, daemons will show as NA,
     however connections will reflect the actual number of connected servers.</p>
-
-
-<p>Calling <code>daemons()</code> without any arguments returns the 'nanoSocket'
-    for connecting to the daemons, or NULL if it is yet to be created.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -175,7 +171,7 @@
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># View status</span></span></span>
-<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Reset to zero</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
@@ -184,7 +180,7 @@
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">2</span>, <span class="va">q</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># View status</span></span></span>
-<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Reset to zero</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
