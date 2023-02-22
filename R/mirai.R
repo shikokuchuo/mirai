@@ -565,7 +565,8 @@ unresolved <- unresolved
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' m <- mirai(as.matrix(df), df = data.frame())
+#' df <- data.frame()
+#' m <- mirai(as.matrix(df), .args = list(df))
 #' is_mirai(m)
 #' is_mirai(df)
 #'

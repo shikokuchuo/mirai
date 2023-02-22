@@ -104,7 +104,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -0.856 -0.276 0.328 -1.365 -43.906 ...
+#>  num [1:100000000] 2.621 -1.002 0.833 -0.264 -1.041 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -112,7 +112,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.856 -0.276 0.328 -1.365 -43.906 ...
+#>  num [1:100000000] 2.621 -1.002 0.833 -0.264 -1.041 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -176,18 +176,16 @@ created on an *ad hoc* basis.
 
 #### Passive Queue (default)
 
-Call daemons() with the number of daemons to launch.
+Call `daemons()` specifying the number of daemons to launch.
 
 ``` r
 daemons(8)
 #> [1] 8
 ```
 
-Call `daemons()` with a logical argument (`NA`, `TRUE` or `FALSE`) to
-view the current status i.e. number of daemons, and number of active
-connections. In the default implementation, the background processes
-connect directly into the client and the number of daemons and
-connections will be the same.
+To view the current status, call `daemons()` with a logical argument
+(`NA`, `TRUE` or `FALSE`). This provides the number of daemons and
+active connections.
 
 ``` r
 daemons(NA)
@@ -197,6 +195,9 @@ daemons(NA)
 #> $connections
 #> [1] 8
 ```
+
+In the default implementation, the background processes connect directly
+into the client and the number of daemons and connections are the same.
 
 This low-level implementation ensures tasks are evenly-distributed
 amongst daemons, and provides a robust and resource-light solution. This
@@ -223,8 +224,8 @@ daemons(8, q)
 ```
 
 Requesting the status now shows 8 daemons, but only one connection. This
-is as the queue acts as a switch, relaying messages between the client
-and individual daemon processes.
+is as the queue now sits in the middle, relaying messages between the
+client and individual daemon processes.
 
 ``` r
 daemons(NA)
@@ -250,22 +251,24 @@ Set the number of daemons to zero to reset.
 
 ### Distributed Computing
 
-The `daemons()` interface may also be used to send tasks for computation
-to server processes on the network.
+The daemons interface may also be used to send tasks for computation to
+server processes on the network.
 
-Instead of specifying a numeric value, instead specify as a character
-string the client network address and a port that is able to accept
-incoming connections.
+Call `daemons()` specifying as a character string the client network
+address and a port that is able to accept incoming connections.
 
-For example if your local network address is ‘192.168.0.2’, make sure
-that a port e.g. ‘5555’ is available for inbound connections from the
-local network.
+As an example: assuming that the local network address of the current
+machine is ‘192.168.0.2’, and port ‘5555’ has been made available for
+inbound connections from the local network.
+
+``` r
+daemons("tcp://192.168.0.2:5555")
+```
 
 Alternatively, simply supply a colon followed by the port number to
 listen on all interfaces on the host, for example:
 
 ``` r
-# daemons("tcp://192.168.0.2:5555")
 daemons("tcp://:5555")
 #> [1] NA
 ```
@@ -288,11 +291,11 @@ cluster of ‘n’ daemons:
 
 –
 
-On the client, requesting the status will show daemons as `NA` as the
-number was not specified. However network resources may be added and
-removed as required, and tasks are automatically distributed to all
-server processes. The number of connections will show the actual number
-of instances connected to the client (2 in the example below).
+On the client, requesting the status will show daemons as `NA`. However
+network resources may be added and removed as required, and tasks are
+automatically distributed to all server processes. The number of
+connections will show the actual number of instances connected to the
+client (2 in the example below).
 
 ``` r
 daemons(TRUE)
