@@ -4,10 +4,10 @@
 \alias{server}
 \title{mirai Server (Async Executor [Daemon])}
 \usage{
-server(.url, n = NULL, daemon = TRUE)
+server(url, n = NULL, daemon = TRUE)
 }
 \arguments{
-\item{.url}{the client URL and port to connect to as a character string e.g.
+\item{url}{the client URL and port to connect to as a character string e.g.
 'tcp://192.168.0.2:5555'.}
 
 \item{n}{[default NULL] if specified as an integer or numeric value,

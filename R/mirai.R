@@ -22,7 +22,7 @@
 #'     evaluates an expression in an environment containing the supplied data,
 #'     and returns the result to the caller/client.
 #'
-#' @param .url the client URL and port to connect to as a character string e.g.
+#' @param url the client URL and port to connect to as a character string e.g.
 #'     'tcp://192.168.0.2:5555'.
 #' @param n [default NULL] if specified as an integer or numeric value,
 #'     implements an active queue (task scheduler), launching and directing a
@@ -44,9 +44,9 @@
 #'
 #' @export
 #'
-server <- function(.url, n = NULL, daemon = TRUE) {
+server <- function(url, n = NULL, daemon = TRUE) {
 
-  sock <- socket(protocol = "rep", dial = .url)
+  sock <- socket(protocol = "rep", dial = url)
   on.exit(expr = close(sock))
 
   is.numeric(n) && {
@@ -201,10 +201,11 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
   arglist <- list(.expr = substitute(.expr), ...)
   if (length(.args))
     arglist <- c(arglist, `names<-`(.args, as.character.default(substitute(.args)[-1L])))
+  envir <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
   if (length(daemons(,))) {
     ctx <- context(daemons(,))
-    aio <- request(ctx, data = list2env(arglist), send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "ctx", ctx)
 
   } else {
@@ -214,7 +215,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
             args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s,,0)", deparse(url)))),
             stdout = NULL, stderr = NULL, wait = FALSE)
     ctx <- context(sock)
-    aio <- request(ctx, data = list2env(arglist), send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(`attr<-`(.subset2(aio, "aio"), "ctx", ctx), "sock", sock)
 
   }
