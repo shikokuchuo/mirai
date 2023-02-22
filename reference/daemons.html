@@ -80,7 +80,8 @@
     at which server processes started using <code><a href="server.html">server</a></code> or
     <code><a href="serverq.html">serverq</a></code> should connect to. For example to listen to port
     5555 on all interfaces on the host, specify either 'tcp://:5555',
-    'tcp://*:5555' or 'tcp://0.0.0.0:5555'.</p></dd>
+    'tcp://*:5555' or 'tcp://0.0.0.0:5555'.</p>
+<p><strong>logical</strong>: to view the currrent status, specify NA, TRUE or FALSE.</p></dd>
 
 
 <dt>q</dt>
@@ -94,8 +95,19 @@ Daemons' below).</p></dd>
     <h2>Value</h2>
     
 
-<p>Integer number of daemons set (1L if supplying a client URL).
-    Calling <code>daemons()</code> without any arguments returns the 'nanoSocket'
+<p>Setting daemons: integer number of daemons set (NA if supplying a
+    client URL).</p>
+
+
+<p>Viewing current status: a named list comprising:</p><ul><li><p><code>daemons</code> - integer number of daemons set.</p></li>
+<li><p><code>connections</code> - integer number of active connections at the
+    client URL.</p></li>
+</ul><p>Note: for an active queue, the number of connections is 1L as only the
+    queue connects to the client. Using a client URL, daemons will show as NA,
+    however connections will reflect the number of actual connected servers.</p>
+
+
+<p>Calling <code>daemons()</code> without any arguments returns the 'nanoSocket'
     for connecting to the daemons, or NULL if it is yet to be created.</p>
     </div>
     <div id="details">
@@ -162,6 +174,10 @@ Daemons' below).</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create 2 daemons</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># View status</span></span></span>
+<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Reset to zero</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
