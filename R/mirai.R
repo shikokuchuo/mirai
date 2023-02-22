@@ -569,23 +569,6 @@ stop_mirai <- stop_aio
 #'
 unresolved <- unresolved
 
-#' Is Error Value
-#'
-#' Is the object an error value, such as a mirai timeout, a 'miraiError' from
-#'     failed execution within a mirai or a 'miraiInterrupt' resulting from
-#'     the user interrupt of an ongoing mirai evaluation.
-#'
-#' @param x an object.
-#'
-#' @return Logical TRUE if 'x' is of class 'errorValue', FALSE otherwise.
-#'
-#' @examples
-#' is_error_value(1L)
-#'
-#' @export
-#'
-is_error_value <- is_error_value
-
 #' Is mirai
 #'
 #' Is the object a 'mirai'.
@@ -608,16 +591,26 @@ is_error_value <- is_error_value
 #'
 is_mirai <- function(x) inherits(x, "mirai")
 
-#' Is mirai Error
+#' Error Validators
 #'
-#' Is the object a 'miraiError'. When execution in a mirai process fails, the
-#'     error message is returned as a character string of class 'miraiError' and
-#'     'errorValue'. To test for all error conditions, including timeouts etc.,
-#'     \code{\link{is_error_value}} should be used instead.
+#' Validator functions for error value types created by \{mirai\}.
 #'
 #' @param x an object.
 #'
-#' @return Logical TRUE if 'x' is of class 'miraiError', FALSE otherwise.
+#' @return Logical value TRUE or FALSE.
+#'
+#' @details Is the object a 'miraiError'. When execution in a mirai process fails,
+#'     the error message is returned as a character string of class 'miraiError'
+#'     and 'errorValue'.
+#'
+#'     Is the object a 'miraiInterrupt'. When a mirai is sent a user interrupt,
+#'     e.g. by ctrl+c during an ongoing \code{\link{call_mirai}}, the mirai
+#'     will resolve to an empty character string classed as 'miraiInterrupt' and
+#'     'errorValue'.
+#'
+#'     Is the object an 'errorValue', such as a mirai timeout, a 'miraiError'
+#'     or a 'miraiInterrupt'. This is a catch-all condition that includes all
+#'     returned error values, such as timeouts, as well as the error types above.
 #'
 #' @examples
 #' if (interactive()) {
@@ -626,6 +619,14 @@ is_mirai <- function(x) inherits(x, "mirai")
 #' m <- mirai(stop())
 #' call_mirai(m)
 #' is_mirai_error(m$data)
+#' is_mirai_interrupt(m$data)
+#' is_error_value(m$data)
+#'
+#' m2 <- mirai(Sys.sleep(1L), .timeout = 100)
+#' call_mirai(m2)
+#' is_mirai_error(m2$data)
+#' is_mirai_interrupt(m2$data)
+#' is_error_value(m2$data)
 #'
 #' }
 #'
@@ -633,31 +634,15 @@ is_mirai <- function(x) inherits(x, "mirai")
 #'
 is_mirai_error <- function(x) inherits(x, "miraiError")
 
-#' Is mirai Interrupt
-#'
-#' Is the object a 'miraiInterrupt'. When a mirai is sent a user interrupt,
-#'     e.g. by ctrl+c during an ongoing \code{\link{call_mirai}}, the mirai
-#'     will resolve to an empty character string classed as 'miraiInterrupt' and
-#'     'errorValue'. To test for all error conditions, including timeouts etc.,
-#'     \code{\link{is_error_value}} should be used instead.
-#'
-#' @param x an object.
-#'
-#' @return Logical TRUE if 'x' is of class 'miraiInterrupt', FALSE otherwise.
-#'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
-#' m <- mirai(stop())
-#' call_mirai(m)
-#' is_mirai_interrupt(m$data)
-#'
-#' }
-#'
+#' @rdname is_mirai_error
 #' @export
 #'
 is_mirai_interrupt <- function(x) inherits(x, "miraiInterrupt")
+
+#' @rdname is_mirai_error
+#' @export
+#'
+is_error_value <- is_error_value
 
 #' @export
 #'
