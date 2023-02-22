@@ -56,11 +56,13 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.7.2.9002" id="mirai-0729002-development">mirai 0.7.2.9002 (development)<a class="anchor" aria-label="anchor" href="#mirai-0729002-development"></a></h2>
 <ul><li>
-<code><a href="../reference/daemons.html">daemons()</a></code> interface has been simplified with a <code>...</code> argument. Please note that this is a breaking change and only upgrade when ready. Calling with a logical argument now provides an improved method for viewing the current number of daemons / active connections, replacing the previous <code>daemons("view")</code> functionality.</li>
+<code><a href="../reference/daemons.html">daemons()</a></code> interface has been simplified with a <code>...</code> argument. Calling with a logical argument now provides an improved method for viewing the current number of daemons / active connections, replacing the previous <code>daemons("view")</code> functionality.</li>
 <li>
 <code><a href="../reference/daemons.html">daemons()</a></code> implements the argument ‘q’ for running an active queue (task scheduler).</li>
 <li>
 <code><a href="../reference/server.html">server()</a></code> gains the argument ‘n’ for launching an actively-managed cluster of daemons on remote resources.</li>
+<li>
+<code>eval_mirai()</code> is now removed as an alias for <code><a href="../reference/mirai.html">mirai()</a></code>.</li>
 <li>Invalid URLs provided to <code><a href="../reference/server.html">server()</a></code> and <code><a href="../reference/daemons.html">daemons()</a></code> will now error and return in a timely fashion instead of potentially causing a hang.</li>
 <li>Requires nanonext &gt;= 0.7.3.9002.</li>
 <li>Internal performance enhancements.</li>
@@ -93,7 +95,7 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.5.3" id="mirai-053">mirai 0.5.3<small>2022-08-16</small><a class="anchor" aria-label="anchor" href="#mirai-053"></a></h2>
 <ul><li>
-<code><a href="../reference/eval_mirai.html">mirai()</a></code> gains a ‘.args’ argument for passing a list of objects already in the calling environment, allowing for example <code>mirai(func(x, y, z), .args = list(x, y, z))</code> rather than having to specify <code>mirai(func(x, y, z), x = x, y = y, z = z)</code>.</li>
+<code><a href="../reference/mirai.html">mirai()</a></code> gains a ‘.args’ argument for passing a list of objects already in the calling environment, allowing for example <code>mirai(func(x, y, z), .args = list(x, y, z))</code> rather than having to specify <code>mirai(func(x, y, z), x = x, y = y, z = z)</code>.</li>
 <li>Errors from inside a mirai will now return the error message as a character string of class ‘miraiError’ and ‘errorValue’, rather than just a nul byte. Utility function <code><a href="../reference/is_mirai_error.html">is_mirai_error()</a></code> should be used in place of <code>is_nul_byte()</code>, which is no longer re-exported.</li>
 <li>
 <code><a href="../reference/is_mirai_error.html">is_error_value()</a></code> can be used to test for all errors, including timeouts where the ‘.timeout’ argument has been used.</li>
@@ -106,7 +108,7 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.5.0" id="mirai-050">mirai 0.5.0<small>2022-06-21</small><a class="anchor" aria-label="anchor" href="#mirai-050"></a></h2>
 <ul><li>Implements the <code>%&gt;&gt;%</code> deferred evaluation pipe.</li>
-<li>Adds ‘.timeout’ argument to <code><a href="../reference/eval_mirai.html">mirai()</a></code> to ensure a mirai always resolves even if the child process crashes etc.</li>
+<li>Adds ‘.timeout’ argument to <code><a href="../reference/mirai.html">mirai()</a></code> to ensure a mirai always resolves even if the child process crashes etc.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.4.1" id="mirai-041">mirai 0.4.1<small>2022-04-21</small><a class="anchor" aria-label="anchor" href="#mirai-041"></a></h2>
@@ -128,7 +130,7 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.1" id="mirai-011">mirai 0.1.1<small>2022-03-15</small><a class="anchor" aria-label="anchor" href="#mirai-011"></a></h2>
 <ul><li>
-<code><a href="../reference/eval_mirai.html">mirai()</a></code> added as an alias for <code><a href="../reference/eval_mirai.html">eval_mirai()</a></code>; supports evaluating arbitrary length expressions wrapped in <code><a href="https://rdrr.io/r/base/Paren.html" class="external-link">{}</a></code>.</li>
+<code><a href="../reference/mirai.html">mirai()</a></code> added as an alias for <code>eval_mirai()</code>; supports evaluating arbitrary length expressions wrapped in <code><a href="https://rdrr.io/r/base/Paren.html" class="external-link">{}</a></code>.</li>
 <li>A mirai now resolves automatically without requiring <code><a href="../reference/call_mirai.html">call_mirai()</a></code>. Access the <code>$value</code> directly and an ‘unresolved’ logical NA will be returned if the async operation is yet to complete.</li>
 <li>
 <code><a href="../reference/stop_mirai.html">stop_mirai()</a></code> added as a function to stop evaluation of an ongoing async operation.</li>

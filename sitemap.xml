@@ -25,9 +25,6 @@
     <loc>https://shikokuchuo.net/mirai/reference/daemons.html</loc>
   </url>
   <url>
-    <loc>https://shikokuchuo.net/mirai/reference/eval_mirai.html</loc>
-  </url>
-  <url>
     <loc>https://shikokuchuo.net/mirai/reference/grapes-greater-than-greater-than-grapes.html</loc>
   </url>
   <url>
@@ -41,6 +38,9 @@
   </url>
   <url>
     <loc>https://shikokuchuo.net/mirai/reference/mirai-package.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/mirai/reference/mirai.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/mirai/reference/server.html</loc>

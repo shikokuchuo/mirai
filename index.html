@@ -94,7 +94,7 @@
 <p>Lightweight parallel code execution, local or distributed across the network.</p>
 <p>Designed for simplicity, a ‘mirai’ evaluates an arbitrary expression asynchronously, resolving automatically upon completion.</p>
 <p>Built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen), uses scalability protocols not subject to R connection limits and transports faster than TCP/IP where applicable.</p>
-<p><code><a href="reference/eval_mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately. ‘mirai’ (未来 みらい) is Japanese for ‘future’.</p>
+<p><code><a href="reference/mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately. ‘mirai’ (未来 みらい) is Japanese for ‘future’.</p>
 <p>The asynchronous ‘mirai’ task runs in an ephemeral or persistent process, spawned locally or distributed across the network.</p>
 <p>{mirai} has a tiny pure R code base, relying solely on {nanonext}, a high-performance binding for the ‘NNG’ (Nanomsg Next Gen) C library with zero package dependencies.</p>
 <div class="section level3">
@@ -127,12 +127,12 @@
 </h3>
 <p>Use case: minimise execution times by performing long-running tasks concurrently in separate processes.</p>
 <p>Multiple long computes (model fits etc.) can be performed in parallel on available computing cores.</p>
-<p>Use <code><a href="reference/eval_mirai.html">mirai()</a></code> to evaluate an expression asynchronously in a separate, clean R process.</p>
+<p>Use <code><a href="reference/mirai.html">mirai()</a></code> to evaluate an expression asynchronously in a separate, clean R process.</p>
 <p>A ‘mirai’ object is returned immediately.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">+</span> <span class="va">m</span></span>
 <span>  <span class="va">res</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="op">}</span>, n <span class="op">=</span> <span class="fl">1e8</span>, m <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
@@ -160,7 +160,7 @@
 </h3>
 <p>Use case: ensure execution flow of the main process is not blocked.</p>
 <p>High-frequency real-time data cannot be written to file/database synchronously without disrupting the execution flow.</p>
-<p>Cache data in memory and use <code><a href="reference/eval_mirai.html">mirai()</a></code> to perform periodic write operations concurrently in a separate process.</p>
+<p>Cache data in memory and use <code><a href="reference/mirai.html">mirai()</a></code> to perform periodic write operations concurrently in a separate process.</p>
 <p>A ‘mirai’ object is returned immediately.</p>
 <p>Below, ‘.args’ accepts a list of objects already present in the calling environment to be passed to the mirai.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -169,7 +169,7 @@
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1e6</span><span class="op">)</span></span>
 <span><span class="va">file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">x</span>, file <span class="op">=</span> <span class="va">file</span><span class="op">)</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">file</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">x</span>, file <span class="op">=</span> <span class="va">file</span><span class="op">)</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">file</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><code><a href="reference/unresolved.html">unresolved()</a></code> may be used in control flow statements to perform actions which depend on resolution of the ‘mirai’, both before and after.</p>
 <p>This means there is no need to actually wait (block) for a ‘mirai’ to resolve, as the example below demonstrates.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -274,11 +274,11 @@
 </h3>
 <p>If execution in a mirai fails, the error message is returned as a character string of class ‘miraiError’ and ‘errorValue’ to facilitate debugging. <code><a href="reference/is_mirai_error.html">is_mirai_error()</a></code> can be used to test for mirai execution errors.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"occurred with a custom message"</span>, call. <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"occurred with a custom message"</span>, call. <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; 'miraiError' chr Error: occurred with a custom message</span></span>
 <span></span>
-<span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; 'miraiError' chr Error in mirai(): missing expression, perhaps wrap in {}?</span></span>
 <span></span>
@@ -292,7 +292,7 @@
 <span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
 <p>If execution of a mirai surpasses the timeout set via the ‘.timeout’ argument, the mirai will resolve to an ‘errorValue’. This can, amongst other things, guard against mirai processes that hang and never return.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/msleep.html" class="external-link">msleep</a></span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span>, .timeout <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/msleep.html" class="external-link">msleep</a></span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span>, .timeout <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m3</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; 'errorValue' int 5 | Timed out</span></span>
 <span></span>
@@ -315,7 +315,7 @@
 <p>The pipe operator semantics are similar to R’s base pipe <code>|&gt;</code>:</p>
 <p><code>x %&gt;&gt;% f</code> is equivalent to <code>f(x)</code> <br><code>x %&gt;&gt;% f()</code> is equivalent to <code>f(x)</code> <br><code>x %&gt;&gt;% f(y)</code> is equivalent to <code>f(x, y)</code></p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/eval_mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span>; <span class="fl">1</span><span class="op">}</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span>; <span class="fl">1</span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="va">b</span> <span class="op">&lt;-</span> <span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op"><a href="reference/grapes-greater-than-greater-than-grapes.html">%&gt;&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="reference/grapes-greater-than-greater-than-grapes.html">%&gt;&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">b</span></span>
 <span><span class="co">#&gt; &lt; unresolvedExpr &gt;</span></span>
