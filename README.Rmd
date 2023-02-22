@@ -156,7 +156,7 @@ Daemons or persistent background processes may be set to receive 'mirai' request
 
 This is potentially more efficient as new processes no longer need to be created on an *ad hoc* basis.
 
-##### Passive Queue (default)
+#### Passive Queue (default)
 
 Call daemons() with the number of daemons to launch.
 
@@ -182,18 +182,18 @@ daemons(0)
 
 Set the number of daemons to zero to reset. This reverts to the default of creating a new background process for each 'mirai' request.
 
-##### Active Queue
+#### Active Queue
 
-Specifying the argument `q = TRUE` provides access to an alternative approach, which implements an active queue (task scheduler). 
+Alternatively, specifying `q` unquoted as a second argument implements an active queue (task scheduler). 
 
 ```{r daemonsq}
-daemons(8, q = TRUE)
+daemons(8, q)
 ```
 ```{r daemonsq2, include=FALSE}
 Sys.sleep(0.5)
 ```
 
-Requesting the status shows 8 daemons, but only one connection. This is as the queue now acts as a bridge between the client and individual daemon processes.
+Requesting the status now shows 8 daemons, but only one connection. This is as the queue acts as a switch, relaying messages between the client and individual daemon processes.
 
 ```{r daemonsqv}
 daemons(NA)

@@ -1,10 +1,11 @@
 # mirai 0.7.2.9002 (development)
 
-* `daemons()` interface has been simplified with a `...` argument. Calling with a logical argument now provides an improved method for viewing the current number of daemons / active connections, replacing the previous `daemons("view")` functionality.
-* `daemons()` implements the argument 'q' for running an active queue (task scheduler).
+* `daemons()` interface has been simplified with a `...` argument.
+  + Allows calling with a second argument `q` for running an active queue (task scheduler).
+  + Calling with a logical argument provides an improved method for viewing the current number of daemons / active connections, replacing the previous `daemons("view")` functionality.
 * `server()` gains the argument 'n' for launching an actively-managed cluster of daemons on remote resources.
 * `eval_mirai()` is now removed as an alias for `mirai()`.
-* Invalid URLs provided to `server()` and `daemons()` will now error and return in a timely fashion instead of potentially causing a hang.
+* Invalid URLs provided to `server()` and `daemons()` now error and return in a timely fashion instead of potentially causing a hang.
 * Requires nanonext >= 0.7.3.9002 and R >= 3.5.
 * Internal performance enhancements.
 

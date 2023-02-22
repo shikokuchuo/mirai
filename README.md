@@ -104,7 +104,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -0.412 -0.467 1.412 1.821 3.366 ...
+#>  num [1:100000000] -0.856 -0.276 0.328 -1.365 -43.906 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -112,7 +112,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.412 -0.467 1.412 1.821 3.366 ...
+#>  num [1:100000000] -0.856 -0.276 0.328 -1.365 -43.906 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -174,7 +174,7 @@ requests.
 This is potentially more efficient as new processes no longer need to be
 created on an *ad hoc* basis.
 
-##### Passive Queue (default)
+#### Passive Queue (default)
 
 Call daemons() with the number of daemons to launch.
 
@@ -212,19 +212,19 @@ daemons(0)
 Set the number of daemons to zero to reset. This reverts to the default
 of creating a new background process for each ‘mirai’ request.
 
-##### Active Queue
+#### Active Queue
 
-Specifying the argument `q = TRUE` provides access to an alternative
-approach, which implements an active queue (task scheduler).
+Alternatively, specifying `q` unquoted as a second argument implements
+an active queue (task scheduler).
 
 ``` r
-daemons(8, q = TRUE)
+daemons(8, q)
 #> [1] 8
 ```
 
-Requesting the status shows 8 daemons, but only one connection. This is
-as the queue now acts as a bridge between the client and individual
-daemon processes.
+Requesting the status now shows 8 daemons, but only one connection. This
+is as the queue acts as a switch, relaying messages between the client
+and individual daemon processes.
 
 ``` r
 daemons(NA)

@@ -4,25 +4,22 @@
 \alias{daemons}
 \title{daemons (Persistent Server Processes)}
 \usage{
-daemons(..., q = FALSE)
+daemons(...)
 }
 \arguments{
 \item{...}{\emph{(depending on the type of argument supplied)}
 
-    \strong{numeric}: integer number of local daemons to set.
+    \strong{numeric}: for setting local daemons: integer number of daemons.
+    Additionally, specify \code{q} unquoted as a second argument e.g.
+    \code{daemons(8, q)} to maintain an active queue. (see 'Local Daemons'
+    below).
 
     \strong{character}: for distributing tasks across the network: the client
-    URL and port accepting incoming connections e.g. 'tcp://192.168.0.2:5555'
-    at which server processes started using \code{\link{server}} should
-    connect to. For example to listen to port 5555 on all interfaces on the
-    host, specify either 'tcp://:5555', 'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
+    URL and port accepting incoming connections as a character string e.g.
+    'tcp://192.168.0.2:5555' (see 'Distributed Computing' below).
 
-    \strong{logical}: to view the currrent status, specify NA, TRUE or FALSE.}
-
-\item{q}{[default FALSE] (applicable only for local daemons) logical value
-whether to maintain an active queue. This requires resources to maintain,
-however ensures optimal allocation of tasks to daemons (see section 'Local
-Daemons' below).}
+    \strong{logical}: for viewing the currrent status, specify any logical
+    value (NA, TRUE or FALSE).}
 }
 \value{
 Setting daemons: integer number of daemons set (NA if supplying a
@@ -35,7 +32,7 @@ Setting daemons: integer number of daemons set (NA if supplying a
     }
     Note: for an active queue, the number of connections is 1L as only the
     queue connects to the client. Using a client URL, daemons will show as NA,
-    however connections will reflect the number of actual connected servers.
+    however connections will reflect the actual number of connected servers.
 
     Calling \code{daemons()} without any arguments returns the 'nanoSocket'
     for connecting to the daemons, or NULL if it is yet to be created.
@@ -68,23 +65,31 @@ Use \code{daemons(0)} to reset all daemon connections at any time.
     operations as new processes no longer need to be created on an ad hoc
     basis.
 
-    The default implementation with \code{q = FALSE} is low-level and ensures
-    tasks are evenly-distributed amongst daemons. This provides a robust and
+    The default implementation is low-level and ensures tasks are
+    evenly-distributed amongst daemons. This provides a robust and
     resource-light approach, particularly suited to working with
     similar-length tasks, or where the number of concurrent tasks typically
     does not exceed available daemons.
 
-    Alternatively, specifying \code{q = TRUE} maintains an active queue. This
-    consumes additional resources, however ensures optimal allocation of
-    tasks to daemons such that they are run as soon as resources become
-    available. Note that modifying the number of daemons in an active queue
-    requires a reset to zero prior to specifying a revised number.
+    Alternatively, specifying \code{q} unquoted as a second argument e.g.
+    \code{daemons(8, q)} maintains an active queue. This consumes additional
+    resources, however ensures optimal allocation of tasks to daemons such
+    that they are run as soon as resources become available. Note that
+    changing the number of daemons in an active queue requires a reset to
+    zero prior to specifying a revised number.
 }
 
 \section{Distributed Computing}{
 
 
     Specifying a client URL allows tasks to be distributed across the network.
+
+    This should be in the form of a character string such as:
+    'tcp://192.168.0.2:5555' at which server processes started using
+    \code{\link{server}} should connect to. Alternatively, to listen to port
+    5555 on all interfaces on the host, specify either 'tcp://:5555',
+    'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
+
     The network topology is such that server daemons (started with
     \code{\link{server}}) dial into the client, which listens at the client
     URL. In this way, network resources may be easily added or removed at any
@@ -108,6 +113,15 @@ if (interactive()) {
 
 # Create 2 daemons
 daemons(2)
+
+# View status
+daemons(NA)
+
+# Reset to zero
+daemons(0)
+
+# Create 2 daemons (active queue)
+daemons(2, q)
 
 # View status
 daemons(NA)
