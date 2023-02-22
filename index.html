@@ -148,11 +148,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.412 -0.467 1.412 1.821 3.366 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.856 -0.276 0.328 -1.365 -43.906 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.412 -0.467 1.412 1.821 3.366 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.856 -0.276 0.328 -1.365 -43.906 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -192,9 +192,9 @@
 </h3>
 <p>Daemons or persistent background processes may be set to receive ‘mirai’ requests.</p>
 <p>This is potentially more efficient as new processes no longer need to be created on an <em>ad hoc</em> basis.</p>
-<div class="section level5">
-<h5 id="passive-queue-default">Passive Queue (default)<a class="anchor" aria-label="anchor" href="#passive-queue-default"></a>
-</h5>
+<div class="section level4">
+<h4 id="passive-queue-default">Passive Queue (default)<a class="anchor" aria-label="anchor" href="#passive-queue-default"></a>
+</h4>
 <p>Call daemons() with the number of daemons to launch.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">8</span><span class="op">)</span></span>
@@ -213,14 +213,14 @@
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <p>Set the number of daemons to zero to reset. This reverts to the default of creating a new background process for each ‘mirai’ request.</p>
 </div>
-<div class="section level5">
-<h5 id="active-queue">Active Queue<a class="anchor" aria-label="anchor" href="#active-queue"></a>
-</h5>
-<p>Specifying the argument <code>q = TRUE</code> provides access to an alternative approach, which implements an active queue (task scheduler).</p>
+<div class="section level4">
+<h4 id="active-queue">Active Queue<a class="anchor" aria-label="anchor" href="#active-queue"></a>
+</h4>
+<p>Alternatively, specifying <code>q</code> unquoted as a second argument implements an active queue (task scheduler).</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">8</span>, q <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">8</span>, <span class="va">q</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 8</span></span></code></pre></div>
-<p>Requesting the status shows 8 daemons, but only one connection. This is as the queue now acts as a bridge between the client and individual daemon processes.</p>
+<p>Requesting the status now shows 8 daemons, but only one connection. This is as the queue acts as a switch, relaying messages between the client and individual daemon processes.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $daemons</span></span>

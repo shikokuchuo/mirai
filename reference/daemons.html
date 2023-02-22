@@ -67,27 +67,22 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">daemons</span><span class="op">(</span><span class="va">...</span>, q <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">daemons</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>...</dt>
 <dd><p><em>(depending on the type of argument supplied)</em></p>
-<p><strong>numeric</strong>: integer number of local daemons to set.</p>
+<p><strong>numeric</strong>: for setting local daemons: integer number of daemons.
+    Additionally, specify <code>q</code> unquoted as a second argument e.g.
+    <code>daemons(8, q)</code> to maintain an active queue. (see 'Local Daemons'
+    below).</p>
 <p><strong>character</strong>: for distributing tasks across the network: the client
-    URL and port accepting incoming connections e.g. 'tcp://192.168.0.2:5555'
-    at which server processes started using <code><a href="server.html">server</a></code> should
-    connect to. For example to listen to port 5555 on all interfaces on the
-    host, specify either 'tcp://:5555', 'tcp://*:5555' or 'tcp://0.0.0.0:5555'.</p>
-<p><strong>logical</strong>: to view the currrent status, specify NA, TRUE or FALSE.</p></dd>
-
-
-<dt>q</dt>
-<dd><p>[default FALSE] (applicable only for local daemons) logical value
-whether to maintain an active queue. This requires resources to maintain,
-however ensures optimal allocation of tasks to daemons (see section 'Local
-Daemons' below).</p></dd>
+    URL and port accepting incoming connections as a character string e.g.
+    'tcp://192.168.0.2:5555' (see 'Distributed Computing' below).</p>
+<p><strong>logical</strong>: for viewing the currrent status, specify any logical
+    value (NA, TRUE or FALSE).</p></dd>
 
 </dl></div>
     <div id="value">
@@ -103,7 +98,7 @@ Daemons' below).</p></dd>
     client URL.</p></li>
 </ul><p>Note: for an active queue, the number of connections is 1L as only the
     queue connects to the client. Using a client URL, daemons will show as NA,
-    however connections will reflect the number of actual connected servers.</p>
+    however connections will reflect the actual number of connected servers.</p>
 
 
 <p>Calling <code>daemons()</code> without any arguments returns the 'nanoSocket'
@@ -130,24 +125,30 @@ Daemons' below).</p></dd>
 <p>Daemons provide a potentially more efficient solution for asynchronous
     operations as new processes no longer need to be created on an ad hoc
     basis.</p>
-<p>The default implementation with <code>q = FALSE</code> is low-level and ensures
-    tasks are evenly-distributed amongst daemons. This provides a robust and
+<p>The default implementation is low-level and ensures tasks are
+    evenly-distributed amongst daemons. This provides a robust and
     resource-light approach, particularly suited to working with
     similar-length tasks, or where the number of concurrent tasks typically
     does not exceed available daemons.</p>
-<p>Alternatively, specifying <code>q = TRUE</code> maintains an active queue. This
-    consumes additional resources, however ensures optimal allocation of
-    tasks to daemons such that they are run as soon as resources become
-    available. Note that modifying the number of daemons in an active queue
-    requires a reset to zero prior to specifying a revised number.</p>
+<p>Alternatively, specifying <code>q</code> unquoted as a second argument e.g.
+    <code>daemons(8, q)</code> maintains an active queue. This consumes additional
+    resources, however ensures optimal allocation of tasks to daemons such
+    that they are run as soon as resources become available. Note that
+    changing the number of daemons in an active queue requires a reset to
+    zero prior to specifying a revised number.</p>
     </div>
     <div id="distributed-computing">
     <h2>Distributed Computing</h2>
     
 
 
-<p>Specifying a client URL allows tasks to be distributed across the network.
-    The network topology is such that server daemons (started with
+<p>Specifying a client URL allows tasks to be distributed across the network.</p>
+<p>This should be in the form of a character string such as:
+    'tcp://192.168.0.2:5555' at which server processes started using
+    <code><a href="server.html">server</a></code> should connect to. Alternatively, to listen to port
+    5555 on all interfaces on the host, specify either 'tcp://:5555',
+    'tcp://*:5555' or 'tcp://0.0.0.0:5555'.</p>
+<p>The network topology is such that server daemons (started with
     <code><a href="server.html">server</a></code>) dial into the client, which listens at the client
     URL. In this way, network resources may be easily added or removed at any
     time. The client automatically distributes tasks to all connected servers.</p>
@@ -172,6 +173,15 @@ Daemons' below).</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create 2 daemons</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># View status</span></span></span>
+<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Reset to zero</span></span></span>
+<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create 2 daemons (active queue)</span></span></span>
+<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">2</span>, <span class="va">q</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># View status</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span></span></span>

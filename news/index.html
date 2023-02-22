@@ -56,14 +56,15 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.7.2.9002" id="mirai-0729002-development">mirai 0.7.2.9002 (development)<a class="anchor" aria-label="anchor" href="#mirai-0729002-development"></a></h2>
 <ul><li>
-<code><a href="../reference/daemons.html">daemons()</a></code> interface has been simplified with a <code>...</code> argument. Calling with a logical argument now provides an improved method for viewing the current number of daemons / active connections, replacing the previous <code>daemons("view")</code> functionality.</li>
-<li>
-<code><a href="../reference/daemons.html">daemons()</a></code> implements the argument ‘q’ for running an active queue (task scheduler).</li>
+<code><a href="../reference/daemons.html">daemons()</a></code> interface has been simplified with a <code>...</code> argument.
+<ul><li>Allows calling with a second argument <code>q</code> for running an active queue (task scheduler).</li>
+<li>Calling with a logical argument provides an improved method for viewing the current number of daemons / active connections, replacing the previous <code>daemons("view")</code> functionality.</li>
+</ul></li>
 <li>
 <code><a href="../reference/server.html">server()</a></code> gains the argument ‘n’ for launching an actively-managed cluster of daemons on remote resources.</li>
 <li>
 <code>eval_mirai()</code> is now removed as an alias for <code><a href="../reference/mirai.html">mirai()</a></code>.</li>
-<li>Invalid URLs provided to <code><a href="../reference/server.html">server()</a></code> and <code><a href="../reference/daemons.html">daemons()</a></code> will now error and return in a timely fashion instead of potentially causing a hang.</li>
+<li>Invalid URLs provided to <code><a href="../reference/server.html">server()</a></code> and <code><a href="../reference/daemons.html">daemons()</a></code> now error and return in a timely fashion instead of potentially causing a hang.</li>
 <li>Requires nanonext &gt;= 0.7.3.9002 and R &gt;= 3.5.</li>
 <li>Internal performance enhancements.</li>
 </ul></div>
