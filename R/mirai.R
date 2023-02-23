@@ -16,18 +16,18 @@
 
 # mirai ------------------------------------------------------------------------
 
-#' mirai Server (Async Executor [Daemon])
+#' mirai Server (Async Executor Daemon)
 #'
-#' Implements a [persistent] executor/server for the remote process. Awaits data,
+#' Implements a persistent executor/server for the remote process. Awaits data,
 #'     evaluates an expression in an environment containing the supplied data,
 #'     and returns the result to the caller/client.
 #'
 #' @param url the client URL and port to connect to as a character string e.g.
 #'     'tcp://192.168.0.2:5555'.
-#' @param nodes [default NULL] if specified, this server instance will run as an
-#'     active queue (task scheduler) with 'nodes' number of nodes.
-#' @param daemon [default TRUE] launch as a persistent daemon or, if FALSE, an
-#'     ephemeral process.
+#' @param nodes [default NULL] if supplied, this server instance will run as an
+#'     active queue (task scheduler) with the specified number of nodes.
+#' @param max_tasks [default Inf] the maximum number of tasks to execute (task
+#'     limit) before exiting.
 #'
 #' @return Invisible NULL.
 #'
@@ -36,19 +36,19 @@
 #'     resources may be easily added or removed at any time and the client
 #'     automatically distributes tasks to all available servers.
 #'
-#'     If specifying 'nodes', an active server queue is launched, directing a
-#'     cluster with the number of nodes specified and relays messages back and
-#'     forth from the client. A server queue may be used in combination with
-#'     other servers or server queues.
+#'     If 'nodes' is supplied, this daemon is launched as an active server queue,
+#'     directing a cluster with the specified number of nodes. A server queue
+#'     may be used in combination with other servers or server queues.
 #'
 #' @export
 #'
-server <- function(url, nodes = NULL, daemon = TRUE) {
+server <- function(url, nodes = NULL, max_tasks = Inf) {
 
   sock <- socket(protocol = "rep", dial = url)
   on.exit(expr = close(sock))
+  count <- 0L
 
-  is.numeric(nodes) && {
+  if (is.numeric(nodes)) {
 
     nodes <- as.integer(nodes)
     seq_nodes <- seq_len(nodes)
@@ -72,7 +72,7 @@ server <- function(url, nodes = NULL, daemon = TRUE) {
       close(servers[[i]][["sock"]])
     }, add = TRUE)
 
-    repeat {
+    while (count < max_tasks) {
 
       free <- which(unlist(lapply(servers, .subset2, "free")))
       msleep(if (length(free) == nodes) 50L else 5L)
@@ -94,24 +94,40 @@ server <- function(url, nodes = NULL, daemon = TRUE) {
           send(queue[[i]][["ctx"]], data = queue[[i]][["res"]][["data"]], mode = 1L)
           q <- queue[[i]][["daemon"]]
           servers[[q]][["free"]] <- TRUE
+          count <- count + 1L
           ctx <- context(sock)
           req <- recv_aio(ctx, mode = 1L)
           queue[[i]] <- list(ctx = ctx, req = req)
         }
     }
 
-  }
+  } else while (count < max_tasks) {
 
-  repeat {
     ctx <- context(sock)
     envir <- recv(ctx, mode = 1L)
     data <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir, enclos = NULL),
                      error = mk_mirai_error, interrupt = mk_interrupt_error)
     send(ctx, data = data, mode = 1L)
     close(ctx)
-    daemon || break
+    count <- count + 1L
+
   }
 
+}
+
+#' @noRd
+#' @export
+#'
+. <- function(url) {
+
+  sock <- socket(protocol = "rep", dial = url)
+  on.exit(expr = close(sock))
+  ctx <- context(sock)
+  envir <- recv(ctx, mode = 1L)
+  data <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir, enclos = NULL),
+                   error = mk_mirai_error, interrupt = mk_interrupt_error)
+  send(ctx, data = data, mode = 1L)
+  close(ctx)
   msleep(2000L)
 
 }
@@ -212,7 +228,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
     url <- sprintf(.urlfmt, random())
     sock <- socket(protocol = "req", listen = url)
     system2(command = .command,
-            args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s,,0)", deparse(url)))),
+            args = c("--vanilla", "-e", shQuote(sprintf("mirai::.(%s)", deparse(url)))),
             stdout = NULL, stderr = NULL, wait = FALSE)
     ctx <- context(sock)
     aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)

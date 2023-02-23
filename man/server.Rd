@@ -2,25 +2,25 @@
 % Please edit documentation in R/mirai.R
 \name{server}
 \alias{server}
-\title{mirai Server (Async Executor [Daemon])}
+\title{mirai Server (Async Executor Daemon)}
 \usage{
-server(url, nodes = NULL, daemon = TRUE)
+server(url, nodes = NULL, max_tasks = Inf)
 }
 \arguments{
 \item{url}{the client URL and port to connect to as a character string e.g.
 'tcp://192.168.0.2:5555'.}
 
-\item{nodes}{[default NULL] if specified, this server instance will run as an
-active queue (task scheduler) with 'nodes' number of nodes.}
+\item{nodes}{[default NULL] if supplied, this server instance will run as an
+active queue (task scheduler) with the specified number of nodes.}
 
-\item{daemon}{[default TRUE] launch as a persistent daemon or, if FALSE, an
-ephemeral process.}
+\item{max_tasks}{[default Inf] the maximum number of tasks to execute (task
+limit) before exiting.}
 }
 \value{
 Invisible NULL.
 }
 \description{
-Implements a [persistent] executor/server for the remote process. Awaits data,
+Implements a persistent executor/server for the remote process. Awaits data,
     evaluates an expression in an environment containing the supplied data,
     and returns the result to the caller/client.
 }
@@ -30,8 +30,7 @@ The network topology is such that server daemons dial into the
     resources may be easily added or removed at any time and the client
     automatically distributes tasks to all available servers.
 
-    If specifying 'nodes', an active server queue is launched, directing a
-    cluster with the number of nodes specified and relays messages back and
-    forth from the client. A server queue may be used in combination with
-    other servers or server queues.
+    If 'nodes' is supplied, this daemon is launched as an active server queue,
+    directing a cluster with the specified number of nodes. A server queue
+    may be used in combination with other servers or server queues.
 }
