@@ -168,7 +168,7 @@ daemons(8)
 Sys.sleep(0.5)
 ```
 
-To view the current status, call `daemons()` with no arguments. This provides the number of daemons and active connections.
+To view the current status, call `daemons()` with no arguments. This provides the number of active connections and daemons (and nodes when running an active queue - see below).
 
 ```{r daemons3}
 daemons()
@@ -186,22 +186,22 @@ Set the number of daemons to zero to reset. This reverts to the default of creat
 
 #### Active Queue
 
-Alternatively, specifying `q` unquoted as a second argument implements an active queue (task scheduler). 
+Alternatively, specifying `nodes` as an additional argument implements an active queue (task scheduler). 
 
 ```{r daemonsq}
-daemons(8, q)
+daemons(1, nodes = 8)
 ```
 ```{r daemonsq2, include=FALSE}
 Sys.sleep(0.5)
 ```
 
-Requesting the status now shows 8 daemons, but only one connection. This is as the queue now sits in the middle, relaying messages between the client and individual daemon processes.
+Requesting the status now shows one connection and one daemon with 8 nodes. The daemon process acts as an active queue or task scheduler and sits between the client and individual nodes, relaying messages back and forth.
 
 ```{r daemonsqv}
 daemons()
 ```
 
-The queue consumes additional resources, however ensures optimal allocation of tasks to daemons such that they are run as soon as resources become available.
+The active queue consumes additional resources, however ensures optimal allocation of tasks to daemons such that they are run as soon as resources become available.
 
 ```{r daemons5}
 daemons(0)
@@ -239,15 +239,15 @@ On the server, `server()` may be called from an R session, or an Rscript invocat
 Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555")'
 ```
 
-Alternatively, specify 'n' to launch an active server queue directing a cluster of 'n' daemons:
+Alternatively, supply 'nodes' to launch an active server queue directing a cluster with the specified number of nodes:
 
 ```
-Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555",n=8)'
+Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555",nodes=8)'
 ```
 
 --
 
-On the client, requesting the status will show daemons as `NA`. However network resources may be added and removed as required, and tasks are automatically distributed to all server processes. The number of connections will show the actual number of instances connected to the client (2 in the example below).
+On the client, requesting the status will show the actual number of server instances connected to the client (2 in the example below). Daemons show as `NA` as network resources may be added and removed at any time, and tasks are automatically distributed to all server processes.
 
 ```{r remotes, include=FALSE}
 Sys.sleep(1)

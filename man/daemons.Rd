@@ -4,15 +4,12 @@
 \alias{daemons}
 \title{daemons (Persistent Server Processes)}
 \usage{
-daemons(...)
+daemons(value, ...)
 }
 \arguments{
-\item{...}{\emph{(depending on the type of argument supplied)}
+\item{value}{\emph{(depending on the type of value supplied)}
 
     \strong{numeric}: for setting local daemons: integer number of daemons.
-    Additionally, specify \code{q} unquoted as a second argument e.g.
-    \code{daemons(8, q)} to maintain an active queue. (see 'Local Daemons'
-    below).
 
     \strong{character}: for distributing tasks across the network: the client
     URL and port accepting incoming connections as a character string e.g.
@@ -20,19 +17,22 @@ daemons(...)
 
     \strong{missing}: for viewing the currrent status, specify
     \code{daemons()} with no arguments.}
+
+\item{...}{additional arguments passed to \code{\link{server}}.
+
+    For example, for an active queue of 8 nodes, specify \code{nodes = 8}.}
 }
 \value{
 Setting daemons: integer number of daemons set (NA if supplying a
     client URL).
 
     Viewing current status: a named list comprising: \itemize{
-    \item{\code{daemons}} {- integer number of daemons set.}
-    \item{\code{connections}} {- integer number of active connections at the
+    \item{\code{connections}} {- integer number of active connections.}
+    \item{\code{daemons}} {- integer number of daemons, or NA when using a
     client URL.}
+    \item{\code{nodes}} {- integer number of nodes (per daemon), or NA when
+    not running an active queue.}
     }
-    Note: for an active queue, the number of connections is 1L as only the
-    queue connects to the client. Using a client URL, daemons will show as NA,
-    however connections will reflect the actual number of connected servers.
 }
 \description{
 Set 'daemons' or persistent server processes receiving \code{\link{mirai}}
@@ -68,12 +68,13 @@ Use \code{daemons(0)} to reset all daemon connections at any time.
     similar-length tasks, or where the number of concurrent tasks typically
     does not exceed available daemons.
 
-    Alternatively, specifying \code{q} unquoted as a second argument e.g.
-    \code{daemons(8, q)} maintains an active queue. This consumes additional
-    resources, however ensures optimal allocation of tasks to daemons such
-    that they are run as soon as resources become available. Note that
-    changing the number of daemons in an active queue requires a reset to
-    zero prior to specifying a revised number.
+    Alternatively, supplying \code{nodes} as an additional argument runs
+    daemon active queues with the specified number of nodes per daemon e.g.
+    \code{daemons(2, nodes = 8)} maintains 2 active queues with 8 nodes each.
+    An active queue consumes additional resources, however ensures optimal
+    allocation of tasks to nodes such that they are run as soon as resources
+    become available. Note that changing the number of nodes in an active
+    queue requires a reset to zero prior to specifying a revised number.
 }
 
 \section{Distributed Computing}{
@@ -117,8 +118,8 @@ daemons()
 # Reset to zero
 daemons(0)
 
-# Create 2 daemons (active queue)
-daemons(2, q)
+# Create 1 active queue with 2 nodes
+daemons(1, nodes = 2)
 
 # View status
 daemons()

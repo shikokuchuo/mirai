@@ -104,7 +104,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -2.1289 12.20874 -0.00232 1.75893 -0.72364 ...
+#>  num [1:100000000] 3.5099 0.8696 -0.0723 -2.6767 -0.1263 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -112,7 +112,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -2.1289 12.20874 -0.00232 1.75893 -0.72364 ...
+#>  num [1:100000000] 3.5099 0.8696 -0.0723 -2.6767 -0.1263 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -184,15 +184,19 @@ daemons(8)
 ```
 
 To view the current status, call `daemons()` with no arguments. This
-provides the number of daemons and active connections.
+provides the number of active connections and daemons (and nodes when
+running an active queue - see below).
 
 ``` r
 daemons()
+#> $connections
+#> [1] 8
+#> 
 #> $daemons
 #> [1] 8
 #> 
-#> $connections
-#> [1] 8
+#> $nodes
+#> [1] NA
 ```
 
 In the default implementation, the background processes connect directly
@@ -214,28 +218,32 @@ of creating a new background process for each ‘mirai’ request.
 
 #### Active Queue
 
-Alternatively, specifying `q` unquoted as a second argument implements
+Alternatively, specifying `nodes` as an additional argument implements
 an active queue (task scheduler).
 
 ``` r
-daemons(8, q)
-#> [1] 8
-```
-
-Requesting the status now shows 8 daemons, but only one connection. This
-is as the queue now sits in the middle, relaying messages between the
-client and individual daemon processes.
-
-``` r
-daemons()
-#> $daemons
-#> [1] 8
-#> 
-#> $connections
+daemons(1, nodes = 8)
 #> [1] 1
 ```
 
-The queue consumes additional resources, however ensures optimal
+Requesting the status now shows one connection and one daemon with 8
+nodes. The daemon process acts as an active queue or task scheduler and
+sits between the client and individual nodes, relaying messages back and
+forth.
+
+``` r
+daemons()
+#> $connections
+#> [1] 1
+#> 
+#> $daemons
+#> [1] 1
+#> 
+#> $nodes
+#> [1] 8
+```
+
+The active queue consumes additional resources, however ensures optimal
 allocation of tasks to daemons such that they are run as soon as
 resources become available.
 
@@ -283,26 +291,29 @@ connects to the client network IP address and receives tasks:
 
     Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555")'
 
-Alternatively, specify ‘n’ to launch an active server queue directing a
-cluster of ‘n’ daemons:
+Alternatively, supply ‘nodes’ to launch an active server queue directing
+a cluster with the specified number of nodes:
 
-    Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555",n=8)'
+    Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555",nodes=8)'
 
 –
 
-On the client, requesting the status will show daemons as `NA`. However
-network resources may be added and removed as required, and tasks are
-automatically distributed to all server processes. The number of
-connections will show the actual number of instances connected to the
-client (2 in the example below).
+On the client, requesting the status will show the actual number of
+server instances connected to the client (2 in the example below).
+Daemons show as `NA` as network resources may be added and removed at
+any time, and tasks are automatically distributed to all server
+processes.
 
 ``` r
 daemons()
+#> $connections
+#> [1] 2
+#> 
 #> $daemons
 #> [1] NA
 #> 
-#> $connections
-#> [1] 2
+#> $nodes
+#> [1] NA
 ```
 
 To reset all connections and revert to default behaviour:
@@ -331,7 +342,7 @@ call_mirai(m1)$data
 
 m2 <- mirai(mirai())
 call_mirai(m2)$data
-#> 'miraiError' chr Error in mirai(): missing expression, perhaps wrap in {}?
+#> 'miraiError' chr Error in mirai(): could not find function "mirai"
 
 is_mirai_error(m2$data)
 #> [1] TRUE

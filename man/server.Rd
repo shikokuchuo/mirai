@@ -4,15 +4,14 @@
 \alias{server}
 \title{mirai Server (Async Executor [Daemon])}
 \usage{
-server(url, n = NULL, daemon = TRUE)
+server(url, nodes = NULL, daemon = TRUE)
 }
 \arguments{
 \item{url}{the client URL and port to connect to as a character string e.g.
 'tcp://192.168.0.2:5555'.}
 
-\item{n}{[default NULL] if specified as an integer or numeric value,
-implements an active queue (task scheduler), launching and directing a
-cluster of 'n' daemons.}
+\item{nodes}{[default NULL] if specified, this server instance will run as an
+active queue (task scheduler) with 'nodes' number of nodes.}
 
 \item{daemon}{[default TRUE] launch as a persistent daemon or, if FALSE, an
 ephemeral process.}
@@ -31,8 +30,8 @@ The network topology is such that server daemons dial into the
     resources may be easily added or removed at any time and the client
     automatically distributes tasks to all available servers.
 
-    If specifying 'n', an active server queue is launched which directs a
-    cluster of 'n' daemons and relays messages back and forth from the client.
-    A server queue may be used in combination with other servers or server
-    queues.
+    If specifying 'nodes', an active server queue is launched, directing a
+    cluster with the number of nodes specified and relays messages back and
+    forth from the client. A server queue may be used in combination with
+    other servers or server queues.
 }

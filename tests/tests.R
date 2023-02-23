@@ -6,8 +6,9 @@ nanotesterr <- function(x, e = "")
   invisible(grepl(e, tryCatch(x, error = identity)[["message"]], fixed = TRUE) || stop())
 
 nanotest(is.list(daemons()))
-nanotest(daemons()[["daemons"]] == 0L)
 nanotest(daemons()[["connections"]] == 0L)
+nanotest(daemons()[["daemons"]] == 0L)
+nanotest(is.na(daemons()[["nodes"]]))
 n <- 3L
 m <- mirai({
   Sys.sleep(0.1)
@@ -41,9 +42,10 @@ nanotest(is.na(daemons(sprintf(mirai:::.urlfmt, runif(1, 1000000, 9999999)))))
 nanotestw(daemons(0L) == 0L)
 nanotestn(daemons(,))
 if (Sys.getenv("NOT_CRAN") == "set") {
-  nanotest(daemons(1, q) == 1L)
+  nanotest(daemons(1, nodes = 1) == 1L)
   mq <- mirai("queue")
   nanotest(call_mirai(mq)$data == "queue")
+  nanotest(daemons()[["nodes"]] == 1L)
   nanotest(daemons(0) == 0L)
 }
 nanotesterr(daemons("URL"), "argument")
