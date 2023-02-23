@@ -4,7 +4,14 @@
 \alias{server}
 \title{mirai Server (Async Executor Daemon)}
 \usage{
-server(url, nodes = NULL, idletime = Inf, runtime = Inf, tasks = Inf)
+server(
+  url,
+  nodes = NULL,
+  baseurl = NULL,
+  idletime = Inf,
+  runtime = Inf,
+  tasks = Inf
+)
 }
 \arguments{
 \item{url}{the client URL and port to connect to as a character string e.g.
@@ -12,6 +19,12 @@ server(url, nodes = NULL, idletime = Inf, runtime = Inf, tasks = Inf)
 
 \item{nodes}{[default NULL] if supplied, this server instance will run as an
 active queue (task scheduler) with the specified number of nodes.}
+
+\item{baseurl}{[default NULL] if supplied (together with 'nodes'), the client
+URL for nodes to connect to with a starting port number e.g.
+'tcp://192.168.0.2:5555' with 6 nodes uses the contiguous block of ports
+5555 through 5560. Otherwise, nodes are automatically launched on the
+same machine.}
 
 \item{idletime}{[default Inf] maximum idle time, since completion of the last
 task (in milliseconds) before exiting.}
@@ -39,4 +52,13 @@ The network topology is such that server daemons dial into the
     If 'nodes' is supplied, this daemon is launched as an active server queue,
     directing a cluster with the specified number of nodes. A server queue
     may be used in combination with other servers or server queues.
+
+    If 'baseurl' is also supplied, this active server queue allocates and
+    listens to a block of URLs with ports starting from the supplied port
+    number and incrementing by one. Individual \code{\link{server}} instances
+    should then be started on the remote resource, with these as the client
+    'url'.
+
+    If 'nodes' is supplied without 'baseurl' then the 'nodes' are launched
+    automatically by the active server queue on the same machine.
 }

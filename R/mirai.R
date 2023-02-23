@@ -26,6 +26,11 @@
 #'     'tcp://192.168.0.2:5555'.
 #' @param nodes [default NULL] if supplied, this server instance will run as an
 #'     active queue (task scheduler) with the specified number of nodes.
+#' @param baseurl [default NULL] if supplied (together with 'nodes'), the client
+#'     URL for nodes to connect to with a starting port number e.g.
+#'     'tcp://192.168.0.2:5555' with 6 nodes uses the contiguous block of ports
+#'     5555 through 5560. Otherwise, nodes are automatically launched on the
+#'     same machine.
 #' @param idletime [default Inf] maximum idle time, since completion of the last
 #'     task (in milliseconds) before exiting.
 #' @param runtime [default Inf] soft walltime, or the minimum amount of real
@@ -44,14 +49,25 @@
 #'     directing a cluster with the specified number of nodes. A server queue
 #'     may be used in combination with other servers or server queues.
 #'
+#'     If 'baseurl' is also supplied, this active server queue allocates and
+#'     listens to a block of URLs with ports starting from the supplied port
+#'     number and incrementing by one. Individual \code{\link{server}} instances
+#'     should then be started on the remote resource, with these as the client
+#'     'url'.
+#'
+#'     If 'nodes' is supplied without 'baseurl' then the 'nodes' are launched
+#'     automatically by the active server queue on the same machine.
+#'
 #' @export
 #'
-server <- function(url, nodes = NULL, idletime = Inf, runtime = Inf, tasks = Inf) {
+server <- function(url, nodes = NULL, baseurl = NULL,
+                   idletime = Inf, runtime = Inf, tasks = Inf) {
 
   sock <- socket(protocol = "rep", dial = url)
   on.exit(expr = close(sock))
   count <- 0L
   idle <- FALSE
+  auto <- TRUE
   start <- mclock()
 
   if (is.numeric(nodes)) {
@@ -60,13 +76,20 @@ server <- function(url, nodes = NULL, idletime = Inf, runtime = Inf, tasks = Inf
     seq_nodes <- seq_len(nodes)
     queue <- vector(mode = "list", length = nodes)
     servers <- vector(mode = "list", length = nodes)
+    if (is.character(baseurl)) {
+      ports <- seq.int(as.integer(parse_url(baseurl)["port"]), length.out = nodes)
+      auto <- FALSE
+    }
 
     for (i in seq_nodes) {
-      url <- sprintf(.urlfmt, random())
+      url <- if (auto)
+        sprintf(.urlfmt, random()) else
+          sprintf("%s%d", substr(baseurl, 1L, nchar(baseurl) - nchar(ports[i])), ports[i])
       socko <- socket(protocol = "req", listen = url)
-      system2(command = .command,
-              args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(url)))),
-              stdout = NULL, stderr = NULL, wait = FALSE)
+      if (auto)
+        system2(command = .command,
+                args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(url)))),
+                stdout = NULL, stderr = NULL, wait = FALSE)
       servers[[i]] <- list(url = url, sock = socko, free = TRUE)
       ctx <- context(sock)
       req <- recv_aio(ctx, mode = 1L)
@@ -94,7 +117,7 @@ server <- function(url, nodes = NULL, idletime = Inf, runtime = Inf, tasks = Inf
           for (i in seq_nodes)
             if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
               for (j in seq_nodes)
-                if (stat(servers[[j]][["sock"]], "pipes") == 0L)
+                if (auto && stat(servers[[j]][["sock"]], "pipes") == 0L)
                   system2(command = .command,
                           args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(servers[[j]][["url"]])))),
                           stdout = NULL, stderr = NULL, wait = FALSE)

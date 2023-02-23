@@ -1,17 +1,18 @@
-# mirai 0.7.2.9004 (development)
+# mirai 0.7.2.9005 (development)
 
 * `daemons()` interface has been simplified with a single `value` argument along with `...` for passing additional parameters.
   + Allows supplying the argument `nodes` for running an active queue (task scheduler).
   + Calling with no arguments now provides an improved view of the current number of connections / daemons / nodes, replacing the previous `daemons("view")` functionality.
 * `server()` gains the following arguments:
   + `nodes` for launching an active queue with the specified number of nodes.
+  + `baseurl` for specifying client URLs for nodes to connect into (when acting as an active queue).
   + `idletime` for specifying an idle time, since completion of the last task before exiting.
   + `runtime` for specifying a soft walltime before exiting.
   + `tasks` for specifying a maximum number of tasks before exiting.
 * An active queue is now self-repairing if one of the nodes crashes or is terminated.
-* Invalid URLs provided to `server()` and `daemons()` now error and return in a timely fashion instead of potentially causing a hang.
+* Invalid URLs provided to `server()` and `daemons()` now error and return immediately instead of potentially causing a hang.
 * `eval_mirai()` is removed as an alias for `mirai()`.
-* Requires nanonext >= 0.7.3.9002 and R >= 3.5.
+* Requires nanonext >= 0.7.3.9003 and R >= 3.5.
 * Internal performance enhancements.
 
 # mirai 0.7.2

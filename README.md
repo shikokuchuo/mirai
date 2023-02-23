@@ -104,7 +104,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.331 -0.695 2.033 0.574 -2.48 ...
+#>  num [1:100000000] -0.0773 0.7422 -0.0978 0.2823 -1.6498 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -112,7 +112,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.331 -0.695 2.033 0.574 -2.48 ...
+#>  num [1:100000000] -0.0773 0.7422 -0.0978 0.2823 -1.6498 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -264,9 +264,11 @@ server processes on the network.
 Call `daemons()` specifying as a character string the client network
 address and a port that is able to accept incoming connections.
 
-As an example: assuming that the local network address of the current
-machine is ‘192.168.0.2’, and port ‘5555’ has been made available for
-inbound connections from the local network.
+#### Example 1: Connecting to Remote Servers / Remote Server Queues
+
+Assuming that the local network IP address of the current machine is
+‘192.168.0.2’, and port ‘5555’ has been made available for inbound
+connections from the local network:
 
 ``` r
 daemons("tcp://192.168.0.2:5555")
@@ -287,7 +289,7 @@ address, and distributes tasks to all connected server processes.
 
 On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
-connects to the client network IP address and receives tasks:
+connects to the client URL and receives tasks:
 
     Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555")'
 
@@ -325,6 +327,60 @@ daemons(0)
 
 This also sends an exit signal to connected server instances so that
 they exit automatically.
+
+#### Example 2: Connecting to Remote Servers Through a Local Server Queue
+
+Assuming that the local network address of the current machine is
+‘192.168.0.2’, and 4 nodes are to be allocated on remote servers. A
+contiguous block of 4 ports e.g. from ‘5556’ to ‘5559’ needs to be made
+available for inbound connections from the local network.
+
+``` r
+# daemons(1,nodes=4,baseurl="tcp://192.168.0.2:5556")
+
+daemons(1, nodes = 4, baseurl = "tcp://:5556")
+#> [1] 1
+```
+
+This automatically starts a server queue as a daemon process on the
+local client machine. This process is listening to the block of URLs
+‘tcp://192.168.0.2:5556’ through ‘tcp://192.168.0.2:5559’.
+
+–
+
+On the server or servers, `server()` may be called from an R session, or
+an Rscript invocation from a shell. Each instance should connect to a
+unique client URL:
+
+    Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5556")'
+    Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5557")'
+    Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5558")'
+    Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5559")'
+
+``` r
+daemons()
+#> $connections
+#> [1] 1
+#> 
+#> $daemons
+#> [1] 1
+#> 
+#> $nodes
+#> [1] 4
+```
+
+This shows the connection to the daemon, which is acting as an active
+server queue for the 4 nodes.
+
+To reset all connections and revert to default behaviour:
+
+``` r
+daemons(0)
+#> [1] 0
+```
+
+This also sends an exit signal to all connected daemons and nodes so
+that they exit automatically.
 
 [« Back to ToC](#table-of-contents)
 
