@@ -7,6 +7,7 @@
   + `nodes` for launching an active queue with the specified number of nodes.
   + `tasks` for specifying the maximum number of tasks before exiting.
   + `runtime` for specifying a soft walltime before exiting.
+* An active queue is now self-repairing if one of the nodes crashes or is terminated.
 * `eval_mirai()` is now removed as an alias for `mirai()`.
 * Invalid URLs provided to `server()` and `daemons()` now error and return in a timely fashion instead of potentially causing a hang.
 * Requires nanonext >= 0.7.3.9002 and R >= 3.5.

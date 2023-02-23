@@ -51,6 +51,7 @@ server <- function(url, nodes = NULL, idletime = Inf, runtime = Inf, tasks = Inf
   sock <- socket(protocol = "rep", dial = url)
   on.exit(expr = close(sock))
   count <- 0L
+  idle <- FALSE
   start <- mclock()
 
   if (is.numeric(nodes)) {
@@ -77,8 +78,6 @@ server <- function(url, nodes = NULL, idletime = Inf, runtime = Inf, tasks = Inf
       close(servers[[i]][["sock"]])
     }, add = TRUE)
 
-    idle <- FALSE
-
     while (count < tasks && mclock() - start < runtime && if (idle) mclock() - idle < idletime else TRUE) {
 
       free <- which(unlist(lapply(servers, .subset2, "free")))
@@ -94,6 +93,11 @@ server <- function(url, nodes = NULL, idletime = Inf, runtime = Inf, tasks = Inf
         for (q in free)
           for (i in seq_nodes)
             if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
+              for (j in seq_nodes)
+                if (stat(servers[[j]][["sock"]], "pipes") == 0L)
+                  system2(command = .command,
+                          args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(servers[[j]][["url"]])))),
+                          stdout = NULL, stderr = NULL, wait = FALSE)
               ctx <- context(servers[[q]][["sock"]])
               queue[[i]][["rctx"]] <- ctx
               queue[[i]][["res"]] <- request(ctx, data = queue[[i]][["req"]][["data"]], send_mode = 1L, recv_mode = 1L)
