@@ -26,8 +26,10 @@
 #'     'tcp://192.168.0.2:5555'.
 #' @param nodes [default NULL] if supplied, this server instance will run as an
 #'     active queue (task scheduler) with the specified number of nodes.
-#' @param max_tasks [default Inf] the maximum number of tasks to execute (task
+#' @param tasks [default Inf] the maximum number of tasks to execute (task
 #'     limit) before exiting.
+#' @param runtime [default Inf] soft walltime, or the minimum amount of real
+#'     time taken (in milliseconds) before exiting.
 #'
 #' @return Invisible NULL.
 #'
@@ -42,11 +44,12 @@
 #'
 #' @export
 #'
-server <- function(url, nodes = NULL, max_tasks = Inf) {
+server <- function(url, nodes = NULL, tasks = Inf, runtime = Inf) {
 
   sock <- socket(protocol = "rep", dial = url)
   on.exit(expr = close(sock))
   count <- 0L
+  start <- mclock()
 
   if (is.numeric(nodes)) {
 
@@ -72,7 +75,7 @@ server <- function(url, nodes = NULL, max_tasks = Inf) {
       close(servers[[i]][["sock"]])
     }, add = TRUE)
 
-    while (count < max_tasks) {
+    while (count < tasks && mclock() - start < runtime) {
 
       free <- which(unlist(lapply(servers, .subset2, "free")))
       msleep(if (length(free) == nodes) 50L else 5L)
@@ -101,7 +104,8 @@ server <- function(url, nodes = NULL, max_tasks = Inf) {
         }
     }
 
-  } else while (count < max_tasks) {
+  } else
+    while (count < tasks && mclock() - start < runtime) {
 
     ctx <- context(sock)
     envir <- recv(ctx, mode = 1L)
