@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9003</span>
       </span>
     </div>
 
@@ -63,7 +63,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">server</span><span class="op">(</span><span class="va">url</span>, n <span class="op">=</span> <span class="cn">NULL</span>, daemon <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">server</span><span class="op">(</span><span class="va">url</span>, nodes <span class="op">=</span> <span class="cn">NULL</span>, daemon <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -73,10 +73,9 @@
 'tcp://192.168.0.2:5555'.</p></dd>
 
 
-<dt>n</dt>
-<dd><p>[default NULL] if specified as an integer or numeric value,
-implements an active queue (task scheduler), launching and directing a
-cluster of 'n' daemons.</p></dd>
+<dt>nodes</dt>
+<dd><p>[default NULL] if specified, this server instance will run as an
+active queue (task scheduler) with 'nodes' number of nodes.</p></dd>
 
 
 <dt>daemon</dt>
@@ -96,10 +95,10 @@ ephemeral process.</p></dd>
     client, which listens at the '.url' address. In this way, network
     resources may be easily added or removed at any time and the client
     automatically distributes tasks to all available servers.</p>
-<p>If specifying 'n', an active server queue is launched which directs a
-    cluster of 'n' daemons and relays messages back and forth from the client.
-    A server queue may be used in combination with other servers or server
-    queues.</p>
+<p>If specifying 'nodes', an active server queue is launched, directing a
+    cluster with the number of nodes specified and relays messages back and
+    forth from the client. A server queue may be used in combination with
+    other servers or server queues.</p>
     </div>
 
   </div>

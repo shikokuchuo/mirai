@@ -21,7 +21,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9003</span>
       </span>
     </div>
 
@@ -67,22 +67,24 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">daemons</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">daemons</span><span class="op">(</span><span class="va">value</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>...</dt>
-<dd><p><em>(depending on the type of argument supplied)</em></p>
-<p><strong>numeric</strong>: for setting local daemons: integer number of daemons.
-    Additionally, specify <code>q</code> unquoted as a second argument e.g.
-    <code>daemons(8, q)</code> to maintain an active queue. (see 'Local Daemons'
-    below).</p>
+    <dl><dt>value</dt>
+<dd><p><em>(depending on the type of value supplied)</em></p>
+<p><strong>numeric</strong>: for setting local daemons: integer number of daemons.</p>
 <p><strong>character</strong>: for distributing tasks across the network: the client
     URL and port accepting incoming connections as a character string e.g.
     'tcp://192.168.0.2:5555' (see 'Distributed Computing' below).</p>
 <p><strong>missing</strong>: for viewing the currrent status, specify
     <code>daemons()</code> with no arguments.</p></dd>
+
+
+<dt>...</dt>
+<dd><p>additional arguments passed to <code><a href="server.html">server</a></code>.</p>
+<p>For example, for an active queue of 8 nodes, specify <code>nodes = 8</code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -93,13 +95,12 @@
     client URL).</p>
 
 
-<p>Viewing current status: a named list comprising:</p><ul><li><p><code>daemons</code> - integer number of daemons set.</p></li>
-<li><p><code>connections</code> - integer number of active connections at the
+<p>Viewing current status: a named list comprising:</p><ul><li><p><code>connections</code> - integer number of active connections.</p></li>
+<li><p><code>daemons</code> - integer number of daemons, or NA when using a
     client URL.</p></li>
-</ul><p>Note: for an active queue, the number of connections is 1L as only the
-    queue connects to the client. Using a client URL, daemons will show as NA,
-    however connections will reflect the actual number of connected servers.</p>
-    </div>
+<li><p><code>nodes</code> - integer number of nodes (per daemon), or NA when
+    not running an active queue.</p></li>
+</ul></div>
     <div id="details">
     <h2>Details</h2>
     <p>Use <code>daemons(0)</code> to reset all daemon connections at any time.
@@ -126,12 +127,13 @@
     resource-light approach, particularly suited to working with
     similar-length tasks, or where the number of concurrent tasks typically
     does not exceed available daemons.</p>
-<p>Alternatively, specifying <code>q</code> unquoted as a second argument e.g.
-    <code>daemons(8, q)</code> maintains an active queue. This consumes additional
-    resources, however ensures optimal allocation of tasks to daemons such
-    that they are run as soon as resources become available. Note that
-    changing the number of daemons in an active queue requires a reset to
-    zero prior to specifying a revised number.</p>
+<p>Alternatively, supplying <code>nodes</code> as an additional argument runs
+    daemon active queues with the specified number of nodes per daemon e.g.
+    <code>daemons(2, nodes = 8)</code> maintains 2 active queues with 8 nodes each.
+    An active queue consumes additional resources, however ensures optimal
+    allocation of tasks to nodes such that they are run as soon as resources
+    become available. Note that changing the number of nodes in an active
+    queue requires a reset to zero prior to specifying a revised number.</p>
     </div>
     <div id="distributed-computing">
     <h2>Distributed Computing</h2>
@@ -176,8 +178,8 @@
 <span class="r-in"><span><span class="co"># Reset to zero</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Create 2 daemons (active queue)</span></span></span>
-<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">2</span>, <span class="va">q</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Create 1 active queue with 2 nodes</span></span></span>
+<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">1</span>, nodes <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># View status</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="op">)</span></span></span>
