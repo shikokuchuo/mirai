@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9004</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.2.9003" id="mirai-0729003-development">mirai 0.7.2.9003 (development)<a class="anchor" aria-label="anchor" href="#mirai-0729003-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.7.2.9004" id="mirai-0729004-development">mirai 0.7.2.9004 (development)<a class="anchor" aria-label="anchor" href="#mirai-0729004-development"></a></h2>
 <ul><li>
 <code><a href="../reference/daemons.html">daemons()</a></code> interface has been simplified with a single <code>value</code> argument along with <code>...</code> for passing additional parameters.
 <ul><li>Allows supplying the argument <code>nodes</code> for running an active queue (task scheduler).</li>
@@ -65,14 +65,16 @@
 <ul><li>
 <code>nodes</code> for launching an active queue with the specified number of nodes.</li>
 <li>
-<code>tasks</code> for specifying the maximum number of tasks before exiting.</li>
+<code>idletime</code> for specifying an idle time, since completion of the last task before exiting.</li>
 <li>
 <code>runtime</code> for specifying a soft walltime before exiting.</li>
+<li>
+<code>tasks</code> for specifying a maximum number of tasks before exiting.</li>
 </ul></li>
 <li>An active queue is now self-repairing if one of the nodes crashes or is terminated.</li>
-<li>
-<code>eval_mirai()</code> is now removed as an alias for <code><a href="../reference/mirai.html">mirai()</a></code>.</li>
 <li>Invalid URLs provided to <code><a href="../reference/server.html">server()</a></code> and <code><a href="../reference/daemons.html">daemons()</a></code> now error and return in a timely fashion instead of potentially causing a hang.</li>
+<li>
+<code>eval_mirai()</code> is removed as an alias for <code><a href="../reference/mirai.html">mirai()</a></code>.</li>
 <li>Requires nanonext &gt;= 0.7.3.9002 and R &gt;= 3.5.</li>
 <li>Internal performance enhancements.</li>
 </ul></div>
