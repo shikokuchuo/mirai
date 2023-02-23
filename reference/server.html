@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9005</span>
       </span>
     </div>
 
@@ -63,7 +63,14 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">server</span><span class="op">(</span><span class="va">url</span>, nodes <span class="op">=</span> <span class="cn">NULL</span>, idletime <span class="op">=</span> <span class="cn">Inf</span>, runtime <span class="op">=</span> <span class="cn">Inf</span>, tasks <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">server</span><span class="op">(</span></span>
+<span>  <span class="va">url</span>,</span>
+<span>  nodes <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  baseurl <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  idletime <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>  runtime <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>  tasks <span class="op">=</span> <span class="cn">Inf</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -76,6 +83,14 @@
 <dt>nodes</dt>
 <dd><p>[default NULL] if supplied, this server instance will run as an
 active queue (task scheduler) with the specified number of nodes.</p></dd>
+
+
+<dt>baseurl</dt>
+<dd><p>[default NULL] if supplied (together with 'nodes'), the client
+URL for nodes to connect to with a starting port number e.g.
+'tcp://192.168.0.2:5555' with 6 nodes uses the contiguous block of ports
+5555 through 5560. Otherwise, nodes are automatically launched on the
+same machine.</p></dd>
 
 
 <dt>idletime</dt>
@@ -108,6 +123,13 @@ limit) before exiting.</p></dd>
 <p>If 'nodes' is supplied, this daemon is launched as an active server queue,
     directing a cluster with the specified number of nodes. A server queue
     may be used in combination with other servers or server queues.</p>
+<p>If 'baseurl' is also supplied, this active server queue allocates and
+    listens to a block of URLs with ports starting from the supplied port
+    number and incrementing by one. Individual <code>server</code> instances
+    should then be started on the remote resource, with these as the client
+    'url'.</p>
+<p>If 'nodes' is supplied without 'baseurl' then the 'nodes' are launched
+    automatically by the active server queue on the same machine.</p>
     </div>
 
   </div>
