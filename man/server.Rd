@@ -4,7 +4,7 @@
 \alias{server}
 \title{mirai Server (Async Executor Daemon)}
 \usage{
-server(url, nodes = NULL, tasks = Inf, runtime = Inf)
+server(url, nodes = NULL, idletime = Inf, runtime = Inf, tasks = Inf)
 }
 \arguments{
 \item{url}{the client URL and port to connect to as a character string e.g.
@@ -13,11 +13,14 @@ server(url, nodes = NULL, tasks = Inf, runtime = Inf)
 \item{nodes}{[default NULL] if supplied, this server instance will run as an
 active queue (task scheduler) with the specified number of nodes.}
 
-\item{tasks}{[default Inf] the maximum number of tasks to execute (task
-limit) before exiting.}
+\item{idletime}{[default Inf] maximum idle time, since completion of the last
+task (in milliseconds) before exiting.}
 
 \item{runtime}{[default Inf] soft walltime, or the minimum amount of real
 time taken (in milliseconds) before exiting.}
+
+\item{tasks}{[default Inf] the maximum number of tasks to execute (task
+limit) before exiting.}
 }
 \value{
 Invisible NULL.

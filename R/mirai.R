@@ -26,10 +26,12 @@
 #'     'tcp://192.168.0.2:5555'.
 #' @param nodes [default NULL] if supplied, this server instance will run as an
 #'     active queue (task scheduler) with the specified number of nodes.
-#' @param tasks [default Inf] the maximum number of tasks to execute (task
-#'     limit) before exiting.
+#' @param idletime [default Inf] maximum idle time, since completion of the last
+#'     task (in milliseconds) before exiting.
 #' @param runtime [default Inf] soft walltime, or the minimum amount of real
 #'     time taken (in milliseconds) before exiting.
+#' @param tasks [default Inf] the maximum number of tasks to execute (task
+#'     limit) before exiting.
 #'
 #' @return Invisible NULL.
 #'
@@ -44,7 +46,7 @@
 #'
 #' @export
 #'
-server <- function(url, nodes = NULL, tasks = Inf, runtime = Inf) {
+server <- function(url, nodes = NULL, idletime = Inf, runtime = Inf, tasks = Inf) {
 
   sock <- socket(protocol = "rep", dial = url)
   on.exit(expr = close(sock))
@@ -75,10 +77,18 @@ server <- function(url, nodes = NULL, tasks = Inf, runtime = Inf) {
       close(servers[[i]][["sock"]])
     }, add = TRUE)
 
-    while (count < tasks && mclock() - start < runtime) {
+    idle <- FALSE
+
+    while (count < tasks && mclock() - start < runtime && if (idle) mclock() - idle < idletime else TRUE) {
 
       free <- which(unlist(lapply(servers, .subset2, "free")))
-      msleep(if (length(free) == nodes) 50L else 5L)
+      if (length(free) == nodes) {
+        if (!idle) idle <- mclock()
+        msleep(50L)
+      } else {
+        if (idle) idle <- FALSE
+        msleep(5L)
+      }
 
       if (length(free))
         for (q in free)
@@ -104,17 +114,20 @@ server <- function(url, nodes = NULL, tasks = Inf, runtime = Inf) {
         }
     }
 
-  } else
+  } else {
+    idletime <- if (idletime == Inf) NULL else idletime
     while (count < tasks && mclock() - start < runtime) {
 
-    ctx <- context(sock)
-    envir <- recv(ctx, mode = 1L)
-    data <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir, enclos = NULL),
-                     error = mk_mirai_error, interrupt = mk_interrupt_error)
-    send(ctx, data = data, mode = 1L)
-    close(ctx)
-    count <- count + 1L
+      ctx <- context(sock)
+      envir <- recv(ctx, mode = 1L, block = idletime)
+      is.integer(envir) && break
+      data <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir, enclos = NULL),
+                       error = mk_mirai_error, interrupt = mk_interrupt_error)
+      send(ctx, data = data, mode = 1L)
+      close(ctx)
+      count <- count + 1L
 
+    }
   }
 
 }
@@ -402,7 +415,7 @@ daemons <- function(value, ...) {
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       if (...length()) {
         dots <- substitute(alist(...))
-        nodes <<- as.integer(dots[["nodes", exact = FALSE]])
+        nodes <<- as.integer(.subset2(dots, "n", exact = FALSE))
         dotstring <- substr(deparse(dots), 7L, nchar(deparse(dots)) - 1L)
         args <<- c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s,%s)", deparse(url), dotstring)))
       } else {
