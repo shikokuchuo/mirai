@@ -61,7 +61,14 @@
 <li>Calling with no arguments now provides an improved view of the current number of connections / daemons / nodes, replacing the previous <code>daemons("view")</code> functionality.</li>
 </ul></li>
 <li>
-<code><a href="../reference/server.html">server()</a></code> gains the argument <code>nodes</code> for launching an active queue with the specified number of nodes, and <code>max_tasks</code> for limiting the number of tasks to be executed before exiting.</li>
+<code><a href="../reference/server.html">server()</a></code> gains the following arguments:
+<ul><li>
+<code>nodes</code> for launching an active queue with the specified number of nodes.</li>
+<li>
+<code>tasks</code> for specifying the maximum number of tasks before exiting.</li>
+<li>
+<code>runtime</code> for specifying a soft walltime before exiting.</li>
+</ul></li>
 <li>
 <code>eval_mirai()</code> is now removed as an alias for <code><a href="../reference/mirai.html">mirai()</a></code>.</li>
 <li>Invalid URLs provided to <code><a href="../reference/server.html">server()</a></code> and <code><a href="../reference/daemons.html">daemons()</a></code> now error and return in a timely fashion instead of potentially causing a hang.</li>
