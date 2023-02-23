@@ -78,13 +78,12 @@ server <- function(url, nodes = NULL, baseurl = NULL,
     servers <- vector(mode = "list", length = nodes)
     if (is.character(baseurl)) {
       ports <- seq.int(as.integer(parse_url(baseurl)["port"]), length.out = nodes)
+      base <- substr(baseurl, 1L, nchar(baseurl) - nchar(ports[1L]))
       auto <- FALSE
     }
 
     for (i in seq_nodes) {
-      url <- if (auto)
-        sprintf(.urlfmt, random()) else
-          sprintf("%s%d", substr(baseurl, 1L, nchar(baseurl) - nchar(ports[i])), ports[i])
+      url <- if (auto) sprintf(.urlfmt, random()) else sprintf("%s%d", base, ports[i])
       socko <- socket(protocol = "req", listen = url)
       if (auto)
         system2(command = .command,
