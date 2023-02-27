@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9007</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9008</span>
       </span>
     </div>
 
@@ -149,11 +149,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -1.567 1.203 0.383 1.981 -2.361 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 2.602 -2.252 0.329 -0.136 -0.498 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -1.567 1.203 0.383 1.981 -2.361 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 2.602 -2.252 0.329 -0.136 -0.498 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -418,11 +418,9 @@
 <span><span class="co">#&gt;  - $data to query resolution</span></span>
 <span><span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/msleep.html" class="external-link">msleep</a></span><span class="op">(</span><span class="fl">600</span><span class="op">)</span></span>
 <span><span class="va">b</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; &lt; unresolvedExpr &gt;</span></span>
-<span><span class="co">#&gt;  - $data to query resolution</span></span>
+<span><span class="co">#&gt; [1] "1" "2" "3"</span></span>
 <span><span class="va">b</span></span>
-<span><span class="co">#&gt; &lt; unresolvedExpr &gt;</span></span>
-<span><span class="co">#&gt;  - $data to query resolution</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt; resolvedExpr: $data &gt;</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">

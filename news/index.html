@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9007</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9008</span>
       </span>
     </div>
 
@@ -54,14 +54,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.2.9007" id="mirai-0729007-development">mirai 0.7.2.9007 (development)<a class="anchor" aria-label="anchor" href="#mirai-0729007-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.7.2.9008" id="mirai-0729008-development">mirai 0.7.2.9008 (development)<a class="anchor" aria-label="anchor" href="#mirai-0729008-development"></a></h2>
 <ul><li>
 <code><a href="../reference/daemons.html">daemons()</a></code> interface has been simplified with a single <code>value</code> argument along with <code>...</code> for passing additional parameters.
 <ul><li>Allows supplying the argument <code>nodes</code> for running an active queue (task scheduler).</li>
 <li>Calling with no arguments now provides an improved view of the current number of connections / daemons / nodes, replacing the previous <code>daemons("view")</code> functionality.</li>
 </ul></li>
 <li>
-<code><a href="../reference/server.html">server()</a></code> gains the following arguments:
+<code><a href="../reference/server.html">server()</a></code> gains the following arguments (special thanks to <a href="https://github.com/wlandau" class="external-link">@wlandau</a> for the suggestions, discussion and testing for many of the new features):
 <ul><li>
 <code>nodes</code> for launching an active queue with the specified number of nodes.</li>
 <li>
