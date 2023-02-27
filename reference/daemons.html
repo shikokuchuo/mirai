@@ -21,7 +21,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9005</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9006</span>
       </span>
     </div>
 
@@ -73,8 +73,9 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>value</dt>
-<dd><p><em>(depending on the type of value supplied)</em></p>
-<p><strong>numeric</strong>: for setting local daemons: integer number of daemons.</p>
+<dd><p><em>~ depending on the type of value supplied ~</em></p>
+<p><strong>numeric</strong>: for setting local daemons: integer number of daemons
+    (see 'Local Daemons' below).</p>
 <p><strong>character</strong>: for distributing tasks across the network: the client
     URL and port accepting incoming connections as a character string e.g.
     'tcp://192.168.0.2:5555' (see 'Distributed Computing' below).</p>
@@ -84,20 +85,21 @@
 
 <dt>...</dt>
 <dd><p>additional arguments passed to <code><a href="server.html">server</a></code>.</p>
-<p>For example, for an active queue of 8 nodes, specify <code>nodes = 8</code>.</p></dd>
+<p><strong>nodes</strong> supplying an integer number of nodes runs an active queue
+    with the specified number of nodes per daemon.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     
 
-<p>Setting daemons: integer number of daemons set (NA if supplying a
-    client URL).</p>
+<p>Setting daemons: integer number of daemons set, or the character
+    string 'remote' if supplying a client URL.</p>
 
 
 <p>Viewing current status: a named list comprising:</p><ul><li><p><code>connections</code> - integer number of active connections.</p></li>
-<li><p><code>daemons</code> - integer number of daemons, or NA when using a
-    client URL.</p></li>
+<li><p><code>daemons</code> - integer number of daemons, or 'remote' when
+    using a client URL.</p></li>
 <li><p><code>nodes</code> - integer number of nodes (per daemon), or NA when
     not running an active queue.</p></li>
 </ul></div>
@@ -127,13 +129,13 @@
     resource-light approach, particularly suited to working with
     similar-length tasks, or where the number of concurrent tasks typically
     does not exceed available daemons.</p>
-<p>Alternatively, supplying <code>nodes</code> as an additional argument runs
-    daemon active queues with the specified number of nodes per daemon e.g.
-    <code>daemons(2, nodes = 8)</code> maintains 2 active queues with 8 nodes each.
-    An active queue consumes additional resources, however ensures optimal
-    allocation of tasks to nodes such that they are run as soon as resources
-    become available. Note that changing the number of nodes in an active
-    queue requires a reset to zero prior to specifying a revised number.</p>
+<p>Alternatively, supplying <code>nodes</code> as an additional argument causes
+    daemons to run as active queues with the specified number of nodes per
+    daemon e.g. <code>daemons(2, nodes = 8)</code> maintains 2 active queues with
+    8 nodes each. An active queue consumes additional resources, however
+    ensures load balancing and optimal scheduling of tasks to nodes. Note
+    that changing the number of nodes in an active queue requires a reset to
+    zero prior to specifying a revised number.</p>
     </div>
     <div id="distributed-computing">
     <h2>Distributed Computing</h2>
@@ -144,24 +146,31 @@
 <p>This should be in the form of a character string such as:
     'tcp://192.168.0.2:5555' at which server processes started using
     <code><a href="server.html">server</a></code> should connect to. Alternatively, to listen to port
-    5555 on all interfaces on the host, specify either 'tcp://:5555',
+    5555 on all interfaces on the local host, specify either 'tcp://:5555',
     'tcp://*:5555' or 'tcp://0.0.0.0:5555'.</p>
 <p>The network topology is such that server daemons (started with
     <code><a href="server.html">server</a></code>) dial into the client, which listens at the client
     URL. In this way, network resources may be easily added or removed at any
     time. The client automatically distributes tasks to all connected servers.</p>
+<p>Supplying <code>nodes</code> as an additional argument will launch a local
+    daemon as an active server queue listening to a block of URLs with
+    ports starting from the supplied port number and incrementing by one for
+    the number of nodes specified e.g. the client URL 'tcp://192.168.0.2:5555'
+    with 6 nodes uses the contiguous block of ports 5555 through 5560.
+    Individual <code><a href="server.html">server</a></code> instances should then be started on the
+    remote resource, with each of these specified as the client URL.</p>
     </div>
     <div id="timeouts">
     <h2>Timeouts</h2>
     
 
 
-<p>Note: specifying the <code>.timeout</code> argument when evaluating a 'mirai'
-    will always cause the user function to return, however the process may not
-    have completed and still be ongoing in the daemon. In such situations, an
-    active queue may be prefereable so that new tasks are not assigned to
-    those daemons, however performance will still be degraded if they remain
-    in use.</p>
+<p>Note: specifying the <code>.timeout</code> argument in <code><a href="mirai.html">mirai</a></code> will
+    ensure that the 'mirai' always resolves, however the process may not have
+    completed and still be ongoing in the daemon. In such situations, an
+    active queue may be preferable so that new tasks are not assigned to the
+    busy process, however performance may still be degraded if they remain in
+    use.</p>
     </div>
 
     <div id="ref-examples">

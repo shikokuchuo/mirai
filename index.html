@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9005</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9006</span>
       </span>
     </div>
 
@@ -104,8 +104,9 @@
 <li><a href="#installation">Installation</a></li>
 <li><a href="#example-1-compute-intensive-operations">Example 1: Compute-intensive Operations</a></li>
 <li><a href="#example-2-io-bound-operations">Example 2: I/O-bound Operations</a></li>
-<li><a href="#daemons">Daemons</a></li>
-<li><a href="#distributed-computing">Distributed Computing</a></li>
+<li><a href="#example-3-resilient-pipelines">Example 3: Resilient Pipelines</a></li>
+<li><a href="#daemons-local-persistent-processes">Daemons: Local Persistent Processes</a></li>
+<li><a href="#distributed-computing-remote-servers">Distributed Computing: Remote Servers</a></li>
 <li><a href="#errors-interrupts-and-timeouts">Errors, Interrupts and Timeouts</a></li>
 <li><a href="#deferred-evaluation-pipe">Deferred Evaluation Pipe</a></li>
 <li><a href="#links">Links</a></li>
@@ -148,11 +149,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.0773 0.7422 -0.0978 0.2823 -1.6498 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 1.284 -2.255 -0.677 0.17 -0.498 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.0773 0.7422 -0.0978 0.2823 -1.6498 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 1.284 -2.255 -0.677 0.17 -0.498 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -188,7 +189,47 @@
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
-<h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
+<h3 id="example-3-resilient-pipelines">Example 3: Resilient Pipelines<a class="anchor" aria-label="anchor" href="#example-3-resilient-pipelines"></a>
+</h3>
+<p>Use case: isolating code that can potentially fail in a separate process to ensure continued uptime.</p>
+<p>As part of a data science or machine learning pipeline, iterations of model training may periodically fail for stochastic and uncontrollable reasons (e.g. buggy memory management on graphics cards). Running each iteration in a ‘mirai’ process isolates this potentially-problematic code such that if it does fail, it does not crash the entire pipeline.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">run_iteration</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  </span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.15</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"random error"</span>, call. <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># simulates a stochastic error rate</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"iteration %d successful"</span>, <span class="va">i</span><span class="op">)</span></span>
+<span>  </span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  </span>
+<span>  <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu">run_iteration</span><span class="op">(</span><span class="va">i</span><span class="op">)</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">run_iteration</span>, <span class="va">i</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="reference/is_mirai_error.html">is_error_value</a></span><span class="op">(</span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">data</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span>    <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu">run_iteration</span><span class="op">(</span><span class="va">i</span><span class="op">)</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">run_iteration</span>, <span class="va">i</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">data</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span>  </span>
+<span><span class="op">}</span></span>
+<span><span class="co">#&gt; iteration 1 successful </span></span>
+<span><span class="co">#&gt; iteration 2 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
+<span><span class="co">#&gt; iteration 3 successful </span></span>
+<span><span class="co">#&gt; iteration 4 successful </span></span>
+<span><span class="co">#&gt; iteration 5 successful </span></span>
+<span><span class="co">#&gt; iteration 6 successful </span></span>
+<span><span class="co">#&gt; iteration 7 successful </span></span>
+<span><span class="co">#&gt; iteration 8 successful </span></span>
+<span><span class="co">#&gt; iteration 9 successful </span></span>
+<span><span class="co">#&gt; iteration 10 successful</span></span></code></pre></div>
+<p>Further, by testing the return value of each ‘mirai’ for errors, error-handling code is then able to automate recovery and re-attempts, as in the above example. Further details on <a href="#errors-interrupts-and-timeouts">error handling</a> can be found in the section below.</p>
+<p>The end result is a resilient and fault-tolerant pipeline that minimises downtime by eliminating interruptions of long computes.</p>
+<p><a href="#table-of-contents">« Back to ToC</a></p>
+</div>
+<div class="section level3">
+<h3 id="daemons-local-persistent-processes">Daemons: Local Persistent Processes<a class="anchor" aria-label="anchor" href="#daemons-local-persistent-processes"></a>
 </h3>
 <p>Daemons or persistent background processes may be set to receive ‘mirai’ requests.</p>
 <p>This is potentially more efficient as new processes no longer need to be created on an <em>ad hoc</em> basis.</p>
@@ -196,11 +237,11 @@
 <h4 id="passive-queue-default">Passive Queue (default)<a class="anchor" aria-label="anchor" href="#passive-queue-default"></a>
 </h4>
 <p>Call <code><a href="reference/daemons.html">daemons()</a></code> specifying the number of daemons to launch.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">8</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 8</span></span></code></pre></div>
 <p>To view the current status, call <code><a href="reference/daemons.html">daemons()</a></code> with no arguments. This provides the number of active connections and daemons (and nodes when running an active queue - see below).</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $connections</span></span>
 <span><span class="co">#&gt; [1] 8</span></span>
@@ -212,7 +253,7 @@
 <span><span class="co">#&gt; [1] NA</span></span></code></pre></div>
 <p>In the default implementation, the background processes connect directly into the client and the number of daemons and connections are the same.</p>
 <p>This low-level implementation ensures tasks are evenly-distributed amongst daemons, and provides a robust and resource-light solution. This is particularly suited to working with similar-length tasks, or where the number of concurrent tasks typically does not exceed the number of available daemons.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <p>Set the number of daemons to zero to reset. This reverts to the default of creating a new background process for each ‘mirai’ request.</p>
@@ -221,11 +262,11 @@
 <h4 id="active-queue">Active Queue<a class="anchor" aria-label="anchor" href="#active-queue"></a>
 </h4>
 <p>Alternatively, specifying <code>nodes</code> as an additional argument implements an active queue (task scheduler).</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1</span>, nodes <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
 <p>Requesting the status now shows one connection and one daemon with 8 nodes. The daemon process acts as an active queue or task scheduler and sits between the client and individual nodes, relaying messages back and forth.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $connections</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
@@ -235,8 +276,8 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $nodes</span></span>
 <span><span class="co">#&gt; [1] 8</span></span></code></pre></div>
-<p>The active queue consumes additional resources, however ensures optimal allocation of tasks to daemons such that they are run as soon as resources become available.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<p>The active queue consumes additional resources, however ensures load balancing and optimal scheduling of tasks to nodes.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <p>Set the number of daemons to zero to reset.</p>
@@ -244,73 +285,75 @@
 </div>
 </div>
 <div class="section level3">
-<h3 id="distributed-computing">Distributed Computing<a class="anchor" aria-label="anchor" href="#distributed-computing"></a>
+<h3 id="distributed-computing-remote-servers">Distributed Computing: Remote Servers<a class="anchor" aria-label="anchor" href="#distributed-computing-remote-servers"></a>
 </h3>
 <p>The daemons interface may also be used to send tasks for computation to server processes on the network.</p>
-<p>Call <code><a href="reference/daemons.html">daemons()</a></code> specifying as a character string the client network address and a port that is able to accept incoming connections.</p>
 <div class="section level4">
-<h4 id="example-1-connecting-to-remote-servers--remote-server-queues">Example 1: Connecting to Remote Servers / Remote Server Queues<a class="anchor" aria-label="anchor" href="#example-1-connecting-to-remote-servers--remote-server-queues"></a>
+<h4 id="connecting-to-remote-servers--remote-server-queues">Connecting to Remote Servers / Remote Server Queues<a class="anchor" aria-label="anchor" href="#connecting-to-remote-servers--remote-server-queues"></a>
 </h4>
+<p>Call <code><a href="reference/daemons.html">daemons()</a></code> specifying as a character string the client network address and a port that is able to accept incoming connections.</p>
 <p>Assuming that the local network IP address of the current machine is ‘192.168.0.2’, and port ‘5555’ has been made available for inbound connections from the local network:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="st">"tcp://192.168.0.2:5555"</span><span class="op">)</span></span></code></pre></div>
-<p>Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the host, for example:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="st">"tcp://192.168.0.2:5555"</span><span class="op">)</span></span></code></pre></div>
+<p>Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="st">"tcp://:5555"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] NA</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "remote"</span></span></code></pre></div>
 <p>The network topology is such that the client listens at the above address, and distributes tasks to all connected server processes.</p>
 <p>–</p>
 <p>On the server, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation from a shell. This sets up a remote daemon process that connects to the client URL and receives tasks:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5555")'</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5555")'</span></span></code></pre></div>
 <p>Alternatively, supply ‘nodes’ to launch an active server queue directing a cluster with the specified number of nodes:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5555",nodes=8)'</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5555",nodes=8)'</span></span></code></pre></div>
 <p>–</p>
-<p>On the client, requesting the status will show the actual number of server instances connected to the client (2 in the example below). Daemons show as <code>NA</code> as network resources may be added and removed at any time, and tasks are automatically distributed to all server processes.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<p>On the client, requesting the status will show <code>daemons</code> as ‘remote’. This is as network resources may be added and removed at any time, and tasks are automatically distributed to all server processes.</p>
+<p><code>connections</code> will show the actual number of connected server instances (2 in the example below).</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $connections</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] NA</span></span>
+<span><span class="co">#&gt; [1] "remote"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $nodes</span></span>
 <span><span class="co">#&gt; [1] NA</span></span></code></pre></div>
 <p>To reset all connections and revert to default behaviour:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <p>This also sends an exit signal to connected server instances so that they exit automatically.</p>
 </div>
 <div class="section level4">
-<h4 id="example-2-connecting-to-remote-servers-through-a-local-server-queue">Example 2: Connecting to Remote Servers Through a Local Server Queue<a class="anchor" aria-label="anchor" href="#example-2-connecting-to-remote-servers-through-a-local-server-queue"></a>
+<h4 id="connecting-to-remote-servers-through-a-local-server-queue">Connecting to Remote Servers Through a Local Server Queue<a class="anchor" aria-label="anchor" href="#connecting-to-remote-servers-through-a-local-server-queue"></a>
 </h4>
-<p>Assuming that the local network address of the current machine is ‘192.168.0.2’, and 4 nodes are to be allocated on remote servers. A contiguous block of 4 ports e.g. from ‘5556’ to ‘5559’ needs to be made available for inbound connections from the local network.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># daemons(1,nodes=4,baseurl="tcp://192.168.0.2:5556")</span></span>
+<p>Assuming that the local network address of the current machine is ‘192.168.0.2’, and 4 nodes are to be allocated on remote servers.</p>
+<p>A contiguous block of 4 ports e.g. from ‘5556’ to ‘5559’ needs to be made available for inbound connections from the local network.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># daemons("tcp://192.168.0.2:5556", nodes = 4)</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1</span>, nodes <span class="op">=</span> <span class="fl">4</span>, baseurl <span class="op">=</span> <span class="st">"tcp://:5556"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
-<p>This automatically starts a server queue as a daemon process on the local client machine. This process is listening to the block of URLs ‘tcp://192.168.0.2:5556’ through ‘tcp://192.168.0.2:5559’.</p>
+<span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="st">"tcp://:5556"</span>, nodes <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "remote"</span></span></code></pre></div>
+<p>This automatically starts a server queue as a daemon process on the local client machine. The URL should contain the starting port number, so in the example above the queue is listening to the block of URLs ‘tcp://192.168.0.2:5556’ through ‘tcp://192.168.0.2:5559’ as 4 nodes have been specified.</p>
 <p>–</p>
 <p>On the server or servers, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation from a shell. Each instance should connect to a unique client URL:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5556")'</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5557")'</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5558")'</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5559")'</span></span></code></pre></div>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5556")'</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5557")'</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5558")'</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5559")'</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $connections</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
+<span><span class="co">#&gt; [1] "remote"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $nodes</span></span>
 <span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
-<p>This shows the connection to the daemon, which is acting as an active server queue for the 4 nodes.</p>
+<p>When running a local server queue to connect to remote nodes, there is only a single connection to the local server queue. This then connects in turn to the nodes running on remote servers.</p>
 <p>To reset all connections and revert to default behaviour:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <p>This also sends an exit signal to all connected daemons and nodes so that they exit automatically.</p>
@@ -321,25 +364,25 @@
 <h3 id="errors-interrupts-and-timeouts">Errors, Interrupts and Timeouts<a class="anchor" aria-label="anchor" href="#errors-interrupts-and-timeouts"></a>
 </h3>
 <p>If execution in a mirai fails, the error message is returned as a character string of class ‘miraiError’ and ‘errorValue’ to facilitate debugging. <code><a href="reference/is_mirai_error.html">is_mirai_error()</a></code> can be used to test for mirai execution errors.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"occurred with a custom message"</span>, call. <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; 'miraiError' chr Error: occurred with a custom message</span></span>
 <span></span>
-<span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu">mirai</span><span class="fu">::</span><span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; 'miraiError' chr Error in mirai(): could not find function "mirai"</span></span>
+<span><span class="co">#&gt; 'miraiError' chr Error in mirai::mirai(): missing expression, perhaps wrap in {}?</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/is_mirai_error.html">is_mirai_error</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="fu"><a href="reference/is_mirai_error.html">is_error_value</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>If during a <code><a href="reference/call_mirai.html">call_mirai()</a></code> an interrupt e.g. ctrl+c is sent, the mirai will resolve to an empty character string of class ‘miraiInterrupt’ and ‘errorValue’. <code><a href="reference/is_mirai_error.html">is_mirai_interrupt()</a></code> may be used to test for such interrupts.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/is_mirai_error.html">is_mirai_interrupt</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
 <p>If execution of a mirai surpasses the timeout set via the ‘.timeout’ argument, the mirai will resolve to an ‘errorValue’. This can, amongst other things, guard against mirai processes that hang and never return.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/msleep.html" class="external-link">msleep</a></span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span>, .timeout <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m3</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; 'errorValue' int 5 | Timed out</span></span>
@@ -362,8 +405,8 @@
 <p>It is possible to use <code><a href="reference/unresolved.html">unresolved()</a></code> around a ‘unresolvedExpr’ or its <code>$data</code> element to test for resolution, as in the example below.</p>
 <p>The pipe operator semantics are similar to R’s base pipe <code>|&gt;</code>:</p>
 <p><code>x %&gt;&gt;% f</code> is equivalent to <code>f(x)</code> <br><code>x %&gt;&gt;% f()</code> is equivalent to <code>f(x)</code> <br><code>x %&gt;&gt;% f(y)</code> is equivalent to <code>f(x, y)</code></p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span>; <span class="fl">1</span><span class="op">}</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/msleep.html" class="external-link">msleep</a></span><span class="op">(</span><span class="fl">500</span><span class="op">)</span>; <span class="fl">1</span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="va">b</span> <span class="op">&lt;-</span> <span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op"><a href="reference/grapes-greater-than-greater-than-grapes.html">%&gt;&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="reference/grapes-greater-than-greater-than-grapes.html">%&gt;&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">b</span></span>
 <span><span class="co">#&gt; &lt; unresolvedExpr &gt;</span></span>
@@ -371,7 +414,7 @@
 <span><span class="va">b</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; &lt; unresolvedExpr &gt;</span></span>
 <span><span class="co">#&gt;  - $data to query resolution</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/msleep.html" class="external-link">msleep</a></span><span class="op">(</span><span class="fl">600</span><span class="op">)</span></span>
 <span><span class="va">b</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; [1] "1" "2" "3"</span></span>
 <span><span class="va">b</span></span>
