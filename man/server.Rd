@@ -7,10 +7,12 @@
 server(
   url,
   nodes = NULL,
-  baseurl = NULL,
   idletime = Inf,
-  runtime = Inf,
-  tasks = Inf
+  walltime = Inf,
+  tasklimit = Inf,
+  pollfreqh = 5L,
+  pollfreql = 50L,
+  asyncdial = TRUE
 )
 }
 \arguments{
@@ -20,20 +22,31 @@ server(
 \item{nodes}{[default NULL] if supplied, this server instance will run as an
 active queue (task scheduler) with the specified number of nodes.}
 
-\item{baseurl}{[default NULL] if supplied (together with 'nodes'), the client
-URL for nodes to connect to with a starting port number e.g.
-'tcp://192.168.0.2:5555' with 6 nodes uses the contiguous block of ports
-5555 through 5560. Otherwise, nodes are automatically launched on the
-same machine.}
-
 \item{idletime}{[default Inf] maximum idle time, since completion of the last
 task (in milliseconds) before exiting.}
 
-\item{runtime}{[default Inf] soft walltime, or the minimum amount of real
+\item{walltime}{[default Inf] soft walltime, or the minimum amount of real
 time taken (in milliseconds) before exiting.}
 
-\item{tasks}{[default Inf] the maximum number of tasks to execute (task
+\item{tasklimit}{[default Inf] the maximum number of tasks to execute (task
 limit) before exiting.}
+
+\item{pollfreqh}{[default 5L] applicable for an active queue only, the high
+polling frequency for the queue in milliseconds (used when there are
+active tasks). Setting a lower value will be more responsive but at the
+cost of consuming more resources on the queue thread.}
+
+\item{pollfreql}{[default 50L] applicable for an active queue only, the low
+polling frequency for the queue in milliseconds (used when there are no
+active tasks). Setting a lower value will be more responsive but at the
+cost of consuming more resources on the queue thread.}
+
+\item{asyncdial}{[default TRUE] (for debugging purposes) whether to dial in
+to the client asynchronously. An asynchronous dial is more resilient and
+will continue retrying if not immediately successful, however this can
+mask potential connection issues. If FALSE, will error if a connection is
+not immediately possible (e.g. \code{\link{daemons}} has yet to be called
+on the client, or the specified port is not open etc.).}
 }
 \value{
 Invisible NULL.
@@ -50,15 +63,9 @@ The network topology is such that server daemons dial into the
     automatically distributes tasks to all available servers.
 
     If 'nodes' is supplied, this daemon is launched as an active server queue,
-    directing a cluster with the specified number of nodes. A server queue
-    may be used in combination with other servers or server queues.
+    directing a cluster with the specified number of nodes. The nodes are
+    launched automatically as processes on the same machine.
 
-    If 'baseurl' is also supplied, this active server queue allocates and
-    listens to a block of URLs with ports starting from the supplied port
-    number and incrementing by one. Individual \code{\link{server}} instances
-    should then be started on the remote resource, with these as the client
-    'url'.
-
-    If 'nodes' is supplied without 'baseurl' then the 'nodes' are launched
-    automatically by the active server queue on the same machine.
+    An active server queue may be used in combination with other servers or
+    server queues.
 }

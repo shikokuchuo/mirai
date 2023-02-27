@@ -26,17 +26,26 @@
 #'     'tcp://192.168.0.2:5555'.
 #' @param nodes [default NULL] if supplied, this server instance will run as an
 #'     active queue (task scheduler) with the specified number of nodes.
-#' @param baseurl [default NULL] if supplied (together with 'nodes'), the client
-#'     URL for nodes to connect to with a starting port number e.g.
-#'     'tcp://192.168.0.2:5555' with 6 nodes uses the contiguous block of ports
-#'     5555 through 5560. Otherwise, nodes are automatically launched on the
-#'     same machine.
 #' @param idletime [default Inf] maximum idle time, since completion of the last
 #'     task (in milliseconds) before exiting.
-#' @param runtime [default Inf] soft walltime, or the minimum amount of real
+#' @param walltime [default Inf] soft walltime, or the minimum amount of real
 #'     time taken (in milliseconds) before exiting.
-#' @param tasks [default Inf] the maximum number of tasks to execute (task
+#' @param tasklimit [default Inf] the maximum number of tasks to execute (task
 #'     limit) before exiting.
+#' @param pollfreqh [default 5L] applicable for an active queue only, the high
+#'     polling frequency for the queue in milliseconds (used when there are
+#'     active tasks). Setting a lower value will be more responsive but at the
+#'     cost of consuming more resources on the queue thread.
+#' @param pollfreql [default 50L] applicable for an active queue only, the low
+#'     polling frequency for the queue in milliseconds (used when there are no
+#'     active tasks). Setting a lower value will be more responsive but at the
+#'     cost of consuming more resources on the queue thread.
+#' @param asyncdial [default TRUE] (for debugging purposes) whether to dial in
+#'     to the client asynchronously. An asynchronous dial is more resilient and
+#'     will continue retrying if not immediately successful, however this can
+#'     mask potential connection issues. If FALSE, will error if a connection is
+#'     not immediately possible (e.g. \code{\link{daemons}} has yet to be called
+#'     on the client, or the specified port is not open etc.).
 #'
 #' @return Invisible NULL.
 #'
@@ -46,80 +55,83 @@
 #'     automatically distributes tasks to all available servers.
 #'
 #'     If 'nodes' is supplied, this daemon is launched as an active server queue,
-#'     directing a cluster with the specified number of nodes. A server queue
-#'     may be used in combination with other servers or server queues.
+#'     directing a cluster with the specified number of nodes. The nodes are
+#'     launched automatically as processes on the same machine.
 #'
-#'     If 'baseurl' is also supplied, this active server queue allocates and
-#'     listens to a block of URLs with ports starting from the supplied port
-#'     number and incrementing by one. Individual \code{\link{server}} instances
-#'     should then be started on the remote resource, with these as the client
-#'     'url'.
-#'
-#'     If 'nodes' is supplied without 'baseurl' then the 'nodes' are launched
-#'     automatically by the active server queue on the same machine.
+#'     An active server queue may be used in combination with other servers or
+#'     server queues.
 #'
 #' @export
 #'
-server <- function(url, nodes = NULL, baseurl = NULL,
-                   idletime = Inf, runtime = Inf, tasks = Inf) {
+server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
+                   tasklimit = Inf, pollfreqh = 5L, pollfreql = 50L,
+                   asyncdial = TRUE) {
 
-  sock <- socket(protocol = "rep", dial = url)
-  on.exit(expr = close(sock))
+  sock <- socket(protocol = "rep", dial = url, autostart = if (asyncdial) TRUE else NA)
+  devnull <- file(nullfile(), open = "w", blocking = FALSE)
+  sink(file = devnull)
+  sink(file = devnull, type = "message")
+  on.exit(expr = {
+    close(sock)
+    sink()
+    sink(type = "message")
+    close(devnull)
+  })
   count <- 0L
   idle <- FALSE
-  auto <- TRUE
   start <- mclock()
 
   if (is.numeric(nodes)) {
 
+    auto <- length(url) == 1L
     nodes <- as.integer(nodes)
     seq_nodes <- seq_len(nodes)
     queue <- vector(mode = "list", length = nodes)
     servers <- vector(mode = "list", length = nodes)
-    if (is.character(baseurl)) {
-      ports <- seq.int(as.integer(parse_url(baseurl)["port"]), length.out = nodes)
-      base <- substr(baseurl, 1L, nchar(baseurl) - nchar(ports[1L]))
-      auto <- FALSE
-    }
+    if (!auto)
+      ports <- sprintf(":%d", seq.int(as.integer(.subset2(parse_url(url[2L]), "port")), length.out = nodes))
 
     for (i in seq_nodes) {
-      url <- if (auto) sprintf(.urlfmt, random()) else sprintf("%s%d", base, ports[i])
-      socko <- socket(protocol = "req", listen = url)
+      nurl <- if (auto) sprintf(.urlfmt, random()) else sub(ports[1L], ports[i], url[2L], fixed = TRUE)
+      nsock <- socket(protocol = "req", listen = nurl)
       if (auto)
         system2(command = .command,
-                args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(url)))),
+                args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(nurl)))),
                 stdout = NULL, stderr = NULL, wait = FALSE)
-      servers[[i]] <- list(url = url, sock = socko, free = TRUE)
+      servers[[i]] <- list(url = nurl, sock = nsock, free = TRUE)
+
       ctx <- context(sock)
       req <- recv_aio(ctx, mode = 1L)
       queue[[i]] <- list(ctx = ctx, req = req)
     }
 
+    .scm <- .subset2(environment(daemons), ".__scm__.")
     on.exit(expr = for (i in seq_nodes) {
-      send(servers[[i]][["sock"]], data = .__scm__., mode = 2L)
+      send(servers[[i]][["sock"]], data = .scm, mode = 2L)
       close(servers[[i]][["sock"]])
     }, add = TRUE)
 
-    while (count < tasks && mclock() - start < runtime && if (idle) mclock() - idle < idletime else TRUE) {
+    while (count < tasklimit && mclock() - start < walltime && if (idle) mclock() - idle < idletime else TRUE) {
 
       free <- which(unlist(lapply(servers, .subset2, "free")))
       if (length(free) == nodes) {
         if (!idle) idle <- mclock()
-        msleep(50L)
+        msleep(pollfreql)
       } else {
         if (idle) idle <- FALSE
-        msleep(5L)
+        msleep(pollfreqh)
       }
 
       if (length(free))
         for (q in free)
           for (i in seq_nodes)
             if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
-              for (j in seq_nodes)
-                if (auto && stat(servers[[j]][["sock"]], "pipes") == 0L)
-                  system2(command = .command,
-                          args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(servers[[j]][["url"]])))),
-                          stdout = NULL, stderr = NULL, wait = FALSE)
+              if (auto)
+                for (j in seq_nodes)
+                  if (stat(servers[[j]][["sock"]], "pipes") == 0L)
+                    system2(command = .command,
+                            args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(servers[[j]][["url"]])))),
+                            stdout = NULL, stderr = NULL, wait = FALSE)
               ctx <- context(servers[[q]][["sock"]])
               queue[[i]][["rctx"]] <- ctx
               queue[[i]][["res"]] <- request(ctx, data = queue[[i]][["req"]][["data"]], send_mode = 1L, recv_mode = 1L)
@@ -141,13 +153,14 @@ server <- function(url, nodes = NULL, baseurl = NULL,
     }
 
   } else {
-    idletime <- if (idletime == Inf) NULL else idletime
-    while (count < tasks && mclock() - start < runtime) {
+    if (idletime == Inf) idletime <- NULL
+    while (count < tasklimit && mclock() - start < walltime) {
 
       ctx <- context(sock)
       envir <- recv(ctx, mode = 1L, block = idletime)
       is.integer(envir) && break
-      data <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir, enclos = NULL),
+      expr <- .subset2(envir, ".expr")
+      data <- tryCatch(eval(expr = expr, envir = envir, enclos = NULL),
                        error = mk_mirai_error, interrupt = mk_interrupt_error)
       send(ctx, data = data, mode = 1L)
       close(ctx)
@@ -167,7 +180,8 @@ server <- function(url, nodes = NULL, baseurl = NULL,
   on.exit(expr = close(sock))
   ctx <- context(sock)
   envir <- recv(ctx, mode = 1L)
-  data <- tryCatch(eval(expr = .subset2(envir, ".expr"), envir = envir, enclos = NULL),
+  expr <- .subset2(envir, ".expr")
+  data <- tryCatch(eval(expr = expr, envir = envir, enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)
   send(ctx, data = data, mode = 1L)
   close(ctx)
@@ -262,10 +276,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
     arglist <- c(arglist, `names<-`(.args, as.character.default(substitute(.args)[-1L])))
   envir <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
-  if (length(daemons(,))) {
-    ctx <- context(daemons(,))
-    aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
-    `attr<-`(.subset2(aio, "aio"), "ctx", ctx)
+  sock <- .subset2(environment(daemons), "sock")
+  if (length(sock)) {
+    aio <- request(context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
 
   } else {
     url <- sprintf(.urlfmt, random())
@@ -273,9 +286,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
     system2(command = .command,
             args = c("--vanilla", "-e", shQuote(sprintf("mirai::.(%s)", deparse(url)))),
             stdout = NULL, stderr = NULL, wait = FALSE)
-    ctx <- context(sock)
-    aio <- request(ctx, data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
-    `attr<-`(`attr<-`(.subset2(aio, "aio"), "ctx", ctx), "sock", sock)
+    aio <- request(context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
   }
 
@@ -291,9 +303,10 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
 #'     from remote servers started with \code{\link{server}} for distributing
 #'     tasks across the network.
 #'
-#' @param value \emph{(depending on the type of value supplied)}
+#' @param value \emph{~ depending on the type of value supplied ~}
 #'
-#'     \strong{numeric}: for setting local daemons: integer number of daemons.
+#'     \strong{numeric}: for setting local daemons: integer number of daemons
+#'     (see 'Local Daemons' below).
 #'
 #'     \strong{character}: for distributing tasks across the network: the client
 #'     URL and port accepting incoming connections as a character string e.g.
@@ -304,15 +317,16 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
 #'
 #' @param ... additional arguments passed to \code{\link{server}}.
 #'
-#'     For example, for an active queue of 8 nodes, specify \code{nodes = 8}.
+#'     \strong{nodes} supplying an integer number of nodes runs an active queue
+#'     with the specified number of nodes per daemon.
 #'
-#' @return Setting daemons: integer number of daemons set (NA if supplying a
-#'     client URL).
+#' @return Setting daemons: integer number of daemons set, or the character
+#'     string 'remote' if supplying a client URL.
 #'
 #'     Viewing current status: a named list comprising: \itemize{
 #'     \item{\code{connections}} {- integer number of active connections.}
-#'     \item{\code{daemons}} {- integer number of daemons, or NA when using a
-#'     client URL.}
+#'     \item{\code{daemons}} {- integer number of daemons, or 'remote' when
+#'     using a client URL.}
 #'     \item{\code{nodes}} {- integer number of nodes (per daemon), or NA when
 #'     not running an active queue.}
 #'     }
@@ -342,13 +356,13 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
 #'     similar-length tasks, or where the number of concurrent tasks typically
 #'     does not exceed available daemons.
 #'
-#'     Alternatively, supplying \code{nodes} as an additional argument runs
-#'     daemon active queues with the specified number of nodes per daemon e.g.
-#'     \code{daemons(2, nodes = 8)} maintains 2 active queues with 8 nodes each.
-#'     An active queue consumes additional resources, however ensures optimal
-#'     allocation of tasks to nodes such that they are run as soon as resources
-#'     become available. Note that changing the number of nodes in an active
-#'     queue requires a reset to zero prior to specifying a revised number.
+#'     Alternatively, supplying \code{nodes} as an additional argument causes
+#'     daemons to run as active queues with the specified number of nodes per
+#'     daemon e.g. \code{daemons(2, nodes = 8)} maintains 2 active queues with
+#'     8 nodes each. An active queue consumes additional resources, however
+#'     ensures load balancing and optimal scheduling of tasks to nodes. Note
+#'     that changing the number of nodes in an active queue requires a reset to
+#'     zero prior to specifying a revised number.
 #'
 #' @section Distributed Computing:
 #'
@@ -357,7 +371,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
 #'     This should be in the form of a character string such as:
 #'     'tcp://192.168.0.2:5555' at which server processes started using
 #'     \code{\link{server}} should connect to. Alternatively, to listen to port
-#'     5555 on all interfaces on the host, specify either 'tcp://:5555',
+#'     5555 on all interfaces on the local host, specify either 'tcp://:5555',
 #'     'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
 #'
 #'     The network topology is such that server daemons (started with
@@ -365,14 +379,22 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
 #'     URL. In this way, network resources may be easily added or removed at any
 #'     time. The client automatically distributes tasks to all connected servers.
 #'
+#'     Supplying \code{nodes} as an additional argument will launch a local
+#'     daemon as an active server queue listening to a block of URLs with
+#'     ports starting from the supplied port number and incrementing by one for
+#'     the number of nodes specified e.g. the client URL 'tcp://192.168.0.2:5555'
+#'     with 6 nodes uses the contiguous block of ports 5555 through 5560.
+#'     Individual \code{\link{server}} instances should then be started on the
+#'     remote resource, with each of these specified as the client URL.
+#'
 #' @section Timeouts:
 #'
-#'     Note: specifying the \code{.timeout} argument when evaluating a 'mirai'
-#'     will always cause the user function to return, however the process may not
-#'     have completed and still be ongoing in the daemon. In such situations, an
-#'     active queue may be prefereable so that new tasks are not assigned to
-#'     those daemons, however performance will still be degraded if they remain
-#'     in use.
+#'     Note: specifying the \code{.timeout} argument in \code{\link{mirai}} will
+#'     ensure that the 'mirai' always resolves, however the process may not have
+#'     completed and still be ongoing in the daemon. In such situations, an
+#'     active queue may be preferable so that new tasks are not assigned to the
+#'     busy process, however performance may still be degraded if they remain in
+#'     use.
 #'
 #' @examples
 #' if (interactive()) {
@@ -405,34 +427,42 @@ daemons <- function(value, ...) {
   proc <- 0L
   nodes <- url <- sock <- args <- NULL
   local <- TRUE
+  .__scm__. <- base64dec("WAoAAAADAAQCAQADBQAAAAAFVVRGLTgAAAD8", convert = FALSE)
 
   function(value, ...) {
 
-    ...length() && missing(..1) && return(sock)
-
-    missing(value) && {
-      envir <- environment(daemons)
-      return(
-        list(connections = if (length(daemons(,))) as.integer(stat(daemons(,), "pipes")) else 0L,
-             daemons = .subset2(envir, "proc"),
-             nodes = if (length(.subset2(envir, "nodes"))) .subset2(envir, "nodes") else NA)
-      )
-    }
+    missing(value) &&
+      return(list(connections = if (length(sock)) as.integer(stat(sock, "pipes")) else 0L,
+                  daemons = proc,
+                  nodes = if (length(nodes)) nodes else NA))
 
     is.numeric(value) || {
 
       is.character(value) || stop("'value' must be numeric, character or missing")
       if (length(sock)) daemons(0L)
-      sock <<- socket(protocol = "req", listen = value)
-      reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
+      if (...length()) {
+        dots <- substitute(alist(...))[-1L]
+        nodes <<- as.integer(.subset2(dots, "n", exact = FALSE))
+      }
+      if (length(nodes)) {
+        url <<- sprintf(.urlfmt, random())
+        sock <<- socket(protocol = "req", listen = url)
+        reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
+        dotstring <- paste(names(dots), dots, sep = "=", collapse = ",")
+        args <<- c("--vanilla", "-e", shQuote(sprintf("mirai::server(c(%s,%s),%s)", deparse(url), deparse(value), dotstring)))
+        system2(command = .command, args = args, stdout = NULL, stderr = NULL, wait = FALSE)
+      } else {
+        sock <<- socket(protocol = "req", listen = value)
+        reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
+      }
       local <<- FALSE
-      return(proc <<- NA)
+      return(proc <<- "remote")
 
     }
 
     n <- as.integer(value)
     n >= 0L || stop("the number of daemons must be zero or greater")
-    delta <- if (is.na(proc)) -1L else n - proc
+    delta <- if (is.integer(proc)) n - proc else -1L
     delta == 0L && return(proc)
 
     if (is.null(sock)) {
@@ -440,9 +470,9 @@ daemons <- function(value, ...) {
       sock <<- socket(protocol = "req", listen = url)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       if (...length()) {
-        dots <- substitute(alist(...))
+        dots <- substitute(alist(...))[-1L]
         nodes <<- as.integer(.subset2(dots, "n", exact = FALSE))
-        dotstring <- substr(deparse(dots), 7L, nchar(deparse(dots)) - 1L)
+        dotstring <- paste(names(dots), dots, sep = "=", collapse = ",")
         args <<- c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s,%s)", deparse(url), dotstring)))
       } else {
         args <<- c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(url))))

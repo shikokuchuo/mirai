@@ -41,11 +41,14 @@ zero package dependencies.
 2.  [Example 1: Compute-intensive
     Operations](#example-1-compute-intensive-operations)
 3.  [Example 2: I/O-bound Operations](#example-2-io-bound-operations)
-4.  [Daemons](#daemons)
-5.  [Distributed Computing](#distributed-computing)
-6.  [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
-7.  [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
-8.  [Links](#links)
+4.  [Example 3: Resilient Pipelines](#example-3-resilient-pipelines)
+5.  [Daemons: Local Persistent
+    Processes](#daemons-local-persistent-processes)
+6.  [Distributed Computing: Remote
+    Servers](#distributed-computing-remote-servers)
+7.  [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
+8.  [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
+9.  [Links](#links)
 
 ### Installation
 
@@ -104,7 +107,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -0.0773 0.7422 -0.0978 0.2823 -1.6498 ...
+#>  num [1:100000000] 1.284 -2.255 -0.677 0.17 -0.498 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -112,7 +115,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.0773 0.7422 -0.0978 0.2823 -1.6498 ...
+#>  num [1:100000000] 1.284 -2.255 -0.677 0.17 -0.498 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -166,7 +169,62 @@ the next write.
 
 [« Back to ToC](#table-of-contents)
 
-### Daemons
+### Example 3: Resilient Pipelines
+
+Use case: isolating code that can potentially fail in a separate process
+to ensure continued uptime.
+
+As part of a data science or machine learning pipeline, iterations of
+model training may periodically fail for stochastic and uncontrollable
+reasons (e.g. buggy memory management on graphics cards). Running each
+iteration in a ‘mirai’ process isolates this potentially-problematic
+code such that if it does fail, it does not crash the entire pipeline.
+
+``` r
+library(mirai)
+
+run_iteration <- function(i) {
+  
+  if (runif(1) < 0.15) stop("random error", call. = FALSE) # simulates a stochastic error rate
+  sprintf("iteration %d successful", i)
+  
+}
+
+for (i in 1:10) {
+  
+  m <- mirai(run_iteration(i), .args = list(run_iteration, i))
+  while (is_error_value(call_mirai(m)$data)) {
+    cat(m$data, "\n")
+    m <- mirai(run_iteration(i), .args = list(run_iteration, i))
+  }
+  cat(m$data, "\n")
+  
+}
+#> iteration 1 successful 
+#> iteration 2 successful 
+#> Error: random error 
+#> iteration 3 successful 
+#> iteration 4 successful 
+#> iteration 5 successful 
+#> iteration 6 successful 
+#> iteration 7 successful 
+#> iteration 8 successful 
+#> iteration 9 successful 
+#> iteration 10 successful
+```
+
+Further, by testing the return value of each ‘mirai’ for errors,
+error-handling code is then able to automate recovery and re-attempts,
+as in the above example. Further details on [error
+handling](#errors-interrupts-and-timeouts) can be found in the section
+below.
+
+The end result is a resilient and fault-tolerant pipeline that minimises
+downtime by eliminating interruptions of long computes.
+
+[« Back to ToC](#table-of-contents)
+
+### Daemons: Local Persistent Processes
 
 Daemons or persistent background processes may be set to receive ‘mirai’
 requests.
@@ -243,9 +301,8 @@ daemons()
 #> [1] 8
 ```
 
-The active queue consumes additional resources, however ensures optimal
-allocation of tasks to daemons such that they are run as soon as
-resources become available.
+The active queue consumes additional resources, however ensures load
+balancing and optimal scheduling of tasks to nodes.
 
 ``` r
 daemons(0)
@@ -256,15 +313,15 @@ Set the number of daemons to zero to reset.
 
 [« Back to ToC](#table-of-contents)
 
-### Distributed Computing
+### Distributed Computing: Remote Servers
 
 The daemons interface may also be used to send tasks for computation to
 server processes on the network.
 
+#### Connecting to Remote Servers / Remote Server Queues
+
 Call `daemons()` specifying as a character string the client network
 address and a port that is able to accept incoming connections.
-
-#### Example 1: Connecting to Remote Servers / Remote Server Queues
 
 Assuming that the local network IP address of the current machine is
 ‘192.168.0.2’, and port ‘5555’ has been made available for inbound
@@ -275,11 +332,11 @@ daemons("tcp://192.168.0.2:5555")
 ```
 
 Alternatively, simply supply a colon followed by the port number to
-listen on all interfaces on the host, for example:
+listen on all interfaces on the local host, for example:
 
 ``` r
 daemons("tcp://:5555")
-#> [1] NA
+#> [1] "remote"
 ```
 
 The network topology is such that the client listens at the above
@@ -300,11 +357,12 @@ a cluster with the specified number of nodes:
 
 –
 
-On the client, requesting the status will show the actual number of
-server instances connected to the client (2 in the example below).
-Daemons show as `NA` as network resources may be added and removed at
-any time, and tasks are automatically distributed to all server
-processes.
+On the client, requesting the status will show `daemons` as ‘remote’.
+This is as network resources may be added and removed at any time, and
+tasks are automatically distributed to all server processes.
+
+`connections` will show the actual number of connected server instances
+(2 in the example below).
 
 ``` r
 daemons()
@@ -312,7 +370,7 @@ daemons()
 #> [1] 2
 #> 
 #> $daemons
-#> [1] NA
+#> [1] "remote"
 #> 
 #> $nodes
 #> [1] NA
@@ -328,23 +386,26 @@ daemons(0)
 This also sends an exit signal to connected server instances so that
 they exit automatically.
 
-#### Example 2: Connecting to Remote Servers Through a Local Server Queue
+#### Connecting to Remote Servers Through a Local Server Queue
 
 Assuming that the local network address of the current machine is
-‘192.168.0.2’, and 4 nodes are to be allocated on remote servers. A
-contiguous block of 4 ports e.g. from ‘5556’ to ‘5559’ needs to be made
-available for inbound connections from the local network.
+‘192.168.0.2’, and 4 nodes are to be allocated on remote servers.
+
+A contiguous block of 4 ports e.g. from ‘5556’ to ‘5559’ needs to be
+made available for inbound connections from the local network.
 
 ``` r
-# daemons(1,nodes=4,baseurl="tcp://192.168.0.2:5556")
+# daemons("tcp://192.168.0.2:5556", nodes = 4)
 
-daemons(1, nodes = 4, baseurl = "tcp://:5556")
-#> [1] 1
+daemons("tcp://:5556", nodes = 4)
+#> [1] "remote"
 ```
 
 This automatically starts a server queue as a daemon process on the
-local client machine. This process is listening to the block of URLs
-‘tcp://192.168.0.2:5556’ through ‘tcp://192.168.0.2:5559’.
+local client machine. The URL should contain the starting port number,
+so in the example above the queue is listening to the block of URLs
+‘tcp://192.168.0.2:5556’ through ‘tcp://192.168.0.2:5559’ as 4 nodes
+have been specified.
 
 –
 
@@ -363,14 +424,15 @@ daemons()
 #> [1] 1
 #> 
 #> $daemons
-#> [1] 1
+#> [1] "remote"
 #> 
 #> $nodes
 #> [1] 4
 ```
 
-This shows the connection to the daemon, which is acting as an active
-server queue for the 4 nodes.
+When running a local server queue to connect to remote nodes, there is
+only a single connection to the local server queue. This then connects
+in turn to the nodes running on remote servers.
 
 To reset all connections and revert to default behaviour:
 
@@ -396,9 +458,9 @@ m1 <- mirai(stop("occurred with a custom message", call. = FALSE))
 call_mirai(m1)$data
 #> 'miraiError' chr Error: occurred with a custom message
 
-m2 <- mirai(mirai())
+m2 <- mirai(mirai::mirai())
 call_mirai(m2)$data
-#> 'miraiError' chr Error in mirai(): could not find function "mirai"
+#> 'miraiError' chr Error in mirai::mirai(): missing expression, perhaps wrap in {}?
 
 is_mirai_error(m2$data)
 #> [1] TRUE
@@ -461,7 +523,7 @@ The pipe operator semantics are similar to R’s base pipe `|>`:
 `f(x)` <br /> `x %>>% f(y)` is equivalent to `f(x, y)`
 
 ``` r
-m <- mirai({Sys.sleep(0.5); 1})
+m <- mirai({nanonext::msleep(500); 1})
 b <- m$data %>>% c(2, 3) %>>% as.character()
 b
 #> < unresolvedExpr >
@@ -469,7 +531,7 @@ b
 b$data
 #> < unresolvedExpr >
 #>  - $data to query resolution
-Sys.sleep(1)
+nanonext::msleep(600)
 b$data
 #> [1] "1" "2" "3"
 b

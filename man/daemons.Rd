@@ -7,9 +7,10 @@
 daemons(value, ...)
 }
 \arguments{
-\item{value}{\emph{(depending on the type of value supplied)}
+\item{value}{\emph{~ depending on the type of value supplied ~}
 
-    \strong{numeric}: for setting local daemons: integer number of daemons.
+    \strong{numeric}: for setting local daemons: integer number of daemons
+    (see 'Local Daemons' below).
 
     \strong{character}: for distributing tasks across the network: the client
     URL and port accepting incoming connections as a character string e.g.
@@ -20,16 +21,17 @@ daemons(value, ...)
 
 \item{...}{additional arguments passed to \code{\link{server}}.
 
-    For example, for an active queue of 8 nodes, specify \code{nodes = 8}.}
+    \strong{nodes} supplying an integer number of nodes runs an active queue
+    with the specified number of nodes per daemon.}
 }
 \value{
-Setting daemons: integer number of daemons set (NA if supplying a
-    client URL).
+Setting daemons: integer number of daemons set, or the character
+    string 'remote' if supplying a client URL.
 
     Viewing current status: a named list comprising: \itemize{
     \item{\code{connections}} {- integer number of active connections.}
-    \item{\code{daemons}} {- integer number of daemons, or NA when using a
-    client URL.}
+    \item{\code{daemons}} {- integer number of daemons, or 'remote' when
+    using a client URL.}
     \item{\code{nodes}} {- integer number of nodes (per daemon), or NA when
     not running an active queue.}
     }
@@ -68,13 +70,13 @@ Use \code{daemons(0)} to reset all daemon connections at any time.
     similar-length tasks, or where the number of concurrent tasks typically
     does not exceed available daemons.
 
-    Alternatively, supplying \code{nodes} as an additional argument runs
-    daemon active queues with the specified number of nodes per daemon e.g.
-    \code{daemons(2, nodes = 8)} maintains 2 active queues with 8 nodes each.
-    An active queue consumes additional resources, however ensures optimal
-    allocation of tasks to nodes such that they are run as soon as resources
-    become available. Note that changing the number of nodes in an active
-    queue requires a reset to zero prior to specifying a revised number.
+    Alternatively, supplying \code{nodes} as an additional argument causes
+    daemons to run as active queues with the specified number of nodes per
+    daemon e.g. \code{daemons(2, nodes = 8)} maintains 2 active queues with
+    8 nodes each. An active queue consumes additional resources, however
+    ensures load balancing and optimal scheduling of tasks to nodes. Note
+    that changing the number of nodes in an active queue requires a reset to
+    zero prior to specifying a revised number.
 }
 
 \section{Distributed Computing}{
@@ -85,24 +87,32 @@ Use \code{daemons(0)} to reset all daemon connections at any time.
     This should be in the form of a character string such as:
     'tcp://192.168.0.2:5555' at which server processes started using
     \code{\link{server}} should connect to. Alternatively, to listen to port
-    5555 on all interfaces on the host, specify either 'tcp://:5555',
+    5555 on all interfaces on the local host, specify either 'tcp://:5555',
     'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
 
     The network topology is such that server daemons (started with
     \code{\link{server}}) dial into the client, which listens at the client
     URL. In this way, network resources may be easily added or removed at any
     time. The client automatically distributes tasks to all connected servers.
+
+    Supplying \code{nodes} as an additional argument will launch a local
+    daemon as an active server queue listening to a block of URLs with
+    ports starting from the supplied port number and incrementing by one for
+    the number of nodes specified e.g. the client URL 'tcp://192.168.0.2:5555'
+    with 6 nodes uses the contiguous block of ports 5555 through 5560.
+    Individual \code{\link{server}} instances should then be started on the
+    remote resource, with each of these specified as the client URL.
 }
 
 \section{Timeouts}{
 
 
-    Note: specifying the \code{.timeout} argument when evaluating a 'mirai'
-    will always cause the user function to return, however the process may not
-    have completed and still be ongoing in the daemon. In such situations, an
-    active queue may be prefereable so that new tasks are not assigned to
-    those daemons, however performance will still be degraded if they remain
-    in use.
+    Note: specifying the \code{.timeout} argument in \code{\link{mirai}} will
+    ensure that the 'mirai' always resolves, however the process may not have
+    completed and still be ongoing in the daemon. In such situations, an
+    active queue may be preferable so that new tasks are not assigned to the
+    busy process, however performance may still be degraded if they remain in
+    use.
 }
 
 \examples{
