@@ -107,7 +107,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 1.284 -2.255 -0.677 0.17 -0.498 ...
+#>  num [1:100000000] -1.567 1.203 0.383 1.981 -2.361 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -115,7 +115,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 1.284 -2.255 -0.677 0.17 -0.498 ...
+#>  num [1:100000000] -1.567 1.203 0.383 1.981 -2.361 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -202,9 +202,9 @@ for (i in 1:10) {
 }
 #> iteration 1 successful 
 #> iteration 2 successful 
-#> Error: random error 
 #> iteration 3 successful 
 #> iteration 4 successful 
+#> Error: random error 
 #> iteration 5 successful 
 #> iteration 6 successful 
 #> iteration 7 successful 
@@ -308,6 +308,9 @@ balancing and optimal scheduling of tasks to nodes.
 daemons(0)
 #> [1] 0
 ```
+
+An active queue with local nodes is self-repairing if one of the nodes
+crashes or is terminated.
 
 Set the number of daemons to zero to reset.
 
@@ -434,6 +437,11 @@ When running a local server queue to connect to remote nodes, there is
 only a single connection to the local server queue. This then connects
 in turn to the nodes running on remote servers.
 
+The active queue will automatically adjust to the number of servers
+actually connected. Hence it is possible to dynamically scale up or down
+the number of server nodes (limited by the number of nodes initially
+specified).
+
 To reset all connections and revert to default behaviour:
 
 ``` r
@@ -533,9 +541,11 @@ b$data
 #>  - $data to query resolution
 nanonext::msleep(600)
 b$data
-#> [1] "1" "2" "3"
+#> < unresolvedExpr >
+#>  - $data to query resolution
 b
-#> < resolvedExpr: $data >
+#> < unresolvedExpr >
+#>  - $data to query resolution
 ```
 
 [« Back to ToC](#table-of-contents)

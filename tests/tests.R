@@ -42,7 +42,7 @@ nanotest(daemons(sprintf(mirai:::.urlfmt, runif(1, 1000000, 9999999))) == "remot
 nanotestw(daemons(0L) == 0L)
 nanotestn(.subset2(environment(daemons), "sock"))
 if (Sys.getenv("NOT_CRAN") == "set") {
-  nanotest(daemons(1, nodes = 1) == 1L)
+  nanotest(daemons(1, nodes = 1, walltime = 100000L) == 1L)
   mq <- mirai("queue")
   nanotest(call_mirai(mq)$data == "queue")
   nanotest(daemons()[["nodes"]] == 1L)

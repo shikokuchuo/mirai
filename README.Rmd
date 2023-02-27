@@ -243,6 +243,8 @@ The active queue consumes additional resources, however ensures load balancing a
 daemons(0)
 ```
 
+An active queue with local nodes is self-repairing if one of the nodes crashes or is terminated.
+
 Set the number of daemons to zero to reset.
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -336,6 +338,8 @@ daemons()
 ```
 
 When running a local server queue to connect to remote nodes, there is only a single connection to the local server queue. This then connects in turn to the nodes running on remote servers.
+
+The active queue will automatically adjust to the number of servers actually connected. Hence it is possible to dynamically scale up or down the number of server nodes (limited by the number of nodes initially specified).
 
 To reset all connections and revert to default behaviour:
 

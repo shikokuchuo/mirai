@@ -86,6 +86,7 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
     auto <- length(url) == 1L
     nodes <- as.integer(nodes)
     seq_nodes <- seq_len(nodes)
+    scan_node <- function(x) stat(.subset2(x, "sock"), "pipes")
     queue <- vector(mode = "list", length = nodes)
     servers <- vector(mode = "list", length = nodes)
     if (!auto)
@@ -113,8 +114,9 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
 
     while (count < tasklimit && mclock() - start < walltime && if (idle) mclock() - idle < idletime else TRUE) {
 
-      free <- which(unlist(lapply(servers, .subset2, "free")))
-      if (length(free) == nodes) {
+      activevec <- unlist(lapply(servers, scan_node))
+      free <- which(unlist(lapply(servers, .subset2, "free")) & activevec)
+      if (length(free) == sum(activevec)) {
         if (!idle) idle <- mclock()
         msleep(pollfreql)
       } else {

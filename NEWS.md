@@ -1,4 +1,4 @@
-# mirai 0.7.2.9006 (development)
+# mirai 0.7.2.9007 (development)
 
 * `daemons()` interface has been simplified with a single `value` argument along with `...` for passing additional parameters.
   + Allows supplying the argument `nodes` for running an active queue (task scheduler).
@@ -10,7 +10,6 @@
   + `tasklimit` for specifying a maximum number of tasks before exiting.
   + `pollfreqh` and `pollfreql` for setting the polling frequency of an active queue.
   + `asyncdial` to specify how the server dials into the client.
-* An active queue with local nodes is now self-repairing if one of the nodes crashes or is terminated.
 * Invalid URLs provided to `daemons()` and `server()` now error and return immediately instead of potentially causing a hang.
 * `eval_mirai()` is removed as an alias for `mirai()`.
 * Requires nanonext >= 0.7.3.9003 and R >= 3.5.
