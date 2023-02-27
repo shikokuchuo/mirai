@@ -86,11 +86,11 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
     auto <- length(url) == 1L
     nodes <- as.integer(nodes)
     seq_nodes <- seq_len(nodes)
-    scan_node <- function(x) stat(.subset2(x, "sock"), "pipes")
+    scan_node <- function(x) stat(x[["sock"]], "pipes")
     queue <- vector(mode = "list", length = nodes)
     servers <- vector(mode = "list", length = nodes)
     if (!auto)
-      ports <- sprintf(":%d", seq.int(as.integer(.subset2(parse_url(url[2L]), "port")), length.out = nodes))
+      ports <- sprintf(":%d", seq.int(as.integer(parse_url(url[2L])[["port"]]), length.out = nodes))
 
     for (i in seq_nodes) {
       nurl <- if (auto) sprintf(.urlfmt, random()) else sub(ports[1L], ports[i], url[2L], fixed = TRUE)
@@ -106,53 +106,55 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
       queue[[i]] <- list(ctx = ctx, req = req)
     }
 
-    .scm <- .subset2(environment(daemons), ".__scm__.")
     on.exit(expr = for (i in seq_nodes) {
-      send(servers[[i]][["sock"]], data = .scm, mode = 2L)
+      send(servers[[i]][["sock"]], data = ..[[".__scm__."]], mode = 2L)
       close(servers[[i]][["sock"]])
     }, add = TRUE)
 
-    while (count < tasklimit && mclock() - start < walltime && if (idle) mclock() - idle < idletime else TRUE) {
+    suspendInterrupts({
 
-      activevec <- unlist(lapply(servers, scan_node))
-      free <- which(unlist(lapply(servers, .subset2, "free")) & activevec)
-      if (length(free) == sum(activevec)) {
-        if (!idle) idle <- mclock()
-        msleep(pollfreql)
-      } else {
-        if (idle) idle <- FALSE
-        msleep(pollfreqh)
-      }
+      while (count < tasklimit && mclock() - start < walltime && if (idle) mclock() - idle < idletime else TRUE) {
 
-      if (length(free))
-        for (q in free)
-          for (i in seq_nodes)
-            if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
-              if (auto)
-                for (j in seq_nodes)
-                  if (stat(servers[[j]][["sock"]], "pipes") == 0L)
+        activevec <- unlist(lapply(servers, scan_node))
+        free <- which(unlist(lapply(servers, .subset2, "free")) & activevec)
+        if (length(free) == sum(activevec)) {
+          if (!idle) idle <- mclock()
+          msleep(pollfreql)
+        } else {
+          if (idle) idle <- FALSE
+          msleep(pollfreqh)
+        }
+
+        if (length(free))
+          for (q in free)
+            for (i in seq_nodes)
+              if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
+                if (auto && sum(activevec) < nodes)
+                  for (j in which(!activevec))
                     system2(command = .command,
                             args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(servers[[j]][["url"]])))),
                             stdout = NULL, stderr = NULL, wait = FALSE)
-              ctx <- context(servers[[q]][["sock"]])
-              queue[[i]][["rctx"]] <- ctx
-              queue[[i]][["res"]] <- request(ctx, data = queue[[i]][["req"]][["data"]], send_mode = 1L, recv_mode = 1L)
-              queue[[i]][["daemon"]] <- q
-              servers[[q]][["free"]] <- FALSE
-              break
-            }
+                ctx <- context(servers[[q]][["sock"]])
+                queue[[i]][["rctx"]] <- ctx
+                queue[[i]][["res"]] <- request(ctx, data = queue[[i]][["req"]][["data"]], send_mode = 1L, recv_mode = 1L)
+                queue[[i]][["daemon"]] <- q
+                servers[[q]][["free"]] <- FALSE
+                break
+              }
 
-      for (i in seq_nodes)
-        if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
-          send(queue[[i]][["ctx"]], data = queue[[i]][["res"]][["data"]], mode = 1L)
-          q <- queue[[i]][["daemon"]]
-          servers[[q]][["free"]] <- TRUE
-          count <- count + 1L
-          ctx <- context(sock)
-          req <- recv_aio(ctx, mode = 1L)
-          queue[[i]] <- list(ctx = ctx, req = req)
-        }
-    }
+        for (i in seq_nodes)
+          if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
+            send(queue[[i]][["ctx"]], data = queue[[i]][["res"]][["data"]], mode = 1L)
+            q <- queue[[i]][["daemon"]]
+            servers[[q]][["free"]] <- TRUE
+            count <- count + 1L
+            ctx <- context(sock)
+            req <- recv_aio(ctx, mode = 1L)
+            queue[[i]] <- list(ctx = ctx, req = req)
+          }
+
+      }
+    })
 
   } else {
     if (idletime == Inf) idletime <- NULL
@@ -161,8 +163,7 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
       ctx <- context(sock)
       envir <- recv(ctx, mode = 1L, block = idletime)
       is.integer(envir) && break
-      expr <- .subset2(envir, ".expr")
-      data <- tryCatch(eval(expr = expr, envir = envir, enclos = NULL),
+      data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
                        error = mk_mirai_error, interrupt = mk_interrupt_error)
       send(ctx, data = data, mode = 1L)
       close(ctx)
@@ -182,8 +183,7 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
   on.exit(expr = close(sock))
   ctx <- context(sock)
   envir <- recv(ctx, mode = 1L)
-  expr <- .subset2(envir, ".expr")
-  data <- tryCatch(eval(expr = expr, envir = envir, enclos = NULL),
+  data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)
   send(ctx, data = data, mode = 1L)
   close(ctx)
@@ -278,9 +278,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
     arglist <- c(arglist, `names<-`(.args, as.character.default(substitute(.args)[-1L])))
   envir <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
-  sock <- .subset2(environment(daemons), "sock")
-  if (length(sock)) {
-    aio <- request(context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+  if (length(..[["sock"]])) {
+    aio <- request(context(..[["sock"]]), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
 
   } else {
     url <- sprintf(.urlfmt, random())
@@ -426,97 +425,97 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
 #'
 daemons <- function(value, ...) {
 
-  proc <- 0L
-  nodes <- url <- sock <- args <- NULL
-  local <- TRUE
-  .__scm__. <- base64dec("WAoAAAADAAQCAQADBQAAAAAFVVRGLTgAAAD8", convert = FALSE)
+  missing(value) &&
+    return(list(connections = if (length(..[["sock"]])) as.integer(stat(..[["sock"]], "pipes")) else 0L,
+                daemons = ..[["proc"]],
+                nodes = if (length(..[["nodes"]])) ..[["nodes"]] else NA))
 
-  function(value, ...) {
+  is.numeric(value) || {
 
-    missing(value) &&
-      return(list(connections = if (length(sock)) as.integer(stat(sock, "pipes")) else 0L,
-                  daemons = proc,
-                  nodes = if (length(nodes)) nodes else NA))
-
-    is.numeric(value) || {
-
-      is.character(value) || stop("'value' must be numeric, character or missing")
-      if (length(sock)) daemons(0L)
-      if (...length()) {
-        dots <- substitute(alist(...))[-1L]
-        nodes <<- as.integer(.subset2(dots, "n", exact = FALSE))
-      }
-      if (length(nodes)) {
-        url <<- sprintf(.urlfmt, random())
-        sock <<- socket(protocol = "req", listen = url)
-        reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
-        dotstring <- paste(names(dots), dots, sep = "=", collapse = ",")
-        args <<- c("--vanilla", "-e", shQuote(sprintf("mirai::server(c(%s,%s),%s)", deparse(url), deparse(value), dotstring)))
-        system2(command = .command, args = args, stdout = NULL, stderr = NULL, wait = FALSE)
-      } else {
-        sock <<- socket(protocol = "req", listen = value)
-        reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
-      }
-      local <<- FALSE
-      return(proc <<- "remote")
-
+    is.character(value) || stop("'value' must be numeric, character or missing")
+    if (length(..[["sock"]])) daemons(0L)
+    nodes <- NULL
+    if (...length()) {
+      dots <- substitute(alist(...))[-1L]
+      nodes <- as.integer(.subset2(dots, "n", exact = FALSE))
     }
-
-    n <- as.integer(value)
-    n >= 0L || stop("the number of daemons must be zero or greater")
-    delta <- if (is.integer(proc)) n - proc else -1L
-    delta == 0L && return(proc)
-
-    if (is.null(sock)) {
-      url <<- sprintf(.urlfmt, random())
-      sock <<- socket(protocol = "req", listen = url)
+    if (length(nodes)) {
+      url <- sprintf(.urlfmt, random())
+      sock <- socket(protocol = "req", listen = url)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
-      if (...length()) {
-        dots <- substitute(alist(...))[-1L]
-        nodes <<- as.integer(.subset2(dots, "n", exact = FALSE))
-        dotstring <- paste(names(dots), dots, sep = "=", collapse = ",")
-        args <<- c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s,%s)", deparse(url), dotstring)))
-      } else {
-        args <<- c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(url))))
-      }
-    }
-
-    if (delta > 0L) {
-      if (local) {
-        for (i in seq_len(delta))
-          system2(command = .command, args = args, stdout = NULL, stderr = NULL, wait = FALSE)
-        proc <<- proc + delta
-      }
-
+      dotstring <- paste(names(dots), dots, sep = "=", collapse = ",")
+      args <- c("--vanilla", "-e", shQuote(sprintf("mirai::server(c(%s,%s),%s)", deparse(url), deparse(value), dotstring)))
+      system2(command = .command, args = args, stdout = NULL, stderr = NULL, wait = FALSE)
+      `[[<-`(`[[<-`(.., "nodes", nodes), "args", args)
     } else {
-      if (!local && n == 0L) {
-        proc <<- as.integer(stat(sock, "pipes"))
-        delta <- -proc
-        local <<- TRUE
-      }
-      if (local) {
-        out <- 0L
-        for (i in seq_len(-delta)) {
-          ctx <- context(sock)
-          res <- send(ctx, data = .__scm__., mode = 2L, block = 2000L)
-          if (res)
-            out <- out + 1L
-          close(ctx)
-        }
-        proc <<- proc + delta
-        if (out)
-          warning(sprintf("%d daemon shutdowns timed out (may require manual action)", out))
-      }
-      if (proc == 0L) {
-        close(sock)
-        nodes <<- sock <<- NULL
-        gc(verbose = FALSE)
-      }
+      sock <- socket(protocol = "req", listen = value)
+      reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
     }
-
-    proc
+    `[[<-`(`[[<-`(`[[<-`(.., "sock", sock), "local", FALSE), "proc", "remote")
+    return("remote")
 
   }
+
+  n <- as.integer(value)
+  n >= 0L || stop("the number of daemons must be zero or greater")
+  proc <- ..[["proc"]]
+  delta <- if (is.integer(proc)) n - proc else -1L
+  delta == 0L && return(proc)
+
+  local <- ..[["local"]]
+
+  if (is.null(..[["sock"]])) {
+    url <- sprintf(.urlfmt, random())
+    sock <- socket(protocol = "req", listen = url)
+    reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
+    if (...length()) {
+      dots <- substitute(alist(...))[-1L]
+      dotstring <- paste(names(dots), dots, sep = "=", collapse = ",")
+      args <- c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s,%s)", deparse(url), dotstring)))
+      `[[<-`(.., "nodes", as.integer(.subset2(dots, "n", exact = FALSE)))
+    } else {
+      args <- c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(url))))
+    }
+    `[[<-`(`[[<-`(.., "sock", sock), "args", args)
+  }
+
+  if (delta > 0L) {
+    if (local) {
+      for (i in seq_len(delta))
+        system2(command = .command, args = ..[["args"]], stdout = NULL, stderr = NULL, wait = FALSE)
+      proc <- proc + delta
+      `[[<-`(.., "proc", proc)
+    }
+
+  } else {
+    if (!local && n == 0L) {
+      proc <- as.integer(stat(..[["sock"]], "pipes"))
+      delta <- -proc
+      local <- TRUE
+    }
+    if (local) {
+      out <- 0L
+      for (i in seq_len(-delta)) {
+        ctx <- context(..[["sock"]])
+        res <- send(ctx, data = ..[[".__scm__."]], mode = 2L, block = 2000L)
+        if (res)
+          out <- out + 1L
+        close(ctx)
+      }
+      proc <- proc + delta
+      `[[<-`(.., "proc", proc)
+      if (out)
+        warning(sprintf("%d daemon shutdowns timed out (may require manual action)", out))
+    }
+    if (proc == 0L) {
+      close(..[["sock"]])
+      `[[<-`(`[[<-`(`[[<-`(.., "sock", NULL), "nodes", NULL), "local", TRUE)
+      gc(verbose = FALSE)
+    }
+  }
+
+  proc
+
 }
 
 #' mirai (Call Value)

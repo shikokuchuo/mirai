@@ -107,7 +107,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -1.567 1.203 0.383 1.981 -2.361 ...
+#>  num [1:100000000] 2.602 -2.252 0.329 -0.136 -0.498 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -115,7 +115,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -1.567 1.203 0.383 1.981 -2.361 ...
+#>  num [1:100000000] 2.602 -2.252 0.329 -0.136 -0.498 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -541,11 +541,9 @@ b$data
 #>  - $data to query resolution
 nanonext::msleep(600)
 b$data
-#> < unresolvedExpr >
-#>  - $data to query resolution
+#> [1] "1" "2" "3"
 b
-#> < unresolvedExpr >
-#>  - $data to query resolution
+#> < resolvedExpr: $data >
 ```
 
 [« Back to ToC](#table-of-contents)

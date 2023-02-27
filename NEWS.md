@@ -1,9 +1,9 @@
-# mirai 0.7.2.9007 (development)
+# mirai 0.7.2.9008 (development)
 
 * `daemons()` interface has been simplified with a single `value` argument along with `...` for passing additional parameters.
   + Allows supplying the argument `nodes` for running an active queue (task scheduler).
   + Calling with no arguments now provides an improved view of the current number of connections / daemons / nodes, replacing the previous `daemons("view")` functionality.
-* `server()` gains the following arguments:
+* `server()` gains the following arguments (special thanks to @wlandau for the suggestions, discussion and testing for many of the new features):
   + `nodes` for launching an active queue with the specified number of nodes.
   + `idletime` for specifying an idle time, since completion of the last task before exiting.
   + `walltime` for specifying a soft walltime before exiting.

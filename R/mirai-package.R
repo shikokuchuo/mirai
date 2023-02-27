@@ -57,8 +57,6 @@
 #'
 NULL
 
-.onLoad <- function(libname, pkgname) daemons <<- daemons()
-
 .onUnload <- function(libpath) invisible(daemons(0L))
 
 .command <- file.path(R.home("bin"), switch(.subset2(.Platform, "OS.type"),
@@ -69,4 +67,11 @@ NULL
                   Linux = "abstract://n%.f",
                   Windows = "ipc://n%.f",
                   "ipc:///tmp/n%.f")
+
+.. <- list2env(list(sock = NULL,
+                    args = NULL,
+                    nodes = NULL,
+                    proc = 0L,
+                    local = TRUE,
+                    .__scm__. = base64dec("WAoAAAADAAQCAQADBQAAAAAFVVRGLTgAAAD8", convert = FALSE)))
 
