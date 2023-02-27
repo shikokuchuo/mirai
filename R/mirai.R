@@ -96,9 +96,7 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
       nurl <- if (auto) sprintf(.urlfmt, random()) else sub(ports[1L], ports[i], url[2L], fixed = TRUE)
       nsock <- socket(protocol = "req", listen = nurl)
       if (auto)
-        system2(command = .command,
-                args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(nurl)))),
-                stdout = NULL, stderr = NULL, wait = FALSE)
+        launch_daemon(sprintf("mirai::server(%s)", deparse(nurl)))
       servers[[i]] <- list(url = nurl, sock = nsock, free = TRUE)
 
       ctx <- context(sock)
@@ -131,9 +129,7 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
               if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
                 if (auto && sum(activevec) < nodes)
                   for (j in which(!activevec))
-                    system2(command = .command,
-                            args = c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(servers[[j]][["url"]])))),
-                            stdout = NULL, stderr = NULL, wait = FALSE)
+                    launch_daemon(sprintf("mirai::server(%s)", deparse(servers[[j]][["url"]])))
                 ctx <- context(servers[[q]][["sock"]])
                 queue[[i]][["rctx"]] <- ctx
                 queue[[i]][["res"]] <- request(ctx, data = queue[[i]][["req"]][["data"]], send_mode = 1L, recv_mode = 1L)
@@ -284,9 +280,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL) {
   } else {
     url <- sprintf(.urlfmt, random())
     sock <- socket(protocol = "req", listen = url)
-    system2(command = .command,
-            args = c("--vanilla", "-e", shQuote(sprintf("mirai::.(%s)", deparse(url)))),
-            stdout = NULL, stderr = NULL, wait = FALSE)
+    launch_daemon(sprintf("mirai::.(%s)", deparse(url)))
     aio <- request(context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
@@ -444,8 +438,8 @@ daemons <- function(value, ...) {
       sock <- socket(protocol = "req", listen = url)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       dotstring <- paste(names(dots), dots, sep = "=", collapse = ",")
-      args <- c("--vanilla", "-e", shQuote(sprintf("mirai::server(c(%s,%s),%s)", deparse(url), deparse(value), dotstring)))
-      system2(command = .command, args = args, stdout = NULL, stderr = NULL, wait = FALSE)
+      args <- sprintf("mirai::server(c(%s,%s),%s)", deparse(url), deparse(value), dotstring)
+      launch_daemon(args)
       `[[<-`(`[[<-`(.., "nodes", nodes), "args", args)
     } else {
       sock <- socket(protocol = "req", listen = value)
@@ -471,10 +465,10 @@ daemons <- function(value, ...) {
     if (...length()) {
       dots <- substitute(alist(...))[-1L]
       dotstring <- paste(names(dots), dots, sep = "=", collapse = ",")
-      args <- c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s,%s)", deparse(url), dotstring)))
+      args <- sprintf("mirai::server(%s,%s)", deparse(url), dotstring)
       `[[<-`(.., "nodes", as.integer(.subset2(dots, "n", exact = FALSE)))
     } else {
-      args <- c("--vanilla", "-e", shQuote(sprintf("mirai::server(%s)", deparse(url))))
+      args <- sprintf("mirai::server(%s)", deparse(url))
     }
     `[[<-`(`[[<-`(.., "sock", sock), "args", args)
   }
@@ -482,7 +476,7 @@ daemons <- function(value, ...) {
   if (delta > 0L) {
     if (local) {
       for (i in seq_len(delta))
-        system2(command = .command, args = ..[["args"]], stdout = NULL, stderr = NULL, wait = FALSE)
+        launch_daemon(..[["args"]])
       proc <- proc + delta
       `[[<-`(.., "proc", proc)
     }
@@ -753,6 +747,10 @@ print.miraiInterrupt <- function(x, ...) {
 }
 
 # internals --------------------------------------------------------------------
+
+launch_daemon <- function(args)
+  system2(command = .command, args = c("--vanilla", "-e", shQuote(args)),
+          stdout = NULL, stderr = NULL, wait = FALSE)
 
 mk_mirai_error <- function(e) `class<-`(if (length(call <- .subset2(e, "call")))
   sprintf("Error in %s: %s", deparse(call, nlines = 1L), .subset2(e, "message")) else

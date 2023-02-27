@@ -46,6 +46,9 @@ if (Sys.getenv("NOT_CRAN") == "set") {
   nanotest(call_mirai(mq)$data == "queue")
   nanotest(daemons()[["nodes"]] == 1L)
   nanotest(daemons(0) == 0L)
+  nanotest(daemons("tcp://:5555", nodes = 1) == "remote")
+  nanotest(daemons()[["nodes"]] == 1L)
+  nanotest(daemons(0) == 0L)
 }
 nanotesterr(daemons("URL"), "argument")
 nanotesterr(daemons(-1), "zero")
