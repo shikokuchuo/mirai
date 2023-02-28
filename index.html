@@ -149,11 +149,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 1.281 3.659 1.234 -2.606 -0.957 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -11.499 1.198 0.59 3.63 -0.746 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 1.281 3.659 1.234 -2.606 -0.957 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -11.499 1.198 0.59 3.63 -0.746 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -215,10 +215,10 @@
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; iteration 1 successful </span></span>
 <span><span class="co">#&gt; iteration 2 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 3 successful </span></span>
 <span><span class="co">#&gt; iteration 4 successful </span></span>
 <span><span class="co">#&gt; iteration 5 successful </span></span>
-<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 6 successful </span></span>
 <span><span class="co">#&gt; iteration 7 successful </span></span>
 <span><span class="co">#&gt; iteration 8 successful </span></span>
@@ -421,9 +421,11 @@
 <span><span class="co">#&gt;  - $data to query resolution</span></span>
 <span><span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/msleep.html" class="external-link">msleep</a></span><span class="op">(</span><span class="fl">600</span><span class="op">)</span></span>
 <span><span class="va">b</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "1" "2" "3"</span></span>
+<span><span class="co">#&gt; &lt; unresolvedExpr &gt;</span></span>
+<span><span class="co">#&gt;  - $data to query resolution</span></span>
 <span><span class="va">b</span></span>
-<span><span class="co">#&gt; &lt; resolvedExpr: $data &gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt; unresolvedExpr &gt;</span></span>
+<span><span class="co">#&gt;  - $data to query resolution</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">

@@ -163,8 +163,11 @@ connecting to different resources).</p></dd>
     ports starting from the supplied port number and incrementing by one for
     the number of nodes specified e.g. the client URL 'tcp://192.168.0.2:5555'
     with 6 nodes uses the contiguous block of ports 5555 through 5560.
-    Individual <code><a href="server.html">server</a></code> instances should then be started on the
-    remote resource, with each of these specified as the client URL.</p>
+    Alterntively, specify a vector of URLs the same length as 'nodes' to
+    listen to - these can be using arbitrary port nubers not necessarily in a
+    contiguous range. Individual <code><a href="server.html">server</a></code> instances should then
+    be started on the remote resource, with each of these specified as the
+    client URL.</p>
     </div>
     <div id="timeouts">
     <h2>Timeouts</h2>
