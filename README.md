@@ -107,7 +107,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -11.499 1.198 0.59 3.63 -0.746 ...
+#>  num [1:100000000] -5.574 2.077 0.821 -17.065 0.482 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -115,7 +115,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -11.499 1.198 0.59 3.63 -0.746 ...
+#>  num [1:100000000] -5.574 2.077 0.821 -17.065 0.482 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -202,8 +202,8 @@ for (i in 1:10) {
 }
 #> iteration 1 successful 
 #> iteration 2 successful 
-#> Error: random error 
 #> iteration 3 successful 
+#> Error: random error 
 #> iteration 4 successful 
 #> iteration 5 successful 
 #> iteration 6 successful 
@@ -547,13 +547,11 @@ b
 b$data
 #> < unresolvedExpr >
 #>  - $data to query resolution
-nanonext::msleep(600)
+nanonext::msleep(700)
 b$data
-#> < unresolvedExpr >
-#>  - $data to query resolution
+#> [1] "1" "2" "3"
 b
-#> < unresolvedExpr >
-#>  - $data to query resolution
+#> < resolvedExpr: $data >
 ```
 
 [« Back to ToC](#table-of-contents)

@@ -413,7 +413,7 @@ m <- mirai({nanonext::msleep(500); 1})
 b <- m$data %>>% c(2, 3) %>>% as.character()
 b
 b$data
-nanonext::msleep(600)
+nanonext::msleep(700)
 b$data
 b
 ```
