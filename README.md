@@ -107,7 +107,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -5.574 2.077 0.821 -17.065 0.482 ...
+#>  num [1:100000000] -1.258 -0.497 -2.112 3.13 0.888 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -115,7 +115,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -5.574 2.077 0.821 -17.065 0.482 ...
+#>  num [1:100000000] -1.258 -0.497 -2.112 3.13 0.888 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -202,8 +202,8 @@ for (i in 1:10) {
 }
 #> iteration 1 successful 
 #> iteration 2 successful 
-#> iteration 3 successful 
 #> Error: random error 
+#> iteration 3 successful 
 #> iteration 4 successful 
 #> iteration 5 successful 
 #> iteration 6 successful 

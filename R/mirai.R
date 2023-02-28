@@ -94,12 +94,10 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
       ports <- sprintf(":%d", seq.int(as.integer(parse_url(url[2L])[["port"]]), length.out = nodes))
 
     for (i in seq_nodes) {
-      nurl <- if (auto) sprintf(.urlfmt, random()) else
-        if (vectorised) url[i + 1L] else
-          sub(ports[1L], ports[i], url[2L], fixed = TRUE)
+      nurl <- if (auto) sprintf(.urlfmt, random()) else if (vectorised) url[i + 1L] else sub(ports[1L], ports[i], url[2L], fixed = TRUE)
       nsock <- socket(protocol = "req", listen = nurl)
       if (auto)
-        launch_daemon(sprintf("mirai::server(%s)", deparse(nurl)))
+        launch_daemon(sprintf("mirai::server(\"%s\")", nurl))
       servers[[i]] <- list(url = nurl, sock = nsock, free = TRUE)
 
       ctx <- context(sock)
@@ -132,7 +130,7 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
               if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
                 if (auto && sum(activevec) < nodes)
                   for (j in which(!activevec))
-                    launch_daemon(sprintf("mirai::server(%s)", deparse(servers[[j]][["url"]])))
+                    launch_daemon(sprintf("mirai::server(\"%s\")", servers[[j]][["url"]]))
                 ctx <- context(servers[[q]][["sock"]])
                 queue[[i]][["rctx"]] <- ctx
                 queue[[i]][["res"]] <- request(ctx, data = queue[[i]][["req"]][["data"]], send_mode = 1L, recv_mode = 1L)
@@ -286,7 +284,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   } else {
     url <- sprintf(.urlfmt, random())
     sock <- socket(protocol = "req", listen = url)
-    launch_daemon(sprintf("mirai::.(%s)", deparse(url)))
+    launch_daemon(sprintf("mirai::.(\"%s\")", url))
     aio <- request(context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
@@ -452,8 +450,9 @@ daemons <- function(value, ..., .compute = "default") {
       sock <- socket(protocol = "req", listen = url)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       dotstring <- paste(names(dots), dots, sep = "=", collapse = ",")
-      args <- sprintf("mirai::server(%s,%s)", paste0(deparse(c(url, value)), collapse = ""), dotstring)
-      args <- gsub(" ", "", args, fixed = TRUE)
+      args <- sprintf("mirai::server(c(%s),%s)",
+                      paste(sprintf("\"%s\"", c(url, value)), collapse = ","),
+                      dotstring)
       launch_daemon(args)
       `[[<-`(`[[<-`(..[[.compute]], "nodes", nodes), "args", args)
     } else {
@@ -480,10 +479,10 @@ daemons <- function(value, ..., .compute = "default") {
     if (...length()) {
       dots <- substitute(alist(...))[-1L]
       dotstring <- paste(names(dots), dots, sep = "=", collapse = ",")
-      args <- sprintf("mirai::server(%s,%s)", deparse(url), dotstring)
+      args <- sprintf("mirai::server(\"%s\",%s)", url, dotstring)
       `[[<-`(..[[.compute]], "nodes", as.integer(.subset2(dots, "n", exact = FALSE)))
     } else {
-      args <- sprintf("mirai::server(%s)", deparse(url))
+      args <- sprintf("mirai::server(\"%s\")", url)
     }
     `[[<-`(`[[<-`(..[[.compute]], "sock", sock), "args", args)
   }
