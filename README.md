@@ -107,7 +107,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 2.602 -2.252 0.329 -0.136 -0.498 ...
+#>  num [1:100000000] 1.281 3.659 1.234 -2.606 -0.957 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -115,7 +115,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 2.602 -2.252 0.329 -0.136 -0.498 ...
+#>  num [1:100000000] 1.281 3.659 1.234 -2.606 -0.957 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -204,8 +204,8 @@ for (i in 1:10) {
 #> iteration 2 successful 
 #> iteration 3 successful 
 #> iteration 4 successful 
-#> Error: random error 
 #> iteration 5 successful 
+#> Error: random error 
 #> iteration 6 successful 
 #> iteration 7 successful 
 #> iteration 8 successful 
@@ -409,6 +409,14 @@ local client machine. The URL should contain the starting port number,
 so in the example above the queue is listening to the block of URLs
 ‘tcp://192.168.0.2:5556’ through ‘tcp://192.168.0.2:5559’ as 4 nodes
 have been specified.
+
+Alternatively, it is possible to supply a vector of URLs the same length
+as the number of nodes with custom port numbers (so that it is not
+necessary for them to be in a contiguous range), e.g.:
+
+``` r
+daemons(c("tcp://:5555", "tcp://:6666", "tcp://:7777", "tcp://:12560"), nodes = 4)
+```
 
 –
 

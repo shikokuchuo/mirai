@@ -93,7 +93,9 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
       ports <- sprintf(":%d", seq.int(as.integer(parse_url(url[2L])[["port"]]), length.out = nodes))
 
     for (i in seq_nodes) {
-      nurl <- if (auto) sprintf(.urlfmt, random()) else sub(ports[1L], ports[i], url[2L], fixed = TRUE)
+      nurl <- if (auto) sprintf(.urlfmt, random()) else
+        if (length(url) == nodes + 1L) url[i + 1L] else
+          sub(ports[1L], ports[i], url[2L], fixed = TRUE)
       nsock <- socket(protocol = "req", listen = nurl)
       if (auto)
         launch_daemon(sprintf("mirai::server(%s)", deparse(nurl)))
@@ -385,8 +387,11 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     ports starting from the supplied port number and incrementing by one for
 #'     the number of nodes specified e.g. the client URL 'tcp://192.168.0.2:5555'
 #'     with 6 nodes uses the contiguous block of ports 5555 through 5560.
-#'     Individual \code{\link{server}} instances should then be started on the
-#'     remote resource, with each of these specified as the client URL.
+#'     Alterntively, specify a vector of URLs the same length as 'nodes' to
+#'     listen to - these can be using arbitrary port nubers not necessarily in a
+#'     contiguous range. Individual \code{\link{server}} instances should then
+#'     be started on the remote resource, with each of these specified as the
+#'     client URL.
 #'
 #' @section Timeouts:
 #'
@@ -428,7 +433,7 @@ daemons <- function(value, ..., .compute = "default") {
   missing(value) &&
     return(list(connections = if (length(..[[.compute]][["sock"]])) as.integer(stat(..[[.compute]][["sock"]], "pipes")) else 0L,
                 daemons = if (length(..[[.compute]][["proc"]])) ..[[.compute]][["proc"]] else 0L,
-                nodes = if (length(..[[.compute]][["nodes"]])) ..[[.compute]][["nodes"]] else NA))
+                nodes = if (length(..[[.compute]][["nodes"]])) ..[[.compute]][["nodes"]] else NA_integer_))
 
   if (is.null(..[[.compute]])) `[[<-`(.., .compute, new.env(hash = FALSE, parent = environment(daemons)))
 
@@ -446,7 +451,8 @@ daemons <- function(value, ..., .compute = "default") {
       sock <- socket(protocol = "req", listen = url)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       dotstring <- paste(names(dots), dots, sep = "=", collapse = ",")
-      args <- sprintf("mirai::server(c(%s,%s),%s)", deparse(url), deparse(value), dotstring)
+      args <- sprintf("mirai::server(%s,%s)", paste0(deparse(c(url, value)), collapse = ""), dotstring)
+      args <- gsub(" ", "", args, fixed = TRUE)
       launch_daemon(args)
       `[[<-`(`[[<-`(..[[.compute]], "nodes", nodes), "args", args)
     } else {

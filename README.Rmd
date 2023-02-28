@@ -319,6 +319,12 @@ daemons("tcp://:5556", nodes = 4)
 
 This automatically starts a server queue as a daemon process on the local client machine. The URL should contain the starting port number, so in the example above the queue is listening to the block of URLs 'tcp://192.168.0.2:5556' through 'tcp://192.168.0.2:5559' as 4 nodes have been specified.
 
+Alternatively, it is possible to supply a vector of URLs the same length as the number of nodes with custom port numbers (so that it is not necessary for them to be in a contiguous range), e.g.:
+
+```{r vectorqueue, eval=FALSE}
+daemons(c("tcp://:5555", "tcp://:6666", "tcp://:7777", "tcp://:12560"), nodes = 4)
+```
+
 --
 
 On the server or servers, `server()` may be called from an R session, or an Rscript invocation from a shell. Each instance should connect to a unique client URL:
