@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9008</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9009</span>
       </span>
     </div>
 
@@ -54,8 +54,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.2.9008" id="mirai-0729008-development">mirai 0.7.2.9008 (development)<a class="anchor" aria-label="anchor" href="#mirai-0729008-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.7.2.9009" id="mirai-0729009-development">mirai 0.7.2.9009 (development)<a class="anchor" aria-label="anchor" href="#mirai-0729009-development"></a></h2>
+<ul><li>Compute profiles have been introduced through a new <code>.compute</code> argument in <code><a href="../reference/daemons.html">daemons()</a></code> and <code><a href="../reference/mirai.html">mirai()</a></code> to allow sending tasks in heterogeneous compute environments.
 <ul><li>
+<code><a href="../reference/daemons.html">daemons()</a></code> can create new profiles to connect to different resources.</li>
+<li>
+<code><a href="../reference/mirai.html">mirai()</a></code> calculations can be sent using a specific compute profile.</li>
+</ul></li>
+<li>
 <code><a href="../reference/daemons.html">daemons()</a></code> interface has been simplified with a single <code>value</code> argument along with <code>...</code> for passing additional parameters.
 <ul><li>Allows supplying the argument <code>nodes</code> for running an active queue (task scheduler).</li>
 <li>Calling with no arguments now provides an improved view of the current number of connections / daemons / nodes, replacing the previous <code>daemons("view")</code> functionality.</li>
