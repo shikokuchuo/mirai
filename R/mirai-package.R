@@ -57,7 +57,7 @@
 #'
 NULL
 
-.onUnload <- function(libpath) invisible(daemons(0L))
+.onUnload <- function(libpath) for (i in names(..)) daemons(0L, .compute = i)
 
 .command <- file.path(R.home("bin"), switch(.subset2(.Platform, "OS.type"),
                                             windows = "Rscript.exe",
