@@ -85,16 +85,17 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
 
     auto <- length(url) == 1L
     nodes <- as.integer(nodes)
+    vectorised <- length(url) == nodes + 1L
     seq_nodes <- seq_len(nodes)
     scan_node <- function(x) stat(x[["sock"]], "pipes")
     queue <- vector(mode = "list", length = nodes)
     servers <- vector(mode = "list", length = nodes)
-    if (!auto)
+    if (!auto && !vectorised)
       ports <- sprintf(":%d", seq.int(as.integer(parse_url(url[2L])[["port"]]), length.out = nodes))
 
     for (i in seq_nodes) {
       nurl <- if (auto) sprintf(.urlfmt, random()) else
-        if (length(url) == nodes + 1L) url[i + 1L] else
+        if (vectorised) url[i + 1L] else
           sub(ports[1L], ports[i], url[2L], fixed = TRUE)
       nsock <- socket(protocol = "req", listen = nurl)
       if (auto)

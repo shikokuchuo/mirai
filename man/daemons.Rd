@@ -104,8 +104,11 @@ Use \code{daemons(0)} to reset all daemon connections at any time.
     ports starting from the supplied port number and incrementing by one for
     the number of nodes specified e.g. the client URL 'tcp://192.168.0.2:5555'
     with 6 nodes uses the contiguous block of ports 5555 through 5560.
-    Individual \code{\link{server}} instances should then be started on the
-    remote resource, with each of these specified as the client URL.
+    Alterntively, specify a vector of URLs the same length as 'nodes' to
+    listen to - these can be using arbitrary port nubers not necessarily in a
+    contiguous range. Individual \code{\link{server}} instances should then
+    be started on the remote resource, with each of these specified as the
+    client URL.
 }
 
 \section{Timeouts}{
