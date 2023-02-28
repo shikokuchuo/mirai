@@ -1,5 +1,8 @@
-# mirai 0.7.2.9008 (development)
+# mirai 0.7.2.9009 (development)
 
+* Compute profiles have been introduced through a new `.compute` argument in `daemons()` and `mirai()` to allow sending tasks in heterogeneous compute environments.
+  + `daemons()` can create new profiles to connect to different resources.
+  + `mirai()` calculations can be sent using a specific compute profile.
 * `daemons()` interface has been simplified with a single `value` argument along with `...` for passing additional parameters.
   + Allows supplying the argument `nodes` for running an active queue (task scheduler).
   + Calling with no arguments now provides an improved view of the current number of connections / daemons / nodes, replacing the previous `daemons("view")` functionality.

@@ -68,10 +68,7 @@ NULL
                   Windows = "ipc://n%.f",
                   "ipc:///tmp/n%.f")
 
-.. <- list2env(list(sock = NULL,
-                    args = NULL,
-                    nodes = NULL,
-                    proc = 0L,
-                    local = TRUE,
-                    .__scm__. = base64dec("WAoAAAADAAQCAQADBQAAAAAFVVRGLTgAAAD8", convert = FALSE)))
+.. <- `[[<-`(new.env(hash = FALSE), "default", new.env(hash = FALSE))
+
+.__scm__. <- base64dec("WAoAAAADAAQCAQADBQAAAAAFVVRGLTgAAAD8", convert = FALSE)
 

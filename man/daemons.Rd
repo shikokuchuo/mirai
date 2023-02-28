@@ -4,7 +4,7 @@
 \alias{daemons}
 \title{daemons (Persistent Server Processes)}
 \usage{
-daemons(value, ...)
+daemons(value, ..., .compute = "default")
 }
 \arguments{
 \item{value}{\emph{~ depending on the type of value supplied ~}
@@ -23,6 +23,10 @@ daemons(value, ...)
 
     \strong{nodes} supplying an integer number of nodes runs an active queue
     with the specified number of nodes per daemon.}
+
+\item{.compute}{(optional) character compute profile to use for creating the
+daemons (each compute profile can have its own set of daemons for
+connecting to different resources).}
 }
 \value{
 Setting daemons: integer number of daemons set, or the character

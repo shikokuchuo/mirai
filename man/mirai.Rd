@@ -4,7 +4,7 @@
 \alias{mirai}
 \title{mirai (Evaluate Async)}
 \usage{
-mirai(.expr, ..., .args = list(), .timeout = NULL)
+mirai(.expr, ..., .args = list(), .timeout = NULL, .compute = "default")
 }
 \arguments{
 \item{.expr}{an expression to evaluate asynchronously. This may be of
@@ -18,6 +18,9 @@ addition to or instead of named arguments specified as '...').}
 \item{.timeout}{(optional) integer value in milliseconds or NULL for no
 timeout. A mirai will resolve to an 'errorValue' 5 (timed out) if
 evaluation exceeds this limit.}
+
+\item{.compute}{(optional) character value for the compute profile to use
+when sending this 'mirai'.}
 }
 \value{
 A 'mirai' object.
