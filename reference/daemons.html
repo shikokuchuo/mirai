@@ -21,7 +21,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9011</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9012</span>
       </span>
     </div>
 
@@ -103,11 +103,11 @@ connecting to different resources).</p></dd>
     string 'remote' if supplying a client URL.</p>
 
 
-<p>Viewing current status: a named list comprising:</p><ul><li><p><code>connections</code> - integer number of active connections.</p></li>
-<li><p><code>daemons</code> - integer number of daemons, or 'remote' when
-    using a client URL.</p></li>
-<li><p><code>nodes</code> - integer number of nodes (per daemon), or NA when
-    not running an active queue.</p></li>
+<p>Viewing current status: a named list comprising:</p><ul><li><p><code>connections</code> - number of active connections.</p></li>
+<li><p><code>daemons</code> - number of daemons, or 'remote' when using a
+    client URL.</p></li>
+<li><p><code>nodes</code> - a named vector of the number of connected nodes at
+    each client URL, or NA when not running an active queue.</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
