@@ -114,13 +114,28 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
       while (count < tasklimit && mclock() - start < walltime && if (idle) mclock() - idle < idletime else TRUE) {
 
         activevec <- unlist(lapply(servers, scan_node))
+        active <- sum(activevec)
         free <- which(unlist(lapply(servers, .subset2, "free")) & activevec)
-        if (length(free) == sum(activevec)) {
+        if (length(free) == active) {
           if (!idle) idle <- mclock()
           msleep(pollfreql)
         } else {
           if (idle) idle <- FALSE
           msleep(pollfreqh)
+        }
+
+        active || {
+          for (i in seq_nodes) {
+            data <- .subset2(queue[[i]][["req"]], "data")
+            missing(data) && {
+              send(queue[[i]][["ctx"]], data = scan_nodes(servers), mode = 1L)
+              ctx <- context(sock)
+              req <- recv_aio(ctx, mode = 1L)
+              queue[[i]] <- list(ctx = ctx, req = req)
+              break
+            }
+          }
+          next
         }
 
         if (length(free))
@@ -135,7 +150,7 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
                   break
                 }
                 unresolved(queue[[i]][["req"]]) && next
-                if (auto && sum(activevec) < nodes)
+                if (auto && active < nodes)
                   for (j in which(!activevec))
                     launch_daemon(sprintf("mirai::server(\"%s\")", servers[[j]][["url"]]))
                 ctx <- context(servers[[q]][["sock"]])

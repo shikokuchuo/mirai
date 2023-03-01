@@ -1,4 +1,4 @@
-# mirai 0.7.2.9012 (development)
+# mirai 0.7.2.9013 (development)
 
 * Compute profiles have been introduced through a new `.compute` argument in `daemons()` and `mirai()` to allow sending tasks in heterogeneous compute environments.
   + `daemons()` can create new profiles to connect to different resources e.g. servers with GPU, accelerators etc.
@@ -16,7 +16,7 @@
 * Invalid URLs provided to `daemons()` and `server()` now error and return immediately instead of potentially causing a hang.
 * `eval_mirai()` is removed as an alias for `mirai()`.
 * 'mirai' processes are no longer launched in Rscript sessions with the `--vanilla` argument to enable site and user profile and environment files to be read.
-* Requires nanonext >= 0.7.3.9003 and R >= 3.5.
+* Requires nanonext >= 0.7.3.9004 and R >= 3.5.
 * Internal performance enhancements.
 
 # mirai 0.7.2

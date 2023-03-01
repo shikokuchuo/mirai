@@ -51,7 +51,7 @@ if (Sys.getenv("NOT_CRAN") == "set") {
   nanotest(daemons()[["nodes"]] == 1L)
   nanotest(daemons(0) == 0L)
   nanotest(daemons("tcp://:5555", nodes = 2) == "remote")
-  nanotest(daemons()[["nodes"]] == 5L)
+  nanotest(sum(daemons()[["nodes"]]) == 0)
   nanotest(daemons(0) == 0L)
 }
 nanotesterr(daemons("URL"), "argument")
