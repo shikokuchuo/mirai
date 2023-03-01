@@ -33,11 +33,11 @@ Setting daemons: integer number of daemons set, or the character
     string 'remote' if supplying a client URL.
 
     Viewing current status: a named list comprising: \itemize{
-    \item{\code{connections}} {- integer number of active connections.}
-    \item{\code{daemons}} {- integer number of daemons, or 'remote' when
-    using a client URL.}
-    \item{\code{nodes}} {- integer number of nodes (per daemon), or NA when
-    not running an active queue.}
+    \item{\code{connections}} {- number of active connections.}
+    \item{\code{daemons}} {- number of daemons, or 'remote' when using a
+    client URL.}
+    \item{\code{nodes}} {- a named vector of the number of connected nodes at
+    each client URL, or NA when not running an active queue.}
     }
 }
 \description{

@@ -107,7 +107,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -1.258 -0.497 -2.112 3.13 0.888 ...
+#>  num [1:100000000] -3.2093 -0.2738 -5.3737 0.3306 0.0454 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -115,7 +115,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -1.258 -0.497 -2.112 3.13 0.888 ...
+#>  num [1:100000000] -3.2093 -0.2738 -5.3737 0.3306 0.0454 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -202,7 +202,6 @@ for (i in 1:10) {
 }
 #> iteration 1 successful 
 #> iteration 2 successful 
-#> Error: random error 
 #> iteration 3 successful 
 #> iteration 4 successful 
 #> iteration 5 successful 
@@ -210,6 +209,7 @@ for (i in 1:10) {
 #> iteration 7 successful 
 #> iteration 8 successful 
 #> iteration 9 successful 
+#> Error: random error 
 #> iteration 10 successful
 ```
 
@@ -298,7 +298,12 @@ daemons()
 #> [1] 1
 #> 
 #> $nodes
-#> [1] 8
+#> abstract://n2684902803  abstract://n948399827 abstract://n1640327566 
+#>                      1                      1                      1 
+#> abstract://n2255709935 abstract://n2016217004 abstract://n3338516882 
+#>                      1                      1                      1 
+#> abstract://n1221477404 abstract://n4221944124 
+#>                      1                      1
 ```
 
 The active queue consumes additional resources, however ensures load
@@ -438,7 +443,8 @@ daemons()
 #> [1] "remote"
 #> 
 #> $nodes
-#> [1] 4
+#> tcp://:5556 tcp://:5557 tcp://:5558 tcp://:5559 
+#>           1           1           1           1
 ```
 
 When running a local server queue to connect to remote nodes, there is

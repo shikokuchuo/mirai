@@ -71,4 +71,5 @@ NULL
 .. <- `[[<-`(new.env(hash = FALSE), "default", new.env(hash = FALSE))
 
 .__scm__. <- base64dec("WAoAAAADAAQCAQADBQAAAAAFVVRGLTgAAAD8", convert = FALSE)
+.__rma__. <- base64dec("WAoAAAADAAQCAgADBQAAAAAFVVRGLTgAAAD7", convert = FALSE)
 
