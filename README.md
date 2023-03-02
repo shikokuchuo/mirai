@@ -107,7 +107,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -3.2093 -0.2738 -5.3737 0.3306 0.0454 ...
+#>  num [1:100000000] -3.997 -0.582 0.705 64.36 -6.027 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -115,7 +115,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -3.2093 -0.2738 -5.3737 0.3306 0.0454 ...
+#>  num [1:100000000] -3.997 -0.582 0.705 64.36 -6.027 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -201,6 +201,7 @@ for (i in 1:10) {
   
 }
 #> iteration 1 successful 
+#> Error: random error 
 #> iteration 2 successful 
 #> iteration 3 successful 
 #> iteration 4 successful 
@@ -209,7 +210,6 @@ for (i in 1:10) {
 #> iteration 7 successful 
 #> iteration 8 successful 
 #> iteration 9 successful 
-#> Error: random error 
 #> iteration 10 successful
 ```
 
@@ -298,11 +298,11 @@ daemons()
 #> [1] 1
 #> 
 #> $nodes
-#> abstract://n2684902803  abstract://n948399827 abstract://n1640327566 
+#> abstract://n3190394728 abstract://n4149695864 abstract://n2899669917 
 #>                      1                      1                      1 
-#> abstract://n2255709935 abstract://n2016217004 abstract://n3338516882 
+#> abstract://n2861861441 abstract://n1638805626 abstract://n2160676595 
 #>                      1                      1                      1 
-#> abstract://n1221477404 abstract://n4221944124 
+#> abstract://n1604574681 abstract://n2414122754 
 #>                      1                      1
 ```
 
@@ -344,7 +344,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons("tcp://:5555")
-#> [1] "remote"
+#> [1] "tcp://:5555"
 ```
 
 The network topology is such that the client listens at the above
@@ -365,9 +365,10 @@ a cluster with the specified number of nodes:
 
 –
 
-On the client, requesting the status will show `daemons` as ‘remote’.
-This is as network resources may be added and removed at any time, and
-tasks are automatically distributed to all server processes.
+On the client, requesting the status will return the client URL for
+`daemons`. The number of daemons connecting to this URL is not limited
+and network resources may be added and removed at any time, with tasks
+automatically distributed to all server processes.
 
 `connections` will show the actual number of connected server instances
 (2 in the example below).
@@ -378,7 +379,7 @@ daemons()
 #> [1] 2
 #> 
 #> $daemons
-#> [1] "remote"
+#> [1] "tcp://:5555"
 #> 
 #> $nodes
 #> [1] NA
@@ -399,25 +400,26 @@ they exit automatically.
 Assuming that the local network address of the current machine is
 ‘192.168.0.2’, and 4 nodes are to be allocated on remote servers.
 
-A contiguous block of 4 ports e.g. from ‘5556’ to ‘5559’ needs to be
-made available for inbound connections from the local network.
+The below automatically starts a server queue as a daemon process on the
+local client machine.
+
+If a single URL is supplied, it should contain the starting port number
+for a contiguous block of ports, so in the example below the queue is
+listening to the block of URLs ‘tcp://192.168.0.2:5556’ through
+‘tcp://192.168.0.2:5559’ as 4 nodes have been specified. These ports
+need to be made available for inbound connections from the local
+network.
 
 ``` r
 # daemons("tcp://192.168.0.2:5556", nodes = 4)
 
 daemons("tcp://:5556", nodes = 4)
-#> [1] "remote"
+#> [1] 1
 ```
 
-This automatically starts a server queue as a daemon process on the
-local client machine. The URL should contain the starting port number,
-so in the example above the queue is listening to the block of URLs
-‘tcp://192.168.0.2:5556’ through ‘tcp://192.168.0.2:5559’ as 4 nodes
-have been specified.
-
-Alternatively, it is possible to supply a vector of URLs the same length
-as the number of nodes with custom port numbers (so that it is not
-necessary for them to be in a contiguous range), e.g.:
+Alternatively, supplying a vector of URLs (the same length as the number
+of nodes) allows the use of arbitrary port numbers (rather than a
+contiguous range), e.g.:
 
 ``` r
 daemons(c("tcp://:5555", "tcp://:6666", "tcp://:7777", "tcp://:12560"), nodes = 4)
@@ -440,7 +442,7 @@ daemons()
 #> [1] 1
 #> 
 #> $daemons
-#> [1] "remote"
+#> [1] 1
 #> 
 #> $nodes
 #> tcp://:5556 tcp://:5557 tcp://:5558 tcp://:5559 

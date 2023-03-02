@@ -30,14 +30,14 @@ connecting to different resources).}
 }
 \value{
 Setting daemons: integer number of daemons set, or the character
-    string 'remote' if supplying a client URL.
+    client URL (will be 1L if specifying a client URL with nodes).
 
     Viewing current status: a named list comprising: \itemize{
     \item{\code{connections}} {- number of active connections.}
-    \item{\code{daemons}} {- number of daemons, or 'remote' when using a
-    client URL.}
+    \item{\code{daemons}} {- number of daemons, or the client URL for a
+    passive queue.}
     \item{\code{nodes}} {- a named vector of the number of connected nodes at
-    each client URL, or NA when not running an active queue.}
+    each client URL, or NA if not running an active queue.}
     }
 }
 \description{
@@ -105,10 +105,9 @@ Use \code{daemons(0)} to reset all daemon connections at any time.
     the number of nodes specified e.g. the client URL 'tcp://192.168.0.2:5555'
     with 6 nodes uses the contiguous block of ports 5555 through 5560.
     Alterntively, specify a vector of URLs the same length as 'nodes' to
-    listen to - these can be using arbitrary port nubers not necessarily in a
-    contiguous range. Individual \code{\link{server}} instances should then
-    be started on the remote resource, with each of these specified as the
-    client URL.
+    listen to arbitrary port nubers. Individual \code{\link{server}} instances
+    should then be started on the remote resource, with each of these
+    specified as the client URL.
 }
 
 \section{Timeouts}{

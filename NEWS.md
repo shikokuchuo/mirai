@@ -1,4 +1,4 @@
-# mirai 0.7.2.9013 (development)
+# mirai 0.7.2.9014 (development)
 
 * Compute profiles have been introduced through a new `.compute` argument in `daemons()` and `mirai()` to allow sending tasks in heterogeneous compute environments.
   + `daemons()` can create new profiles to connect to different resources e.g. servers with GPU, accelerators etc.
