@@ -5,6 +5,7 @@
   + `mirai()` tasks can be sent using a specific compute profile.
 * `daemons()` interface has been simplified with a single `value` argument along with `...` for passing additional parameters.
   + Allows supplying the argument `nodes` for running an active queue (task scheduler).
+  + Supplying a client URL with a zero port number `:0` will automatically assign a free ephemeral port, with the actual port number subsequently reported by `daemons()`.
   + Calling with no arguments now provides an improved view of the current number of connections / daemons / nodes, replacing the previous `daemons("view")` functionality.
 * `server()` gains the following arguments (special thanks to @wlandau for the suggestions, discussion and testing for many of the new features):
   + `nodes` for launching an active queue with the specified number of nodes.

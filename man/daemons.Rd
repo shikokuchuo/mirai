@@ -94,6 +94,10 @@ Use \code{daemons(0)} to reset all daemon connections at any time.
     5555 on all interfaces on the local host, specify either 'tcp://:5555',
     'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
 
+    To automatically assign a free ephemeral port, please specify zero as the
+    port number e.g. 'tcp://:0'. The actual port assigned may be queried at
+    any time by simply calling \code{daemons()}.
+
     The network topology is such that server daemons (started with
     \code{\link{server}}) dial into the client, which listens at the client
     URL. In this way, network resources may be easily added or removed at any

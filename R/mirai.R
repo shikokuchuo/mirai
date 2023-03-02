@@ -398,6 +398,10 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     5555 on all interfaces on the local host, specify either 'tcp://:5555',
 #'     'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
 #'
+#'     To automatically assign a free ephemeral port, please specify zero as the
+#'     port number e.g. 'tcp://:0'. The actual port assigned may be queried at
+#'     any time by simply calling \code{daemons()}.
+#'
 #'     The network topology is such that server daemons (started with
 #'     \code{\link{server}}) dial into the client, which listens at the client
 #'     URL. In this way, network resources may be easily added or removed at any
@@ -480,7 +484,7 @@ daemons <- function(value, ..., .compute = "default") {
     } else {
       sock <- socket(protocol = "req", listen = value)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
-      proc <- value
+      proc <- opt(attr(sock, "listener")[[1L]], "url")
     }
     `[[<-`(`[[<-`(`[[<-`(..[[.compute]], "sock", sock), "local", FALSE), "proc", proc)
     return(proc)
@@ -787,8 +791,10 @@ print.miraiInterrupt <- function(x, ...) {
 
 scan_node <- function(node) stat(node[["sock"]], "pipes")
 
+read_url <- function(node) opt(attr(node[["sock"]], "listener")[[1L]], "url")
+
 scan_nodes <- function(servers)
-  `names<-`(unlist(lapply(servers, scan_node)), unlist(lapply(servers, .subset2, "url")))
+  `names<-`(unlist(lapply(servers, scan_node)), unlist(lapply(servers, read_url)))
 
 query_nodes <- function(.compute)
   .subset2(call_mirai(request(context(..[[.compute]][["sock"]]), data = .__rma__.,
