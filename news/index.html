@@ -64,6 +64,7 @@
 <li>
 <code><a href="../reference/daemons.html">daemons()</a></code> interface has been simplified with a single <code>value</code> argument along with <code>...</code> for passing additional parameters.
 <ul><li>Allows supplying the argument <code>nodes</code> for running an active queue (task scheduler).</li>
+<li>Supplying a client URL with a zero port number <code>:0</code> will automatically assign a free ephemeral port, with the actual port number subsequently reported by <code><a href="../reference/daemons.html">daemons()</a></code>.</li>
 <li>Calling with no arguments now provides an improved view of the current number of connections / daemons / nodes, replacing the previous <code>daemons("view")</code> functionality.</li>
 </ul></li>
 <li>
