@@ -59,7 +59,7 @@ nanotesterr(daemons(-1), "zero")
 nanotesterr(daemons(raw(0L)), "numeric, character")
 nanotesterr(server("URL"), "argument")
 nanotest(daemons(0L) == 0L)
-Sys.sleep(2.5)
+Sys.sleep(3L)
 me$data
 m
 b

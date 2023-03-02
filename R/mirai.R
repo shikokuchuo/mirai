@@ -149,13 +149,13 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
                   servers[[q]][["free"]] <- FALSE
                   break
                 }
-                unresolved(queue[[i]][["req"]]) && next
+                unresolved(data) && next
                 if (auto && active < nodes)
                   for (j in which(!activevec))
                     launch_daemon(sprintf("mirai::server(\"%s\")", servers[[j]][["url"]]))
                 ctx <- context(servers[[q]][["sock"]])
                 queue[[i]][["rctx"]] <- ctx
-                queue[[i]][["res"]] <- request(ctx, data = .subset2(queue[[i]][["req"]], "data"), send_mode = 1L, recv_mode = 1L)
+                queue[[i]][["res"]] <- request(ctx, data = data, send_mode = 1L, recv_mode = 1L)
                 queue[[i]][["daemon"]] <- q
                 servers[[q]][["free"]] <- FALSE
                 break
