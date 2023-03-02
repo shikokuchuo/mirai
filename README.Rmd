@@ -41,12 +41,13 @@ The asynchronous 'mirai' task runs in an ephemeral or persistent process, spawne
 1. [Installation](#installation)
 2. [Example 1: Compute-intensive Operations](#example-1-compute-intensive-operations)
 3. [Example 2: I/O-bound Operations](#example-2-io-bound-operations)
-3. [Example 3: Resilient Pipelines](#example-3-resilient-pipelines)
-4. [Daemons: Local Persistent Processes](#daemons-local-persistent-processes)
-5. [Distributed Computing: Remote Servers](#distributed-computing-remote-servers)
-6. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
-7. [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
-8. [Links](#links)
+4. [Example 3: Resilient Pipelines](#example-3-resilient-pipelines)
+5. [Daemons: Local Persistent Processes](#daemons-local-persistent-processes)
+6. [Distributed Computing: Remote Servers](#distributed-computing-remote-servers)
+7. [Compute Profiles](#compute-profiles)
+8. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
+9. [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
+10. [Links](#links)
 
 ### Installation
 
@@ -330,10 +331,10 @@ daemons(c("tcp://:5555", "tcp://:6666", "tcp://:7777", "tcp://:12560"), nodes = 
 On the server or servers, `server()` may be called from an R session, or an Rscript invocation from a shell. Each instance should connect to a unique client URL:
 
 ```
-Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5556")'
-Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5557")'
-Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5558")'
-Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5559")'
+Rscript -e 'mirai::server("tcp://192.168.0.2:5556")'
+Rscript -e 'mirai::server("tcp://192.168.0.2:5557")'
+Rscript -e 'mirai::server("tcp://192.168.0.2:5558")'
+Rscript -e 'mirai::server("tcp://192.168.0.2:5559")'
 
 ```
 ```{r remotes2, include=FALSE}
@@ -353,6 +354,19 @@ To reset all connections and revert to default behaviour:
 daemons(0)
 ```
 This also sends an exit signal to all connected daemons and nodes so that they exit automatically.
+
+[&laquo; Back to ToC](#table-of-contents)
+
+### Compute Profiles
+
+The `daemons` interface allows the easy specification of compute profiles. This is for managing tasks with heterogeneous compute requirements:
+
+- send tasks to different servers or server clusters with the appropriate specifications (in terms of CPUs / memory / GPU / accelerators etc.)
+- split tasks between local and remote computation
+
+Simply specify the argument `.compute` when calling `daemons()` with a profile name (which is 'default' for the default profile). The daemons settings are saved under the named profile.
+
+To launch a 'mirai' task using a specific compute profile, specify the '.compute' argument to `mirai()`, which defaults to the 'default' compute profile.
 
 [&laquo; Back to ToC](#table-of-contents)
 

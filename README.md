@@ -46,9 +46,10 @@ zero package dependencies.
     Processes](#daemons-local-persistent-processes)
 6.  [Distributed Computing: Remote
     Servers](#distributed-computing-remote-servers)
-7.  [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
-8.  [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
-9.  [Links](#links)
+7.  [Compute Profiles](#compute-profiles)
+8.  [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
+9.  [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
+10. [Links](#links)
 
 ### Installation
 
@@ -107,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -3.997 -0.582 0.705 64.36 -6.027 ...
+#>  num [1:100000000] 0.656 0.767 3.934 0.212 0.152 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -115,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -3.997 -0.582 0.705 64.36 -6.027 ...
+#>  num [1:100000000] 0.656 0.767 3.934 0.212 0.152 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -201,13 +202,13 @@ for (i in 1:10) {
   
 }
 #> iteration 1 successful 
-#> Error: random error 
 #> iteration 2 successful 
 #> iteration 3 successful 
 #> iteration 4 successful 
 #> iteration 5 successful 
 #> iteration 6 successful 
 #> iteration 7 successful 
+#> Error: random error 
 #> iteration 8 successful 
 #> iteration 9 successful 
 #> iteration 10 successful
@@ -298,11 +299,11 @@ daemons()
 #> [1] 1
 #> 
 #> $nodes
-#> abstract://n3190394728 abstract://n4149695864 abstract://n2899669917 
+#> abstract://n3347332230  abstract://n549273732 abstract://n3176168240 
 #>                      1                      1                      1 
-#> abstract://n2861861441 abstract://n1638805626 abstract://n2160676595 
+#> abstract://n3488667645 abstract://n4054396602 abstract://n2683394081 
 #>                      1                      1                      1 
-#> abstract://n1604574681 abstract://n2414122754 
+#>  abstract://n210982381 abstract://n1240477607 
 #>                      1                      1
 ```
 
@@ -431,10 +432,10 @@ On the server or servers, `server()` may be called from an R session, or
 an Rscript invocation from a shell. Each instance should connect to a
 unique client URL:
 
-    Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5556")'
-    Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5557")'
-    Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5558")'
-    Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5559")'
+    Rscript -e 'mirai::server("tcp://192.168.0.2:5556")'
+    Rscript -e 'mirai::server("tcp://192.168.0.2:5557")'
+    Rscript -e 'mirai::server("tcp://192.168.0.2:5558")'
+    Rscript -e 'mirai::server("tcp://192.168.0.2:5559")'
 
 ``` r
 daemons()
@@ -467,6 +468,27 @@ daemons(0)
 
 This also sends an exit signal to all connected daemons and nodes so
 that they exit automatically.
+
+[« Back to ToC](#table-of-contents)
+
+### Compute Profiles
+
+The `daemons` interface allows the easy specification of compute
+profiles. This is for managing tasks with heterogeneous compute
+requirements:
+
+- send tasks to different servers or server clusters with the
+  appropriate specifications (in terms of CPUs / memory / GPU /
+  accelerators etc.)
+- split tasks between local and remote computation
+
+Simply specify the argument `.compute` when calling `daemons()` with a
+profile name (which is ‘default’ for the default profile). The daemons
+settings are saved under the named profile.
+
+To launch a ‘mirai’ task using a specific compute profile, specify the
+‘.compute’ argument to `mirai()`, which defaults to the ‘default’
+compute profile.
 
 [« Back to ToC](#table-of-contents)
 
