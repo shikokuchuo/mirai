@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9014</span>
       </span>
     </div>
 
@@ -149,11 +149,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -3.2093 -0.2738 -5.3737 0.3306 0.0454 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -3.997 -0.582 0.705 64.36 -6.027 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -3.2093 -0.2738 -5.3737 0.3306 0.0454 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -3.997 -0.582 0.705 64.36 -6.027 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -214,6 +214,7 @@
 <span>  </span>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; iteration 1 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 2 successful </span></span>
 <span><span class="co">#&gt; iteration 3 successful </span></span>
 <span><span class="co">#&gt; iteration 4 successful </span></span>
@@ -222,7 +223,6 @@
 <span><span class="co">#&gt; iteration 7 successful </span></span>
 <span><span class="co">#&gt; iteration 8 successful </span></span>
 <span><span class="co">#&gt; iteration 9 successful </span></span>
-<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 10 successful</span></span></code></pre></div>
 <p>Further, by testing the return value of each ‘mirai’ for errors, error-handling code is then able to automate recovery and re-attempts, as in the above example. Further details on <a href="#errors-interrupts-and-timeouts">error handling</a> can be found in the section below.</p>
 <p>The end result is a resilient and fault-tolerant pipeline that minimises downtime by eliminating interruptions of long computes.</p>
@@ -275,11 +275,11 @@
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $nodes</span></span>
-<span><span class="co">#&gt; abstract://n2684902803  abstract://n948399827 abstract://n1640327566 </span></span>
+<span><span class="co">#&gt; abstract://n3190394728 abstract://n4149695864 abstract://n2899669917 </span></span>
 <span><span class="co">#&gt;                      1                      1                      1 </span></span>
-<span><span class="co">#&gt; abstract://n2255709935 abstract://n2016217004 abstract://n3338516882 </span></span>
+<span><span class="co">#&gt; abstract://n2861861441 abstract://n1638805626 abstract://n2160676595 </span></span>
 <span><span class="co">#&gt;                      1                      1                      1 </span></span>
-<span><span class="co">#&gt; abstract://n1221477404 abstract://n4221944124 </span></span>
+<span><span class="co">#&gt; abstract://n1604574681 abstract://n2414122754 </span></span>
 <span><span class="co">#&gt;                      1                      1</span></span></code></pre></div>
 <p>The active queue consumes additional resources, however ensures load balancing and optimal scheduling of tasks to nodes.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -304,7 +304,7 @@
 <p>Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="st">"tcp://:5555"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "remote"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:5555"</span></span></code></pre></div>
 <p>The network topology is such that the client listens at the above address, and distributes tasks to all connected server processes.</p>
 <p>–</p>
 <p>On the server, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation from a shell. This sets up a remote daemon process that connects to the client URL and receives tasks:</p>
@@ -312,7 +312,7 @@
 <p>Alternatively, supply ‘nodes’ to launch an active server queue directing a cluster with the specified number of nodes:</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5555",nodes=8)'</span></span></code></pre></div>
 <p>–</p>
-<p>On the client, requesting the status will show <code>daemons</code> as ‘remote’. This is as network resources may be added and removed at any time, and tasks are automatically distributed to all server processes.</p>
+<p>On the client, requesting the status will return the client URL for <code>daemons</code>. The number of daemons connecting to this URL is not limited and network resources may be added and removed at any time, with tasks automatically distributed to all server processes.</p>
 <p><code>connections</code> will show the actual number of connected server instances (2 in the example below).</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -320,7 +320,7 @@
 <span><span class="co">#&gt; [1] 2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "remote"</span></span>
+<span><span class="co">#&gt; [1] "tcp://:5555"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $nodes</span></span>
 <span><span class="co">#&gt; [1] NA</span></span></code></pre></div>
@@ -334,14 +334,14 @@
 <h4 id="connecting-to-remote-servers-through-a-local-server-queue">Connecting to Remote Servers Through a Local Server Queue<a class="anchor" aria-label="anchor" href="#connecting-to-remote-servers-through-a-local-server-queue"></a>
 </h4>
 <p>Assuming that the local network address of the current machine is ‘192.168.0.2’, and 4 nodes are to be allocated on remote servers.</p>
-<p>A contiguous block of 4 ports e.g. from ‘5556’ to ‘5559’ needs to be made available for inbound connections from the local network.</p>
+<p>The below automatically starts a server queue as a daemon process on the local client machine.</p>
+<p>If a single URL is supplied, it should contain the starting port number for a contiguous block of ports, so in the example below the queue is listening to the block of URLs ‘tcp://192.168.0.2:5556’ through ‘tcp://192.168.0.2:5559’ as 4 nodes have been specified. These ports need to be made available for inbound connections from the local network.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># daemons("tcp://192.168.0.2:5556", nodes = 4)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="st">"tcp://:5556"</span>, nodes <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "remote"</span></span></code></pre></div>
-<p>This automatically starts a server queue as a daemon process on the local client machine. The URL should contain the starting port number, so in the example above the queue is listening to the block of URLs ‘tcp://192.168.0.2:5556’ through ‘tcp://192.168.0.2:5559’ as 4 nodes have been specified.</p>
-<p>Alternatively, it is possible to supply a vector of URLs the same length as the number of nodes with custom port numbers (so that it is not necessary for them to be in a contiguous range), e.g.:</p>
+<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
+<p>Alternatively, supplying a vector of URLs (the same length as the number of nodes) allows the use of arbitrary port numbers (rather than a contiguous range), e.g.:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tcp://:5555"</span>, <span class="st">"tcp://:6666"</span>, <span class="st">"tcp://:7777"</span>, <span class="st">"tcp://:12560"</span><span class="op">)</span>, nodes <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 <p>–</p>
@@ -356,7 +356,7 @@
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "remote"</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $nodes</span></span>
 <span><span class="co">#&gt; tcp://:5556 tcp://:5557 tcp://:5558 tcp://:5559 </span></span>

@@ -21,7 +21,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9014</span>
       </span>
     </div>
 
@@ -100,14 +100,14 @@ connecting to different resources).</p></dd>
     
 
 <p>Setting daemons: integer number of daemons set, or the character
-    string 'remote' if supplying a client URL.</p>
+    client URL (will be 1L if specifying a client URL with nodes).</p>
 
 
 <p>Viewing current status: a named list comprising:</p><ul><li><p><code>connections</code> - number of active connections.</p></li>
-<li><p><code>daemons</code> - number of daemons, or 'remote' when using a
-    client URL.</p></li>
+<li><p><code>daemons</code> - number of daemons, or the client URL for a
+    passive queue.</p></li>
 <li><p><code>nodes</code> - a named vector of the number of connected nodes at
-    each client URL, or NA when not running an active queue.</p></li>
+    each client URL, or NA if not running an active queue.</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
@@ -164,10 +164,9 @@ connecting to different resources).</p></dd>
     the number of nodes specified e.g. the client URL 'tcp://192.168.0.2:5555'
     with 6 nodes uses the contiguous block of ports 5555 through 5560.
     Alterntively, specify a vector of URLs the same length as 'nodes' to
-    listen to - these can be using arbitrary port nubers not necessarily in a
-    contiguous range. Individual <code><a href="server.html">server</a></code> instances should then
-    be started on the remote resource, with each of these specified as the
-    client URL.</p>
+    listen to arbitrary port nubers. Individual <code><a href="server.html">server</a></code> instances
+    should then be started on the remote resource, with each of these
+    specified as the client URL.</p>
     </div>
     <div id="timeouts">
     <h2>Timeouts</h2>
