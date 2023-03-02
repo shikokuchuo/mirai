@@ -107,6 +107,7 @@
 <li><a href="#example-3-resilient-pipelines">Example 3: Resilient Pipelines</a></li>
 <li><a href="#daemons-local-persistent-processes">Daemons: Local Persistent Processes</a></li>
 <li><a href="#distributed-computing-remote-servers">Distributed Computing: Remote Servers</a></li>
+<li><a href="#compute-profiles">Compute Profiles</a></li>
 <li><a href="#errors-interrupts-and-timeouts">Errors, Interrupts and Timeouts</a></li>
 <li><a href="#deferred-evaluation-pipe">Deferred Evaluation Pipe</a></li>
 <li><a href="#links">Links</a></li>
@@ -149,11 +150,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -3.997 -0.582 0.705 64.36 -6.027 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.656 0.767 3.934 0.212 0.152 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -3.997 -0.582 0.705 64.36 -6.027 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.656 0.767 3.934 0.212 0.152 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -214,13 +215,13 @@
 <span>  </span>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; iteration 1 successful </span></span>
-<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 2 successful </span></span>
 <span><span class="co">#&gt; iteration 3 successful </span></span>
 <span><span class="co">#&gt; iteration 4 successful </span></span>
 <span><span class="co">#&gt; iteration 5 successful </span></span>
 <span><span class="co">#&gt; iteration 6 successful </span></span>
 <span><span class="co">#&gt; iteration 7 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 8 successful </span></span>
 <span><span class="co">#&gt; iteration 9 successful </span></span>
 <span><span class="co">#&gt; iteration 10 successful</span></span></code></pre></div>
@@ -275,11 +276,11 @@
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $nodes</span></span>
-<span><span class="co">#&gt; abstract://n3190394728 abstract://n4149695864 abstract://n2899669917 </span></span>
+<span><span class="co">#&gt; abstract://n3347332230  abstract://n549273732 abstract://n3176168240 </span></span>
 <span><span class="co">#&gt;                      1                      1                      1 </span></span>
-<span><span class="co">#&gt; abstract://n2861861441 abstract://n1638805626 abstract://n2160676595 </span></span>
+<span><span class="co">#&gt; abstract://n3488667645 abstract://n4054396602 abstract://n2683394081 </span></span>
 <span><span class="co">#&gt;                      1                      1                      1 </span></span>
-<span><span class="co">#&gt; abstract://n1604574681 abstract://n2414122754 </span></span>
+<span><span class="co">#&gt;  abstract://n210982381 abstract://n1240477607 </span></span>
 <span><span class="co">#&gt;                      1                      1</span></span></code></pre></div>
 <p>The active queue consumes additional resources, however ensures load balancing and optimal scheduling of tasks to nodes.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -346,10 +347,10 @@
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tcp://:5555"</span>, <span class="st">"tcp://:6666"</span>, <span class="st">"tcp://:7777"</span>, <span class="st">"tcp://:12560"</span><span class="op">)</span>, nodes <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 <p>–</p>
 <p>On the server or servers, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation from a shell. Each instance should connect to a unique client URL:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5556")'</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5557")'</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5558")'</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">--</span>vanilla <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5559")'</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5556")'</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5557")'</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5558")'</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5559")'</span></span></code></pre></div>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $connections</span></span>
@@ -370,6 +371,18 @@
 <p>This also sends an exit signal to all connected daemons and nodes so that they exit automatically.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
+</div>
+<div class="section level3">
+<h3 id="compute-profiles">Compute Profiles<a class="anchor" aria-label="anchor" href="#compute-profiles"></a>
+</h3>
+<p>The <code>daemons</code> interface allows the easy specification of compute profiles. This is for managing tasks with heterogeneous compute requirements:</p>
+<ul>
+<li>send tasks to different servers or server clusters with the appropriate specifications (in terms of CPUs / memory / GPU / accelerators etc.)</li>
+<li>split tasks between local and remote computation</li>
+</ul>
+<p>Simply specify the argument <code>.compute</code> when calling <code><a href="reference/daemons.html">daemons()</a></code> with a profile name (which is ‘default’ for the default profile). The daemons settings are saved under the named profile.</p>
+<p>To launch a ‘mirai’ task using a specific compute profile, specify the ‘.compute’ argument to <code><a href="reference/mirai.html">mirai()</a></code>, which defaults to the ‘default’ compute profile.</p>
+<p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
 <h3 id="errors-interrupts-and-timeouts">Errors, Interrupts and Timeouts<a class="anchor" aria-label="anchor" href="#errors-interrupts-and-timeouts"></a>
