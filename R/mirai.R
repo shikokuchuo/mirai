@@ -26,13 +26,19 @@
 #'     'tcp://192.168.0.2:5555'.
 #' @param nodes [default NULL] if supplied, this server instance will run as an
 #'     active queue (task scheduler) with the specified number of nodes.
-#' @param ... reserved but not currently used.
 #' @param idletime [default Inf] maximum idle time, since completion of the last
 #'     task (in milliseconds) before exiting.
 #' @param walltime [default Inf] soft walltime, or the minimum amount of real
 #'     time taken (in milliseconds) before exiting.
 #' @param tasklimit [default Inf] the maximum number of tasks to execute (task
 #'     limit) before exiting.
+#' @param asyncdial [default TRUE] (for debugging purposes) whether to dial in
+#'     to the client asynchronously. An asynchronous dial is more resilient and
+#'     will continue retrying if not immediately successful, however this can
+#'     mask potential connection issues. If FALSE, will error if a connection is
+#'     not immediately possible (e.g. \code{\link{daemons}} has yet to be called
+#'     on the client, or the specified port is not open etc.).
+#' @param ... reserved but not currently used.
 #' @param pollfreqh [default 5L] applicable for an active queue only, the high
 #'     polling frequency for the queue in milliseconds (used when there are
 #'     active tasks). Setting a lower value will be more responsive but at the
@@ -41,12 +47,6 @@
 #'     polling frequency for the queue in milliseconds (used when there are no
 #'     active tasks). Setting a lower value will be more responsive but at the
 #'     cost of consuming more resources on the queue thread.
-#' @param asyncdial [default TRUE] (for debugging purposes) whether to dial in
-#'     to the client asynchronously. An asynchronous dial is more resilient and
-#'     will continue retrying if not immediately successful, however this can
-#'     mask potential connection issues. If FALSE, will error if a connection is
-#'     not immediately possible (e.g. \code{\link{daemons}} has yet to be called
-#'     on the client, or the specified port is not open etc.).
 #'
 #' @return Invisible NULL.
 #'
@@ -64,9 +64,8 @@
 #'
 #' @export
 #'
-server <- function(url, nodes = NULL, ...,
-                   idletime = Inf, walltime = Inf, tasklimit = Inf,
-                   pollfreqh = 5L, pollfreql = 50L, asyncdial = TRUE) {
+server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit = Inf,
+                   asyncdial = TRUE, ..., pollfreqh = 5L, pollfreql = 50L) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = if (asyncdial) TRUE else NA)
   devnull <- file(nullfile(), open = "w", blocking = FALSE)
@@ -554,21 +553,18 @@ daemons <- function(value, ..., .compute = "default") {
     }
 
   } else {
-    if (!local && n == 0L) {
+    if (n == 0L || local) {
       proc <- as.integer(stat(..[[.compute]][["sock"]], "pipes"))
-      delta <- -proc
-      local <- TRUE
-    }
-    if (local) {
+      delta <- if (n == 0L) proc else min(-delta, proc)
       out <- 0L
-      for (i in seq_len(-delta)) {
+      for (i in seq_len(delta)) {
         ctx <- context(..[[.compute]][["sock"]])
         res <- send(ctx, data = .__scm__., mode = 2L, block = 2000L)
         if (res)
           out <- out + 1L
         close(ctx)
       }
-      proc <- proc + delta
+      proc <- proc - delta
       `[[<-`(..[[.compute]], "proc", proc)
       if (out)
         warning(sprintf("%d daemon shutdowns timed out (may require manual action)", out))

@@ -7,13 +7,13 @@
 server(
   url,
   nodes = NULL,
-  ...,
   idletime = Inf,
   walltime = Inf,
   tasklimit = Inf,
+  asyncdial = TRUE,
+  ...,
   pollfreqh = 5L,
-  pollfreql = 50L,
-  asyncdial = TRUE
+  pollfreql = 50L
 )
 }
 \arguments{
@@ -22,8 +22,6 @@ server(
 
 \item{nodes}{[default NULL] if supplied, this server instance will run as an
 active queue (task scheduler) with the specified number of nodes.}
-
-\item{...}{reserved but not currently used.}
 
 \item{idletime}{[default Inf] maximum idle time, since completion of the last
 task (in milliseconds) before exiting.}
@@ -34,6 +32,15 @@ time taken (in milliseconds) before exiting.}
 \item{tasklimit}{[default Inf] the maximum number of tasks to execute (task
 limit) before exiting.}
 
+\item{asyncdial}{[default TRUE] (for debugging purposes) whether to dial in
+to the client asynchronously. An asynchronous dial is more resilient and
+will continue retrying if not immediately successful, however this can
+mask potential connection issues. If FALSE, will error if a connection is
+not immediately possible (e.g. \code{\link{daemons}} has yet to be called
+on the client, or the specified port is not open etc.).}
+
+\item{...}{reserved but not currently used.}
+
 \item{pollfreqh}{[default 5L] applicable for an active queue only, the high
 polling frequency for the queue in milliseconds (used when there are
 active tasks). Setting a lower value will be more responsive but at the
@@ -43,13 +50,6 @@ cost of consuming more resources on the queue thread.}
 polling frequency for the queue in milliseconds (used when there are no
 active tasks). Setting a lower value will be more responsive but at the
 cost of consuming more resources on the queue thread.}
-
-\item{asyncdial}{[default TRUE] (for debugging purposes) whether to dial in
-to the client asynchronously. An asynchronous dial is more resilient and
-will continue retrying if not immediately successful, however this can
-mask potential connection issues. If FALSE, will error if a connection is
-not immediately possible (e.g. \code{\link{daemons}} has yet to be called
-on the client, or the specified port is not open etc.).}
 }
 \value{
 Invisible NULL.
