@@ -46,6 +46,7 @@
 #'     mask potential connection issues. If FALSE, will error if a connection is
 #'     not immediately possible (e.g. \code{\link{daemons}} has yet to be called
 #'     on the client, or the specified port is not open etc.).
+#' @param ... not currently used.
 #'
 #' @return Invisible NULL.
 #'
@@ -65,7 +66,7 @@
 #'
 server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
                    tasklimit = Inf, pollfreqh = 5L, pollfreql = 50L,
-                   asyncdial = TRUE) {
+                   asyncdial = TRUE, ...) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = if (asyncdial) TRUE else NA)
   devnull <- file(nullfile(), open = "w", blocking = FALSE)
@@ -190,6 +191,8 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
 
     }
   }
+
+  msleep(2000L)
 
 }
 

@@ -12,7 +12,8 @@ server(
   tasklimit = Inf,
   pollfreqh = 5L,
   pollfreql = 50L,
-  asyncdial = TRUE
+  asyncdial = TRUE,
+  ...
 )
 }
 \arguments{
@@ -47,6 +48,8 @@ will continue retrying if not immediately successful, however this can
 mask potential connection issues. If FALSE, will error if a connection is
 not immediately possible (e.g. \code{\link{daemons}} has yet to be called
 on the client, or the specified port is not open etc.).}
+
+\item{...}{not currently used.}
 }
 \value{
 Invisible NULL.
