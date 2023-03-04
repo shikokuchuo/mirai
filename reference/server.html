@@ -66,13 +66,13 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">server</span><span class="op">(</span></span>
 <span>  <span class="va">url</span>,</span>
 <span>  nodes <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span>,</span>
 <span>  idletime <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  walltime <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  tasklimit <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  pollfreqh <span class="op">=</span> <span class="fl">5L</span>,</span>
 <span>  pollfreql <span class="op">=</span> <span class="fl">50L</span>,</span>
-<span>  asyncdial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  asyncdial <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -86,6 +86,10 @@
 <dt>nodes</dt>
 <dd><p>[default NULL] if supplied, this server instance will run as an
 active queue (task scheduler) with the specified number of nodes.</p></dd>
+
+
+<dt>...</dt>
+<dd><p>reserved but not currently used.</p></dd>
 
 
 <dt>idletime</dt>
@@ -124,10 +128,6 @@ will continue retrying if not immediately successful, however this can
 mask potential connection issues. If FALSE, will error if a connection is
 not immediately possible (e.g. <code><a href="daemons.html">daemons</a></code> has yet to be called
 on the client, or the specified port is not open etc.).</p></dd>
-
-
-<dt>...</dt>
-<dd><p>not currently used.</p></dd>
 
 </dl></div>
     <div id="value">
