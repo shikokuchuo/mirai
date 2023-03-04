@@ -84,7 +84,7 @@
 
 
 <dt>...</dt>
-<dd><p>additional arguments passed to <code><a href="server.html">server</a></code>.</p>
+<dd><p>additional named arguments passed to <code><a href="server.html">server</a></code>.</p>
 <p><strong>nodes</strong> supplying an integer number of nodes runs an active queue
     with the specified number of nodes per daemon.</p></dd>
 
@@ -100,14 +100,14 @@ connecting to different resources).</p></dd>
     
 
 <p>Setting daemons: integer number of daemons set, or the character
-    client URL (will be 1L if specifying a client URL with nodes).</p>
+    client URL (1L if specifying a client URL with nodes).</p>
 
 
 <p>Viewing current status: a named list comprising:</p><ul><li><p><code>connections</code> - number of active connections.</p></li>
-<li><p><code>daemons</code> - number of daemons, or the client URL for a
-    passive queue.</p></li>
+<li><p><code>daemons</code> - number of daemons, or the client URL when
+    running a passive queue.</p></li>
 <li><p><code>nodes</code> - a named vector of the number of connected nodes at
-    each client URL, or NA if not running an active queue.</p></li>
+    each client URL when running an active queue, or else NA.</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
@@ -117,8 +117,8 @@ connecting to different resources).</p></dd>
 <p>When specifying a client URL, all daemons dialing into the client are
     detected automatically and resources may be added or removed dynamically.
     Further specifying a numeric number of daemons has no effect, with the
-    exception that <code>daemons(0)</code> will always attempt to shutdown all
-    connected daemons.</p>
+    exception that <code>daemons(0)</code> will always reset and attempt to
+    shutdown all connected daemons.</p>
 <p>Setting a new client URL will attempt to shutdown all daemons connected
     at the existing address before opening a connection at the new address.</p>
     </div>
@@ -128,8 +128,8 @@ connecting to different resources).</p></dd>
 
 
 <p>Daemons provide a potentially more efficient solution for asynchronous
-    operations as new processes no longer need to be created on an ad hoc
-    basis.</p>
+    operations as new processes no longer need to be created on an <em>ad
+    hoc</em> basis.</p>
 <p>The default implementation is low-level and ensures tasks are
     evenly-distributed amongst daemons. This provides a robust and
     resource-light approach, particularly suited to working with
@@ -154,9 +154,9 @@ connecting to different resources).</p></dd>
     <code><a href="server.html">server</a></code> should connect to. Alternatively, to listen to port
     5555 on all interfaces on the local host, specify either 'tcp://:5555',
     'tcp://*:5555' or 'tcp://0.0.0.0:5555'.</p>
-<p>To automatically assign a free ephemeral port, please specify zero as the
-    port number e.g. 'tcp://:0'. The actual port assigned may be queried at
-    any time by simply calling <code>daemons()</code>.</p>
+<p>To automatically assign a free ephemeral port, specify zero as the port
+    number e.g. 'tcp://:0'. The actual port assigned may be queried at any
+    time by querying <code>daemons()</code>.</p>
 <p>The network topology is such that server daemons (started with
     <code><a href="server.html">server</a></code>) dial into the client, which listens at the client
     URL. In this way, network resources may be easily added or removed at any
@@ -167,9 +167,35 @@ connecting to different resources).</p></dd>
     the number of nodes specified e.g. the client URL 'tcp://192.168.0.2:5555'
     with 6 nodes uses the contiguous block of ports 5555 through 5560.
     Alterntively, specify a vector of URLs the same length as 'nodes' to
-    listen to arbitrary port nubers. Individual <code><a href="server.html">server</a></code> instances
+    listen to arbitrary ports. Individual <code><a href="server.html">server</a></code> instances
     should then be started on the remote resource, with each of these
-    specified as the client URL.</p>
+    specified as the client URL. Server nodes may be scaled up or down
+    dynamically, subject to the maximum 'nodes' initially specified, with the
+    queue automatically adjusting.</p>
+    </div>
+    <div id="compute-profiles">
+    <h2>Compute Profiles</h2>
+    
+
+
+<p>By default, the 'default' compute profile is used. Provide a character
+    value for '.compute' to create a new compute profile with the name
+    specified. Each compute profile retains its own daemons settings, and may
+    be operated independently of each other. Some usage examples follow:</p>
+<p><strong>local / remote</strong> new daemons may be set via a client URL and
+    specifying '.compute' as 'remote'. This creates a new compute profile
+    called 'remote'. Subsequent mirai calls may then be sent for local
+    computation by not specifying its '.compute' argument, or for remote
+    computation by specifying its '.compute' argument as 'remote'.</p>
+<p><strong>cpu / gpu</strong> some tasks may require access to different classes of
+    server, such as those with GPUs. In this case, <code>daemons()</code> may be
+    called twice to set up client URLs for CPU-only and GPU servers to dial
+    into respectively, specifying the '.compute' argument as 'cpu' and 'gpu'
+    each time. By supplying the '.compute' argument to subsequent mirai calls,
+    tasks may be sent to either 'cpu' or 'gpu' servers for computation.</p>
+<p>Note: further actions such as viewing the status of daemons or resetting
+    via <code>daemons(0)</code> should be carried out with the desired '.compute'
+    argument specified.</p>
     </div>
     <div id="timeouts">
     <h2>Timeouts</h2>
