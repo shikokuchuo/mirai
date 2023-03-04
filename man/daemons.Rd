@@ -19,7 +19,7 @@ daemons(value, ..., .compute = "default")
     \strong{missing}: for viewing the currrent status, specify
     \code{daemons()} with no arguments.}
 
-\item{...}{additional arguments passed to \code{\link{server}}.
+\item{...}{additional named arguments passed to \code{\link{server}}.
 
     \strong{nodes} supplying an integer number of nodes runs an active queue
     with the specified number of nodes per daemon.}
@@ -30,14 +30,14 @@ connecting to different resources).}
 }
 \value{
 Setting daemons: integer number of daemons set, or the character
-    client URL (will be 1L if specifying a client URL with nodes).
+    client URL (1L if specifying a client URL with nodes).
 
     Viewing current status: a named list comprising: \itemize{
     \item{\code{connections}} {- number of active connections.}
-    \item{\code{daemons}} {- number of daemons, or the client URL for a
-    passive queue.}
+    \item{\code{daemons}} {- number of daemons, or the client URL when
+    running a passive queue.}
     \item{\code{nodes}} {- a named vector of the number of connected nodes at
-    each client URL, or NA if not running an active queue.}
+    each client URL when running an active queue, or else NA.}
     }
 }
 \description{
@@ -55,8 +55,8 @@ Use \code{daemons(0)} to reset all daemon connections at any time.
     When specifying a client URL, all daemons dialing into the client are
     detected automatically and resources may be added or removed dynamically.
     Further specifying a numeric number of daemons has no effect, with the
-    exception that \code{daemons(0)} will always attempt to shutdown all
-    connected daemons.
+    exception that \code{daemons(0)} will always reset and attempt to
+    shutdown all connected daemons.
 
     Setting a new client URL will attempt to shutdown all daemons connected
     at the existing address before opening a connection at the new address.
@@ -65,8 +65,8 @@ Use \code{daemons(0)} to reset all daemon connections at any time.
 
 
     Daemons provide a potentially more efficient solution for asynchronous
-    operations as new processes no longer need to be created on an ad hoc
-    basis.
+    operations as new processes no longer need to be created on an \emph{ad
+    hoc} basis.
 
     The default implementation is low-level and ensures tasks are
     evenly-distributed amongst daemons. This provides a robust and
@@ -94,9 +94,9 @@ Use \code{daemons(0)} to reset all daemon connections at any time.
     5555 on all interfaces on the local host, specify either 'tcp://:5555',
     'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
 
-    To automatically assign a free ephemeral port, please specify zero as the
-    port number e.g. 'tcp://:0'. The actual port assigned may be queried at
-    any time by simply calling \code{daemons()}.
+    To automatically assign a free ephemeral port, specify zero as the port
+    number e.g. 'tcp://:0'. The actual port assigned may be queried at any
+    time by querying \code{daemons()}.
 
     The network topology is such that server daemons (started with
     \code{\link{server}}) dial into the client, which listens at the client
@@ -109,9 +109,37 @@ Use \code{daemons(0)} to reset all daemon connections at any time.
     the number of nodes specified e.g. the client URL 'tcp://192.168.0.2:5555'
     with 6 nodes uses the contiguous block of ports 5555 through 5560.
     Alterntively, specify a vector of URLs the same length as 'nodes' to
-    listen to arbitrary port nubers. Individual \code{\link{server}} instances
+    listen to arbitrary ports. Individual \code{\link{server}} instances
     should then be started on the remote resource, with each of these
-    specified as the client URL.
+    specified as the client URL. Server nodes may be scaled up or down
+    dynamically, subject to the maximum 'nodes' initially specified, with the
+    queue automatically adjusting.
+}
+
+\section{Compute Profiles}{
+
+
+    By default, the 'default' compute profile is used. Provide a character
+    value for '.compute' to create a new compute profile with the name
+    specified. Each compute profile retains its own daemons settings, and may
+    be operated independently of each other. Some usage examples follow:
+
+    \strong{local / remote} new daemons may be set via a client URL and
+    specifying '.compute' as 'remote'. This creates a new compute profile
+    called 'remote'. Subsequent mirai calls may then be sent for local
+    computation by not specifying its '.compute' argument, or for remote
+    computation by specifying its '.compute' argument as 'remote'.
+
+    \strong{cpu / gpu} some tasks may require access to different classes of
+    server, such as those with GPUs. In this case, \code{daemons()} may be
+    called twice to set up client URLs for CPU-only and GPU servers to dial
+    into respectively, specifying the '.compute' argument as 'cpu' and 'gpu'
+    each time. By supplying the '.compute' argument to subsequent mirai calls,
+    tasks may be sent to either 'cpu' or 'gpu' servers for computation.
+
+    Note: further actions such as viewing the status of daemons or resetting
+    via \code{daemons(0)} should be carried out with the desired '.compute'
+    argument specified.
 }
 
 \section{Timeouts}{
