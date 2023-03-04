@@ -22,8 +22,9 @@
 #'     evaluates an expression in an environment containing the supplied data,
 #'     and returns the result to the caller/client.
 #'
-#' @param url the client URL and port to connect to as a character string e.g.
-#'     'tcp://192.168.0.2:5555'.
+#' @param url the client URL as a character string, including the port to
+#'     connect to and (optionally) a path for websocket URLs e.g.
+#'     'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
 #' @param nodes [default NULL] if supplied, this server instance will run as an
 #'     active queue (task scheduler) with the specified number of nodes.
 #' @param idletime [default Inf] maximum idle time, since completion of the last
@@ -91,8 +92,7 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
     servers <- vector(mode = "list", length = nodes)
     if (!auto && !vectorised) {
       baseurl <- parse_url(url[2L])
-      ports <- if (baseurl[["scheme"]] == "tcp")
-        sprintf("%d", seq.int(as.integer(parse_url(url[2L])[["port"]]), length.out = nodes))
+      ports <- if (baseurl[["scheme"]] == "tcp") sprintf("%d", seq.int(baseurl[["port"]], length.out = nodes))
     }
 
     for (i in seq_nodes) {
@@ -340,8 +340,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     (see 'Local Daemons' below).
 #'
 #'     \strong{character}: for distributing tasks across the network: the client
-#'     URL and port accepting incoming connections as a character string e.g.
-#'     'tcp://192.168.0.2:5555' (see 'Distributed Computing' below).
+#'     URL as a character string, including a port accepting incoming connections
+#'     and (optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555'
+#'     or 'ws://192.168.0.2:5555/path'. (see 'Distributed Computing' below).
 #'
 #'     \strong{missing}: for viewing the currrent status, specify
 #'     \code{daemons()} with no arguments.
@@ -400,6 +401,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #' @section Distributed Computing:
 #'
+#'     \strong{Passive Queues}
+#'
 #'     Specifying a client URL allows tasks to be distributed across the network.
 #'
 #'     This should be in the form of a character string such as:
@@ -408,26 +411,41 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     5555 on all interfaces on the local host, specify either 'tcp://:5555',
 #'     'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
 #'
-#'     To automatically assign a free ephemeral port, specify zero as the port
-#'     number e.g. 'tcp://:0'. The actual port assigned may be queried at any
-#'     time by querying \code{daemons()}.
+#'     When using the TCP transport, specifying the wildcard value zero as the
+#'     port number e.g. 'tcp://:0' will automatically assign a free ephemeral
+#'     port. Use \code{daemons()} to query the actual assigned port at any time.
 #'
 #'     The network topology is such that server daemons (started with
 #'     \code{\link{server}}) dial into the client, which listens at the client
 #'     URL. In this way, network resources may be easily added or removed at any
 #'     time. The client automatically distributes tasks to all connected servers.
 #'
+#'     \strong{Active Queues}
+#'
 #'     Supplying \code{nodes} as an additional argument will launch a local
-#'     daemon as an active server queue listening to a block of URLs with
-#'     ports starting from the supplied port number and incrementing by one for
-#'     the number of nodes specified e.g. the client URL 'tcp://192.168.0.2:5555'
-#'     with 6 nodes uses the contiguous block of ports 5555 through 5560.
-#'     Alterntively, specify a vector of URLs the same length as 'nodes' to
-#'     listen to arbitrary ports. Individual \code{\link{server}} instances
-#'     should then be started on the remote resource, with each of these
-#'     specified as the client URL. Server nodes may be scaled up or down
-#'     dynamically, subject to the maximum 'nodes' initially specified, with the
-#'     queue automatically adjusting.
+#'     daemon as an active server queue.
+#'
+#'     It is recommended to use a websocket URL instead of TCP in this case so
+#'     that only one port is used to connect to the nodes. This is as a websocket
+#'     URL supports a path after the port number, which can be made unique for
+#'     each node. Specifying a single client URL such as 'ws://192.168.0.2:5555'
+#'     with 6 nodes will automatically append a sequence to the path, listening
+#'     to the URLs 'ws://192.168.0.2:5555/1' through 'ws://192.168.0.2:5555/6'.
+#'
+#'     Alternatively, specify a vector of URLs the same length as 'nodes' to
+#'     listen to arbitrary port numbers / paths.
+#'
+#'     Individual \code{\link{server}} instances should then be started on the
+#'     remote resource, with each of these specified as the client URL.
+#'
+#'     Server nodes may be scaled up or down dynamically, subject to the maximum
+#'     'nodes' initially specified, with the queue automatically adjusting.
+#'
+#'     Alternatively, supplying a single TCP URL will listen on a block of URLs
+#'     with ports starting from the supplied port number and incrementing by one
+#'     for the number of nodes specified e.g. the client URL
+#'     'tcp://192.168.0.2:5555' with 6 nodes listens to the contiguous block of
+#'     ports 5555 through 5560.
 #'
 #' @section Compute Profiles:
 #'

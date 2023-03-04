@@ -17,8 +17,9 @@ server(
 )
 }
 \arguments{
-\item{url}{the client URL and port to connect to as a character string e.g.
-'tcp://192.168.0.2:5555'.}
+\item{url}{the client URL as a character string, including the port to
+connect to and (optionally) a path for websocket URLs e.g.
+'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 
 \item{nodes}{[default NULL] if supplied, this server instance will run as an
 active queue (task scheduler) with the specified number of nodes.}

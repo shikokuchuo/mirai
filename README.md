@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.656 0.767 3.934 0.212 0.152 ...
+#>  num [1:100000000] 0.199 -7.676 0.605 -0.195 0.97 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.656 0.767 3.934 0.212 0.152 ...
+#>  num [1:100000000] 0.199 -7.676 0.605 -0.195 0.97 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -208,9 +208,9 @@ for (i in 1:10) {
 #> iteration 5 successful 
 #> iteration 6 successful 
 #> iteration 7 successful 
-#> Error: random error 
 #> iteration 8 successful 
 #> iteration 9 successful 
+#> Error: random error 
 #> iteration 10 successful
 ```
 
@@ -299,11 +299,11 @@ daemons()
 #> [1] 1
 #> 
 #> $nodes
-#> abstract://n3347332230  abstract://n549273732 abstract://n3176168240 
+#> abstract://n3073500774 abstract://n2134044985 abstract://n2396886131 
 #>                      1                      1                      1 
-#> abstract://n3488667645 abstract://n4054396602 abstract://n2683394081 
+#> abstract://n3948532955 abstract://n2514036477 abstract://n3648240482 
 #>                      1                      1                      1 
-#>  abstract://n210982381 abstract://n1240477607 
+#> abstract://n4206285864 abstract://n1283654277 
 #>                      1                      1
 ```
 
@@ -404,26 +404,26 @@ Assuming that the local network address of the current machine is
 The below automatically starts a server queue as a daemon process on the
 local client machine.
 
-If a single URL is supplied, it should contain the starting port number
-for a contiguous block of ports, so in the example below the queue is
-listening to the block of URLs ‘tcp://192.168.0.2:5556’ through
-‘tcp://192.168.0.2:5559’ as 4 nodes have been specified. These ports
-need to be made available for inbound connections from the local
-network.
+It is recommended to use a websocket URL starting `ws://` instead of TCP
+in this scenario. This is as a websocket URL supports a path after the
+port number, which can be made unique for each node. In this way a
+client can connect to an arbitrary number of servers over a single port.
 
 ``` r
-# daemons("tcp://192.168.0.2:5556", nodes = 4)
+# daemons("ws://192.168.0.2:5556", nodes = 4)
 
-daemons("tcp://:5556", nodes = 4)
+daemons("ws://:5556", nodes = 4)
 #> [1] 1
 ```
 
+Above, a single URL was supplied, in which case a sequence is
+automatically appended to the path `/1` through `/4`
+
 Alternatively, supplying a vector of URLs (the same length as the number
-of nodes) allows the use of arbitrary port numbers (rather than a
-contiguous range), e.g.:
+of nodes) allows the use of arbitrary port numbers / paths, e.g.:
 
 ``` r
-daemons(c("tcp://:5555", "tcp://:6666", "tcp://:7777", "tcp://:12560"), nodes = 4)
+# daemons(c("tcp://:5555/cpu", "tcp://:5555/gpu", "tcp://:12560", "tcp://:12560/2"), nodes = 4)
 ```
 
 –
@@ -432,10 +432,10 @@ On the server or servers, `server()` may be called from an R session, or
 an Rscript invocation from a shell. Each instance should connect to a
 unique client URL:
 
-    Rscript -e 'mirai::server("tcp://192.168.0.2:5556")'
-    Rscript -e 'mirai::server("tcp://192.168.0.2:5557")'
-    Rscript -e 'mirai::server("tcp://192.168.0.2:5558")'
-    Rscript -e 'mirai::server("tcp://192.168.0.2:5559")'
+    Rscript -e 'mirai::server("ws://192.168.0.2:5556/1")'
+    Rscript -e 'mirai::server("ws://192.168.0.2:5556/2")'
+    Rscript -e 'mirai::server("ws://192.168.0.2:5556/3")'
+    Rscript -e 'mirai::server("ws://192.168.0.2:5556/4")'
 
 ``` r
 daemons()
@@ -446,8 +446,8 @@ daemons()
 #> [1] 1
 #> 
 #> $nodes
-#> tcp://:5556 tcp://:5557 tcp://:5558 tcp://:5559 
-#>           1           1           1           1
+#> ws://:5556/1 ws://:5556/2 ws://:5556/3 ws://:5556/4 
+#>            1            1            1            1
 ```
 
 When running a local server queue to connect to remote nodes, there is

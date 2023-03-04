@@ -312,18 +312,20 @@ Assuming that the local network address of the current machine is '192.168.0.2',
 
 The below automatically starts a server queue as a daemon process on the local client machine.
 
-If a single URL is supplied, it should contain the starting port number for a contiguous block of ports, so in the example below the queue is listening to the block of URLs 'tcp://192.168.0.2:5556' through 'tcp://192.168.0.2:5559' as 4 nodes have been specified. These ports need to be made available for inbound connections from the local network.
+It is recommended to use a websocket URL starting `ws://` instead of TCP in this scenario. This is as a websocket URL supports a path after the port number, which can be made unique for each node. In this way a client can connect to an arbitrary number of servers over a single port.
 
 ```{r localqueue}
-# daemons("tcp://192.168.0.2:5556", nodes = 4)
+# daemons("ws://192.168.0.2:5556", nodes = 4)
 
-daemons("tcp://:5556", nodes = 4)
+daemons("ws://:5556", nodes = 4)
 ```
 
-Alternatively, supplying a vector of URLs (the same length as the number of nodes) allows the use of arbitrary port numbers (rather than a contiguous range), e.g.:
+Above, a single URL was supplied, in which case a sequence is automatically appended to the path `/1` through `/4`
 
-```{r vectorqueue, eval=FALSE}
-daemons(c("tcp://:5555", "tcp://:6666", "tcp://:7777", "tcp://:12560"), nodes = 4)
+Alternatively, supplying a vector of URLs (the same length as the number of nodes) allows the use of arbitrary port numbers / paths, e.g.:
+
+```{r vectorqueue}
+# daemons(c("tcp://:5555/cpu", "tcp://:5555/gpu", "tcp://:12560", "tcp://:12560/2"), nodes = 4)
 ```
 
 --
@@ -331,10 +333,10 @@ daemons(c("tcp://:5555", "tcp://:6666", "tcp://:7777", "tcp://:12560"), nodes = 
 On the server or servers, `server()` may be called from an R session, or an Rscript invocation from a shell. Each instance should connect to a unique client URL:
 
 ```
-Rscript -e 'mirai::server("tcp://192.168.0.2:5556")'
-Rscript -e 'mirai::server("tcp://192.168.0.2:5557")'
-Rscript -e 'mirai::server("tcp://192.168.0.2:5558")'
-Rscript -e 'mirai::server("tcp://192.168.0.2:5559")'
+Rscript -e 'mirai::server("ws://192.168.0.2:5556/1")'
+Rscript -e 'mirai::server("ws://192.168.0.2:5556/2")'
+Rscript -e 'mirai::server("ws://192.168.0.2:5556/3")'
+Rscript -e 'mirai::server("ws://192.168.0.2:5556/4")'
 
 ```
 ```{r remotes2, include=FALSE}
