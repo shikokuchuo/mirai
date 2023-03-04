@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9014</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9015</span>
       </span>
     </div>
 
@@ -71,7 +71,8 @@
 <span>  tasklimit <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  pollfreqh <span class="op">=</span> <span class="fl">5L</span>,</span>
 <span>  pollfreql <span class="op">=</span> <span class="fl">50L</span>,</span>
-<span>  asyncdial <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  asyncdial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -123,6 +124,10 @@ will continue retrying if not immediately successful, however this can
 mask potential connection issues. If FALSE, will error if a connection is
 not immediately possible (e.g. <code><a href="daemons.html">daemons</a></code> has yet to be called
 on the client, or the specified port is not open etc.).</p></dd>
+
+
+<dt>...</dt>
+<dd><p>not currently used.</p></dd>
 
 </dl></div>
     <div id="value">
