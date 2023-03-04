@@ -89,11 +89,17 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
     seq_nodes <- seq_len(nodes)
     queue <- vector(mode = "list", length = nodes)
     servers <- vector(mode = "list", length = nodes)
-    if (!auto && !vectorised)
-      ports <- sprintf(":%d", seq.int(as.integer(parse_url(url[2L])[["port"]]), length.out = nodes))
+    if (!auto && !vectorised) {
+      baseurl <- parse_url(url[2L])
+      ports <- if (baseurl[["scheme"]] == "tcp")
+        sprintf("%d", seq.int(as.integer(parse_url(url[2L])[["port"]]), length.out = nodes))
+    }
 
     for (i in seq_nodes) {
-      nurl <- if (auto) sprintf(.urlfmt, random()) else if (vectorised) url[i + 1L] else sub(ports[1L], ports[i], url[2L], fixed = TRUE)
+      nurl <- if (auto) sprintf(.urlfmt, random()) else
+        if (vectorised) url[i + 1L] else
+          if (is.null(ports)) sprintf("%s/%d", url[2L], i) else
+            sub(ports[1L], ports[i], url[2L], fixed = TRUE)
       nsock <- socket(protocol = "req", listen = nurl)
       if (auto)
         launch_daemon(sprintf("mirai::server(\"%s\")", nurl))
