@@ -320,7 +320,7 @@ It is recommended to use a websocket URL starting `ws://` instead of TCP in this
 daemons("ws://:5556", nodes = 4)
 ```
 
-Above, a single URL was supplied, in which case a sequence is automatically appended to the path `/1` through `/4`
+Above, a single URL was supplied, in which case a sequence is automatically appended to the path `/1` through `/4` as 4 nodes were specified.
 
 Alternatively, supplying a vector of URLs (the same length as the number of nodes) allows the use of arbitrary port numbers / paths, e.g.:
 
@@ -342,6 +342,11 @@ Rscript -e 'mirai::server("ws://192.168.0.2:5556/4")'
 ```{r remotes2, include=FALSE}
 Sys.sleep(1)
 ```
+
+--
+
+Requesting status, on the client:
+
 ```{r remotev2}
 daemons()
 ```

@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.199 -7.676 0.605 -0.195 0.97 ...
+#>  num [1:100000000] -0.6609 0.761 -0.0453 0.4544 0.1634 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.199 -7.676 0.605 -0.195 0.97 ...
+#>  num [1:100000000] -0.6609 0.761 -0.0453 0.4544 0.1634 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -203,6 +203,7 @@ for (i in 1:10) {
 }
 #> iteration 1 successful 
 #> iteration 2 successful 
+#> Error: random error 
 #> iteration 3 successful 
 #> iteration 4 successful 
 #> iteration 5 successful 
@@ -210,7 +211,6 @@ for (i in 1:10) {
 #> iteration 7 successful 
 #> iteration 8 successful 
 #> iteration 9 successful 
-#> Error: random error 
 #> iteration 10 successful
 ```
 
@@ -299,11 +299,11 @@ daemons()
 #> [1] 1
 #> 
 #> $nodes
-#> abstract://n3073500774 abstract://n2134044985 abstract://n2396886131 
+#> abstract://n3970620801 abstract://n2144547045 abstract://n3012492010 
 #>                      1                      1                      1 
-#> abstract://n3948532955 abstract://n2514036477 abstract://n3648240482 
+#>  abstract://n977458567 abstract://n2078445424 abstract://n1764814410 
 #>                      1                      1                      1 
-#> abstract://n4206285864 abstract://n1283654277 
+#> abstract://n2701482796 abstract://n2118000075 
 #>                      1                      1
 ```
 
@@ -417,7 +417,8 @@ daemons("ws://:5556", nodes = 4)
 ```
 
 Above, a single URL was supplied, in which case a sequence is
-automatically appended to the path `/1` through `/4`
+automatically appended to the path `/1` through `/4` as 4 nodes were
+specified.
 
 Alternatively, supplying a vector of URLs (the same length as the number
 of nodes) allows the use of arbitrary port numbers / paths, e.g.:
@@ -436,6 +437,10 @@ unique client URL:
     Rscript -e 'mirai::server("ws://192.168.0.2:5556/2")'
     Rscript -e 'mirai::server("ws://192.168.0.2:5556/3")'
     Rscript -e 'mirai::server("ws://192.168.0.2:5556/4")'
+
+–
+
+Requesting status, on the client:
 
 ``` r
 daemons()
