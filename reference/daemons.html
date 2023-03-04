@@ -77,8 +77,9 @@
 <p><strong>numeric</strong>: for setting local daemons: integer number of daemons
     (see 'Local Daemons' below).</p>
 <p><strong>character</strong>: for distributing tasks across the network: the client
-    URL and port accepting incoming connections as a character string e.g.
-    'tcp://192.168.0.2:5555' (see 'Distributed Computing' below).</p>
+    URL as a character string, including a port accepting incoming connections
+    and (optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555'
+    or 'ws://192.168.0.2:5555/path'. (see 'Distributed Computing' below).</p>
 <p><strong>missing</strong>: for viewing the currrent status, specify
     <code>daemons()</code> with no arguments.</p></dd>
 
@@ -148,30 +149,40 @@ connecting to different resources).</p></dd>
     
 
 
+<p><strong>Passive Queues</strong></p>
 <p>Specifying a client URL allows tasks to be distributed across the network.</p>
 <p>This should be in the form of a character string such as:
     'tcp://192.168.0.2:5555' at which server processes started using
     <code><a href="server.html">server</a></code> should connect to. Alternatively, to listen to port
     5555 on all interfaces on the local host, specify either 'tcp://:5555',
     'tcp://*:5555' or 'tcp://0.0.0.0:5555'.</p>
-<p>To automatically assign a free ephemeral port, specify zero as the port
-    number e.g. 'tcp://:0'. The actual port assigned may be queried at any
-    time by querying <code>daemons()</code>.</p>
+<p>When using the TCP transport, specifying the wildcard value zero as the
+    port number e.g. 'tcp://:0' will automatically assign a free ephemeral
+    port. Use <code>daemons()</code> to query the actual assigned port at any time.</p>
 <p>The network topology is such that server daemons (started with
     <code><a href="server.html">server</a></code>) dial into the client, which listens at the client
     URL. In this way, network resources may be easily added or removed at any
     time. The client automatically distributes tasks to all connected servers.</p>
+<p><strong>Active Queues</strong></p>
 <p>Supplying <code>nodes</code> as an additional argument will launch a local
-    daemon as an active server queue listening to a block of URLs with
-    ports starting from the supplied port number and incrementing by one for
-    the number of nodes specified e.g. the client URL 'tcp://192.168.0.2:5555'
-    with 6 nodes uses the contiguous block of ports 5555 through 5560.
-    Alterntively, specify a vector of URLs the same length as 'nodes' to
-    listen to arbitrary ports. Individual <code><a href="server.html">server</a></code> instances
-    should then be started on the remote resource, with each of these
-    specified as the client URL. Server nodes may be scaled up or down
-    dynamically, subject to the maximum 'nodes' initially specified, with the
-    queue automatically adjusting.</p>
+    daemon as an active server queue.</p>
+<p>It is recommended to use a websocket URL instead of TCP in this case so
+    that only one port is used to connect to the nodes. This is as a websocket
+    URL supports a path after the port number, which can be made unique for
+    each node. Specifying a single client URL such as 'ws://192.168.0.2:5555'
+    with 6 nodes will automatically append a sequence to the path, listening
+    to the URLs 'ws://192.168.0.2:5555/1' through 'ws://192.168.0.2:5555/6'.</p>
+<p>Alternatively, specify a vector of URLs the same length as 'nodes' to
+    listen to arbitrary port numbers / paths.</p>
+<p>Individual <code><a href="server.html">server</a></code> instances should then be started on the
+    remote resource, with each of these specified as the client URL.</p>
+<p>Server nodes may be scaled up or down dynamically, subject to the maximum
+    'nodes' initially specified, with the queue automatically adjusting.</p>
+<p>Alternatively, supplying a single TCP URL will listen on a block of URLs
+    with ports starting from the supplied port number and incrementing by one
+    for the number of nodes specified e.g. the client URL
+    'tcp://192.168.0.2:5555' with 6 nodes listens to the contiguous block of
+    ports 5555 through 5560.</p>
     </div>
     <div id="compute-profiles">
     <h2>Compute Profiles</h2>

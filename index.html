@@ -150,11 +150,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.656 0.767 3.934 0.212 0.152 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.199 -7.676 0.605 -0.195 0.97 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.656 0.767 3.934 0.212 0.152 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.199 -7.676 0.605 -0.195 0.97 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -221,9 +221,9 @@
 <span><span class="co">#&gt; iteration 5 successful </span></span>
 <span><span class="co">#&gt; iteration 6 successful </span></span>
 <span><span class="co">#&gt; iteration 7 successful </span></span>
-<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 8 successful </span></span>
 <span><span class="co">#&gt; iteration 9 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 10 successful</span></span></code></pre></div>
 <p>Further, by testing the return value of each ‘mirai’ for errors, error-handling code is then able to automate recovery and re-attempts, as in the above example. Further details on <a href="#errors-interrupts-and-timeouts">error handling</a> can be found in the section below.</p>
 <p>The end result is a resilient and fault-tolerant pipeline that minimises downtime by eliminating interruptions of long computes.</p>
@@ -276,11 +276,11 @@
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $nodes</span></span>
-<span><span class="co">#&gt; abstract://n3347332230  abstract://n549273732 abstract://n3176168240 </span></span>
+<span><span class="co">#&gt; abstract://n3073500774 abstract://n2134044985 abstract://n2396886131 </span></span>
 <span><span class="co">#&gt;                      1                      1                      1 </span></span>
-<span><span class="co">#&gt; abstract://n3488667645 abstract://n4054396602 abstract://n2683394081 </span></span>
+<span><span class="co">#&gt; abstract://n3948532955 abstract://n2514036477 abstract://n3648240482 </span></span>
 <span><span class="co">#&gt;                      1                      1                      1 </span></span>
-<span><span class="co">#&gt;  abstract://n210982381 abstract://n1240477607 </span></span>
+<span><span class="co">#&gt; abstract://n4206285864 abstract://n1283654277 </span></span>
 <span><span class="co">#&gt;                      1                      1</span></span></code></pre></div>
 <p>The active queue consumes additional resources, however ensures load balancing and optimal scheduling of tasks to nodes.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -336,21 +336,22 @@
 </h4>
 <p>Assuming that the local network address of the current machine is ‘192.168.0.2’, and 4 nodes are to be allocated on remote servers.</p>
 <p>The below automatically starts a server queue as a daemon process on the local client machine.</p>
-<p>If a single URL is supplied, it should contain the starting port number for a contiguous block of ports, so in the example below the queue is listening to the block of URLs ‘tcp://192.168.0.2:5556’ through ‘tcp://192.168.0.2:5559’ as 4 nodes have been specified. These ports need to be made available for inbound connections from the local network.</p>
+<p>It is recommended to use a websocket URL starting <code>ws://</code> instead of TCP in this scenario. This is as a websocket URL supports a path after the port number, which can be made unique for each node. In this way a client can connect to an arbitrary number of servers over a single port.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># daemons("tcp://192.168.0.2:5556", nodes = 4)</span></span>
+<code class="sourceCode R"><span><span class="co"># daemons("ws://192.168.0.2:5556", nodes = 4)</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="st">"tcp://:5556"</span>, nodes <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="st">"ws://:5556"</span>, nodes <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
-<p>Alternatively, supplying a vector of URLs (the same length as the number of nodes) allows the use of arbitrary port numbers (rather than a contiguous range), e.g.:</p>
+<p>Above, a single URL was supplied, in which case a sequence is automatically appended to the path <code>/1</code> through <code>/4</code></p>
+<p>Alternatively, supplying a vector of URLs (the same length as the number of nodes) allows the use of arbitrary port numbers / paths, e.g.:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tcp://:5555"</span>, <span class="st">"tcp://:6666"</span>, <span class="st">"tcp://:7777"</span>, <span class="st">"tcp://:12560"</span><span class="op">)</span>, nodes <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># daemons(c("tcp://:5555/cpu", "tcp://:5555/gpu", "tcp://:12560", "tcp://:12560/2"), nodes = 4)</span></span></code></pre></div>
 <p>–</p>
 <p>On the server or servers, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation from a shell. Each instance should connect to a unique client URL:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5556")'</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5557")'</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5558")'</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5559")'</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("ws://192.168.0.2:5556/1")'</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("ws://192.168.0.2:5556/2")'</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("ws://192.168.0.2:5556/3")'</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("ws://192.168.0.2:5556/4")'</span></span></code></pre></div>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $connections</span></span>
@@ -360,8 +361,8 @@
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $nodes</span></span>
-<span><span class="co">#&gt; tcp://:5556 tcp://:5557 tcp://:5558 tcp://:5559 </span></span>
-<span><span class="co">#&gt;           1           1           1           1</span></span></code></pre></div>
+<span><span class="co">#&gt; ws://:5556/1 ws://:5556/2 ws://:5556/3 ws://:5556/4 </span></span>
+<span><span class="co">#&gt;            1            1            1            1</span></span></code></pre></div>
 <p>When running a local server queue to connect to remote nodes, there is only a single connection to the local server queue. This then connects in turn to the nodes running on remote servers.</p>
 <p>The active queue will automatically adjust to the number of servers actually connected. Hence it is possible to dynamically scale up or down the number of server nodes (limited by the number of nodes initially specified).</p>
 <p>To reset all connections and revert to default behaviour:</p>
