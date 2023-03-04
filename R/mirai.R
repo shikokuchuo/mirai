@@ -26,6 +26,7 @@
 #'     'tcp://192.168.0.2:5555'.
 #' @param nodes [default NULL] if supplied, this server instance will run as an
 #'     active queue (task scheduler) with the specified number of nodes.
+#' @param ... reserved but not currently used.
 #' @param idletime [default Inf] maximum idle time, since completion of the last
 #'     task (in milliseconds) before exiting.
 #' @param walltime [default Inf] soft walltime, or the minimum amount of real
@@ -46,7 +47,6 @@
 #'     mask potential connection issues. If FALSE, will error if a connection is
 #'     not immediately possible (e.g. \code{\link{daemons}} has yet to be called
 #'     on the client, or the specified port is not open etc.).
-#' @param ... not currently used.
 #'
 #' @return Invisible NULL.
 #'
@@ -64,9 +64,9 @@
 #'
 #' @export
 #'
-server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf,
-                   tasklimit = Inf, pollfreqh = 5L, pollfreql = 50L,
-                   asyncdial = TRUE, ...) {
+server <- function(url, nodes = NULL, ...,
+                   idletime = Inf, walltime = Inf, tasklimit = Inf,
+                   pollfreqh = 5L, pollfreql = 50L, asyncdial = TRUE) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = if (asyncdial) TRUE else NA)
   devnull <- file(nullfile(), open = "w", blocking = FALSE)

@@ -1,5 +1,6 @@
 # mirai 0.7.2.9015 (development)
 
+* mirai 0.8.0 is a major feature release. Special thanks to @wlandau for suggestions, discussion and testing for this release.
 * Compute profiles have been introduced through a new `.compute` argument in `daemons()` and `mirai()` for sending tasks with heterogeneous compute requirements.
   + `daemons()` can create new profiles to connect to different resources e.g. servers with GPU, accelerators etc.
   + `mirai()` tasks can be sent using a specific compute profile.
@@ -7,7 +8,7 @@
   + Allows supplying the argument `nodes` for running an active queue (task scheduler).
   + Supplying a client URL with a zero port number `:0` will automatically assign a free ephemeral port, with the actual port number subsequently reported by `daemons()`.
   + Calling with no arguments now provides an improved view of the current number of connections / daemons / nodes, replacing the previous `daemons("view")` functionality.
-* `server()` gains the following arguments (special thanks to @wlandau for the suggestions, discussion and testing for many of the new features):
+* `server()` gains the following arguments:
   + `nodes` for launching an active queue with the specified number of nodes.
   + `idletime` for specifying an idle time, since completion of the last task before exiting.
   + `walltime` for specifying a soft walltime before exiting.
