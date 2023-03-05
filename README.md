@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 1.266 0.951 -0.408 -5.948 0.486 ...
+#>  num [1:100000000] -0.661 -0.7 2.277 0.624 1.041 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 1.266 0.951 -0.408 -5.948 0.486 ...
+#>  num [1:100000000] -0.661 -0.7 2.277 0.624 1.041 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -202,13 +202,12 @@ for (i in 1:10) {
   
 }
 #> iteration 1 successful 
-#> Error: random error 
 #> iteration 2 successful 
+#> Error: random error 
 #> iteration 3 successful 
 #> iteration 4 successful 
 #> iteration 5 successful 
 #> iteration 6 successful 
-#> Error: random error 
 #> iteration 7 successful 
 #> iteration 8 successful 
 #> iteration 9 successful 
@@ -300,11 +299,11 @@ daemons()
 #> [1] 1
 #> 
 #> $nodes
-#> abstract://n3351115381  abstract://n533721694 abstract://n1473004197 
+#> abstract://n2422846517 abstract://n2414625238 abstract://n2070604781 
 #>                      1                      1                      1 
-#> abstract://n4133315723 abstract://n3138110097 abstract://n2005793604 
+#> abstract://n3994341872  abstract://n603575174 abstract://n3549983888 
 #>                      1                      1                      1 
-#>  abstract://n559636641    abstract://n8139312 
+#> abstract://n3076438152 abstract://n1670992818 
 #>                      1                      1
 ```
 

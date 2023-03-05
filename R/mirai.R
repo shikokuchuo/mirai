@@ -84,22 +84,30 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
 
   if (is.numeric(nodes)) {
 
-    auto <- length(url) == 1L
+    ctrchannel <- length(url) > 1L
+    auto <- length(url) < 3L
     nodes <- as.integer(nodes)
-    vectorised <- length(url) == nodes + 1L
+    vectorised <- length(url) == nodes + 2L
     seq_nodes <- seq_len(nodes)
     queue <- vector(mode = "list", length = nodes)
     servers <- vector(mode = "list", length = nodes)
+    if (ctrchannel) {
+      sockc <- socket(protocol = "rep", dial = url[2L], autostart = if (asyncdial) TRUE else NA)
+      on.exit(expr = close(sockc), add = TRUE, after = FALSE)
+      ctx <- context(sockc)
+      req <- recv_aio(ctx, mode = 5L)
+      controlq <- list(ctx = ctx, req = req)
+    }
     if (!auto && !vectorised) {
-      baseurl <- parse_url(url[2L])
+      baseurl <- parse_url(url[3L])
       ports <- if (baseurl[["scheme"]] == "tcp") sprintf("%d", seq.int(baseurl[["port"]], length.out = nodes))
     }
 
     for (i in seq_nodes) {
       nurl <- if (auto) sprintf(.urlfmt, random()) else
-        if (vectorised) url[i + 1L] else
-          if (is.null(ports)) sprintf("%s/%d", url[2L], i) else
-            sub(ports[1L], ports[i], url[2L], fixed = TRUE)
+        if (vectorised) url[i + 2L] else
+          if (is.null(ports)) sprintf("%s/%d", url[3L], i) else
+            sub(ports[1L], ports[i], url[3L], fixed = TRUE)
       nsock <- socket(protocol = "req", listen = nurl)
       if (auto)
         launch_daemon(sprintf("mirai::server(\"%s\")", nurl))
@@ -130,38 +138,30 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
           msleep(pollfreqh)
         }
 
+        ctrchannel && !unresolved(controlq[["req"]]) && {
+          send(controlq[["ctx"]], data = scan_nodes(servers), mode = 1L)
+          ctx <- context(sockc)
+          req <- recv_aio(ctx, mode = 5L)
+          controlq <- list(ctx = ctx, req = req)
+          next
+        }
+
         active || {
-          for (i in seq_nodes) {
-            data <- .subset2(queue[[i]][["req"]], "data")
-            missing(data) && {
-              send(queue[[i]][["ctx"]], data = scan_nodes(servers), mode = 1L)
-              ctx <- context(sock)
-              req <- recv_aio(ctx, mode = 1L)
-              queue[[i]] <- list(ctx = ctx, req = req)
-              break
-            }
-          }
+          for (i in seq_nodes)
+            r <- .subset2(queue[[i]][["req"]], "data")
           next
         }
 
         if (length(free))
           for (q in free)
             for (i in seq_nodes)
-              if (length(queue[[i]]) == 2L) {
-                data <- .subset2(queue[[i]][["req"]], "data")
-                missing(data) && {
-                  queue[[i]][["res"]] <- list(data = scan_nodes(servers))
-                  queue[[i]][["daemon"]] <- q
-                  servers[[q]][["free"]] <- FALSE
-                  break
-                }
-                unresolved(data) && next
+              if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
                 if (auto && active < nodes)
                   for (j in which(!activevec))
                     launch_daemon(sprintf("mirai::server(\"%s\")", servers[[j]][["url"]]))
                 ctx <- context(servers[[q]][["sock"]])
                 queue[[i]][["rctx"]] <- ctx
-                queue[[i]][["res"]] <- request(ctx, data = data, send_mode = 1L, recv_mode = 1L)
+                queue[[i]][["res"]] <- request(ctx, data = .subset2(queue[[i]][["req"]], "data"), send_mode = 1L, recv_mode = 1L)
                 queue[[i]][["daemon"]] <- q
                 servers[[q]][["free"]] <- FALSE
                 break
@@ -511,7 +511,7 @@ daemons <- function(value, ..., .compute = "default") {
   missing(value) &&
     return(list(connections = if (length(..[[.compute]][["sock"]])) stat(..[[.compute]][["sock"]], "pipes") else 0,
                 daemons = if (length(..[[.compute]][["proc"]])) ..[[.compute]][["proc"]] else 0L,
-                nodes = if (length(..[[.compute]][["nodes"]])) query_nodes(.compute) else NA))
+                nodes = if (length(..[[.compute]][["sockc"]])) query_nodes(.compute) else NA))
 
   if (is.null(..[[.compute]])) `[[<-`(.., .compute, new.env(hash = FALSE, parent = environment(daemons)))
 
@@ -526,14 +526,16 @@ daemons <- function(value, ..., .compute = "default") {
     }
     if (length(nodes)) {
       url <- sprintf(.urlfmt, random())
+      urlc <- sprintf("%s%s", url, "c")
       sock <- socket(protocol = "req", listen = url)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
+      sockc <- socket(protocol = "req", listen = urlc)
       dotstring <- paste(names(dots), dots, sep = "=", collapse = ",")
       args <- sprintf("mirai::server(c(%s),%s)",
-                      paste(sprintf("\"%s\"", c(url, value)), collapse = ","),
+                      paste(sprintf("\"%s\"", c(url, urlc, value)), collapse = ","),
                       dotstring)
       launch_daemon(args)
-      `[[<-`(`[[<-`(..[[.compute]], "nodes", nodes), "args", args)
+      `[[<-`(`[[<-`(..[[.compute]], "sockc", sockc), "args", args)
       proc <- 1
     } else {
       sock <- socket(protocol = "req", listen = value)
@@ -560,8 +562,15 @@ daemons <- function(value, ..., .compute = "default") {
     if (...length()) {
       dots <- substitute(alist(...))[-1L]
       dotstring <- paste(names(dots), dots, sep = "=", collapse = ",")
-      args <- sprintf("mirai::server(\"%s\",%s)", url, dotstring)
-      `[[<-`(..[[.compute]], "nodes", as.integer(.subset2(dots, "n", exact = FALSE)))
+      nodes <- .subset2(dots, "n", exact = FALSE)
+      if (length(nodes)) {
+        urlc <- sprintf("%s%s", url, "c")
+        sockc <- socket(protocol = "req", listen = urlc)
+        args <- sprintf("mirai::server(c(\"%s\",\"%s\"),%s)", url, urlc, dotstring)
+        `[[<-`(..[[.compute]], "sockc", sockc)
+      } else {
+        args <- sprintf("mirai::server(\"%s\",%s)", url, dotstring)
+      }
     } else {
       args <- sprintf("mirai::server(\"%s\")", url)
     }
@@ -594,7 +603,7 @@ daemons <- function(value, ..., .compute = "default") {
     }
     if (proc == 0L) {
       close(..[[.compute]][["sock"]])
-      `[[<-`(`[[<-`(`[[<-`(..[[.compute]], "sock", NULL), "nodes", NULL), "local", NULL)
+      `[[<-`(`[[<-`(`[[<-`(..[[.compute]], "sock", NULL), "sockc", NULL), "local", NULL)
       gc(verbose = FALSE)
     }
   }
@@ -847,7 +856,7 @@ scan_nodes <- function(servers)
   `names<-`(unlist(lapply(servers, scan_node)), unlist(lapply(servers, read_url)))
 
 query_nodes <- function(.compute)
-  .subset2(call_mirai(request(context(..[[.compute]][["sock"]]), data = .__rma__.,
+  .subset2(call_mirai(request(context(..[[.compute]][["sockc"]]), data = 0L,
                               send_mode = 2L, recv_mode = 1L, timeout = 1000L)), "data")
 
 launch_daemon <- function(args)
