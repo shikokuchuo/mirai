@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -0.6609 0.761 -0.0453 0.4544 0.1634 ...
+#>  num [1:100000000] 1.266 0.951 -0.408 -5.948 0.486 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.6609 0.761 -0.0453 0.4544 0.1634 ...
+#>  num [1:100000000] 1.266 0.951 -0.408 -5.948 0.486 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -202,12 +202,13 @@ for (i in 1:10) {
   
 }
 #> iteration 1 successful 
-#> iteration 2 successful 
 #> Error: random error 
+#> iteration 2 successful 
 #> iteration 3 successful 
 #> iteration 4 successful 
 #> iteration 5 successful 
 #> iteration 6 successful 
+#> Error: random error 
 #> iteration 7 successful 
 #> iteration 8 successful 
 #> iteration 9 successful 
@@ -299,11 +300,11 @@ daemons()
 #> [1] 1
 #> 
 #> $nodes
-#> abstract://n3970620801 abstract://n2144547045 abstract://n3012492010 
+#> abstract://n3351115381  abstract://n533721694 abstract://n1473004197 
 #>                      1                      1                      1 
-#>  abstract://n977458567 abstract://n2078445424 abstract://n1764814410 
+#> abstract://n4133315723 abstract://n3138110097 abstract://n2005793604 
 #>                      1                      1                      1 
-#> abstract://n2701482796 abstract://n2118000075 
+#>  abstract://n559636641    abstract://n8139312 
 #>                      1                      1
 ```
 
@@ -357,12 +358,12 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555")'
+    Rscript -e 'mirai::server("tcp://192.168.0.2:5555")'
 
 Alternatively, supply ‘nodes’ to launch an active server queue directing
 a cluster with the specified number of nodes:
 
-    Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555",nodes=8)'
+    Rscript -e 'mirai::server("tcp://192.168.0.2:5555",nodes=8)'
 
 –
 
@@ -410,9 +411,9 @@ port number, which can be made unique for each node. In this way a
 client can connect to an arbitrary number of servers over a single port.
 
 ``` r
-# daemons("ws://192.168.0.2:5556", nodes = 4)
+# daemons("ws://192.168.0.2:5555", nodes = 4)
 
-daemons("ws://:5556", nodes = 4)
+daemons("ws://:5555", nodes = 4)
 #> [1] 1
 ```
 
@@ -433,10 +434,10 @@ On the server or servers, `server()` may be called from an R session, or
 an Rscript invocation from a shell. Each instance should connect to a
 unique client URL:
 
-    Rscript -e 'mirai::server("ws://192.168.0.2:5556/1")'
-    Rscript -e 'mirai::server("ws://192.168.0.2:5556/2")'
-    Rscript -e 'mirai::server("ws://192.168.0.2:5556/3")'
-    Rscript -e 'mirai::server("ws://192.168.0.2:5556/4")'
+    Rscript -e 'mirai::server("ws://192.168.0.2:5555/1")'
+    Rscript -e 'mirai::server("ws://192.168.0.2:5555/2")'
+    Rscript -e 'mirai::server("ws://192.168.0.2:5555/3")'
+    Rscript -e 'mirai::server("ws://192.168.0.2:5555/4")'
 
 –
 
@@ -451,7 +452,7 @@ daemons()
 #> [1] 1
 #> 
 #> $nodes
-#> ws://:5556/1 ws://:5556/2 ws://:5556/3 ws://:5556/4 
+#> ws://:5555/1 ws://:5555/2 ws://:5555/3 ws://:5555/4 
 #>            1            1            1            1
 ```
 

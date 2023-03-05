@@ -584,8 +584,7 @@ daemons <- function(value, ..., .compute = "default") {
       for (i in seq_len(delta)) {
         ctx <- context(..[[.compute]][["sock"]])
         res <- send(ctx, data = .__scm__., mode = 2L, block = 2000L)
-        if (res)
-          out <- out + 1L
+        if (res) out <- out + 1L
         close(ctx)
       }
       proc <- proc - delta

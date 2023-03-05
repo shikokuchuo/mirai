@@ -277,13 +277,13 @@ The network topology is such that the client listens at the above address, and d
 On the server, `server()` may be called from an R session, or an Rscript invocation from a shell. This sets up a remote daemon process that connects to the client URL and receives tasks:
 
 ```
-Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555")'
+Rscript -e 'mirai::server("tcp://192.168.0.2:5555")'
 ```
 
 Alternatively, supply 'nodes' to launch an active server queue directing a cluster with the specified number of nodes:
 
 ```
-Rscript --vanilla -e 'mirai::server("tcp://192.168.0.2:5555",nodes=8)'
+Rscript -e 'mirai::server("tcp://192.168.0.2:5555",nodes=8)'
 ```
 
 --
@@ -315,9 +315,9 @@ The below automatically starts a server queue as a daemon process on the local c
 It is recommended to use a websocket URL starting `ws://` instead of TCP in this scenario. This is as a websocket URL supports a path after the port number, which can be made unique for each node. In this way a client can connect to an arbitrary number of servers over a single port.
 
 ```{r localqueue}
-# daemons("ws://192.168.0.2:5556", nodes = 4)
+# daemons("ws://192.168.0.2:5555", nodes = 4)
 
-daemons("ws://:5556", nodes = 4)
+daemons("ws://:5555", nodes = 4)
 ```
 
 Above, a single URL was supplied, in which case a sequence is automatically appended to the path `/1` through `/4` as 4 nodes were specified.
@@ -333,10 +333,10 @@ Alternatively, supplying a vector of URLs (the same length as the number of node
 On the server or servers, `server()` may be called from an R session, or an Rscript invocation from a shell. Each instance should connect to a unique client URL:
 
 ```
-Rscript -e 'mirai::server("ws://192.168.0.2:5556/1")'
-Rscript -e 'mirai::server("ws://192.168.0.2:5556/2")'
-Rscript -e 'mirai::server("ws://192.168.0.2:5556/3")'
-Rscript -e 'mirai::server("ws://192.168.0.2:5556/4")'
+Rscript -e 'mirai::server("ws://192.168.0.2:5555/1")'
+Rscript -e 'mirai::server("ws://192.168.0.2:5555/2")'
+Rscript -e 'mirai::server("ws://192.168.0.2:5555/3")'
+Rscript -e 'mirai::server("ws://192.168.0.2:5555/4")'
 
 ```
 ```{r remotes2, include=FALSE}
