@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9017</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9018</span>
       </span>
     </div>
 
@@ -150,11 +150,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 1.266 0.951 -0.408 -5.948 0.486 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.661 -0.7 2.277 0.624 1.041 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 1.266 0.951 -0.408 -5.948 0.486 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.661 -0.7 2.277 0.624 1.041 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -215,13 +215,12 @@
 <span>  </span>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; iteration 1 successful </span></span>
-<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 2 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 3 successful </span></span>
 <span><span class="co">#&gt; iteration 4 successful </span></span>
 <span><span class="co">#&gt; iteration 5 successful </span></span>
 <span><span class="co">#&gt; iteration 6 successful </span></span>
-<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 7 successful </span></span>
 <span><span class="co">#&gt; iteration 8 successful </span></span>
 <span><span class="co">#&gt; iteration 9 successful </span></span>
@@ -277,11 +276,11 @@
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $nodes</span></span>
-<span><span class="co">#&gt; abstract://n3351115381  abstract://n533721694 abstract://n1473004197 </span></span>
+<span><span class="co">#&gt; abstract://n2422846517 abstract://n2414625238 abstract://n2070604781 </span></span>
 <span><span class="co">#&gt;                      1                      1                      1 </span></span>
-<span><span class="co">#&gt; abstract://n4133315723 abstract://n3138110097 abstract://n2005793604 </span></span>
+<span><span class="co">#&gt; abstract://n3994341872  abstract://n603575174 abstract://n3549983888 </span></span>
 <span><span class="co">#&gt;                      1                      1                      1 </span></span>
-<span><span class="co">#&gt;  abstract://n559636641    abstract://n8139312 </span></span>
+<span><span class="co">#&gt; abstract://n3076438152 abstract://n1670992818 </span></span>
 <span><span class="co">#&gt;                      1                      1</span></span></code></pre></div>
 <p>The active queue consumes additional resources, however ensures load balancing and optimal scheduling of tasks to nodes.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
