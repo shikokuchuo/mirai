@@ -112,6 +112,7 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
       if (parse_url(opt(attr(nsock, "listener")[[1]], "url"))[["port"]] == "0") {
         realport <- opt(attr(nsock, "listener")[[1]], "tcp-bound-port")
         nurl <- sub("//:0", sprintf("//:%d", realport), nurl)
+        url[3L] <- sub("//:0", sprintf("//:%d", realport), url[3L])
         close(nsock)
         nsock <- socket(protocol = "req", listen = nurl)
       }
@@ -543,7 +544,7 @@ daemons <- function(value, ..., .compute = "default") {
                       dotstring)
       launch_daemon(args)
       `[[<-`(`[[<-`(..[[.compute]], "sockc", sockc), "args", args)
-      proc <- 1
+      proc <- 1L
     } else {
       sock <- socket(protocol = "req", listen = value)
       if (parse_url(opt(attr(sock, "listener")[[1]], "url"))[["port"]] == "0") {

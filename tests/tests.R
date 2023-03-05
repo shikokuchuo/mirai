@@ -40,7 +40,7 @@ nanotest(daemons()[["daemons"]] == 0L)
 nanotest(daemons(value <- sprintf(mirai:::.urlfmt, runif(1, 1000000, 9999999))) == value)
 nanotest(daemons(value <- "ws://:0") != value)
 nanotestw(daemons(0L) == 0L)
-Sys.sleep(2.5)
+Sys.sleep(3L)
 nanotest(daemons(1L, tasklimit = 5L, .compute = "new") == 1L)
 mn <- mirai("test", .compute = "new")
 nanotest(call_mirai(mn)$data == "test")
@@ -60,7 +60,7 @@ nanotesterr(daemons(-1), "zero")
 nanotesterr(daemons(raw(0L)), "numeric, character")
 nanotesterr(server("URL"), "argument")
 nanotest(daemons(0L) == 0L)
-Sys.sleep(2.5)
+Sys.sleep(3L)
 me$data
 m
 b
