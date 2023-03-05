@@ -100,7 +100,7 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
     }
     if (!auto && !vectorised) {
       baseurl <- parse_url(url[3L])
-      ports <- if (baseurl[["scheme"]] == "tcp") sprintf("%d", seq.int(baseurl[["port"]], length.out = nodes))
+      ports <- if (grepl("tcp", baseurl[["scheme"]], fixed = TRUE)) sprintf("%d", seq.int(baseurl[["port"]], length.out = nodes))
     }
 
     for (i in seq_nodes) {
@@ -109,6 +109,13 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
           if (is.null(ports)) sprintf("%s/%d", url[3L], i) else
             sub(ports[1L], ports[i], url[3L], fixed = TRUE)
       nsock <- socket(protocol = "req", listen = nurl)
+      if (parse_url(opt(attr(nsock, "listener")[[1]], "url"))[["port"]] == "0") {
+        realport <- opt(attr(nsock, "listener")[[1]], "tcp-bound-port")
+        nurl <- sub("//:0", sprintf("//:%d", realport), nurl)
+        close(nsock)
+        nsock <- socket(protocol = "req", listen = nurl)
+      }
+
       if (auto)
         launch_daemon(sprintf("mirai::server(\"%s\")", nurl))
       servers[[i]] <- list(url = nurl, sock = nsock, free = TRUE)
@@ -411,9 +418,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     5555 on all interfaces on the local host, specify either 'tcp://:5555',
 #'     'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
 #'
-#'     When using the TCP transport, specifying the wildcard value zero as the
-#'     port number e.g. 'tcp://:0' will automatically assign a free ephemeral
-#'     port. Use \code{daemons()} to query the actual assigned port at any time.
+#'     Specifying the wildcard value zero for the port number e.g. 'tcp://:0' or
+#'     'ws://:0' will automatically assign a free ephemeral port. Use
+#'     \code{daemons()} to query the actual assigned port at any time.
 #'
 #'     The network topology is such that server daemons (started with
 #'     \code{\link{server}}) dial into the client, which listens at the client
@@ -539,6 +546,11 @@ daemons <- function(value, ..., .compute = "default") {
       proc <- 1
     } else {
       sock <- socket(protocol = "req", listen = value)
+      if (parse_url(opt(attr(sock, "listener")[[1]], "url"))[["port"]] == "0") {
+        realport <- opt(attr(sock, "listener")[[1]], "tcp-bound-port")
+        close(sock)
+        sock <- socket(protocol = "req", listen = sub("//:0", sprintf("//:%d", realport), value))
+      }
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       proc <- opt(attr(sock, "listener")[[1L]], "url")
     }

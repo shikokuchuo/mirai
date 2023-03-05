@@ -97,9 +97,9 @@ Use \code{daemons(0)} to reset all daemon connections at any time.
     5555 on all interfaces on the local host, specify either 'tcp://:5555',
     'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
 
-    When using the TCP transport, specifying the wildcard value zero as the
-    port number e.g. 'tcp://:0' will automatically assign a free ephemeral
-    port. Use \code{daemons()} to query the actual assigned port at any time.
+    Specifying the wildcard value zero for the port number e.g. 'tcp://:0' or
+    'ws://:0' will automatically assign a free ephemeral port. Use
+    \code{daemons()} to query the actual assigned port at any time.
 
     The network topology is such that server daemons (started with
     \code{\link{server}}) dial into the client, which listens at the client
