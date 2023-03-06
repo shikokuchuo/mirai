@@ -109,8 +109,8 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
           if (is.null(ports)) sprintf("%s/%d", url[3L], i) else
             sub(ports[1L], ports[i], url[3L], fixed = TRUE)
       nsock <- socket(protocol = "req", listen = nurl)
-      if (!auto && parse_url(opt(attr(nsock, "listener")[[1]], "url"))[["port"]] == "0") {
-        realport <- opt(attr(nsock, "listener")[[1]], "tcp-bound-port")
+      if (!auto && parse_url(opt(attr(nsock, "listener")[[1L]], "url"))[["port"]] == "0") {
+        realport <- opt(attr(nsock, "listener")[[1L]], "tcp-bound-port")
         nurl <- sub("(?<=:)0(?![^/])", realport, nurl, perl = TRUE)
         if (!vectorised) url[3L] <- sub("(?<=:)0(?![^/])", realport, url[3L], perl = TRUE)
         close(nsock)
@@ -139,7 +139,7 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
         active <- sum(activevec)
         free <- which(unlist(lapply(servers, .subset2, "free")) & activevec)
         if (length(free) == active) {
-          if (!idle) idle <- mclock()
+          if (active && !idle) idle <- mclock()
           msleep(pollfreql)
         } else {
           if (idle) idle <- FALSE
@@ -549,7 +549,7 @@ daemons <- function(value, ..., .compute = "default") {
       sock <- socket(protocol = "req", listen = value)
       proc <- opt(attr(sock, "listener")[[1L]], "url")
       if (parse_url(proc)[["port"]] == "0")
-        proc <- sub("(?<=:)0(?![^/])", opt(attr(sock, "listener")[[1]], "tcp-bound-port"), proc, perl = TRUE)
+        proc <- sub("(?<=:)0(?![^/])", opt(attr(sock, "listener")[[1L]], "tcp-bound-port"), proc, perl = TRUE)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
     }
     `[[<-`(`[[<-`(`[[<-`(..[[.compute]], "sock", sock), "local", FALSE), "proc", proc)
