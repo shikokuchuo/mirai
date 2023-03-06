@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -0.661 -0.7 2.277 0.624 1.041 ...
+#>  num [1:100000000] 1.8655 -0.6296 3.3902 -1.4058 0.0579 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.661 -0.7 2.277 0.624 1.041 ...
+#>  num [1:100000000] 1.8655 -0.6296 3.3902 -1.4058 0.0579 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -203,13 +203,13 @@ for (i in 1:10) {
 }
 #> iteration 1 successful 
 #> iteration 2 successful 
-#> Error: random error 
 #> iteration 3 successful 
 #> iteration 4 successful 
 #> iteration 5 successful 
 #> iteration 6 successful 
 #> iteration 7 successful 
 #> iteration 8 successful 
+#> Error: random error 
 #> iteration 9 successful 
 #> iteration 10 successful
 ```
@@ -299,11 +299,11 @@ daemons()
 #> [1] 1
 #> 
 #> $nodes
-#> abstract://n2422846517 abstract://n2414625238 abstract://n2070604781 
+#>  abstract://n917981926 abstract://n2182945584  abstract://n217632536 
 #>                      1                      1                      1 
-#> abstract://n3994341872  abstract://n603575174 abstract://n3549983888 
+#> abstract://n1335550386 abstract://n1506038381  abstract://n437759450 
 #>                      1                      1                      1 
-#> abstract://n3076438152 abstract://n1670992818 
+#> abstract://n2323736272  abstract://n229559106 
 #>                      1                      1
 ```
 
@@ -405,9 +405,10 @@ The below automatically starts a server queue as a daemon process on the
 local client machine.
 
 It is recommended to use a websocket URL starting `ws://` instead of TCP
-in this scenario. This is as a websocket URL supports a path after the
-port number, which can be made unique for each node. In this way a
-client can connect to an arbitrary number of servers over a single port.
+in this scenario (the two can be used interchangeably). This is as a
+websocket URL supports a path after the port number, which can be made
+unique for each node. In this way a client can connect to an arbitrary
+number of nodes over a single port.
 
 ``` r
 # daemons("ws://192.168.0.2:5555", nodes = 4)
@@ -424,7 +425,7 @@ Alternatively, supplying a vector of URLs (the same length as the number
 of nodes) allows the use of arbitrary port numbers / paths, e.g.:
 
 ``` r
-# daemons(c("tcp://:5555/cpu", "tcp://:5555/gpu", "tcp://:12560", "tcp://:12560/2"), nodes = 4)
+# daemons(c("ws://:5555/cpu", "ws://:5555/gpu", "ws://:12560", "ws://:12560/2"), nodes = 4)
 ```
 
 –

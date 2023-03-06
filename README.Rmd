@@ -312,7 +312,7 @@ Assuming that the local network address of the current machine is '192.168.0.2',
 
 The below automatically starts a server queue as a daemon process on the local client machine.
 
-It is recommended to use a websocket URL starting `ws://` instead of TCP in this scenario. This is as a websocket URL supports a path after the port number, which can be made unique for each node. In this way a client can connect to an arbitrary number of servers over a single port.
+It is recommended to use a websocket URL starting `ws://` instead of TCP in this scenario (the two can be used interchangeably). This is as a websocket URL supports a path after the port number, which can be made unique for each node. In this way a client can connect to an arbitrary number of nodes over a single port.
 
 ```{r localqueue}
 # daemons("ws://192.168.0.2:5555", nodes = 4)
@@ -325,7 +325,7 @@ Above, a single URL was supplied, in which case a sequence is automatically appe
 Alternatively, supplying a vector of URLs (the same length as the number of nodes) allows the use of arbitrary port numbers / paths, e.g.:
 
 ```{r vectorqueue}
-# daemons(c("tcp://:5555/cpu", "tcp://:5555/gpu", "tcp://:12560", "tcp://:12560/2"), nodes = 4)
+# daemons(c("ws://:5555/cpu", "ws://:5555/gpu", "ws://:12560", "ws://:12560/2"), nodes = 4)
 ```
 
 --
