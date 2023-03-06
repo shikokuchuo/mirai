@@ -150,11 +150,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.661 -0.7 2.277 0.624 1.041 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 1.8655 -0.6296 3.3902 -1.4058 0.0579 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.661 -0.7 2.277 0.624 1.041 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 1.8655 -0.6296 3.3902 -1.4058 0.0579 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -216,13 +216,13 @@
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; iteration 1 successful </span></span>
 <span><span class="co">#&gt; iteration 2 successful </span></span>
-<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 3 successful </span></span>
 <span><span class="co">#&gt; iteration 4 successful </span></span>
 <span><span class="co">#&gt; iteration 5 successful </span></span>
 <span><span class="co">#&gt; iteration 6 successful </span></span>
 <span><span class="co">#&gt; iteration 7 successful </span></span>
 <span><span class="co">#&gt; iteration 8 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 9 successful </span></span>
 <span><span class="co">#&gt; iteration 10 successful</span></span></code></pre></div>
 <p>Further, by testing the return value of each ‘mirai’ for errors, error-handling code is then able to automate recovery and re-attempts, as in the above example. Further details on <a href="#errors-interrupts-and-timeouts">error handling</a> can be found in the section below.</p>
@@ -276,11 +276,11 @@
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $nodes</span></span>
-<span><span class="co">#&gt; abstract://n2422846517 abstract://n2414625238 abstract://n2070604781 </span></span>
+<span><span class="co">#&gt;  abstract://n917981926 abstract://n2182945584  abstract://n217632536 </span></span>
 <span><span class="co">#&gt;                      1                      1                      1 </span></span>
-<span><span class="co">#&gt; abstract://n3994341872  abstract://n603575174 abstract://n3549983888 </span></span>
+<span><span class="co">#&gt; abstract://n1335550386 abstract://n1506038381  abstract://n437759450 </span></span>
 <span><span class="co">#&gt;                      1                      1                      1 </span></span>
-<span><span class="co">#&gt; abstract://n3076438152 abstract://n1670992818 </span></span>
+<span><span class="co">#&gt; abstract://n2323736272  abstract://n229559106 </span></span>
 <span><span class="co">#&gt;                      1                      1</span></span></code></pre></div>
 <p>The active queue consumes additional resources, however ensures load balancing and optimal scheduling of tasks to nodes.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -336,7 +336,7 @@
 </h4>
 <p>Assuming that the local network address of the current machine is ‘192.168.0.2’, and 4 nodes are to be allocated on remote servers.</p>
 <p>The below automatically starts a server queue as a daemon process on the local client machine.</p>
-<p>It is recommended to use a websocket URL starting <code>ws://</code> instead of TCP in this scenario. This is as a websocket URL supports a path after the port number, which can be made unique for each node. In this way a client can connect to an arbitrary number of servers over a single port.</p>
+<p>It is recommended to use a websocket URL starting <code>ws://</code> instead of TCP in this scenario (the two can be used interchangeably). This is as a websocket URL supports a path after the port number, which can be made unique for each node. In this way a client can connect to an arbitrary number of nodes over a single port.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># daemons("ws://192.168.0.2:5555", nodes = 4)</span></span>
 <span></span>
@@ -345,7 +345,7 @@
 <p>Above, a single URL was supplied, in which case a sequence is automatically appended to the path <code>/1</code> through <code>/4</code> as 4 nodes were specified.</p>
 <p>Alternatively, supplying a vector of URLs (the same length as the number of nodes) allows the use of arbitrary port numbers / paths, e.g.:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># daemons(c("tcp://:5555/cpu", "tcp://:5555/gpu", "tcp://:12560", "tcp://:12560/2"), nodes = 4)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># daemons(c("ws://:5555/cpu", "ws://:5555/gpu", "ws://:12560", "ws://:12560/2"), nodes = 4)</span></span></code></pre></div>
 <p>–</p>
 <p>On the server or servers, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation from a shell. Each instance should connect to a unique client URL:</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("ws://192.168.0.2:5555/1")'</span></span>
