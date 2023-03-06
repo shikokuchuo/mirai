@@ -111,8 +111,8 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
       nsock <- socket(protocol = "req", listen = nurl)
       if (!auto && parse_url(opt(attr(nsock, "listener")[[1]], "url"))[["port"]] == "0") {
         realport <- opt(attr(nsock, "listener")[[1]], "tcp-bound-port")
-        nurl <- sub("//:0", sprintf("//:%d", realport), nurl)
-        if (!vectorised) url[3L] <- sub("//:0", sprintf("//:%d", realport), url[3L])
+        nurl <- sub("(?<=:)0(?![\\w:\\]]+)", realport, nurl, perl = TRUE)
+        if (!vectorised) url[3L] <- sub("(?<=:)0(?![\\w:\\]]+)", realport, url[3L], perl = TRUE)
         close(nsock)
         nsock <- socket(protocol = "req", listen = nurl)
       }
@@ -548,12 +548,8 @@ daemons <- function(value, ..., .compute = "default") {
     } else {
       sock <- socket(protocol = "req", listen = value)
       proc <- opt(attr(sock, "listener")[[1L]], "url")
-      if (parse_url(proc)[["port"]] == "0") {
-        realport <- opt(attr(sock, "listener")[[1]], "tcp-bound-port")
-        close(sock)
-        sock <- socket(protocol = "req", listen = sub("//:0", sprintf("//:%d", realport), proc))
-        proc <- opt(attr(sock, "listener")[[1L]], "url")
-      }
+      if (parse_url(proc)[["port"]] == "0")
+        proc <- sub("(?<=:)0(?![\\w:\\]]+)", opt(attr(sock, "listener")[[1]], "tcp-bound-port"), proc, perl = TRUE)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
     }
     `[[<-`(`[[<-`(`[[<-`(..[[.compute]], "sock", sock), "local", FALSE), "proc", proc)
