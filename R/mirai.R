@@ -351,13 +351,13 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' @param ... additional named arguments passed to \code{\link{server}}.
 #'
 #'     \strong{nodes} supplying an integer number of nodes runs an active queue
-#'     with the specified number of nodes per daemon.
+#'     with the specified number of nodes.
 #' @param .compute (optional) character compute profile to use for creating the
 #'     daemons (each compute profile can have its own set of daemons for
 #'     connecting to different resources).
 #'
 #' @return Setting daemons: integer number of daemons set, or the character
-#'     client URL (1L if specifying a client URL with nodes).
+#'     client URL (1L if specifying 'nodes').
 #'
 #'     Viewing current status: a named list comprising: \itemize{
 #'     \item{\code{connections}} {- number of active connections.}
@@ -392,13 +392,14 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     similar-length tasks, or where the number of concurrent tasks typically
 #'     does not exceed available daemons.
 #'
-#'     Alternatively, supplying \code{nodes} as an additional argument causes
-#'     daemons to run as active queues with the specified number of nodes per
-#'     daemon e.g. \code{daemons(2, nodes = 8)} maintains 2 active queues with
-#'     8 nodes each. An active queue consumes additional resources, however
-#'     ensures load balancing and optimal scheduling of tasks to nodes. Note
-#'     that changing the number of nodes in an active queue requires a reset to
-#'     zero prior to specifying a revised number.
+#'     Alternatively, supplying \code{nodes} as an additional argument launches
+#'     an active queue with the specified number of nodes e.g.
+#'     \code{daemons(1, nodes = 8)}. When 'nodes' is specified, the value for
+#'     daemons is disregarded and one active queue is launched. An active queue
+#'     consumes additional resources, however ensures load balancing and optimal
+#'     scheduling of tasks to nodes. Note that changing the number of nodes in
+#'     an active queue requires a reset to zero prior to specifying a revised
+#'     number.
 #'
 #' @section Distributed Computing:
 #'
@@ -567,10 +568,11 @@ daemons <- function(value, ..., .compute = "default") {
       dotstring <- paste(names(dots), dots, sep = "=", collapse = ",")
       nodes <- .subset2(dots, "n", exact = FALSE)
       if (length(nodes)) {
+        delta <- 1L
         urlc <- sprintf("%s%s", url, "c")
         sockc <- socket(protocol = "bus", listen = urlc)
         args <- sprintf("mirai::server(c(\"%s\",\"%s\"),%s)", url, urlc, dotstring)
-        `[[<-`(..[[.compute]], "sockc", sockc)
+        `[[<-`(`[[<-`(..[[.compute]], "sockc", sockc), "local", TRUE)
       } else {
         args <- sprintf("mirai::server(\"%s\",%s)", url, dotstring)
       }
