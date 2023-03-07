@@ -37,9 +37,9 @@ Setting daemons: integer number of daemons set, or the character
     \item{\code{connections}} {- number of active connections.}
     \item{\code{daemons}} {- number of daemons, or the client URL when
     running a passive queue.}
-    \item{\code{nodes}} {- a matrix of statistics of currently active
-    (connected) nodes, as well as cumulative assigned and completed tasks
-    (reset if a node disconnects), or else NA if not running an active queue.}
+    \item{\code{nodes}} {- a matrix of URL, active (connected) and busy
+    status, as well as cumulative tasks assigned and completed (reset if a
+    node disconnects), or else NA if not running an active queue.}
     }
 }
 \description{
@@ -79,11 +79,11 @@ Use \code{daemons(0)} to reset all daemon connections at any time.
     Alternatively, supplying \code{nodes} as an additional argument launches
     an active queue with the specified number of nodes e.g.
     \code{daemons(1, nodes = 8)}. When 'nodes' is specified, the value for
-    daemons is disregarded and one active queue is launched. An active queue
-    consumes additional resources, however ensures load balancing and optimal
-    scheduling of tasks to nodes. Note that changing the number of nodes in
-    an active queue requires a reset to zero prior to specifying a revised
-    number.
+    daemons is disregarded and one active queue is launched in all cases. An
+    active queue consumes additional resources, however ensures load balancing
+    and optimal scheduling of tasks to nodes. Note that changing the number
+    of nodes in an active queue requires a reset to zero prior to specifying
+    a revised number.
 }
 
 \section{Distributed Computing}{
@@ -110,15 +110,16 @@ Use \code{daemons(0)} to reset all daemon connections at any time.
 
     \strong{Active Queues}
 
-    Supplying \code{nodes} as an additional argument will launch a local
-    daemon as an active server queue.
+    Supplying a client URL with \code{nodes} as an additional argument will
+    launch a local daemon as an active server queue.
 
-    It is recommended to use a websocket URL instead of TCP in this case so
-    that only one port is used to connect to the nodes. This is as a websocket
-    URL supports a path after the port number, which can be made unique for
-    each node. Specifying a single client URL such as 'ws://192.168.0.2:5555'
-    with 6 nodes will automatically append a sequence to the path, listening
-    to the URLs 'ws://192.168.0.2:5555/1' through 'ws://192.168.0.2:5555/6'.
+    It is recommended in this case to use a websocket URL rather than TCP.
+    This allows using only one port to connect to all nodes. This is as a
+    websocket URL supports a path after the port number, which can be made
+    unique for each node. Specifying a single client URL such as
+    'ws://192.168.0.2:5555' with 6 nodes will automatically append a sequence
+    to the path, listening to the URLs 'ws://192.168.0.2:5555/1' through
+    'ws://192.168.0.2:5555/6'.
 
     Alternatively, specify a vector of URLs the same length as 'nodes' to
     listen to arbitrary port numbers / paths.
