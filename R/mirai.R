@@ -100,7 +100,7 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
     }
     if (!auto && !vectorised) {
       baseurl <- parse_url(url[3L])
-      ports <- if (grepl("tcp", baseurl[["scheme"]], fixed = TRUE)) sprintf("%d", seq.int(baseurl[["port"]], length.out = nodes))
+      ports <- if (grepl("tcp", baseurl[["scheme"]], fixed = TRUE)) as.character(seq.int(baseurl[["port"]], length.out = nodes))
     }
 
     for (i in seq_nodes) {
@@ -199,7 +199,6 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
       data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
                        error = mk_mirai_error, interrupt = mk_interrupt_error)
       send(ctx, data = data, mode = 1L)
-      close(ctx)
       count <- count + 1L
 
     }
@@ -221,7 +220,6 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
   data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)
   send(ctx, data = data, mode = 1L)
-  close(ctx)
   msleep(2000L)
 
 }
@@ -599,17 +597,10 @@ daemons <- function(value, ..., .compute = "default") {
     if (n == 0L || local) {
       proc <- as.integer(stat(..[[.compute]][["sock"]], "pipes"))
       delta <- if (n == 0L) proc else min(-delta, proc)
-      out <- 0L
-      for (i in seq_len(delta)) {
-        ctx <- context(..[[.compute]][["sock"]])
-        res <- send(ctx, data = .__scm__., mode = 2L, block = 2000L)
-        if (res) out <- out + 1L
-        close(ctx)
-      }
+      for (i in seq_len(delta))
+        send(context(..[[.compute]][["sock"]]), data = .__scm__., mode = 2L, block = 1000L)
       proc <- proc - delta
       `[[<-`(..[[.compute]], "proc", proc)
-      if (out)
-        warning(sprintf("%d daemon shutdowns timed out (may require manual action)", out))
     }
     if (proc == 0L) {
       close(..[[.compute]][["sock"]])
@@ -863,7 +854,7 @@ scan_node <- function(node) stat(node[["sock"]], "pipes")
 read_url <- function(node) opt(attr(node[["sock"]], "listener")[[1L]], "url")
 
 scan_nodes <- function(servers)
-  `names<-`(unlist(lapply(servers, scan_node)), unlist(lapply(servers, read_url)))
+  unlist(`names<-`(lapply(servers, scan_node), lapply(servers, read_url)))
 
 query_nodes <- function(.compute)
   .subset2(call_mirai(request(context(..[[.compute]][["sockc"]]), data = 0L,

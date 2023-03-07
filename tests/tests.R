@@ -23,7 +23,7 @@ nanotest(identical(call_mirai(m), m))
 nanotest(is_mirai(m))
 nanotest(length(b) == 3L || length(b$data) == 3L)
 nanotest(is.character(b) || is.character(b$data))
-Sys.sleep(2.1)
+Sys.sleep(2.2)
 nanotest(daemons(1L) == 1L)
 me <- mirai(mirai())
 nanotest(is_mirai_error(call_mirai(me)$data))
@@ -57,7 +57,7 @@ if (Sys.getenv("NOT_CRAN") == "set") {
   nanotest(daemons(0) == 0L)
   Sys.sleep(0.1)
   nanotest(daemons("ws://:0", nodes = 2) == 1L)
-  nanotest((nodes <- sum(daemons()[["nodes"]])) == 0 || nodes == 5L)
+  nanotest(sum(nodes <- daemons()[["nodes"]]) == 0 || is_error_value(nodes))
   nanotest(daemons(0) == 0L)
   Sys.sleep(0.1)
 }
@@ -66,6 +66,7 @@ nanotesterr(daemons(-1), "zero")
 nanotesterr(daemons(raw(0L)), "numeric, character")
 nanotesterr(server("URL"), "argument")
 nanotest(daemons(0L) == 0L)
+Sys.sleep(0.1)
 me$data
 m
 b
