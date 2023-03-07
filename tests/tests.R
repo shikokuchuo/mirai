@@ -53,11 +53,11 @@ if (Sys.getenv("NOT_CRAN") == "set") {
   nanotest(daemons(1, nodes = 1, walltime = 10000L) == 1L)
   mq <- mirai("queue")
   nanotest(call_mirai(mq)$data == "queue")
-  nanotest(daemons()[["nodes"]] == 1L)
+  nanotest(is.matrix(daemons()[["nodes"]]))
   nanotest(daemons(0) == 0L)
   Sys.sleep(0.1)
   nanotest(daemons("ws://:0", nodes = 2) == 1L)
-  nanotest(sum(nodes <- daemons()[["nodes"]]) == 0 || is_error_value(nodes))
+  nanotest(is.matrix(nodes <- daemons()[["nodes"]]) || is_error_value(nodes))
   nanotest(daemons(0) == 0L)
   Sys.sleep(0.1)
 }

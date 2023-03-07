@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 1.8655 -0.6296 3.3902 -1.4058 0.0579 ...
+#>  num [1:100000000] 0.7709 0.8812 12.9918 0.0259 -0.7405 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 1.8655 -0.6296 3.3902 -1.4058 0.0579 ...
+#>  num [1:100000000] 0.7709 0.8812 12.9918 0.0259 -0.7405 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -299,12 +299,15 @@ daemons()
 #> [1] 1
 #> 
 #> $nodes
-#>  abstract://n917981926 abstract://n2182945584  abstract://n217632536 
-#>                      1                      1                      1 
-#> abstract://n1335550386 abstract://n1506038381  abstract://n437759450 
-#>                      1                      1                      1 
-#> abstract://n2323736272  abstract://n229559106 
-#>                      1                      1
+#>                        status_active tasks_assigned tasks_complete
+#> abstract://n1935442096             1              0              0
+#> abstract://n2147565434             1              0              0
+#> abstract://n820944890              1              0              0
+#> abstract://n1443421630             1              0              0
+#> abstract://n3482691348             1              0              0
+#> abstract://n1457004898             1              0              0
+#> abstract://n3656123428             1              0              0
+#> abstract://n3695239108             1              0              0
 ```
 
 The active queue consumes additional resources, however ensures load
@@ -452,8 +455,11 @@ daemons()
 #> [1] 1
 #> 
 #> $nodes
-#> ws://:5555/1 ws://:5555/2 ws://:5555/3 ws://:5555/4 
-#>            1            1            1            1
+#>              status_active tasks_assigned tasks_complete
+#> ws://:5555/1             1              0              0
+#> ws://:5555/2             1              0              0
+#> ws://:5555/3             1              0              0
+#> ws://:5555/4             1              0              0
 ```
 
 When running a local server queue to connect to remote nodes, there is
