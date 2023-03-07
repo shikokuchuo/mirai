@@ -39,7 +39,7 @@ Setting daemons: integer number of daemons set, or the character
     running a passive queue.}
     \item{\code{nodes}} {- a matrix of URL, active (connected) and busy
     status, as well as cumulative tasks assigned and completed (reset if a
-    node disconnects), or else NA if not running an active queue.}
+    node re-connects), or else NA if not running an active queue.}
     }
 }
 \description{

@@ -90,7 +90,7 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
     vectorised <- length(url) == nodes + 2L
     seq_nodes <- seq_len(nodes)
     servernames <- character(nodes)
-    complete <- assigned <- integer(nodes)
+    activestore <- complete <- assigned <- integer(nodes)
     serverfree <- !integer(nodes)
     servers <- queue <- vector(mode = "list", length = nodes)
 
@@ -140,8 +140,11 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
       while (count < tasklimit && mclock() - start < walltime && if (idle) mclock() - idle < idletime else TRUE) {
 
         activevec <- as.integer(unlist(lapply(servers, stat, "pipes")))
-        assigned <- activevec * assigned
-        complete <- activevec * complete
+        newcon <- as.logical(pmax.int(activevec - activestore, 0L))
+        activestore <- activevec
+        assigned[newcon] <- 0L
+        complete[newcon] <- 0L
+
         active <- sum(activevec)
         free <- which(serverfree & activevec)
         if (length(free) == active) {
@@ -379,7 +382,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     running a passive queue.}
 #'     \item{\code{nodes}} {- a matrix of URL, active (connected) and busy
 #'     status, as well as cumulative tasks assigned and completed (reset if a
-#'     node disconnects), or else NA if not running an active queue.}
+#'     node re-connects), or else NA if not running an active queue.}
 #'     }
 #'
 #' @details Use \code{daemons(0)} to reset all daemon connections at any time.
