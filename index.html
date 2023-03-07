@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9026</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9027</span>
       </span>
     </div>
 
@@ -150,11 +150,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.7709 0.8812 12.9918 0.0259 -0.7405 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 3.896 -1.84 0.432 -1.303 0.437 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.7709 0.8812 12.9918 0.0259 -0.7405 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 3.896 -1.84 0.432 -1.303 0.437 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -219,10 +219,10 @@
 <span><span class="co">#&gt; iteration 3 successful </span></span>
 <span><span class="co">#&gt; iteration 4 successful </span></span>
 <span><span class="co">#&gt; iteration 5 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 6 successful </span></span>
 <span><span class="co">#&gt; iteration 7 successful </span></span>
 <span><span class="co">#&gt; iteration 8 successful </span></span>
-<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 9 successful </span></span>
 <span><span class="co">#&gt; iteration 10 successful</span></span></code></pre></div>
 <p>Further, by testing the return value of each ‘mirai’ for errors, error-handling code is then able to automate recovery and re-attempts, as in the above example. Further details on <a href="#errors-interrupts-and-timeouts">error handling</a> can be found in the section below.</p>
@@ -276,15 +276,15 @@
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $nodes</span></span>
-<span><span class="co">#&gt;                        status_active tasks_assigned tasks_complete</span></span>
-<span><span class="co">#&gt; abstract://n1935442096             1              0              0</span></span>
-<span><span class="co">#&gt; abstract://n2147565434             1              0              0</span></span>
-<span><span class="co">#&gt; abstract://n820944890              1              0              0</span></span>
-<span><span class="co">#&gt; abstract://n1443421630             1              0              0</span></span>
-<span><span class="co">#&gt; abstract://n3482691348             1              0              0</span></span>
-<span><span class="co">#&gt; abstract://n1457004898             1              0              0</span></span>
-<span><span class="co">#&gt; abstract://n3656123428             1              0              0</span></span>
-<span><span class="co">#&gt; abstract://n3695239108             1              0              0</span></span></code></pre></div>
+<span><span class="co">#&gt;                        status_active status_busy tasks_assigned tasks_complete</span></span>
+<span><span class="co">#&gt; abstract://n9752396                1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n4138936330             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n2293062345             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n149260565              1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n276521527              1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n3201409789             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n1123645738             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n3835857894             1           0              0              0</span></span></code></pre></div>
 <p>The active queue consumes additional resources, however ensures load balancing and optimal scheduling of tasks to nodes.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
@@ -366,11 +366,11 @@
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $nodes</span></span>
-<span><span class="co">#&gt;              status_active tasks_assigned tasks_complete</span></span>
-<span><span class="co">#&gt; ws://:5555/1             1              0              0</span></span>
-<span><span class="co">#&gt; ws://:5555/2             1              0              0</span></span>
-<span><span class="co">#&gt; ws://:5555/3             1              0              0</span></span>
-<span><span class="co">#&gt; ws://:5555/4             1              0              0</span></span></code></pre></div>
+<span><span class="co">#&gt;              status_active status_busy tasks_assigned tasks_complete</span></span>
+<span><span class="co">#&gt; ws://:5555/1             1           0              0              0</span></span>
+<span><span class="co">#&gt; ws://:5555/2             1           0              0              0</span></span>
+<span><span class="co">#&gt; ws://:5555/3             1           0              0              0</span></span>
+<span><span class="co">#&gt; ws://:5555/4             1           0              0              0</span></span></code></pre></div>
 <p>When running a local server queue to connect to remote nodes, there is only a single connection to the local server queue. This then connects in turn to the nodes running on remote servers.</p>
 <p>The active queue will automatically adjust to the number of servers actually connected. Hence it is possible to dynamically scale up or down the number of server nodes (limited by the number of nodes initially specified).</p>
 <p>To reset all connections and revert to default behaviour:</p>

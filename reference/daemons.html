@@ -21,7 +21,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9026</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9027</span>
       </span>
     </div>
 
@@ -107,9 +107,9 @@ connecting to different resources).</p></dd>
 <p>Viewing current status: a named list comprising:</p><ul><li><p><code>connections</code> - number of active connections.</p></li>
 <li><p><code>daemons</code> - number of daemons, or the client URL when
     running a passive queue.</p></li>
-<li><p><code>nodes</code> - a matrix of statistics of currently active
-    (connected) nodes, as well as cumulative assigned and completed tasks
-    (reset if a node disconnects), or else NA if not running an active queue.</p></li>
+<li><p><code>nodes</code> - a matrix of URL, active (connected) and busy
+    status, as well as cumulative tasks assigned and completed (reset if a
+    node disconnects), or else NA if not running an active queue.</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
@@ -140,11 +140,11 @@ connecting to different resources).</p></dd>
 <p>Alternatively, supplying <code>nodes</code> as an additional argument launches
     an active queue with the specified number of nodes e.g.
     <code>daemons(1, nodes = 8)</code>. When 'nodes' is specified, the value for
-    daemons is disregarded and one active queue is launched. An active queue
-    consumes additional resources, however ensures load balancing and optimal
-    scheduling of tasks to nodes. Note that changing the number of nodes in
-    an active queue requires a reset to zero prior to specifying a revised
-    number.</p>
+    daemons is disregarded and one active queue is launched in all cases. An
+    active queue consumes additional resources, however ensures load balancing
+    and optimal scheduling of tasks to nodes. Note that changing the number
+    of nodes in an active queue requires a reset to zero prior to specifying
+    a revised number.</p>
     </div>
     <div id="distributed-computing">
     <h2>Distributed Computing</h2>
@@ -166,14 +166,15 @@ connecting to different resources).</p></dd>
     URL. In this way, network resources may be easily added or removed at any
     time. The client automatically distributes tasks to all connected servers.</p>
 <p><strong>Active Queues</strong></p>
-<p>Supplying <code>nodes</code> as an additional argument will launch a local
-    daemon as an active server queue.</p>
-<p>It is recommended to use a websocket URL instead of TCP in this case so
-    that only one port is used to connect to the nodes. This is as a websocket
-    URL supports a path after the port number, which can be made unique for
-    each node. Specifying a single client URL such as 'ws://192.168.0.2:5555'
-    with 6 nodes will automatically append a sequence to the path, listening
-    to the URLs 'ws://192.168.0.2:5555/1' through 'ws://192.168.0.2:5555/6'.</p>
+<p>Supplying a client URL with <code>nodes</code> as an additional argument will
+    launch a local daemon as an active server queue.</p>
+<p>It is recommended in this case to use a websocket URL rather than TCP.
+    This allows using only one port to connect to all nodes. This is as a
+    websocket URL supports a path after the port number, which can be made
+    unique for each node. Specifying a single client URL such as
+    'ws://192.168.0.2:5555' with 6 nodes will automatically append a sequence
+    to the path, listening to the URLs 'ws://192.168.0.2:5555/1' through
+    'ws://192.168.0.2:5555/6'.</p>
 <p>Alternatively, specify a vector of URLs the same length as 'nodes' to
     listen to arbitrary port numbers / paths.</p>
 <p>Individual <code><a href="server.html">server</a></code> instances should then be started on the

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9026</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9027</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.2.9026" id="mirai-0729026-development">mirai 0.7.2.9026 (development)<a class="anchor" aria-label="anchor" href="#mirai-0729026-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.7.2.9027" id="mirai-0729027-development">mirai 0.7.2.9027 (development)<a class="anchor" aria-label="anchor" href="#mirai-0729027-development"></a></h2>
 <ul><li>mirai 0.8.0 is a major feature release. Special thanks to <a href="https://github.com/wlandau" class="external-link">@wlandau</a> for suggestions, discussion and testing for many of the new capabilities.</li>
 <li>Compute profiles have been introduced through a new <code>.compute</code> argument in <code><a href="../reference/daemons.html">daemons()</a></code> and <code><a href="../reference/mirai.html">mirai()</a></code> for sending tasks with heterogeneous compute requirements.
 <ul><li>
@@ -66,7 +66,7 @@
 <code><a href="../reference/daemons.html">daemons()</a></code> interface has been simplified with a single <code>value</code> argument along with <code>...</code> for passing additional parameters.
 <ul><li>Allows supplying the argument <code>nodes</code> for running an active queue (task scheduler).</li>
 <li>Supplying a client URL with a zero port number <code>:0</code> will automatically assign a free ephemeral port, with the actual port number subsequently reported by <code><a href="../reference/daemons.html">daemons()</a></code>.</li>
-<li>Calling with no arguments now provides an improved view of the current number of connections / daemons / status of nodes (active, tasks assigned, tasks complete), replacing the previous <code>daemons("view")</code> functionality.</li>
+<li>Calling with no arguments now provides an improved view of the current number of connections / daemons / nodes (URL, active and busy status, tasks assigned and completed), replacing the previous <code>daemons("view")</code> functionality.</li>
 </ul></li>
 <li>
 <code><a href="../reference/server.html">server()</a></code> gains the following arguments:
