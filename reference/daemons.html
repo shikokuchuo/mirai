@@ -21,7 +21,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9024</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9025</span>
       </span>
     </div>
 
@@ -87,7 +87,7 @@
 <dt>...</dt>
 <dd><p>additional named arguments passed to <code><a href="server.html">server</a></code>.</p>
 <p><strong>nodes</strong> supplying an integer number of nodes runs an active queue
-    with the specified number of nodes per daemon.</p></dd>
+    with the specified number of nodes.</p></dd>
 
 
 <dt>.compute</dt>
@@ -101,7 +101,7 @@ connecting to different resources).</p></dd>
     
 
 <p>Setting daemons: integer number of daemons set, or the character
-    client URL (1L if specifying a client URL with nodes).</p>
+    client URL (1L if specifying 'nodes').</p>
 
 
 <p>Viewing current status: a named list comprising:</p><ul><li><p><code>connections</code> - number of active connections.</p></li>
@@ -136,13 +136,14 @@ connecting to different resources).</p></dd>
     resource-light approach, particularly suited to working with
     similar-length tasks, or where the number of concurrent tasks typically
     does not exceed available daemons.</p>
-<p>Alternatively, supplying <code>nodes</code> as an additional argument causes
-    daemons to run as active queues with the specified number of nodes per
-    daemon e.g. <code>daemons(2, nodes = 8)</code> maintains 2 active queues with
-    8 nodes each. An active queue consumes additional resources, however
-    ensures load balancing and optimal scheduling of tasks to nodes. Note
-    that changing the number of nodes in an active queue requires a reset to
-    zero prior to specifying a revised number.</p>
+<p>Alternatively, supplying <code>nodes</code> as an additional argument launches
+    an active queue with the specified number of nodes e.g.
+    <code>daemons(1, nodes = 8)</code>. When 'nodes' is specified, the value for
+    daemons is disregarded and one active queue is launched. An active queue
+    consumes additional resources, however ensures load balancing and optimal
+    scheduling of tasks to nodes. Note that changing the number of nodes in
+    an active queue requires a reset to zero prior to specifying a revised
+    number.</p>
     </div>
     <div id="distributed-computing">
     <h2>Distributed Computing</h2>
