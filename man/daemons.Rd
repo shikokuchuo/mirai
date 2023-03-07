@@ -37,8 +37,9 @@ Setting daemons: integer number of daemons set, or the character
     \item{\code{connections}} {- number of active connections.}
     \item{\code{daemons}} {- number of daemons, or the client URL when
     running a passive queue.}
-    \item{\code{nodes}} {- a named vector of the number of connected nodes at
-    each client URL when running an active queue, or else NA.}
+    \item{\code{nodes}} {- a matrix of statistics of currently active
+    (connected) nodes, as well as cumulative assigned and completed tasks
+    (reset if a node disconnects), or else NA if not running an active queue.}
     }
 }
 \description{

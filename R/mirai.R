@@ -155,8 +155,10 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
         }
 
         ctrchannel && !unresolved(controlq) && {
-          data <- cbind(status_active = activevec, tasks_assigned = assigned, tasks_complete = complete)
-          dimnames(data)[[1L]] <- servernames
+          data <- `attributes<-`(c(activevec, assigned, complete),
+                                 list(dim = c(nodes, 3L),
+                                      dimnames = list(servernames,
+                                                      c("status_active", "tasks_assigned", "tasks_complete"))))
           send(sockc, data = data, mode = 1L)
           controlq <- recv_aio(sockc, mode = 5L)
           next
@@ -173,7 +175,7 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
             for (i in seq_nodes)
               if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
                 if (auto && active < nodes)
-                  for (j in which(!activevec)) launch_daemon(sprintf("mirai::server(\"%s\")", servernames[[j]]))
+                  for (j in which(!activevec)) launch_daemon(sprintf("mirai::server(\"%s\")", servernames[j]))
                 ctx <- context(servers[[q]])
                 queue[[i]][["rctx"]] <- ctx
                 queue[[i]][["res"]] <- request(ctx, data = .subset2(queue[[i]][["req"]], "data"), send_mode = 1L, recv_mode = 1L)
@@ -377,8 +379,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     \item{\code{connections}} {- number of active connections.}
 #'     \item{\code{daemons}} {- number of daemons, or the client URL when
 #'     running a passive queue.}
-#'     \item{\code{nodes}} {- a named vector of the number of connected nodes at
-#'     each client URL when running an active queue, or else NA.}
+#'     \item{\code{nodes}} {- a matrix of statistics of currently active
+#'     (connected) nodes, as well as cumulative assigned and completed tasks
+#'     (reset if a node disconnects), or else NA if not running an active queue.}
 #'     }
 #'
 #' @details Use \code{daemons(0)} to reset all daemon connections at any time.
