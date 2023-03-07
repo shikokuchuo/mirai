@@ -107,8 +107,9 @@ connecting to different resources).</p></dd>
 <p>Viewing current status: a named list comprising:</p><ul><li><p><code>connections</code> - number of active connections.</p></li>
 <li><p><code>daemons</code> - number of daemons, or the client URL when
     running a passive queue.</p></li>
-<li><p><code>nodes</code> - a named vector of the number of connected nodes at
-    each client URL when running an active queue, or else NA.</p></li>
+<li><p><code>nodes</code> - a matrix of statistics of currently active
+    (connected) nodes, as well as cumulative assigned and completed tasks
+    (reset if a node disconnects), or else NA if not running an active queue.</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
