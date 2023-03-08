@@ -27,24 +27,28 @@
 #'     'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
 #' @param nodes [default NULL] if supplied, this server instance will run as an
 #'     active queue (task scheduler) with the specified number of nodes.
-#' @param idletime [default Inf] maximum idle time, since completion of the last
-#'     task (in milliseconds) before exiting.
-#' @param walltime [default Inf] soft walltime, or the minimum amount of real
-#'     time taken (in milliseconds) before exiting.
-#' @param tasklimit [default Inf] the maximum number of tasks to execute (task
-#'     limit) before exiting.
-#' @param asyncdial [default TRUE] (for debugging purposes) whether to dial in
-#'     to the client asynchronously. An asynchronous dial is more resilient and
-#'     will continue retrying if not immediately successful, however this can
-#'     mask potential connection issues. If FALSE, will error if a connection is
-#'     not immediately possible (e.g. \code{\link{daemons}} has yet to be called
-#'     on the client, or the specified port is not open etc.).
+#' @param asyncdial [default TRUE] whether to dial in to the client
+#'     asynchronously. An asynchronous dial is more resilient and will continue
+#'     retrying if not immediately successful. However this can mask potential
+#'     connection issues and specifying FALSE is useful for debugging purposes,
+#'     producing an error if a connection is not immediately possible (e.g.
+#'     \code{\link{daemons}} has yet to be called on the client, or the
+#'     specified port is not open etc.).
+#' @param maxtasks [default Inf] (applicable to severs/nodes) the maximum number
+#'     of tasks to execute (task limit) before exiting.
+#' @param idletime [default Inf] (applicable to severs/nodes) maximum idle time,
+#'     since completion of the last task (in milliseconds) before exiting.
+#' @param walltime [default Inf] (applicable to severs/nodes) soft walltime, or
+#'     the minimum amount of real time taken (in milliseconds) before exiting.
+#' @param timerstart [default 0L] (applicable to severs/nodes) number of
+#'     completed tasks after which to start the timer for 'idletime' and
+#'     'walltime'. 0L implies timers are started upon server launch.
 #' @param ... reserved but not currently used.
-#' @param pollfreqh [default 5L] applicable for an active queue only, the high
+#' @param pollfreqh [default 5L] (applicable to active queues only) the high
 #'     polling frequency for the queue in milliseconds (used when there are
 #'     active tasks). Setting a lower value will be more responsive but at the
 #'     cost of consuming more resources on the queue thread.
-#' @param pollfreql [default 50L] applicable for an active queue only, the low
+#' @param pollfreql [default 50L] (applicable to active queues only) the low
 #'     polling frequency for the queue in milliseconds (used when there are no
 #'     active tasks). Setting a lower value will be more responsive but at the
 #'     cost of consuming more resources on the queue thread.
@@ -65,8 +69,9 @@
 #'
 #' @export
 #'
-server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit = Inf,
-                   asyncdial = TRUE, ..., pollfreqh = 5L, pollfreql = 50L) {
+server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
+                   idletime = Inf, walltime = Inf, timerstart = 0L, ...,
+                   pollfreqh = 5L, pollfreql = 50L) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = if (asyncdial) TRUE else NA)
   devnull <- file(nullfile(), open = "w", blocking = FALSE)
@@ -78,9 +83,6 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
     sink(type = "message")
     close(devnull)
   })
-  count <- 0L
-  idle <- FALSE
-  start <- mclock()
 
   if (is.numeric(nodes)) {
 
@@ -137,7 +139,7 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
 
     suspendInterrupts({
 
-      while (count < tasklimit && mclock() - start < walltime && if (idle) mclock() - idle < idletime else TRUE) {
+      repeat {
 
         activevec <- as.integer(unlist(lapply(servers, stat, "pipes")))
         newcon <- as.logical(pmax.int(activevec - activestore, 0L))
@@ -147,19 +149,13 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
 
         active <- sum(activevec)
         free <- which(serverfree & activevec)
-        if (length(free) == active) {
-          if (active && !idle) idle <- mclock()
-          msleep(pollfreql)
-        } else {
-          if (idle) idle <- FALSE
-          msleep(pollfreqh)
-        }
+        msleep(if (length(free) == active) pollfreql else pollfreqh)
 
         ctrchannel && !unresolved(controlq) && {
           data <- `attributes<-`(c(activevec, assigned - complete, assigned, complete),
                                  list(dim = c(nodes, 4L),
                                       dimnames = list(servernames,
-                                                      c("status_active", "status_busy", "tasks_assigned", "tasks_complete"))))
+                                                      c("status_online", "status_busy", "tasks_assigned", "tasks_complete"))))
           send(sockc, data = data, mode = 1L)
           controlq <- recv_aio(sockc, mode = 5L)
           next
@@ -192,7 +188,6 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
             q <- queue[[i]][["daemon"]]
             serverfree[q] <- TRUE
             complete[q] <- complete[q] + 1L
-            count <- count + 1L
             ctx <- context(sock)
             req <- recv_aio(ctx, mode = 1L)
             queue[[i]] <- list(ctx = ctx, req = req)
@@ -202,15 +197,19 @@ server <- function(url, nodes = NULL, idletime = Inf, walltime = Inf, tasklimit 
     })
 
   } else {
+
+    count <- 0L
+    start <- mclock()
     if (idletime == Inf) idletime <- NULL
-    while (count < tasklimit && mclock() - start < walltime) {
+    while (count < maxtasks && mclock() - start < walltime) {
 
       ctx <- context(sock)
-      envir <- recv(ctx, mode = 1L, block = idletime)
-      is.integer(envir) && break
+      while (is.integer(envir <- recv(ctx, mode = 1L, block = idletime)))
+        count >= timerstart && return(invisible())
       data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
                        error = mk_mirai_error, interrupt = mk_interrupt_error)
       send(ctx, data = data, mode = 1L)
+      if (count < timerstart) start <- mclock()
       count <- count + 1L
 
     }
@@ -380,9 +379,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     \item{\code{connections}} {- number of active connections.}
 #'     \item{\code{daemons}} {- number of daemons, or the client URL when
 #'     running a passive queue.}
-#'     \item{\code{nodes}} {- a matrix of URL, active (connected) and busy
-#'     status, as well as cumulative tasks assigned and completed (reset if a
-#'     node re-connects), or else NA if not running an active queue.}
+#'     \item{\code{nodes}} {- a matrix of URL, online and busy status, as well
+#'     as cumulative tasks assigned and completed (reset if a node re-connects),
+#'     or else NA if not running an active queue.}
 #'     }
 #'
 #' @details Use \code{daemons(0)} to reset all daemon connections at any time.

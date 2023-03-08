@@ -7,10 +7,11 @@
 server(
   url,
   nodes = NULL,
+  asyncdial = TRUE,
+  maxtasks = Inf,
   idletime = Inf,
   walltime = Inf,
-  tasklimit = Inf,
-  asyncdial = TRUE,
+  timerstart = 0L,
   ...,
   pollfreqh = 5L,
   pollfreql = 50L
@@ -24,30 +25,35 @@ connect to and (optionally) a path for websocket URLs e.g.
 \item{nodes}{[default NULL] if supplied, this server instance will run as an
 active queue (task scheduler) with the specified number of nodes.}
 
-\item{idletime}{[default Inf] maximum idle time, since completion of the last
-task (in milliseconds) before exiting.}
+\item{asyncdial}{[default TRUE] whether to dial in to the client
+asynchronously. An asynchronous dial is more resilient and will continue
+retrying if not immediately successful. However this can mask potential
+connection issues and specifying FALSE is useful for debugging purposes,
+producing an error if a connection is not immediately possible (e.g.
+\code{\link{daemons}} has yet to be called on the client, or the
+specified port is not open etc.).}
 
-\item{walltime}{[default Inf] soft walltime, or the minimum amount of real
-time taken (in milliseconds) before exiting.}
+\item{maxtasks}{[default Inf] (applicable to severs/nodes) the maximum number
+of tasks to execute (task limit) before exiting.}
 
-\item{tasklimit}{[default Inf] the maximum number of tasks to execute (task
-limit) before exiting.}
+\item{idletime}{[default Inf] (applicable to severs/nodes) maximum idle time,
+since completion of the last task (in milliseconds) before exiting.}
 
-\item{asyncdial}{[default TRUE] (for debugging purposes) whether to dial in
-to the client asynchronously. An asynchronous dial is more resilient and
-will continue retrying if not immediately successful, however this can
-mask potential connection issues. If FALSE, will error if a connection is
-not immediately possible (e.g. \code{\link{daemons}} has yet to be called
-on the client, or the specified port is not open etc.).}
+\item{walltime}{[default Inf] (applicable to severs/nodes) soft walltime, or
+the minimum amount of real time taken (in milliseconds) before exiting.}
+
+\item{timerstart}{[default 0L] (applicable to severs/nodes) number of
+completed tasks after which to start the timer for 'idletime' and
+'walltime'. 0L implies timers are started upon server launch.}
 
 \item{...}{reserved but not currently used.}
 
-\item{pollfreqh}{[default 5L] applicable for an active queue only, the high
+\item{pollfreqh}{[default 5L] (applicable to active queues only) the high
 polling frequency for the queue in milliseconds (used when there are
 active tasks). Setting a lower value will be more responsive but at the
 cost of consuming more resources on the queue thread.}
 
-\item{pollfreql}{[default 50L] applicable for an active queue only, the low
+\item{pollfreql}{[default 50L] (applicable to active queues only) the low
 polling frequency for the queue in milliseconds (used when there are no
 active tasks). Setting a lower value will be more responsive but at the
 cost of consuming more resources on the queue thread.}

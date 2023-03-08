@@ -1,4 +1,4 @@
-# mirai 0.7.2.9028 (development)
+# mirai 0.7.2.9029 (development)
 
 * mirai 0.8.0 is a major feature release. Special thanks to @wlandau for suggestions, discussion and testing for many of the new capabilities.
 * Compute profiles have been introduced through a new `.compute` argument in `daemons()` and `mirai()` for sending tasks with heterogeneous compute requirements.
@@ -7,13 +7,14 @@
 * `daemons()` interface has been simplified with a single `value` argument along with `...` for passing additional parameters.
   + Allows supplying the argument `nodes` for running an active queue (task scheduler).
   + Supplying a client URL with a zero port number `:0` will automatically assign a free ephemeral port, with the actual port number subsequently reported by `daemons()`.
-  + Calling with no arguments now provides an improved view of the current number of connections / daemons / nodes (URL, active and busy status, tasks assigned and completed), replacing the previous `daemons("view")` functionality.
+  + Calling with no arguments now provides an improved view of the current number of connections / daemons / nodes (URL, online and busy status, tasks assigned and completed), replacing the previous `daemons("view")` functionality.
 * `server()` gains the following arguments:
   + `nodes` for launching an active queue with the specified number of nodes.
+  + `asyncdial` to specify how the server dials into the client.
+  + `maxtasks` for specifying a maximum number of tasks before exiting.
   + `idletime` for specifying an idle time, since completion of the last task before exiting.
   + `walltime` for specifying a soft walltime before exiting.
-  + `tasklimit` for specifying a maximum number of tasks before exiting.
-  + `asyncdial` to specify how the server dials into the client.
+  + `timerstart` for specifying a minimum number of task completions before starting timers.
   + `pollfreqh` and `pollfreql` for setting the polling frequency of an active queue.
 * Invalid URLs provided to `daemons()` and `server()` now error and return immediately instead of potentially causing a hang.
 * `eval_mirai()` is removed as an alias for `mirai()`.
