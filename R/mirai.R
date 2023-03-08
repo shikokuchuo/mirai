@@ -78,6 +78,7 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
   sink(file = devnull)
   sink(file = devnull, type = "message")
   on.exit(expr = {
+    msleep(100L)
     close(sock)
     sink()
     sink(type = "message")
@@ -101,7 +102,7 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
 
     if (ctrchannel) {
       sockc <- socket(protocol = "bus", dial = url[2L], autostart = if (asyncdial) TRUE else NA)
-      on.exit(expr = close(sockc), add = TRUE, after = FALSE)
+      on.exit(expr = close(sockc), add = TRUE)
       controlq <- recv_aio(sockc, mode = 5L)
     }
 
@@ -138,7 +139,7 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
     on.exit(expr = for (i in seq_nodes) {
       send(servers[[i]], data = .__scm__., mode = 2L)
       close(servers[[i]])
-    }, add = TRUE, after = FALSE)
+    }, add = TRUE)
 
     suspendInterrupts({
 
@@ -225,7 +226,7 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
     }
   }
 
-  msleep(2000L)
+  msleep(1900L)
 
 }
 
