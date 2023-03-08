@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 3.896 -1.84 0.432 -1.303 0.437 ...
+#>  num [1:100000000] -2.818 1.16 2.079 1.654 -0.263 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 3.896 -1.84 0.432 -1.303 0.437 ...
+#>  num [1:100000000] -2.818 1.16 2.079 1.654 -0.263 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -203,10 +203,10 @@ for (i in 1:10) {
 }
 #> iteration 1 successful 
 #> iteration 2 successful 
+#> Error: random error 
 #> iteration 3 successful 
 #> iteration 4 successful 
 #> iteration 5 successful 
-#> Error: random error 
 #> iteration 6 successful 
 #> iteration 7 successful 
 #> iteration 8 successful 
@@ -299,15 +299,15 @@ daemons()
 #> [1] 1
 #> 
 #> $nodes
-#>                        status_active status_busy tasks_assigned tasks_complete
-#> abstract://n9752396                1           0              0              0
-#> abstract://n4138936330             1           0              0              0
-#> abstract://n2293062345             1           0              0              0
-#> abstract://n149260565              1           0              0              0
-#> abstract://n276521527              1           0              0              0
-#> abstract://n3201409789             1           0              0              0
-#> abstract://n1123645738             1           0              0              0
-#> abstract://n3835857894             1           0              0              0
+#>                        status_online status_busy tasks_assigned tasks_complete
+#> abstract://n3324689956             1           0              0              0
+#> abstract://n3974621895             1           0              0              0
+#> abstract://n1345399361             1           0              0              0
+#> abstract://n1640585043             1           0              0              0
+#> abstract://n2571835085             1           0              0              0
+#> abstract://n1065382845             1           0              0              0
+#> abstract://n1528743574             1           0              0              0
+#> abstract://n2682136772             1           0              0              0
 ```
 
 The active queue consumes additional resources, however ensures load
@@ -455,7 +455,7 @@ daemons()
 #> [1] 1
 #> 
 #> $nodes
-#>              status_active status_busy tasks_assigned tasks_complete
+#>              status_online status_busy tasks_assigned tasks_complete
 #> ws://:5555/1             1           0              0              0
 #> ws://:5555/2             1           0              0              0
 #> ws://:5555/3             1           0              0              0

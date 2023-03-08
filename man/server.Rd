@@ -33,18 +33,18 @@ producing an error if a connection is not immediately possible (e.g.
 \code{\link{daemons}} has yet to be called on the client, or the
 specified port is not open etc.).}
 
-\item{maxtasks}{[default Inf] (applicable to severs/nodes) the maximum number
-of tasks to execute (task limit) before exiting.}
+\item{maxtasks}{[default Inf] the maximum number of tasks to execute (task
+limit) before exiting.}
 
-\item{idletime}{[default Inf] (applicable to severs/nodes) maximum idle time,
-since completion of the last task (in milliseconds) before exiting.}
+\item{idletime}{[default Inf] maximum idle time, since completion of the last
+task (in milliseconds) before exiting.}
 
-\item{walltime}{[default Inf] (applicable to severs/nodes) soft walltime, or
-the minimum amount of real time taken (in milliseconds) before exiting.}
+\item{walltime}{[default Inf] soft walltime, or the minimum amount of real
+time taken (in milliseconds) before exiting.}
 
-\item{timerstart}{[default 0L] (applicable to severs/nodes) number of
-completed tasks after which to start the timer for 'idletime' and
-'walltime'. 0L implies timers are started upon server launch.}
+\item{timerstart}{[default 0L] (applicable to individual server / node
+instances only) number of completed tasks after which to start the timer
+for 'idletime' and 'walltime'. 0L implies timers are started upon launch.}
 
 \item{...}{reserved but not currently used.}
 

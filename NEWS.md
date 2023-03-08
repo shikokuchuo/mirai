@@ -1,4 +1,4 @@
-# mirai 0.7.2.9029 (development)
+# mirai 0.7.2.9030 (development)
 
 * mirai 0.8.0 is a major feature release. Special thanks to @wlandau for suggestions, discussion and testing for many of the new capabilities.
 * Compute profiles have been introduced through a new `.compute` argument in `daemons()` and `mirai()` for sending tasks with heterogeneous compute requirements.

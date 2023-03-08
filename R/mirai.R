@@ -34,15 +34,15 @@
 #'     producing an error if a connection is not immediately possible (e.g.
 #'     \code{\link{daemons}} has yet to be called on the client, or the
 #'     specified port is not open etc.).
-#' @param maxtasks [default Inf] (applicable to severs/nodes) the maximum number
-#'     of tasks to execute (task limit) before exiting.
-#' @param idletime [default Inf] (applicable to severs/nodes) maximum idle time,
-#'     since completion of the last task (in milliseconds) before exiting.
-#' @param walltime [default Inf] (applicable to severs/nodes) soft walltime, or
-#'     the minimum amount of real time taken (in milliseconds) before exiting.
-#' @param timerstart [default 0L] (applicable to severs/nodes) number of
-#'     completed tasks after which to start the timer for 'idletime' and
-#'     'walltime'. 0L implies timers are started upon server launch.
+#' @param maxtasks [default Inf] the maximum number of tasks to execute (task
+#'     limit) before exiting.
+#' @param idletime [default Inf] maximum idle time, since completion of the last
+#'     task (in milliseconds) before exiting.
+#' @param walltime [default Inf] soft walltime, or the minimum amount of real
+#'     time taken (in milliseconds) before exiting.
+#' @param timerstart [default 0L] (applicable to individual server / node
+#'     instances only) number of completed tasks after which to start the timer
+#'     for 'idletime' and 'walltime'. 0L implies timers are started upon launch.
 #' @param ... reserved but not currently used.
 #' @param pollfreqh [default 5L] (applicable to active queues only) the high
 #'     polling frequency for the queue in milliseconds (used when there are
@@ -83,9 +83,12 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
     sink(type = "message")
     close(devnull)
   })
+  count <- 0L
+  start <- mclock()
 
   if (is.numeric(nodes)) {
 
+    idle <- FALSE
     ctrchannel <- length(url) > 1L
     auto <- length(url) < 3L
     nodes <- as.integer(nodes)
@@ -135,11 +138,11 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
     on.exit(expr = for (i in seq_nodes) {
       send(servers[[i]], data = .__scm__., mode = 2L)
       close(servers[[i]])
-    }, add = TRUE)
+    }, add = TRUE, after = FALSE)
 
     suspendInterrupts({
 
-      repeat {
+      while (count < maxtasks && mclock() - start < walltime && (!idle || mclock() - idle < idletime)) {
 
         activevec <- as.integer(unlist(lapply(servers, stat, "pipes")))
         newcon <- as.logical(pmax.int(activevec - activestore, 0L))
@@ -149,7 +152,13 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
 
         active <- sum(activevec)
         free <- which(serverfree & activevec)
-        msleep(if (length(free) == active) pollfreql else pollfreqh)
+        if (length(free) == active) {
+          if (active && !idle) idle <- mclock()
+          msleep(pollfreql)
+        } else {
+          if (idle) idle <- FALSE
+          msleep(pollfreqh)
+        }
 
         ctrchannel && !unresolved(controlq) && {
           data <- `attributes<-`(c(activevec, assigned - complete, assigned, complete),
@@ -169,7 +178,7 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
 
         if (length(free))
           for (q in free)
-            for (i in seq_nodes)
+            for (i in seq_nodes) {
               if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
                 if (auto && active < nodes)
                   for (j in which(!activevec)) launch_daemon(sprintf("mirai::server(\"%s\")", servernames[j]))
@@ -181,6 +190,8 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
                 assigned[q] <- assigned[q] + 1L
                 break
               }
+              serverfree[q] || break
+            }
 
         for (i in seq_nodes)
           if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
@@ -188,6 +199,7 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
             q <- queue[[i]][["daemon"]]
             serverfree[q] <- TRUE
             complete[q] <- complete[q] + 1L
+            count <- count + 1L
             ctx <- context(sock)
             req <- recv_aio(ctx, mode = 1L)
             queue[[i]] <- list(ctx = ctx, req = req)
@@ -198,9 +210,7 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
 
   } else {
 
-    count <- 0L
-    start <- mclock()
-    if (idletime == Inf) idletime <- NULL
+    if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
     while (count < maxtasks && mclock() - start < walltime) {
 
       ctx <- context(sock)
