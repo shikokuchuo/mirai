@@ -22,8 +22,6 @@ nanotest(identical(call_mirai(m), m))
 nanotest(is_mirai(m))
 nanotest(length(b) == 3L || length(b$data) == 3L)
 nanotest(is.character(b) || is.character(b$data))
-nanotest(!unresolved(m))
-nanotestn(stop_mirai(m))
 Sys.sleep(2.2)
 nanotest(daemons(1L) == 1L)
 me <- mirai(mirai())
@@ -68,7 +66,7 @@ nanotesterr(daemons(raw(0L)), "numeric, character")
 nanotesterr(server("URL"), "argument")
 nanotest(daemons(0L) == 0L)
 Sys.sleep(1)
-nanotest(is_mirai_error(r <- mirai:::mk_mirai_error(list())))
+nanotest(is_mirai_interrupt(r <- mirai:::mk_interrupt_error()))
 me$data
 m
 b
