@@ -102,7 +102,7 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
 
     if (ctrchannel) {
       sockc <- socket(protocol = "bus", dial = url[2L], autostart = if (asyncdial) TRUE else NA)
-      on.exit(expr = close(sockc), add = TRUE)
+      on.exit(expr = close(sockc), add = TRUE, after = FALSE)
       controlq <- recv_aio(sockc, mode = 5L)
     }
 
@@ -139,7 +139,7 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
     on.exit(expr = for (i in seq_nodes) {
       send(servers[[i]], data = .__scm__., mode = 2L)
       close(servers[[i]])
-    }, add = TRUE)
+    }, add = TRUE, after = FALSE)
 
     suspendInterrupts({
 
@@ -212,18 +212,22 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
   } else {
 
     if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
-    while (count < maxtasks && mclock() - start < walltime) {
+    repeat {
+      while (count < maxtasks && mclock() - start < walltime) {
 
-      ctx <- context(sock)
-      while (is.integer(envir <- recv(ctx, mode = 1L, block = idletime)))
-        count >= timerstart && return(invisible())
-      data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
-                       error = mk_mirai_error, interrupt = mk_interrupt_error)
-      send(ctx, data = data, mode = 1L)
-      if (count < timerstart) start <- mclock()
-      count <- count + 1L
+        ctx <- context(sock)
+        envir <- recv(ctx, mode = 1L, block = idletime)
+        is.integer(envir) && break
+        data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
+                         error = mk_mirai_error, interrupt = mk_interrupt_error)
+        send(ctx, data = data, mode = 1L)
+        if (count < timerstart) start <- mclock()
+        count <- count + 1L
 
+      }
+      count < timerstart || break
     }
+
   }
 
   msleep(1900L)
