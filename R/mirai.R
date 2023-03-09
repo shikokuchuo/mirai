@@ -216,20 +216,23 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
   } else {
 
     if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
-    repeat {
-      while (count < maxtasks && mclock() - start < walltime) {
+    while (count < maxtasks && mclock() - start < walltime) {
 
-        ctx <- context(sock)
-        envir <- recv(ctx, mode = 1L, block = idletime)
-        is.integer(envir) && break
-        data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
-                         error = mk_mirai_error, interrupt = mk_interrupt_error)
-        send(ctx, data = data, mode = 1L)
-        if (count < timerstart) start <- mclock()
-        count <- count + 1L
-
+      ctx <- context(sock)
+      envir <- recv(ctx, mode = 1L, block = idletime)
+      is.integer(envir) && {
+        count < timerstart && {
+          start <- mclock()
+          next
+        }
+        break
       }
-      count < timerstart || break
+      data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
+                       error = mk_mirai_error, interrupt = mk_interrupt_error)
+      send(ctx, data = data, mode = 1L)
+      if (count < timerstart) start <- mclock()
+      count <- count + 1L
+
     }
 
   }
