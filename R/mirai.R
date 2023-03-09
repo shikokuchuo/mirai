@@ -43,7 +43,12 @@
 #' @param timerstart [default 0L] (applicable to individual server / node
 #'     instances only) number of completed tasks after which to start the timer
 #'     for 'idletime' and 'walltime'. 0L implies timers are started upon launch.
-#' @param ... reserved but not currently used.
+#' @param exitdelay [default 100L] time in milliseconds to wait after an exit
+#'     signal is received or a timer / task limit is reached, to allow sockets
+#'     to finish sends currently in progress. The default permits normal
+#'     operations, but if timers / task limits are in force and computations are
+#'     expected to return very large objects, this should be set wider to ensure
+#'     results are sent before exiting.
 #' @param pollfreqh [default 5L] (applicable to active queues only) the high
 #'     polling frequency for the queue in milliseconds (used when there are
 #'     active tasks). Setting a lower value will be more responsive but at the
@@ -52,6 +57,7 @@
 #'     polling frequency for the queue in milliseconds (used when there are no
 #'     active tasks). Setting a lower value will be more responsive but at the
 #'     cost of consuming more resources on the queue thread.
+#' @param ... reserved but not currently used.
 #'
 #' @return Invisible NULL.
 #'
@@ -70,15 +76,15 @@
 #' @export
 #'
 server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
-                   idletime = Inf, walltime = Inf, timerstart = 0L, ...,
-                   pollfreqh = 5L, pollfreql = 50L) {
+                   idletime = Inf, walltime = Inf, timerstart = 0L,
+                   exitdelay = 100L, pollfreqh = 5L, pollfreql = 50L, ...) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = if (asyncdial) TRUE else NA)
   devnull <- file(nullfile(), open = "w", blocking = FALSE)
   sink(file = devnull)
   sink(file = devnull, type = "message")
   on.exit(expr = {
-    msleep(100L)
+    msleep(exitdelay)
     close(sock)
     sink()
     sink(type = "message")
@@ -136,10 +142,8 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
       queue[[i]] <- list(ctx = ctx, req = req)
     }
 
-    on.exit(expr = for (i in seq_nodes) {
-      send(servers[[i]], data = .__scm__., mode = 2L)
-      close(servers[[i]])
-    }, add = TRUE, after = FALSE)
+    on.exit(expr = lapply(servers, send, data = .__scm__., mode = 2L), add = TRUE, after = FALSE)
+    on.exit(expr = lapply(servers, close), add = TRUE, after = TRUE)
 
     suspendInterrupts({
 
@@ -229,8 +233,6 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
     }
 
   }
-
-  msleep(1900L)
 
 }
 

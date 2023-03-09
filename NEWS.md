@@ -1,4 +1,4 @@
-# mirai 0.7.2.9031 (development)
+# mirai 0.7.2.9032 (development)
 
 * mirai 0.8.0 is a major feature release. Special thanks to @wlandau for suggestions, discussion and testing for many of the new capabilities.
 * Compute profiles have been introduced through a new `.compute` argument in `daemons()` and `mirai()` for sending tasks with heterogeneous compute requirements.
@@ -15,6 +15,7 @@
   + `idletime` for specifying an idle time, since completion of the last task before exiting.
   + `walltime` for specifying a soft walltime before exiting.
   + `timerstart` for specifying a minimum number of task completions before starting timers.
+  + `exitdelay` tuning parameter used in conjunction with above timer / task limits.
   + `pollfreqh` and `pollfreql` for setting the polling frequency of an active queue.
 * Invalid URLs provided to `daemons()` and `server()` now error and return immediately instead of potentially causing a hang.
 * `eval_mirai()` is removed as an alias for `mirai()`.

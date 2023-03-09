@@ -12,9 +12,10 @@ server(
   idletime = Inf,
   walltime = Inf,
   timerstart = 0L,
-  ...,
+  exitdelay = 100L,
   pollfreqh = 5L,
-  pollfreql = 50L
+  pollfreql = 50L,
+  ...
 )
 }
 \arguments{
@@ -46,7 +47,12 @@ time taken (in milliseconds) before exiting.}
 instances only) number of completed tasks after which to start the timer
 for 'idletime' and 'walltime'. 0L implies timers are started upon launch.}
 
-\item{...}{reserved but not currently used.}
+\item{exitdelay}{[default 100L] time in milliseconds to wait after an exit
+signal is received or a timer / task limit is reached, to allow sockets
+to finish sends currently in progress. The default permits normal
+operations, but if timers / task limits are in force and computations are
+expected to return very large objects, this should be set wider to ensure
+results are sent before exiting.}
 
 \item{pollfreqh}{[default 5L] (applicable to active queues only) the high
 polling frequency for the queue in milliseconds (used when there are
@@ -57,6 +63,8 @@ cost of consuming more resources on the queue thread.}
 polling frequency for the queue in milliseconds (used when there are no
 active tasks). Setting a lower value will be more responsive but at the
 cost of consuming more resources on the queue thread.}
+
+\item{...}{reserved but not currently used.}
 }
 \value{
 Invisible NULL.
