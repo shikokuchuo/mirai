@@ -102,14 +102,14 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
     vectorised <- length(url) == nodes + 2L
     seq_nodes <- seq_len(nodes)
     servernames <- character(nodes)
-    activestore <- complete <- assigned <- integer(nodes)
-    state <- serverfree <- !integer(nodes)
+    instances <- activestore <- complete <- assigned <- integer(nodes)
+    serverfree <- !integer(nodes)
     servers <- queue <- vector(mode = "list", length = nodes)
 
     if (ctrchannel) {
       sockc <- socket(protocol = "bus", dial = url[2L], autostart = if (asyncdial) TRUE else NA)
       on.exit(expr = close(sockc), add = TRUE, after = FALSE)
-      controlq <- recv_aio(sockc, mode = 5L)
+      cmessage <- recv_aio(sockc, mode = 5L)
     }
 
     if (!auto && !vectorised) {
@@ -150,11 +150,13 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
       while (count < maxtasks && mclock() - start < walltime && (!idle || mclock() - idle < idletime)) {
 
         activevec <- as.integer(unlist(lapply(servers, stat, "pipes")))
-        changes <- activevec - activestore
+        changes <- (activevec - activestore) > 0L
         activestore <- activevec
-        assigned[changes > 0L] <- 0L
-        complete[changes > 0L] <- 0L
-        state[changes < 0L] <- !state[changes < 0L]
+        if (any(changes)) {
+          assigned[changes] <- 0L
+          complete[changes] <- 0L
+          instances[changes] <- instances[changes] + 1L
+        }
 
         active <- sum(activevec)
         free <- which(serverfree & activevec)
@@ -166,13 +168,13 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
           msleep(pollfreqh)
         }
 
-        ctrchannel && !unresolved(controlq) && {
-          data <- `attributes<-`(c(activevec, assigned - complete, assigned, complete),
-                                 list(dim = c(nodes, 4L),
-                                      dimnames = list(`attr<-`(servernames, "state", state),
-                                                      c("status_online", "status_busy", "tasks_assigned", "tasks_complete"))))
+        ctrchannel && !unresolved(cmessage) && {
+          data <- `attributes<-`(c(activevec, assigned - complete, assigned, complete, instances),
+                                 list(dim = c(nodes, 5L),
+                                      dimnames = list(servernames,
+                                                      c("status_online", "status_busy", "tasks_assigned", "tasks_complete", "node_instance"))))
           send(sockc, data = data, mode = 1L)
-          controlq <- recv_aio(sockc, mode = 5L)
+          cmessage <- recv_aio(sockc, mode = 5L)
           next
         }
 
