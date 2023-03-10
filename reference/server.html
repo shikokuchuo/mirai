@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9035</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9036</span>
       </span>
     </div>
 
@@ -66,6 +66,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">server</span><span class="op">(</span></span>
 <span>  <span class="va">url</span>,</span>
 <span>  nodes <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span>,</span>
 <span>  asyncdial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  maxtasks <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  idletime <span class="op">=</span> <span class="cn">Inf</span>,</span>
@@ -73,8 +74,7 @@
 <span>  timerstart <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  exitdelay <span class="op">=</span> <span class="fl">100L</span>,</span>
 <span>  pollfreqh <span class="op">=</span> <span class="fl">5L</span>,</span>
-<span>  pollfreql <span class="op">=</span> <span class="fl">50L</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  pollfreql <span class="op">=</span> <span class="fl">50L</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -89,6 +89,10 @@ connect to and (optionally) a path for websocket URLs e.g.
 <dt>nodes</dt>
 <dd><p>[default NULL] if supplied, this server instance will run as an
 active queue (task scheduler) with the specified number of nodes.</p></dd>
+
+
+<dt>...</dt>
+<dd><p>reserved but not currently used.</p></dd>
 
 
 <dt>asyncdial</dt>
@@ -143,10 +147,6 @@ cost of consuming more resources on the queue thread.</p></dd>
 polling frequency for the queue in milliseconds (used when there are no
 active tasks). Setting a lower value will be more responsive but at the
 cost of consuming more resources on the queue thread.</p></dd>
-
-
-<dt>...</dt>
-<dd><p>reserved but not currently used.</p></dd>
 
 </dl></div>
     <div id="value">
