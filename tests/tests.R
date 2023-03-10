@@ -49,7 +49,7 @@ mp <- mirai("test2", .compute = "new")
 nanotest(call_mirai(mn)$data == "test")
 nanotest(call_mirai(mp)$data == "test2")
 nanotest(daemons(.compute = "new")[["connections"]] == 1L)
-Sys.sleep(0.7)
+Sys.sleep(0.8)
 nanotest(daemons(.compute = "new")[["connections"]] == 0L)
 nanotest(daemons(0L, .compute = "new") == 0L)
 if (Sys.getenv("NOT_CRAN") == "set") {

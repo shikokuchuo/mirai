@@ -103,7 +103,7 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
     seq_nodes <- seq_len(nodes)
     servernames <- character(nodes)
     activestore <- complete <- assigned <- integer(nodes)
-    serverfree <- !integer(nodes)
+    state <- serverfree <- !integer(nodes)
     servers <- queue <- vector(mode = "list", length = nodes)
 
     if (ctrchannel) {
@@ -150,10 +150,11 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
       while (count < maxtasks && mclock() - start < walltime && (!idle || mclock() - idle < idletime)) {
 
         activevec <- as.integer(unlist(lapply(servers, stat, "pipes")))
-        newcon <- as.logical(pmax.int(activevec - activestore, 0L))
+        changes <- activevec - activestore
         activestore <- activevec
-        assigned[newcon] <- 0L
-        complete[newcon] <- 0L
+        assigned[changes > 0L] <- 0L
+        complete[changes > 0L] <- 0L
+        state[changes < 0L] <- !state[changes < 0L]
 
         active <- sum(activevec)
         free <- which(serverfree & activevec)
@@ -168,7 +169,7 @@ server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
         ctrchannel && !unresolved(controlq) && {
           data <- `attributes<-`(c(activevec, assigned - complete, assigned, complete),
                                  list(dim = c(nodes, 4L),
-                                      dimnames = list(servernames,
+                                      dimnames = list(`attr<-`(servernames, "state", state),
                                                       c("status_online", "status_busy", "tasks_assigned", "tasks_complete"))))
           send(sockc, data = data, mode = 1L)
           controlq <- recv_aio(sockc, mode = 5L)
