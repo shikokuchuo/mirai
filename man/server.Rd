@@ -7,6 +7,7 @@
 server(
   url,
   nodes = NULL,
+  ...,
   asyncdial = TRUE,
   maxtasks = Inf,
   idletime = Inf,
@@ -14,8 +15,7 @@ server(
   timerstart = 0L,
   exitdelay = 100L,
   pollfreqh = 5L,
-  pollfreql = 50L,
-  ...
+  pollfreql = 50L
 )
 }
 \arguments{
@@ -25,6 +25,8 @@ connect to and (optionally) a path for websocket URLs e.g.
 
 \item{nodes}{[default NULL] if supplied, this server instance will run as an
 active queue (task scheduler) with the specified number of nodes.}
+
+\item{...}{reserved but not currently used.}
 
 \item{asyncdial}{[default TRUE] whether to dial in to the client
 asynchronously. An asynchronous dial is more resilient and will continue
@@ -63,8 +65,6 @@ cost of consuming more resources on the queue thread.}
 polling frequency for the queue in milliseconds (used when there are no
 active tasks). Setting a lower value will be more responsive but at the
 cost of consuming more resources on the queue thread.}
-
-\item{...}{reserved but not currently used.}
 }
 \value{
 Invisible NULL.

@@ -4,26 +4,20 @@
 \alias{daemons}
 \title{daemons (Persistent Server Processes)}
 \usage{
-daemons(value, ..., .compute = "default")
+daemons(n, url = NULL, active = TRUE, ..., .compute = "default")
 }
 \arguments{
-\item{value}{\emph{~ depending on the type of value supplied ~}
+\item{n}{integer number of daemons (server processes) to set.}
 
-    \strong{numeric}: for setting local daemons: integer number of daemons
-    (see 'Local Daemons' below).
+\item{url}{[default NULL] NULL for local daemons, or else the client URL as a
+character string, including a port accepting incoming connections and
+(optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
+'ws://192.168.0.2:5555/path'.}
 
-    \strong{character}: for distributing tasks across the network: the client
-    URL as a character string, including a port accepting incoming connections
-    and (optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555'
-    or 'ws://192.168.0.2:5555/path'. (see 'Distributed Computing' below).
+\item{active}{[default TRUE] logical value whether to use active dispatch and
+task scheduling, or else immediate dispatch and even distribution.}
 
-    \strong{missing}: for viewing the currrent status, specify
-    \code{daemons()} with no arguments.}
-
-\item{...}{additional named arguments passed to \code{\link{server}}.
-
-    \strong{nodes} supplying an integer number of nodes runs an active queue
-    with the specified number of nodes.}
+\item{...}{reserved, but not used.}
 
 \item{.compute}{(optional) character compute profile to use for creating the
 daemons (each compute profile can have its own set of daemons for
@@ -43,14 +37,19 @@ Setting daemons: integer number of daemons set, or the character
     }
 }
 \description{
-Set 'daemons' or persistent server processes receiving \code{\link{mirai}}
-    requests. These are, by default, automatically created on the local
-    machine. Alternatively, a client URL may be set to receive connections
-    from remote servers started with \code{\link{server}} for distributing
-    tasks across the network.
+Set 'daemons' or background persistent server processes receiving
+    \code{\link{mirai}} requests. These are, by default, automatically
+    created on the local machine. Alternatively, a client URL may be set to
+    receive connections from remote servers started with \code{\link{server}}
+    for distributing tasks across the network. Daemons may take advantage of
+    active dispatch and task scheduling, or the low-level approach of
+    distributing tasks evenly amongst servers by pushing to them immediately.
 }
 \details{
-Use \code{daemons(0)} to reset all daemon connections at any time.
+For viewing the currrent status, specify \code{daemons()} with no
+    arguments.
+
+    Use \code{daemons(0)} to reset all daemon connections at any time.
     \{mirai\} will revert to the default behaviour of creating a new
     background process for each request.
 
@@ -60,8 +59,8 @@ Use \code{daemons(0)} to reset all daemon connections at any time.
     exception that \code{daemons(0)} will always reset and attempt to
     shutdown all connected daemons.
 
-    Setting a new client URL will attempt to shutdown all daemons connected
-    at the existing address before opening a connection at the new address.
+    Specifying a new client URL will attempt to shutdown all daemons
+    connected at the existing URL before opening a connection at the new URL.
 }
 \section{Local Daemons}{
 
@@ -178,7 +177,7 @@ Use \code{daemons(0)} to reset all daemon connections at any time.
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-# Create 2 daemons
+# Create 2 daemons (with active dispatch)
 daemons(2)
 
 # View status
@@ -187,8 +186,8 @@ daemons()
 # Reset to zero
 daemons(0)
 
-# Create 1 active queue with 2 nodes
-daemons(1, nodes = 2)
+# Create 2 daemons (without active dispatch)
+daemons(2, active = FALSE)
 
 # View status
 daemons()

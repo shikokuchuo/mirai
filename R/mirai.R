@@ -27,6 +27,7 @@
 #'     'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
 #' @param nodes [default NULL] if supplied, this server instance will run as an
 #'     active queue (task scheduler) with the specified number of nodes.
+#' @param ... reserved but not currently used.
 #' @param asyncdial [default TRUE] whether to dial in to the client
 #'     asynchronously. An asynchronous dial is more resilient and will continue
 #'     retrying if not immediately successful. However this can mask potential
@@ -57,7 +58,6 @@
 #'     polling frequency for the queue in milliseconds (used when there are no
 #'     active tasks). Setting a lower value will be more responsive but at the
 #'     cost of consuming more resources on the queue thread.
-#' @param ... reserved but not currently used.
 #'
 #' @return Invisible NULL.
 #'
@@ -75,9 +75,9 @@
 #'
 #' @export
 #'
-server <- function(url, nodes = NULL, asyncdial = TRUE, maxtasks = Inf,
+server <- function(url, nodes = NULL, ..., asyncdial = TRUE, maxtasks = Inf,
                    idletime = Inf, walltime = Inf, timerstart = 0L,
-                   exitdelay = 100L, pollfreqh = 5L, pollfreql = 50L, ...) {
+                   exitdelay = 100L, pollfreqh = 5L, pollfreql = 50L) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = if (asyncdial) TRUE else NA)
   devnull <- file(nullfile(), open = "w", blocking = FALSE)
@@ -368,29 +368,22 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 
 #' daemons (Persistent Server Processes)
 #'
-#' Set 'daemons' or persistent server processes receiving \code{\link{mirai}}
-#'     requests. These are, by default, automatically created on the local
-#'     machine. Alternatively, a client URL may be set to receive connections
-#'     from remote servers started with \code{\link{server}} for distributing
-#'     tasks across the network.
+#' Set 'daemons' or background persistent server processes receiving
+#'     \code{\link{mirai}} requests. These are, by default, automatically
+#'     created on the local machine. Alternatively, a client URL may be set to
+#'     receive connections from remote servers started with \code{\link{server}}
+#'     for distributing tasks across the network. Daemons may take advantage of
+#'     active dispatch and task scheduling, or the low-level approach of
+#'     distributing tasks evenly amongst servers by pushing to them immediately.
 #'
-#' @param value \emph{~ depending on the type of value supplied ~}
-#'
-#'     \strong{numeric}: for setting local daemons: integer number of daemons
-#'     (see 'Local Daemons' below).
-#'
-#'     \strong{character}: for distributing tasks across the network: the client
-#'     URL as a character string, including a port accepting incoming connections
-#'     and (optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555'
-#'     or 'ws://192.168.0.2:5555/path'. (see 'Distributed Computing' below).
-#'
-#'     \strong{missing}: for viewing the currrent status, specify
-#'     \code{daemons()} with no arguments.
-#'
-#' @param ... additional named arguments passed to \code{\link{server}}.
-#'
-#'     \strong{nodes} supplying an integer number of nodes runs an active queue
-#'     with the specified number of nodes.
+#' @param n integer number of daemons (server processes) to set.
+#' @param url [default NULL] NULL for local daemons, or else the client URL as a
+#'     character string, including a port accepting incoming connections and
+#'     (optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
+#'     'ws://192.168.0.2:5555/path'.
+#' @param active [default TRUE] logical value whether to use active dispatch and
+#'     task scheduling, or else immediate dispatch and even distribution.
+#' @param ... reserved, but not currently used.
 #' @param .compute (optional) character compute profile to use for creating the
 #'     daemons (each compute profile can have its own set of daemons for
 #'     connecting to different resources).
@@ -407,7 +400,10 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     or else NA if not running an active queue.}
 #'     }
 #'
-#' @details Use \code{daemons(0)} to reset all daemon connections at any time.
+#' @details For viewing the currrent status, specify \code{daemons()} with no
+#'     arguments.
+#'
+#'     Use \code{daemons(0)} to reset all daemon connections at any time.
 #'     \{mirai\} will revert to the default behaviour of creating a new
 #'     background process for each request.
 #'
@@ -417,8 +413,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     exception that \code{daemons(0)} will always reset and attempt to
 #'     shutdown all connected daemons.
 #'
-#'     Setting a new client URL will attempt to shutdown all daemons connected
-#'     at the existing address before opening a connection at the new address.
+#'     Specifying a new client URL will attempt to shutdown all daemons
+#'     connected at the existing URL before opening a connection at the new URL.
 #'
 #' @section Local Daemons:
 #'
@@ -527,7 +523,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' # Create 2 daemons
+#' # Create 2 daemons (with active dispatch)
 #' daemons(2)
 #'
 #' # View status
@@ -536,8 +532,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' # Reset to zero
 #' daemons(0)
 #'
-#' # Create 1 active queue with 2 nodes
-#' daemons(1, nodes = 2)
+#' # Create 2 daemons (without active dispatch)
+#' daemons(2, active = FALSE)
 #'
 #' # View status
 #' daemons()
@@ -549,39 +545,34 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #' @export
 #'
-daemons <- function(value, ..., .compute = "default") {
+daemons <- function(n, url = NULL, active = TRUE, ..., .compute = "default") {
 
-  missing(value) &&
+  missing(n) && missing(url) &&
     return(list(connections = if (length(..[[.compute]][["sock"]])) stat(..[[.compute]][["sock"]], "pipes") else 0,
-                daemons = if (length(..[[.compute]][["proc"]])) ..[[.compute]][["proc"]] else 0L,
-                nodes = if (length(..[[.compute]][["sockc"]])) query_nodes(.compute) else NA))
+                daemons = if (length(..[[.compute]][["sockc"]])) query_nodes(.compute) else
+                  if (length(..[[.compute]][["proc"]])) ..[[.compute]][["proc"]] else 0L))
 
   if (is.null(..[[.compute]])) `[[<-`(.., .compute, new.env(hash = FALSE, parent = environment(daemons)))
 
-  is.numeric(value) || {
-
-    is.character(value) || stop("'value' must be numeric, character or missing")
+  if (is.character(url)) {
     if (length(..[[.compute]][["sock"]])) daemons(0L)
-    nodes <- NULL
-    if (...length()) {
-      dots <- substitute(alist(...))[-1L]
-      nodes <- as.integer(.subset2(dots, "n", exact = FALSE))
-    }
-    if (length(nodes)) {
-      url <- sprintf(.urlfmt, random())
-      urlc <- sprintf("%s%s", url, "c")
-      sock <- socket(protocol = "req", listen = url)
+    if (active) {
+      missing(n) && stop("'n' must be specified (max number of daemons) if using active dispatch")
+      is.numeric(n) || stop("'n' must be numeric, did you mean to provide 'url'?")
+      n <- as.integer(n)
+
+      urld <- sprintf(.urlfmt, random())
+      urlc <- sprintf("%s%s", urld, "c")
+      sock <- socket(protocol = "req", listen = urld)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       sockc <- socket(protocol = "bus", listen = urlc)
-      dotstring <- paste(names(dots), dots, sep = "=", collapse = ",")
-      args <- sprintf("mirai::server(c(%s),%s)",
-                      paste(sprintf("\"%s\"", c(url, urlc, value)), collapse = ","),
-                      dotstring)
+      args <- sprintf("mirai::server(c(%s),nodes=%d)",
+                      paste(sprintf("\"%s\"", c(urld, urlc, url)), collapse = ","), n)
       launch_daemon(args)
       `[[<-`(`[[<-`(..[[.compute]], "sockc", sockc), "args", args)
       proc <- 1L
     } else {
-      sock <- socket(protocol = "req", listen = value)
+      sock <- socket(protocol = "req", listen = url)
       proc <- opt(attr(sock, "listener")[[1L]], "url")
       if (parse_url(proc)[["port"]] == "0")
         proc <- sub("(?<=:)0(?![^/])", opt(attr(sock, "listener")[[1L]], "tcp-bound-port"), proc, perl = TRUE)
@@ -592,7 +583,8 @@ daemons <- function(value, ..., .compute = "default") {
 
   }
 
-  n <- as.integer(value)
+  is.numeric(n) || stop("'n' must be numeric, did you mean to provide 'url'?")
+  n <- as.integer(n)
   n >= 0L || stop("the number of daemons must be zero or greater")
   proc <- if (length(..[[.compute]][["proc"]])) ..[[.compute]][["proc"]] else 0L
   delta <- if (is.integer(proc)) n - proc else -1L
@@ -601,24 +593,17 @@ daemons <- function(value, ..., .compute = "default") {
   local <- is.null(..[[.compute]][["local"]])
 
   if (is.null(..[[.compute]][["sock"]])) {
-    url <- sprintf(.urlfmt, random())
-    sock <- socket(protocol = "req", listen = url)
+    urld <- sprintf(.urlfmt, random())
+    sock <- socket(protocol = "req", listen = urld)
     reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
-    if (...length()) {
-      dots <- substitute(alist(...))[-1L]
-      dotstring <- paste(names(dots), dots, sep = "=", collapse = ",")
-      nodes <- .subset2(dots, "n", exact = FALSE)
-      if (length(nodes)) {
-        delta <- 1L
-        urlc <- sprintf("%s%s", url, "c")
-        sockc <- socket(protocol = "bus", listen = urlc)
-        args <- sprintf("mirai::server(c(\"%s\",\"%s\"),%s)", url, urlc, dotstring)
-        `[[<-`(`[[<-`(..[[.compute]], "sockc", sockc), "local", TRUE)
-      } else {
-        args <- sprintf("mirai::server(\"%s\",%s)", url, dotstring)
-      }
+    if (active) {
+      delta <- 1L
+      urlc <- sprintf("%s%s", urld, "c")
+      sockc <- socket(protocol = "bus", listen = urlc)
+      args <- sprintf("mirai::server(c(\"%s\",\"%s\"),nodes=%d)", urld, urlc, n)
+      `[[<-`(`[[<-`(..[[.compute]], "sockc", sockc), "local", TRUE)
     } else {
-      args <- sprintf("mirai::server(\"%s\")", url)
+      args <- sprintf("mirai::server(\"%s\")", urld)
     }
     `[[<-`(`[[<-`(..[[.compute]], "sock", sock), "args", args)
   }
