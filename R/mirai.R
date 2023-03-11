@@ -430,58 +430,91 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     client URL.
 #'
 #'     Viewing current status: a named list comprising: \itemize{
-#'     \item{\code{connections}} {- number of active connections.}
-#'     \item{\code{daemons}} {- number of daemons, or the client URL when
-#'     running a passive queue.}
-#'     \item{\code{nodes}} {- a matrix of URL, online and busy status, as well
-#'     as cumulative tasks assigned and completed (reset if a node re-connects),
-#'     or else NA if not running an active queue.}
+#'     \item{\code{connections}} {- number of active connections at the client.
+#'     Will always be 1L when using active dispatch as there is only one
+#'     connection to the dispatcher which connects to the servers in turn.}
+#'     \item{\code{daemons}} {- if using active dispatch: a matrix of statistics
+#'     for each server: URL, online and busy status, cumulative tasks assigned
+#'     and completed (reset if a server re-connects), and server instance
+#'     (increments by 1 every time a server connects). If not using active
+#'     dispatch: the number of daemons set, or else the client URL.}
 #'     }
 #'
 #' @details For viewing the currrent status, specify \code{daemons()} with no
 #'     arguments.
 #'
-#'     Use \code{daemons(0)} to reset all daemon connections at any time.
-#'     \{mirai\} will revert to the default behaviour of creating a new
-#'     background process for each request.
+#'     Use \code{daemons(0)} to reset all daemon connections at any time. This
+#'     will send an exit signal to all connected daemons or dispatchers (and be
+#'     propagated onwards where applicable) such that their processes exit. A
+#'     reset is required before specifying revised daemons settings, otherwise
+#'     these will not be registered.
+#'
+#'     After a reset, \{mirai\} will revert to the default behaviour of creating
+#'     a new background process for each request.
 #'
 #'     When specifying a client URL, all daemons dialing into the client are
-#'     detected automatically and resources may be added or removed dynamically.
-#'     Further specifying a numeric number of daemons has no effect, with the
-#'     exception that \code{daemons(0)} will always reset and attempt to
-#'     shutdown all connected daemons.
-#'
-#'     Specifying a new client URL will attempt to shutdown all daemons
-#'     connected at the existing URL before opening a connection at the new URL.
+#'     detected automatically and resources may be added or removed at any time.
 #'
 #' @section Local Daemons:
 #'
 #'     Daemons provide a potentially more efficient solution for asynchronous
 #'     operations as new processes no longer need to be created on an \emph{ad
-#'     hoc} basis.
+#'     hoc} basis. Supply the argument 'n' to set the number of daemons.
 #'
-#'     The default implementation is low-level and ensures tasks are
-#'     evenly-distributed amongst daemons. This provides a robust and
-#'     resource-light approach, particularly suited to working with
-#'     similar-length tasks, or where the number of concurrent tasks typically
-#'     does not exceed available daemons.
+#'     \strong{Active Dispatch}
 #'
-#'     Alternatively, supplying \code{nodes} as an additional argument launches
-#'     an active queue with the specified number of nodes e.g.
-#'     \code{daemons(1, nodes = 8)}. When 'nodes' is specified, the value for
-#'     daemons is disregarded and one active queue is launched in all cases. An
-#'     active queue consumes additional resources, however ensures load balancing
-#'     and optimal scheduling of tasks to nodes. Note that changing the number
-#'     of nodes in an active queue requires a reset to zero prior to specifying
-#'     a revised number.
+#'     By default, active dispatch is used. This runs an additional
+#'     \code{\link{dispatcher}} background process that connects to individual
+#'     background \code{\link{server}} processes on the local machine. A
+#'     dispatcher ensures that tasks are dispatched efficiently on a FIFO basis
+#'     to servers for processing. Tasks are queued at the dispatcher and only
+#'     sent to servers that can begin immediate execution of the task.
+#'
+#'     \strong{Immediate Dispatch}
+#'
+#'     Alternatively, specifying \code{active = FALSE} uses a low-level
+#'     implementation without a dispatcher. The client distributes tasks to
+#'     directly-connected servers immediately, and can thus only ensure that
+#'     tasks are evenly-distributed amongst daemons. Optimal scheduling is not
+#'     guaranteed as the duration of tasks is not known \emph{a priori}.
+#'     Nevertheless, this provides a robust and resource-light approach,
+#'     particularly suited to working with similar-length tasks or where the
+#'     number of concurrent tasks typically does not exceed available daemons.
 #'
 #' @section Distributed Computing:
 #'
-#'     \strong{Passive Queues}
+#'     Specifying 'url' allows tasks to be distributed across the network.
 #'
-#'     Specifying a client URL allows tasks to be distributed across the network.
+#'     \strong{Active Dispatch}
 #'
-#'     This should be in the form of a character string such as:
+#'     With \code{active = TRUE}, a local \code{\link{dispatcher}} background
+#'     process is launched, which in turn listens to remote server processes.
+#'     In this case, it is recommended to use a websocket URL rather than TCP,
+#'     as this requires only one port to connect to all servers. This is as a
+#'     websocket URL supports a path after the port number, which can be made
+#'     unique for each server. Specifying a single client URL such as
+#'     'ws://192.168.0.2:5555' with \code{n = 6} will automatically append a
+#'     sequence to the path, listening to the URLs 'ws://192.168.0.2:5555/1'
+#'     through 'ws://192.168.0.2:5555/6'.
+#'
+#'     Alternatively, specify a vector of URLs the same length as 'nodes' to
+#'     listen to arbitrary port numbers / paths.
+#'
+#'     Individual \code{\link{server}} instances should then be started on the
+#'     remote resource, which dial in to each of these client URLs.
+#'
+#'     Server nodes may be scaled up or down dynamically, subject to the maximum
+#'     number initially specified, with the dispatcher adjusting automatically.
+#'
+#'     Alternatively, supplying a single TCP URL will listen on a block of URLs
+#'     with ports starting from the supplied port number and incrementing by one
+#'     for the number of nodes specified e.g. the client URL
+#'     'tcp://192.168.0.2:5555' with 6 nodes listens to the contiguous block of
+#'     ports 5555 through 5560.
+#'
+#'     \strong{Immediate Dispatch}
+#'
+#'     The client URL should be in the form of a character string such as:
 #'     'tcp://192.168.0.2:5555' at which server processes started using
 #'     \code{\link{server}} should connect to. Alternatively, to listen to port
 #'     5555 on all interfaces on the local host, specify either 'tcp://:5555',
@@ -492,37 +525,11 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     \code{daemons()} to query the actual assigned port at any time.
 #'
 #'     The network topology is such that server daemons (started with
-#'     \code{\link{server}}) dial into the client, which listens at the client
-#'     URL. In this way, network resources may be easily added or removed at any
-#'     time. The client automatically distributes tasks to all connected servers.
-#'
-#'     \strong{Active Queues}
-#'
-#'     Supplying a client URL with \code{nodes} as an additional argument will
-#'     launch a local daemon as an active server queue.
-#'
-#'     It is recommended in this case to use a websocket URL rather than TCP.
-#'     This allows using only one port to connect to all nodes. This is as a
-#'     websocket URL supports a path after the port number, which can be made
-#'     unique for each node. Specifying a single client URL such as
-#'     'ws://192.168.0.2:5555' with 6 nodes will automatically append a sequence
-#'     to the path, listening to the URLs 'ws://192.168.0.2:5555/1' through
-#'     'ws://192.168.0.2:5555/6'.
-#'
-#'     Alternatively, specify a vector of URLs the same length as 'nodes' to
-#'     listen to arbitrary port numbers / paths.
-#'
-#'     Individual \code{\link{server}} instances should then be started on the
-#'     remote resource, with each of these specified as the client URL.
-#'
-#'     Server nodes may be scaled up or down dynamically, subject to the maximum
-#'     'nodes' initially specified, with the queue automatically adjusting.
-#'
-#'     Alternatively, supplying a single TCP URL will listen on a block of URLs
-#'     with ports starting from the supplied port number and incrementing by one
-#'     for the number of nodes specified e.g. the client URL
-#'     'tcp://192.168.0.2:5555' with 6 nodes listens to the contiguous block of
-#'     ports 5555 through 5560.
+#'     \code{\link{server}}) or indeed dispatchers (started with
+#'     \code{\link{dispatcher}}) dial into the client, which listens at the
+#'     client URL. In this way, network resources may be added or removed at any
+#'     time. The client automatically distributes tasks to all connected servers
+#'     and dispatchers.
 #'
 #' @section Compute Profiles:
 #'
@@ -560,7 +567,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' # Create 2 daemons (with active dispatch)
+#' # Create 2 daemons (active dispatch)
 #' daemons(2)
 #'
 #' # View status
@@ -569,7 +576,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' # Reset to zero
 #' daemons(0)
 #'
-#' # Create 2 daemons (without active dispatch)
+#' # Create 2 daemons (immediate dispatch)
 #' daemons(2, active = FALSE)
 #'
 #' # View status
@@ -623,18 +630,18 @@ daemons <- function(n, url = NULL, active = TRUE, ..., .compute = "default") {
     is.numeric(n) || stop("'n' must be numeric, did you mean to provide 'url'?")
     n <- as.integer(n)
 
-    n == 0L && {
+    if (n == 0L) {
       length(..[[.compute]][["proc"]]) || return(0L)
+
       proc <- as.integer(stat(..[[.compute]][["sock"]], "pipes"))
       for (i in seq_len(proc))
         send(context(..[[.compute]][["sock"]]), data = .__scm__., mode = 2L, block = 1000L)
       close(..[[.compute]][["sock"]])
       `[[<-`(`[[<-`(`[[<-`(..[[.compute]], "sock", NULL), "sockc", NULL), "proc", NULL)
       gc(verbose = FALSE)
-      return(0L)
-    }
 
-    if (is.null(..[[.compute]][["sock"]])) {
+    } else if (is.null(..[[.compute]][["sock"]])) {
+
       n > 0L || stop("the number of daemons must be zero or greater")
       urld <- sprintf(.urlfmt, random())
       sock <- socket(protocol = "req", listen = urld)
