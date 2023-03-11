@@ -62,40 +62,33 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dispatcher</span><span class="op">(</span></span>
-<span>  <span class="va">client</span>,</span>
-<span>  monitor <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  url <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">dial</span>,</span>
+<span>  listen <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  asyncdial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  exitlinger <span class="op">=</span> <span class="fl">100L</span>,</span>
 <span>  pollfreqh <span class="op">=</span> <span class="fl">10L</span>,</span>
 <span>  pollfreql <span class="op">=</span> <span class="fl">100L</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  monitor <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>client</dt>
-<dd><p>the client URL to dial as a character string, including the port
-to connect to and (optionally) a path for websocket URLs e.g.
-'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.</p></dd>
+    <dl><dt>dial</dt>
+<dd><p>the client URL to dial as a character string (where tasks are
+sent from), including the port to connect to and (optionally) a path for
+websocket URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.</p></dd>
 
 
-<dt>monitor</dt>
-<dd><p>(optional) the client URL used for monitoring purposes as a
-character string, including the port to connect to and (optionally) a
-path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
-'ws://192.168.0.2:5555/path'.</p></dd>
-
-
-<dt>url</dt>
-<dd><p>(optional) the URL or range of URLs the dispatcher should listen
-at as a character vector, including the port to connect to and
+<dt>listen</dt>
+<dd><p>(optional) the URL or range of URLs the dispatcher should
+listen at as a character vector, including the port to connect to and
 (optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
-'ws://192.168.0.2:5555/path'. Daemons started using <code><a href="server.html">server</a></code>
-should dial into these addresses. If NULL, 'n' IPC URLs will be assigned
-automatically.</p></dd>
+'ws://192.168.0.2:5555/path'. Tasks are sent to servers dialled into
+these URLs. If NULL, 'n' URLs accessible from the same computer will be
+assigned automatically.</p></dd>
 
 
 <dt>n</dt>
@@ -138,6 +131,11 @@ cost of consuming more resources on the queue thread.</p></dd>
 
 <dt>...</dt>
 <dd><p>reserved but not currently used.</p></dd>
+
+
+<dt>monitor</dt>
+<dd><p>(for internal use) the client URL used for monitoring purposes
+as a character string.</p></dd>
 
 </dl></div>
     <div id="value">
