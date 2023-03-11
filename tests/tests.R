@@ -58,7 +58,7 @@ if (Sys.getenv("NOT_CRAN") == "set") {
   nanotest(is.matrix(daemons()[["daemons"]]))
   nanotest(daemons(0) == 0L)
   Sys.sleep(0.2)
-  nanotest(daemons(n = 2, "ws://:0", active = TRUE) == 1L)
+  nanotest(daemons(n = 2, "ws://:0", active = TRUE) == 2L)
   nanotest(is.matrix(nodes <- daemons()[["daemons"]]) || is_error_value(nodes))
   nanotest(daemons(0) == 0L)
   Sys.sleep(0.2)

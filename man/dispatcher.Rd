@@ -5,33 +5,28 @@
 \title{mirai Dispatcher}
 \usage{
 dispatcher(
-  client,
-  monitor = NULL,
-  url = NULL,
+  dial,
+  listen = NULL,
   n = NULL,
   asyncdial = TRUE,
   exitlinger = 100L,
   pollfreqh = 10L,
   pollfreql = 100L,
-  ...
+  ...,
+  monitor = NULL
 )
 }
 \arguments{
-\item{client}{the client URL to dial as a character string, including the port
-to connect to and (optionally) a path for websocket URLs e.g.
-'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
+\item{dial}{the client URL to dial as a character string (where tasks are
+sent from), including the port to connect to and (optionally) a path for
+websocket URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 
-\item{monitor}{(optional) the client URL used for monitoring purposes as a
-character string, including the port to connect to and (optionally) a
-path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
-'ws://192.168.0.2:5555/path'.}
-
-\item{url}{(optional) the URL or range of URLs the dispatcher should listen
-at as a character vector, including the port to connect to and
+\item{listen}{(optional) the URL or range of URLs the dispatcher should
+listen at as a character vector, including the port to connect to and
 (optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
-'ws://192.168.0.2:5555/path'. Daemons started using \code{\link{server}}
-should dial into these addresses. If NULL, 'n' IPC URLs will be assigned
-automatically.}
+'ws://192.168.0.2:5555/path'. Tasks are sent to servers dialled into
+these URLs. If NULL, 'n' URLs accessible from the same computer will be
+assigned automatically.}
 
 \item{n}{(optional) if specified, the integer number of servers to listen for.
 Otherwise 'n' will be inferred from the length of the vector 'url'. Where
@@ -62,6 +57,9 @@ active tasks). Setting a lower value will be more responsive but at the
 cost of consuming more resources on the queue thread.}
 
 \item{...}{reserved but not currently used.}
+
+\item{monitor}{(for internal use) the client URL used for monitoring purposes
+as a character string.}
 }
 \value{
 Invisible NULL.

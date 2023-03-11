@@ -9,13 +9,15 @@ daemons(n, url = NULL, active = TRUE, ..., .compute = "default")
 \arguments{
 \item{n}{integer number of daemons (server processes) to set.}
 
-\item{url}{[default NULL] NULL for local daemons, or else the client URL as a
-character string, including a port accepting incoming connections and
-(optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
-'ws://192.168.0.2:5555/path'.}
+\item{url}{(optional) the client URL as a character vector, including a
+port accepting incoming connections and (optionally) a path for websocket
+URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 
-\item{active}{[default TRUE] logical value whether to use active dispatch and
-task scheduling, or else immediate dispatch and even distribution.}
+\item{active}{[default TRUE] logical value whether to use active dispatch,
+which queues tasks until servers can process them ensuring optimal
+allocation on a FIFO basis, or else immediate dispatch, which only
+ensures an even distribution of tasks amongst servers (without reference
+to the time taken for each task).}
 
 \item{...}{reserved, but not currently used.}
 
@@ -25,7 +27,7 @@ connecting to different resources).}
 }
 \value{
 Setting daemons: integer number of daemons set, or the character
-    client URL (1L if specifying 'nodes').
+    client URL.
 
     Viewing current status: a named list comprising: \itemize{
     \item{\code{connections}} {- number of active connections.}
@@ -39,11 +41,12 @@ Setting daemons: integer number of daemons set, or the character
 \description{
 Set 'daemons' or background persistent server processes receiving
     \code{\link{mirai}} requests. These are, by default, automatically
-    created on the local machine. Alternatively, a client URL may be set to
-    receive connections from remote servers started with \code{\link{server}}
-    for distributing tasks across the network. Daemons may take advantage of
-    active dispatch and task scheduling, or the low-level approach of
-    distributing tasks evenly amongst servers by pushing to them immediately.
+    created on the local machine. Alternatively, a client URL may be
+    specified to receive connections from remote servers started with
+    \code{\link{server}} for distributing tasks across the network. Daemons
+    may take advantage of active dispatch, which ensures that tasks are
+    assigned to servers efficiently on a FIFO basis, or else the low-level
+    approach of distributing tasks to servers immediately in an even fashion.
 }
 \details{
 For viewing the currrent status, specify \code{daemons()} with no
@@ -167,10 +170,9 @@ For viewing the currrent status, specify \code{daemons()} with no
 
     Note: specifying the \code{.timeout} argument in \code{\link{mirai}} will
     ensure that the 'mirai' always resolves, however the process may not have
-    completed and still be ongoing in the daemon. In such situations, an
-    active queue may be preferable so that new tasks are not assigned to the
-    busy process, however performance may still be degraded if they remain in
-    use.
+    completed and still be ongoing in the daemon. In such situations, using
+    active dispatch ensures that queued tasks are not assigned to the busy
+    process, however performance may still be degraded if they remain in use.
 }
 
 \examples{

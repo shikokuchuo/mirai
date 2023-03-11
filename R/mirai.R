@@ -21,19 +21,15 @@
 #' Implements a dispatcher for tasks from clients to servers for processing,
 #'     using a FIFO scheduling rule, queuing tasks as required.
 #'
-#' @param client the client URL to dial as a character string, including the port
-#'     to connect to and (optionally) a path for websocket URLs e.g.
-#'     'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
-#' @param monitor (optional) the client URL used for monitoring purposes as a
-#'     character string, including the port to connect to and (optionally) a
-#'     path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
-#'     'ws://192.168.0.2:5555/path'.
-#' @param url (optional) the URL or range of URLs the dispatcher should listen
-#'     at as a character vector, including the port to connect to and
+#' @param dial the client URL to dial as a character string (where tasks are
+#'     sent from), including the port to connect to and (optionally) a path for
+#'     websocket URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
+#' @param listen (optional) the URL or range of URLs the dispatcher should
+#'     listen at as a character vector, including the port to connect to and
 #'     (optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
-#'     'ws://192.168.0.2:5555/path'. Daemons started using \code{\link{server}}
-#'     should dial into these addresses. If NULL, 'n' IPC URLs will be assigned
-#'     automatically.
+#'     'ws://192.168.0.2:5555/path'. Tasks are sent to servers dialled into
+#'     these URLs. If NULL, 'n' URLs accessible from the same computer will be
+#'     assigned automatically.
 #' @param n (optional) if specified, the integer number of servers to listen for.
 #'     Otherwise 'n' will be inferred from the length of the vector 'url'. Where
 #'     'url' is a single URL and 'n' > 1, 'n' unique URLs will be assigned for
@@ -58,6 +54,8 @@
 #'     active tasks). Setting a lower value will be more responsive but at the
 #'     cost of consuming more resources on the queue thread.
 #' @param ... reserved but not currently used.
+#' @param monitor (for internal use) the client URL used for monitoring purposes
+#'     as a character string.
 #'
 #' @return Invisible NULL.
 #'
@@ -69,10 +67,11 @@
 #'
 #' @export
 #'
-dispatcher <- function(client, monitor = NULL, url = NULL, n = NULL, asyncdial = TRUE,
-                       exitlinger = 100L, pollfreqh = 10L, pollfreql = 100L, ...) {
+dispatcher <- function(dial, listen = NULL, n = NULL, asyncdial = TRUE,
+                       exitlinger = 100L, pollfreqh = 10L, pollfreql = 100L, ...,
+                       monitor = NULL) {
 
-  sock <- socket(protocol = "rep", dial = client, autostart = if (asyncdial) TRUE else NA)
+  sock <- socket(protocol = "rep", dial = dial, autostart = if (asyncdial) TRUE else NA)
   on.exit(expr = {
     msleep(exitlinger)
     close(sock)
@@ -83,9 +82,9 @@ dispatcher <- function(client, monitor = NULL, url = NULL, n = NULL, asyncdial =
     on.exit(expr = close(sockc), add = TRUE, after = FALSE)
     cmessage <- recv_aio(sockc, mode = 5L)
   }
-  auto <- is.null(url)
-  vectorised <- length(url) > 1L
-  n <- if (is.numeric(n)) as.integer(n) else length(url)
+  auto <- is.null(listen)
+  vectorised <- length(listen) > 1L
+  n <- if (is.numeric(n)) as.integer(n) else length(listen)
   seq_n <- seq_len(n)
   servernames <- character(n)
   instances <- activestore <- complete <- assigned <- integer(n)
@@ -93,20 +92,20 @@ dispatcher <- function(client, monitor = NULL, url = NULL, n = NULL, asyncdial =
   servers <- queue <- vector(mode = "list", length = n)
 
   if (!auto && !vectorised) {
-    baseurl <- parse_url(url)
+    baseurl <- parse_url(listen)
     ports <- if (grepl("tcp", baseurl[["scheme"]], fixed = TRUE)) as.character(seq.int(baseurl[["port"]], length.out = n))
   }
 
   for (i in seq_n) {
     nurl <- if (auto) sprintf(.urlfmt, random()) else
-      if (vectorised) url[i] else
-        if (is.null(ports)) sprintf("%s/%d", url, i) else
-          sub(ports[1L], ports[i], url, fixed = TRUE)
+      if (vectorised) listen[i] else
+        if (is.null(ports)) sprintf("%s/%d", listen, i) else
+          sub(ports[1L], ports[i], listen, fixed = TRUE)
     nsock <- socket(protocol = "req", listen = nurl)
     if (!auto && parse_url(opt(attr(nsock, "listener")[[1L]], "url"))[["port"]] == "0") {
       realport <- opt(attr(nsock, "listener")[[1L]], "tcp-bound-port")
       nurl <- sub("(?<=:)0(?![^/])", realport, nurl, perl = TRUE)
-      if (!vectorised) url <- sub("(?<=:)0(?![^/])", realport, url, perl = TRUE)
+      if (!vectorised) url <- sub("(?<=:)0(?![^/])", realport, listen, perl = TRUE)
       close(nsock)
       nsock <- socket(protocol = "req", listen = nurl)
     }
@@ -116,7 +115,6 @@ dispatcher <- function(client, monitor = NULL, url = NULL, n = NULL, asyncdial =
 
     servernames[i] <- opt(attr(nsock, "listener")[[1L]], "url")
     servers[[i]] <- nsock
-
     ctx <- context(sock)
     req <- recv_aio(ctx, mode = 1L)
     queue[[i]] <- list(ctx = ctx, req = req)
@@ -271,6 +269,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
     data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
                      error = mk_mirai_error, interrupt = mk_interrupt_error)
     send(ctx, data = data, mode = 1L)
+    rm(list = ls(.GlobalEnv, all.names = TRUE, sorted = FALSE), envir = .GlobalEnv)
     if (count < timerstart) start <- mclock()
     count <- count + 1L
 
@@ -406,26 +405,29 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #' Set 'daemons' or background persistent server processes receiving
 #'     \code{\link{mirai}} requests. These are, by default, automatically
-#'     created on the local machine. Alternatively, a client URL may be set to
-#'     receive connections from remote servers started with \code{\link{server}}
-#'     for distributing tasks across the network. Daemons may take advantage of
-#'     active dispatch and task scheduling, or the low-level approach of
-#'     distributing tasks evenly amongst servers by pushing to them immediately.
+#'     created on the local machine. Alternatively, a client URL may be
+#'     specified to receive connections from remote servers started with
+#'     \code{\link{server}} for distributing tasks across the network. Daemons
+#'     may take advantage of active dispatch, which ensures that tasks are
+#'     assigned to servers efficiently on a FIFO basis, or else the low-level
+#'     approach of distributing tasks to servers immediately in an even fashion.
 #'
 #' @param n integer number of daemons (server processes) to set.
-#' @param url [default NULL] NULL for local daemons, or else the client URL as a
-#'     character string, including a port accepting incoming connections and
-#'     (optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
-#'     'ws://192.168.0.2:5555/path'.
-#' @param active [default TRUE] logical value whether to use active dispatch and
-#'     task scheduling, or else immediate dispatch and even distribution.
+#' @param url (optional) the client URL as a character vector, including a
+#'     port accepting incoming connections and (optionally) a path for websocket
+#'     URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
+#' @param active [default TRUE] logical value whether to use active dispatch,
+#'     which queues tasks until servers can process them ensuring optimal
+#'     allocation on a FIFO basis, or else immediate dispatch, which only
+#'     ensures an even distribution of tasks amongst servers (without reference
+#'     to the time taken for each task).
 #' @param ... reserved, but not currently used.
 #' @param .compute (optional) character compute profile to use for creating the
 #'     daemons (each compute profile can have its own set of daemons for
 #'     connecting to different resources).
 #'
 #' @return Setting daemons: integer number of daemons set, or the character
-#'     client URL (1L if specifying 'nodes').
+#'     client URL.
 #'
 #'     Viewing current status: a named list comprising: \itemize{
 #'     \item{\code{connections}} {- number of active connections.}
@@ -550,10 +552,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #'     Note: specifying the \code{.timeout} argument in \code{\link{mirai}} will
 #'     ensure that the 'mirai' always resolves, however the process may not have
-#'     completed and still be ongoing in the daemon. In such situations, an
-#'     active queue may be preferable so that new tasks are not assigned to the
-#'     busy process, however performance may still be degraded if they remain in
-#'     use.
+#'     completed and still be ongoing in the daemon. In such situations, using
+#'     active dispatch ensures that queued tasks are not assigned to the busy
+#'     process, however performance may still be degraded if they remain in use.
 #'
 #' @examples
 #' if (interactive()) {
@@ -591,85 +592,70 @@ daemons <- function(n, url = NULL, active = TRUE, ..., .compute = "default") {
   if (is.null(..[[.compute]])) `[[<-`(.., .compute, new.env(hash = FALSE, parent = environment(daemons)))
 
   if (is.character(url)) {
-    if (length(..[[.compute]][["sock"]])) daemons(0L)
-    if (active) {
-      missing(n) && stop("'n' must be specified (max number of daemons) if using active dispatch")
-      is.numeric(n) || stop("'n' must be numeric, did you mean to provide 'url'?")
-      n <- as.integer(n)
 
-      urld <- sprintf(.urlfmt, random())
-      urlc <- sprintf("%s%s", urld, "c")
-      sock <- socket(protocol = "req", listen = urld)
-      reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
-      sockc <- socket(protocol = "bus", listen = urlc)
-      args <- sprintf("mirai::dispatcher(\"%s\",\"%s\",c(%s),n=%d)",
-                      urld, urlc,
-                      paste(sprintf("\"%s\"", url), collapse = ","), n)
-      launch_daemon(args)
-      `[[<-`(`[[<-`(..[[.compute]], "sockc", sockc), "args", args)
-      proc <- 1L
-    } else {
-      sock <- socket(protocol = "req", listen = url)
-      proc <- opt(attr(sock, "listener")[[1L]], "url")
-      if (parse_url(proc)[["port"]] == "0")
-        proc <- sub("(?<=:)0(?![^/])", opt(attr(sock, "listener")[[1L]], "tcp-bound-port"), proc, perl = TRUE)
-      reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
-    }
-    `[[<-`(`[[<-`(`[[<-`(..[[.compute]], "sock", sock), "local", FALSE), "proc", proc)
-    return(proc)
-
-  }
-
-  is.numeric(n) || stop("'n' must be numeric, did you mean to provide 'url'?")
-  n <- as.integer(n)
-  n >= 0L || stop("the number of daemons must be zero or greater")
-  proc <- if (length(..[[.compute]][["proc"]])) ..[[.compute]][["proc"]] else 0L
-  delta <- if (is.integer(proc)) n - proc else -1L
-  delta == 0L && return(proc)
-
-  local <- is.null(..[[.compute]][["local"]])
-
-  if (is.null(..[[.compute]][["sock"]])) {
-    urld <- sprintf(.urlfmt, random())
-    sock <- socket(protocol = "req", listen = urld)
-    reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
-    if (active) {
-      delta <- 1L
-      urlc <- sprintf("%s%s", urld, "c")
-      sockc <- socket(protocol = "bus", listen = urlc)
-      args <- sprintf("mirai::dispatcher(\"%s\",\"%s\",n=%d)", urld, urlc, n)
-      `[[<-`(`[[<-`(..[[.compute]], "sockc", sockc), "local", TRUE)
-    } else {
-      args <- sprintf("mirai::server(\"%s\")", urld)
-    }
-    `[[<-`(`[[<-`(..[[.compute]], "sock", sock), "args", args)
-  }
-
-  if (delta > 0L) {
-    if (local) {
-      for (i in seq_len(delta))
-        launch_daemon(..[[.compute]][["args"]])
-      proc <- proc + delta
-      `[[<-`(..[[.compute]], "proc", proc)
+    if (is.null(..[[.compute]][["sock"]])) {
+      if (active) {
+        missing(n) && stop("'n' must be specified (max number of daemons) if using active dispatch")
+        is.numeric(n) || stop("'n' must be numeric, did you mean to provide 'url'?")
+        n <- as.integer(n)
+        urld <- sprintf(.urlfmt, random())
+        urlc <- sprintf("%s%s", urld, "c")
+        sock <- socket(protocol = "req", listen = urld)
+        reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
+        sockc <- socket(protocol = "bus", listen = urlc)
+        args <- sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\")",
+                        urld, paste(sprintf("\"%s\"", url), collapse = ","), n, urlc)
+        launch_daemon(args)
+        `[[<-`(..[[.compute]], "sockc", sockc)
+        proc <- n
+      } else {
+        sock <- socket(protocol = "req", listen = url)
+        proc <- opt(attr(sock, "listener")[[1L]], "url")
+        if (parse_url(proc)[["port"]] == "0")
+          proc <- sub("(?<=:)0(?![^/])", opt(attr(sock, "listener")[[1L]], "tcp-bound-port"), proc, perl = TRUE)
+        reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
+      }
+      `[[<-`(`[[<-`(..[[.compute]], "sock", sock), "proc", proc)
     }
 
   } else {
-    if (n == 0L || local) {
+
+    is.numeric(n) || stop("'n' must be numeric, did you mean to provide 'url'?")
+    n <- as.integer(n)
+
+    n == 0L && {
+      length(..[[.compute]][["proc"]]) || return(0L)
       proc <- as.integer(stat(..[[.compute]][["sock"]], "pipes"))
-      delta <- if (n == 0L) proc else min(-delta, proc)
-      for (i in seq_len(delta))
+      for (i in seq_len(proc))
         send(context(..[[.compute]][["sock"]]), data = .__scm__., mode = 2L, block = 1000L)
-      proc <- proc - delta
-      `[[<-`(..[[.compute]], "proc", proc)
-    }
-    if (proc == 0L) {
       close(..[[.compute]][["sock"]])
-      `[[<-`(`[[<-`(`[[<-`(..[[.compute]], "sock", NULL), "sockc", NULL), "local", NULL)
+      `[[<-`(`[[<-`(`[[<-`(..[[.compute]], "sock", NULL), "sockc", NULL), "proc", NULL)
       gc(verbose = FALSE)
+      return(0L)
     }
+
+    if (is.null(..[[.compute]][["sock"]])) {
+      n > 0L || stop("the number of daemons must be zero or greater")
+      urld <- sprintf(.urlfmt, random())
+      sock <- socket(protocol = "req", listen = urld)
+      reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
+      if (active) {
+        urlc <- sprintf("%s%s", urld, "c")
+        sockc <- socket(protocol = "bus", listen = urlc)
+        args <- sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\")", urld, n, urlc)
+        launch_daemon(args)
+        `[[<-`(..[[.compute]], "sockc", sockc)
+      } else {
+        args <- sprintf("mirai::server(\"%s\")", urld)
+        for (i in seq_len(n))
+          launch_daemon(args)
+      }
+      `[[<-`(`[[<-`(..[[.compute]], "sock", sock), "proc", n)
+    }
+
   }
 
-  proc
+  if (length(..[[.compute]][["proc"]])) ..[[.compute]][["proc"]] else 0L
 
 }
 
