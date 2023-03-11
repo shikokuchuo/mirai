@@ -21,18 +21,29 @@
 #' Implements a dispatcher for tasks from clients to servers for processing,
 #'     using a FIFO scheduling rule, queuing tasks as required.
 #'
-#' @param url the client URL as a character string, including the port to
-#'     connect to and (optionally) a path for websocket URLs e.g.
+#' @param client the client URL to dial as a character string, including the port
+#'     to connect to and (optionally) a path for websocket URLs e.g.
 #'     'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
-#' @param n [default NULL] if supplied, this server instance will run as an
-#'     active queue (task scheduler) with the specified number of nodes.
-#' @param asyncdial [default TRUE] whether to dial in to the client
-#'     asynchronously. An asynchronous dial is more resilient and will continue
-#'     retrying if not immediately successful. However this can mask potential
-#'     connection issues and specifying FALSE is useful for debugging purposes,
-#'     producing an error if a connection is not immediately possible (e.g.
-#'     \code{\link{daemons}} has yet to be called on the client, or the
-#'     specified port is not open etc.).
+#' @param monitor (optional) the client URL used for monitoring purposes as a
+#'     character string, including the port to connect to and (optionally) a
+#'     path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
+#'     'ws://192.168.0.2:5555/path'.
+#' @param url (optional) the URL or range of URLs the dispatcher should listen
+#'     at as a character vector, including the port to connect to and
+#'     (optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
+#'     'ws://192.168.0.2:5555/path'. Daemons started using \code{\link{server}}
+#'     should dial into these addresses. If NULL, 'n' IPC URLs will be assigned
+#'     automatically.
+#' @param n (optional) if specified, the integer number of servers to listen for.
+#'     Otherwise 'n' will be inferred from the length of the vector 'url'. Where
+#'     'url' is a single URL and 'n' > 1, 'n' unique URLs will be assigned for
+#'     servers to dial into.
+#' @param asyncdial [default TRUE] whether to perform dials asynchronously. An
+#'     asynchronous dial is more resilient and will continue retrying if not
+#'     immediately successful. However this can mask potential connection issues
+#'     and specifying FALSE will error if a connection is not immediately
+#'     possible (e.g. \code{\link{daemons}} has yet to be called on the client,
+#'     or the specified port is not open etc.).
 #' @param exitlinger [default 100L] time in milliseconds to linger after an exit
 #'     signal is received or a timer / task limit is reached, to allow sockets
 #'     to flush sends currently in progress. The default permits normal
@@ -58,57 +69,44 @@
 #'
 #' @export
 #'
-dispatcher <- function(url, n = NULL, asyncdial = TRUE, exitlinger = 100L,
-                       pollfreqh = 10L, pollfreql = 100L, ...) {
+dispatcher <- function(client, monitor = NULL, url = NULL, n = NULL, asyncdial = TRUE,
+                       exitlinger = 100L, pollfreqh = 10L, pollfreql = 100L, ...) {
 
-  sock <- socket(protocol = "rep", dial = url, autostart = if (asyncdial) TRUE else NA)
-  devnull <- file(nullfile(), open = "w", blocking = FALSE)
-  sink(file = devnull)
-  sink(file = devnull, type = "message")
+  sock <- socket(protocol = "rep", dial = client, autostart = if (asyncdial) TRUE else NA)
   on.exit(expr = {
     msleep(exitlinger)
     close(sock)
-    sink()
-    sink(type = "message")
-    close(devnull)
   })
-  count <- 0L
-  start <- mclock()
-
-  is.numeric(n) || stop("'n' must be numeric")
-
-  n <- as.integer(n)
-  idle <- FALSE
-  ctrchannel <- length(url) > 1L
-  auto <- length(url) < 3L
-  vectorised <- length(url) == n + 2L
+  ctrchannel <- is.character(monitor)
+  if (ctrchannel) {
+    sockc <- socket(protocol = "bus", dial = monitor, autostart = if (asyncdial) TRUE else NA)
+    on.exit(expr = close(sockc), add = TRUE, after = FALSE)
+    cmessage <- recv_aio(sockc, mode = 5L)
+  }
+  auto <- is.null(url)
+  vectorised <- length(url) > 1L
+  n <- if (is.numeric(n)) as.integer(n) else length(url)
   seq_n <- seq_len(n)
   servernames <- character(n)
   instances <- activestore <- complete <- assigned <- integer(n)
   serverfree <- !integer(n)
   servers <- queue <- vector(mode = "list", length = n)
 
-  if (ctrchannel) {
-    sockc <- socket(protocol = "bus", dial = url[2L], autostart = if (asyncdial) TRUE else NA)
-    on.exit(expr = close(sockc), add = TRUE, after = FALSE)
-    cmessage <- recv_aio(sockc, mode = 5L)
-  }
-
   if (!auto && !vectorised) {
-    baseurl <- parse_url(url[3L])
+    baseurl <- parse_url(url)
     ports <- if (grepl("tcp", baseurl[["scheme"]], fixed = TRUE)) as.character(seq.int(baseurl[["port"]], length.out = n))
   }
 
   for (i in seq_n) {
     nurl <- if (auto) sprintf(.urlfmt, random()) else
-      if (vectorised) url[i + 2L] else
-        if (is.null(ports)) sprintf("%s/%d", url[3L], i) else
-          sub(ports[1L], ports[i], url[3L], fixed = TRUE)
+      if (vectorised) url[i] else
+        if (is.null(ports)) sprintf("%s/%d", url, i) else
+          sub(ports[1L], ports[i], url, fixed = TRUE)
     nsock <- socket(protocol = "req", listen = nurl)
     if (!auto && parse_url(opt(attr(nsock, "listener")[[1L]], "url"))[["port"]] == "0") {
       realport <- opt(attr(nsock, "listener")[[1L]], "tcp-bound-port")
       nurl <- sub("(?<=:)0(?![^/])", realport, nurl, perl = TRUE)
-      if (!vectorised) url[3L] <- sub("(?<=:)0(?![^/])", realport, url[3L], perl = TRUE)
+      if (!vectorised) url <- sub("(?<=:)0(?![^/])", realport, url, perl = TRUE)
       close(nsock)
       nsock <- socket(protocol = "req", listen = nurl)
     }
@@ -123,9 +121,17 @@ dispatcher <- function(url, n = NULL, asyncdial = TRUE, exitlinger = 100L,
     req <- recv_aio(ctx, mode = 1L)
     queue[[i]] <- list(ctx = ctx, req = req)
   }
-
   on.exit(expr = lapply(servers, send, data = .__scm__., mode = 2L), add = TRUE, after = FALSE)
   on.exit(expr = lapply(servers, close), add = TRUE, after = TRUE)
+
+  devnull <- file(nullfile(), open = "w", blocking = FALSE)
+  sink(file = devnull)
+  sink(file = devnull, type = "message")
+  on.exit(expr = {
+    sink()
+    sink(type = "message")
+    close(devnull)
+  }, add = TRUE, after = TRUE)
 
   suspendInterrupts(
     repeat {
@@ -183,7 +189,6 @@ dispatcher <- function(url, n = NULL, asyncdial = TRUE, exitlinger = 100L,
           q <- queue[[i]][["daemon"]]
           serverfree[q] <- TRUE
           complete[q] <- complete[q] + 1L
-          count <- count + 1L
           ctx <- context(sock)
           req <- recv_aio(ctx, mode = 1L)
           queue[[i]] <- list(ctx = ctx, req = req)
@@ -200,16 +205,15 @@ dispatcher <- function(url, n = NULL, asyncdial = TRUE, exitlinger = 100L,
 #'     evaluates an expression in an environment containing the supplied data,
 #'     and returns the result to the caller/client.
 #'
-#' @param url the client URL as a character string, including the port to
-#'     connect to and (optionally) a path for websocket URLs e.g.
-#'     'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
-#' @param asyncdial [default TRUE] whether to dial in to the client
-#'     asynchronously. An asynchronous dial is more resilient and will continue
-#'     retrying if not immediately successful. However this can mask potential
-#'     connection issues and specifying FALSE is useful for debugging purposes,
-#'     producing an error if a connection is not immediately possible (e.g.
-#'     \code{\link{daemons}} has yet to be called on the client, or the
-#'     specified port is not open etc.).
+#' @param url the client or dispatcher URL to dial into as a character string,
+#'     including the port to connect to and (optionally) a path for websocket
+#'     URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
+#' @param asyncdial [default TRUE] whether to perform dials asynchronously. An
+#'     asynchronous dial is more resilient and will continue retrying if not
+#'     immediately successful. However this can mask potential connection issues
+#'     and specifying FALSE will error if a connection is not immediately
+#'     possible (e.g. \code{\link{daemons}} has yet to be called on the client,
+#'     or the specified port is not open etc.).
 #' @param maxtasks [default Inf] the maximum number of tasks to execute (task
 #'     limit) before exiting.
 #' @param idletime [default Inf] maximum idle time, since completion of the last
@@ -598,8 +602,9 @@ daemons <- function(n, url = NULL, active = TRUE, ..., .compute = "default") {
       sock <- socket(protocol = "req", listen = urld)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       sockc <- socket(protocol = "bus", listen = urlc)
-      args <- sprintf("mirai::dispatcher(c(%s),n=%d)",
-                      paste(sprintf("\"%s\"", c(urld, urlc, url)), collapse = ","), n)
+      args <- sprintf("mirai::dispatcher(\"%s\",\"%s\",c(%s),n=%d)",
+                      urld, urlc,
+                      paste(sprintf("\"%s\"", url), collapse = ","), n)
       launch_daemon(args)
       `[[<-`(`[[<-`(..[[.compute]], "sockc", sockc), "args", args)
       proc <- 1L
@@ -632,7 +637,7 @@ daemons <- function(n, url = NULL, active = TRUE, ..., .compute = "default") {
       delta <- 1L
       urlc <- sprintf("%s%s", urld, "c")
       sockc <- socket(protocol = "bus", listen = urlc)
-      args <- sprintf("mirai::dispatcher(c(\"%s\",\"%s\"),n=%d)", urld, urlc, n)
+      args <- sprintf("mirai::dispatcher(\"%s\",\"%s\",n=%d)", urld, urlc, n)
       `[[<-`(`[[<-`(..[[.compute]], "sockc", sockc), "local", TRUE)
     } else {
       args <- sprintf("mirai::server(\"%s\")", urld)

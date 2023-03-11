@@ -5,7 +5,9 @@
 \title{mirai Dispatcher}
 \usage{
 dispatcher(
-  url,
+  client,
+  monitor = NULL,
+  url = NULL,
   n = NULL,
   asyncdial = TRUE,
   exitlinger = 100L,
@@ -15,20 +17,33 @@ dispatcher(
 )
 }
 \arguments{
-\item{url}{the client URL as a character string, including the port to
-connect to and (optionally) a path for websocket URLs e.g.
+\item{client}{the client URL to dial as a character string, including the port
+to connect to and (optionally) a path for websocket URLs e.g.
 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 
-\item{n}{[default NULL] if supplied, this server instance will run as an
-active queue (task scheduler) with the specified number of nodes.}
+\item{monitor}{(optional) the client URL used for monitoring purposes as a
+character string, including the port to connect to and (optionally) a
+path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
+'ws://192.168.0.2:5555/path'.}
 
-\item{asyncdial}{[default TRUE] whether to dial in to the client
-asynchronously. An asynchronous dial is more resilient and will continue
-retrying if not immediately successful. However this can mask potential
-connection issues and specifying FALSE is useful for debugging purposes,
-producing an error if a connection is not immediately possible (e.g.
-\code{\link{daemons}} has yet to be called on the client, or the
-specified port is not open etc.).}
+\item{url}{(optional) the URL or range of URLs the dispatcher should listen
+at as a character vector, including the port to connect to and
+(optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
+'ws://192.168.0.2:5555/path'. Daemons started using \code{\link{server}}
+should dial into these addresses. If NULL, 'n' IPC URLs will be assigned
+automatically.}
+
+\item{n}{(optional) if specified, the integer number of servers to listen for.
+Otherwise 'n' will be inferred from the length of the vector 'url'. Where
+'url' is a single URL and 'n' > 1, 'n' unique URLs will be assigned for
+servers to dial into.}
+
+\item{asyncdial}{[default TRUE] whether to perform dials asynchronously. An
+asynchronous dial is more resilient and will continue retrying if not
+immediately successful. However this can mask potential connection issues
+and specifying FALSE will error if a connection is not immediately
+possible (e.g. \code{\link{daemons}} has yet to be called on the client,
+or the specified port is not open etc.).}
 
 \item{exitlinger}{[default 100L] time in milliseconds to linger after an exit
 signal is received or a timer / task limit is reached, to allow sockets
