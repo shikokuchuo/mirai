@@ -6,16 +6,16 @@
 \usage{
 server(
   url,
-  nodes = NULL,
-  ...,
+  n = NULL,
   asyncdial = TRUE,
   maxtasks = Inf,
   idletime = Inf,
   walltime = Inf,
   timerstart = 0L,
-  exitdelay = 100L,
-  pollfreqh = 5L,
-  pollfreql = 50L
+  exitlinger = 100L,
+  pollfreqh = 10L,
+  pollfreql = 100L,
+  ...
 )
 }
 \arguments{
@@ -23,10 +23,8 @@ server(
 connect to and (optionally) a path for websocket URLs e.g.
 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 
-\item{nodes}{[default NULL] if supplied, this server instance will run as an
+\item{n}{[default NULL] if supplied, this server instance will run as an
 active queue (task scheduler) with the specified number of nodes.}
-
-\item{...}{reserved but not currently used.}
 
 \item{asyncdial}{[default TRUE] whether to dial in to the client
 asynchronously. An asynchronous dial is more resilient and will continue
@@ -49,22 +47,23 @@ time taken (in milliseconds) before exiting.}
 instances only) number of completed tasks after which to start the timer
 for 'idletime' and 'walltime'. 0L implies timers are started upon launch.}
 
-\item{exitdelay}{[default 100L] time in milliseconds to wait after an exit
+\item{exitlinger}{[default 100L] time in milliseconds to linger after an exit
 signal is received or a timer / task limit is reached, to allow sockets
-to finish sends currently in progress. The default permits normal
-operations, but if timers / task limits are in force and computations are
-expected to return very large objects, this should be set wider to ensure
-results are sent before exiting.}
+to flush sends currently in progress. The default permits normal
+operations, but should be set wider if computations are expected to
+return very large objects.}
 
-\item{pollfreqh}{[default 5L] (applicable to active queues only) the high
+\item{pollfreqh}{[default 10L] (applicable to active queues only) the high
 polling frequency for the queue in milliseconds (used when there are
 active tasks). Setting a lower value will be more responsive but at the
 cost of consuming more resources on the queue thread.}
 
-\item{pollfreql}{[default 50L] (applicable to active queues only) the low
+\item{pollfreql}{[default 100L] (applicable to active queues only) the low
 polling frequency for the queue in milliseconds (used when there are no
 active tasks). Setting a lower value will be more responsive but at the
 cost of consuming more resources on the queue thread.}
+
+\item{...}{reserved but not currently used.}
 }
 \value{
 Invisible NULL.

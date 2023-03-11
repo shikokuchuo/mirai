@@ -30,9 +30,9 @@
 #'     domain sockets on MacOS, Solaris and other POSIX platforms, and named
 #'     pipes on Windows.
 #'
-#'     This may be overriden if required by specifying a custom client URL in
-#'     the \code{\link{daemons}} interface, and starting server processes
-#'     manually with \code{\link{server}} on the same machine.
+#'     This may be overriden if required by specifying 'url' in the
+#'     \code{\link{daemons}} interface, and starting server processes manually
+#'     using \code{\link{server}} on the same machine.
 #'
 #' @section Links:
 #'

@@ -25,9 +25,8 @@
 #' @param url the client URL as a character string, including the port to
 #'     connect to and (optionally) a path for websocket URLs e.g.
 #'     'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
-#' @param nodes [default NULL] if supplied, this server instance will run as an
+#' @param n [default NULL] if supplied, this server instance will run as an
 #'     active queue (task scheduler) with the specified number of nodes.
-#' @param ... reserved but not currently used.
 #' @param asyncdial [default TRUE] whether to dial in to the client
 #'     asynchronously. An asynchronous dial is more resilient and will continue
 #'     retrying if not immediately successful. However this can mask potential
@@ -44,20 +43,20 @@
 #' @param timerstart [default 0L] (applicable to individual server / node
 #'     instances only) number of completed tasks after which to start the timer
 #'     for 'idletime' and 'walltime'. 0L implies timers are started upon launch.
-#' @param exitdelay [default 100L] time in milliseconds to wait after an exit
+#' @param exitlinger [default 100L] time in milliseconds to linger after an exit
 #'     signal is received or a timer / task limit is reached, to allow sockets
-#'     to finish sends currently in progress. The default permits normal
-#'     operations, but if timers / task limits are in force and computations are
-#'     expected to return very large objects, this should be set wider to ensure
-#'     results are sent before exiting.
-#' @param pollfreqh [default 5L] (applicable to active queues only) the high
+#'     to flush sends currently in progress. The default permits normal
+#'     operations, but should be set wider if computations are expected to
+#'     return very large objects.
+#' @param pollfreqh [default 10L] (applicable to active queues only) the high
 #'     polling frequency for the queue in milliseconds (used when there are
 #'     active tasks). Setting a lower value will be more responsive but at the
 #'     cost of consuming more resources on the queue thread.
-#' @param pollfreql [default 50L] (applicable to active queues only) the low
+#' @param pollfreql [default 100L] (applicable to active queues only) the low
 #'     polling frequency for the queue in milliseconds (used when there are no
 #'     active tasks). Setting a lower value will be more responsive but at the
 #'     cost of consuming more resources on the queue thread.
+#' @param ... reserved but not currently used.
 #'
 #' @return Invisible NULL.
 #'
@@ -75,16 +74,16 @@
 #'
 #' @export
 #'
-server <- function(url, nodes = NULL, ..., asyncdial = TRUE, maxtasks = Inf,
+server <- function(url, n = NULL, asyncdial = TRUE, maxtasks = Inf,
                    idletime = Inf, walltime = Inf, timerstart = 0L,
-                   exitdelay = 100L, pollfreqh = 5L, pollfreql = 50L) {
+                   exitlinger = 100L, pollfreqh = 10L, pollfreql = 100L, ...) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = if (asyncdial) TRUE else NA)
   devnull <- file(nullfile(), open = "w", blocking = FALSE)
   sink(file = devnull)
   sink(file = devnull, type = "message")
   on.exit(expr = {
-    msleep(exitdelay)
+    msleep(exitlinger)
     close(sock)
     sink()
     sink(type = "message")
@@ -93,18 +92,18 @@ server <- function(url, nodes = NULL, ..., asyncdial = TRUE, maxtasks = Inf,
   count <- 0L
   start <- mclock()
 
-  if (is.numeric(nodes)) {
+  if (is.numeric(n)) {
 
+    n <- as.integer(n)
     idle <- FALSE
     ctrchannel <- length(url) > 1L
     auto <- length(url) < 3L
-    nodes <- as.integer(nodes)
-    vectorised <- length(url) == nodes + 2L
-    seq_nodes <- seq_len(nodes)
-    servernames <- character(nodes)
-    instances <- activestore <- complete <- assigned <- integer(nodes)
-    serverfree <- !integer(nodes)
-    servers <- queue <- vector(mode = "list", length = nodes)
+    vectorised <- length(url) == n + 2L
+    seq_n <- seq_len(n)
+    servernames <- character(n)
+    instances <- activestore <- complete <- assigned <- integer(n)
+    serverfree <- !integer(n)
+    servers <- queue <- vector(mode = "list", length = n)
 
     if (ctrchannel) {
       sockc <- socket(protocol = "bus", dial = url[2L], autostart = if (asyncdial) TRUE else NA)
@@ -114,10 +113,10 @@ server <- function(url, nodes = NULL, ..., asyncdial = TRUE, maxtasks = Inf,
 
     if (!auto && !vectorised) {
       baseurl <- parse_url(url[3L])
-      ports <- if (grepl("tcp", baseurl[["scheme"]], fixed = TRUE)) as.character(seq.int(baseurl[["port"]], length.out = nodes))
+      ports <- if (grepl("tcp", baseurl[["scheme"]], fixed = TRUE)) as.character(seq.int(baseurl[["port"]], length.out = n))
     }
 
-    for (i in seq_nodes) {
+    for (i in seq_n) {
       nurl <- if (auto) sprintf(.urlfmt, random()) else
         if (vectorised) url[i + 2L] else
           if (is.null(ports)) sprintf("%s/%d", url[3L], i) else
@@ -170,25 +169,25 @@ server <- function(url, nodes = NULL, ..., asyncdial = TRUE, maxtasks = Inf,
 
         ctrchannel && !unresolved(cmessage) && {
           data <- `attributes<-`(c(activevec, assigned - complete, assigned, complete, instances),
-                                 list(dim = c(nodes, 5L),
+                                 list(dim = c(n, 5L),
                                       dimnames = list(servernames,
-                                                      c("status_online", "status_busy", "tasks_assigned", "tasks_complete", "node_instance"))))
+                                                      c("status_online", "status_busy", "tasks_assigned", "tasks_complete", "instance"))))
           send(sockc, data = data, mode = 1L)
           cmessage <- recv_aio(sockc, mode = 5L)
           next
         }
 
         active || {
-          for (i in seq_nodes)
+          for (i in seq_n)
             r <- .subset2(queue[[i]][["req"]], "data")
           next
         }
 
         if (length(free))
           for (q in free)
-            for (i in seq_nodes) {
+            for (i in seq_n) {
               if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
-                if (auto && active < nodes)
+                if (auto && active < n)
                   for (j in which(!activevec)) launch_daemon(sprintf("mirai::server(\"%s\")", servernames[j]))
                 ctx <- context(servers[[q]])
                 queue[[i]][["rctx"]] <- ctx
@@ -201,7 +200,7 @@ server <- function(url, nodes = NULL, ..., asyncdial = TRUE, maxtasks = Inf,
               serverfree[q] || break
             }
 
-        for (i in seq_nodes)
+        for (i in seq_n)
           if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
             send(queue[[i]][["ctx"]], data = .subset2(queue[[i]][["res"]], "data"), mode = 1L)
             q <- queue[[i]][["daemon"]]
@@ -566,7 +565,7 @@ daemons <- function(n, url = NULL, active = TRUE, ..., .compute = "default") {
       sock <- socket(protocol = "req", listen = urld)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       sockc <- socket(protocol = "bus", listen = urlc)
-      args <- sprintf("mirai::server(c(%s),nodes=%d)",
+      args <- sprintf("mirai::server(c(%s),n=%d)",
                       paste(sprintf("\"%s\"", c(urld, urlc, url)), collapse = ","), n)
       launch_daemon(args)
       `[[<-`(`[[<-`(..[[.compute]], "sockc", sockc), "args", args)
@@ -600,7 +599,7 @@ daemons <- function(n, url = NULL, active = TRUE, ..., .compute = "default") {
       delta <- 1L
       urlc <- sprintf("%s%s", urld, "c")
       sockc <- socket(protocol = "bus", listen = urlc)
-      args <- sprintf("mirai::server(c(\"%s\",\"%s\"),nodes=%d)", urld, urlc, n)
+      args <- sprintf("mirai::server(c(\"%s\",\"%s\"),n=%d)", urld, urlc, n)
       `[[<-`(`[[<-`(..[[.compute]], "sockc", sockc), "local", TRUE)
     } else {
       args <- sprintf("mirai::server(\"%s\")", urld)

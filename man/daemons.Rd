@@ -17,7 +17,7 @@ character string, including a port accepting incoming connections and
 \item{active}{[default TRUE] logical value whether to use active dispatch and
 task scheduling, or else immediate dispatch and even distribution.}
 
-\item{...}{reserved, but not used.}
+\item{...}{reserved, but not currently used.}
 
 \item{.compute}{(optional) character compute profile to use for creating the
 daemons (each compute profile can have its own set of daemons for
