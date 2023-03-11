@@ -62,7 +62,9 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dispatcher</span><span class="op">(</span></span>
-<span>  <span class="va">url</span>,</span>
+<span>  <span class="va">client</span>,</span>
+<span>  monitor <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  url <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  asyncdial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  exitlinger <span class="op">=</span> <span class="fl">100L</span>,</span>
@@ -74,25 +76,42 @@
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>url</dt>
-<dd><p>the client URL as a character string, including the port to
-connect to and (optionally) a path for websocket URLs e.g.
+    <dl><dt>client</dt>
+<dd><p>the client URL to dial as a character string, including the port
+to connect to and (optionally) a path for websocket URLs e.g.
 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.</p></dd>
 
 
+<dt>monitor</dt>
+<dd><p>(optional) the client URL used for monitoring purposes as a
+character string, including the port to connect to and (optionally) a
+path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
+'ws://192.168.0.2:5555/path'.</p></dd>
+
+
+<dt>url</dt>
+<dd><p>(optional) the URL or range of URLs the dispatcher should listen
+at as a character vector, including the port to connect to and
+(optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
+'ws://192.168.0.2:5555/path'. Daemons started using <code><a href="server.html">server</a></code>
+should dial into these addresses. If NULL, 'n' IPC URLs will be assigned
+automatically.</p></dd>
+
+
 <dt>n</dt>
-<dd><p>[default NULL] if supplied, this server instance will run as an
-active queue (task scheduler) with the specified number of nodes.</p></dd>
+<dd><p>(optional) if specified, the integer number of servers to listen for.
+Otherwise 'n' will be inferred from the length of the vector 'url'. Where
+'url' is a single URL and 'n' &gt; 1, 'n' unique URLs will be assigned for
+servers to dial into.</p></dd>
 
 
 <dt>asyncdial</dt>
-<dd><p>[default TRUE] whether to dial in to the client
-asynchronously. An asynchronous dial is more resilient and will continue
-retrying if not immediately successful. However this can mask potential
-connection issues and specifying FALSE is useful for debugging purposes,
-producing an error if a connection is not immediately possible (e.g.
-<code><a href="daemons.html">daemons</a></code> has yet to be called on the client, or the
-specified port is not open etc.).</p></dd>
+<dd><p>[default TRUE] whether to perform dials asynchronously. An
+asynchronous dial is more resilient and will continue retrying if not
+immediately successful. However this can mask potential connection issues
+and specifying FALSE will error if a connection is not immediately
+possible (e.g. <code><a href="daemons.html">daemons</a></code> has yet to be called on the client,
+or the specified port is not open etc.).</p></dd>
 
 
 <dt>exitlinger</dt>
