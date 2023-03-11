@@ -16,11 +16,10 @@
 
 # mirai ------------------------------------------------------------------------
 
-#' mirai Server (Async Executor Daemon)
+#' mirai Dispatcher
 #'
-#' Implements a persistent executor/server for the remote process. Awaits data,
-#'     evaluates an expression in an environment containing the supplied data,
-#'     and returns the result to the caller/client.
+#' Implements a dispatcher for tasks from clients to servers for processing,
+#'     using a FIFO scheduling rule, queuing tasks as required.
 #'
 #' @param url the client URL as a character string, including the port to
 #'     connect to and (optionally) a path for websocket URLs e.g.
@@ -34,15 +33,6 @@
 #'     producing an error if a connection is not immediately possible (e.g.
 #'     \code{\link{daemons}} has yet to be called on the client, or the
 #'     specified port is not open etc.).
-#' @param maxtasks [default Inf] the maximum number of tasks to execute (task
-#'     limit) before exiting.
-#' @param idletime [default Inf] maximum idle time, since completion of the last
-#'     task (in milliseconds) before exiting.
-#' @param walltime [default Inf] soft walltime, or the minimum amount of real
-#'     time taken (in milliseconds) before exiting.
-#' @param timerstart [default 0L] (applicable to individual server / node
-#'     instances only) number of completed tasks after which to start the timer
-#'     for 'idletime' and 'walltime'. 0L implies timers are started upon launch.
 #' @param exitlinger [default 100L] time in milliseconds to linger after an exit
 #'     signal is received or a timer / task limit is reached, to allow sockets
 #'     to flush sends currently in progress. The default permits normal
@@ -60,23 +50,16 @@
 #'
 #' @return Invisible NULL.
 #'
-#' @details The network topology is such that server daemons dial into the
-#'     client, which listens at the '.url' address. In this way, network
-#'     resources may be easily added or removed at any time and the client
-#'     automatically distributes tasks to all available servers.
-#'
-#'     If 'nodes' is supplied, this daemon is launched as an active server queue,
-#'     directing a cluster with the specified number of nodes. The nodes are
-#'     launched automatically as processes on the same machine.
-#'
-#'     An active server queue may be used in combination with other servers or
-#'     server queues.
+#' @details The network topology is such that a dispatcher acts as a gateway
+#'     between clients and servers, ensuring that tasks received from clients
+#'     are dispatched on a FIFO basis to servers for processing. Tasks are
+#'     queued at the dispatcher to ensure tasks are only sent to servers that
+#'     can begin immediate execution of the task.
 #'
 #' @export
 #'
-server <- function(url, n = NULL, asyncdial = TRUE, maxtasks = Inf,
-                   idletime = Inf, walltime = Inf, timerstart = 0L,
-                   exitlinger = 100L, pollfreqh = 10L, pollfreql = 100L, ...) {
+dispatcher <- function(url, n = NULL, asyncdial = TRUE, exitlinger = 100L,
+                       pollfreqh = 10L, pollfreql = 100L, ...) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = if (asyncdial) TRUE else NA)
   devnull <- file(nullfile(), open = "w", blocking = FALSE)
@@ -92,150 +75,200 @@ server <- function(url, n = NULL, asyncdial = TRUE, maxtasks = Inf,
   count <- 0L
   start <- mclock()
 
-  if (is.numeric(n)) {
+  is.numeric(n) || stop("'n' must be numeric")
 
-    n <- as.integer(n)
-    idle <- FALSE
-    ctrchannel <- length(url) > 1L
-    auto <- length(url) < 3L
-    vectorised <- length(url) == n + 2L
-    seq_n <- seq_len(n)
-    servernames <- character(n)
-    instances <- activestore <- complete <- assigned <- integer(n)
-    serverfree <- !integer(n)
-    servers <- queue <- vector(mode = "list", length = n)
+  n <- as.integer(n)
+  idle <- FALSE
+  ctrchannel <- length(url) > 1L
+  auto <- length(url) < 3L
+  vectorised <- length(url) == n + 2L
+  seq_n <- seq_len(n)
+  servernames <- character(n)
+  instances <- activestore <- complete <- assigned <- integer(n)
+  serverfree <- !integer(n)
+  servers <- queue <- vector(mode = "list", length = n)
 
-    if (ctrchannel) {
-      sockc <- socket(protocol = "bus", dial = url[2L], autostart = if (asyncdial) TRUE else NA)
-      on.exit(expr = close(sockc), add = TRUE, after = FALSE)
-      cmessage <- recv_aio(sockc, mode = 5L)
-    }
+  if (ctrchannel) {
+    sockc <- socket(protocol = "bus", dial = url[2L], autostart = if (asyncdial) TRUE else NA)
+    on.exit(expr = close(sockc), add = TRUE, after = FALSE)
+    cmessage <- recv_aio(sockc, mode = 5L)
+  }
 
-    if (!auto && !vectorised) {
-      baseurl <- parse_url(url[3L])
-      ports <- if (grepl("tcp", baseurl[["scheme"]], fixed = TRUE)) as.character(seq.int(baseurl[["port"]], length.out = n))
-    }
+  if (!auto && !vectorised) {
+    baseurl <- parse_url(url[3L])
+    ports <- if (grepl("tcp", baseurl[["scheme"]], fixed = TRUE)) as.character(seq.int(baseurl[["port"]], length.out = n))
+  }
 
-    for (i in seq_n) {
-      nurl <- if (auto) sprintf(.urlfmt, random()) else
-        if (vectorised) url[i + 2L] else
-          if (is.null(ports)) sprintf("%s/%d", url[3L], i) else
-            sub(ports[1L], ports[i], url[3L], fixed = TRUE)
+  for (i in seq_n) {
+    nurl <- if (auto) sprintf(.urlfmt, random()) else
+      if (vectorised) url[i + 2L] else
+        if (is.null(ports)) sprintf("%s/%d", url[3L], i) else
+          sub(ports[1L], ports[i], url[3L], fixed = TRUE)
+    nsock <- socket(protocol = "req", listen = nurl)
+    if (!auto && parse_url(opt(attr(nsock, "listener")[[1L]], "url"))[["port"]] == "0") {
+      realport <- opt(attr(nsock, "listener")[[1L]], "tcp-bound-port")
+      nurl <- sub("(?<=:)0(?![^/])", realport, nurl, perl = TRUE)
+      if (!vectorised) url[3L] <- sub("(?<=:)0(?![^/])", realport, url[3L], perl = TRUE)
+      close(nsock)
       nsock <- socket(protocol = "req", listen = nurl)
-      if (!auto && parse_url(opt(attr(nsock, "listener")[[1L]], "url"))[["port"]] == "0") {
-        realport <- opt(attr(nsock, "listener")[[1L]], "tcp-bound-port")
-        nurl <- sub("(?<=:)0(?![^/])", realport, nurl, perl = TRUE)
-        if (!vectorised) url[3L] <- sub("(?<=:)0(?![^/])", realport, url[3L], perl = TRUE)
-        close(nsock)
-        nsock <- socket(protocol = "req", listen = nurl)
+    }
+
+    if (auto)
+      launch_daemon(sprintf("mirai::server(\"%s\")", nurl))
+
+    servernames[i] <- opt(attr(nsock, "listener")[[1L]], "url")
+    servers[[i]] <- nsock
+
+    ctx <- context(sock)
+    req <- recv_aio(ctx, mode = 1L)
+    queue[[i]] <- list(ctx = ctx, req = req)
+  }
+
+  on.exit(expr = lapply(servers, send, data = .__scm__., mode = 2L), add = TRUE, after = FALSE)
+  on.exit(expr = lapply(servers, close), add = TRUE, after = TRUE)
+
+  suspendInterrupts(
+    repeat {
+
+      activevec <- as.integer(unlist(lapply(servers, stat, "pipes")))
+      changes <- (activevec - activestore) > 0L
+      activestore <- activevec
+      if (any(changes)) {
+        assigned[changes] <- 0L
+        complete[changes] <- 0L
+        instances[changes] <- instances[changes] + 1L
       }
 
-      if (auto)
-        launch_daemon(sprintf("mirai::server(\"%s\")", nurl))
+      active <- sum(activevec)
+      free <- which(serverfree & activevec)
 
-      servernames[i] <- opt(attr(nsock, "listener")[[1L]], "url")
-      servers[[i]] <- nsock
+      msleep(if (length(free) == active) pollfreql else pollfreqh)
 
-      ctx <- context(sock)
-      req <- recv_aio(ctx, mode = 1L)
-      queue[[i]] <- list(ctx = ctx, req = req)
-    }
+      ctrchannel && !unresolved(cmessage) && {
+        data <- `attributes<-`(c(activevec, assigned - complete, assigned, complete, instances),
+                               list(dim = c(n, 5L),
+                                    dimnames = list(servernames,
+                                                    c("status_online", "status_busy", "tasks_assigned", "tasks_complete", "server_instance"))))
+        send(sockc, data = data, mode = 1L)
+        cmessage <- recv_aio(sockc, mode = 5L)
+        next
+      }
 
-    on.exit(expr = lapply(servers, send, data = .__scm__., mode = 2L), add = TRUE, after = FALSE)
-    on.exit(expr = lapply(servers, close), add = TRUE, after = TRUE)
-
-    suspendInterrupts({
-
-      while (count < maxtasks && mclock() - start < walltime && (!idle || mclock() - idle < idletime)) {
-
-        activevec <- as.integer(unlist(lapply(servers, stat, "pipes")))
-        changes <- (activevec - activestore) > 0L
-        activestore <- activevec
-        if (any(changes)) {
-          assigned[changes] <- 0L
-          complete[changes] <- 0L
-          instances[changes] <- instances[changes] + 1L
-        }
-
-        active <- sum(activevec)
-        free <- which(serverfree & activevec)
-        if (length(free) == active) {
-          if (active && !idle) idle <- mclock()
-          msleep(pollfreql)
-        } else {
-          if (idle) idle <- FALSE
-          msleep(pollfreqh)
-        }
-
-        ctrchannel && !unresolved(cmessage) && {
-          data <- `attributes<-`(c(activevec, assigned - complete, assigned, complete, instances),
-                                 list(dim = c(n, 5L),
-                                      dimnames = list(servernames,
-                                                      c("status_online", "status_busy", "tasks_assigned", "tasks_complete", "instance"))))
-          send(sockc, data = data, mode = 1L)
-          cmessage <- recv_aio(sockc, mode = 5L)
-          next
-        }
-
-        active || {
-          for (i in seq_n)
-            r <- .subset2(queue[[i]][["req"]], "data")
-          next
-        }
-
-        if (length(free))
-          for (q in free)
-            for (i in seq_n) {
-              if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
-                if (auto && active < n)
-                  for (j in which(!activevec)) launch_daemon(sprintf("mirai::server(\"%s\")", servernames[j]))
-                ctx <- context(servers[[q]])
-                queue[[i]][["rctx"]] <- ctx
-                queue[[i]][["res"]] <- request(ctx, data = .subset2(queue[[i]][["req"]], "data"), send_mode = 1L, recv_mode = 1L)
-                queue[[i]][["daemon"]] <- q
-                serverfree[q] <- FALSE
-                assigned[q] <- assigned[q] + 1L
-                break
-              }
-              serverfree[q] || break
-            }
-
+      active || {
         for (i in seq_n)
-          if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
-            send(queue[[i]][["ctx"]], data = .subset2(queue[[i]][["res"]], "data"), mode = 1L)
-            q <- queue[[i]][["daemon"]]
-            serverfree[q] <- TRUE
-            complete[q] <- complete[q] + 1L
-            count <- count + 1L
-            ctx <- context(sock)
-            req <- recv_aio(ctx, mode = 1L)
-            queue[[i]] <- list(ctx = ctx, req = req)
+          r <- .subset2(queue[[i]][["req"]], "data")
+        next
+      }
+
+      if (length(free))
+        for (q in free)
+          for (i in seq_n) {
+            if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
+              if (auto && active < n)
+                for (j in which(!activevec)) launch_daemon(sprintf("mirai::server(\"%s\")", servernames[j]))
+              ctx <- context(servers[[q]])
+              queue[[i]][["rctx"]] <- ctx
+              queue[[i]][["res"]] <- request(ctx, data = .subset2(queue[[i]][["req"]], "data"), send_mode = 1L, recv_mode = 1L)
+              queue[[i]][["daemon"]] <- q
+              serverfree[q] <- FALSE
+              assigned[q] <- assigned[q] + 1L
+              break
+            }
+            serverfree[q] || break
           }
 
-      }
-    })
-
-  } else {
-
-    if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
-    while (count < maxtasks && mclock() - start < walltime) {
-
-      ctx <- context(sock)
-      envir <- recv(ctx, mode = 1L, block = idletime)
-      is.integer(envir) && {
-        count < timerstart && {
-          start <- mclock()
-          next
+      for (i in seq_n)
+        if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
+          send(queue[[i]][["ctx"]], data = .subset2(queue[[i]][["res"]], "data"), mode = 1L)
+          q <- queue[[i]][["daemon"]]
+          serverfree[q] <- TRUE
+          complete[q] <- complete[q] + 1L
+          count <- count + 1L
+          ctx <- context(sock)
+          req <- recv_aio(ctx, mode = 1L)
+          queue[[i]] <- list(ctx = ctx, req = req)
         }
-        break
-      }
-      data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
-                       error = mk_mirai_error, interrupt = mk_interrupt_error)
-      send(ctx, data = data, mode = 1L)
-      if (count < timerstart) start <- mclock()
-      count <- count + 1L
 
     }
+  )
+
+}
+
+#' mirai Server (Async Executor Daemon)
+#'
+#' Implements a persistent executor/server for the remote process. Awaits data,
+#'     evaluates an expression in an environment containing the supplied data,
+#'     and returns the result to the caller/client.
+#'
+#' @param url the client URL as a character string, including the port to
+#'     connect to and (optionally) a path for websocket URLs e.g.
+#'     'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
+#' @param asyncdial [default TRUE] whether to dial in to the client
+#'     asynchronously. An asynchronous dial is more resilient and will continue
+#'     retrying if not immediately successful. However this can mask potential
+#'     connection issues and specifying FALSE is useful for debugging purposes,
+#'     producing an error if a connection is not immediately possible (e.g.
+#'     \code{\link{daemons}} has yet to be called on the client, or the
+#'     specified port is not open etc.).
+#' @param maxtasks [default Inf] the maximum number of tasks to execute (task
+#'     limit) before exiting.
+#' @param idletime [default Inf] maximum idle time, since completion of the last
+#'     task (in milliseconds) before exiting.
+#' @param walltime [default Inf] soft walltime, or the minimum amount of real
+#'     time taken (in milliseconds) before exiting.
+#' @param timerstart [default 0L] number of completed tasks after which to start
+#'     the timer for 'idletime' and 'walltime'. 0L implies timers are started
+#'     upon launch.
+#' @param exitlinger [default 100L] time in milliseconds to linger after an exit
+#'     signal is received or a timer / task limit is reached, to allow sockets
+#'     to flush sends currently in progress. The default permits normal
+#'     operations, but should be set wider if computations are expected to
+#'     return very large objects.
+#' @param ... reserved but not currently used.
+#'
+#' @return Invisible NULL.
+#'
+#' @details The network topology is such that server daemons dial into the
+#'     client or dispatcher, which listens at the 'url' address. In this way,
+#'     network resources may be added or removed dynamically and the client /
+#'     dispatcher automatically distributes tasks to all available servers.
+#'
+#' @export
+#'
+server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
+                   walltime = Inf, timerstart = 0L, exitlinger = 100L, ...) {
+
+  sock <- socket(protocol = "rep", dial = url, autostart = if (asyncdial) TRUE else NA)
+  devnull <- file(nullfile(), open = "w", blocking = FALSE)
+  sink(file = devnull)
+  sink(file = devnull, type = "message")
+  on.exit(expr = {
+    msleep(exitlinger)
+    close(sock)
+    sink()
+    sink(type = "message")
+    close(devnull)
+  })
+  count <- 0L
+  if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
+  start <- mclock()
+
+  while (count < maxtasks && mclock() - start < walltime) {
+
+    ctx <- context(sock)
+    envir <- recv(ctx, mode = 1L, block = idletime)
+    is.integer(envir) && {
+      count < timerstart && {
+        start <- mclock()
+        next
+      }
+      break
+    }
+    data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
+                     error = mk_mirai_error, interrupt = mk_interrupt_error)
+    send(ctx, data = data, mode = 1L)
+    if (count < timerstart) start <- mclock()
+    count <- count + 1L
 
   }
 
@@ -565,7 +598,7 @@ daemons <- function(n, url = NULL, active = TRUE, ..., .compute = "default") {
       sock <- socket(protocol = "req", listen = urld)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       sockc <- socket(protocol = "bus", listen = urlc)
-      args <- sprintf("mirai::server(c(%s),n=%d)",
+      args <- sprintf("mirai::dispatcher(c(%s),n=%d)",
                       paste(sprintf("\"%s\"", c(urld, urlc, url)), collapse = ","), n)
       launch_daemon(args)
       `[[<-`(`[[<-`(..[[.compute]], "sockc", sockc), "args", args)
@@ -599,7 +632,7 @@ daemons <- function(n, url = NULL, active = TRUE, ..., .compute = "default") {
       delta <- 1L
       urlc <- sprintf("%s%s", urld, "c")
       sockc <- socket(protocol = "bus", listen = urlc)
-      args <- sprintf("mirai::server(c(\"%s\",\"%s\"),n=%d)", urld, urlc, n)
+      args <- sprintf("mirai::dispatcher(c(\"%s\",\"%s\"),n=%d)", urld, urlc, n)
       `[[<-`(`[[<-`(..[[.compute]], "sockc", sockc), "local", TRUE)
     } else {
       args <- sprintf("mirai::server(\"%s\")", urld)

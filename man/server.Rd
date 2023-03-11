@@ -6,15 +6,12 @@
 \usage{
 server(
   url,
-  n = NULL,
   asyncdial = TRUE,
   maxtasks = Inf,
   idletime = Inf,
   walltime = Inf,
   timerstart = 0L,
   exitlinger = 100L,
-  pollfreqh = 10L,
-  pollfreql = 100L,
   ...
 )
 }
@@ -22,9 +19,6 @@ server(
 \item{url}{the client URL as a character string, including the port to
 connect to and (optionally) a path for websocket URLs e.g.
 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
-
-\item{n}{[default NULL] if supplied, this server instance will run as an
-active queue (task scheduler) with the specified number of nodes.}
 
 \item{asyncdial}{[default TRUE] whether to dial in to the client
 asynchronously. An asynchronous dial is more resilient and will continue
@@ -43,25 +37,15 @@ task (in milliseconds) before exiting.}
 \item{walltime}{[default Inf] soft walltime, or the minimum amount of real
 time taken (in milliseconds) before exiting.}
 
-\item{timerstart}{[default 0L] (applicable to individual server / node
-instances only) number of completed tasks after which to start the timer
-for 'idletime' and 'walltime'. 0L implies timers are started upon launch.}
+\item{timerstart}{[default 0L] number of completed tasks after which to start
+the timer for 'idletime' and 'walltime'. 0L implies timers are started
+upon launch.}
 
 \item{exitlinger}{[default 100L] time in milliseconds to linger after an exit
 signal is received or a timer / task limit is reached, to allow sockets
 to flush sends currently in progress. The default permits normal
 operations, but should be set wider if computations are expected to
 return very large objects.}
-
-\item{pollfreqh}{[default 10L] (applicable to active queues only) the high
-polling frequency for the queue in milliseconds (used when there are
-active tasks). Setting a lower value will be more responsive but at the
-cost of consuming more resources on the queue thread.}
-
-\item{pollfreql}{[default 100L] (applicable to active queues only) the low
-polling frequency for the queue in milliseconds (used when there are no
-active tasks). Setting a lower value will be more responsive but at the
-cost of consuming more resources on the queue thread.}
 
 \item{...}{reserved but not currently used.}
 }
@@ -75,14 +59,7 @@ Implements a persistent executor/server for the remote process. Awaits data,
 }
 \details{
 The network topology is such that server daemons dial into the
-    client, which listens at the '.url' address. In this way, network
-    resources may be easily added or removed at any time and the client
-    automatically distributes tasks to all available servers.
-
-    If 'nodes' is supplied, this daemon is launched as an active server queue,
-    directing a cluster with the specified number of nodes. The nodes are
-    launched automatically as processes on the same machine.
-
-    An active server queue may be used in combination with other servers or
-    server queues.
+    client or dispatcher, which listens at the 'url' address. In this way,
+    network resources may be added or removed dynamically and the client /
+    dispatcher automatically distributes tasks to all available servers.
 }
