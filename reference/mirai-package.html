@@ -22,7 +22,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9039</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9040</span>
       </span>
     </div>
 
@@ -74,13 +74,14 @@
     
 
 
-<p>For local mirai processes, the default transport for intra-process
-    communications is platform-dependent: abstract sockets on Linux, Unix
-    domain sockets on MacOS, Solaris and other POSIX platforms, and named
-    pipes on Windows.</p>
+<p>For local mirai processes, the default transport for inter-process
+    communications is platform-dependent: abstract Unix domain sockets on
+    Linux, Unix domain sockets on MacOS, Solaris and other POSIX platforms,
+    and named pipes on Windows.</p>
 <p>This may be overriden if required by specifying 'url' in the
-    <code><a href="daemons.html">daemons</a></code> interface, and starting server processes manually
-    using <code><a href="server.html">server</a></code> on the same machine.</p>
+    <code><a href="daemons.html">daemons</a></code> interface, and starting server and/or dispatcher
+    processes manually using <code><a href="server.html">server</a></code> and <code><a href="dispatcher.html">dispatcher</a></code>
+    respectively, on the same machine.</p>
     </div>
     <div id="links">
     <h2>Links</h2>

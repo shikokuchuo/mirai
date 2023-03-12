@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9039</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9040</span>
       </span>
     </div>
 
@@ -150,11 +150,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.337 -1.307 -5.911 -1.421 0.178 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 96.602 0.132 0.193 0.985 -2.964 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.337 -1.307 -5.911 -1.421 0.178 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 96.602 0.132 0.193 0.985 -2.964 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -199,7 +199,7 @@
 <span></span>
 <span><span class="va">run_iteration</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  </span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.15</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"random error"</span>, call. <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># simulates a stochastic error rate</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0.12</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"random error"</span>, call. <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># simulates a stochastic error rate</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"iteration %d successful"</span>, <span class="va">i</span><span class="op">)</span></span>
 <span>  </span>
 <span><span class="op">}</span></span>
@@ -216,11 +216,10 @@
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; iteration 1 successful </span></span>
 <span><span class="co">#&gt; iteration 2 successful </span></span>
-<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 3 successful </span></span>
 <span><span class="co">#&gt; iteration 4 successful </span></span>
-<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 5 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 6 successful </span></span>
 <span><span class="co">#&gt; iteration 7 successful </span></span>
 <span><span class="co">#&gt; iteration 8 successful </span></span>
@@ -250,19 +249,19 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt;                        status_online status_busy tasks_assigned tasks_complete</span></span>
-<span><span class="co">#&gt; abstract://n4067537620             1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n2812412994             1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n3748384984             1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n4170883739             1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n158626969              1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n4060565304             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n115126770              1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n2954332544             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n2498279922             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n3329160412             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n1523821053             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n1309143979             1           0              0              0</span></span>
 <span><span class="co">#&gt;                        instance #</span></span>
-<span><span class="co">#&gt; abstract://n4067537620          1</span></span>
-<span><span class="co">#&gt; abstract://n2812412994          1</span></span>
-<span><span class="co">#&gt; abstract://n3748384984          1</span></span>
-<span><span class="co">#&gt; abstract://n4170883739          1</span></span>
-<span><span class="co">#&gt; abstract://n158626969           1</span></span>
-<span><span class="co">#&gt; abstract://n4060565304          1</span></span></code></pre></div>
+<span><span class="co">#&gt; abstract://n115126770           1</span></span>
+<span><span class="co">#&gt; abstract://n2954332544          1</span></span>
+<span><span class="co">#&gt; abstract://n2498279922          1</span></span>
+<span><span class="co">#&gt; abstract://n3329160412          1</span></span>
+<span><span class="co">#&gt; abstract://n1523821053          1</span></span>
+<span><span class="co">#&gt; abstract://n1309143979          1</span></span></code></pre></div>
 <p>Active dispatch runs an additional <code><a href="reference/dispatcher.html">dispatcher()</a></code> background process that connects to individual background <code><a href="reference/server.html">server()</a></code> processes on the local machine. This ensures that tasks are dispatched efficiently on a FIFO basis to servers for processing. Tasks are queued at the dispatcher and only sent to servers that can begin immediate execution of the task.</p>
 <p>A dispatcher running local daemons is self-repairing if one of the daemons crashes or is terminated.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
@@ -336,7 +335,7 @@
 <p>The below automatically launches a dispatcher as a background process on the local client machine.</p>
 <p>It is recommended to use a websocket URL starting <code>ws://</code> instead of TCP in this scenario (the two can be used interchangeably). This is as a websocket URL supports a path after the port number, which can be made unique for each server to dial into. In this way a dispatcher can connect to an arbitrary number of servers over a single port.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># daemons("ws://192.168.0.2:5555", nodes = 4)</span></span>
+<code class="sourceCode R"><span><span class="co"># daemons(n = 4, url = "ws://192.168.0.2:5555")</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, url <span class="op">=</span> <span class="st">"ws://:5555"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
