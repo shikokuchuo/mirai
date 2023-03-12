@@ -120,12 +120,12 @@ dispatcher <- function(dial, listen = NULL, n = NULL, asyncdial = TRUE,
     queue[[i]] <- list(ctx = ctx, req = req)
   }
   on.exit(expr = lapply(servers, send, data = .__scm__., mode = 2L), add = TRUE, after = FALSE)
-  on.exit(expr = lapply(servers, close), add = TRUE, after = TRUE)
 
   devnull <- file(nullfile(), open = "w", blocking = FALSE)
   sink(file = devnull)
   sink(file = devnull, type = "message")
   on.exit(expr = {
+    lapply(servers, close)
     sink()
     sink(type = "message")
     close(devnull)
@@ -225,6 +225,10 @@ dispatcher <- function(dial, listen = NULL, n = NULL, asyncdial = TRUE,
 #'     operations, but should be set wider if computations are expected to
 #'     return very large objects.
 #' @param ... reserved but not currently used.
+#' @param cleanup [default TRUE] logical value whether to perform cleanup of the
+#'     global environment and options values after each task evaluation. This is
+#'     recommended in all cases. Do not set to FALSE unless you are certain you
+#'     want such persistence across evaluations.
 #'
 #' @return Invisible NULL.
 #'
@@ -236,7 +240,8 @@ dispatcher <- function(dial, listen = NULL, n = NULL, asyncdial = TRUE,
 #' @export
 #'
 server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
-                   walltime = Inf, timerstart = 0L, exitlinger = 100L, ...) {
+                   walltime = Inf, timerstart = 0L, exitlinger = 100L, ...,
+                   cleanup = TRUE) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = if (asyncdial) TRUE else NA)
   devnull <- file(nullfile(), open = "w", blocking = FALSE)
@@ -251,6 +256,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
   })
   count <- 0L
   if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
+  op <- options()
   start <- mclock()
 
   while (count < maxtasks && mclock() - start < walltime) {
@@ -267,7 +273,10 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
     data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
                      error = mk_mirai_error, interrupt = mk_interrupt_error)
     send(ctx, data = data, mode = 1L)
-    rm(list = ls(.GlobalEnv, all.names = TRUE, sorted = FALSE), envir = .GlobalEnv)
+    if (cleanup) {
+      rm(list = ls(.GlobalEnv, all.names = TRUE, sorted = FALSE), envir = .GlobalEnv)
+      options(op)
+    }
     if (count < timerstart) start <- mclock()
     count <- count + 1L
 

@@ -68,7 +68,7 @@ NULL
                   Windows = "ipc://n%.f",
                   "ipc:///tmp/n%.f")
 
-.statnames <- c("status_online", "status_busy", "tasks_assigned", "tasks_complete", "server_instance")
+.statnames <- c("status_online", "status_busy", "tasks_assigned", "tasks_complete", "instance #")
 
 .. <- `[[<-`(new.env(hash = FALSE), "default", new.env(hash = FALSE))
 

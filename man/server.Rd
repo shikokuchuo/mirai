@@ -12,7 +12,8 @@ server(
   walltime = Inf,
   timerstart = 0L,
   exitlinger = 100L,
-  ...
+  ...,
+  cleanup = TRUE
 )
 }
 \arguments{
@@ -47,6 +48,11 @@ operations, but should be set wider if computations are expected to
 return very large objects.}
 
 \item{...}{reserved but not currently used.}
+
+\item{cleanup}{[default TRUE] logical value whether to perform cleanup of the
+global environment and options values after each task evaluation. This is
+recommended in all cases. Do not set to FALSE unless you are certain you
+want such persistence across evaluations.}
 }
 \value{
 Invisible NULL.

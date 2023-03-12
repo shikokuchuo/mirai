@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 5.287 0.785 4.534 3.99 -1.89 ...
+#>  num [1:100000000] -0.337 -1.307 -5.911 -1.421 0.178 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 5.287 0.785 4.534 3.99 -1.89 ...
+#>  num [1:100000000] -0.337 -1.307 -5.911 -1.421 0.178 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -203,6 +203,7 @@ for (i in 1:10) {
 }
 #> iteration 1 successful 
 #> iteration 2 successful 
+#> Error: random error 
 #> iteration 3 successful 
 #> iteration 4 successful 
 #> Error: random error 
@@ -253,19 +254,19 @@ daemons()
 #> 
 #> $daemons
 #>                        status_online status_busy tasks_assigned tasks_complete
-#> abstract://n619249296              1           0              0              0
-#> abstract://n4260662568             1           0              0              0
-#> abstract://n4158429864             1           0              0              0
-#> abstract://n1724714095             1           0              0              0
-#> abstract://n795406291              1           0              0              0
-#> abstract://n4118608210             1           0              0              0
-#>                        server_instance
-#> abstract://n619249296                1
-#> abstract://n4260662568               1
-#> abstract://n4158429864               1
-#> abstract://n1724714095               1
-#> abstract://n795406291                1
-#> abstract://n4118608210               1
+#> abstract://n4067537620             1           0              0              0
+#> abstract://n2812412994             1           0              0              0
+#> abstract://n3748384984             1           0              0              0
+#> abstract://n4170883739             1           0              0              0
+#> abstract://n158626969              1           0              0              0
+#> abstract://n4060565304             1           0              0              0
+#>                        instance #
+#> abstract://n4067537620          1
+#> abstract://n2812412994          1
+#> abstract://n3748384984          1
+#> abstract://n4170883739          1
+#> abstract://n158626969           1
+#> abstract://n4060565304          1
 ```
 
 Active dispatch runs an additional `dispatcher()` background process
@@ -450,16 +451,11 @@ daemons()
 #> [1] 1
 #> 
 #> $daemons
-#>              status_online status_busy tasks_assigned tasks_complete
-#> ws://:5555/1             1           0              0              0
-#> ws://:5555/2             1           0              0              0
-#> ws://:5555/3             1           0              0              0
-#> ws://:5555/4             1           0              0              0
-#>              server_instance
-#> ws://:5555/1               1
-#> ws://:5555/2               1
-#> ws://:5555/3               1
-#> ws://:5555/4               1
+#>              status_online status_busy tasks_assigned tasks_complete instance #
+#> ws://:5555/1             1           0              0              0          1
+#> ws://:5555/2             1           0              0              0          1
+#> ws://:5555/3             1           0              0              0          1
+#> ws://:5555/4             1           0              0              0          1
 ```
 
 When using active dispatch, there is only a single connection to the
