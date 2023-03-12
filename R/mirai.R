@@ -602,6 +602,7 @@ daemons <- function(n, url = NULL, active = TRUE, ..., .compute = "default") {
       if (active) {
         n <- if (missing(n)) length(url) else if (is.numeric(n)) as.integer(n) else
           stop("'n' must be numeric, did you mean to provide 'url'?")
+        parse_url(url)
         urld <- sprintf(.urlfmt, random())
         urlc <- sprintf("%s%s", urld, "c")
         sock <- socket(protocol = "req", listen = urld)

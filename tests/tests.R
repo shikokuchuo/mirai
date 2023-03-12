@@ -63,7 +63,7 @@ if (Sys.getenv("NOT_CRAN") == "set") {
   nanotest(daemons(0) == 0L)
   Sys.sleep(0.2)
 }
-nanotesterr(daemons(url = "URL"), "active dispatch")
+nanotesterr(daemons(url = "URL"), "argument")
 nanotesterr(daemons(-1), "zero or greater")
 nanotesterr(daemons(raw(0L)), "must be numeric")
 nanotesterr(server("URL"), "argument")

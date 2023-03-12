@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -0.0699 1.9453 0.0676 -0.4279 0.2366 ...
+#>  num [1:100000000] 5.287 0.785 4.534 3.99 -1.89 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.0699 1.9453 0.0676 -0.4279 0.2366 ...
+#>  num [1:100000000] 5.287 0.785 4.534 3.99 -1.89 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -201,18 +201,15 @@ for (i in 1:10) {
   cat(m$data, "\n")
   
 }
-#> Error: random error 
 #> iteration 1 successful 
 #> iteration 2 successful 
 #> iteration 3 successful 
-#> Error: random error 
 #> iteration 4 successful 
+#> Error: random error 
 #> iteration 5 successful 
 #> iteration 6 successful 
 #> iteration 7 successful 
-#> Error: random error 
 #> iteration 8 successful 
-#> Error: random error 
 #> iteration 9 successful 
 #> iteration 10 successful
 ```
@@ -256,19 +253,19 @@ daemons()
 #> 
 #> $daemons
 #>                        status_online status_busy tasks_assigned tasks_complete
-#> abstract://n2628588012             1           0              0              0
-#> abstract://n1441683089             1           0              0              0
-#> abstract://n3739347122             1           0              0              0
-#> abstract://n2698192616             1           0              0              0
-#> abstract://n329668536              1           0              0              0
-#> abstract://n286458006              1           0              0              0
+#> abstract://n619249296              1           0              0              0
+#> abstract://n4260662568             1           0              0              0
+#> abstract://n4158429864             1           0              0              0
+#> abstract://n1724714095             1           0              0              0
+#> abstract://n795406291              1           0              0              0
+#> abstract://n4118608210             1           0              0              0
 #>                        server_instance
-#> abstract://n2628588012               1
-#> abstract://n1441683089               1
-#> abstract://n3739347122               1
-#> abstract://n2698192616               1
-#> abstract://n329668536                1
-#> abstract://n286458006                1
+#> abstract://n619249296                1
+#> abstract://n4260662568               1
+#> abstract://n4158429864               1
+#> abstract://n1724714095               1
+#> abstract://n795406291                1
+#> abstract://n4118608210               1
 ```
 
 Active dispatch runs an additional `dispatcher()` background process
@@ -345,19 +342,20 @@ Assuming that the local network IP address of the current machine is
 connections from the local network:
 
 ``` r
-daemons(url = "tcp://192.168.0.2:5555")
+daemons(url = "tcp://192.168.0.2:5555", active = FALSE)
 ```
 
 Alternatively, simply supply a colon followed by the port number to
 listen on all interfaces on the local host, for example:
 
 ``` r
-daemons(url = "tcp://:5555")
-#> [1] 1
+daemons(url = "tcp://:5555", active = FALSE)
+#> [1] "tcp://:5555"
 ```
 
-The network topology is such that the client listens at the above
-address, and distributes tasks to all connected server processes.
+Here, `active = FALSE` is specified so that servers connect directly to
+the client. The network topology is such that the client listens at the
+above address, and distributes tasks to all connected server processes.
 
 –
 
@@ -380,13 +378,10 @@ automatically distributed to all server processes.
 ``` r
 daemons()
 #> $connections
-#> [1] 1
+#> [1] 2
 #> 
 #> $daemons
-#>             status_online status_busy tasks_assigned tasks_complete
-#> tcp://:5555             0           0              0              0
-#>             server_instance
-#> tcp://:5555               0
+#> [1] "tcp://:5555"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -452,10 +447,19 @@ Requesting status, on the client:
 ``` r
 daemons()
 #> $connections
-#> [1] 0
+#> [1] 1
 #> 
 #> $daemons
-#> 'errorValue' int 5 | Timed out
+#>              status_online status_busy tasks_assigned tasks_complete
+#> ws://:5555/1             1           0              0              0
+#> ws://:5555/2             1           0              0              0
+#> ws://:5555/3             1           0              0              0
+#> ws://:5555/4             1           0              0              0
+#>              server_instance
+#> ws://:5555/1               1
+#> ws://:5555/2               1
+#> ws://:5555/3               1
+#> ws://:5555/4               1
 ```
 
 When using active dispatch, there is only a single connection to the

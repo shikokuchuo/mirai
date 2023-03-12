@@ -261,16 +261,16 @@ Call `daemons()` specifying as a character string the client network address and
 Assuming that the local network IP address of the current machine is '192.168.0.2', and port '5555' has been made available for inbound connections from the local network:
 
 ```{r remote, eval=FALSE}
-daemons(url = "tcp://192.168.0.2:5555")
+daemons(url = "tcp://192.168.0.2:5555", active = FALSE)
 ```
 
 Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:
 
 ```{r remotealt}
-daemons(url = "tcp://:5555")
+daemons(url = "tcp://:5555", active = FALSE)
 ```
 
-The network topology is such that the client listens at the above address, and distributes tasks to all connected server processes.
+Here, `active = FALSE` is specified so that servers connect directly to the client. The network topology is such that the client listens at the above address, and distributes tasks to all connected server processes.
 
 --
 
