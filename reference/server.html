@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9037</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9038</span>
       </span>
     </div>
 
@@ -71,7 +71,8 @@
 <span>  walltime <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  timerstart <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  exitlinger <span class="op">=</span> <span class="fl">100L</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  cleanup <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -123,6 +124,13 @@ return very large objects.</p></dd>
 
 <dt>...</dt>
 <dd><p>reserved but not currently used.</p></dd>
+
+
+<dt>cleanup</dt>
+<dd><p>[default TRUE] logical value whether to perform cleanup of the
+global environment and options values after each task evaluation. This is
+recommended in all cases. Do not set to FALSE unless you are certain you
+want such persistence across evaluations.</p></dd>
 
 </dl></div>
     <div id="value">
