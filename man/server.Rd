@@ -50,9 +50,9 @@ return very large objects.}
 \item{...}{reserved but not currently used.}
 
 \item{cleanup}{[default TRUE] logical value whether to perform cleanup of the
-global environment and options values after each task evaluation. This is
-recommended in all cases. Do not set to FALSE unless you are certain you
-want such persistence across evaluations.}
+global environment, options values and loaded packages after each task
+evaluation. This option should not be modified. Do not set to FALSE
+unless you are certain you want such persistence across evaluations.}
 }
 \value{
 Invisible NULL.

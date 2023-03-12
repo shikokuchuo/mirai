@@ -5,28 +5,27 @@
 \title{mirai Dispatcher}
 \usage{
 dispatcher(
-  dial,
-  listen = NULL,
+  client,
+  ...,
   n = NULL,
   asyncdial = TRUE,
   exitlinger = 100L,
   pollfreqh = 10L,
   pollfreql = 100L,
-  ...,
   monitor = NULL
 )
 }
 \arguments{
-\item{dial}{the client URL to dial as a character string (where tasks are
+\item{client}{the client URL to dial as a character string (where tasks are
 sent from), including the port to connect to and (optionally) a path for
 websocket URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 
-\item{listen}{(optional) the URL or range of URLs the dispatcher should
-listen at as a character vector, including the port to connect to and
+\item{...}{(optional) the URL or range of URLs the dispatcher should
+listen at as character strings, including the port to connect to and
 (optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
 'ws://192.168.0.2:5555/path'. Tasks are sent to servers dialled into
-these URLs. If NULL, 'n' URLs accessible from the same computer will be
-assigned automatically.}
+these URLs. If not supplied, 'n' URLs accessible from the same computer
+will be assigned automatically.}
 
 \item{n}{(optional) if specified, the integer number of servers to listen for.
 Otherwise 'n' will be inferred from the length of the vector 'url'. Where
@@ -56,10 +55,9 @@ polling frequency for the queue in milliseconds (used when there are no
 active tasks). Setting a lower value will be more responsive but at the
 cost of consuming more resources on the queue thread.}
 
-\item{...}{reserved but not currently used.}
-
-\item{monitor}{(for internal use) the client URL used for monitoring purposes
-as a character string.}
+\item{monitor}{(for package internal use, not applicable if called
+independently) the client URL used for monitoring purposes as a character
+string.}
 }
 \value{
 Invisible NULL.

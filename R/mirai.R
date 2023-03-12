@@ -21,15 +21,15 @@
 #' Implements a dispatcher for tasks from clients to servers for processing,
 #'     using a FIFO scheduling rule, queuing tasks as required.
 #'
-#' @param dial the client URL to dial as a character string (where tasks are
+#' @param client the client URL to dial as a character string (where tasks are
 #'     sent from), including the port to connect to and (optionally) a path for
 #'     websocket URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
-#' @param listen (optional) the URL or range of URLs the dispatcher should
-#'     listen at as a character vector, including the port to connect to and
+#' @param ... (optional) the URL or range of URLs the dispatcher should
+#'     listen at as character strings, including the port to connect to and
 #'     (optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
 #'     'ws://192.168.0.2:5555/path'. Tasks are sent to servers dialled into
-#'     these URLs. If NULL, 'n' URLs accessible from the same computer will be
-#'     assigned automatically.
+#'     these URLs. If not supplied, 'n' URLs accessible from the same computer
+#'     will be assigned automatically.
 #' @param n (optional) if specified, the integer number of servers to listen for.
 #'     Otherwise 'n' will be inferred from the length of the vector 'url'. Where
 #'     'url' is a single URL and 'n' > 1, 'n' unique URLs will be assigned for
@@ -53,9 +53,9 @@
 #'     polling frequency for the queue in milliseconds (used when there are no
 #'     active tasks). Setting a lower value will be more responsive but at the
 #'     cost of consuming more resources on the queue thread.
-#' @param ... reserved but not currently used.
-#' @param monitor (for internal use) the client URL used for monitoring purposes
-#'     as a character string.
+#' @param monitor (for package internal use, not applicable if called
+#'     independently) the client URL used for monitoring purposes as a character
+#'     string.
 #'
 #' @return Invisible NULL.
 #'
@@ -67,11 +67,10 @@
 #'
 #' @export
 #'
-dispatcher <- function(dial, listen = NULL, n = NULL, asyncdial = TRUE,
-                       exitlinger = 100L, pollfreqh = 10L, pollfreql = 100L, ...,
-                       monitor = NULL) {
+dispatcher <- function(client, ..., n = NULL, asyncdial = TRUE, exitlinger = 100L,
+                       pollfreqh = 10L, pollfreql = 100L, monitor = NULL) {
 
-  sock <- socket(protocol = "rep", dial = dial, autostart = if (asyncdial) TRUE else NA)
+  sock <- socket(protocol = "rep", dial = client, autostart = if (asyncdial) TRUE else NA)
   on.exit(expr = {
     msleep(exitlinger)
     close(sock)
@@ -82,9 +81,12 @@ dispatcher <- function(dial, listen = NULL, n = NULL, asyncdial = TRUE,
     on.exit(expr = close(sockc), add = TRUE, after = FALSE)
     cmessage <- recv_aio(sockc, mode = 5L)
   }
-  auto <- is.null(listen)
-  vectorised <- length(listen) > 1L
-  n <- if (is.numeric(n)) as.integer(n) else length(listen)
+  auto <- missing(...)
+  urls <- if (!auto) c(...) else character()
+  is.character(urls) || stop("URLs supplied for '...' must be of type character")
+  vectorised <- length(urls) > 1L
+  n <- if (is.numeric(n)) as.integer(n) else length(urls)
+  n > 0L || stop("at least one URL must be supplied for '...' or 'n' must be at least 1")
   seq_n <- seq_len(n)
   servernames <- character(n)
   instances <- activestore <- complete <- assigned <- integer(n)
@@ -92,20 +94,20 @@ dispatcher <- function(dial, listen = NULL, n = NULL, asyncdial = TRUE,
   servers <- queue <- vector(mode = "list", length = n)
 
   if (!auto && !vectorised) {
-    baseurl <- parse_url(listen)
+    baseurl <- parse_url(urls)
     ports <- if (grepl("tcp", baseurl[["scheme"]], fixed = TRUE)) as.character(seq.int(baseurl[["port"]], length.out = n))
   }
 
   for (i in seq_n) {
     nurl <- if (auto) sprintf(.urlfmt, random()) else
-      if (vectorised) listen[i] else
-        if (is.null(ports)) sprintf("%s/%d", listen, i) else
-          sub(ports[1L], ports[i], listen, fixed = TRUE)
+      if (vectorised) urls[i] else
+        if (is.null(ports)) sprintf("%s/%d", urls, i) else
+          sub(ports[1L], ports[i], urls, fixed = TRUE)
     nsock <- socket(protocol = "req", listen = nurl)
     if (!auto && parse_url(opt(attr(nsock, "listener")[[1L]], "url"))[["port"]] == "0") {
       realport <- opt(attr(nsock, "listener")[[1L]], "tcp-bound-port")
       nurl <- sub("(?<=:)0(?![^/])", realport, nurl, perl = TRUE)
-      if (!vectorised) url <- sub("(?<=:)0(?![^/])", realport, listen, perl = TRUE)
+      if (!vectorised) url <- sub("(?<=:)0(?![^/])", realport, urls, perl = TRUE)
       close(nsock)
       nsock <- socket(protocol = "req", listen = nurl)
     }
@@ -226,9 +228,9 @@ dispatcher <- function(dial, listen = NULL, n = NULL, asyncdial = TRUE,
 #'     return very large objects.
 #' @param ... reserved but not currently used.
 #' @param cleanup [default TRUE] logical value whether to perform cleanup of the
-#'     global environment and options values after each task evaluation. This is
-#'     recommended in all cases. Do not set to FALSE unless you are certain you
-#'     want such persistence across evaluations.
+#'     global environment, options values and loaded packages after each task
+#'     evaluation. This option should not be modified. Do not set to FALSE
+#'     unless you are certain you want such persistence across evaluations.
 #'
 #' @return Invisible NULL.
 #'
@@ -619,7 +621,7 @@ daemons <- function(n, url = NULL, active = TRUE, ..., .compute = "default") {
         sock <- socket(protocol = "req", listen = urld)
         reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
         sockc <- socket(protocol = "bus", listen = urlc)
-        args <- sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\")",
+        args <- sprintf("mirai::dispatcher(\"%s\",%s,n=%d,monitor=\"%s\")",
                         urld, paste(sprintf("\"%s\"", url), collapse = ","), n, urlc)
         launch_daemon(args)
         `[[<-`(..[[.compute]], "sockc", sockc)
