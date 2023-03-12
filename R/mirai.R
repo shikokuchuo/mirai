@@ -16,43 +16,145 @@
 
 # mirai ------------------------------------------------------------------------
 
-#' mirai Dispatcher
+#' mirai Server (Async Executor Daemon)
 #'
-#' Implements a dispatcher for tasks from clients to servers for processing,
-#'     using a FIFO scheduling rule, queuing tasks as required.
+#' Implements a persistent executor/server for the remote process. Awaits data,
+#'     evaluates an expression in an environment containing the supplied data,
+#'     and returns the result to the caller/client.
 #'
-#' @param client the client URL to dial as a character string (where tasks are
-#'     sent from), including the port to connect to and (optionally) a path for
-#'     websocket URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
-#' @param ... (optional) the URL or range of URLs the dispatcher should
-#'     listen at as character strings, including the port to connect to and
-#'     (optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
-#'     'ws://192.168.0.2:5555/path'. Tasks are sent to servers dialled into
-#'     these URLs. If not supplied, 'n' URLs accessible from the same computer
-#'     will be assigned automatically.
-#' @param n (optional) if specified, the integer number of servers to listen for.
-#'     Otherwise 'n' will be inferred from the length of the vector 'url'. Where
-#'     'url' is a single URL and 'n' > 1, 'n' unique URLs will be assigned for
-#'     servers to dial into.
+#' @param url the client or dispatcher URL to dial into as a character string,
+#'     including the port to connect to and (optionally) a path for websocket
+#'     URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
 #' @param asyncdial [default TRUE] whether to perform dials asynchronously. An
 #'     asynchronous dial is more resilient and will continue retrying if not
 #'     immediately successful. However this can mask potential connection issues
 #'     and specifying FALSE will error if a connection is not immediately
 #'     possible (e.g. \code{\link{daemons}} has yet to be called on the client,
 #'     or the specified port is not open etc.).
+#' @param maxtasks [default Inf] the maximum number of tasks to execute (task
+#'     limit) before exiting.
+#' @param idletime [default Inf] maximum idle time, since completion of the last
+#'     task (in milliseconds) before exiting.
+#' @param walltime [default Inf] soft walltime, or the minimum amount of real
+#'     time taken (in milliseconds) before exiting.
+#' @param timerstart [default 0L] number of completed tasks after which to start
+#'     the timer for 'idletime' and 'walltime'. 0L implies timers are started
+#'     upon launch.
 #' @param exitlinger [default 100L] time in milliseconds to linger after an exit
 #'     signal is received or a timer / task limit is reached, to allow sockets
 #'     to flush sends currently in progress. The default permits normal
 #'     operations, but should be set wider if computations are expected to
 #'     return very large objects.
-#' @param pollfreqh [default 10L] (applicable to active queues only) the high
-#'     polling frequency for the queue in milliseconds (used when there are
-#'     active tasks). Setting a lower value will be more responsive but at the
-#'     cost of consuming more resources on the queue thread.
-#' @param pollfreql [default 100L] (applicable to active queues only) the low
-#'     polling frequency for the queue in milliseconds (used when there are no
-#'     active tasks). Setting a lower value will be more responsive but at the
-#'     cost of consuming more resources on the queue thread.
+#' @param ... reserved but not currently used.
+#' @param cleanup [default TRUE] logical value whether to perform cleanup of the
+#'     global environment, options values and loaded packages after each task
+#'     evaluation. This option should not be modified. Do not set to FALSE
+#'     unless you are certain you want such persistence across evaluations.
+#'
+#' @return Invisible NULL.
+#'
+#' @details The network topology is such that server daemons dial into the
+#'     client or dispatcher, which listens at the 'url' address. In this way,
+#'     network resources may be added or removed dynamically and the client or
+#'     dispatcher automatically distributes tasks to all available servers.
+#'
+#' @export
+#'
+server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
+                   walltime = Inf, timerstart = 0L, exitlinger = 100L, ...,
+                   cleanup = TRUE) {
+
+  sock <- socket(protocol = "rep", dial = url, autostart = if (asyncdial) TRUE else NA)
+  devnull <- file(nullfile(), open = "w", blocking = FALSE)
+  sink(file = devnull)
+  sink(file = devnull, type = "message")
+  on.exit(expr = {
+    msleep(exitlinger)
+    close(sock)
+    sink()
+    sink(type = "message")
+    close(devnull)
+  })
+  count <- 0L
+  if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
+  op <- options()
+  se <- search()
+  start <- mclock()
+
+  while (count < maxtasks && mclock() - start < walltime) {
+
+    ctx <- context(sock)
+    envir <- recv(ctx, mode = 1L, block = idletime)
+    is.integer(envir) && {
+      count < timerstart && {
+        start <- mclock()
+        next
+      }
+      break
+    }
+    data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
+                     error = mk_mirai_error, interrupt = mk_interrupt_error)
+    send(ctx, data = data, mode = 1L)
+    if (cleanup) {
+      rm(list = ls(.GlobalEnv, all.names = TRUE, sorted = FALSE), envir = .GlobalEnv)
+      lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
+      options(op)
+    }
+    if (count < timerstart) start <- mclock()
+    count <- count + 1L
+
+  }
+
+}
+
+#' @noRd
+#' @export
+#'
+. <- function(url) {
+
+  sock <- socket(protocol = "rep", dial = url)
+  on.exit(expr = close(sock))
+  ctx <- context(sock)
+  envir <- recv(ctx, mode = 1L)
+  data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
+                   error = mk_mirai_error, interrupt = mk_interrupt_error)
+  send(ctx, data = data, mode = 1L)
+  msleep(2000L)
+
+}
+
+#' mirai Dispatcher
+#'
+#' Implements a dispatcher for tasks from a client to multiple servers for
+#'     processing, using a FIFO scheduling rule, queuing tasks as required.
+#'
+#' @inheritParams server
+#' @param client the client URL to dial as a character string (where tasks are
+#'     sent from), including the port to connect to and (optionally) a path for
+#'     websocket URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
+#' @param url (optional) the URL or range of URLs the dispatcher should
+#'     listen at as a character vector, including the port to connect to and
+#'     (optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
+#'     'ws://192.168.0.2:5555/path'. Tasks are sent to servers dialled into
+#'     these URLs. If not supplied, 'n' URLs accessible from the same computer
+#'     will be assigned automatically.
+#' @param n (optional) if specified, the integer number of servers to listen for.
+#'     Otherwise 'n' will be inferred from the number of URLs supplied as '...'.
+#'     Where a single URL is supplied and 'n' > 1, 'n' unique URLs will be
+#'     automatically assigned for servers to dial into.
+#' @param exitlinger [default 100L] time in milliseconds to linger after an exit
+#'     signal is received, to allow sockets to flush sends currently in progress.
+#'     The default permits normal operations, but should be set wider if
+#'     computations are expected to return very large objects.
+#' @param pollfreqh [default 10L] the high polling frequency for the dispatcher
+#'     in milliseconds (used when there are active tasks). Setting a lower value
+#'     will be more responsive but at the cost of consuming more resources on
+#'     the dispatcher thread.
+#' @param pollfreql [default 100L] the low polling frequency for the dispatcher
+#'     in milliseconds (used when there are no active tasks). Setting a lower
+#'     value will be more responsive but at the cost of consuming more resources
+#'     on the dispatcher thread.
+#' @param ... reserved but not currently used.
 #' @param monitor (for package internal use, not applicable if called
 #'     independently) the client URL used for monitoring purposes as a character
 #'     string.
@@ -67,8 +169,9 @@
 #'
 #' @export
 #'
-dispatcher <- function(client, ..., n = NULL, asyncdial = TRUE, exitlinger = 100L,
-                       pollfreqh = 10L, pollfreql = 100L, monitor = NULL) {
+dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
+                       exitlinger = 100L, pollfreqh = 10L, pollfreql = 100L, ...,
+                       monitor = NULL) {
 
   sock <- socket(protocol = "rep", dial = client, autostart = if (asyncdial) TRUE else NA)
   on.exit(expr = {
@@ -81,12 +184,10 @@ dispatcher <- function(client, ..., n = NULL, asyncdial = TRUE, exitlinger = 100
     on.exit(expr = close(sockc), add = TRUE, after = FALSE)
     cmessage <- recv_aio(sockc, mode = 5L)
   }
-  auto <- missing(...)
-  urls <- if (!auto) c(...) else character()
-  is.character(urls) || stop("URLs supplied for '...' must be of type character")
-  vectorised <- length(urls) > 1L
-  n <- if (is.numeric(n)) as.integer(n) else length(urls)
-  n > 0L || stop("at least one URL must be supplied for '...' or 'n' must be at least 1")
+  auto <- is.null(url)
+  vectorised <- length(url) > 1L
+  n <- if (is.numeric(n)) as.integer(n) else length(url)
+  n > 0L || stop("at least one URL must be supplied for 'url' or 'n' must be at least 1")
   seq_n <- seq_len(n)
   servernames <- character(n)
   instances <- activestore <- complete <- assigned <- integer(n)
@@ -94,20 +195,21 @@ dispatcher <- function(client, ..., n = NULL, asyncdial = TRUE, exitlinger = 100
   servers <- queue <- vector(mode = "list", length = n)
 
   if (!auto && !vectorised) {
-    baseurl <- parse_url(urls)
-    ports <- if (grepl("tcp", baseurl[["scheme"]], fixed = TRUE)) as.character(seq.int(baseurl[["port"]], length.out = n))
+    baseurl <- parse_url(url)
+    ports <- if (grepl("tcp", baseurl[["scheme"]], fixed = TRUE))
+      if (baseurl[["port"]] == "0") integer(n) else seq.int(baseurl[["port"]], length.out = n)
   }
 
   for (i in seq_n) {
     nurl <- if (auto) sprintf(.urlfmt, random()) else
-      if (vectorised) urls[i] else
-        if (is.null(ports)) sprintf("%s/%d", urls, i) else
-          sub(ports[1L], ports[i], urls, fixed = TRUE)
+      if (vectorised) url[i] else
+        if (is.null(ports)) sprintf("%s/%d", url, i) else
+          sub(ports[1L], ports[i], url, fixed = TRUE)
     nsock <- socket(protocol = "req", listen = nurl)
-    if (!auto && parse_url(opt(attr(nsock, "listener")[[1L]], "url"))[["port"]] == "0") {
+    if (i == 1L && !auto && parse_url(opt(attr(nsock, "listener")[[1L]], "url"))[["port"]] == "0") {
       realport <- opt(attr(nsock, "listener")[[1L]], "tcp-bound-port")
       nurl <- sub("(?<=:)0(?![^/])", realport, nurl, perl = TRUE)
-      if (!vectorised) url <- sub("(?<=:)0(?![^/])", realport, urls, perl = TRUE)
+      if (!vectorised) url <- sub("(?<=:)0(?![^/])", realport, url, perl = TRUE)
       close(nsock)
       nsock <- socket(protocol = "req", listen = nurl)
     }
@@ -197,113 +299,6 @@ dispatcher <- function(client, ..., n = NULL, asyncdial = TRUE, exitlinger = 100
 
 }
 
-#' mirai Server (Async Executor Daemon)
-#'
-#' Implements a persistent executor/server for the remote process. Awaits data,
-#'     evaluates an expression in an environment containing the supplied data,
-#'     and returns the result to the caller/client.
-#'
-#' @param url the client or dispatcher URL to dial into as a character string,
-#'     including the port to connect to and (optionally) a path for websocket
-#'     URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
-#' @param asyncdial [default TRUE] whether to perform dials asynchronously. An
-#'     asynchronous dial is more resilient and will continue retrying if not
-#'     immediately successful. However this can mask potential connection issues
-#'     and specifying FALSE will error if a connection is not immediately
-#'     possible (e.g. \code{\link{daemons}} has yet to be called on the client,
-#'     or the specified port is not open etc.).
-#' @param maxtasks [default Inf] the maximum number of tasks to execute (task
-#'     limit) before exiting.
-#' @param idletime [default Inf] maximum idle time, since completion of the last
-#'     task (in milliseconds) before exiting.
-#' @param walltime [default Inf] soft walltime, or the minimum amount of real
-#'     time taken (in milliseconds) before exiting.
-#' @param timerstart [default 0L] number of completed tasks after which to start
-#'     the timer for 'idletime' and 'walltime'. 0L implies timers are started
-#'     upon launch.
-#' @param exitlinger [default 100L] time in milliseconds to linger after an exit
-#'     signal is received or a timer / task limit is reached, to allow sockets
-#'     to flush sends currently in progress. The default permits normal
-#'     operations, but should be set wider if computations are expected to
-#'     return very large objects.
-#' @param ... reserved but not currently used.
-#' @param cleanup [default TRUE] logical value whether to perform cleanup of the
-#'     global environment, options values and loaded packages after each task
-#'     evaluation. This option should not be modified. Do not set to FALSE
-#'     unless you are certain you want such persistence across evaluations.
-#'
-#' @return Invisible NULL.
-#'
-#' @details The network topology is such that server daemons dial into the
-#'     client or dispatcher, which listens at the 'url' address. In this way,
-#'     network resources may be added or removed dynamically and the client /
-#'     dispatcher automatically distributes tasks to all available servers.
-#'
-#' @export
-#'
-server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
-                   walltime = Inf, timerstart = 0L, exitlinger = 100L, ...,
-                   cleanup = TRUE) {
-
-  sock <- socket(protocol = "rep", dial = url, autostart = if (asyncdial) TRUE else NA)
-  devnull <- file(nullfile(), open = "w", blocking = FALSE)
-  sink(file = devnull)
-  sink(file = devnull, type = "message")
-  on.exit(expr = {
-    msleep(exitlinger)
-    close(sock)
-    sink()
-    sink(type = "message")
-    close(devnull)
-  })
-  count <- 0L
-  if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
-  op <- options()
-  se <- search()
-  start <- mclock()
-
-  while (count < maxtasks && mclock() - start < walltime) {
-
-    ctx <- context(sock)
-    envir <- recv(ctx, mode = 1L, block = idletime)
-    is.integer(envir) && {
-      count < timerstart && {
-        start <- mclock()
-        next
-      }
-      break
-    }
-    data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
-                     error = mk_mirai_error, interrupt = mk_interrupt_error)
-    send(ctx, data = data, mode = 1L)
-    if (cleanup) {
-      rm(list = ls(.GlobalEnv, all.names = TRUE, sorted = FALSE), envir = .GlobalEnv)
-      lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
-      options(op)
-    }
-    if (count < timerstart) start <- mclock()
-    count <- count + 1L
-
-  }
-
-}
-
-#' @noRd
-#' @export
-#'
-. <- function(url) {
-
-  sock <- socket(protocol = "rep", dial = url)
-  on.exit(expr = close(sock))
-  ctx <- context(sock)
-  envir <- recv(ctx, mode = 1L)
-  data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
-                   error = mk_mirai_error, interrupt = mk_interrupt_error)
-  send(ctx, data = data, mode = 1L)
-  msleep(2000L)
-
-}
-
 #' mirai (Evaluate Async)
 #'
 #' Evaluate an expression asynchronously in a new background R process or
@@ -319,7 +314,8 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 #' @param .timeout (optional) integer value in milliseconds or NULL for no
 #'     timeout. A mirai will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
-#' @param .compute (optional) character value for the compute profile to use.
+#' @param .compute (optional) character value for the compute profile to use
+#'     when sending the mirai.
 #'
 #' @return A 'mirai' object.
 #'
@@ -347,8 +343,9 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 #'     \code{\link{is_error_value}} tests for all error conditions including
 #'     'mirai' errors, interrupts, and timeouts.
 #'
-#'     Specify '.compute' if multiple compute profiles have been set up via
-#'     \code{\link{daemons}}, otherwise leave as 'default'.
+#'     Specify '.compute' to send the mirai to a specific server destination, if
+#'     multiple compute profiles have been set up via \code{\link{daemons}},
+#'     otherwise leave as 'default'.
 #'
 #' @examples
 #' if (interactive()) {
@@ -428,10 +425,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     port accepting incoming connections and (optionally) a path for websocket
 #'     URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
 #' @param active [default TRUE] logical value whether to use active dispatch,
-#'     which queues tasks until servers can process them ensuring optimal
-#'     allocation on a FIFO basis, or else immediate dispatch, which only
-#'     ensures an even distribution of tasks amongst servers (without reference
-#'     to the time taken for each task).
+#'     which uses a background dispatcher process, or else immediate dispatch
+#'     (futher details below).
 #' @param ... reserved, but not currently used.
 #' @param .compute (optional) character compute profile to use for creating the
 #'     daemons (each compute profile can have its own set of daemons for
@@ -443,11 +438,11 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     Viewing current status: a named list comprising: \itemize{
 #'     \item{\code{connections}} {- number of active connections at the client.
 #'     Will always be 1L when using active dispatch as there is only one
-#'     connection to the dispatcher which connects to the servers in turn.}
+#'     connection to the dispatcher, which then connects to the servers in turn.}
 #'     \item{\code{daemons}} {- if using active dispatch: a matrix of statistics
 #'     for each server: URL, online and busy status, cumulative tasks assigned
-#'     and completed (reset if a server re-connects), and server instance
-#'     (increments by 1 every time a server connects). If not using active
+#'     and completed (reset if a server re-connects), and instance # (increments
+#'     by 1 every time a server connects to the URL). If not using active
 #'     dispatch: the number of daemons set, or else the client URL.}
 #'     }
 #'
@@ -483,33 +478,46 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #'     \strong{Immediate Dispatch}
 #'
-#'     Alternatively, specifying \code{active = FALSE} uses a low-level
-#'     implementation without a dispatcher. The client distributes tasks to
-#'     directly-connected servers immediately, and can thus only ensure that
-#'     tasks are evenly-distributed amongst daemons. Optimal scheduling is not
-#'     guaranteed as the duration of tasks is not known \emph{a priori}.
-#'     Nevertheless, this provides a robust and resource-light approach,
-#'     particularly suited to working with similar-length tasks or where the
-#'     number of concurrent tasks typically does not exceed available daemons.
+#'     Alternatively, specifying \code{active = FALSE} connects to servers
+#'     directly without a dispatcher. The client sends tasks immediately, and
+#'     can thus only ensure that they are evenly-distributed amongst daemons.
+#'     Optimal scheduling is not guaranteed as the duration of tasks is not
+#'     known \emph{a priori}. Nevertheless, this provides a low-level,
+#'     resource-light approach, suited to working with similar-length tasks or
+#'     where concurrent tasks typically do not exceed available daemons.
 #'
 #' @section Distributed Computing:
 #'
 #'     Specifying 'url' allows tasks to be distributed across the network.
 #'
+#'     The client URL should be in the form of a character string such as:
+#'     'tcp://192.168.0.2:5555' at which server processes started using
+#'     \code{\link{server}} should connect to.
+#'
+#'     Alternatively, to listen to port 5555 on all interfaces on the local host,
+#'     specify either 'tcp://:5555', 'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
+#'
+#'     Specifying the wildcard value zero for the port number e.g. 'tcp://:0' or
+#'     'ws://:0' will automatically assign a free ephemeral port. Use
+#'     \code{daemons()} to query the actual assigned port at any time.
+#'
 #'     \strong{Active Dispatch}
 #'
 #'     With \code{active = TRUE}, a local \code{\link{dispatcher}} background
 #'     process is launched, which in turn listens to remote server processes.
-#'     In this case, it is recommended to use a websocket URL rather than TCP,
-#'     as this requires only one port to connect to all servers. This is as a
-#'     websocket URL supports a path after the port number, which can be made
-#'     unique for each server. Specifying a single client URL such as
-#'     'ws://192.168.0.2:5555' with \code{n = 6} will automatically append a
-#'     sequence to the path, listening to the URLs 'ws://192.168.0.2:5555/1'
-#'     through 'ws://192.168.0.2:5555/6'.
 #'
-#'     Alternatively, specify a vector of URLs the same length as 'nodes' to
-#'     listen to arbitrary port numbers / paths.
+#'     It is recommended in this case to use a websocket URL rather than TCP,
+#'     as this requires only one port to connect to all servers: a websocket URL
+#'     supports a path after the port number, which can be made unique for each
+#'     server.
+#'
+#'     Specifying a single client URL such as 'ws://192.168.0.2:5555' with
+#'     \code{n = 6} will automatically append a sequence to the path, listening
+#'     to the URLs 'ws://192.168.0.2:5555/1' through 'ws://192.168.0.2:5555/6'.
+#'
+#'     Alternatively, specify a vector of URLs to listen to arbitrary port
+#'     numbers / paths. In this case it is optional to supply 'n' as this can
+#'     be inferred by the length of vector supplied.
 #'
 #'     Individual \code{\link{server}} instances should then be started on the
 #'     remote resource, which dial in to each of these client URLs.
@@ -519,21 +527,13 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #'     Alternatively, supplying a single TCP URL will listen on a block of URLs
 #'     with ports starting from the supplied port number and incrementing by one
-#'     for the number of nodes specified e.g. the client URL
-#'     'tcp://192.168.0.2:5555' with 6 nodes listens to the contiguous block of
-#'     ports 5555 through 5560.
+#'     for 'n' specified e.g. the client URL 'tcp://192.168.0.2:5555' with
+#'     \code{n = 6} listens to the contiguous block of ports 5555 through 5560.
 #'
 #'     \strong{Immediate Dispatch}
 #'
-#'     The client URL should be in the form of a character string such as:
-#'     'tcp://192.168.0.2:5555' at which server processes started using
-#'     \code{\link{server}} should connect to. Alternatively, to listen to port
-#'     5555 on all interfaces on the local host, specify either 'tcp://:5555',
-#'     'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
-#'
-#'     Specifying the wildcard value zero for the port number e.g. 'tcp://:0' or
-#'     'ws://:0' will automatically assign a free ephemeral port. Use
-#'     \code{daemons()} to query the actual assigned port at any time.
+#'     Either a TCP or websocket URL can be used in this case as the client
+#'     listens at only one address, utilising a single port.
 #'
 #'     The network topology is such that server daemons (started with
 #'     \code{\link{server}}) or indeed dispatchers (started with
@@ -578,21 +578,31 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' # Create 2 daemons (active dispatch)
+#' # Create 2 local daemons (active dispatch)
 #' daemons(2)
-#'
 #' # View status
 #' daemons()
-#'
 #' # Reset to zero
 #' daemons(0)
 #'
-#' # Create 2 daemons (immediate dispatch)
+#' # Create 2 local daemons (immediate dispatch)
 #' daemons(2, active = FALSE)
-#'
 #' # View status
 #' daemons()
+#' # Reset to zero
+#' daemons(0)
 #'
+#' # Set client URL for remote servers to dial into (using zero wildcard)
+#' daemons(url = "tcp://:0")
+#' # View status
+#' daemons()
+#' # Reset to zero
+#' daemons(0)
+#'
+#' # Launch local dispatcher for 2 remote servers to dial into (using zero wildcard)
+#' daemons(2, url = "ws://:0")
+#' # View status
+#' daemons()
 #' # Reset to zero
 #' daemons(0)
 #'
@@ -613,15 +623,15 @@ daemons <- function(n, url = NULL, active = TRUE, ..., .compute = "default") {
 
     if (is.null(..[[.compute]][["sock"]])) {
       if (active) {
-        n <- if (missing(n)) length(url) else if (is.numeric(n)) as.integer(n) else
-          stop("'n' must be numeric, did you mean to provide 'url'?")
+        n <- if (missing(n)) length(url) else if (is.numeric(n) && n > 0L) as.integer(n) else
+          stop("'n' must be 1 or greater if specified with a client URL")
         parse_url(url)
         urld <- sprintf(.urlfmt, random())
         urlc <- sprintf("%s%s", urld, "c")
         sock <- socket(protocol = "req", listen = urld)
         reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
         sockc <- socket(protocol = "bus", listen = urlc)
-        args <- sprintf("mirai::dispatcher(\"%s\",%s,n=%d,monitor=\"%s\")",
+        args <- sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\")",
                         urld, paste(sprintf("\"%s\"", url), collapse = ","), n, urlc)
         launch_daemon(args)
         `[[<-`(..[[.compute]], "sockc", sockc)

@@ -19,7 +19,8 @@ addition to or instead of named arguments specified as '...').}
 timeout. A mirai will resolve to an 'errorValue' 5 (timed out) if
 evaluation exceeds this limit.}
 
-\item{.compute}{(optional) character value for the compute profile to use.}
+\item{.compute}{(optional) character value for the compute profile to use
+when sending the mirai.}
 }
 \value{
 A 'mirai' object.
@@ -55,8 +56,9 @@ This function will return a 'mirai' object immediately.
     \code{\link{is_error_value}} tests for all error conditions including
     'mirai' errors, interrupts, and timeouts.
 
-    Specify '.compute' if multiple compute profiles have been set up via
-    \code{\link{daemons}}, otherwise leave as 'default'.
+    Specify '.compute' to send the mirai to a specific server destination, if
+    multiple compute profiles have been set up via \code{\link{daemons}},
+    otherwise leave as 'default'.
 }
 \examples{
 if (interactive()) {

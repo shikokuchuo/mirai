@@ -6,12 +6,13 @@
 \usage{
 dispatcher(
   client,
-  ...,
+  url = NULL,
   n = NULL,
   asyncdial = TRUE,
   exitlinger = 100L,
   pollfreqh = 10L,
   pollfreql = 100L,
+  ...,
   monitor = NULL
 )
 }
@@ -20,17 +21,17 @@ dispatcher(
 sent from), including the port to connect to and (optionally) a path for
 websocket URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 
-\item{...}{(optional) the URL or range of URLs the dispatcher should
-listen at as character strings, including the port to connect to and
+\item{url}{(optional) the URL or range of URLs the dispatcher should
+listen at as a character vector, including the port to connect to and
 (optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
 'ws://192.168.0.2:5555/path'. Tasks are sent to servers dialled into
 these URLs. If not supplied, 'n' URLs accessible from the same computer
 will be assigned automatically.}
 
 \item{n}{(optional) if specified, the integer number of servers to listen for.
-Otherwise 'n' will be inferred from the length of the vector 'url'. Where
-'url' is a single URL and 'n' > 1, 'n' unique URLs will be assigned for
-servers to dial into.}
+Otherwise 'n' will be inferred from the number of URLs supplied as '...'.
+Where a single URL is supplied and 'n' > 1, 'n' unique URLs will be
+automatically assigned for servers to dial into.}
 
 \item{asyncdial}{[default TRUE] whether to perform dials asynchronously. An
 asynchronous dial is more resilient and will continue retrying if not
@@ -40,20 +41,21 @@ possible (e.g. \code{\link{daemons}} has yet to be called on the client,
 or the specified port is not open etc.).}
 
 \item{exitlinger}{[default 100L] time in milliseconds to linger after an exit
-signal is received or a timer / task limit is reached, to allow sockets
-to flush sends currently in progress. The default permits normal
-operations, but should be set wider if computations are expected to
-return very large objects.}
+signal is received, to allow sockets to flush sends currently in progress.
+The default permits normal operations, but should be set wider if
+computations are expected to return very large objects.}
 
-\item{pollfreqh}{[default 10L] (applicable to active queues only) the high
-polling frequency for the queue in milliseconds (used when there are
-active tasks). Setting a lower value will be more responsive but at the
-cost of consuming more resources on the queue thread.}
+\item{pollfreqh}{[default 10L] the high polling frequency for the dispatcher
+in milliseconds (used when there are active tasks). Setting a lower value
+will be more responsive but at the cost of consuming more resources on
+the dispatcher thread.}
 
-\item{pollfreql}{[default 100L] (applicable to active queues only) the low
-polling frequency for the queue in milliseconds (used when there are no
-active tasks). Setting a lower value will be more responsive but at the
-cost of consuming more resources on the queue thread.}
+\item{pollfreql}{[default 100L] the low polling frequency for the dispatcher
+in milliseconds (used when there are no active tasks). Setting a lower
+value will be more responsive but at the cost of consuming more resources
+on the dispatcher thread.}
+
+\item{...}{reserved but not currently used.}
 
 \item{monitor}{(for package internal use, not applicable if called
 independently) the client URL used for monitoring purposes as a character
@@ -63,8 +65,8 @@ string.}
 Invisible NULL.
 }
 \description{
-Implements a dispatcher for tasks from clients to servers for processing,
-    using a FIFO scheduling rule, queuing tasks as required.
+Implements a dispatcher for tasks from a client to multiple servers for
+    processing, using a FIFO scheduling rule, queuing tasks as required.
 }
 \details{
 The network topology is such that a dispatcher acts as a gateway

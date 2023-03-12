@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -0.337 -1.307 -5.911 -1.421 0.178 ...
+#>  num [1:100000000] 96.602 0.132 0.193 0.985 -2.964 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.337 -1.307 -5.911 -1.421 0.178 ...
+#>  num [1:100000000] 96.602 0.132 0.193 0.985 -2.964 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -186,7 +186,7 @@ library(mirai)
 
 run_iteration <- function(i) {
   
-  if (runif(1) < 0.15) stop("random error", call. = FALSE) # simulates a stochastic error rate
+  if (runif(1) < 0.12) stop("random error", call. = FALSE) # simulates a stochastic error rate
   sprintf("iteration %d successful", i)
   
 }
@@ -203,11 +203,10 @@ for (i in 1:10) {
 }
 #> iteration 1 successful 
 #> iteration 2 successful 
-#> Error: random error 
 #> iteration 3 successful 
 #> iteration 4 successful 
-#> Error: random error 
 #> iteration 5 successful 
+#> Error: random error 
 #> iteration 6 successful 
 #> iteration 7 successful 
 #> iteration 8 successful 
@@ -254,19 +253,19 @@ daemons()
 #> 
 #> $daemons
 #>                        status_online status_busy tasks_assigned tasks_complete
-#> abstract://n4067537620             1           0              0              0
-#> abstract://n2812412994             1           0              0              0
-#> abstract://n3748384984             1           0              0              0
-#> abstract://n4170883739             1           0              0              0
-#> abstract://n158626969              1           0              0              0
-#> abstract://n4060565304             1           0              0              0
+#> abstract://n115126770              1           0              0              0
+#> abstract://n2954332544             1           0              0              0
+#> abstract://n2498279922             1           0              0              0
+#> abstract://n3329160412             1           0              0              0
+#> abstract://n1523821053             1           0              0              0
+#> abstract://n1309143979             1           0              0              0
 #>                        instance #
-#> abstract://n4067537620          1
-#> abstract://n2812412994          1
-#> abstract://n3748384984          1
-#> abstract://n4170883739          1
-#> abstract://n158626969           1
-#> abstract://n4060565304          1
+#> abstract://n115126770           1
+#> abstract://n2954332544          1
+#> abstract://n2498279922          1
+#> abstract://n3329160412          1
+#> abstract://n1523821053          1
+#> abstract://n1309143979          1
 ```
 
 Active dispatch runs an additional `dispatcher()` background process
@@ -410,7 +409,7 @@ unique for each server to dial into. In this way a dispatcher can
 connect to an arbitrary number of servers over a single port.
 
 ``` r
-# daemons("ws://192.168.0.2:5555", nodes = 4)
+# daemons(n = 4, url = "ws://192.168.0.2:5555")
 
 daemons(n = 4, url = "ws://:5555")
 #> [1] 4

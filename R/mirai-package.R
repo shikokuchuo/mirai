@@ -25,14 +25,15 @@
 #'
 #' @section Notes:
 #'
-#'     For local mirai processes, the default transport for intra-process
-#'     communications is platform-dependent: abstract sockets on Linux, Unix
-#'     domain sockets on MacOS, Solaris and other POSIX platforms, and named
-#'     pipes on Windows.
+#'     For local mirai processes, the default transport for inter-process
+#'     communications is platform-dependent: abstract Unix domain sockets on
+#'     Linux, Unix domain sockets on MacOS, Solaris and other POSIX platforms,
+#'     and named pipes on Windows.
 #'
 #'     This may be overriden if required by specifying 'url' in the
-#'     \code{\link{daemons}} interface, and starting server processes manually
-#'     using \code{\link{server}} on the same machine.
+#'     \code{\link{daemons}} interface, and starting server and/or dispatcher
+#'     processes manually using \code{\link{server}} and \code{\link{dispatcher}}
+#'     respectively, on the same machine.
 #'
 #' @section Links:
 #'

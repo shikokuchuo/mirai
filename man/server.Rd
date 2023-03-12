@@ -65,6 +65,6 @@ Implements a persistent executor/server for the remote process. Awaits data,
 \details{
 The network topology is such that server daemons dial into the
     client or dispatcher, which listens at the 'url' address. In this way,
-    network resources may be added or removed dynamically and the client /
+    network resources may be added or removed dynamically and the client or
     dispatcher automatically distributes tasks to all available servers.
 }

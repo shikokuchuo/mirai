@@ -163,7 +163,7 @@ library(mirai)
 
 run_iteration <- function(i) {
   
-  if (runif(1) < 0.15) stop("random error", call. = FALSE) # simulates a stochastic error rate
+  if (runif(1) < 0.12) stop("random error", call. = FALSE) # simulates a stochastic error rate
   sprintf("iteration %d successful", i)
   
 }
@@ -309,7 +309,7 @@ The below automatically launches a dispatcher as a background process on the loc
 It is recommended to use a websocket URL starting `ws://` instead of TCP in this scenario (the two can be used interchangeably). This is as a websocket URL supports a path after the port number, which can be made unique for each server to dial into. In this way a dispatcher can connect to an arbitrary number of servers over a single port.
 
 ```{r localqueue}
-# daemons("ws://192.168.0.2:5555", nodes = 4)
+# daemons(n = 4, url = "ws://192.168.0.2:5555")
 
 daemons(n = 4, url = "ws://:5555")
 ```

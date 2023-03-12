@@ -14,10 +14,8 @@ port accepting incoming connections and (optionally) a path for websocket
 URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 
 \item{active}{[default TRUE] logical value whether to use active dispatch,
-which queues tasks until servers can process them ensuring optimal
-allocation on a FIFO basis, or else immediate dispatch, which only
-ensures an even distribution of tasks amongst servers (without reference
-to the time taken for each task).}
+which uses a background dispatcher process, or else immediate dispatch
+(futher details below).}
 
 \item{...}{reserved, but not currently used.}
 
@@ -32,11 +30,11 @@ Setting daemons: integer number of daemons set, or the character
     Viewing current status: a named list comprising: \itemize{
     \item{\code{connections}} {- number of active connections at the client.
     Will always be 1L when using active dispatch as there is only one
-    connection to the dispatcher which connects to the servers in turn.}
+    connection to the dispatcher, which then connects to the servers in turn.}
     \item{\code{daemons}} {- if using active dispatch: a matrix of statistics
     for each server: URL, online and busy status, cumulative tasks assigned
-    and completed (reset if a server re-connects), and server instance
-    (increments by 1 every time a server connects). If not using active
+    and completed (reset if a server re-connects), and instance # (increments
+    by 1 every time a server connects to the URL). If not using active
     dispatch: the number of daemons set, or else the client URL.}
     }
 }
@@ -84,14 +82,13 @@ For viewing the currrent status, specify \code{daemons()} with no
 
     \strong{Immediate Dispatch}
 
-    Alternatively, specifying \code{active = FALSE} uses a low-level
-    implementation without a dispatcher. The client distributes tasks to
-    directly-connected servers immediately, and can thus only ensure that
-    tasks are evenly-distributed amongst daemons. Optimal scheduling is not
-    guaranteed as the duration of tasks is not known \emph{a priori}.
-    Nevertheless, this provides a robust and resource-light approach,
-    particularly suited to working with similar-length tasks or where the
-    number of concurrent tasks typically does not exceed available daemons.
+    Alternatively, specifying \code{active = FALSE} connects to servers
+    directly without a dispatcher. The client sends tasks immediately, and
+    can thus only ensure that they are evenly-distributed amongst daemons.
+    Optimal scheduling is not guaranteed as the duration of tasks is not
+    known \emph{a priori}. Nevertheless, this provides a low-level,
+    resource-light approach, suited to working with similar-length tasks or
+    where concurrent tasks typically do not exceed available daemons.
 }
 
 \section{Distributed Computing}{
@@ -99,20 +96,34 @@ For viewing the currrent status, specify \code{daemons()} with no
 
     Specifying 'url' allows tasks to be distributed across the network.
 
+    The client URL should be in the form of a character string such as:
+    'tcp://192.168.0.2:5555' at which server processes started using
+    \code{\link{server}} should connect to.
+
+    Alternatively, to listen to port 5555 on all interfaces on the local host,
+    specify either 'tcp://:5555', 'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
+
+    Specifying the wildcard value zero for the port number e.g. 'tcp://:0' or
+    'ws://:0' will automatically assign a free ephemeral port. Use
+    \code{daemons()} to query the actual assigned port at any time.
+
     \strong{Active Dispatch}
 
     With \code{active = TRUE}, a local \code{\link{dispatcher}} background
     process is launched, which in turn listens to remote server processes.
-    In this case, it is recommended to use a websocket URL rather than TCP,
-    as this requires only one port to connect to all servers. This is as a
-    websocket URL supports a path after the port number, which can be made
-    unique for each server. Specifying a single client URL such as
-    'ws://192.168.0.2:5555' with \code{n = 6} will automatically append a
-    sequence to the path, listening to the URLs 'ws://192.168.0.2:5555/1'
-    through 'ws://192.168.0.2:5555/6'.
 
-    Alternatively, specify a vector of URLs the same length as 'nodes' to
-    listen to arbitrary port numbers / paths.
+    It is recommended in this case to use a websocket URL rather than TCP,
+    as this requires only one port to connect to all servers: a websocket URL
+    supports a path after the port number, which can be made unique for each
+    server.
+
+    Specifying a single client URL such as 'ws://192.168.0.2:5555' with
+    \code{n = 6} will automatically append a sequence to the path, listening
+    to the URLs 'ws://192.168.0.2:5555/1' through 'ws://192.168.0.2:5555/6'.
+
+    Alternatively, specify a vector of URLs to listen to arbitrary port
+    numbers / paths. In this case it is optional to supply 'n' as this can
+    be inferred by the length of vector supplied.
 
     Individual \code{\link{server}} instances should then be started on the
     remote resource, which dial in to each of these client URLs.
@@ -122,21 +133,13 @@ For viewing the currrent status, specify \code{daemons()} with no
 
     Alternatively, supplying a single TCP URL will listen on a block of URLs
     with ports starting from the supplied port number and incrementing by one
-    for the number of nodes specified e.g. the client URL
-    'tcp://192.168.0.2:5555' with 6 nodes listens to the contiguous block of
-    ports 5555 through 5560.
+    for 'n' specified e.g. the client URL 'tcp://192.168.0.2:5555' with
+    \code{n = 6} listens to the contiguous block of ports 5555 through 5560.
 
     \strong{Immediate Dispatch}
 
-    The client URL should be in the form of a character string such as:
-    'tcp://192.168.0.2:5555' at which server processes started using
-    \code{\link{server}} should connect to. Alternatively, to listen to port
-    5555 on all interfaces on the local host, specify either 'tcp://:5555',
-    'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
-
-    Specifying the wildcard value zero for the port number e.g. 'tcp://:0' or
-    'ws://:0' will automatically assign a free ephemeral port. Use
-    \code{daemons()} to query the actual assigned port at any time.
+    Either a TCP or websocket URL can be used in this case as the client
+    listens at only one address, utilising a single port.
 
     The network topology is such that server daemons (started with
     \code{\link{server}}) or indeed dispatchers (started with
@@ -186,21 +189,31 @@ For viewing the currrent status, specify \code{daemons()} with no
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-# Create 2 daemons (active dispatch)
+# Create 2 local daemons (active dispatch)
 daemons(2)
-
 # View status
 daemons()
-
 # Reset to zero
 daemons(0)
 
-# Create 2 daemons (immediate dispatch)
+# Create 2 local daemons (immediate dispatch)
 daemons(2, active = FALSE)
-
 # View status
 daemons()
+# Reset to zero
+daemons(0)
 
+# Set client URL for remote servers to dial into (using zero wildcard)
+daemons(url = "tcp://:0")
+# View status
+daemons()
+# Reset to zero
+daemons(0)
+
+# Launch local dispatcher for 2 remote servers to dial into (using zero wildcard)
+daemons(2, url = "ws://:0")
+# View status
+daemons()
 # Reset to zero
 daemons(0)
 
