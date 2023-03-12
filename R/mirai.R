@@ -154,7 +154,8 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 #'     in milliseconds (used when there are no active tasks). Setting a lower
 #'     value will be more responsive but at the cost of consuming more resources
 #'     on the dispatcher thread.
-#' @param ... reserved but not currently used.
+#' @param ... additional arguments passed through to \code{\link{server}} if
+#'     launching local daemons i.e. 'url' is not specified.
 #' @param monitor (for package internal use, not applicable if called
 #'     independently) the client URL used for monitoring purposes as a character
 #'     string.
@@ -214,8 +215,11 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
       nsock <- socket(protocol = "req", listen = nurl)
     }
 
+    dotstring <- if (missing(...)) "" else
+      sprintf(",%s", paste(names(dots <- substitute(alist(...))[-1L]), dots, sep = "=", collapse = ","))
+
     if (auto)
-      launch_daemon(sprintf("mirai::server(\"%s\")", nurl))
+      launch_daemon(sprintf("mirai::server(\"%s\"%s)", nurl, dotstring))
 
     servernames[i] <- opt(attr(nsock, "listener")[[1L]], "url")
     servers[[i]] <- nsock
@@ -427,7 +431,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' @param active [default TRUE] logical value whether to use active dispatch,
 #'     which uses a background dispatcher process, or else immediate dispatch
 #'     (futher details below).
-#' @param ... reserved, but not currently used.
+#' @param ... additional arguments passed through to \code{\link{dispatcher}} if
+#'     using active dispatch or \code{\link{server}} if launching local daemons.
 #' @param .compute (optional) character compute profile to use for creating the
 #'     daemons (each compute profile can have its own set of daemons for
 #'     connecting to different resources).
@@ -631,8 +636,10 @@ daemons <- function(n, url = NULL, active = TRUE, ..., .compute = "default") {
         sock <- socket(protocol = "req", listen = urld)
         reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
         sockc <- socket(protocol = "bus", listen = urlc)
-        args <- sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\")",
-                        urld, paste(sprintf("\"%s\"", url), collapse = ","), n, urlc)
+        dotstring <- if (missing(...)) "" else
+          sprintf(",%s", paste(names(dots <- substitute(alist(...))[-1L]), dots, sep = "=", collapse = ","))
+        args <- sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)",
+                        urld, paste(sprintf("\"%s\"", url), collapse = ","), n, urlc, dotstring)
         launch_daemon(args)
         `[[<-`(..[[.compute]], "sockc", sockc)
         proc <- n
@@ -667,14 +674,16 @@ daemons <- function(n, url = NULL, active = TRUE, ..., .compute = "default") {
       urld <- sprintf(.urlfmt, random())
       sock <- socket(protocol = "req", listen = urld)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
+      dotstring <- if (missing(...)) "" else
+        sprintf(",%s", paste(names(dots <- substitute(alist(...))[-1L]), dots, sep = "=", collapse = ","))
       if (active) {
         urlc <- sprintf("%s%s", urld, "c")
         sockc <- socket(protocol = "bus", listen = urlc)
-        args <- sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\")", urld, n, urlc)
+        args <- sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", urld, n, urlc, dotstring)
         launch_daemon(args)
         `[[<-`(..[[.compute]], "sockc", sockc)
       } else {
-        args <- sprintf("mirai::server(\"%s\")", urld)
+        args <- sprintf("mirai::server(\"%s\"%s)", urld, dotstring)
         for (i in seq_len(n))
           launch_daemon(args)
       }

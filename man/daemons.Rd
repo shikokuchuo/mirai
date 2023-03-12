@@ -17,7 +17,8 @@ URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 which uses a background dispatcher process, or else immediate dispatch
 (futher details below).}
 
-\item{...}{reserved, but not currently used.}
+\item{...}{additional arguments passed through to \code{\link{dispatcher}} if
+using active dispatch or \code{\link{server}} if launching local daemons.}
 
 \item{.compute}{(optional) character compute profile to use for creating the
 daemons (each compute profile can have its own set of daemons for

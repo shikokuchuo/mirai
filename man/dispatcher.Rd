@@ -55,7 +55,8 @@ in milliseconds (used when there are no active tasks). Setting a lower
 value will be more responsive but at the cost of consuming more resources
 on the dispatcher thread.}
 
-\item{...}{reserved but not currently used.}
+\item{...}{additional arguments passed through to \code{\link{server}} if
+launching local daemons i.e. 'url' is not specified.}
 
 \item{monitor}{(for package internal use, not applicable if called
 independently) the client URL used for monitoring purposes as a character
