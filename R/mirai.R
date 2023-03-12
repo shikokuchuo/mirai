@@ -257,6 +257,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
   count <- 0L
   if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
   op <- options()
+  se <- search()
   start <- mclock()
 
   while (count < maxtasks && mclock() - start < walltime) {
@@ -275,6 +276,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
     send(ctx, data = data, mode = 1L)
     if (cleanup) {
       rm(list = ls(.GlobalEnv, all.names = TRUE, sorted = FALSE), envir = .GlobalEnv)
+      lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
       options(op)
     }
     if (count < timerstart) start <- mclock()
