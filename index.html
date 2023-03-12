@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9036</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9037</span>
       </span>
     </div>
 
@@ -150,11 +150,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.0285 1.8104 0.4312 -0.0624 4.4876 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.0699 1.9453 0.0676 -0.4279 0.2366 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.0285 1.8104 0.4312 -0.0624 4.4876 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.0699 1.9453 0.0676 -0.4279 0.2366 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -214,17 +214,19 @@
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">data</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span>  </span>
 <span><span class="op">}</span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 1 successful </span></span>
 <span><span class="co">#&gt; iteration 2 successful </span></span>
 <span><span class="co">#&gt; iteration 3 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 4 successful </span></span>
 <span><span class="co">#&gt; iteration 5 successful </span></span>
 <span><span class="co">#&gt; iteration 6 successful </span></span>
 <span><span class="co">#&gt; iteration 7 successful </span></span>
 <span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 8 successful </span></span>
-<span><span class="co">#&gt; iteration 9 successful </span></span>
 <span><span class="co">#&gt; Error: random error </span></span>
+<span><span class="co">#&gt; iteration 9 successful </span></span>
 <span><span class="co">#&gt; iteration 10 successful</span></span></code></pre></div>
 <p>Further, by testing the return value of each ‘mirai’ for errors, error-handling code is then able to automate recovery and re-attempts, as in the above example. Further details on <a href="#errors-interrupts-and-timeouts">error handling</a> can be found in the section below.</p>
 <p>The end result is a resilient and fault-tolerant pipeline that minimises downtime by eliminating interruptions of long computes.</p>
@@ -236,61 +238,60 @@
 <p>Daemons or persistent background processes may be set to receive ‘mirai’ requests.</p>
 <p>This is potentially more efficient as new processes no longer need to be created on an <em>ad hoc</em> basis.</p>
 <div class="section level4">
-<h4 id="passive-queue-default">Passive Queue (default)<a class="anchor" aria-label="anchor" href="#passive-queue-default"></a>
+<h4 id="active-dispatch-default">Active Dispatch (default)<a class="anchor" aria-label="anchor" href="#active-dispatch-default"></a>
 </h4>
 <p>Call <code><a href="reference/daemons.html">daemons()</a></code> specifying the number of daemons to launch.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">8</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 8</span></span></code></pre></div>
-<p>To view the current status, call <code><a href="reference/daemons.html">daemons()</a></code> with no arguments. This provides the number of active connections and daemons (and nodes when running an active queue - see below).</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">6</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 6</span></span></code></pre></div>
+<p>To view the current status, call <code><a href="reference/daemons.html">daemons()</a></code> with no arguments. This provides the number of active connections along with a matrix of statistics for each daemon.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $connections</span></span>
-<span><span class="co">#&gt; [1] 8</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] 8</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $nodes</span></span>
-<span><span class="co">#&gt; [1] NA</span></span></code></pre></div>
-<p>In the default implementation, the background processes connect directly into the client and the number of daemons and connections are the same.</p>
-<p>This low-level implementation ensures tasks are evenly-distributed amongst daemons, and provides a robust and resource-light solution. This is particularly suited to working with similar-length tasks, or where the number of concurrent tasks typically does not exceed the number of available daemons.</p>
+<span><span class="co">#&gt;                        status_online status_busy tasks_assigned tasks_complete</span></span>
+<span><span class="co">#&gt; abstract://n2628588012             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n1441683089             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n3739347122             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n2698192616             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n329668536              1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n286458006              1           0              0              0</span></span>
+<span><span class="co">#&gt;                        server_instance</span></span>
+<span><span class="co">#&gt; abstract://n2628588012               1</span></span>
+<span><span class="co">#&gt; abstract://n1441683089               1</span></span>
+<span><span class="co">#&gt; abstract://n3739347122               1</span></span>
+<span><span class="co">#&gt; abstract://n2698192616               1</span></span>
+<span><span class="co">#&gt; abstract://n329668536                1</span></span>
+<span><span class="co">#&gt; abstract://n286458006                1</span></span></code></pre></div>
+<p>Active dispatch runs an additional <code><a href="reference/dispatcher.html">dispatcher()</a></code> background process that connects to individual background <code><a href="reference/server.html">server()</a></code> processes on the local machine. This ensures that tasks are dispatched efficiently on a FIFO basis to servers for processing. Tasks are queued at the dispatcher and only sent to servers that can begin immediate execution of the task.</p>
+<p>A dispatcher running local daemons is self-repairing if one of the daemons crashes or is terminated.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <p>Set the number of daemons to zero to reset. This reverts to the default of creating a new background process for each ‘mirai’ request.</p>
 </div>
 <div class="section level4">
-<h4 id="active-queue">Active Queue<a class="anchor" aria-label="anchor" href="#active-queue"></a>
+<h4 id="immediate-dispatch">Immediate Dispatch<a class="anchor" aria-label="anchor" href="#immediate-dispatch"></a>
 </h4>
-<p>Alternatively, specifying <code>nodes</code> as an additional argument implements an active queue (task scheduler).</p>
+<p>Alternatively, specifying <code>active = FALSE</code> invokes immediate dispatch.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1</span>, nodes <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
-<p>Requesting the status now shows one connection and one daemon with 8 nodes. The daemon process acts as an active queue or task scheduler and sits between the client and individual nodes, relaying messages back and forth.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">6</span>, active <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 6</span></span></code></pre></div>
+<p>Requesting the status now shows one connection and one daemon with 6 nodes. The daemon process acts as an active queue or task scheduler and sits between the client and individual nodes, relaying messages back and forth.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $connections</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
+<span><span class="co">#&gt; [1] 6</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $nodes</span></span>
-<span><span class="co">#&gt;                        status_online status_busy tasks_assigned tasks_complete</span></span>
-<span><span class="co">#&gt; abstract://n4229308668             1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n25939157               1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n6012951                1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n309155873              1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n778540428              1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n1666011980             1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n3947783796             1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n1002668304             1           0              0              0</span></span></code></pre></div>
-<p>The active queue consumes additional resources, however ensures load balancing and optimal scheduling of tasks to nodes.</p>
+<span><span class="co">#&gt; [1] 6</span></span></code></pre></div>
+<p>In this case, the background processes connect directly into the client and the number of daemons and connections are the same.</p>
+<p>This low-level implementation only ensures that tasks are evenly-distributed amongst daemons. Optimal scheduling is not guaranteed as the duration of tasks is not known <em>a priori</em>. Nevertheless, this provides a robust and resource-light solution, particularly suited to working with similar-length tasks or where the number of concurrent tasks typically does not exceed available daemons.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
-<p>An active queue with local nodes is self-repairing if one of the nodes crashes or is terminated.</p>
 <p>Set the number of daemons to zero to reset.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
@@ -300,82 +301,74 @@
 </h3>
 <p>The daemons interface may also be used to send tasks for computation to server processes on the network.</p>
 <div class="section level4">
-<h4 id="connecting-to-remote-servers--remote-server-queues">Connecting to Remote Servers / Remote Server Queues<a class="anchor" aria-label="anchor" href="#connecting-to-remote-servers--remote-server-queues"></a>
+<h4 id="connecting-to-remote-servers">Connecting to Remote Servers<a class="anchor" aria-label="anchor" href="#connecting-to-remote-servers"></a>
 </h4>
 <p>Call <code><a href="reference/daemons.html">daemons()</a></code> specifying as a character string the client network address and a port that is able to accept incoming connections.</p>
 <p>Assuming that the local network IP address of the current machine is ‘192.168.0.2’, and port ‘5555’ has been made available for inbound connections from the local network:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="st">"tcp://192.168.0.2:5555"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://192.168.0.2:5555"</span><span class="op">)</span></span></code></pre></div>
 <p>Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="st">"tcp://:5555"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tcp://:5555"</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://:5555"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
 <p>The network topology is such that the client listens at the above address, and distributes tasks to all connected server processes.</p>
 <p>–</p>
 <p>On the server, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation from a shell. This sets up a remote daemon process that connects to the client URL and receives tasks:</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5555")'</span></span></code></pre></div>
-<p>Alternatively, supply ‘nodes’ to launch an active server queue directing a cluster with the specified number of nodes:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5555",nodes=8)'</span></span></code></pre></div>
 <p>–</p>
 <p>On the client, requesting the status will return the client URL for <code>daemons</code>. The number of daemons connecting to this URL is not limited and network resources may be added and removed at any time, with tasks automatically distributed to all server processes.</p>
 <p><code>connections</code> will show the actual number of connected server instances (2 in the example below).</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $connections</span></span>
-<span><span class="co">#&gt; [1] 2</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "tcp://:5555"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $nodes</span></span>
-<span><span class="co">#&gt; [1] NA</span></span></code></pre></div>
+<span><span class="co">#&gt;             status_online status_busy tasks_assigned tasks_complete</span></span>
+<span><span class="co">#&gt; tcp://:5555             0           0              0              0</span></span>
+<span><span class="co">#&gt;             server_instance</span></span>
+<span><span class="co">#&gt; tcp://:5555               0</span></span></code></pre></div>
 <p>To reset all connections and revert to default behaviour:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <p>This also sends an exit signal to connected server instances so that they exit automatically.</p>
 </div>
 <div class="section level4">
-<h4 id="connecting-to-remote-servers-through-a-local-server-queue">Connecting to Remote Servers Through a Local Server Queue<a class="anchor" aria-label="anchor" href="#connecting-to-remote-servers-through-a-local-server-queue"></a>
+<h4 id="connecting-to-remote-servers-through-a-local-dispatcher">Connecting to Remote Servers Through a Local Dispatcher<a class="anchor" aria-label="anchor" href="#connecting-to-remote-servers-through-a-local-dispatcher"></a>
 </h4>
 <p>Assuming that the local network address of the current machine is ‘192.168.0.2’, and 4 nodes are to be allocated on remote servers.</p>
-<p>The below automatically starts a server queue as a daemon process on the local client machine.</p>
-<p>It is recommended to use a websocket URL starting <code>ws://</code> instead of TCP in this scenario (the two can be used interchangeably). This is as a websocket URL supports a path after the port number, which can be made unique for each node. In this way a client can connect to an arbitrary number of nodes over a single port.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<p>The below automatically launches a dispatcher as a background process on the local client machine.</p>
+<p>It is recommended to use a websocket URL starting <code>ws://</code> instead of TCP in this scenario (the two can be used interchangeably). This is as a websocket URL supports a path after the port number, which can be made unique for each server to dial into. In this way a dispatcher can connect to an arbitrary number of servers over a single port.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># daemons("ws://192.168.0.2:5555", nodes = 4)</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="st">"ws://:5555"</span>, nodes <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
-<p>Above, a single URL was supplied, in which case a sequence is automatically appended to the path <code>/1</code> through <code>/4</code> as 4 nodes were specified.</p>
-<p>Alternatively, supplying a vector of URLs (the same length as the number of nodes) allows the use of arbitrary port numbers / paths, e.g.:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># daemons(c("ws://:5555/cpu", "ws://:5555/gpu", "ws://:12560", "ws://:12560/2"), nodes = 4)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, url <span class="op">=</span> <span class="st">"ws://:5555"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
+<p>Above, a single URL was supplied, in which case a sequence is automatically appended to the path <code>/1</code> through <code>/4</code> as <code>n = 4</code> was specified.</p>
+<p>Alternatively, supplying a vector of URLs allows the use of arbitrary port numbers / paths, e.g.:</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># daemons(url = c("ws://:5555/cpu", "ws://:5555/gpu", "ws://:12560", "ws://:12560/2"))</span></span></code></pre></div>
+<p>Above, the value for ‘n’ is implied by the length of ‘url’ vector without needing to strictly specify ‘n’.</p>
 <p>–</p>
-<p>On the server or servers, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation from a shell. Each instance should connect to a unique client URL:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("ws://192.168.0.2:5555/1")'</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("ws://192.168.0.2:5555/2")'</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("ws://192.168.0.2:5555/3")'</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("ws://192.168.0.2:5555/4")'</span></span></code></pre></div>
+<p>On the remote resource, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation from a shell. Each server instance should dial into one of the unique URLs that the dispatcher is listening to:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("ws://192.168.0.2:5555/1")'</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("ws://192.168.0.2:5555/2")'</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("ws://192.168.0.2:5555/3")'</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("ws://192.168.0.2:5555/4")'</span></span></code></pre></div>
 <p>–</p>
 <p>Requesting status, on the client:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $connections</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $nodes</span></span>
-<span><span class="co">#&gt;              status_online status_busy tasks_assigned tasks_complete</span></span>
-<span><span class="co">#&gt; ws://:5555/1             1           0              0              0</span></span>
-<span><span class="co">#&gt; ws://:5555/2             1           0              0              0</span></span>
-<span><span class="co">#&gt; ws://:5555/3             1           0              0              0</span></span>
-<span><span class="co">#&gt; ws://:5555/4             1           0              0              0</span></span></code></pre></div>
-<p>When running a local server queue to connect to remote nodes, there is only a single connection to the local server queue. This then connects in turn to the nodes running on remote servers.</p>
-<p>The active queue will automatically adjust to the number of servers actually connected. Hence it is possible to dynamically scale up or down the number of server nodes (limited by the number of nodes initially specified).</p>
+<span><span class="co">#&gt; 'errorValue' int 5 | Timed out</span></span></code></pre></div>
+<p>When using active dispatch, there is only a single connection to the local background dispatcher process, which connects in turn to the servers running on remote resources.</p>
+<p>The dispatcher will automatically adjust to the number of servers actually connected. Hence it is possible to dynamically scale up or down the number of servers according to requirements (limited to the number initially specified).</p>
 <p>To reset all connections and revert to default behaviour:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <p>This also sends an exit signal to all connected daemons and nodes so that they exit automatically.</p>
@@ -398,7 +391,7 @@
 <h3 id="errors-interrupts-and-timeouts">Errors, Interrupts and Timeouts<a class="anchor" aria-label="anchor" href="#errors-interrupts-and-timeouts"></a>
 </h3>
 <p>If execution in a mirai fails, the error message is returned as a character string of class ‘miraiError’ and ‘errorValue’ to facilitate debugging. <code><a href="reference/is_mirai_error.html">is_mirai_error()</a></code> can be used to test for mirai execution errors.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"occurred with a custom message"</span>, call. <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; 'miraiError' chr Error: occurred with a custom message</span></span>
@@ -412,11 +405,11 @@
 <span><span class="fu"><a href="reference/is_mirai_error.html">is_error_value</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>If during a <code><a href="reference/call_mirai.html">call_mirai()</a></code> an interrupt e.g. ctrl+c is sent, the mirai will resolve to an empty character string of class ‘miraiInterrupt’ and ‘errorValue’. <code><a href="reference/is_mirai_error.html">is_mirai_interrupt()</a></code> may be used to test for such interrupts.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/is_mirai_error.html">is_mirai_interrupt</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
 <p>If execution of a mirai surpasses the timeout set via the ‘.timeout’ argument, the mirai will resolve to an ‘errorValue’. This can, amongst other things, guard against mirai processes that hang and never return.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/msleep.html" class="external-link">msleep</a></span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span>, .timeout <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m3</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; 'errorValue' int 5 | Timed out</span></span>
@@ -439,7 +432,7 @@
 <p>It is possible to use <code><a href="reference/unresolved.html">unresolved()</a></code> around a ‘unresolvedExpr’ or its <code>$data</code> element to test for resolution, as in the example below.</p>
 <p>The pipe operator semantics are similar to R’s base pipe <code>|&gt;</code>:</p>
 <p><code>x %&gt;&gt;% f</code> is equivalent to <code>f(x)</code> <br><code>x %&gt;&gt;% f()</code> is equivalent to <code>f(x)</code> <br><code>x %&gt;&gt;% f(y)</code> is equivalent to <code>f(x, y)</code></p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/msleep.html" class="external-link">msleep</a></span><span class="op">(</span><span class="fl">500</span><span class="op">)</span>; <span class="fl">1</span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="va">b</span> <span class="op">&lt;-</span> <span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op"><a href="reference/grapes-greater-than-greater-than-grapes.html">%&gt;&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="reference/grapes-greater-than-greater-than-grapes.html">%&gt;&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">b</span></span>
