@@ -193,27 +193,27 @@ Daemons or persistent background processes may be set to receive 'mirai' request
 
 This is potentially more efficient as new processes no longer need to be created on an *ad hoc* basis.
 
-#### Passive Queue (default)
+#### Active Dispatch (default)
 
 Call `daemons()` specifying the number of daemons to launch.
 
 ```{r daemons}
-daemons(8)
+daemons(6)
 ```
 
 ```{r daemons2, include=FALSE}
 Sys.sleep(0.5)
 ```
 
-To view the current status, call `daemons()` with no arguments. This provides the number of active connections and daemons (and nodes when running an active queue - see below).
+To view the current status, call `daemons()` with no arguments. This provides the number of active connections along with a matrix of statistics for each daemon.
 
 ```{r daemons3}
 daemons()
 ```
 
-In the default implementation, the background processes connect directly into the client and the number of daemons and connections are the same.
+Active dispatch runs an additional `dispatcher()` background process that connects to individual background `server()` processes on the local machine. This ensures that tasks are dispatched efficiently on a FIFO basis to servers for processing. Tasks are queued at the dispatcher and only sent to servers that can begin immediate execution of the task.
 
-This low-level implementation ensures tasks are evenly-distributed amongst daemons, and provides a robust and resource-light solution. This is particularly suited to working with similar-length tasks, or where the number of concurrent tasks typically does not exceed the number of available daemons.
+A dispatcher running local daemons is self-repairing if one of the daemons crashes or is terminated.
 
 ```{r daemons4}
 daemons(0)
@@ -221,30 +221,30 @@ daemons(0)
 
 Set the number of daemons to zero to reset. This reverts to the default of creating a new background process for each 'mirai' request.
 
-#### Active Queue
+#### Immediate Dispatch
 
-Alternatively, specifying `nodes` as an additional argument implements an active queue (task scheduler). 
+Alternatively, specifying `active = FALSE` invokes immediate dispatch. 
 
 ```{r daemonsq}
-daemons(1, nodes = 8)
+daemons(6, active = FALSE)
 ```
 ```{r daemonsq2, include=FALSE}
 Sys.sleep(0.5)
 ```
 
-Requesting the status now shows one connection and one daemon with 8 nodes. The daemon process acts as an active queue or task scheduler and sits between the client and individual nodes, relaying messages back and forth.
+Requesting the status now shows one connection and one daemon with 6 nodes. The daemon process acts as an active queue or task scheduler and sits between the client and individual nodes, relaying messages back and forth.
 
 ```{r daemonsqv}
 daemons()
 ```
 
-The active queue consumes additional resources, however ensures load balancing and optimal scheduling of tasks to nodes.
+In this case, the background processes connect directly into the client and the number of daemons and connections are the same.
+
+This low-level implementation only ensures that tasks are evenly-distributed amongst daemons. Optimal scheduling is not guaranteed as the duration of tasks is not known *a priori*. Nevertheless, this provides a robust and resource-light solution, particularly suited to working with similar-length tasks or where the number of concurrent tasks typically does not exceed available daemons.
 
 ```{r daemons5}
 daemons(0)
 ```
-
-An active queue with local nodes is self-repairing if one of the nodes crashes or is terminated.
 
 Set the number of daemons to zero to reset.
 
@@ -254,20 +254,20 @@ Set the number of daemons to zero to reset.
 
 The daemons interface may also be used to send tasks for computation to server processes on the network.
 
-#### Connecting to Remote Servers / Remote Server Queues
+#### Connecting to Remote Servers
 
 Call `daemons()` specifying as a character string the client network address and a port that is able to accept incoming connections.
 
 Assuming that the local network IP address of the current machine is '192.168.0.2', and port '5555' has been made available for inbound connections from the local network:
 
 ```{r remote, eval=FALSE}
-daemons("tcp://192.168.0.2:5555")
+daemons(url = "tcp://192.168.0.2:5555")
 ```
 
 Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:
 
 ```{r remotealt}
-daemons("tcp://:5555")
+daemons(url = "tcp://:5555")
 ```
 
 The network topology is such that the client listens at the above address, and distributes tasks to all connected server processes.
@@ -278,12 +278,6 @@ On the server, `server()` may be called from an R session, or an Rscript invocat
 
 ```
 Rscript -e 'mirai::server("tcp://192.168.0.2:5555")'
-```
-
-Alternatively, supply 'nodes' to launch an active server queue directing a cluster with the specified number of nodes:
-
-```
-Rscript -e 'mirai::server("tcp://192.168.0.2:5555",nodes=8)'
 ```
 
 --
@@ -306,31 +300,33 @@ daemons(0)
 ```
 This also sends an exit signal to connected server instances so that they exit automatically.
 
-#### Connecting to Remote Servers Through a Local Server Queue
+#### Connecting to Remote Servers Through a Local Dispatcher
 
 Assuming that the local network address of the current machine is '192.168.0.2', and 4 nodes are to be allocated on remote servers.
 
-The below automatically starts a server queue as a daemon process on the local client machine.
+The below automatically launches a dispatcher as a background process on the local client machine.
 
-It is recommended to use a websocket URL starting `ws://` instead of TCP in this scenario (the two can be used interchangeably). This is as a websocket URL supports a path after the port number, which can be made unique for each node. In this way a client can connect to an arbitrary number of nodes over a single port.
+It is recommended to use a websocket URL starting `ws://` instead of TCP in this scenario (the two can be used interchangeably). This is as a websocket URL supports a path after the port number, which can be made unique for each server to dial into. In this way a dispatcher can connect to an arbitrary number of servers over a single port.
 
 ```{r localqueue}
 # daemons("ws://192.168.0.2:5555", nodes = 4)
 
-daemons("ws://:5555", nodes = 4)
+daemons(n = 4, url = "ws://:5555")
 ```
 
-Above, a single URL was supplied, in which case a sequence is automatically appended to the path `/1` through `/4` as 4 nodes were specified.
+Above, a single URL was supplied, in which case a sequence is automatically appended to the path `/1` through `/4` as `n = 4` was specified.
 
-Alternatively, supplying a vector of URLs (the same length as the number of nodes) allows the use of arbitrary port numbers / paths, e.g.:
+Alternatively, supplying a vector of URLs allows the use of arbitrary port numbers / paths, e.g.:
 
 ```{r vectorqueue}
-# daemons(c("ws://:5555/cpu", "ws://:5555/gpu", "ws://:12560", "ws://:12560/2"), nodes = 4)
+# daemons(url = c("ws://:5555/cpu", "ws://:5555/gpu", "ws://:12560", "ws://:12560/2"))
 ```
+
+Above, the value for 'n' is implied by the length of 'url' vector without needing to strictly specify 'n'.
 
 --
 
-On the server or servers, `server()` may be called from an R session, or an Rscript invocation from a shell. Each instance should connect to a unique client URL:
+On the remote resource, `server()` may be called from an R session, or an Rscript invocation from a shell. Each server instance should dial into one of the unique URLs that the dispatcher is listening to:
 
 ```
 Rscript -e 'mirai::server("ws://192.168.0.2:5555/1")'
@@ -351,9 +347,9 @@ Requesting status, on the client:
 daemons()
 ```
 
-When running a local server queue to connect to remote nodes, there is only a single connection to the local server queue. This then connects in turn to the nodes running on remote servers.
+When using active dispatch, there is only a single connection to the local background dispatcher process, which connects in turn to the servers running on remote resources.
 
-The active queue will automatically adjust to the number of servers actually connected. Hence it is possible to dynamically scale up or down the number of server nodes (limited by the number of nodes initially specified).
+The dispatcher will automatically adjust to the number of servers actually connected. Hence it is possible to dynamically scale up or down the number of servers according to requirements (limited to the number initially specified).
 
 To reset all connections and revert to default behaviour:
 

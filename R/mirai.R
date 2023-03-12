@@ -150,9 +150,7 @@ dispatcher <- function(dial, listen = NULL, n = NULL, asyncdial = TRUE,
 
       ctrchannel && !unresolved(cmessage) && {
         data <- `attributes<-`(c(activevec, assigned - complete, assigned, complete, instances),
-                               list(dim = c(n, 5L),
-                                    dimnames = list(servernames,
-                                                    c("status_online", "status_busy", "tasks_assigned", "tasks_complete", "server_instance"))))
+                               list(dim = c(n, 5L), dimnames = list(servernames, .statnames)))
         send(sockc, data = data, mode = 1L)
         cmessage <- recv_aio(sockc, mode = 5L)
         next
@@ -602,9 +600,8 @@ daemons <- function(n, url = NULL, active = TRUE, ..., .compute = "default") {
 
     if (is.null(..[[.compute]][["sock"]])) {
       if (active) {
-        missing(n) && stop("'n' must be specified (max number of daemons) if using active dispatch")
-        is.numeric(n) || stop("'n' must be numeric, did you mean to provide 'url'?")
-        n <- as.integer(n)
+        n <- if (missing(n)) length(url) else if (is.numeric(n)) as.integer(n) else
+          stop("'n' must be numeric, did you mean to provide 'url'?")
         urld <- sprintf(.urlfmt, random())
         urlc <- sprintf("%s%s", urld, "c")
         sock <- socket(protocol = "req", listen = urld)

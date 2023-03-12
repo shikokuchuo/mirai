@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -0.0285 1.8104 0.4312 -0.0624 4.4876 ...
+#>  num [1:100000000] -0.0699 1.9453 0.0676 -0.4279 0.2366 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.0285 1.8104 0.4312 -0.0624 4.4876 ...
+#>  num [1:100000000] -0.0699 1.9453 0.0676 -0.4279 0.2366 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -201,17 +201,19 @@ for (i in 1:10) {
   cat(m$data, "\n")
   
 }
+#> Error: random error 
 #> iteration 1 successful 
 #> iteration 2 successful 
 #> iteration 3 successful 
+#> Error: random error 
 #> iteration 4 successful 
 #> iteration 5 successful 
 #> iteration 6 successful 
 #> iteration 7 successful 
 #> Error: random error 
 #> iteration 8 successful 
-#> iteration 9 successful 
 #> Error: random error 
+#> iteration 9 successful 
 #> iteration 10 successful
 ```
 
@@ -234,39 +236,49 @@ requests.
 This is potentially more efficient as new processes no longer need to be
 created on an *ad hoc* basis.
 
-#### Passive Queue (default)
+#### Active Dispatch (default)
 
 Call `daemons()` specifying the number of daemons to launch.
 
 ``` r
-daemons(8)
-#> [1] 8
+daemons(6)
+#> [1] 6
 ```
 
 To view the current status, call `daemons()` with no arguments. This
-provides the number of active connections and daemons (and nodes when
-running an active queue - see below).
+provides the number of active connections along with a matrix of
+statistics for each daemon.
 
 ``` r
 daemons()
 #> $connections
-#> [1] 8
+#> [1] 1
 #> 
 #> $daemons
-#> [1] 8
-#> 
-#> $nodes
-#> [1] NA
+#>                        status_online status_busy tasks_assigned tasks_complete
+#> abstract://n2628588012             1           0              0              0
+#> abstract://n1441683089             1           0              0              0
+#> abstract://n3739347122             1           0              0              0
+#> abstract://n2698192616             1           0              0              0
+#> abstract://n329668536              1           0              0              0
+#> abstract://n286458006              1           0              0              0
+#>                        server_instance
+#> abstract://n2628588012               1
+#> abstract://n1441683089               1
+#> abstract://n3739347122               1
+#> abstract://n2698192616               1
+#> abstract://n329668536                1
+#> abstract://n286458006                1
 ```
 
-In the default implementation, the background processes connect directly
-into the client and the number of daemons and connections are the same.
+Active dispatch runs an additional `dispatcher()` background process
+that connects to individual background `server()` processes on the local
+machine. This ensures that tasks are dispatched efficiently on a FIFO
+basis to servers for processing. Tasks are queued at the dispatcher and
+only sent to servers that can begin immediate execution of the task.
 
-This low-level implementation ensures tasks are evenly-distributed
-amongst daemons, and provides a robust and resource-light solution. This
-is particularly suited to working with similar-length tasks, or where
-the number of concurrent tasks typically does not exceed the number of
-available daemons.
+A dispatcher running local daemons is self-repairing if one of the
+daemons crashes or is terminated.
 
 ``` r
 daemons(0)
@@ -276,17 +288,16 @@ daemons(0)
 Set the number of daemons to zero to reset. This reverts to the default
 of creating a new background process for each ‘mirai’ request.
 
-#### Active Queue
+#### Immediate Dispatch
 
-Alternatively, specifying `nodes` as an additional argument implements
-an active queue (task scheduler).
+Alternatively, specifying `active = FALSE` invokes immediate dispatch.
 
 ``` r
-daemons(1, nodes = 8)
-#> [1] 1
+daemons(6, active = FALSE)
+#> [1] 6
 ```
 
-Requesting the status now shows one connection and one daemon with 8
+Requesting the status now shows one connection and one daemon with 6
 nodes. The daemon process acts as an active queue or task scheduler and
 sits between the client and individual nodes, relaying messages back and
 forth.
@@ -294,33 +305,26 @@ forth.
 ``` r
 daemons()
 #> $connections
-#> [1] 1
+#> [1] 6
 #> 
 #> $daemons
-#> [1] 1
-#> 
-#> $nodes
-#>                        status_online status_busy tasks_assigned tasks_complete
-#> abstract://n4229308668             1           0              0              0
-#> abstract://n25939157               1           0              0              0
-#> abstract://n6012951                1           0              0              0
-#> abstract://n309155873              1           0              0              0
-#> abstract://n778540428              1           0              0              0
-#> abstract://n1666011980             1           0              0              0
-#> abstract://n3947783796             1           0              0              0
-#> abstract://n1002668304             1           0              0              0
+#> [1] 6
 ```
 
-The active queue consumes additional resources, however ensures load
-balancing and optimal scheduling of tasks to nodes.
+In this case, the background processes connect directly into the client
+and the number of daemons and connections are the same.
+
+This low-level implementation only ensures that tasks are
+evenly-distributed amongst daemons. Optimal scheduling is not guaranteed
+as the duration of tasks is not known *a priori*. Nevertheless, this
+provides a robust and resource-light solution, particularly suited to
+working with similar-length tasks or where the number of concurrent
+tasks typically does not exceed available daemons.
 
 ``` r
 daemons(0)
 #> [1] 0
 ```
-
-An active queue with local nodes is self-repairing if one of the nodes
-crashes or is terminated.
 
 Set the number of daemons to zero to reset.
 
@@ -331,7 +335,7 @@ Set the number of daemons to zero to reset.
 The daemons interface may also be used to send tasks for computation to
 server processes on the network.
 
-#### Connecting to Remote Servers / Remote Server Queues
+#### Connecting to Remote Servers
 
 Call `daemons()` specifying as a character string the client network
 address and a port that is able to accept incoming connections.
@@ -341,15 +345,15 @@ Assuming that the local network IP address of the current machine is
 connections from the local network:
 
 ``` r
-daemons("tcp://192.168.0.2:5555")
+daemons(url = "tcp://192.168.0.2:5555")
 ```
 
 Alternatively, simply supply a colon followed by the port number to
 listen on all interfaces on the local host, for example:
 
 ``` r
-daemons("tcp://:5555")
-#> [1] "tcp://:5555"
+daemons(url = "tcp://:5555")
+#> [1] 1
 ```
 
 The network topology is such that the client listens at the above
@@ -362,11 +366,6 @@ invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
     Rscript -e 'mirai::server("tcp://192.168.0.2:5555")'
-
-Alternatively, supply ‘nodes’ to launch an active server queue directing
-a cluster with the specified number of nodes:
-
-    Rscript -e 'mirai::server("tcp://192.168.0.2:5555",nodes=8)'
 
 –
 
@@ -381,13 +380,13 @@ automatically distributed to all server processes.
 ``` r
 daemons()
 #> $connections
-#> [1] 2
+#> [1] 1
 #> 
 #> $daemons
-#> [1] "tcp://:5555"
-#> 
-#> $nodes
-#> [1] NA
+#>             status_online status_busy tasks_assigned tasks_complete
+#> tcp://:5555             0           0              0              0
+#>             server_instance
+#> tcp://:5555               0
 ```
 
 To reset all connections and revert to default behaviour:
@@ -400,43 +399,46 @@ daemons(0)
 This also sends an exit signal to connected server instances so that
 they exit automatically.
 
-#### Connecting to Remote Servers Through a Local Server Queue
+#### Connecting to Remote Servers Through a Local Dispatcher
 
 Assuming that the local network address of the current machine is
 ‘192.168.0.2’, and 4 nodes are to be allocated on remote servers.
 
-The below automatically starts a server queue as a daemon process on the
-local client machine.
+The below automatically launches a dispatcher as a background process on
+the local client machine.
 
 It is recommended to use a websocket URL starting `ws://` instead of TCP
 in this scenario (the two can be used interchangeably). This is as a
 websocket URL supports a path after the port number, which can be made
-unique for each node. In this way a client can connect to an arbitrary
-number of nodes over a single port.
+unique for each server to dial into. In this way a dispatcher can
+connect to an arbitrary number of servers over a single port.
 
 ``` r
 # daemons("ws://192.168.0.2:5555", nodes = 4)
 
-daemons("ws://:5555", nodes = 4)
-#> [1] 1
+daemons(n = 4, url = "ws://:5555")
+#> [1] 4
 ```
 
 Above, a single URL was supplied, in which case a sequence is
-automatically appended to the path `/1` through `/4` as 4 nodes were
+automatically appended to the path `/1` through `/4` as `n = 4` was
 specified.
 
-Alternatively, supplying a vector of URLs (the same length as the number
-of nodes) allows the use of arbitrary port numbers / paths, e.g.:
+Alternatively, supplying a vector of URLs allows the use of arbitrary
+port numbers / paths, e.g.:
 
 ``` r
-# daemons(c("ws://:5555/cpu", "ws://:5555/gpu", "ws://:12560", "ws://:12560/2"), nodes = 4)
+# daemons(url = c("ws://:5555/cpu", "ws://:5555/gpu", "ws://:12560", "ws://:12560/2"))
 ```
+
+Above, the value for ‘n’ is implied by the length of ‘url’ vector
+without needing to strictly specify ‘n’.
 
 –
 
-On the server or servers, `server()` may be called from an R session, or
-an Rscript invocation from a shell. Each instance should connect to a
-unique client URL:
+On the remote resource, `server()` may be called from an R session, or
+an Rscript invocation from a shell. Each server instance should dial
+into one of the unique URLs that the dispatcher is listening to:
 
     Rscript -e 'mirai::server("ws://192.168.0.2:5555/1")'
     Rscript -e 'mirai::server("ws://192.168.0.2:5555/2")'
@@ -450,27 +452,20 @@ Requesting status, on the client:
 ``` r
 daemons()
 #> $connections
-#> [1] 1
+#> [1] 0
 #> 
 #> $daemons
-#> [1] 1
-#> 
-#> $nodes
-#>              status_online status_busy tasks_assigned tasks_complete
-#> ws://:5555/1             1           0              0              0
-#> ws://:5555/2             1           0              0              0
-#> ws://:5555/3             1           0              0              0
-#> ws://:5555/4             1           0              0              0
+#> 'errorValue' int 5 | Timed out
 ```
 
-When running a local server queue to connect to remote nodes, there is
-only a single connection to the local server queue. This then connects
-in turn to the nodes running on remote servers.
+When using active dispatch, there is only a single connection to the
+local background dispatcher process, which connects in turn to the
+servers running on remote resources.
 
-The active queue will automatically adjust to the number of servers
+The dispatcher will automatically adjust to the number of servers
 actually connected. Hence it is possible to dynamically scale up or down
-the number of server nodes (limited by the number of nodes initially
-specified).
+the number of servers according to requirements (limited to the number
+initially specified).
 
 To reset all connections and revert to default behaviour:
 

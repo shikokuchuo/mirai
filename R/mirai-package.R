@@ -68,6 +68,8 @@ NULL
                   Windows = "ipc://n%.f",
                   "ipc:///tmp/n%.f")
 
+.statnames <- c("status_online", "status_busy", "tasks_assigned", "tasks_complete", "server_instance")
+
 .. <- `[[<-`(new.env(hash = FALSE), "default", new.env(hash = FALSE))
 
 .__scm__. <- base64dec("WAoAAAADAAQCAQADBQAAAAAFVVRGLTgAAAD8", convert = FALSE)

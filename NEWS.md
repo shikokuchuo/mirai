@@ -1,21 +1,20 @@
-# mirai 0.7.2.9036 (development)
+# mirai 0.7.2.9037 (development)
 
 * mirai 0.8.0 is a major feature release. Special thanks to @wlandau for suggestions, discussion and testing for many of the new capabilities.
 * Compute profiles have been introduced through a new `.compute` argument in `daemons()` and `mirai()` for sending tasks with heterogeneous compute requirements.
   + `daemons()` can create new profiles to connect to different resources e.g. servers with GPU, accelerators etc.
   + `mirai()` tasks can be sent using a specific compute profile.
-* `daemons()` interface has a new `url` argument along with `active` for specifying active dispatch (load-balancing task scheduler) which is now the default.
+* `daemons()` interface has a new `url` argument along with `active` for specifying active dispatch (optimal FIFO task scheduling) which is now the default.
   + Supplying a client URL with a zero port number `:0` will automatically assign a free ephemeral port, with the actual port number subsequently reported by `daemons()`.
   + Calling with no arguments now provides an improved view of the current number of connections / daemons (URL, online and busy status, tasks assigned and completed, node instance), replacing the previous `daemons("view")` functionality.
 * `server()` gains the following arguments:
-  + `nodes` for launching an active dispatcher with the specified number of nodes.
   + `asyncdial` to specify how the server dials into the client.
   + `maxtasks` for specifying a maximum number of tasks before exiting.
   + `idletime` for specifying an idle time, since completion of the last task before exiting.
   + `walltime` for specifying a soft walltime before exiting.
   + `timerstart` for specifying a minimum number of task completions before starting timers.
-  + `exitdelay` tuning parameter used in conjunction with above timer / task limits.
-  + `pollfreqh` and `pollfreql` for setting the polling frequency of an active queue.
+  + `exitlinger` tuning parameter used in conjunction with above timer / task limits.
+* `dispatcher()` is implemented as a self-contained function for the active dispatcher.
 * Invalid URLs provided to `daemons()` and `server()` now error and return immediately instead of potentially causing a hang.
 * `eval_mirai()` is removed as an alias for `mirai()`.
 * 'mirai' processes are no longer launched in Rscript sessions with the `--vanilla` argument to enable site and user profile and environment files to be read.
