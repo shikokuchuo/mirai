@@ -156,7 +156,9 @@ Now actions which depend on the resolution may be processed, for example the nex
 
 Use case: isolating code that can potentially fail in a separate process to ensure continued uptime.
 
-As part of a data science or machine learning pipeline, iterations of model training may periodically fail for stochastic and uncontrollable reasons (e.g. buggy memory management on graphics cards). Running each iteration in a 'mirai' process isolates this potentially-problematic code such that if it does fail, it does not crash the entire pipeline.
+As part of a data science or machine learning pipeline, iterations of model training may periodically fail for stochastic and uncontrollable reasons (e.g. buggy memory management on graphics cards).
+
+Running each iteration in a 'mirai' process isolates this potentially-problematic code such that if it does fail, it does not bring down the entire pipeline.
 
 ```{r exec3r}
 library(mirai)
@@ -211,9 +213,9 @@ To view the current status, call `daemons()` with no arguments. This provides th
 daemons()
 ```
 
-The default `dispatcher = TRUE` launches a `dispatcher()` background process that connects to individual background `server()` processes on the local machine. This ensures that tasks are dispatched efficiently on a FIFO basis to servers for processing. Tasks are queued at the dispatcher and only sent to servers that can begin immediate execution of the task.
+The default `dispatcher = TRUE` launches a `dispatcher()` background process that connects to individual background `server()` processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to servers for processing. Tasks are queued at the dispatcher and sent to a server as soon as it can accept the task for immediate execution.
 
-A dispatcher running local daemons is self-repairing if one of the daemons crashes or is terminated.
+A dispatcher running local daemons is self-repairing if one of the daemons crashes or is terminated - a replacement daemon is launched upon the next task.
 
 ```{r daemons4}
 daemons(0)
@@ -238,7 +240,7 @@ Requesting the status now shows 6 connections and 6 daemons.
 daemons()
 ```
 
-This implementation ensures that tasks are evenly-distributed amongst daemons, however requires tasks to be sent to daemons immediately. This means that optimal scheduling is not guaranteed as the duration of tasks cannot be known *a priori*. As an example, tasks could be queued at a server behind a long-running task, whilst other servers remain idle.
+This implementation sends tasks immediately, and ensures that tasks are evenly-distributed amongst daemons. This means that optimal scheduling is not guaranteed as the duration of tasks cannot be known *a priori*. As an example, tasks could be queued at a daemon behind a long-running task, whilst other daemons remain idle.
 
 The advantage of this approach is that it is low-level and does not require an additional dispatcher process. It is well-suited to working with similar-length tasks, or where the number of concurrent tasks typically does not exceed available daemons.
 
@@ -256,7 +258,9 @@ The daemons interface may also be used to send tasks for computation to server p
 
 Call `daemons()` specifying 'url' as a character string the client network address and a port that is able to accept incoming connections.
 
-The examples below use an illustrative local network IP address of '192.168.0.2'. A port on the client also needs to be open and available for inbound connections from the local network, illustratively '5555' in the examples below.
+The examples below use an illustrative local network IP address of '10.111.5.13'.
+
+A port on the client also needs to be open and available for inbound connections from the local network, illustratively '5555' in the examples below.
 
 #### Connecting to Remote Servers Through Dispatcher
 
@@ -265,7 +269,7 @@ The default `dispatcher = TRUE` creates a background `dispatcher()` process on t
 It is recommended to use a websocket URL starting `ws://` instead of TCP in this scenario (used interchangeably with `tcp://`). A websocket URL supports a path after the port number, which can be made unique for each server. In this way a dispatcher can connect to an arbitrary number of servers over a single port.
 
 ```{r localqueue}
-# daemons(n = 4, url = "ws://192.168.0.2:5555")
+# daemons(n = 4, url = "ws://10.111.5.13:5555")
 
 daemons(n = 4, url = "ws://:5555")
 ```
@@ -285,10 +289,10 @@ Above, 'n' is not specified, in which case its value is inferred from the length
 On the remote resource, `server()` may be called from an R session, or directly from a shell using Rscript. Each server instance should dial into one of the unique URLs that the dispatcher is listening to:
 
 ```
-Rscript -e 'mirai::server("ws://192.168.0.2:5555/1")'
-Rscript -e 'mirai::server("ws://192.168.0.2:5555/2")'
-Rscript -e 'mirai::server("ws://192.168.0.2:5555/3")'
-Rscript -e 'mirai::server("ws://192.168.0.2:5555/4")'
+Rscript -e 'mirai::server("ws://10.111.5.13:5555/1")'
+Rscript -e 'mirai::server("ws://10.111.5.13:5555/2")'
+Rscript -e 'mirai::server("ws://10.111.5.13:5555/3")'
+Rscript -e 'mirai::server("ws://10.111.5.13:5555/4")'
 
 ```
 ```{r remotes2, include=FALSE}
@@ -327,10 +331,10 @@ This also sends an exit signal to the dispatcher and all connected servers so th
 
 #### Connecting to Remote Servers Directly
 
-By specifying `dispatcher = FALSE`, remote servers can connect directly to the client.
+By specifying `dispatcher = FALSE`, remote servers connect directly to the client. The client listens at the below address, and distributes tasks to all connected server processes.
 
 ```{r remote, eval=FALSE}
-daemons(url = "tcp://192.168.0.2:5555", dispatcher = FALSE)
+daemons(url = "tcp://10.111.5.13:0", dispatcher = FALSE)
 ```
 
 ```{r remotes3, include=FALSE}
@@ -340,24 +344,24 @@ Sys.sleep(0.5)
 Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:
 
 ```{r remotealt}
-daemons(url = "tcp://:5555", dispatcher = FALSE)
+daemons(url = "tcp://:0", dispatcher = FALSE)
 ```
 
-Here, `dispatcher = FALSE` is specified so that servers connect directly to the client. The network topology is such that the client listens at the above address, and distributes tasks to all connected server processes.
+Note that above, the port number is specified as zero. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided as the return value of the call, or it may be queried at any time by requesting the status using `daemons()`.
 
 --
 
 On the server, `server()` may be called from an R session, or an Rscript invocation from a shell. This sets up a remote daemon process that connects to the client URL and receives tasks:
 
 ```
-Rscript -e 'mirai::server("tcp://192.168.0.2:5555")'
+Rscript -e 'mirai::server("tcp://10.111.5.13:0")'
 ```
 
 --
 
 On the client, requesting the status will return the client URL for `daemons`. The number of daemons connecting to this URL is not limited and network resources may be added and removed at any time, with tasks automatically distributed to all server processes.
 
-`connections` will show the actual number of connected server instances (2 in the example below).
+`$connections` will show the actual number of connected server instances.
 
 ```{r remotes, include=FALSE}
 Sys.sleep(1)

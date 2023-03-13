@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.724 2.315 3.127 -0.139 10.14 ...
+#>  num [1:100000000] 0.875 -0.454 1.126 -1.1 4.368 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.724 2.315 3.127 -0.139 10.14 ...
+#>  num [1:100000000] 0.875 -0.454 1.126 -1.1 4.368 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -177,9 +177,11 @@ to ensure continued uptime.
 
 As part of a data science or machine learning pipeline, iterations of
 model training may periodically fail for stochastic and uncontrollable
-reasons (e.g. buggy memory management on graphics cards). Running each
-iteration in a ‘mirai’ process isolates this potentially-problematic
-code such that if it does fail, it does not crash the entire pipeline.
+reasons (e.g. buggy memory management on graphics cards).
+
+Running each iteration in a ‘mirai’ process isolates this
+potentially-problematic code such that if it does fail, it does not
+bring down the entire pipeline.
 
 ``` r
 library(mirai)
@@ -202,6 +204,7 @@ for (i in 1:10) {
   
 }
 #> iteration 1 successful 
+#> Error: random error 
 #> iteration 2 successful 
 #> iteration 3 successful 
 #> iteration 4 successful 
@@ -209,7 +212,6 @@ for (i in 1:10) {
 #> iteration 6 successful 
 #> iteration 7 successful 
 #> iteration 8 successful 
-#> Error: random error 
 #> iteration 9 successful 
 #> iteration 10 successful
 ```
@@ -253,30 +255,31 @@ daemons()
 #> 
 #> $daemons
 #>                        status_online status_busy tasks_assigned tasks_complete
-#> abstract://n3582508833             1           0              0              0
-#> abstract://n3653525063             1           0              0              0
-#> abstract://n2270890670             1           0              0              0
-#> abstract://n544363157              1           0              0              0
-#> abstract://n2675417043             1           0              0              0
-#> abstract://n4136595219             1           0              0              0
+#> abstract://n4033539056             1           0              0              0
+#> abstract://n708022954              1           0              0              0
+#> abstract://n2400804719             1           0              0              0
+#> abstract://n1869449702             1           0              0              0
+#> abstract://n2419389939             1           0              0              0
+#> abstract://n2186199539             1           0              0              0
 #>                        instance #
-#> abstract://n3582508833          1
-#> abstract://n3653525063          1
-#> abstract://n2270890670          1
-#> abstract://n544363157           1
-#> abstract://n2675417043          1
-#> abstract://n4136595219          1
+#> abstract://n4033539056          1
+#> abstract://n708022954           1
+#> abstract://n2400804719          1
+#> abstract://n1869449702          1
+#> abstract://n2419389939          1
+#> abstract://n2186199539          1
 ```
 
 The default `dispatcher = TRUE` launches a `dispatcher()` background
 process that connects to individual background `server()` processes on
 the local machine. This ensures that tasks are dispatched efficiently on
-a FIFO basis to servers for processing. Tasks are queued at the
-dispatcher and only sent to servers that can begin immediate execution
-of the task.
+a first-in first-out (FIFO) basis to servers for processing. Tasks are
+queued at the dispatcher and sent to a server as soon as it can accept
+the task for immediate execution.
 
 A dispatcher running local daemons is self-repairing if one of the
-daemons crashes or is terminated.
+daemons crashes or is terminated - a replacement daemon is launched upon
+the next task.
 
 ``` r
 daemons(0)
@@ -307,11 +310,11 @@ daemons()
 #> [1] 6
 ```
 
-This implementation ensures that tasks are evenly-distributed amongst
-daemons, however requires tasks to be sent to daemons immediately. This
-means that optimal scheduling is not guaranteed as the duration of tasks
-cannot be known *a priori*. As an example, tasks could be queued at a
-server behind a long-running task, whilst other servers remain idle.
+This implementation sends tasks immediately, and ensures that tasks are
+evenly-distributed amongst daemons. This means that optimal scheduling
+is not guaranteed as the duration of tasks cannot be known *a priori*.
+As an example, tasks could be queued at a daemon behind a long-running
+task, whilst other daemons remain idle.
 
 The advantage of this approach is that it is low-level and does not
 require an additional dispatcher process. It is well-suited to working
@@ -336,9 +339,11 @@ Call `daemons()` specifying ‘url’ as a character string the client
 network address and a port that is able to accept incoming connections.
 
 The examples below use an illustrative local network IP address of
-‘192.168.0.2’. A port on the client also needs to be open and available
-for inbound connections from the local network, illustratively ‘5555’ in
-the examples below.
+‘10.111.5.13’.
+
+A port on the client also needs to be open and available for inbound
+connections from the local network, illustratively ‘5555’ in the
+examples below.
 
 #### Connecting to Remote Servers Through Dispatcher
 
@@ -353,7 +358,7 @@ server. In this way a dispatcher can connect to an arbitrary number of
 servers over a single port.
 
 ``` r
-# daemons(n = 4, url = "ws://192.168.0.2:5555")
+# daemons(n = 4, url = "ws://10.111.5.13:5555")
 
 daemons(n = 4, url = "ws://:5555")
 #> [1] 4
@@ -380,10 +385,10 @@ On the remote resource, `server()` may be called from an R session, or
 directly from a shell using Rscript. Each server instance should dial
 into one of the unique URLs that the dispatcher is listening to:
 
-    Rscript -e 'mirai::server("ws://192.168.0.2:5555/1")'
-    Rscript -e 'mirai::server("ws://192.168.0.2:5555/2")'
-    Rscript -e 'mirai::server("ws://192.168.0.2:5555/3")'
-    Rscript -e 'mirai::server("ws://192.168.0.2:5555/4")'
+    Rscript -e 'mirai::server("ws://10.111.5.13:5555/1")'
+    Rscript -e 'mirai::server("ws://10.111.5.13:5555/2")'
+    Rscript -e 'mirai::server("ws://10.111.5.13:5555/3")'
+    Rscript -e 'mirai::server("ws://10.111.5.13:5555/4")'
 
 –
 
@@ -441,25 +446,27 @@ servers so that they exit automatically.
 
 #### Connecting to Remote Servers Directly
 
-By specifying `dispatcher = FALSE`, remote servers can connect directly
-to the client.
+By specifying `dispatcher = FALSE`, remote servers connect directly to
+the client. The client listens at the below address, and distributes
+tasks to all connected server processes.
 
 ``` r
-daemons(url = "tcp://192.168.0.2:5555", dispatcher = FALSE)
+daemons(url = "tcp://10.111.5.13:0", dispatcher = FALSE)
 ```
 
 Alternatively, simply supply a colon followed by the port number to
 listen on all interfaces on the local host, for example:
 
 ``` r
-daemons(url = "tcp://:5555", dispatcher = FALSE)
-#> [1] "tcp://:5555"
+daemons(url = "tcp://:0", dispatcher = FALSE)
+#> [1] "tcp://:37137"
 ```
 
-Here, `dispatcher = FALSE` is specified so that servers connect directly
-to the client. The network topology is such that the client listens at
-the above address, and distributes tasks to all connected server
-processes.
+Note that above, the port number is specified as zero. This is a
+wildcard value that will automatically cause a free ephemeral port to be
+assigned. The actual assigned port is provided as the return value of
+the call, or it may be queried at any time by requesting the status
+using `daemons()`.
 
 –
 
@@ -467,7 +474,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://192.168.0.2:5555")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:37137")'
 
 –
 
@@ -476,16 +483,16 @@ On the client, requesting the status will return the client URL for
 and network resources may be added and removed at any time, with tasks
 automatically distributed to all server processes.
 
-`connections` will show the actual number of connected server instances
-(2 in the example below).
+`$connections` will show the actual number of connected server
+instances.
 
 ``` r
 daemons()
 #> $connections
-#> [1] 2
+#> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:5555"
+#> [1] "tcp://:37137"
 ```
 
 To reset all connections and revert to default behaviour:
