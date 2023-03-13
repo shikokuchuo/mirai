@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -4.473 -0.366 -2.733 1.655 0.708 ...
+#>  num [1:100000000] -0.3313 1.6611 0.7669 -0.0476 3.3869 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -4.473 -0.366 -2.733 1.655 0.708 ...
+#>  num [1:100000000] -0.3313 1.6611 0.7669 -0.0476 3.3869 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -160,7 +160,6 @@ while (unresolved(m)) {
 }
 #> while unresolved
 #> while unresolved
-#> while unresolved
 
 cat("Write complete:", is.null(m$data))
 #> Write complete: TRUE
@@ -187,7 +186,7 @@ library(mirai)
 
 run_iteration <- function(i) {
   
-  if (runif(1) < 0.12) stop("random error", call. = FALSE) # simulates a stochastic error rate
+  if (runif(1) < 0.15) stop("random error", call. = FALSE) # simulates a stochastic error rate
   sprintf("iteration %d successful", i)
   
 }
@@ -202,15 +201,13 @@ for (i in 1:10) {
   cat(m$data, "\n")
   
 }
-#> Error: random error 
 #> iteration 1 successful 
-#> Error: random error 
 #> iteration 2 successful 
-#> Error: random error 
 #> iteration 3 successful 
 #> iteration 4 successful 
 #> iteration 5 successful 
 #> iteration 6 successful 
+#> Error: random error 
 #> iteration 7 successful 
 #> iteration 8 successful 
 #> iteration 9 successful 
@@ -230,8 +227,8 @@ downtime by eliminating interruptions of long computes.
 
 ### Daemons: Local Persistent Processes
 
-Daemons or persistent background processes may be set to receive ‘mirai’
-requests.
+Daemons, or persistent background processes, may be set to receive
+‘mirai’ requests.
 
 This is potentially more efficient as new processes no longer need to be
 created on an *ad hoc* basis.
@@ -256,19 +253,19 @@ daemons()
 #> 
 #> $daemons
 #>                        status_online status_busy tasks_assigned tasks_complete
-#> abstract://n2908363293             1           0              0              0
-#> abstract://n111672579              1           0              0              0
-#> abstract://n3740075339             1           0              0              0
-#> abstract://n3762287376             1           0              0              0
-#> abstract://n3216378331             1           0              0              0
-#> abstract://n3524864455             1           0              0              0
+#> abstract://n3167963634             1           0              0              0
+#> abstract://n3016422522             1           0              0              0
+#> abstract://n2909713717             1           0              0              0
+#> abstract://n987066846              1           0              0              0
+#> abstract://n1395514703             1           0              0              0
+#> abstract://n3999618829             1           0              0              0
 #>                        instance #
-#> abstract://n2908363293          1
-#> abstract://n111672579           1
-#> abstract://n3740075339          1
-#> abstract://n3762287376          1
-#> abstract://n3216378331          1
-#> abstract://n3524864455          1
+#> abstract://n3167963634          1
+#> abstract://n3016422522          1
+#> abstract://n2909713717          1
+#> abstract://n987066846           1
+#> abstract://n1395514703          1
+#> abstract://n3999618829          1
 ```
 
 The default `dispatcher = TRUE` launches a `dispatcher()` background
@@ -291,46 +288,35 @@ of creating a new background process for each ‘mirai’ request.
 
 #### Without Dispatcher
 
-Alternatively, specifying `dispatcher = FALSE` invokes immediate
-dispatch.
+Alternatively, specifying `dispatcher = FALSE`, the background daemon
+processes connect directly to the client.
 
 ``` r
 daemons(6, dispatcher = FALSE)
 #> [1] 6
 ```
 
-Requesting the status now shows 6 connections and 6 daemons. The
-background processes connect directly into the client and the number of
-daemons and connections are the same.
+Requesting the status now shows 6 connections and 6 daemons.
 
 ``` r
 daemons()
 #> $connections
-#> [1] 1
+#> [1] 6
 #> 
 #> $daemons
-#>                        status_online status_busy tasks_assigned tasks_complete
-#> abstract://n3126338822             1           0              0              0
-#> abstract://n2874793113             1           0              0              0
-#> abstract://n400349758              1           0              0              0
-#> abstract://n897675969              1           0              0              0
-#> abstract://n2719088583             1           0              0              0
-#> abstract://n820292453              1           0              0              0
-#>                        instance #
-#> abstract://n3126338822          1
-#> abstract://n2874793113          1
-#> abstract://n400349758           1
-#> abstract://n897675969           1
-#> abstract://n2719088583          1
-#> abstract://n820292453           1
+#> [1] 6
 ```
 
-This low-level implementation only ensures that tasks are
-evenly-distributed amongst daemons. Optimal scheduling is not guaranteed
-as the duration of tasks is not known *a priori*. Nevertheless, this
-provides a robust and resource-light solution, particularly suited to
-working with similar-length tasks or where the number of concurrent
-tasks typically does not exceed available daemons.
+This implementation ensures that tasks are evenly-distributed amongst
+daemons, however requires tasks to be sent to daemons immediately. This
+means that optimal scheduling is not guaranteed as the duration of tasks
+cannot be known *a priori*. As an example, tasks could be queued at a
+server behind a long-running task, whilst other servers remain idle.
+
+The advantage of this approach is that it is low-level and does not
+require an additional dispatcher process. It is well-suited to working
+with similar-length tasks, or where the number of concurrent tasks
+typically does not exceed available daemons.
 
 ``` r
 daemons(0)
@@ -346,14 +332,117 @@ Set the number of daemons to zero to reset.
 The daemons interface may also be used to send tasks for computation to
 server processes on the network.
 
-#### Connecting to Remote Servers
+Call `daemons()` specifying ‘url’ as a character string the client
+network address and a port that is able to accept incoming connections.
 
-Call `daemons()` specifying as a character string the client network
-address and a port that is able to accept incoming connections.
+The examples below use an illustrative local network IP address of
+‘192.168.0.2’. A port on the client also needs to be open and available
+for inbound connections from the local network, illustratively ‘5555’ in
+the examples below.
 
-Assuming that the local network IP address of the current machine is
-‘192.168.0.2’, and port ‘5555’ has been made available for inbound
-connections from the local network:
+#### Connecting to Remote Servers Through Dispatcher
+
+The default `dispatcher = TRUE` creates a background `dispatcher()`
+process on the local client machine, which listens to a vector of URLs
+that remote servers dial in to, with each server having its unique URL.
+
+It is recommended to use a websocket URL starting `ws://` instead of TCP
+in this scenario (used interchangeably with `tcp://`). A websocket URL
+supports a path after the port number, which can be made unique for each
+server. In this way a dispatcher can connect to an arbitrary number of
+servers over a single port.
+
+``` r
+# daemons(n = 4, url = "ws://192.168.0.2:5555")
+
+daemons(n = 4, url = "ws://:5555")
+#> [1] 4
+```
+
+Above, a single URL was supplied, along with `n = 4` to specify that the
+dispatcher should listen at 4 URLs. In such a case, an integer sequence
+is automatically appended to the path `/1` through `/4` to produce these
+URLs.
+
+Alternatively, supplying a vector of URLs allows the use of arbitrary
+port numbers / paths, e.g.:
+
+``` r
+# daemons(url = c("ws://:5555/cpu", "ws://:5555/gpu", "ws://:12560", "ws://:12560/2"))
+```
+
+Above, ‘n’ is not specified, in which case its value is inferred from
+the length of the ‘url’ vector supplied.
+
+–
+
+On the remote resource, `server()` may be called from an R session, or
+directly from a shell using Rscript. Each server instance should dial
+into one of the unique URLs that the dispatcher is listening to:
+
+    Rscript -e 'mirai::server("ws://192.168.0.2:5555/1")'
+    Rscript -e 'mirai::server("ws://192.168.0.2:5555/2")'
+    Rscript -e 'mirai::server("ws://192.168.0.2:5555/3")'
+    Rscript -e 'mirai::server("ws://192.168.0.2:5555/4")'
+
+–
+
+Requesting status, on the client:
+
+``` r
+daemons()
+#> $connections
+#> [1] 1
+#> 
+#> $daemons
+#>              status_online status_busy tasks_assigned tasks_complete instance #
+#> ws://:5555/1             1           0              0              0          1
+#> ws://:5555/2             1           0              0              0          1
+#> ws://:5555/3             1           0              0              0          1
+#> ws://:5555/4             1           0              0              0          1
+```
+
+As per the local case, `$connections` will show the single connection to
+the dispatcher process, however `$daemons` will provide the matrix of
+statistics for the remote servers.
+
+`status_online` shows as 1 when there is an active connection, or else 0
+if a server has yet to connect or has disconnected.
+
+`status_busy` will be 1 if the server is currently processing a task, or
+else 0.
+
+`tasks_assinged` shows the cumulative number of tasks assigned to the
+server instance by the dispatcher.
+
+`tasks_complete` shows the cumulative number of tasks completed by the
+server instance.
+
+`instance #` will increment by 1 every time there is a new connection at
+a URL. When this happens, the `tasks_assigned` and `tasks_complete`
+statistics will also reset. This is designed to track new server
+instances connecting after previous ones have ended (due to time-outs
+etc.).
+
+The dispatcher will automatically adjust to the number of servers
+actually connected. Hence it is possible to dynamically scale up or down
+the number of servers according to requirements (limited to the ‘n’ URLs
+assigned to the dispatcher).
+
+To reset all connections and revert to default behaviour:
+
+``` r
+daemons(0)
+#> [1] 0
+```
+
+This also sends an exit signal to the dispatcher and all connected
+servers so that they exit automatically.
+
+#### Connecting to Remote Servers Directly
+
+By specifying `dispatcher = FALSE`, remote servers can connect directly
+to the client.
 
 ``` r
 daemons(url = "tcp://192.168.0.2:5555", dispatcher = FALSE)
@@ -364,7 +453,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:5555", dispatcher = FALSE)
-#> [1] 1
+#> [1] "tcp://:5555"
 ```
 
 Here, `dispatcher = FALSE` is specified so that servers connect directly
@@ -393,11 +482,10 @@ automatically distributed to all server processes.
 ``` r
 daemons()
 #> $connections
-#> [1] 1
+#> [1] 2
 #> 
 #> $daemons
-#>             status_online status_busy tasks_assigned tasks_complete instance #
-#> tcp://:5555             2           0              0              0          2
+#> [1] "tcp://:5555"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -409,88 +497,6 @@ daemons(0)
 
 This also sends an exit signal to connected server instances so that
 they exit automatically.
-
-#### Connecting to Remote Servers Through a Local Dispatcher
-
-Assuming that the local network address of the current machine is
-‘192.168.0.2’, and 4 nodes are to be allocated on remote servers.
-
-The below automatically launches a dispatcher as a background process on
-the local client machine.
-
-It is recommended to use a websocket URL starting `ws://` instead of TCP
-in this scenario (the two can be used interchangeably). This is as a
-websocket URL supports a path after the port number, which can be made
-unique for each server to dial into. In this way a dispatcher can
-connect to an arbitrary number of servers over a single port.
-
-``` r
-# daemons(n = 4, url = "ws://192.168.0.2:5555")
-
-daemons(n = 4, url = "ws://:5555")
-#> [1] 4
-```
-
-Above, a single URL was supplied, in which case a sequence is
-automatically appended to the path `/1` through `/4` as `n = 4` was
-specified.
-
-Alternatively, supplying a vector of URLs allows the use of arbitrary
-port numbers / paths, e.g.:
-
-``` r
-# daemons(url = c("ws://:5555/cpu", "ws://:5555/gpu", "ws://:12560", "ws://:12560/2"))
-```
-
-Above, the value for ‘n’ is implied by the length of ‘url’ vector
-without needing to strictly specify ‘n’.
-
-–
-
-On the remote resource, `server()` may be called from an R session, or
-an Rscript invocation from a shell. Each server instance should dial
-into one of the unique URLs that the dispatcher is listening to:
-
-    Rscript -e 'mirai::server("ws://192.168.0.2:5555/1")'
-    Rscript -e 'mirai::server("ws://192.168.0.2:5555/2")'
-    Rscript -e 'mirai::server("ws://192.168.0.2:5555/3")'
-    Rscript -e 'mirai::server("ws://192.168.0.2:5555/4")'
-
-–
-
-Requesting status, on the client:
-
-``` r
-daemons()
-#> $connections
-#> [1] 1
-#> 
-#> $daemons
-#>              status_online status_busy tasks_assigned tasks_complete instance #
-#> ws://:5555/1             1           0              0              0          1
-#> ws://:5555/2             1           0              0              0          1
-#> ws://:5555/3             1           0              0              0          1
-#> ws://:5555/4             1           0              0              0          1
-```
-
-When using a dispatcher, there is only a single connection to the local
-background dispatcher process, which connects in turn to the servers
-running on remote resources.
-
-The dispatcher will automatically adjust to the number of servers
-actually connected. Hence it is possible to dynamically scale up or down
-the number of servers according to requirements (limited to the number
-initially specified).
-
-To reset all connections and revert to default behaviour:
-
-``` r
-daemons(0)
-#> [1] 0
-```
-
-This also sends an exit signal to all connected daemons and nodes so
-that they exit automatically.
 
 [« Back to ToC](#table-of-contents)
 
@@ -600,7 +606,7 @@ b
 b$data
 #> < unresolvedExpr >
 #>  - $data to query resolution
-nanonext::msleep(700)
+nanonext::msleep(800)
 b$data
 #> [1] "1" "2" "3"
 b
