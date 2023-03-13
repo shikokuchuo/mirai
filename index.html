@@ -150,11 +150,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.3313 1.6611 0.7669 -0.0476 3.3869 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.724 2.315 3.127 -0.139 10.14 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.3313 1.6611 0.7669 -0.0476 3.3869 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.724 2.315 3.127 -0.139 10.14 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -220,9 +220,9 @@
 <span><span class="co">#&gt; iteration 4 successful </span></span>
 <span><span class="co">#&gt; iteration 5 successful </span></span>
 <span><span class="co">#&gt; iteration 6 successful </span></span>
-<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 7 successful </span></span>
 <span><span class="co">#&gt; iteration 8 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 9 successful </span></span>
 <span><span class="co">#&gt; iteration 10 successful</span></span></code></pre></div>
 <p>Further, by testing the return value of each ‘mirai’ for errors, error-handling code is then able to automate recovery and re-attempts, as in the above example. Further details on <a href="#errors-interrupts-and-timeouts">error handling</a> can be found in the section below.</p>
@@ -249,19 +249,19 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt;                        status_online status_busy tasks_assigned tasks_complete</span></span>
-<span><span class="co">#&gt; abstract://n3167963634             1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n3016422522             1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n2909713717             1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n987066846              1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n1395514703             1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n3999618829             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n3582508833             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n3653525063             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n2270890670             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n544363157              1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n2675417043             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n4136595219             1           0              0              0</span></span>
 <span><span class="co">#&gt;                        instance #</span></span>
-<span><span class="co">#&gt; abstract://n3167963634          1</span></span>
-<span><span class="co">#&gt; abstract://n3016422522          1</span></span>
-<span><span class="co">#&gt; abstract://n2909713717          1</span></span>
-<span><span class="co">#&gt; abstract://n987066846           1</span></span>
-<span><span class="co">#&gt; abstract://n1395514703          1</span></span>
-<span><span class="co">#&gt; abstract://n3999618829          1</span></span></code></pre></div>
+<span><span class="co">#&gt; abstract://n3582508833          1</span></span>
+<span><span class="co">#&gt; abstract://n3653525063          1</span></span>
+<span><span class="co">#&gt; abstract://n2270890670          1</span></span>
+<span><span class="co">#&gt; abstract://n544363157           1</span></span>
+<span><span class="co">#&gt; abstract://n2675417043          1</span></span>
+<span><span class="co">#&gt; abstract://n4136595219          1</span></span></code></pre></div>
 <p>The default <code>dispatcher = TRUE</code> launches a <code><a href="reference/dispatcher.html">dispatcher()</a></code> background process that connects to individual background <code><a href="reference/server.html">server()</a></code> processes on the local machine. This ensures that tasks are dispatched efficiently on a FIFO basis to servers for processing. Tasks are queued at the dispatcher and only sent to servers that can begin immediate execution of the task.</p>
 <p>A dispatcher running local daemons is self-repairing if one of the daemons crashes or is terminated.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
@@ -339,7 +339,7 @@
 <p><code>tasks_assinged</code> shows the cumulative number of tasks assigned to the server instance by the dispatcher.</p>
 <p><code>tasks_complete</code> shows the cumulative number of tasks completed by the server instance.</p>
 <p><code>instance #</code> will increment by 1 every time there is a new connection at a URL. When this happens, the <code>tasks_assigned</code> and <code>tasks_complete</code> statistics will also reset. This is designed to track new server instances connecting after previous ones have ended (due to time-outs etc.).</p>
-<p>The dispatcher will automatically adjust to the number of servers actually connected. Hence it is possible to dynamically scale up or down the number of servers according to requirements (limited to the ‘n’ URLs assigned to the dispatcher).</p>
+<p>The dispatcher will automatically adjust to the number of servers actually connected. Hence it is possible to dynamically scale up or down the number of servers according to requirements (limited to the ‘n’ URLs assigned at the dispatcher).</p>
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
