@@ -24,7 +24,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9041</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9042</span>
       </span>
     </div>
 
@@ -73,7 +73,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">daemons</span><span class="op">(</span><span class="va">n</span>, url <span class="op">=</span> <span class="cn">NULL</span>, active <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span>, .compute <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">daemons</span><span class="op">(</span><span class="va">n</span>, url <span class="op">=</span> <span class="cn">NULL</span>, dispatcher <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span>, .compute <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -88,10 +88,11 @@ port accepting incoming connections and (optionally) a path for websocket
 URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.</p></dd>
 
 
-<dt>active</dt>
-<dd><p>[default TRUE] logical value whether to use active dispatch,
-which uses a background dispatcher process, or else immediate dispatch
-(futher details below).</p></dd>
+<dt>dispatcher</dt>
+<dd><p>[default TRUE] logical value whether to use a background
+dispatcher process. A dispatcher connects to servers on behalf of the
+client and queues tasks until a server is able to begin immediate
+execution of that task, ensuring FIFO scheduling (futher details below).</p></dd>
 
 
 <dt>...</dt>
@@ -116,11 +117,11 @@ connecting to different resources).</p></dd>
 <p>Viewing current status: a named list comprising:</p><ul><li><p><code>connections</code> - number of active connections at the client.
     Will always be 1L when using active dispatch as there is only one
     connection to the dispatcher, which then connects to the servers in turn.</p></li>
-<li><p><code>daemons</code> - if using active dispatch: a matrix of statistics
+<li><p><code>daemons</code> - if using dispatcher: a matrix of statistics
     for each server: URL, online and busy status, cumulative tasks assigned
     and completed (reset if a server re-connects), and instance # (increments
-    by 1 every time a server connects to the URL). If not using active
-    dispatch: the number of daemons set, or else the client URL.</p></li>
+    by 1 every time a server connects to the URL). If not using dispatcher:
+    the number of daemons set, or else the client URL.</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
@@ -136,6 +137,24 @@ connecting to different resources).</p></dd>
 <p>When specifying a client URL, all daemons dialing into the client are
     detected automatically and resources may be added or removed at any time.</p>
     </div>
+    <div id="dispatcher">
+    <h2>Dispatcher</h2>
+    
+
+
+<p>By default <code>dispatcher = TRUE</code>. This launches a background process
+    running <code><a href="dispatcher.html">dispatcher</a></code>.  A dispatcher connects to servers on
+    behalf of the client and queues tasks until a server is able to begin
+    immediate execution of that task, ensuring FIFO scheduling.</p>
+<p>By specifying <code>active = FALSE</code>, servers connect to the client
+    directly rather than through a dispatcher. The client sends tasks to
+    connected servers immediately in an evenly-distributed fashion. However,
+    optimal scheduling is not guaranteed as the duration of tasks cannot be
+    known <em>a priori</em>, such that tasks can be queued at a server behind
+    a long-running task while other servers remain idle. Nevertheless, this
+    provides a resource-light approach suited to working with similar-length
+    tasks, or where concurrent tasks typically do not exceed available daemons.</p>
+    </div>
     <div id="local-daemons">
     <h2>Local Daemons</h2>
     
@@ -143,22 +162,14 @@ connecting to different resources).</p></dd>
 
 <p>Daemons provide a potentially more efficient solution for asynchronous
     operations as new processes no longer need to be created on an <em>ad
-    hoc</em> basis. Supply the argument 'n' to set the number of daemons.</p>
-<p><strong>Active Dispatch</strong></p>
-<p>By default, active dispatch is used. This runs an additional
-    <code><a href="dispatcher.html">dispatcher</a></code> background process that connects to individual
-    background <code><a href="server.html">server</a></code> processes on the local machine. A
-    dispatcher ensures that tasks are dispatched efficiently on a FIFO basis
-    to servers for processing. Tasks are queued at the dispatcher and only
-    sent to servers that can begin immediate execution of the task.</p>
-<p><strong>Immediate Dispatch</strong></p>
-<p>Alternatively, specifying <code>active = FALSE</code> connects to servers
-    directly without a dispatcher. The client sends tasks immediately, and
-    can thus only ensure that they are evenly-distributed amongst daemons.
-    Optimal scheduling is not guaranteed as the duration of tasks is not
-    known <em>a priori</em>. Nevertheless, this provides a low-level,
-    resource-light approach, suited to working with similar-length tasks or
-    where concurrent tasks typically do not exceed available daemons.</p>
+    hoc</em> basis.</p>
+<p>Supply the argument 'n' to set the number of daemons. New background
+    <code><a href="server.html">server</a></code> processes are automatically created on the local
+    machine connecting back to the client process, either directly or via a
+    dispatcher.</p>
+<p>Running local daemons with a dispatcher is self-repairing: in the case
+    that daemons crash or are terminated, replacement daemons are launched
+    upon the next task.</p>
     </div>
     <div id="distributed-computing">
     <h2>Distributed Computing</h2>
@@ -174,13 +185,11 @@ connecting to different resources).</p></dd>
 <p>Specifying the wildcard value zero for the port number e.g. 'tcp://:0' or
     'ws://:0' will automatically assign a free ephemeral port. Use
     <code>daemons()</code> to query the actual assigned port at any time.</p>
-<p><strong>Active Dispatch</strong></p>
-<p>With <code>active = TRUE</code>, a local <code><a href="dispatcher.html">dispatcher</a></code> background
-    process is launched, which in turn listens to remote server processes.</p>
-<p>It is recommended in this case to use a websocket URL rather than TCP,
-    as this requires only one port to connect to all servers: a websocket URL
-    supports a path after the port number, which can be made unique for each
-    server.</p>
+<p><strong>With Dispatcher</strong></p>
+<p>When using a dispatcher, it is recommended to use a websocket URL rather
+    than TCP, as this requires only one port to connect to all servers: a
+    websocket URL supports a path after the port number, which can be made
+    unique for each server.</p>
 <p>Specifying a single client URL such as 'ws://192.168.0.2:5555' with
     <code>n = 6</code> will automatically append a sequence to the path, listening
     to the URLs 'ws://192.168.0.2:5555/1' through 'ws://192.168.0.2:5555/6'.</p>
@@ -189,21 +198,23 @@ connecting to different resources).</p></dd>
     be inferred by the length of vector supplied.</p>
 <p>Individual <code><a href="server.html">server</a></code> instances should then be started on the
     remote resource, which dial in to each of these client URLs.</p>
-<p>Server nodes may be scaled up or down dynamically, subject to the maximum
-    number initially specified, with the dispatcher adjusting automatically.</p>
+<p>Server instances may be scaled up or down dynamically, subject to the
+    maximum number initially specified, with the dispatcher adjusting
+    automatically.</p>
 <p>Alternatively, supplying a single TCP URL will listen on a block of URLs
     with ports starting from the supplied port number and incrementing by one
     for 'n' specified e.g. the client URL 'tcp://192.168.0.2:5555' with
     <code>n = 6</code> listens to the contiguous block of ports 5555 through 5560.</p>
-<p><strong>Immediate Dispatch</strong></p>
-<p>Either a TCP or websocket URL can be used in this case as the client
-    listens at only one address, utilising a single port.</p>
+<p><strong>Without Dispatcher</strong></p>
+<p>A TCP URL may be used in this case as the client listens at only one
+    address, utilising a single port.</p>
 <p>The network topology is such that server daemons (started with
     <code><a href="server.html">server</a></code>) or indeed dispatchers (started with
     <code><a href="dispatcher.html">dispatcher</a></code>) dial into the client, which listens at the
-    client URL. In this way, network resources may be added or removed at any
-    time. The client automatically distributes tasks to all connected servers
-    and dispatchers.</p>
+    client URL.</p>
+<p>'n' does not need to be supplied in this case, and is disregarded if it
+    is, as network resources may be added or removed at any time. The client
+    automatically distributes tasks to all connected servers and dispatchers.</p>
     </div>
     <div id="compute-profiles">
     <h2>Compute Profiles</h2>
@@ -253,22 +264,22 @@ connecting to different resources).</p></dd>
 <span class="r-in"><span><span class="co"># Reset to zero</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Create 2 local daemons (immediate dispatch)</span></span></span>
-<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">2</span>, active <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Create 2 local daemons (direct connection)</span></span></span>
+<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">2</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># View status</span></span></span>
+<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Reset to zero</span></span></span>
+<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># 2 remote servers via dispatcher (using zero wildcard)</span></span></span>
+<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">2</span>, url <span class="op">=</span> <span class="st">"ws://:0"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># View status</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Reset to zero</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Set client URL for remote servers to dial into (using zero wildcard)</span></span></span>
-<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://:0"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># View status</span></span></span>
-<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># Reset to zero</span></span></span>
-<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Launch local dispatcher for 2 remote servers to dial into (using zero wildcard)</span></span></span>
-<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">2</span>, url <span class="op">=</span> <span class="st">"ws://:0"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://:0"</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># View status</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Reset to zero</span></span></span>

@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9041</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9042</span>
       </span>
     </div>
 
@@ -150,11 +150,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 96.602 0.132 0.193 0.985 -2.964 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -4.473 -0.366 -2.733 1.655 0.708 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 96.602 0.132 0.193 0.985 -2.964 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -4.473 -0.366 -2.733 1.655 0.708 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -181,6 +181,7 @@
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"while unresolved\n"</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
+<span><span class="co">#&gt; while unresolved</span></span>
 <span><span class="co">#&gt; while unresolved</span></span>
 <span><span class="co">#&gt; while unresolved</span></span>
 <span></span>
@@ -214,12 +215,14 @@
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">data</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span>  </span>
 <span><span class="op">}</span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 1 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 2 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 3 successful </span></span>
 <span><span class="co">#&gt; iteration 4 successful </span></span>
 <span><span class="co">#&gt; iteration 5 successful </span></span>
-<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 6 successful </span></span>
 <span><span class="co">#&gt; iteration 7 successful </span></span>
 <span><span class="co">#&gt; iteration 8 successful </span></span>
@@ -235,7 +238,7 @@
 <p>Daemons or persistent background processes may be set to receive ‘mirai’ requests.</p>
 <p>This is potentially more efficient as new processes no longer need to be created on an <em>ad hoc</em> basis.</p>
 <div class="section level4">
-<h4 id="active-dispatch-default">Active Dispatch (default)<a class="anchor" aria-label="anchor" href="#active-dispatch-default"></a>
+<h4 id="with-dispatcher-default">With Dispatcher (default)<a class="anchor" aria-label="anchor" href="#with-dispatcher-default"></a>
 </h4>
 <p>Call <code><a href="reference/daemons.html">daemons()</a></code> specifying the number of daemons to launch.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -249,20 +252,20 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt;                        status_online status_busy tasks_assigned tasks_complete</span></span>
-<span><span class="co">#&gt; abstract://n115126770              1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n2954332544             1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n2498279922             1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n3329160412             1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n1523821053             1           0              0              0</span></span>
-<span><span class="co">#&gt; abstract://n1309143979             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n2908363293             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n111672579              1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n3740075339             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n3762287376             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n3216378331             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n3524864455             1           0              0              0</span></span>
 <span><span class="co">#&gt;                        instance #</span></span>
-<span><span class="co">#&gt; abstract://n115126770           1</span></span>
-<span><span class="co">#&gt; abstract://n2954332544          1</span></span>
-<span><span class="co">#&gt; abstract://n2498279922          1</span></span>
-<span><span class="co">#&gt; abstract://n3329160412          1</span></span>
-<span><span class="co">#&gt; abstract://n1523821053          1</span></span>
-<span><span class="co">#&gt; abstract://n1309143979          1</span></span></code></pre></div>
-<p>Active dispatch runs an additional <code><a href="reference/dispatcher.html">dispatcher()</a></code> background process that connects to individual background <code><a href="reference/server.html">server()</a></code> processes on the local machine. This ensures that tasks are dispatched efficiently on a FIFO basis to servers for processing. Tasks are queued at the dispatcher and only sent to servers that can begin immediate execution of the task.</p>
+<span><span class="co">#&gt; abstract://n2908363293          1</span></span>
+<span><span class="co">#&gt; abstract://n111672579           1</span></span>
+<span><span class="co">#&gt; abstract://n3740075339          1</span></span>
+<span><span class="co">#&gt; abstract://n3762287376          1</span></span>
+<span><span class="co">#&gt; abstract://n3216378331          1</span></span>
+<span><span class="co">#&gt; abstract://n3524864455          1</span></span></code></pre></div>
+<p>The default <code>dispatcher = TRUE</code> launches a <code><a href="reference/dispatcher.html">dispatcher()</a></code> background process that connects to individual background <code><a href="reference/server.html">server()</a></code> processes on the local machine. This ensures that tasks are dispatched efficiently on a FIFO basis to servers for processing. Tasks are queued at the dispatcher and only sent to servers that can begin immediate execution of the task.</p>
 <p>A dispatcher running local daemons is self-repairing if one of the daemons crashes or is terminated.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
@@ -270,21 +273,33 @@
 <p>Set the number of daemons to zero to reset. This reverts to the default of creating a new background process for each ‘mirai’ request.</p>
 </div>
 <div class="section level4">
-<h4 id="immediate-dispatch">Immediate Dispatch<a class="anchor" aria-label="anchor" href="#immediate-dispatch"></a>
+<h4 id="without-dispatcher">Without Dispatcher<a class="anchor" aria-label="anchor" href="#without-dispatcher"></a>
 </h4>
-<p>Alternatively, specifying <code>active = FALSE</code> invokes immediate dispatch.</p>
+<p>Alternatively, specifying <code>dispatcher = FALSE</code> invokes immediate dispatch.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">6</span>, active <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">6</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 6</span></span></code></pre></div>
-<p>Requesting the status now shows one connection and one daemon with 6 nodes. The daemon process acts as an active queue or task scheduler and sits between the client and individual nodes, relaying messages back and forth.</p>
+<p>Requesting the status now shows 6 connections and 6 daemons. The background processes connect directly into the client and the number of daemons and connections are the same.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $connections</span></span>
-<span><span class="co">#&gt; [1] 6</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] 6</span></span></code></pre></div>
-<p>In this case, the background processes connect directly into the client and the number of daemons and connections are the same.</p>
+<span><span class="co">#&gt;                        status_online status_busy tasks_assigned tasks_complete</span></span>
+<span><span class="co">#&gt; abstract://n3126338822             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n2874793113             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n400349758              1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n897675969              1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n2719088583             1           0              0              0</span></span>
+<span><span class="co">#&gt; abstract://n820292453              1           0              0              0</span></span>
+<span><span class="co">#&gt;                        instance #</span></span>
+<span><span class="co">#&gt; abstract://n3126338822          1</span></span>
+<span><span class="co">#&gt; abstract://n2874793113          1</span></span>
+<span><span class="co">#&gt; abstract://n400349758           1</span></span>
+<span><span class="co">#&gt; abstract://n897675969           1</span></span>
+<span><span class="co">#&gt; abstract://n2719088583          1</span></span>
+<span><span class="co">#&gt; abstract://n820292453           1</span></span></code></pre></div>
 <p>This low-level implementation only ensures that tasks are evenly-distributed amongst daemons. Optimal scheduling is not guaranteed as the duration of tasks is not known <em>a priori</em>. Nevertheless, this provides a robust and resource-light solution, particularly suited to working with similar-length tasks or where the number of concurrent tasks typically does not exceed available daemons.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
@@ -303,12 +318,12 @@
 <p>Call <code><a href="reference/daemons.html">daemons()</a></code> specifying as a character string the client network address and a port that is able to accept incoming connections.</p>
 <p>Assuming that the local network IP address of the current machine is ‘192.168.0.2’, and port ‘5555’ has been made available for inbound connections from the local network:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://192.168.0.2:5555"</span>, active <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://192.168.0.2:5555"</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://:5555"</span>, active <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tcp://:5555"</span></span></code></pre></div>
-<p>Here, <code>active = FALSE</code> is specified so that servers connect directly to the client. The network topology is such that the client listens at the above address, and distributes tasks to all connected server processes.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://:5555"</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
+<p>Here, <code>dispatcher = FALSE</code> is specified so that servers connect directly to the client. The network topology is such that the client listens at the above address, and distributes tasks to all connected server processes.</p>
 <p>–</p>
 <p>On the server, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation from a shell. This sets up a remote daemon process that connects to the client URL and receives tasks:</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://192.168.0.2:5555")'</span></span></code></pre></div>
@@ -318,10 +333,11 @@
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $connections</span></span>
-<span><span class="co">#&gt; [1] 2</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "tcp://:5555"</span></span></code></pre></div>
+<span><span class="co">#&gt;             status_online status_busy tasks_assigned tasks_complete instance #</span></span>
+<span><span class="co">#&gt; tcp://:5555             2           0              0              0          2</span></span></code></pre></div>
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
@@ -363,7 +379,7 @@
 <span><span class="co">#&gt; ws://:5555/2             1           0              0              0          1</span></span>
 <span><span class="co">#&gt; ws://:5555/3             1           0              0              0          1</span></span>
 <span><span class="co">#&gt; ws://:5555/4             1           0              0              0          1</span></span></code></pre></div>
-<p>When using active dispatch, there is only a single connection to the local background dispatcher process, which connects in turn to the servers running on remote resources.</p>
+<p>When using a dispatcher, there is only a single connection to the local background dispatcher process, which connects in turn to the servers running on remote resources.</p>
 <p>The dispatcher will automatically adjust to the number of servers actually connected. Hence it is possible to dynamically scale up or down the number of servers according to requirements (limited to the number initially specified).</p>
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">

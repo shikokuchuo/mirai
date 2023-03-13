@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9041</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.2.9042</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.2.9041" id="mirai-0729041-development">mirai 0.7.2.9041 (development)<a class="anchor" aria-label="anchor" href="#mirai-0729041-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.7.2.9042" id="mirai-0729042-development">mirai 0.7.2.9042 (development)<a class="anchor" aria-label="anchor" href="#mirai-0729042-development"></a></h2>
 <ul><li>mirai 0.8.0 is a major feature release. Special thanks to <a href="https://github.com/wlandau" class="external-link">@wlandau</a> for suggestions, discussion and testing for many of the new capabilities.</li>
 <li>Compute profiles have been introduced through a new <code>.compute</code> argument in <code><a href="../reference/daemons.html">daemons()</a></code> and <code><a href="../reference/mirai.html">mirai()</a></code> for sending tasks with heterogeneous compute requirements.
 <ul><li>
@@ -63,7 +63,7 @@
 <code><a href="../reference/mirai.html">mirai()</a></code> tasks can be sent using a specific compute profile.</li>
 </ul></li>
 <li>
-<code><a href="../reference/daemons.html">daemons()</a></code> interface has a new <code>url</code> argument along with <code>active</code> for specifying active dispatch (optimal FIFO task scheduling) which is now the default.
+<code><a href="../reference/daemons.html">daemons()</a></code> interface has a new <code>url</code> argument along with <code>dispatcher</code> for using a background dispatcher process to ensure optimal FIFO task scheduling (now the default).
 <ul><li>Supplying a client URL with a zero port number <code>:0</code> will automatically assign a free ephemeral port, with the actual port number subsequently reported by <code><a href="../reference/daemons.html">daemons()</a></code>.</li>
 <li>Calling with no arguments now provides an improved view of the current number of connections / daemons (URL, online and busy status, tasks assigned and completed, instance), replacing the previous <code>daemons("view")</code> functionality.</li>
 </ul></li>
@@ -81,7 +81,7 @@
 <code>timerstart</code> for specifying a minimum number of task completions before starting timers.</li>
 </ul></li>
 <li>
-<code><a href="../reference/dispatcher.html">dispatcher()</a></code> is implemented as a self-contained function for the active dispatcher.</li>
+<code><a href="../reference/dispatcher.html">dispatcher()</a></code> is implemented as a self-contained function for the dispatcher.</li>
 <li>Invalid URLs provided to <code><a href="../reference/daemons.html">daemons()</a></code> and <code><a href="../reference/server.html">server()</a></code> now error and return immediately instead of potentially causing a hang.</li>
 <li>
 <code>eval_mirai()</code> is removed as an alias for <code><a href="../reference/mirai.html">mirai()</a></code>.</li>
