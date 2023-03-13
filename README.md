@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 96.602 0.132 0.193 0.985 -2.964 ...
+#>  num [1:100000000] -4.473 -0.366 -2.733 1.655 0.708 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 96.602 0.132 0.193 0.985 -2.964 ...
+#>  num [1:100000000] -4.473 -0.366 -2.733 1.655 0.708 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -160,6 +160,7 @@ while (unresolved(m)) {
 }
 #> while unresolved
 #> while unresolved
+#> while unresolved
 
 cat("Write complete:", is.null(m$data))
 #> Write complete: TRUE
@@ -201,12 +202,14 @@ for (i in 1:10) {
   cat(m$data, "\n")
   
 }
+#> Error: random error 
 #> iteration 1 successful 
+#> Error: random error 
 #> iteration 2 successful 
+#> Error: random error 
 #> iteration 3 successful 
 #> iteration 4 successful 
 #> iteration 5 successful 
-#> Error: random error 
 #> iteration 6 successful 
 #> iteration 7 successful 
 #> iteration 8 successful 
@@ -233,7 +236,7 @@ requests.
 This is potentially more efficient as new processes no longer need to be
 created on an *ad hoc* basis.
 
-#### Active Dispatch (default)
+#### With Dispatcher (default)
 
 Call `daemons()` specifying the number of daemons to launch.
 
@@ -253,26 +256,27 @@ daemons()
 #> 
 #> $daemons
 #>                        status_online status_busy tasks_assigned tasks_complete
-#> abstract://n115126770              1           0              0              0
-#> abstract://n2954332544             1           0              0              0
-#> abstract://n2498279922             1           0              0              0
-#> abstract://n3329160412             1           0              0              0
-#> abstract://n1523821053             1           0              0              0
-#> abstract://n1309143979             1           0              0              0
+#> abstract://n2908363293             1           0              0              0
+#> abstract://n111672579              1           0              0              0
+#> abstract://n3740075339             1           0              0              0
+#> abstract://n3762287376             1           0              0              0
+#> abstract://n3216378331             1           0              0              0
+#> abstract://n3524864455             1           0              0              0
 #>                        instance #
-#> abstract://n115126770           1
-#> abstract://n2954332544          1
-#> abstract://n2498279922          1
-#> abstract://n3329160412          1
-#> abstract://n1523821053          1
-#> abstract://n1309143979          1
+#> abstract://n2908363293          1
+#> abstract://n111672579           1
+#> abstract://n3740075339          1
+#> abstract://n3762287376          1
+#> abstract://n3216378331          1
+#> abstract://n3524864455          1
 ```
 
-Active dispatch runs an additional `dispatcher()` background process
-that connects to individual background `server()` processes on the local
-machine. This ensures that tasks are dispatched efficiently on a FIFO
-basis to servers for processing. Tasks are queued at the dispatcher and
-only sent to servers that can begin immediate execution of the task.
+The default `dispatcher = TRUE` launches a `dispatcher()` background
+process that connects to individual background `server()` processes on
+the local machine. This ensures that tasks are dispatched efficiently on
+a FIFO basis to servers for processing. Tasks are queued at the
+dispatcher and only sent to servers that can begin immediate execution
+of the task.
 
 A dispatcher running local daemons is self-repairing if one of the
 daemons crashes or is terminated.
@@ -285,31 +289,41 @@ daemons(0)
 Set the number of daemons to zero to reset. This reverts to the default
 of creating a new background process for each ‘mirai’ request.
 
-#### Immediate Dispatch
+#### Without Dispatcher
 
-Alternatively, specifying `active = FALSE` invokes immediate dispatch.
+Alternatively, specifying `dispatcher = FALSE` invokes immediate
+dispatch.
 
 ``` r
-daemons(6, active = FALSE)
+daemons(6, dispatcher = FALSE)
 #> [1] 6
 ```
 
-Requesting the status now shows one connection and one daemon with 6
-nodes. The daemon process acts as an active queue or task scheduler and
-sits between the client and individual nodes, relaying messages back and
-forth.
+Requesting the status now shows 6 connections and 6 daemons. The
+background processes connect directly into the client and the number of
+daemons and connections are the same.
 
 ``` r
 daemons()
 #> $connections
-#> [1] 6
+#> [1] 1
 #> 
 #> $daemons
-#> [1] 6
+#>                        status_online status_busy tasks_assigned tasks_complete
+#> abstract://n3126338822             1           0              0              0
+#> abstract://n2874793113             1           0              0              0
+#> abstract://n400349758              1           0              0              0
+#> abstract://n897675969              1           0              0              0
+#> abstract://n2719088583             1           0              0              0
+#> abstract://n820292453              1           0              0              0
+#>                        instance #
+#> abstract://n3126338822          1
+#> abstract://n2874793113          1
+#> abstract://n400349758           1
+#> abstract://n897675969           1
+#> abstract://n2719088583          1
+#> abstract://n820292453           1
 ```
-
-In this case, the background processes connect directly into the client
-and the number of daemons and connections are the same.
 
 This low-level implementation only ensures that tasks are
 evenly-distributed amongst daemons. Optimal scheduling is not guaranteed
@@ -342,20 +356,21 @@ Assuming that the local network IP address of the current machine is
 connections from the local network:
 
 ``` r
-daemons(url = "tcp://192.168.0.2:5555", active = FALSE)
+daemons(url = "tcp://192.168.0.2:5555", dispatcher = FALSE)
 ```
 
 Alternatively, simply supply a colon followed by the port number to
 listen on all interfaces on the local host, for example:
 
 ``` r
-daemons(url = "tcp://:5555", active = FALSE)
-#> [1] "tcp://:5555"
+daemons(url = "tcp://:5555", dispatcher = FALSE)
+#> [1] 1
 ```
 
-Here, `active = FALSE` is specified so that servers connect directly to
-the client. The network topology is such that the client listens at the
-above address, and distributes tasks to all connected server processes.
+Here, `dispatcher = FALSE` is specified so that servers connect directly
+to the client. The network topology is such that the client listens at
+the above address, and distributes tasks to all connected server
+processes.
 
 –
 
@@ -378,10 +393,11 @@ automatically distributed to all server processes.
 ``` r
 daemons()
 #> $connections
-#> [1] 2
+#> [1] 1
 #> 
 #> $daemons
-#> [1] "tcp://:5555"
+#>             status_online status_busy tasks_assigned tasks_complete instance #
+#> tcp://:5555             2           0              0              0          2
 ```
 
 To reset all connections and revert to default behaviour:
@@ -457,9 +473,9 @@ daemons()
 #> ws://:5555/4             1           0              0              0          1
 ```
 
-When using active dispatch, there is only a single connection to the
-local background dispatcher process, which connects in turn to the
-servers running on remote resources.
+When using a dispatcher, there is only a single connection to the local
+background dispatcher process, which connects in turn to the servers
+running on remote resources.
 
 The dispatcher will automatically adjust to the number of servers
 actually connected. Hence it is possible to dynamically scale up or down

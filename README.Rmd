@@ -193,7 +193,7 @@ Daemons or persistent background processes may be set to receive 'mirai' request
 
 This is potentially more efficient as new processes no longer need to be created on an *ad hoc* basis.
 
-#### Active Dispatch (default)
+#### With Dispatcher (default)
 
 Call `daemons()` specifying the number of daemons to launch.
 
@@ -211,7 +211,7 @@ To view the current status, call `daemons()` with no arguments. This provides th
 daemons()
 ```
 
-Active dispatch runs an additional `dispatcher()` background process that connects to individual background `server()` processes on the local machine. This ensures that tasks are dispatched efficiently on a FIFO basis to servers for processing. Tasks are queued at the dispatcher and only sent to servers that can begin immediate execution of the task.
+The default `dispatcher = TRUE` launches a `dispatcher()` background process that connects to individual background `server()` processes on the local machine. This ensures that tasks are dispatched efficiently on a FIFO basis to servers for processing. Tasks are queued at the dispatcher and only sent to servers that can begin immediate execution of the task.
 
 A dispatcher running local daemons is self-repairing if one of the daemons crashes or is terminated.
 
@@ -221,24 +221,22 @@ daemons(0)
 
 Set the number of daemons to zero to reset. This reverts to the default of creating a new background process for each 'mirai' request.
 
-#### Immediate Dispatch
+#### Without Dispatcher
 
-Alternatively, specifying `active = FALSE` invokes immediate dispatch. 
+Alternatively, specifying `dispatcher = FALSE` invokes immediate dispatch. 
 
 ```{r daemonsq}
-daemons(6, active = FALSE)
+daemons(6, dispatcher = FALSE)
 ```
 ```{r daemonsq2, include=FALSE}
 Sys.sleep(0.5)
 ```
 
-Requesting the status now shows one connection and one daemon with 6 nodes. The daemon process acts as an active queue or task scheduler and sits between the client and individual nodes, relaying messages back and forth.
+Requesting the status now shows 6 connections and 6 daemons. The background processes connect directly into the client and the number of daemons and connections are the same.
 
 ```{r daemonsqv}
 daemons()
 ```
-
-In this case, the background processes connect directly into the client and the number of daemons and connections are the same.
 
 This low-level implementation only ensures that tasks are evenly-distributed amongst daemons. Optimal scheduling is not guaranteed as the duration of tasks is not known *a priori*. Nevertheless, this provides a robust and resource-light solution, particularly suited to working with similar-length tasks or where the number of concurrent tasks typically does not exceed available daemons.
 
@@ -261,16 +259,16 @@ Call `daemons()` specifying as a character string the client network address and
 Assuming that the local network IP address of the current machine is '192.168.0.2', and port '5555' has been made available for inbound connections from the local network:
 
 ```{r remote, eval=FALSE}
-daemons(url = "tcp://192.168.0.2:5555", active = FALSE)
+daemons(url = "tcp://192.168.0.2:5555", dispatcher = FALSE)
 ```
 
 Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:
 
 ```{r remotealt}
-daemons(url = "tcp://:5555", active = FALSE)
+daemons(url = "tcp://:5555", dispatcher = FALSE)
 ```
 
-Here, `active = FALSE` is specified so that servers connect directly to the client. The network topology is such that the client listens at the above address, and distributes tasks to all connected server processes.
+Here, `dispatcher = FALSE` is specified so that servers connect directly to the client. The network topology is such that the client listens at the above address, and distributes tasks to all connected server processes.
 
 --
 
@@ -347,7 +345,7 @@ Requesting status, on the client:
 daemons()
 ```
 
-When using active dispatch, there is only a single connection to the local background dispatcher process, which connects in turn to the servers running on remote resources.
+When using a dispatcher, there is only a single connection to the local background dispatcher process, which connects in turn to the servers running on remote resources.
 
 The dispatcher will automatically adjust to the number of servers actually connected. Hence it is possible to dynamically scale up or down the number of servers according to requirements (limited to the number initially specified).
 

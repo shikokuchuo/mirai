@@ -4,7 +4,7 @@
 \alias{daemons}
 \title{daemons (Persistent Server Processes)}
 \usage{
-daemons(n, url = NULL, active = TRUE, ..., .compute = "default")
+daemons(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 }
 \arguments{
 \item{n}{integer number of daemons (server processes) to set.}
@@ -13,9 +13,10 @@ daemons(n, url = NULL, active = TRUE, ..., .compute = "default")
 port accepting incoming connections and (optionally) a path for websocket
 URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 
-\item{active}{[default TRUE] logical value whether to use active dispatch,
-which uses a background dispatcher process, or else immediate dispatch
-(futher details below).}
+\item{dispatcher}{[default TRUE] logical value whether to use a background
+dispatcher process. A dispatcher connects to servers on behalf of the
+client and queues tasks until a server is able to begin immediate
+execution of that task, ensuring FIFO scheduling (futher details below).}
 
 \item{...}{additional arguments passed through to \code{\link{dispatcher}} if
 using active dispatch or \code{\link{server}} if launching local daemons.}
@@ -32,11 +33,11 @@ Setting daemons: integer number of daemons set, or the character
     \item{\code{connections}} {- number of active connections at the client.
     Will always be 1L when using active dispatch as there is only one
     connection to the dispatcher, which then connects to the servers in turn.}
-    \item{\code{daemons}} {- if using active dispatch: a matrix of statistics
+    \item{\code{daemons}} {- if using dispatcher: a matrix of statistics
     for each server: URL, online and busy status, cumulative tasks assigned
     and completed (reset if a server re-connects), and instance # (increments
-    by 1 every time a server connects to the URL). If not using active
-    dispatch: the number of daemons set, or else the client URL.}
+    by 1 every time a server connects to the URL). If not using dispatcher:
+    the number of daemons set, or else the client URL.}
     }
 }
 \description{
@@ -65,31 +66,39 @@ For viewing the currrent status, specify \code{daemons()} with no
     When specifying a client URL, all daemons dialing into the client are
     detected automatically and resources may be added or removed at any time.
 }
+\section{Dispatcher}{
+
+
+    By default \code{dispatcher = TRUE}. This launches a background process
+    running \code{\link{dispatcher}}.  A dispatcher connects to servers on
+    behalf of the client and queues tasks until a server is able to begin
+    immediate execution of that task, ensuring FIFO scheduling.
+
+    By specifying \code{active = FALSE}, servers connect to the client
+    directly rather than through a dispatcher. The client sends tasks to
+    connected servers immediately in an evenly-distributed fashion. However,
+    optimal scheduling is not guaranteed as the duration of tasks cannot be
+    known \emph{a priori}, such that tasks can be queued at a server behind
+    a long-running task while other servers remain idle. Nevertheless, this
+    provides a resource-light approach suited to working with similar-length
+    tasks, or where concurrent tasks typically do not exceed available daemons.
+}
+
 \section{Local Daemons}{
 
 
     Daemons provide a potentially more efficient solution for asynchronous
     operations as new processes no longer need to be created on an \emph{ad
-    hoc} basis. Supply the argument 'n' to set the number of daemons.
+    hoc} basis.
 
-    \strong{Active Dispatch}
+    Supply the argument 'n' to set the number of daemons. New background
+    \code{\link{server}} processes are automatically created on the local
+    machine connecting back to the client process, either directly or via a
+    dispatcher.
 
-    By default, active dispatch is used. This runs an additional
-    \code{\link{dispatcher}} background process that connects to individual
-    background \code{\link{server}} processes on the local machine. A
-    dispatcher ensures that tasks are dispatched efficiently on a FIFO basis
-    to servers for processing. Tasks are queued at the dispatcher and only
-    sent to servers that can begin immediate execution of the task.
-
-    \strong{Immediate Dispatch}
-
-    Alternatively, specifying \code{active = FALSE} connects to servers
-    directly without a dispatcher. The client sends tasks immediately, and
-    can thus only ensure that they are evenly-distributed amongst daemons.
-    Optimal scheduling is not guaranteed as the duration of tasks is not
-    known \emph{a priori}. Nevertheless, this provides a low-level,
-    resource-light approach, suited to working with similar-length tasks or
-    where concurrent tasks typically do not exceed available daemons.
+    Running local daemons with a dispatcher is self-repairing: in the case
+    that daemons crash or are terminated, replacement daemons are launched
+    upon the next task.
 }
 
 \section{Distributed Computing}{
@@ -108,15 +117,12 @@ For viewing the currrent status, specify \code{daemons()} with no
     'ws://:0' will automatically assign a free ephemeral port. Use
     \code{daemons()} to query the actual assigned port at any time.
 
-    \strong{Active Dispatch}
+    \strong{With Dispatcher}
 
-    With \code{active = TRUE}, a local \code{\link{dispatcher}} background
-    process is launched, which in turn listens to remote server processes.
-
-    It is recommended in this case to use a websocket URL rather than TCP,
-    as this requires only one port to connect to all servers: a websocket URL
-    supports a path after the port number, which can be made unique for each
-    server.
+    When using a dispatcher, it is recommended to use a websocket URL rather
+    than TCP, as this requires only one port to connect to all servers: a
+    websocket URL supports a path after the port number, which can be made
+    unique for each server.
 
     Specifying a single client URL such as 'ws://192.168.0.2:5555' with
     \code{n = 6} will automatically append a sequence to the path, listening
@@ -129,25 +135,28 @@ For viewing the currrent status, specify \code{daemons()} with no
     Individual \code{\link{server}} instances should then be started on the
     remote resource, which dial in to each of these client URLs.
 
-    Server nodes may be scaled up or down dynamically, subject to the maximum
-    number initially specified, with the dispatcher adjusting automatically.
+    Server instances may be scaled up or down dynamically, subject to the
+    maximum number initially specified, with the dispatcher adjusting
+    automatically.
 
     Alternatively, supplying a single TCP URL will listen on a block of URLs
     with ports starting from the supplied port number and incrementing by one
     for 'n' specified e.g. the client URL 'tcp://192.168.0.2:5555' with
     \code{n = 6} listens to the contiguous block of ports 5555 through 5560.
 
-    \strong{Immediate Dispatch}
+    \strong{Without Dispatcher}
 
-    Either a TCP or websocket URL can be used in this case as the client
-    listens at only one address, utilising a single port.
+    A TCP URL may be used in this case as the client listens at only one
+    address, utilising a single port.
 
     The network topology is such that server daemons (started with
     \code{\link{server}}) or indeed dispatchers (started with
     \code{\link{dispatcher}}) dial into the client, which listens at the
-    client URL. In this way, network resources may be added or removed at any
-    time. The client automatically distributes tasks to all connected servers
-    and dispatchers.
+    client URL.
+
+    'n' does not need to be supplied in this case, and is disregarded if it
+    is, as network resources may be added or removed at any time. The client
+    automatically distributes tasks to all connected servers and dispatchers.
 }
 
 \section{Compute Profiles}{
@@ -197,22 +206,22 @@ daemons()
 # Reset to zero
 daemons(0)
 
-# Create 2 local daemons (immediate dispatch)
-daemons(2, active = FALSE)
+# Create 2 local daemons (direct connection)
+daemons(2, dispatcher = FALSE)
+# View status
+daemons()
+# Reset to zero
+daemons(0)
+
+# 2 remote servers via dispatcher (using zero wildcard)
+daemons(2, url = "ws://:0")
 # View status
 daemons()
 # Reset to zero
 daemons(0)
 
 # Set client URL for remote servers to dial into (using zero wildcard)
-daemons(url = "tcp://:0")
-# View status
-daemons()
-# Reset to zero
-daemons(0)
-
-# Launch local dispatcher for 2 remote servers to dial into (using zero wildcard)
-daemons(2, url = "ws://:0")
+daemons(url = "tcp://:0", dispatcher = FALSE)
 # View status
 daemons()
 # Reset to zero
