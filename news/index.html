@@ -68,6 +68,8 @@
 <li>Calling with no arguments now provides an improved view of the current number of connections / daemons (URL, online and busy status, tasks assigned and completed, instance), replacing the previous <code>daemons("view")</code> functionality.</li>
 </ul></li>
 <li>
+<code><a href="../reference/dispatcher.html">dispatcher()</a></code> is implemented as a new function for the dispatcher.</li>
+<li>
 <code><a href="../reference/server.html">server()</a></code> gains the following arguments:
 <ul><li>
 <code>asyncdial</code> to specify how the server dials into the client.</li>
@@ -80,12 +82,10 @@
 <li>
 <code>timerstart</code> for specifying a minimum number of task completions before starting timers.</li>
 </ul></li>
-<li>
-<code><a href="../reference/dispatcher.html">dispatcher()</a></code> is implemented as a self-contained function for the dispatcher.</li>
 <li>Invalid URLs provided to <code><a href="../reference/daemons.html">daemons()</a></code> and <code><a href="../reference/server.html">server()</a></code> now error and return immediately instead of potentially causing a hang.</li>
 <li>
 <code>eval_mirai()</code> is removed as an alias for <code><a href="../reference/mirai.html">mirai()</a></code>.</li>
-<li>‘mirai’ processes are no longer launched in Rscript sessions with the <code>--vanilla</code> argument to enable site and user profile and environment files to be read.</li>
+<li>‘mirai’ processes are no longer launched in Rscript sessions with the <code>--vanilla</code> argument to enable site / user profile and environment files to be read.</li>
 <li>Requires nanonext &gt;= 0.8.0.</li>
 <li>Internal performance enhancements.</li>
 </ul></div>
