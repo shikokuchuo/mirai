@@ -315,7 +315,7 @@ As per the local case, `$connections` will show the single connection to the dis
 
 `instance #` will increment by 1 every time there is a new connection at a URL. When this happens, the `tasks_assigned` and `tasks_complete` statistics will also reset. This is designed to track new server instances connecting after previous ones have ended (due to time-outs etc.).
 
-The dispatcher will automatically adjust to the number of servers actually connected. Hence it is possible to dynamically scale up or down the number of servers according to requirements (limited to the 'n' URLs assigned to the dispatcher).
+The dispatcher will automatically adjust to the number of servers actually connected. Hence it is possible to dynamically scale up or down the number of servers according to requirements (limited to the 'n' URLs assigned at the dispatcher).
 
 To reset all connections and revert to default behaviour:
 

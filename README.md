@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -0.3313 1.6611 0.7669 -0.0476 3.3869 ...
+#>  num [1:100000000] 0.724 2.315 3.127 -0.139 10.14 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.3313 1.6611 0.7669 -0.0476 3.3869 ...
+#>  num [1:100000000] 0.724 2.315 3.127 -0.139 10.14 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -207,9 +207,9 @@ for (i in 1:10) {
 #> iteration 4 successful 
 #> iteration 5 successful 
 #> iteration 6 successful 
-#> Error: random error 
 #> iteration 7 successful 
 #> iteration 8 successful 
+#> Error: random error 
 #> iteration 9 successful 
 #> iteration 10 successful
 ```
@@ -253,19 +253,19 @@ daemons()
 #> 
 #> $daemons
 #>                        status_online status_busy tasks_assigned tasks_complete
-#> abstract://n3167963634             1           0              0              0
-#> abstract://n3016422522             1           0              0              0
-#> abstract://n2909713717             1           0              0              0
-#> abstract://n987066846              1           0              0              0
-#> abstract://n1395514703             1           0              0              0
-#> abstract://n3999618829             1           0              0              0
+#> abstract://n3582508833             1           0              0              0
+#> abstract://n3653525063             1           0              0              0
+#> abstract://n2270890670             1           0              0              0
+#> abstract://n544363157              1           0              0              0
+#> abstract://n2675417043             1           0              0              0
+#> abstract://n4136595219             1           0              0              0
 #>                        instance #
-#> abstract://n3167963634          1
-#> abstract://n3016422522          1
-#> abstract://n2909713717          1
-#> abstract://n987066846           1
-#> abstract://n1395514703          1
-#> abstract://n3999618829          1
+#> abstract://n3582508833          1
+#> abstract://n3653525063          1
+#> abstract://n2270890670          1
+#> abstract://n544363157           1
+#> abstract://n2675417043          1
+#> abstract://n4136595219          1
 ```
 
 The default `dispatcher = TRUE` launches a `dispatcher()` background
@@ -427,7 +427,7 @@ etc.).
 The dispatcher will automatically adjust to the number of servers
 actually connected. Hence it is possible to dynamically scale up or down
 the number of servers according to requirements (limited to the ‘n’ URLs
-assigned to the dispatcher).
+assigned at the dispatcher).
 
 To reset all connections and revert to default behaviour:
 
