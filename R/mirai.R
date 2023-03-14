@@ -179,12 +179,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
     msleep(exitlinger)
     close(sock)
   })
-  ctrchannel <- is.character(monitor)
-  if (ctrchannel) {
-    sockc <- socket(protocol = "bus", dial = monitor, autostart = if (asyncdial) TRUE else NA)
-    on.exit(expr = close(sockc), add = TRUE, after = FALSE)
-    cmessage <- recv_aio(sockc, mode = 5L)
-  }
+
   auto <- is.null(url)
   vectorised <- length(url) > 1L
   n <- if (is.numeric(n)) as.integer(n) else length(url)
@@ -194,6 +189,14 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
   instances <- activestore <- complete <- assigned <- integer(n)
   serverfree <- !integer(n)
   servers <- queue <- vector(mode = "list", length = n)
+
+  ctrchannel <- is.character(monitor)
+  if (ctrchannel) {
+    sockc <- socket(protocol = "bus", dial = monitor, autostart = if (asyncdial) TRUE else NA)
+    on.exit(expr = close(sockc), add = TRUE, after = FALSE)
+    cmessage <- recv_aio(sockc, mode = 5L)
+    attr(servernames, "dispatcher_pid") <- Sys.getpid()
+  }
 
   if (!auto && !vectorised) {
     baseurl <- parse_url(url)
