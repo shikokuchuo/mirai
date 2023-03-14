@@ -10,8 +10,8 @@ dispatcher(
   n = NULL,
   asyncdial = TRUE,
   exitlinger = 100L,
-  pollfreqh = 10L,
-  pollfreql = 100L,
+  pollfreqh = 5L,
+  pollfreql = 50L,
   ...,
   monitor = NULL
 )

@@ -171,7 +171,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 #' @export
 #'
 dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
-                       exitlinger = 100L, pollfreqh = 10L, pollfreql = 100L, ...,
+                       exitlinger = 100L, pollfreqh = 5L, pollfreql = 50L, ...,
                        monitor = NULL) {
 
   sock <- socket(protocol = "rep", dial = client, autostart = if (asyncdial) TRUE else NA)
