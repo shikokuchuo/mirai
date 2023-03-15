@@ -254,20 +254,13 @@ daemons()
 #> [1] 1
 #> 
 #> $daemons
-#>                        status_online status_busy tasks_assigned tasks_complete
-#> abstract://n4033539056             1           0              0              0
-#> abstract://n708022954              1           0              0              0
-#> abstract://n2400804719             1           0              0              0
-#> abstract://n1869449702             1           0              0              0
-#> abstract://n2419389939             1           0              0              0
-#> abstract://n2186199539             1           0              0              0
-#>                        instance #
-#> abstract://n4033539056          1
-#> abstract://n708022954           1
-#> abstract://n2400804719          1
-#> abstract://n1869449702          1
-#> abstract://n2419389939          1
-#> abstract://n2186199539          1
+#>                        status_online status_busy tasks_assigned tasks_complete instance #
+#> abstract://n403353905              1           0              0              0          1
+#> abstract://n708022954              1           0              0              0          1
+#> abstract://n240080471              1           0              0              0          1
+#> abstract://n186944970              1           0              0              0          1
+#> abstract://n241938993              1           0              0              0          1
+#> abstract://n218619953              1           0              0              0          1
 ```
 
 The default `dispatcher = TRUE` launches a `dispatcher()` background

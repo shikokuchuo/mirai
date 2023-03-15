@@ -181,9 +181,9 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
   })
 
   auto <- is.null(url)
-  vectorised <- length(url) > 1L
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop("at least one URL must be supplied for 'url' or 'n' must be at least 1")
+  vectorised <- length(url) == n
   seq_n <- seq_len(n)
   servernames <- character(n)
   instances <- activestore <- complete <- assigned <- integer(n)
@@ -660,7 +660,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
           proc <- sub("(?<=:)0(?![^/])", opt(attr(sock, "listener")[[1L]], "tcp-bound-port"), proc, perl = TRUE)
         reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       }
-      `[[<-`(`[[<-`(..[[.compute]], "sock", sock), "proc", proc)
+      `[[<-`(`[[<-`(`[[<-`(..[[.compute]], "sock", sock), "proc", proc), "timestamp", mclock())
     }
 
   } else {
@@ -671,6 +671,8 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
     if (n == 0L) {
       length(..[[.compute]][["proc"]]) || return(0L)
 
+      elapsed <- mclock() - ..[[.compute]][["timestamp"]]
+      if (elapsed < 1000) msleep(1000 - elapsed)
       proc <- as.integer(stat(..[[.compute]][["sock"]], "pipes"))
       for (i in seq_len(proc))
         send(context(..[[.compute]][["sock"]]), data = .__scm__., mode = 2L, block = 1000L)
@@ -697,7 +699,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         for (i in seq_len(n))
           launch_daemon(args)
       }
-      `[[<-`(`[[<-`(..[[.compute]], "sock", sock), "proc", n)
+      `[[<-`(`[[<-`(`[[<-`(..[[.compute]], "sock", sock), "proc", n), "timestamp", mclock())
     }
 
   }
