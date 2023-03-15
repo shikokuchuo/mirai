@@ -107,7 +107,15 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 
 }
 
-#' @noRd
+#' mirai dot Daemon
+#'
+#' Implements an ephemeral executor/server for the remote process.
+#'
+#' @inheritParams server
+#'
+#' @return NULL.
+#'
+#' @keywords internal
 #' @export
 #'
 . <- function(url) {
