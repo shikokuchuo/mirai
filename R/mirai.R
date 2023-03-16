@@ -113,7 +113,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 #'
 #' @inheritParams server
 #'
-#' @return NULL.
+#' @return Invisible NULL.
 #'
 #' @keywords internal
 #' @export

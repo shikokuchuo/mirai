@@ -1,3 +1,5 @@
+# mirai 0.8.0.9000 (development)
+
 # mirai 0.8.0
 
 * mirai 0.8.0 is a major feature release. Special thanks to @wlandau for suggestions, discussion and testing for many of the new capabilities.
