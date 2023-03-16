@@ -9,3 +9,5 @@ reference:
 - contents:
   - mirai-package
   - matches("^[a-zA-Z]*")
+ignore:
+  - "R/mirai-package.R"
