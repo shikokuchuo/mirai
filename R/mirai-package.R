@@ -58,11 +58,14 @@
 #'
 NULL
 
+.onLoad <- function(libname, pkgname)
+  .command <<- file.path(R.home("bin"), .command)
+
 .onUnload <- function(libpath) for (i in names(..)) daemons(0L, .compute = i)
 
-.command <- file.path(R.home("bin"), switch(.subset2(.Platform, "OS.type"),
-                                            windows = "Rscript.exe",
-                                            "Rscript"))
+.command <- switch(.subset2(.Platform, "OS.type"),
+                   windows = "Rscript.exe",
+                   "Rscript")
 
 .urlfmt <- switch(.subset2(Sys.info(), "sysname"),
                   Linux = "abstract://n%.f",

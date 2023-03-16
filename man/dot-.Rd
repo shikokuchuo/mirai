@@ -12,7 +12,7 @@ including the port to connect to and (optionally) a path for websocket
 URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 }
 \value{
-NULL.
+Invisible NULL.
 }
 \description{
 Implements an ephemeral executor/server for the remote process.
