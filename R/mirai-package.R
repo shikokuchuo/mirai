@@ -58,23 +58,22 @@
 #'
 NULL
 
-.onLoad <- function(libname, pkgname)
-  .command <<- file.path(R.home("bin"), .command)
+.onLoad <- function(libname, pkgname) {
+  .command <<- switch(.Platform[["OS.type"]],
+                      windows = file.path(R.home("bin"), "Rscript.exe"),
+                      file.path(R.home("bin"), "Rscript"))
+  .urlfmt <<- switch(Sys.info()[["sysname"]],
+                     Linux = "abstract://n%.f",
+                     Windows = "ipc://n%.f",
+                     "ipc:///tmp/n%.f")
+}
+
 
 .onUnload <- function(libpath) for (i in names(..)) daemons(0L, .compute = i)
 
-.command <- switch(.subset2(.Platform, "OS.type"),
-                   windows = "Rscript.exe",
-                   "Rscript")
-
-.urlfmt <- switch(.subset2(Sys.info(), "sysname"),
-                  Linux = "abstract://n%.f",
-                  Windows = "ipc://n%.f",
-                  "ipc:///tmp/n%.f")
-
+.command <- NULL
+.urlfmt <- NULL
 .statnames <- c("status_online", "status_busy", "tasks_assigned", "tasks_complete", "instance #")
-
 .. <- `[[<-`(new.env(hash = FALSE), "default", new.env(hash = FALSE))
-
 .__scm__. <- base64dec("WAoAAAADAAQCAQADBQAAAAAFVVRGLTgAAAD8", convert = FALSE)
 
