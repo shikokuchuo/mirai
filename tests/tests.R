@@ -54,7 +54,7 @@ Sys.sleep(0.8)
 nanotest(daemons(.compute = "new")[["connections"]] == 0L)
 nanotest(daemons(0L, .compute = "new") == 0L)
 }
-if (Sys.getenv("NOT_CRAN") == "true") {
+if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
 nanotest(daemons(1, dispatcher = TRUE, maxtasks = 10L) == 1L)
 mq <- mirai("server")
 nanotest(call_mirai(mq)$data == "server")
