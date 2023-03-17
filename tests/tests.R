@@ -76,4 +76,5 @@ me$data
 m
 b
 r
+Sys.sleep(0.2)
 

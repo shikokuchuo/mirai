@@ -68,7 +68,6 @@ NULL
                      "ipc:///tmp/n%.f")
 }
 
-
 .onUnload <- function(libpath) for (i in names(..)) daemons(0L, .compute = i)
 
 .command <- NULL

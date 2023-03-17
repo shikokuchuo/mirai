@@ -1,4 +1,6 @@
-# mirai 0.8.0.9000 (development)
+# mirai 0.8.1
+
+* Fixes issue where daemon processes may not launch for certain setups (only affecting binary package builds).
 
 # mirai 0.8.0
 
