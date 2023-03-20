@@ -1,4 +1,4 @@
-# mirai 0.8.1.9000
+# mirai 0.8.1.9000 (development)
 
 # mirai 0.8.1
 
