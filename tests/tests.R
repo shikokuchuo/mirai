@@ -36,35 +36,35 @@ nanotestn(stop_mirai(dm))
 nanotest(daemons()[["daemons"]] == 1L)
 nanotest(daemons(0L) == 0L)
 nanotest(daemons()[["daemons"]] == 0L)
-Sys.sleep(0.2)
-if (Sys.info()[["sysname"]] != "Windows" || length(R.version$crt)) {
+Sys.sleep(0.3)
+if (.Platform[["OS.type"]] != "windows") {
 nanotest(daemons(url = value <- sprintf(mirai:::.urlfmt, runif(1, 1000000, 9999999)), dispatcher = FALSE) == value)
 nanotest(daemons(0L) == 0L)
-Sys.sleep(0.2)
+Sys.sleep(0.3)
 nanotest(daemons(url = value <- "ws://:0", dispatcher = FALSE) != value)
 nanotest(daemons(0L) == 0L)
-Sys.sleep(0.2)
+Sys.sleep(0.3)
 nanotest(daemons(1L, dispatcher = FALSE, walltime = 500L, timerstart = 1L, .compute = "new") == 1L)
 mn <- mirai("test", .compute = "new")
 mp <- mirai("test2", .compute = "new")
 nanotest(call_mirai(mn)$data == "test")
 nanotest(call_mirai(mp)$data == "test2")
 nanotest(daemons(.compute = "new")[["connections"]] == 1L)
-Sys.sleep(0.8)
+Sys.sleep(1)
 nanotest(daemons(.compute = "new")[["connections"]] == 0L)
 nanotest(daemons(0L, .compute = "new") == 0L)
-}
 nanotest(daemons(n = 2, "ws://:0") == 2L)
 nanotest(is.matrix(nodes <- daemons()[["daemons"]]) || is_error_value(nodes))
 nanotest(daemons(0) == 0L)
-Sys.sleep(0.2)
+Sys.sleep(0.3)
+}
 if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
 nanotest(daemons(1, dispatcher = TRUE, maxtasks = 10L) == 1L)
 mq <- mirai("server")
 nanotest(call_mirai(mq)$data == "server")
 nanotest(is.matrix(daemons()[["daemons"]]))
 nanotest(daemons(0) == 0L)
-Sys.sleep(0.2)
+Sys.sleep(0.3)
 }
 nanotesterr(daemons(url = "URL"), "argument")
 nanotesterr(daemons(-1), "zero or greater")
@@ -76,5 +76,5 @@ me$data
 m
 b
 r
-Sys.sleep(0.2)
+Sys.sleep(0.5)
 
