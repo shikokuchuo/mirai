@@ -1,4 +1,7 @@
-# mirai 0.8.1.9000 (development)
+# mirai 0.8.1.9001 (development)
+
+* Internal improvements which ensure server processes exit if the connection is closed. This significantly lowers the chance of orphaned server processes.
+* Requires nanonext >= [0.8.0.9000].
 
 # mirai 0.8.1
 

@@ -65,6 +65,9 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
                    cleanup = TRUE) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = if (asyncdial) TRUE else NA)
+  cv <- cv()
+  pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE)
+
   devnull <- file(nullfile(), open = "w", blocking = FALSE)
   sink(file = devnull)
   sink(file = devnull, type = "message")
@@ -84,7 +87,10 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
   while (count < maxtasks && mclock() - start < walltime) {
 
     ctx <- context(sock)
-    envir <- recv(ctx, mode = 1L, block = idletime)
+    aio <- recv_aio_signal(ctx, mode = 1L, timeout = idletime, cv = cv)
+    wait(cv)
+    .unresolved(aio) && break
+    envir <- .subset2(aio, "data")
     is.integer(envir) && {
       count < timerstart && {
         start <- mclock()
@@ -238,7 +244,6 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
     req <- recv_aio(ctx, mode = 1L)
     queue[[i]] <- list(ctx = ctx, req = req)
   }
-  on.exit(expr = lapply(servers, send, data = .__scm__., mode = 2L), add = TRUE, after = FALSE)
 
   devnull <- file(nullfile(), open = "w", blocking = FALSE)
   sink(file = devnull)
@@ -681,8 +686,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 
       elapsed <- mclock() - ..[[.compute]][["timestamp"]]
       if (elapsed < 1000) msleep(1000 - elapsed)
-      proc <- as.integer(stat(..[[.compute]][["sock"]], "pipes"))
-      for (i in seq_len(proc))
+      if (length(..[[.compute]][["sockc"]]))
         send(context(..[[.compute]][["sock"]]), data = .__scm__., mode = 2L, block = 1000L)
       close(..[[.compute]][["sock"]])
       `[[<-`(`[[<-`(`[[<-`(..[[.compute]], "sock", NULL), "sockc", NULL), "proc", NULL)
