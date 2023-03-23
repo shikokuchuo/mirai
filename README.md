@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.875 -0.454 1.126 -1.1 4.368 ...
+#>  num [1:100000000] 0.828 1.14 1.353 0.188 0.799 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.875 -0.454 1.126 -1.1 4.368 ...
+#>  num [1:100000000] 0.828 1.14 1.353 0.188 0.799 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -204,7 +204,6 @@ for (i in 1:10) {
   
 }
 #> iteration 1 successful 
-#> Error: random error 
 #> iteration 2 successful 
 #> iteration 3 successful 
 #> iteration 4 successful 
@@ -213,6 +212,7 @@ for (i in 1:10) {
 #> iteration 7 successful 
 #> iteration 8 successful 
 #> iteration 9 successful 
+#> Error: random error 
 #> iteration 10 successful
 ```
 
@@ -255,12 +255,12 @@ daemons()
 #> 
 #> $daemons
 #>                        status_online status_busy tasks_assigned tasks_complete instance #
-#> abstract://n403353905              1           0              0              0          1
-#> abstract://n708022954              1           0              0              0          1
-#> abstract://n240080471              1           0              0              0          1
-#> abstract://n186944970              1           0              0              0          1
-#> abstract://n241938993              1           0              0              0          1
-#> abstract://n218619953              1           0              0              0          1
+#> abstract://n2785608988             1           0              0              0          1
+#> abstract://n1215454201             1           0              0              0          1
+#> abstract://n1223169541             1           0              0              0          1
+#> abstract://n3434368646             1           0              0              0          1
+#> abstract://n2987682078             1           0              0              0          1
+#> abstract://n1357705155             1           0              0              0          1
 ```
 
 The default `dispatcher = TRUE` launches a `dispatcher()` background
@@ -269,10 +269,6 @@ the local machine. This ensures that tasks are dispatched efficiently on
 a first-in first-out (FIFO) basis to servers for processing. Tasks are
 queued at the dispatcher and sent to a server as soon as it can accept
 the task for immediate execution.
-
-A dispatcher running local daemons is self-repairing if one of the
-daemons crashes or is terminated - a replacement daemon is launched upon
-the next task.
 
 ``` r
 daemons(0)
@@ -452,7 +448,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:37137"
+#> [1] "tcp://:37153"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -467,7 +463,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:37137")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:37153")'
 
 –
 
@@ -485,7 +481,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:37137"
+#> [1] "tcp://:37153"
 ```
 
 To reset all connections and revert to default behaviour:

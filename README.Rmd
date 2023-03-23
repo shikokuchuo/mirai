@@ -215,8 +215,6 @@ daemons()
 
 The default `dispatcher = TRUE` launches a `dispatcher()` background process that connects to individual background `server()` processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to servers for processing. Tasks are queued at the dispatcher and sent to a server as soon as it can accept the task for immediate execution.
 
-A dispatcher running local daemons is self-repairing if one of the daemons crashes or is terminated - a replacement daemon is launched upon the next task.
-
 ```{r daemons4}
 daemons(0)
 ```

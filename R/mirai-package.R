@@ -49,30 +49,33 @@
 #' @author Charlie Gao \email{charlie.gao@@shikokuchuo.net}
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
-#' @importFrom nanonext base64dec call_aio context cv is_error_value mclock
-#'     msleep opt parse_url pipe_notify random recv recv_aio recv_aio_signal
-#'     request send socket stat stop_aio unresolved .unresolved wait
+#' @importFrom nanonext call_aio context cv cv_value is_error_value listen
+#'     mclock msleep opt parse_url pipe_notify random recv recv_aio_signal reply
+#'     request request_signal send socket stat stop_aio unresolved wait
 #'
 #' @docType package
 #' @name mirai-package
 #'
 NULL
 
-.onLoad <- function(libname, pkgname) {
-  .command <<- switch(.Platform[["OS.type"]],
-                      windows = file.path(R.home("bin"), "Rscript.exe"),
-                      file.path(R.home("bin"), "Rscript"))
-  .urlfmt <<- switch(Sys.info()[["sysname"]],
-                     Linux = "abstract://n%.f",
-                     Windows = "ipc://n%.f",
-                     "ipc:///tmp/n%.f")
-}
+.onLoad <- function(libname, pkgname)
+  switch(Sys.info()[["sysname"]],
+         Linux = {
+           .command <<- file.path(R.home("bin"), "Rscript")
+           .urlfmt <<- "abstract://n%.f"
+         },
+         Windows = {
+           .command <<- file.path(R.home("bin"), "Rscript.exe")
+           .urlfmt <<- "ipc://n%.f"
+         },
+         {
+           .command <<- file.path(R.home("bin"), "Rscript")
+           .urlfmt <<- "ipc:///tmp/n%.f"
+         })
 
 .onUnload <- function(libpath) for (i in names(..)) daemons(0L, .compute = i)
 
 .command <- NULL
 .urlfmt <- NULL
-.statnames <- c("status_online", "status_busy", "tasks_assigned", "tasks_complete", "instance #")
 .. <- `[[<-`(new.env(hash = FALSE), "default", new.env(hash = FALSE))
-.__scm__. <- base64dec("WAoAAAADAAQCAQADBQAAAAAFVVRGLTgAAAD8", convert = FALSE)
 

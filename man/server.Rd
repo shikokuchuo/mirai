@@ -11,7 +11,7 @@ server(
   idletime = Inf,
   walltime = Inf,
   timerstart = 0L,
-  exitlinger = 100L,
+  exitlinger = 1000L,
   ...,
   cleanup = TRUE
 )
@@ -41,11 +41,10 @@ time taken (in milliseconds) before exiting.}
 the timer for 'idletime' and 'walltime'. 0L implies timers are started
 upon launch.}
 
-\item{exitlinger}{[default 100L] time in milliseconds to linger after an exit
-signal is received or a timer / task limit is reached, to allow sockets
-to flush sends currently in progress. The default permits normal
-operations, but should be set wider if computations are expected to
-return very large objects.}
+\item{exitlinger}{[default 1000L] time in milliseconds to linger before
+exiting due to a timer / task limit, to allow sockets to complete sends
+currently in progress. The default can be set wider if computations are
+expected to return very large objects (> GBs).}
 
 \item{...}{reserved but not currently used.}
 

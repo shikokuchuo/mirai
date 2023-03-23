@@ -4,17 +4,7 @@
 \alias{dispatcher}
 \title{mirai Dispatcher}
 \usage{
-dispatcher(
-  client,
-  url = NULL,
-  n = NULL,
-  asyncdial = TRUE,
-  exitlinger = 100L,
-  pollfreqh = 5L,
-  pollfreql = 50L,
-  ...,
-  monitor = NULL
-)
+dispatcher(client, url = NULL, n = NULL, asyncdial = TRUE, ..., monitor = NULL)
 }
 \arguments{
 \item{client}{the client URL to dial as a character string (where tasks are
@@ -39,21 +29,6 @@ immediately successful. However this can mask potential connection issues
 and specifying FALSE will error if a connection is not immediately
 possible (e.g. \code{\link{daemons}} has yet to be called on the client,
 or the specified port is not open etc.).}
-
-\item{exitlinger}{[default 100L] time in milliseconds to linger after an exit
-signal is received, to allow sockets to flush sends currently in progress.
-The default permits normal operations, but should be set wider if
-computations are expected to return very large objects.}
-
-\item{pollfreqh}{[default 10L] the high polling frequency for the dispatcher
-in milliseconds (used when there are active tasks). Setting a lower value
-will be more responsive but at the cost of consuming more resources on
-the dispatcher thread.}
-
-\item{pollfreql}{[default 100L] the low polling frequency for the dispatcher
-in milliseconds (used when there are no active tasks). Setting a lower
-value will be more responsive but at the cost of consuming more resources
-on the dispatcher thread.}
 
 \item{...}{additional arguments passed through to \code{\link{server}} if
 launching local daemons i.e. 'url' is not specified.}

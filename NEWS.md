@@ -1,7 +1,9 @@
-# mirai 0.8.1.9001 (development)
+# mirai 0.8.1.9002 (development)
 
-* Internal improvements which ensure server processes exit if the connection is closed. This significantly lowers the chance of orphaned server processes.
-* Requires nanonext >= [0.8.0.9000].
+* `dispatcher()` has significantly higher throughput and lower latency, implementing an efficient non-polling design with no processor usage when idle. Arguments 'pollfreqh' and 'pollfreql' removed as no longer applicable.
+* Server and dispatcher processes exit automatically if the connection with the client is dropped. This significantly reduces the likelihood of orphaned processes.
+* Requires nanonext >= [0.8.0.9001].
+* Internal performance enhancements.
 
 # mirai 0.8.1
 

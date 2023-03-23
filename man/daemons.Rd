@@ -31,7 +31,7 @@ Setting daemons: integer number of daemons set, or the character
 
     Viewing current status: a named list comprising: \itemize{
     \item{\code{connections}} {- number of active connections at the client.
-    Will always be 1L when using active dispatch as there is only one
+    Will always be 1L when using dispatcher as there is only a single
     connection to the dispatcher, which then connects to the servers in turn.}
     \item{\code{daemons}} {- if using dispatcher: a matrix of statistics
     for each server: URL, online and busy status, cumulative tasks assigned
@@ -95,10 +95,6 @@ For viewing the currrent status, specify \code{daemons()} with no
     \code{\link{server}} processes are automatically created on the local
     machine connecting back to the client process, either directly or via a
     dispatcher.
-
-    Running local daemons with a dispatcher is self-repairing: in the case
-    that daemons crash or are terminated, replacement daemons are launched
-    upon the next task.
 }
 
 \section{Distributed Computing}{
@@ -191,7 +187,7 @@ For viewing the currrent status, specify \code{daemons()} with no
     Note: specifying the \code{.timeout} argument in \code{\link{mirai}} will
     ensure that the 'mirai' always resolves, however the process may not have
     completed and still be ongoing in the daemon. In such situations, using
-    active dispatch ensures that queued tasks are not assigned to the busy
+    a dispatcher ensures that queued tasks are not assigned to the busy
     process, however performance may still be degraded if they remain in use.
 }
 
