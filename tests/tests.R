@@ -59,7 +59,7 @@ if (.Platform[["OS.type"]] != "windows" || length(R.version$crt)) {
   nanotest(is.matrix(nodes <- daemons()[["daemons"]]) || is_error_value(nodes))
   nanotest(daemons(0) == 0L)
   Sys.sleep(0.3)
-  if (Sys.getenv("NOT_CRAN") == "true") {
+  if (Sys.getenv("NOT_CRAN") == "set") {
     nanotest(daemons(1, dispatcher = TRUE, maxtasks = 10L) == 1L)
     mq <- mirai("server")
     nanotest(call_mirai(mq)$data == "server")
