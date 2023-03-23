@@ -1,4 +1,4 @@
-# mirai 0.8.1.9002 (development)
+# mirai 0.8.1.9003 (development)
 
 * `dispatcher()` has significantly higher throughput and lower latency, implementing an efficient non-polling design with no processor usage when idle. Arguments 'pollfreqh' and 'pollfreql' removed as no longer applicable.
 * Server and dispatcher processes exit automatically if the connection with the client is dropped. This significantly reduces the likelihood of orphaned processes.

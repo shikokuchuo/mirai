@@ -10,16 +10,16 @@ daemons(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 \item{n}{integer number of daemons (server processes) to set.}
 
 \item{url}{(optional) the client URL as a character vector, including a
-port accepting incoming connections and (optionally) a path for websocket
-URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
+port accepting incoming connections and (optionally for websockets) a
+path e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 
-\item{dispatcher}{[default TRUE] logical value whether to use a background
-dispatcher process. A dispatcher connects to servers on behalf of the
-client and queues tasks until a server is able to begin immediate
-execution of that task, ensuring FIFO scheduling (futher details below).}
+\item{dispatcher}{[default TRUE] logical value whether to use dispatcher.
+Dispatcher is a background process that connects to servers on behalf of
+the client and ensures FIFO scheduling, queueing tasks if necessary
+(futher details below).}
 
 \item{...}{additional arguments passed through to \code{\link{dispatcher}} if
-using active dispatch or \code{\link{server}} if launching local daemons.}
+using active dispatch and/or \code{\link{server}} if launching local daemons.}
 
 \item{.compute}{(optional) character compute profile to use for creating the
 daemons (each compute profile can have its own set of daemons for
@@ -36,8 +36,8 @@ Setting daemons: integer number of daemons set, or the character
     \item{\code{daemons}} {- if using dispatcher: a matrix of statistics
     for each server: URL, online and busy status, cumulative tasks assigned
     and completed (reset if a server re-connects), and instance # (increments
-    by 1 every time a server connects to the URL). If not using dispatcher:
-    the number of daemons set, or else the client URL.}
+    every time a server connects to the URL). If not using dispatcher: the
+    number of daemons set, or else the client URL.}
     }
 }
 \description{
@@ -46,22 +46,22 @@ Set 'daemons' or background persistent server processes receiving
     created on the local machine. Alternatively, a client URL may be
     specified to receive connections from remote servers started with
     \code{\link{server}} for distributing tasks across the network. Daemons
-    may take advantage of active dispatch, which ensures that tasks are
+    may take advantage of the dispatcher, which ensures that tasks are
     assigned to servers efficiently on a FIFO basis, or else the low-level
-    approach of distributing tasks to servers immediately in an even fashion.
+    approach of distributing tasks to servers in an even fashion.
 }
 \details{
 For viewing the currrent status, specify \code{daemons()} with no
     arguments.
 
-    Use \code{daemons(0)} to reset all daemon connections at any time. This
-    will send an exit signal to all connected daemons or dispatchers (and be
-    propagated onwards where applicable) such that their processes exit. A
-    reset is required before specifying revised daemons settings, otherwise
-    these will not be registered.
-
-    After a reset, \{mirai\} will revert to the default behaviour of creating
-    a new background process for each request.
+    Use \code{daemons(0)} to reset daemon connections:
+    \itemize{
+    \item{A reset is required before revising settings for the same compute
+    profile, otherwise changes are not registered.}
+    \item{All connected daemons and/or dispatchers will exit automatically.}
+    \item{\{mirai\} will revert to the default behaviour of creating
+    a new background process for each request.}
+    }
 
     When specifying a client URL, all daemons dialing into the client are
     detected automatically and resources may be added or removed at any time.
@@ -74,7 +74,7 @@ For viewing the currrent status, specify \code{daemons()} with no
     behalf of the client and queues tasks until a server is able to begin
     immediate execution of that task, ensuring FIFO scheduling.
 
-    By specifying \code{active = FALSE}, servers connect to the client
+    By specifying \code{dispatcher = FALSE}, servers connect to the client
     directly rather than through a dispatcher. The client sends tasks to
     connected servers immediately in an evenly-distributed fashion. However,
     optimal scheduling is not guaranteed as the duration of tasks cannot be
@@ -111,7 +111,7 @@ For viewing the currrent status, specify \code{daemons()} with no
 
     Specifying the wildcard value zero for the port number e.g. 'tcp://:0' or
     'ws://:0' will automatically assign a free ephemeral port. Use
-    \code{daemons()} to query the actual assigned port at any time.
+    \code{daemons()} to inspect the actual assigned port at any time.
 
     \strong{With Dispatcher}
 
@@ -147,34 +147,33 @@ For viewing the currrent status, specify \code{daemons()} with no
 
     The network topology is such that server daemons (started with
     \code{\link{server}}) or indeed dispatchers (started with
-    \code{\link{dispatcher}}) dial into the client, which listens at the
-    client URL.
+    \code{\link{dispatcher}}) dial into the same client URL.
 
-    'n' does not need to be supplied in this case, and is disregarded if it
-    is, as network resources may be added or removed at any time. The client
-    automatically distributes tasks to all connected servers and dispatchers.
+    'n' is not required in this case, and disregarded if supplied, as network
+    resources may be added or removed at any time. The client automatically
+    distributes tasks to all connected servers and dispatchers.
 }
 
 \section{Compute Profiles}{
 
 
-    By default, the 'default' compute profile is used. Provide a character
-    value for '.compute' to create a new compute profile with the name
+    By default, the 'default' compute profile is used. Providing a character
+    value for '.compute' creates a new compute profile with the name
     specified. Each compute profile retains its own daemons settings, and may
     be operated independently of each other. Some usage examples follow:
 
-    \strong{local / remote} new daemons may be set via a client URL and
-    specifying '.compute' as 'remote'. This creates a new compute profile
-    called 'remote'. Subsequent mirai calls may then be sent for local
-    computation by not specifying its '.compute' argument, or for remote
-    computation by specifying its '.compute' argument as 'remote'.
+    \strong{local / remote} daemons may be set via a client URL and creating
+    a new compute profile by specifying '.compute' as 'remote'. Subsequent
+    mirai calls may then be sent for local computation by not specifying its
+    '.compute' argument, or for remote computation to connected daemons by
+    specifying its '.compute' argument as 'remote'.
 
     \strong{cpu / gpu} some tasks may require access to different classes of
     server, such as those with GPUs. In this case, \code{daemons()} may be
     called twice to set up client URLs for CPU-only and GPU servers to dial
-    into respectively, specifying the '.compute' argument as 'cpu' and 'gpu'
-    each time. By supplying the '.compute' argument to subsequent mirai calls,
-    tasks may be sent to either 'cpu' or 'gpu' servers for computation.
+    into, specifying the '.compute' argument as 'cpu' and 'gpu' respectively.
+    By supplying the '.compute' argument to subsequent mirai calls, tasks may
+    be sent to either 'cpu' or 'gpu' servers as appropriate.
 
     Note: further actions such as viewing the status of daemons or resetting
     via \code{daemons(0)} should be carried out with the desired '.compute'
@@ -184,10 +183,10 @@ For viewing the currrent status, specify \code{daemons()} with no
 \section{Timeouts}{
 
 
-    Note: specifying the \code{.timeout} argument in \code{\link{mirai}} will
-    ensure that the 'mirai' always resolves, however the process may not have
-    completed and still be ongoing in the daemon. In such situations, using
-    a dispatcher ensures that queued tasks are not assigned to the busy
+    Specifying the \code{.timeout} argument in \code{\link{mirai}} will ensure
+    that the 'mirai' always resolves. However, the task may not have
+    completed and still be ongoing in the daemon process. In such situations,
+    using a dispatcher ensures that queued tasks are not assigned to the busy
     process, however performance may still be degraded if they remain in use.
 }
 
