@@ -24,7 +24,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1.9002</span>
       </span>
     </div>
 
@@ -115,7 +115,7 @@ connecting to different resources).</p></dd>
 
 
 <p>Viewing current status: a named list comprising:</p><ul><li><p><code>connections</code> - number of active connections at the client.
-    Will always be 1L when using active dispatch as there is only one
+    Will always be 1L when using dispatcher as there is only a single
     connection to the dispatcher, which then connects to the servers in turn.</p></li>
 <li><p><code>daemons</code> - if using dispatcher: a matrix of statistics
     for each server: URL, online and busy status, cumulative tasks assigned
@@ -167,9 +167,6 @@ connecting to different resources).</p></dd>
     <code><a href="server.html">server</a></code> processes are automatically created on the local
     machine connecting back to the client process, either directly or via a
     dispatcher.</p>
-<p>Running local daemons with a dispatcher is self-repairing: in the case
-    that daemons crash or are terminated, replacement daemons are launched
-    upon the next task.</p>
     </div>
     <div id="distributed-computing">
     <h2>Distributed Computing</h2>
@@ -248,7 +245,7 @@ connecting to different resources).</p></dd>
 <p>Note: specifying the <code>.timeout</code> argument in <code><a href="mirai.html">mirai</a></code> will
     ensure that the 'mirai' always resolves, however the process may not have
     completed and still be ongoing in the daemon. In such situations, using
-    active dispatch ensures that queued tasks are not assigned to the busy
+    a dispatcher ensures that queued tasks are not assigned to the busy
     process, however performance may still be degraded if they remain in use.</p>
     </div>
 

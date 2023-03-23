@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1.9002</span>
       </span>
     </div>
 
@@ -61,17 +61,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dispatcher</span><span class="op">(</span></span>
-<span>  <span class="va">client</span>,</span>
-<span>  url <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  asyncdial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  exitlinger <span class="op">=</span> <span class="fl">100L</span>,</span>
-<span>  pollfreqh <span class="op">=</span> <span class="fl">5L</span>,</span>
-<span>  pollfreql <span class="op">=</span> <span class="fl">50L</span>,</span>
-<span>  <span class="va">...</span>,</span>
-<span>  monitor <span class="op">=</span> <span class="cn">NULL</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dispatcher</span><span class="op">(</span><span class="va">client</span>, url <span class="op">=</span> <span class="cn">NULL</span>, n <span class="op">=</span> <span class="cn">NULL</span>, asyncdial <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span>, monitor <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -105,27 +95,6 @@ immediately successful. However this can mask potential connection issues
 and specifying FALSE will error if a connection is not immediately
 possible (e.g. <code><a href="daemons.html">daemons</a></code> has yet to be called on the client,
 or the specified port is not open etc.).</p></dd>
-
-
-<dt>exitlinger</dt>
-<dd><p>[default 100L] time in milliseconds to linger after an exit
-signal is received, to allow sockets to flush sends currently in progress.
-The default permits normal operations, but should be set wider if
-computations are expected to return very large objects.</p></dd>
-
-
-<dt>pollfreqh</dt>
-<dd><p>[default 10L] the high polling frequency for the dispatcher
-in milliseconds (used when there are active tasks). Setting a lower value
-will be more responsive but at the cost of consuming more resources on
-the dispatcher thread.</p></dd>
-
-
-<dt>pollfreql</dt>
-<dd><p>[default 100L] the low polling frequency for the dispatcher
-in milliseconds (used when there are no active tasks). Setting a lower
-value will be more responsive but at the cost of consuming more resources
-on the dispatcher thread.</p></dd>
 
 
 <dt>...</dt>

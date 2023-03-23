@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1.9002</span>
       </span>
     </div>
 
@@ -54,9 +54,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.1.9001" id="mirai-0819001-development">mirai 0.8.1.9001 (development)<a class="anchor" aria-label="anchor" href="#mirai-0819001-development"></a></h2>
-<ul><li>Internal improvements which ensure server processes exit if the connection is closed. This significantly lowers the chance of orphaned server processes.</li>
-<li>Requires nanonext &gt;= [0.8.0.9000].</li>
+<h2 class="page-header" data-toc-text="0.8.1.9002" id="mirai-0819002-development">mirai 0.8.1.9002 (development)<a class="anchor" aria-label="anchor" href="#mirai-0819002-development"></a></h2>
+<ul><li>
+<code><a href="../reference/dispatcher.html">dispatcher()</a></code> has significantly higher throughput and lower latency, implementing an efficient non-polling design with no processor usage when idle. Arguments ‘pollfreqh’ and ‘pollfreql’ removed as no longer applicable.</li>
+<li>Server and dispatcher processes exit automatically if the connection with the client is dropped. This significantly reduces the likelihood of orphaned processes.</li>
+<li>Requires nanonext &gt;= [0.8.0.9001].</li>
+<li>Internal performance enhancements.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.8.1" id="mirai-081">mirai 0.8.1<small>2023-03-17</small><a class="anchor" aria-label="anchor" href="#mirai-081"></a></h2>

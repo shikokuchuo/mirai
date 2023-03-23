@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1.9002</span>
       </span>
     </div>
 
@@ -150,11 +150,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.875 -0.454 1.126 -1.1 4.368 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.828 1.14 1.353 0.188 0.799 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.875 -0.454 1.126 -1.1 4.368 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.828 1.14 1.353 0.188 0.799 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -216,7 +216,6 @@
 <span>  </span>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; iteration 1 successful </span></span>
-<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 2 successful </span></span>
 <span><span class="co">#&gt; iteration 3 successful </span></span>
 <span><span class="co">#&gt; iteration 4 successful </span></span>
@@ -225,6 +224,7 @@
 <span><span class="co">#&gt; iteration 7 successful </span></span>
 <span><span class="co">#&gt; iteration 8 successful </span></span>
 <span><span class="co">#&gt; iteration 9 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 10 successful</span></span></code></pre></div>
 <p>Further, by testing the return value of each ‘mirai’ for errors, error-handling code is then able to automate recovery and re-attempts, as in the above example. Further details on <a href="#errors-interrupts-and-timeouts">error handling</a> can be found in the section below.</p>
 <p>The end result is a resilient and fault-tolerant pipeline that minimises downtime by eliminating interruptions of long computes.</p>
@@ -250,14 +250,13 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt;                        status_online status_busy tasks_assigned tasks_complete instance #</span></span>
-<span><span class="co">#&gt; abstract://n403353905              1           0              0              0          1</span></span>
-<span><span class="co">#&gt; abstract://n708022954              1           0              0              0          1</span></span>
-<span><span class="co">#&gt; abstract://n240080471              1           0              0              0          1</span></span>
-<span><span class="co">#&gt; abstract://n186944970              1           0              0              0          1</span></span>
-<span><span class="co">#&gt; abstract://n241938993              1           0              0              0          1</span></span>
-<span><span class="co">#&gt; abstract://n218619953              1           0              0              0          1</span></span></code></pre></div>
+<span><span class="co">#&gt; abstract://n2785608988             1           0              0              0          1</span></span>
+<span><span class="co">#&gt; abstract://n1215454201             1           0              0              0          1</span></span>
+<span><span class="co">#&gt; abstract://n1223169541             1           0              0              0          1</span></span>
+<span><span class="co">#&gt; abstract://n3434368646             1           0              0              0          1</span></span>
+<span><span class="co">#&gt; abstract://n2987682078             1           0              0              0          1</span></span>
+<span><span class="co">#&gt; abstract://n1357705155             1           0              0              0          1</span></span></code></pre></div>
 <p>The default <code>dispatcher = TRUE</code> launches a <code><a href="reference/dispatcher.html">dispatcher()</a></code> background process that connects to individual background <code><a href="reference/server.html">server()</a></code> processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to servers for processing. Tasks are queued at the dispatcher and sent to a server as soon as it can accept the task for immediate execution.</p>
-<p>A dispatcher running local daemons is self-repairing if one of the daemons crashes or is terminated - a replacement daemon is launched upon the next task.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
@@ -350,11 +349,11 @@
 <p>Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://:0"</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tcp://:37137"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:37153"</span></span></code></pre></div>
 <p>Note that above, the port number is specified as zero. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided as the return value of the call, or it may be queried at any time by requesting the status using <code><a href="reference/daemons.html">daemons()</a></code>.</p>
 <p>–</p>
 <p>On the server, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation from a shell. This sets up a remote daemon process that connects to the client URL and receives tasks:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://10.111.5.13:37137")'</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://10.111.5.13:37153")'</span></span></code></pre></div>
 <p>–</p>
 <p>On the client, requesting the status will return the client URL for <code>daemons</code>. The number of daemons connecting to this URL is not limited and network resources may be added and removed at any time, with tasks automatically distributed to all server processes.</p>
 <p><code>$connections</code> will show the actual number of connected server instances.</p>
@@ -364,7 +363,7 @@
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "tcp://:37137"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:37153"</span></span></code></pre></div>
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
