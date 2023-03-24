@@ -467,6 +467,8 @@ Listed in CRAN Task View: <br />
 
 NNG website: <https://nng.nanomsg.org/><br />
 
+The {crew} package <https://wlandau.github.io/crew/> (available on CRAN) by William Landau further extends {mirai} to different computing platforms for distributed workers.
+
 [&laquo; Back to ToC](#table-of-contents)
 
 --

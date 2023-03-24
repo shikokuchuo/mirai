@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.828 1.14 1.353 0.188 0.799 ...
+#>  num [1:100000000] 1.269 1.174 -7.989 4.156 0.719 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.828 1.14 1.353 0.188 0.799 ...
+#>  num [1:100000000] 1.269 1.174 -7.989 4.156 0.719 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -210,9 +210,9 @@ for (i in 1:10) {
 #> iteration 5 successful 
 #> iteration 6 successful 
 #> iteration 7 successful 
+#> Error: random error 
 #> iteration 8 successful 
 #> iteration 9 successful 
-#> Error: random error 
 #> iteration 10 successful
 ```
 
@@ -255,12 +255,12 @@ daemons()
 #> 
 #> $daemons
 #>                        status_online status_busy tasks_assigned tasks_complete instance #
-#> abstract://n2785608988             1           0              0              0          1
-#> abstract://n1215454201             1           0              0              0          1
-#> abstract://n1223169541             1           0              0              0          1
-#> abstract://n3434368646             1           0              0              0          1
-#> abstract://n2987682078             1           0              0              0          1
-#> abstract://n1357705155             1           0              0              0          1
+#> abstract://n3063491533             1           0              0              0          1
+#> abstract://n9135961470             1           0              0              0          1
+#> abstract://n3039486211             1           0              0              0          1
+#> abstract://n1674302262             1           0              0              0          1
+#> abstract://n2654370972             1           0              0              0          1
+#> abstract://n4173326581             1           0              0              0          1
 ```
 
 The default `dispatcher = TRUE` launches a `dispatcher()` background
@@ -448,7 +448,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:37153"
+#> [1] "tcp://:32917"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -463,7 +463,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:37153")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:32917")'
 
 –
 
@@ -481,7 +481,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:37153"
+#> [1] "tcp://:32917"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -623,6 +623,10 @@ Listed in CRAN Task View: <br /> - High Performance Computing:
 on CRAN: <https://cran.r-project.org/package=nanonext>
 
 NNG website: <https://nng.nanomsg.org/><br />
+
+The {crew} package <https://wlandau.github.io/crew/> (available on CRAN)
+by William Landau further extends {mirai} to different computing
+platforms for distributed workers.
 
 [« Back to ToC](#table-of-contents)
 

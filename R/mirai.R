@@ -225,7 +225,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE, ..., moni
     }
 
     dotstring <- if (missing(...)) "" else
-      sprintf(",%s", paste(names(dots <- substitute(alist(...))[-1L]), dots, sep = "=", collapse = ","))
+      sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
 
     if (auto)
       launch_daemon(sprintf("mirai::server(\"%s\"%s)", nurl, dotstring))
@@ -633,7 +633,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
         sockc <- socket(protocol = "bus", listen = urlc)
         dotstring <- if (missing(...)) "" else
-          sprintf(",%s", paste(names(dots <- substitute(alist(...))[-1L]), dots, sep = "=", collapse = ","))
+          sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
         args <- sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)",
                         urld, paste(sprintf("\"%s\"", url), collapse = ","), n, urlc, dotstring)
         launch_daemon(args)
@@ -669,7 +669,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
       sock <- socket(protocol = "req", listen = urld)
       reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       dotstring <- if (missing(...)) "" else
-        sprintf(",%s", paste(names(dots <- substitute(alist(...))[-1L]), dots, sep = "=", collapse = ","))
+        sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
       if (dispatcher) {
         urlc <- sprintf("%s%s", urld, "c")
         sockc <- socket(protocol = "bus", listen = urlc)
