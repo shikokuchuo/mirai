@@ -58,6 +58,7 @@
 <ul><li>
 <code><a href="../reference/dispatcher.html">dispatcher()</a></code> re-implemented using an efficient non-polling design. Results in significantly higher throughput and lower latency, consuming no processor usage when idle. Arguments ‘pollfreqh’ and ‘pollfreql’ removed as no longer applicable.</li>
 <li>Server and dispatcher processes exit automatically if the connection with the client is dropped. This significantly reduces the likelihood of orphaned processes.</li>
+<li>Correct passthrough of <code>...</code> variables in the <code><a href="../reference/daemons.html">daemons()</a></code> call.</li>
 <li>Requires nanonext &gt;= [0.8.0.9001].</li>
 <li>Internal performance enhancements.</li>
 </ul></div>
