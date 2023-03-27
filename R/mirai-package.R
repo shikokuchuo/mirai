@@ -18,10 +18,10 @@
 #'
 #' Lightweight parallel code execution, local or distributed across the network.
 #'     Designed for simplicity, a 'mirai' evaluates an arbitrary expression
-#'     asynchronously, resolving automatically upon completion. Built upon
-#'     'nanonext' and 'NNG' (Nanomsg Next Gen), provides for a level of
-#'     scalability beyond R connection limits, utilising transports faster than
-#'     TCP/IP for inter-process communications.
+#'     asynchronously, resolving automatically upon completion. Leverages
+#'     'nanonext' and the underlying 'NNG' (Nanomsg Next Gen) library to provide
+#'     efficient task scheduling, scalability beyond R connection limits, and
+#'     transports faster than TCP/IP for inter-process communications.
 #'
 #' @section Notes:
 #'
