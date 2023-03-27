@@ -8,10 +8,10 @@
 \description{
 Lightweight parallel code execution, local or distributed across the network.
     Designed for simplicity, a 'mirai' evaluates an arbitrary expression
-    asynchronously, resolving automatically upon completion. Built on
-    'nanonext' and 'NNG' (Nanomsg Next Gen), uses scalability protocols not
-    subject to R connection limits and transports faster than TCP/IP where
-    applicable.
+    asynchronously, resolving automatically upon completion. Built upon
+    'nanonext' and 'NNG' (Nanomsg Next Gen), provides for a level of
+    scalability beyond R connection limits, utilising transports faster than
+    TCP/IP for inter-process communications.
 }
 \section{Notes}{
 

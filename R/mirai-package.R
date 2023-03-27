@@ -18,10 +18,10 @@
 #'
 #' Lightweight parallel code execution, local or distributed across the network.
 #'     Designed for simplicity, a 'mirai' evaluates an arbitrary expression
-#'     asynchronously, resolving automatically upon completion. Built on
-#'     'nanonext' and 'NNG' (Nanomsg Next Gen), uses scalability protocols not
-#'     subject to R connection limits and transports faster than TCP/IP where
-#'     applicable.
+#'     asynchronously, resolving automatically upon completion. Built upon
+#'     'nanonext' and 'NNG' (Nanomsg Next Gen), provides for a level of
+#'     scalability beyond R connection limits, utilising transports faster than
+#'     TCP/IP for inter-process communications.
 #'
 #' @section Notes:
 #'
@@ -50,8 +50,9 @@
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
 #' @importFrom nanonext call_aio context cv cv_value is_error_value listen
-#'     mclock msleep opt parse_url pipe_notify random recv recv_aio_signal reply
+#'     mclock msleep opt parse_url pipe_notify random recv recv_aio_signal
 #'     request request_signal send socket stat stop_aio unresolved wait
+#'     weakref<-
 #'
 #' @docType package
 #' @name mirai-package

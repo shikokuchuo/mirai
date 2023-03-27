@@ -75,7 +75,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
     close(devnull)
   })
   cv <- cv()
-  pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
+  pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE) && stop()
   count <- 0L
   if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
   op <- options()
@@ -180,7 +180,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE, ..., moni
   sock <- socket(protocol = "rep", dial = client, autostart = asyncdial || NA)
   on.exit(close(sock))
   cv <- cv()
-  pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
+  pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE) && stop()
 
   auto <- is.null(url)
   vectorised <- length(url) == n
@@ -192,7 +192,10 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE, ..., moni
 
   ctrchannel <- is.character(monitor)
   if (ctrchannel) {
-    reply(context(sock), execute = identity, recv_mode = 5L, send_mode = 2L, timeout = 1000L) && return(invisible())
+    ctx <- context(sock)
+    recv(ctx, mode = 5L, block = 2000L) && stop()
+    send(ctx, 0L, mode = 2L, block = 2000L) && stop()
+    close(ctx)
     statnames <- c("status_online", "status_busy", "tasks_assigned", "tasks_complete", "instance #")
     attr(servernames, "dispatcher_pid") <- Sys.getpid()
     sockc <- socket(protocol = "bus", dial = monitor, autostart = asyncdial || NA)
@@ -213,7 +216,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE, ..., moni
           sub(ports[1L], ports[i], url, fixed = TRUE)
     nsock <- socket(protocol = "req")
     ncv <- cv()
-    pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE)
+    pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE) && stop()
     listen(nsock, url = nurl, error = TRUE)
     if (i == 1L && !auto && parse_url(opt(attr(nsock, "listener")[[1L]], "url"))[["port"]] == "0") {
       realport <- opt(attr(nsock, "listener")[[1L]], "tcp-bound-port")
@@ -387,7 +390,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 
   arglist <- list(.expr = substitute(.expr), ...)
   if (length(.args))
-    arglist <- c(arglist, `names<-`(.args, as.character.default(substitute(.args)[-1L])))
+    arglist <- c(arglist, `names<-`(.args, `storage.mode<-`(substitute(.args)[-1L], "character")))
   envir <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
   if (length(..[[.compute]][["sock"]])) {
@@ -399,7 +402,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
     sock <- socket(protocol = "req", listen = url)
     launch_daemon(sprintf("mirai::.(\"%s\")", url))
     aio <- request(context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
-    `attr<-`(.subset2(aio, "aio"), "sock", sock)
+    `weakref<-`(aio, sock)
 
   }
 
@@ -936,8 +939,8 @@ launch_daemon <- function(args)
   system2(command = .command, args = c("-e", shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE)
 
 request_ack <- function(sock) {
-  r <- request(context(sock), data = 0L, send_mode = 2L, recv_mode = 5L, timeout = 1000L)
-  .subset2(call_aio(r), "data") && stop("dispatcher process launch - timed out after 1s")
+  r <- request(context(sock), data = 0L, send_mode = 2L, recv_mode = 5L, timeout = 2000L)
+  .subset2(call_aio(r), "data") && stop("dispatcher process launch - timed out after 2s")
 }
 
 mk_mirai_error <- function(e) `class<-`(if (length(call <- .subset2(e, "call")))

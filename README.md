@@ -21,9 +21,9 @@ network.
 Designed for simplicity, a ‘mirai’ evaluates an arbitrary expression
 asynchronously, resolving automatically upon completion.
 
-Built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen), uses scalability
-protocols not subject to R connection limits and transports faster than
-TCP/IP where applicable.
+Built upon ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen), provides for a level
+of scalability beyond R connection limits, utilising transports faster
+than TCP/IP for inter-process communications.
 
 `mirai()` returns a ‘mirai’ object immediately. ‘mirai’ (未来 みらい) is
 Japanese for ‘future’.
@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 1.269 1.174 -7.989 4.156 0.719 ...
+#>  num [1:100000000] 0.0525 -0.4094 0.4546 -3.5658 -0.0711 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 1.269 1.174 -7.989 4.156 0.719 ...
+#>  num [1:100000000] 0.0525 -0.4094 0.4546 -3.5658 -0.0711 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -255,12 +255,12 @@ daemons()
 #> 
 #> $daemons
 #>                        status_online status_busy tasks_assigned tasks_complete instance #
-#> abstract://n3063491533             1           0              0              0          1
-#> abstract://n9135961470             1           0              0              0          1
-#> abstract://n3039486211             1           0              0              0          1
-#> abstract://n1674302262             1           0              0              0          1
-#> abstract://n2654370972             1           0              0              0          1
-#> abstract://n4173326581             1           0              0              0          1
+#> abstract://n2483373319             1           0              0              0          1
+#> abstract://n2316389431             1           0              0              0          1
+#> abstract://n8150352445             1           0              0              0          1
+#> abstract://n3938384791             1           0              0              0          1
+#> abstract://n7965150070             1           0              0              0          1
+#> abstract://n2563441992             1           0              0              0          1
 ```
 
 The default `dispatcher = TRUE` launches a `dispatcher()` background
@@ -448,7 +448,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:32917"
+#> [1] "tcp://:37219"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -463,7 +463,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:32917")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:37219")'
 
 –
 
@@ -481,7 +481,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:32917"
+#> [1] "tcp://:37219"
 ```
 
 To reset all connections and revert to default behaviour:
