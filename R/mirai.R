@@ -935,10 +935,12 @@ print.miraiInterrupt <- function(x, ...) {
 
 #' Launch Background Process
 #'
-#' Uses \code{\link{system2}} to call \code{Rscript} in a background process,
-#'     with 'args' passed as command line argument to \code{Rscript -e 'args'}.
+#' Utility function which calls \code{Rscript} in a background process, with
+#'     'args' passed as command line argument to \code{Rscript -e 'args'}. May
+#'     be used to re-launch local daemons that have timed out, for instance.
 #'
-#' @param args character string. This will be shell quoted by \code{\link{shQuote}}.
+#' @param args character string, which will be shell quoted by \code{\link{shQuote}}
+#'     before being passed as argument.
 #'
 #' @return Invisibly, an exit code (zero upon success).
 #'

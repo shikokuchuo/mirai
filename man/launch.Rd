@@ -7,14 +7,16 @@
 launch(args)
 }
 \arguments{
-\item{args}{character string. This will be shell quoted by \code{\link{shQuote}}.}
+\item{args}{character string, which will be shell quoted by \code{\link{shQuote}}
+before being passed as argument.}
 }
 \value{
 Invisibly, an exit code (zero upon success).
 }
 \description{
-Uses \code{\link{system2}} to call \code{Rscript} in a background process,
-    with 'args' passed as command line argument to \code{Rscript -e 'args'}.
+Utility function which calls \code{Rscript} in a background process, with
+    'args' passed as command line argument to \code{Rscript -e 'args'}. May
+    be used to re-launch local daemons that have timed out, for instance.
 }
 \examples{
 if (interactive()) {
