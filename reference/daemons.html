@@ -129,11 +129,15 @@ connecting to different resources).</p></dd>
     arguments.</p>
 <p>Use <code>daemons(0)</code> to reset daemon connections:</p><ul><li><p>A reset is required before revising settings for the same compute
     profile, otherwise changes are not registered.</p></li>
-<li><p>All connected daemons and/or dispatchers will exit automatically.</p></li>
-<li><p>{mirai} will revert to the default behaviour of creating
-    a new background process for each request.</p></li>
+<li><p>All connected daemons and/or dispatchers exit automatically.</p></li>
+<li><p>{mirai} reverts to the default behaviour of creating a new
+    background process for each request.</p></li>
 </ul><p>When specifying a client URL, all daemons dialing into the client are
     detected automatically and resources may be added or removed at any time.</p>
+<p>If the client session ends, for whatever reason, all connected dispatcher
+    and daemon processes automatically exit as soon as their connections are
+    dropped. If a daemon is processing a task, it will exit as soon as the
+    task is complete.</p>
     </div>
     <div id="dispatcher">
     <h2>Dispatcher</h2>
