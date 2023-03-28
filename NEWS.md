@@ -1,6 +1,6 @@
 # mirai 0.8.1.9004 (development)
 
-* `dispatcher()` re-implemented using an efficient non-polling design. Results in significantly higher throughput and lower latency, consuming no processor usage when idle. Arguments 'pollfreqh' and 'pollfreql' removed as no longer applicable.
+* `dispatcher()` re-implemented using an efficient non-polling design. Results in significantly higher throughput and lower latency, consuming zero processor usage when idle. Arguments 'pollfreqh' and 'pollfreql' removed as no longer applicable.
 * Server and dispatcher processes exit automatically if the connection with the client is dropped. This significantly reduces the likelihood of orphaned processes.
 * Correct passthrough of `...` variables in the `daemons()` call.
 * Requires nanonext >= 0.8.1.

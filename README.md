@@ -21,10 +21,9 @@ network.
 Designed for simplicity, a ‘mirai’ evaluates an arbitrary expression
 asynchronously, resolving automatically upon completion.
 
-Leverages ‘nanonext’ and the underlying ‘NNG’ (Nanomsg Next Gen) library
-to provide efficient task scheduling, scalability beyond R connection
-limits, and transports faster than TCP/IP for inter-process
-communications.
+Leverages ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) to provide efficient
+task scheduling, scalability beyond R connection limits, and transports
+faster than TCP/IP for inter-process communications.
 
 `mirai()` returns a ‘mirai’ object immediately. ‘mirai’ (未来 みらい) is
 Japanese for ‘future’.
@@ -109,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 2.4558 -7.4023 -1.2222 -0.6255 0.0524 ...
+#>  num [1:100000000] -10.974 -0.142 1.335 2.598 0.91 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -117,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 2.4558 -7.4023 -1.2222 -0.6255 0.0524 ...
+#>  num [1:100000000] -10.974 -0.142 1.335 2.598 0.91 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -211,8 +210,8 @@ for (i in 1:10) {
 #> iteration 5 successful 
 #> iteration 6 successful 
 #> iteration 7 successful 
-#> Error: random error 
 #> iteration 8 successful 
+#> Error: random error 
 #> iteration 9 successful 
 #> iteration 10 successful
 ```
@@ -256,12 +255,12 @@ daemons()
 #> 
 #> $daemons
 #>                        status_online status_busy tasks_assigned tasks_complete instance #
-#> abstract://n4013406002             1           0              0              0          1
-#> abstract://n2301605937             1           0              0              0          1
-#> abstract://n5306897073             1           0              0              0          1
-#> abstract://n1768282245             1           0              0              0          1
-#> abstract://n9024394960             1           0              0              0          1
-#> abstract://n4124042341             1           0              0              0          1
+#> abstract://n2049946055             1           0              0              0          1
+#> abstract://n1227422372             1           0              0              0          1
+#> abstract://n7652447120             1           0              0              0          1
+#> abstract://n3038177524             1           0              0              0          1
+#> abstract://n1873925846             1           0              0              0          1
+#> abstract://n6017584969             1           0              0              0          1
 ```
 
 The default `dispatcher = TRUE` launches a `dispatcher()` background
@@ -431,8 +430,9 @@ daemons(0)
 #> [1] 0
 ```
 
-This also sends an exit signal to the dispatcher and all connected
-servers so that they exit automatically.
+Closing the connection causes the dispatcher to exit automatically, and
+in turn all connected servers when their respective connections with the
+dispatcher are terminated.
 
 #### Connecting to Remote Servers Directly
 
@@ -441,7 +441,7 @@ the client. The client listens at the below address, and distributes
 tasks to all connected server processes.
 
 ``` r
-daemons(url = "tcp://10.111.5.13:0", dispatcher = FALSE)
+daemons(url = "tcp://10.111.5.13:45073", dispatcher = FALSE)
 ```
 
 Alternatively, simply supply a colon followed by the port number to
@@ -449,7 +449,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:44047"
+#> [1] "tcp://:45073"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -464,7 +464,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:44047")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:0")'
 
 –
 
@@ -482,7 +482,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:44047"
+#> [1] "tcp://:45073"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -492,8 +492,7 @@ daemons(0)
 #> [1] 0
 ```
 
-This also sends an exit signal to connected server instances so that
-they exit automatically.
+This causes all connected server instances to exit automatically.
 
 [« Back to ToC](#table-of-contents)
 

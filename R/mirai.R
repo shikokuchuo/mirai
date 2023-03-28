@@ -456,13 +456,18 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     \itemize{
 #'     \item{A reset is required before revising settings for the same compute
 #'     profile, otherwise changes are not registered.}
-#'     \item{All connected daemons and/or dispatchers will exit automatically.}
-#'     \item{\{mirai\} will revert to the default behaviour of creating
-#'     a new background process for each request.}
+#'     \item{All connected daemons and/or dispatchers exit automatically.}
+#'     \item{\{mirai\} reverts to the default behaviour of creating a new
+#'     background process for each request.}
 #'     }
 #'
 #'     When specifying a client URL, all daemons dialing into the client are
 #'     detected automatically and resources may be added or removed at any time.
+#'
+#'     If the client session ends, for whatever reason, all connected dispatcher
+#'     and daemon processes automatically exit as soon as their connections are
+#'     dropped. If a daemon is processing a task, it will exit as soon as the
+#'     task is complete.
 #'
 #' @section Dispatcher:
 #'

@@ -9,9 +9,9 @@
 Lightweight parallel code execution, local or distributed across the network.
     Designed for simplicity, a 'mirai' evaluates an arbitrary expression
     asynchronously, resolving automatically upon completion. Leverages
-    'nanonext' and the underlying 'NNG' (Nanomsg Next Gen) library to provide
-    efficient task scheduling, scalability beyond R connection limits, and
-    transports faster than TCP/IP for inter-process communications.
+    'nanonext' and 'NNG' (Nanomsg Next Gen) to provide efficient task
+    scheduling, scalability beyond R connection limits, and transports faster
+    than TCP/IP for inter-process communications.
 }
 \section{Notes}{
 

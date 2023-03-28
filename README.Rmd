@@ -28,7 +28,7 @@ Lightweight parallel code execution, local or distributed across the network.
 
 Designed for simplicity, a 'mirai' evaluates an arbitrary expression asynchronously, resolving automatically upon completion.
 
-Leverages 'nanonext' and the underlying 'NNG' (Nanomsg Next Gen) library to provide efficient task scheduling, scalability beyond R connection limits, and transports faster than TCP/IP for inter-process communications.
+Leverages 'nanonext' and 'NNG' (Nanomsg Next Gen) to provide efficient task scheduling, scalability beyond R connection limits, and transports faster than TCP/IP for inter-process communications.
 
 `mirai()` returns a 'mirai' object immediately. 'mirai' (未来 みらい) is Japanese for 'future'.
 
@@ -325,7 +325,7 @@ To reset all connections and revert to default behaviour:
 daemons(0)
 ```
 
-This also sends an exit signal to the dispatcher and all connected servers so that they exit automatically.
+Closing the connection causes the dispatcher to exit automatically, and in turn all connected servers when their respective connections with the dispatcher are terminated.
 
 #### Connecting to Remote Servers Directly
 
@@ -373,7 +373,8 @@ To reset all connections and revert to default behaviour:
 ```{r reset}
 daemons(0)
 ```
-This also sends an exit signal to connected server instances so that they exit automatically.
+
+This causes all connected server instances to exit automatically.
 
 [&laquo; Back to ToC](#table-of-contents)
 
