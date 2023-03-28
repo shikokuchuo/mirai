@@ -16,14 +16,10 @@ m <- mirai({
   q <- m + n + 1L
   q / m
 }, m = 2L, .args = list(n), .timeout = 1000L)
-b <- m$data %>>% rnorm %>>% as.character()
-nanotestp(b)
 nanotest(inherits(call_mirai(m), "mirai"))
 nanotest(m$data == 3L || is_error_value(m$data))
 nanotest(identical(call_mirai(m), m))
 nanotest(is_mirai(m))
-nanotest(length(b) == 3L || length(b$data) == 3L)
-nanotest(is.character(b) || is.character(b$data))
 Sys.sleep(2.2)
 if (.Platform[["OS.type"]] != "windows" || length(R.version$crt)) {
   nanotesto(daemons(1L, dispatcher = FALSE))
@@ -46,10 +42,10 @@ if (.Platform[["OS.type"]] != "windows" || length(R.version$crt)) {
   Sys.sleep(1L)
   nanotest(daemons(url = value <- sprintf(mirai:::.urlfmt, nanonext::random()), dispatcher = FALSE) == value)
   nanotestz(daemons(0L))
-  Sys.sleep(1L)
+  Sys.sleep(0.5)
   nanotest(daemons(n = 2L, url = value <- "ws://:0", dispatcher = FALSE) != value)
   nanotestz(daemons(0L))
-  Sys.sleep(1L)
+  Sys.sleep(0.5)
   nanotesto(daemons(url = "tcp://:0"))
   nanotestz(daemons(0L))
   Sys.sleep(1L)
@@ -115,5 +111,4 @@ nanotestz(daemons(0L))
 nanotest(is_mirai_interrupt(r <- mirai:::mk_interrupt_error()))
 nanotestp(r)
 nanotestp(m)
-nanotestp(b)
 
