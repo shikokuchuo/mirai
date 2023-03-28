@@ -87,7 +87,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
     ctx <- context(sock)
     aio <- recv_aio_signal(ctx, mode = 1L, timeout = idletime, cv = cv)
     wait(cv) || break
-    envir <- .subset2(aio, "data")
+    envir <- .subset2(call_aio(aio), "data")
     is.integer(envir) && {
       count < timerstart && {
         start <- mclock()
