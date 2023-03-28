@@ -106,6 +106,7 @@ if (.Platform[["OS.type"]] != "windows" || length(R.version$crt)) {
     Sys.sleep(1L)
   }
 }
+Sys.sleep(1L)
 nanotesterr(daemons(url = "URL"), "argument")
 nanotesterr(daemons(-1), "zero or greater")
 nanotesterr(daemons(raw(0L)), "must be numeric")
