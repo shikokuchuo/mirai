@@ -2,6 +2,7 @@
 
 * `dispatcher()` re-implemented using an efficient non-polling design. Results in significantly higher throughput and lower latency, consuming zero processor usage when idle. Arguments 'pollfreqh' and 'pollfreql' removed as no longer applicable.
 * Server and dispatcher processes exit automatically if the connection with the client is dropped. This significantly reduces the likelihood of orphaned processes.
+* `launch()` exported as a utility for launching background Rscript processes (may be used for re-launching servers that time out for instance).
 * Correct passthrough of `...` variables in the `daemons()` call.
 * Requires nanonext >= 0.8.1.
 * Internal performance enhancements.

@@ -231,7 +231,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE, ..., moni
       sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
 
     if (auto)
-      launch_daemon(sprintf("mirai::server(\"%s\"%s)", nurl, dotstring))
+      launch(sprintf("mirai::server(\"%s\"%s)", nurl, dotstring))
 
     servers[[i]] <- nsock
     active[[i]] <- ncv
@@ -400,7 +400,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   } else {
     url <- sprintf(.urlfmt, random())
     sock <- socket(protocol = "req", listen = url)
-    launch_daemon(sprintf("mirai::.(\"%s\")", url))
+    launch(sprintf("mirai::.(\"%s\")", url))
     aio <- request(context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `weakref<-`(aio, sock)
 
@@ -644,7 +644,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
           sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
         args <- sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)",
                         urld, paste(sprintf("\"%s\"", url), collapse = ","), n, urlc, dotstring)
-        launch_daemon(args)
+        launch(args)
         request_ack(sock)
         `[[<-`(..[[.compute]], "sockc", sockc)
         proc <- n
@@ -682,13 +682,13 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         urlc <- sprintf("%s%s", urld, "c")
         sockc <- socket(protocol = "bus", listen = urlc)
         args <- sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", urld, n, urlc, dotstring)
-        launch_daemon(args)
+        launch(args)
         request_ack(sock)
         `[[<-`(..[[.compute]], "sockc", sockc)
       } else {
         args <- sprintf("mirai::server(\"%s\"%s)", urld, dotstring)
         for (i in seq_len(n))
-          launch_daemon(args)
+          launch(args)
       }
       `[[<-`(`[[<-`(..[[.compute]], "sock", sock), "proc", n)
     }
@@ -933,15 +933,34 @@ print.miraiInterrupt <- function(x, ...) {
 
 }
 
+#' Launch Background Process
+#'
+#' Uses \code{\link{system2}} to call \code{Rscript} in a background process,
+#'     with 'args' passed as command line argument to \code{Rscript -e 'args'}.
+#'
+#' @param args character string. This will be shell quoted by \code{\link{shQuote}}.
+#'
+#' @return Invisibly, an exit code (zero upon success).
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' launch('mirai::server("abstract://mirai", idletime = 60000L)')
+#'
+#' }
+#'
+#' @export
+#'
+launch <- function(args)
+  system2(command = .command, args = c("-e", shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE)
+
 # internals --------------------------------------------------------------------
 
 query_nodes <- function(sock) {
   send(sock, data = 0L, mode = 2L)
   recv(sock, mode = 1L, block = 1000L)
 }
-
-launch_daemon <- function(args)
-  system2(command = .command, args = c("-e", shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE)
 
 request_ack <- function(sock) {
   r <- request(context(sock), data = 0L, send_mode = 2L, recv_mode = 5L, timeout = 2000L)
