@@ -13,4 +13,3 @@ coverage:
         informational: true
 ignore:
   - "R/mirai-package.R"
-  - "R/pipe.R"

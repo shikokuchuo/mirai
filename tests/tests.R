@@ -16,12 +16,16 @@ m <- mirai({
   q <- m + n + 1L
   q / m
 }, m = 2L, .args = list(n), .timeout = 1000L)
+b <- m$data %>>% rnorm %>>% as.character()
+nanotestp(b)
 nanotest(inherits(call_mirai(m), "mirai"))
 nanotest(m$data == 3L || is_error_value(m$data))
 nanotest(identical(call_mirai(m), m))
 nanotest(is_mirai(m))
+nanotest(length(b) == 3L || length(b$data) == 3L)
+nanotest(is.character(b) || is.character(b$data))
 Sys.sleep(2.2)
-if (.Platform[["OS.type"]] != "windows" || length(R.version$crt)) {
+if (Sys.getenv("NOT_CRAN") == "true") {
   nanotesto(daemons(1L, dispatcher = FALSE))
   me <- mirai(mirai(), .timeout = 1000L)
   nanotest(is_mirai_error(call_mirai(me)$data) || is_error_value(me$data))
@@ -90,17 +94,15 @@ if (.Platform[["OS.type"]] != "windows" || length(R.version$crt)) {
   nanotestz(sum(status[, "instance #"]))
   nanotestz(daemons(0))
   Sys.sleep(1L)
-  if (Sys.getenv("NOT_CRAN") == "set") {
-    cleanup <- FALSE
-    nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, cleanup = cleanup))
-    mq <- mirai("server", .timeout = 1000)
-    nanotest(call_mirai(mq)$data == "server" || is_error_value(mq$data))
-    nanotest(is.matrix(status <- daemons()[["daemons"]]))
-    nanotesto(status[, "status_online"])
-    nanotesto(status[, "instance #"])
-    nanotestz(daemons(0))
-    Sys.sleep(1L)
-  }
+  cleanup <- FALSE
+  nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, cleanup = cleanup))
+  mq <- mirai("server", .timeout = 1000)
+  nanotest(call_mirai(mq)$data == "server" || is_error_value(mq$data))
+  nanotest(is.matrix(status <- daemons()[["daemons"]]))
+  nanotesto(status[, "status_online"])
+  nanotesto(status[, "instance #"])
+  nanotestz(daemons(0))
+  Sys.sleep(1L)
 }
 Sys.sleep(1L)
 nanotesterr(daemons(url = "URL"), "argument")
@@ -111,4 +113,5 @@ nanotestz(daemons(0L))
 nanotest(is_mirai_interrupt(r <- mirai:::mk_interrupt_error()))
 nanotestp(r)
 nanotestp(m)
+nanotestp(b)
 
