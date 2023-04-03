@@ -1,6 +1,7 @@
-# mirai 0.8.1.9005 (development)
+# mirai 0.8.2
 
-* `dispatcher()` re-implemented using an innovative non-polling design. Efficient process consumes zero processor usage when idle with significantly higher throughput and lower latency. Arguments 'pollfreqh' and 'pollfreql' removed as no longer applicable.
+* `dispatcher()` re-implemented using an innovative non-polling design. Efficient process consumes zero processor usage when idle and features significantly higher throughput and lower latency.
+  + Arguments 'pollfreqh' and 'pollfreql' removed as no longer applicable.
 * Server and dispatcher processes exit automatically if the connection with the client is dropped. This significantly reduces the likelihood of orphaned processes.
 * `launch()` exported as a utility for easily re-launching daemons that have timed out, for instance.
 * Correct passthrough of `...` variables in the `daemons()` call.
