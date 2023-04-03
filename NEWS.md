@@ -1,3 +1,5 @@
+# mirai 0.8.2.9000 (development)
+
 # mirai 0.8.2
 
 * `dispatcher()` re-implemented using an innovative non-polling design. Efficient process consumes zero processor usage when idle and features significantly higher throughput and lower latency.

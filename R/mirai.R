@@ -638,7 +638,6 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         urld <- sprintf(.urlfmt, random())
         urlc <- sprintf("%s%s", urld, "c")
         sock <- socket(protocol = "req", listen = urld)
-        reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
         sockc <- socket(protocol = "bus", listen = urlc)
         dotstring <- if (missing(...)) "" else
           sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
@@ -653,7 +652,6 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         proc <- opt(attr(sock, "listener")[[1L]], "url")
         if (parse_url(proc)[["port"]] == "0")
           proc <- sub("(?<=:)0(?![^/])", opt(attr(sock, "listener")[[1L]], "tcp-bound-port"), proc, perl = TRUE)
-        reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       }
       `[[<-`(`[[<-`(..[[.compute]], "sock", sock), "proc", proc)
     }
@@ -675,7 +673,6 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
       n > 0L || stop("the number of daemons must be zero or greater")
       urld <- sprintf(.urlfmt, random())
       sock <- socket(protocol = "req", listen = urld)
-      reg.finalizer(sock, function(x) daemons(0L), onexit = TRUE)
       dotstring <- if (missing(...)) "" else
         sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
       if (dispatcher) {
