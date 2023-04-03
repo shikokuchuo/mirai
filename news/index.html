@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.1.9005</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2</span>
       </span>
     </div>
 
@@ -54,9 +54,11 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.1.9005" id="mirai-0819005-development">mirai 0.8.1.9005 (development)<a class="anchor" aria-label="anchor" href="#mirai-0819005-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.2" id="mirai-082">mirai 0.8.2<a class="anchor" aria-label="anchor" href="#mirai-082"></a></h2>
 <ul><li>
-<code><a href="../reference/dispatcher.html">dispatcher()</a></code> re-implemented using an innovative non-polling design. Efficient process consumes zero processor usage when idle with significantly higher throughput and lower latency. Arguments ‘pollfreqh’ and ‘pollfreql’ removed as no longer applicable.</li>
+<code><a href="../reference/dispatcher.html">dispatcher()</a></code> re-implemented using an innovative non-polling design. Efficient process consumes zero processor usage when idle and features significantly higher throughput and lower latency.
+<ul><li>Arguments ‘pollfreqh’ and ‘pollfreql’ removed as no longer applicable.</li>
+</ul></li>
 <li>Server and dispatcher processes exit automatically if the connection with the client is dropped. This significantly reduces the likelihood of orphaned processes.</li>
 <li>
 <code><a href="../reference/launch.html">launch()</a></code> exported as a utility for easily re-launching daemons that have timed out, for instance.</li>
