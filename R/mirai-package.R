@@ -74,6 +74,9 @@ NULL
            .urlfmt <<- "ipc:///tmp/n%.f"
          })
 
+.onUnload <- function(libpath)
+  invisible(lapply(.., function(x) if (length(x[["sock"]])) close(x[["sock"]])))
+
 .command <- NULL
 .urlfmt <- NULL
 .. <- `[[<-`(new.env(hash = FALSE), "default", new.env(hash = FALSE))

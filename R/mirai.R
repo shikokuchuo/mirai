@@ -82,18 +82,17 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
   se <- search()
   start <- mclock()
 
-  while ((live <- count < maxtasks) && (live <- mclock() - start < walltime)) {
+  while (count < maxtasks && mclock() - start < walltime) {
 
     ctx <- context(sock)
     aio <- recv_aio_signal(ctx, mode = 1L, timeout = idletime, cv = cv)
-    wait(cv) || break
+    wait(cv) || return(invisible())
     envir <- .subset2(call_aio(aio), "data")
     is.integer(envir) && {
       count < timerstart && {
         start <- mclock()
         next
       }
-      live <- FALSE
       break
     }
     data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
@@ -109,7 +108,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 
   }
 
-  if (!live) msleep(exitlinger)
+  msleep(exitlinger)
 
 }
 
