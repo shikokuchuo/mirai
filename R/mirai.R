@@ -217,13 +217,13 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
   }
 
   for (i in seq_n) {
-    nurl <- if (auto) sprintf(.urlfmt, if (token) i else random()) else
+    nurl <- if (auto) sprintf(.urlfmt, "") else
       if (vectorised) url[i] else
         if (is.null(ports)) sprintf("%s/%d", url, i) else
           sub(ports[1L], ports[i], url, fixed = TRUE)
     basenames[i] <- nurl
-    if (token)
-      nurl <- append_token(nurl)
+    if (auto || token)
+      nurl <- append_token(auto, nurl)
     nsock <- socket(protocol = "req")
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE) && stop()
@@ -279,7 +279,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
             servers[[i]] <- socket(protocol = "req")
             active[[i]] <- cv()
             pipe_notify(servers[[i]], cv = active[[i]], cv2 = cv, flag = FALSE) && stop()
-            data <- servernames[i] <- append_token(basenames[i])
+            data <- servernames[i] <- append_token(auto, basenames[i])
             listen(servers[[i]], url = data, error = TRUE)
             if (token) lock(servers[[i]], cv = active[[i]])
           } else {
@@ -425,7 +425,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
                    data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
 
   } else {
-    url <- sprintf(.urlfmt, random())
+    url <- sprintf(.urlfmt, new_token())
     sock <- socket(protocol = "req", listen = url)
     launch(sprintf("mirai::.(\"%s\")", url))
     aio <- request(context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
@@ -649,8 +649,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default") {
 
   missing(n) && missing(url) &&
-    return(list(connections = ifnne(..[[.compute]][["sock"]], stat, "pipes", 0),
-                daemons = ifnne(..[[.compute]][["sockc"]], query_nodes, 0L, ..[[.compute]][["proc"]] %||% 0L)))
+    return(list(connections = ifle(..[[.compute]][["sock"]], stat, "pipes", 0),
+                daemons = ifle(..[[.compute]][["sockc"]], query_nodes, 0L, ..[[.compute]][["proc"]] %||% 0L)))
 
   if (is.null(..[[.compute]])) `[[<-`(.., .compute, new.env(hash = FALSE, parent = environment(daemons)))
 
@@ -661,7 +661,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n > 0L) as.integer(n) else
           stop("'n' must be 1 or greater if specified with a client URL")
         parse_url(url)
-        urld <- sprintf(.urlfmt, random())
+        urld <- sprintf(.urlfmt, new_token())
         urlc <- sprintf("%s%s", urld, "c")
         sock <- socket(protocol = "req", listen = urld)
         sockc <- socket(protocol = "bus", listen = urlc)
@@ -697,7 +697,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
     } else if (is.null(..[[.compute]][["sock"]])) {
 
       n > 0L || stop("the number of daemons must be zero or greater")
-      urld <- sprintf(.urlfmt, random())
+      urld <- sprintf(.urlfmt, new_token())
       sock <- socket(protocol = "req", listen = urld)
       dotstring <- if (missing(...)) "" else
         sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
@@ -1012,7 +1012,8 @@ launch <- function(args)
 #' @export
 #'
 saisei <- function(i, .compute = "default")
-  ifnn(..[[.compute]][["sockc"]], query_nodes, as.integer(i))
+  if (length(..[[.compute]][["sockc"]]))
+    query_nodes(..[[.compute]][["sockc"]], as.integer(i))
 
 # internals --------------------------------------------------------------------
 
@@ -1026,7 +1027,10 @@ request_ack <- function(sock) {
   .subset2(call_aio(r), "data") && stop("dispatcher process launch - timed out after 2s")
 }
 
-append_token <- function(url) sprintf("%s/%s", url, sha1(random(100L)))
+new_token <- function() sha1(runif(n = 100L))
+
+append_token <- function(auto, url)
+  if (auto) sprintf("%s%s", url, new_token()) else sprintf("%s/%s", url, new_token())
 
 mk_mirai_error <- function(e) `class<-`(if (length(call <- .subset2(e, "call")))
   sprintf("Error in %s: %s", deparse(call, nlines = 1L), .subset2(e, "message")) else
@@ -1035,7 +1039,6 @@ mk_mirai_error <- function(e) `class<-`(if (length(call <- .subset2(e, "call")))
 mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
 
 `%||%` <- function(x, y) if (length(x)) x else y
-`%x%` <- function(x, f) if (length(x)) f(x)
-ifnn <- function(x, f, a) if (length(x)) f(x, a)
-ifnne <- function(x, f, a, y) if (length(x)) f(x, a) else y
+
+ifle <- function(x, f, a, y) if (length(x)) f(x, a) else y
 

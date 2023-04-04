@@ -101,12 +101,10 @@ if (Sys.getenv("NOT_CRAN") == "true") {
   nanotest(is.matrix(status <- daemons()[["daemons"]]))
   nanotesto(status[, "status_online"])
   nanotesto(status[, "instance #"])
-  if (Sys.info()[["sysname"]] == "Linux") {
-    nanotest(is.character(saisei(i = 1L)))
-    nanotest(is.matrix(status <- daemons()[["daemons"]]))
-    nanotestz(status[, "status_online"])
-    nanotestz(status[, "instance #"])
-  }
+  nanotest(is.character(saisei(i = 1L)))
+  nanotest(is.matrix(status <- daemons()[["daemons"]]))
+  nanotestz(status[, "status_online"])
+  nanotestz(status[, "instance #"])
   nanotestz(daemons(0))
   Sys.sleep(1L)
 }

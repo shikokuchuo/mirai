@@ -50,9 +50,9 @@
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
 #' @importFrom nanonext call_aio context cv cv_value is_error_value listen lock
-#'     mclock msleep opt parse_url pipe_notify random recv recv_aio_signal
-#'     request request_signal send sha1 socket stat stop_aio unresolved wait
-#'     weakref<-
+#'     mclock msleep opt parse_url pipe_notify recv recv_aio_signal request
+#'     request_signal send sha1 socket stat stop_aio unresolved wait weakref<-
+#' @importFrom stats runif
 #'
 #' @docType package
 #' @name mirai-package
@@ -63,19 +63,19 @@ NULL
   switch(Sys.info()[["sysname"]],
          Linux = {
            .command <<- file.path(R.home("bin"), "Rscript")
-           .urlfmt <<- "abstract://n%.f"
+           .urlfmt <<- "abstract://%s"
          },
          Windows = {
            .command <<- file.path(R.home("bin"), "Rscript.exe")
-           .urlfmt <<- "ipc://n%.f"
+           .urlfmt <<- "ipc://%s"
          },
          {
            .command <<- file.path(R.home("bin"), "Rscript")
-           .urlfmt <<- "ipc:///tmp/n%.f"
+           .urlfmt <<- "ipc:///tmp/%s"
          })
 
 .onUnload <- function(libpath)
-  invisible(lapply(.., function(x) x[["sock"]] %x% close))
+  invisible(lapply(.., function(x) if (length(x[["sock"]])) close(x[["sock"]])))
 
 .command <- NULL
 .urlfmt <- NULL
