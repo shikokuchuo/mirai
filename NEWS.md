@@ -2,6 +2,7 @@
 
 * `dispatcher()` gains the argument 'token' for appending a unique token to each URL the dispatcher listens at.
 * `saisei()` implemented to regenerate the token used by a given dispatcher socket.
+* Requires nanonext >= [0.8.2].
 * Internal performance enhancements.
 
 # mirai 0.8.2
