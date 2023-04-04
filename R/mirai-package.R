@@ -49,7 +49,7 @@
 #' @author Charlie Gao \email{charlie.gao@@shikokuchuo.net}
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
-#' @importFrom nanonext call_aio context cv cv_value is_error_value listen
+#' @importFrom nanonext call_aio context cv cv_value is_error_value listen lock
 #'     mclock msleep opt parse_url pipe_notify random recv recv_aio_signal
 #'     request request_signal send sha1 socket stat stop_aio unresolved wait
 #'     weakref<-

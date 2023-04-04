@@ -217,7 +217,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
   }
 
   for (i in seq_n) {
-    nurl <- if (auto) sprintf(.urlfmt, random()) else
+    nurl <- if (auto) sprintf(.urlfmt, if (token) i else random()) else
       if (vectorised) url[i] else
         if (is.null(ports)) sprintf("%s/%d", url, i) else
           sub(ports[1L], ports[i], url, fixed = TRUE)
@@ -228,6 +228,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE) && stop()
     listen(nsock, url = nurl, error = TRUE)
+    if (token) lock(nsock, cv = ncv)
     if (i == 1L && !auto && parse_url(opt(attr(nsock, "listener")[[1L]], "url"))[["port"]] == "0") {
       realport <- opt(attr(nsock, "listener")[[1L]], "tcp-bound-port")
       nurl <- sub("(?<=:)0(?![^/])", realport, nurl, perl = TRUE)
@@ -273,12 +274,18 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
       ctrchannel && !unresolved(cmessage) && {
         i <- .subset2(cmessage, "data")
         if (i) {
-          close(servers[[i]])
-          servers[[i]] <- socket(protocol = "req")
-          active[[i]] <- cv()
-          pipe_notify(servers[[i]], cv = active[[i]], cv2 = cv, flag = FALSE) && stop()
-          data <- servernames[i] <- append_token(basenames[i])
-          listen(servers[[i]], url = data, error = TRUE)
+          if (i > 0 && i <= n) {
+            close(servers[[i]])
+            servers[[i]] <- socket(protocol = "req")
+            active[[i]] <- cv()
+            pipe_notify(servers[[i]], cv = active[[i]], cv2 = cv, flag = FALSE) && stop()
+            data <- servernames[i] <- append_token(basenames[i])
+            listen(servers[[i]], url = data, error = TRUE)
+            if (token) lock(servers[[i]], cv = active[[i]])
+          } else {
+            data <- NULL
+          }
+
         } else {
           data <- `attributes<-`(c(activevec, assigned - complete, assigned, complete, instance),
                                  list(dim = c(n, 5L), dimnames = list(servernames, statnames)))
@@ -452,8 +459,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' @param ... additional arguments passed through to \code{\link{dispatcher}} if
 #'     using active dispatch and/or \code{\link{server}} if launching local daemons.
 #' @param .compute (optional) character compute profile to use for creating the
-#'     daemons (each compute profile can have its own set of daemons for
-#'     connecting to different resources).
+#'     daemons (each compute profile has its own set of daemons for connecting
+#'     to different resources).
 #'
 #' @return Setting daemons: integer number of daemons set, or the character
 #'     client URL.
@@ -643,7 +650,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 
   missing(n) && missing(url) &&
     return(list(connections = if (length(..[[.compute]][["sock"]])) stat(..[[.compute]][["sock"]], "pipes") else 0,
-                daemons = if (length(..[[.compute]][["sockc"]])) query_nodes(..[[.compute]][["sockc"]], dispatcher) else
+                daemons = if (length(..[[.compute]][["sockc"]])) query_nodes(..[[.compute]][["sockc"]], 0L) else
                   if (length(..[[.compute]][["proc"]])) ..[[.compute]][["proc"]] else 0L))
 
   if (is.null(..[[.compute]])) `[[<-`(.., .compute, new.env(hash = FALSE, parent = environment(daemons)))
@@ -974,10 +981,48 @@ print.miraiInterrupt <- function(x, ...) {
 launch <- function(args)
   system2(command = .command, args = c("-e", shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE)
 
+#' Saisei - Regenerate Token
+#'
+#' When using daemons with a local dispatcher service, replaces an existing
+#'     socket at the dispatcher with a new one, listening to a URL incorporating
+#'     a newly-generated token.
+#'
+#' @param i integer \code{i}th daemon to replace.
+#' @param .compute (optional) character compute profile to use (each compute
+#'     profile has its own set of daemons for connecting to different resources).
+#'
+#' @return The regenerated character URL upon success, or else NULL.
+#'
+#' @details Care should be taken when calling this function as the specified
+#'     socket will be closed and replaced immediately without waiting for any
+#'     task in progress to finish.
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' daemons(1, token = TRUE)
+#' daemons()
+#' saisei(i = 1L)
+#' daemons()
+#'
+#' daemons(0)
+#'
+#' }
+#'
+#' @export
+#'
+saisei <- function(i, .compute = "default") {
+
+  length(..[[.compute]][["sockc"]]) || return()
+  query_nodes(..[[.compute]][["sockc"]], as.integer(i))
+
+}
+
 # internals --------------------------------------------------------------------
 
 query_nodes <- function(sock, command) {
-  send(sock, data = if (is.integer(command)) command else 0L, mode = 2L)
+  send(sock, data = command, mode = 2L)
   recv(sock, mode = 1L, block = 1000L)
 }
 

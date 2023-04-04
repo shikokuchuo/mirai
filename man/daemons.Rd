@@ -22,8 +22,8 @@ the client and ensures FIFO scheduling, queueing tasks if necessary
 using active dispatch and/or \code{\link{server}} if launching local daemons.}
 
 \item{.compute}{(optional) character compute profile to use for creating the
-daemons (each compute profile can have its own set of daemons for
-connecting to different resources).}
+daemons (each compute profile has its own set of daemons for connecting
+to different resources).}
 }
 \value{
 Setting daemons: integer number of daemons set, or the character
