@@ -74,8 +74,6 @@ NULL
            .urlfmt <<- "ipc:///tmp/n%.f"
          })
 
-.onUnload <- function(libpath) for (i in names(..)) daemons(0L, .compute = i)
-
 .command <- NULL
 .urlfmt <- NULL
 .. <- `[[<-`(new.env(hash = FALSE), "default", new.env(hash = FALSE))
