@@ -4,7 +4,15 @@
 \alias{dispatcher}
 \title{mirai Dispatcher}
 \usage{
-dispatcher(client, url = NULL, n = NULL, asyncdial = TRUE, ..., monitor = NULL)
+dispatcher(
+  client,
+  url = NULL,
+  n = NULL,
+  asyncdial = TRUE,
+  token = FALSE,
+  ...,
+  monitor = NULL
+)
 }
 \arguments{
 \item{client}{the client URL to dial as a character string (where tasks are
@@ -29,6 +37,10 @@ immediately successful. However this can mask potential connection issues
 and specifying FALSE will error if a connection is not immediately
 possible (e.g. \code{\link{daemons}} has yet to be called on the client,
 or the specified port is not open etc.).}
+
+\item{token}{[default FALSE] if TRUE, appends a unique 40-character token
+to each URL path the dispatcher listens at (not applicable for TCP URLs
+which do not accept a path).}
 
 \item{...}{additional arguments passed through to \code{\link{server}} if
 launching local daemons i.e. 'url' is not specified.}

@@ -1,4 +1,7 @@
-# mirai 0.8.2.9000 (development)
+# mirai 0.8.2.9001 (development)
+
+* `dispatcher()` gains the argument 'token' for appending a unique token to each URL the dispatcher listens at.
+* Internal performance enhancements.
 
 # mirai 0.8.2
 

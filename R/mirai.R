@@ -155,6 +155,9 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 #'     Otherwise 'n' will be inferred from the number of URLs supplied as '...'.
 #'     Where a single URL is supplied and 'n' > 1, 'n' unique URLs will be
 #'     automatically assigned for servers to dial into.
+#' @param token [default FALSE] if TRUE, appends a unique 40-character token
+#'     to each URL path the dispatcher listens at (not applicable for TCP URLs
+#'     which do not accept a path).
 #' @param ... additional arguments passed through to \code{\link{server}} if
 #'     launching local daemons i.e. 'url' is not specified.
 #' @param monitor (for package internal use, not applicable if called
@@ -171,7 +174,8 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 #'
 #' @export
 #'
-dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE, ..., monitor = NULL) {
+dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
+                       token = FALSE, ..., monitor = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop("at least one URL must be supplied for 'url' or 'n' must be at least 1")
@@ -184,7 +188,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE, ..., moni
   auto <- is.null(url)
   vectorised <- length(url) == n
   seq_n <- seq_len(n)
-  servernames <- character(n)
+  basenames <- servernames <- character(n)
   instance <- istore <- complete <- assigned <- integer(n)
   serverfree <- !integer(n)
   active <- servers <- queue <- vector(mode = "list", length = n)
@@ -202,10 +206,14 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE, ..., moni
     cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
   }
 
-  if (!auto && !vectorised) {
+  if (!auto) {
     baseurl <- parse_url(url)
-    ports <- if (grepl("tcp", baseurl[["scheme"]], fixed = TRUE))
-      if (baseurl[["port"]] == "0") integer(n) else seq.int(baseurl[["port"]], length.out = n)
+    if (grepl("tcp", baseurl[["scheme"]], fixed = TRUE)) {
+      ports <- if (baseurl[["port"]] == "0") integer(n) else seq.int(baseurl[["port"]], length.out = n)
+      token <- FALSE
+    } else {
+      ports <- NULL
+    }
   }
 
   for (i in seq_n) {
@@ -213,6 +221,9 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE, ..., moni
       if (vectorised) url[i] else
         if (is.null(ports)) sprintf("%s/%d", url, i) else
           sub(ports[1L], ports[i], url, fixed = TRUE)
+    basenames[i] <- nurl
+    if (token)
+      nurl <- sprintf("%s/%s", nurl, sha1(random(100L)))
     nsock <- socket(protocol = "req")
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE) && stop()
@@ -260,8 +271,18 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE, ..., moni
       free <- which(serverfree & activevec)
 
       ctrchannel && !unresolved(cmessage) && {
-        data <- `attributes<-`(c(activevec, assigned - complete, assigned, complete, instance),
-                               list(dim = c(n, 5L), dimnames = list(servernames, statnames)))
+        i <- .subset2(cmessage, "data")
+        if (i) {
+          close(servers[[i]])
+          servers[[i]] <- socket(protocol = "req")
+          active[[i]] <- cv()
+          pipe_notify(servers[[i]], cv = active[[i]], cv2 = cv, flag = FALSE) && stop()
+          data <- servernames[i] <- sprintf("%s/%s", basenames[i], sha1(random(100L)))
+          listen(servers[[i]], url = data, error = TRUE)
+        } else {
+          data <- `attributes<-`(c(activevec, assigned - complete, assigned, complete, instance),
+                                 list(dim = c(n, 5L), dimnames = list(servernames, statnames)))
+        }
         send(sockc, data = data, mode = 1L)
         cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
         next
@@ -622,7 +643,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 
   missing(n) && missing(url) &&
     return(list(connections = if (length(..[[.compute]][["sock"]])) stat(..[[.compute]][["sock"]], "pipes") else 0,
-                daemons = if (length(..[[.compute]][["sockc"]])) query_nodes(..[[.compute]][["sockc"]]) else
+                daemons = if (length(..[[.compute]][["sockc"]])) query_nodes(..[[.compute]][["sockc"]], dispatcher) else
                   if (length(..[[.compute]][["proc"]])) ..[[.compute]][["proc"]] else 0L))
 
   if (is.null(..[[.compute]])) `[[<-`(.., .compute, new.env(hash = FALSE, parent = environment(daemons)))
@@ -955,8 +976,8 @@ launch <- function(args)
 
 # internals --------------------------------------------------------------------
 
-query_nodes <- function(sock) {
-  send(sock, data = 0L, mode = 2L)
+query_nodes <- function(sock, command) {
+  send(sock, data = if (is.integer(command)) command else 0L, mode = 2L)
   recv(sock, mode = 1L, block = 1000L)
 }
 

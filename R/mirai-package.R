@@ -51,7 +51,7 @@
 #'
 #' @importFrom nanonext call_aio context cv cv_value is_error_value listen
 #'     mclock msleep opt parse_url pipe_notify random recv recv_aio_signal
-#'     request request_signal send socket stat stop_aio unresolved wait
+#'     request request_signal send sha1 socket stat stop_aio unresolved wait
 #'     weakref<-
 #'
 #' @docType package
