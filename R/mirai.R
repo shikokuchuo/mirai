@@ -223,7 +223,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
           sub(ports[1L], ports[i], url, fixed = TRUE)
     basenames[i] <- nurl
     if (token)
-      nurl <- sprintf("%s/%s", nurl, sha1(random(100L)))
+      nurl <- append_token(nurl)
     nsock <- socket(protocol = "req")
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE) && stop()
@@ -277,7 +277,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
           servers[[i]] <- socket(protocol = "req")
           active[[i]] <- cv()
           pipe_notify(servers[[i]], cv = active[[i]], cv2 = cv, flag = FALSE) && stop()
-          data <- servernames[i] <- sprintf("%s/%s", basenames[i], sha1(random(100L)))
+          data <- servernames[i] <- append_token(basenames[i])
           listen(servers[[i]], url = data, error = TRUE)
         } else {
           data <- `attributes<-`(c(activevec, assigned - complete, assigned, complete, instance),
@@ -985,6 +985,8 @@ request_ack <- function(sock) {
   r <- request(context(sock), data = 0L, send_mode = 2L, recv_mode = 5L, timeout = 2000L)
   .subset2(call_aio(r), "data") && stop("dispatcher process launch - timed out after 2s")
 }
+
+append_token <- function(url) sprintf("%s/%s", url, sha1(random(100L)))
 
 mk_mirai_error <- function(e) `class<-`(if (length(call <- .subset2(e, "call")))
   sprintf("Error in %s: %s", deparse(call, nlines = 1L), .subset2(e, "message")) else

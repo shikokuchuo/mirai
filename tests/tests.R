@@ -94,13 +94,14 @@ if (Sys.getenv("NOT_CRAN") == "true") {
   nanotestz(sum(status[, "instance #"]))
   nanotestz(daemons(0))
   Sys.sleep(1L)
-  cleanup <- FALSE
-  nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, cleanup = cleanup))
+  option <- FALSE
+  nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, token = option, cleanup = option))
   mq <- mirai("server", .timeout = 1000)
   nanotest(call_mirai(mq)$data == "server" || is_error_value(mq$data))
   nanotest(is.matrix(status <- daemons()[["daemons"]]))
   nanotesto(status[, "status_online"])
   nanotesto(status[, "instance #"])
+  nanotest(is.character(daemons(,,1L)$daemons))
   nanotestz(daemons(0))
   Sys.sleep(1L)
 }
