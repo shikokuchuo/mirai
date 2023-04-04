@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9001</span>
       </span>
     </div>
 
@@ -61,7 +61,15 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dispatcher</span><span class="op">(</span><span class="va">client</span>, url <span class="op">=</span> <span class="cn">NULL</span>, n <span class="op">=</span> <span class="cn">NULL</span>, asyncdial <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span>, monitor <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dispatcher</span><span class="op">(</span></span>
+<span>  <span class="va">client</span>,</span>
+<span>  url <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  asyncdial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  token <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  monitor <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -95,6 +103,12 @@ immediately successful. However this can mask potential connection issues
 and specifying FALSE will error if a connection is not immediately
 possible (e.g. <code><a href="daemons.html">daemons</a></code> has yet to be called on the client,
 or the specified port is not open etc.).</p></dd>
+
+
+<dt>token</dt>
+<dd><p>[default FALSE] if TRUE, appends a unique 40-character token
+to each URL path the dispatcher listens at (not applicable for TCP URLs
+which do not accept a path).</p></dd>
 
 
 <dt>...</dt>
