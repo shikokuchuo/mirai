@@ -75,7 +75,7 @@ NULL
          })
 
 .onUnload <- function(libpath)
-  invisible(lapply(.., function(x) if (length(x[["sock"]])) close(x[["sock"]])))
+  invisible(lapply(.., function(x) x[["sock"]] %x% close))
 
 .command <- NULL
 .urlfmt <- NULL

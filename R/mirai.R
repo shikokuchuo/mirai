@@ -649,9 +649,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default") {
 
   missing(n) && missing(url) &&
-    return(list(connections = if (length(..[[.compute]][["sock"]])) stat(..[[.compute]][["sock"]], "pipes") else 0,
-                daemons = if (length(..[[.compute]][["sockc"]])) query_nodes(..[[.compute]][["sockc"]], 0L) else
-                  if (length(..[[.compute]][["proc"]])) ..[[.compute]][["proc"]] else 0L))
+    return(list(connections = ifnne(..[[.compute]][["sock"]], stat, "pipes", 0),
+                daemons = ifnne(..[[.compute]][["sockc"]], query_nodes, 0L, ..[[.compute]][["proc"]] %||% 0L)))
 
   if (is.null(..[[.compute]])) `[[<-`(.., .compute, new.env(hash = FALSE, parent = environment(daemons)))
 
@@ -719,7 +718,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 
   }
 
-  if (length(..[[.compute]][["proc"]])) ..[[.compute]][["proc"]] else 0L
+  ..[[.compute]][["proc"]] %||% 0L
 
 }
 
@@ -1012,12 +1011,8 @@ launch <- function(args)
 #'
 #' @export
 #'
-saisei <- function(i, .compute = "default") {
-
-  length(..[[.compute]][["sockc"]]) || return()
-  query_nodes(..[[.compute]][["sockc"]], as.integer(i))
-
-}
+saisei <- function(i, .compute = "default")
+  ifnn(..[[.compute]][["sockc"]], query_nodes, as.integer(i))
 
 # internals --------------------------------------------------------------------
 
@@ -1038,4 +1033,9 @@ mk_mirai_error <- function(e) `class<-`(if (length(call <- .subset2(e, "call")))
     sprintf("Error: %s", .subset2(e, "message")), c("miraiError", "errorValue"))
 
 mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
+
+`%||%` <- function(x, y) if (length(x)) x else y
+`%x%` <- function(x, f) if (length(x)) f(x)
+ifnn <- function(x, f, a) if (length(x)) f(x, a)
+ifnne <- function(x, f, a, y) if (length(x)) f(x, a) else y
 
