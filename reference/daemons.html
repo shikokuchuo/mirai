@@ -24,7 +24,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9003</span>
       </span>
     </div>
 
@@ -118,9 +118,9 @@ to different resources).</p></dd>
     Will always be 1L when using dispatcher as there is only a single
     connection to the dispatcher, which then connects to the servers in turn.</p></li>
 <li><p><code>daemons</code> - if using dispatcher: a matrix of statistics
-    for each server: URL, online and busy status, cumulative tasks assigned
-    and completed (reset if a server re-connects), and instance # (increments
-    every time a server connects to the URL). If not using dispatcher: the
+    for each server: URL, online status, instance number (increments each
+    time a server connects to the URL), cumulative tasks assigned and
+    completed (reset if a server re-connects). If not using dispatcher: the
     number of daemons set, or else the client URL.</p></li>
 </ul></div>
     <div id="details">
@@ -255,14 +255,14 @@ to different resources).</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="co"># Only run examples in interactive R sessions</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Create 2 local daemons (active dispatch)</span></span></span>
+<span class="r-in"><span><span class="co"># Create 2 local daemons (using dispatcher)</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># View status</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Reset to zero</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Create 2 local daemons (direct connection)</span></span></span>
+<span class="r-in"><span><span class="co"># Create 2 local daemons (not using dispatcher)</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">2</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># View status</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="op">)</span></span></span>
