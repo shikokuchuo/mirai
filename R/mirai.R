@@ -273,8 +273,6 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
         complete[changes] <- 0L
       }
 
-      free <- which(serverfree & activevec)
-
       ctrchannel && !unresolved(cmessage) && {
         i <- .subset2(cmessage, "data")
         if (i) {
@@ -299,6 +297,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
         cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
         next
       }
+
+      free <- which(serverfree & activevec)
 
       if (length(free))
         for (q in free)
