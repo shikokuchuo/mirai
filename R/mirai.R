@@ -1027,7 +1027,7 @@ request_ack <- function(sock) {
   .subset2(call_aio(r), "data") && stop("dispatcher process launch - timed out after 2s")
 }
 
-new_token <- function() sha1(runif(n = 100L))
+new_token <- function() sha1(random(n = 8L))
 
 append_token <- function(auto, url)
   if (auto) sprintf("%s%s", url, new_token()) else sprintf("%s/%s", url, new_token())

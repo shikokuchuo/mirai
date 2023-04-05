@@ -3,7 +3,7 @@
 * `dispatcher()` gains the argument 'token' for appending a unique token to each URL the dispatcher listens at.
 * `saisei()` implemented to regenerate the token used by a given dispatcher socket.
 * Local IPC socket URLs revised to use unique tokens.
-* Daemons status matrix headers updated to "online", "instance", "assigned", and "complete".
+* Daemons status matrix headers updated to 'online', 'instance', 'assigned', and 'complete'.
 * Requires nanonext >= [0.8.2].
 * Internal performance enhancements.
 
