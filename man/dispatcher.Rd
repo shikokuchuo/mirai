@@ -10,6 +10,7 @@ dispatcher(
   n = NULL,
   asyncdial = TRUE,
   token = FALSE,
+  lock = FALSE,
   ...,
   monitor = NULL
 )
@@ -41,6 +42,10 @@ or the specified port is not open etc.).}
 \item{token}{[default FALSE] if TRUE, appends a unique 40-character token
 to each URL path the dispatcher listens at (not applicable for TCP URLs
 which do not accept a path).}
+
+\item{lock}{[default FALSE] if TRUE, sockets lock once a connection has been
+accepted, preventing further connection attempts. This provides safety
+against more than one server trying to connect to a unique URL.}
 
 \item{...}{additional arguments passed through to \code{\link{server}} if
 launching local daemons i.e. 'url' is not specified.}

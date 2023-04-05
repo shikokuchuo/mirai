@@ -158,6 +158,9 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 #' @param token [default FALSE] if TRUE, appends a unique 40-character token
 #'     to each URL path the dispatcher listens at (not applicable for TCP URLs
 #'     which do not accept a path).
+#' @param lock [default FALSE] if TRUE, sockets lock once a connection has been
+#'     accepted, preventing further connection attempts. This provides safety
+#'     against more than one server trying to connect to a unique URL.
 #' @param ... additional arguments passed through to \code{\link{server}} if
 #'     launching local daemons i.e. 'url' is not specified.
 #' @param monitor (for package internal use, not applicable if called
@@ -175,7 +178,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 #' @export
 #'
 dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
-                       token = FALSE, ..., monitor = NULL) {
+                       token = FALSE, lock = FALSE, ..., monitor = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop("at least one URL must be supplied for 'url' or 'n' must be at least 1")
@@ -228,7 +231,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE) && stop()
     listen(nsock, url = nurl, error = TRUE)
-    if (token) lock(nsock, cv = ncv)
+    if (lock)
+      lock(nsock, cv = ncv)
     if (i == 1L && !auto && parse_url(opt(attr(nsock, "listener")[[1L]], "url"))[["port"]] == "0") {
       realport <- opt(attr(nsock, "listener")[[1L]], "tcp-bound-port")
       nurl <- sub("(?<=:)0(?![^/])", realport, nurl, perl = TRUE)
@@ -281,7 +285,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
             pipe_notify(servers[[i]], cv = active[[i]], cv2 = cv, flag = FALSE) && stop()
             data <- servernames[i] <- append_token(auto, basenames[i])
             listen(servers[[i]], url = data, error = TRUE)
-            if (token) lock(servers[[i]], cv = active[[i]])
+            if (lock)
+              lock(servers[[i]], cv = active[[i]])
           } else {
             data <- NULL
           }
