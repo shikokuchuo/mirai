@@ -165,7 +165,7 @@ library(mirai)
 
 run_iteration <- function(i) {
   
-  if (runif(1) < 0.15) stop("random error", call. = FALSE) # simulates a stochastic error rate
+  if (runif(1) < 0.1) stop("random error", call. = FALSE) # simulates a stochastic error rate
   sprintf("iteration %d successful", i)
   
 }
@@ -307,15 +307,13 @@ daemons()
 
 As per the local case, `$connections` will show the single connection to the dispatcher process, however `$daemons` will provide the matrix of statistics for the remote servers.
 
-`status_online` shows as 1 when there is an active connection, or else 0 if a server has yet to connect or has disconnected.
+`online` shows as 1 when there is an active connection, or else 0 if a server has yet to connect or has disconnected.
 
-`status_busy` will be 1 if the server is currently processing a task, or else 0.
+`instance` will increment by 1 every time there is a new connection at a URL. When this happens, the `assigned` and `complete` statistics will also reset. This is designed to track new server instances connecting after previous ones have ended (due to time-outs etc.).
 
-`tasks_assinged` shows the cumulative number of tasks assigned to the server instance by the dispatcher.
+`assigned` shows the cumulative number of tasks assigned to the server instance by the dispatcher.
 
-`tasks_complete` shows the cumulative number of tasks completed by the server instance.
-
-`instance #` will increment by 1 every time there is a new connection at a URL. When this happens, the `tasks_assigned` and `tasks_complete` statistics will also reset. This is designed to track new server instances connecting after previous ones have ended (due to time-outs etc.).
+`complete` shows the cumulative number of tasks completed by the server instance.
 
 The dispatcher will automatically adjust to the number of servers actually connected. Hence it is possible to dynamically scale up or down the number of servers according to requirements (limited to the 'n' URLs assigned at the dispatcher).
 

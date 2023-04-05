@@ -34,9 +34,9 @@ Setting daemons: integer number of daemons set, or the character
     Will always be 1L when using dispatcher as there is only a single
     connection to the dispatcher, which then connects to the servers in turn.}
     \item{\code{daemons}} {- if using dispatcher: a matrix of statistics
-    for each server: URL, online and busy status, cumulative tasks assigned
-    and completed (reset if a server re-connects), and instance # (increments
-    every time a server connects to the URL). If not using dispatcher: the
+    for each server: URL, online status, instance number (increments each
+    time a server connects to the URL), cumulative tasks assigned and
+    completed (reset if a server re-connects). If not using dispatcher: the
     number of daemons set, or else the client URL.}
     }
 }
@@ -199,14 +199,14 @@ For viewing the currrent status, specify \code{daemons()} with no
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-# Create 2 local daemons (active dispatch)
+# Create 2 local daemons (using dispatcher)
 daemons(2)
 # View status
 daemons()
 # Reset to zero
 daemons(0)
 
-# Create 2 local daemons (direct connection)
+# Create 2 local daemons (not using dispatcher)
 daemons(2, dispatcher = FALSE)
 # View status
 daemons()

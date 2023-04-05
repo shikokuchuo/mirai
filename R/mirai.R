@@ -199,7 +199,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
     recv(ctx, mode = 5L, block = 2000L) && stop()
     send(ctx, 0L, mode = 2L, block = 2000L) && stop()
     close(ctx)
-    statnames <- c("status_online", "status_busy", "tasks_assigned", "tasks_complete", "instance #")
+    statnames <- c("online", "instance", "assigned", "complete")
     attr(servernames, "dispatcher_pid") <- Sys.getpid()
     sockc <- socket(protocol = "bus", dial = monitor, autostart = asyncdial || NA)
     on.exit(close(sockc), add = TRUE, after = FALSE)
@@ -287,8 +287,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
           }
 
         } else {
-          data <- `attributes<-`(c(activevec, assigned - complete, assigned, complete, instance),
-                                 list(dim = c(n, 5L), dimnames = list(servernames, statnames)))
+          data <- `attributes<-`(c(activevec, instance, assigned, complete),
+                                 list(dim = c(n, 4L), dimnames = list(servernames, statnames)))
         }
         send(sockc, data = data, mode = 1L)
         cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
@@ -470,9 +470,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     Will always be 1L when using dispatcher as there is only a single
 #'     connection to the dispatcher, which then connects to the servers in turn.}
 #'     \item{\code{daemons}} {- if using dispatcher: a matrix of statistics
-#'     for each server: URL, online and busy status, cumulative tasks assigned
-#'     and completed (reset if a server re-connects), and instance # (increments
-#'     every time a server connects to the URL). If not using dispatcher: the
+#'     for each server: URL, online status, instance number (increments each
+#'     time a server connects to the URL), cumulative tasks assigned and
+#'     completed (reset if a server re-connects). If not using dispatcher: the
 #'     number of daemons set, or else the client URL.}
 #'     }
 #'
@@ -614,14 +614,14 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' # Create 2 local daemons (active dispatch)
+#' # Create 2 local daemons (using dispatcher)
 #' daemons(2)
 #' # View status
 #' daemons()
 #' # Reset to zero
 #' daemons(0)
 #'
-#' # Create 2 local daemons (direct connection)
+#' # Create 2 local daemons (not using dispatcher)
 #' daemons(2, dispatcher = FALSE)
 #' # View status
 #' daemons()

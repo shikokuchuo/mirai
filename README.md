@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -10.974 -0.142 1.335 2.598 0.91 ...
+#>  num [1:100000000] 0.22 -1.108 0.955 0.627 6.239 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -10.974 -0.142 1.335 2.598 0.91 ...
+#>  num [1:100000000] 0.22 -1.108 0.955 0.627 6.239 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -188,7 +188,7 @@ library(mirai)
 
 run_iteration <- function(i) {
   
-  if (runif(1) < 0.15) stop("random error", call. = FALSE) # simulates a stochastic error rate
+  if (runif(1) < 0.1) stop("random error", call. = FALSE) # simulates a stochastic error rate
   sprintf("iteration %d successful", i)
   
 }
@@ -254,13 +254,13 @@ daemons()
 #> [1] 1
 #> 
 #> $daemons
-#>                        status_online status_busy tasks_assigned tasks_complete instance #
-#> abstract://n2049946055             1           0              0              0          1
-#> abstract://n1227422372             1           0              0              0          1
-#> abstract://n7652447120             1           0              0              0          1
-#> abstract://n3038177524             1           0              0              0          1
-#> abstract://n1873925846             1           0              0              0          1
-#> abstract://n6017584969             1           0              0              0          1
+#>                                                     online instance assigned complete
+#> abstract://486aa91c7d1bfe058b34b2fc505ee9a1b0db1fb8      1        1        0        0
+#> abstract://f04d3468f98c348497b60e95d7aff4015cd9ed37      1        1        0        0
+#> abstract://4756b9b93cf2fa8abc34ae20e265fbf1c0c03841      1        1        0        0
+#> abstract://e0c99a50d5642a892b3c11249cfe304414d647f1      1        1        0        0
+#> abstract://de84219c6d02f6fe442711c84584297c106319fb      1        1        0        0
+#> abstract://7b384f64b451369b974a570637a72c6cddd0f4b5      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` launches a `dispatcher()` background
@@ -389,34 +389,30 @@ daemons()
 #> [1] 1
 #> 
 #> $daemons
-#>              status_online status_busy tasks_assigned tasks_complete instance #
-#> ws://:5555/1             1           0              0              0          1
-#> ws://:5555/2             1           0              0              0          1
-#> ws://:5555/3             1           0              0              0          1
-#> ws://:5555/4             1           0              0              0          1
+#>              online instance assigned complete
+#> ws://:5555/1      1        1        0        0
+#> ws://:5555/2      1        1        0        0
+#> ws://:5555/3      1        1        0        0
+#> ws://:5555/4      1        1        0        0
 ```
 
 As per the local case, `$connections` will show the single connection to
 the dispatcher process, however `$daemons` will provide the matrix of
 statistics for the remote servers.
 
-`status_online` shows as 1 when there is an active connection, or else 0
-if a server has yet to connect or has disconnected.
+`online` shows as 1 when there is an active connection, or else 0 if a
+server has yet to connect or has disconnected.
 
-`status_busy` will be 1 if the server is currently processing a task, or
-else 0.
+`instance` will increment by 1 every time there is a new connection at a
+URL. When this happens, the `assigned` and `complete` statistics will
+also reset. This is designed to track new server instances connecting
+after previous ones have ended (due to time-outs etc.).
 
-`tasks_assinged` shows the cumulative number of tasks assigned to the
-server instance by the dispatcher.
+`assigned` shows the cumulative number of tasks assigned to the server
+instance by the dispatcher.
 
-`tasks_complete` shows the cumulative number of tasks completed by the
-server instance.
-
-`instance #` will increment by 1 every time there is a new connection at
-a URL. When this happens, the `tasks_assigned` and `tasks_complete`
-statistics will also reset. This is designed to track new server
-instances connecting after previous ones have ended (due to time-outs
-etc.).
+`complete` shows the cumulative number of tasks completed by the server
+instance.
 
 The dispatcher will automatically adjust to the number of servers
 actually connected. Hence it is possible to dynamically scale up or down
@@ -441,7 +437,7 @@ the client. The client listens at the below address, and distributes
 tasks to all connected server processes.
 
 ``` r
-daemons(url = "tcp://10.111.5.13:45073", dispatcher = FALSE)
+daemons(url = "tcp://10.111.5.13:0", dispatcher = FALSE)
 ```
 
 Alternatively, simply supply a colon followed by the port number to
@@ -449,7 +445,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:45073"
+#> [1] "tcp://:39359"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -464,7 +460,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:0")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:39359")'
 
 –
 
@@ -482,7 +478,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:45073"
+#> [1] "tcp://:39359"
 ```
 
 To reset all connections and revert to default behaviour:
