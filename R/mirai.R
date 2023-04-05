@@ -1021,7 +1021,7 @@ query_nodes <- function(sock, command) {
   send(sock, data = command, mode = 2L)
   r <- recv(sock, mode = 1L, block = 1000L)
   if (exists("crew_controller_callr")) {
-    r <- cbind(r, r[, "complete"] - r[, "assigned"])
+    r <- cbind(r, r[, "assigned"] - r[, "complete"])
     dimnames(r)[[2L]] <- c("status_online", "instance #", "tasks_assigned", "tasks_complete", "status_busy")
   } # compatibility for crew <= 0.0.5
   r

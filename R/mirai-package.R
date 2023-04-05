@@ -59,7 +59,7 @@
 #'
 NULL
 
-.onLoad <- function(libname, pkgname)
+.onLoad <- function(libname, pkgname) {
   switch(Sys.info()[["sysname"]],
          Linux = {
            .command <<- file.path(R.home("bin"), "Rscript")
@@ -73,11 +73,17 @@ NULL
            .command <<- file.path(R.home("bin"), "Rscript")
            .urlfmt <<- "ipc:///tmp/%s"
          })
+  reg.finalizer(.., .close_all_sockets, onexit = TRUE)
+}
 
-.onUnload <- function(libpath)
-  invisible(lapply(.., function(x) if (length(x[["sock"]])) close(x[["sock"]])))
+.onUnload <- function(libpath) .close_all_sockets(..)
+
+.close_all_sockets <- function(env)
+  invisible(lapply(env, function(x) if (length(x[["sock"]])) close(x[["sock"]])))
 
 .command <- NULL
+
 .urlfmt <- NULL
+
 .. <- `[[<-`(new.env(hash = FALSE), "default", new.env(hash = FALSE))
 

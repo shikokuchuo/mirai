@@ -1,4 +1,4 @@
-# mirai 0.8.2.9003 (development)
+# mirai 0.8.2.9004 (development)
 
 * `dispatcher()` gains the argument 'token' for appending a unique token to each URL the dispatcher listens at.
 * `saisei()` implemented to regenerate the token used by a given dispatcher socket.
