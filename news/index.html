@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9005</span>
       </span>
     </div>
 
@@ -54,9 +54,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.2.9004" id="mirai-0829004-development">mirai 0.8.2.9004 (development)<a class="anchor" aria-label="anchor" href="#mirai-0829004-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.2.9005" id="mirai-0829005-development">mirai 0.8.2.9005 (development)<a class="anchor" aria-label="anchor" href="#mirai-0829005-development"></a></h2>
 <ul><li>
-<code><a href="../reference/dispatcher.html">dispatcher()</a></code> gains the argument ‘token’ for appending a unique token to each URL the dispatcher listens at.</li>
+<code><a href="../reference/dispatcher.html">dispatcher()</a></code> gains the following arguments:
+<ul><li>
+<code>token</code> for appending a unique token to each URL the dispatcher listens at.</li>
+<li>
+<code>lock</code> for locking sockets to prevent more than one server connecting at a unique URL.</li>
+</ul></li>
 <li>
 <code><a href="../reference/saisei.html">saisei()</a></code> implemented to regenerate the token used by a given dispatcher socket.</li>
 <li>Local IPC socket URLs revised to use unique tokens.</li>
