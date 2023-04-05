@@ -232,7 +232,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
     if (i == 1L && !auto && parse_url(opt(attr(nsock, "listener")[[1L]], "url"))[["port"]] == "0") {
       realport <- opt(attr(nsock, "listener")[[1L]], "tcp-bound-port")
       nurl <- sub("(?<=:)0(?![^/])", realport, nurl, perl = TRUE)
-      if (!vectorised) url <- sub("(?<=:)0(?![^/])", realport, url, perl = TRUE)
+      if (!vectorised) basenames[1L] <- url <- sub("(?<=:)0(?![^/])", realport, url, perl = TRUE)
       servernames[i] <- nurl
     } else {
       servernames[i] <- opt(attr(nsock, "listener")[[1L]], "url")
