@@ -432,10 +432,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   missing(.expr) && stop("missing expression, perhaps wrap in {}?")
 
   expr <- substitute(.expr)
-  if (length(expr) == 1L)
-    if (is.language(get0(deparse(expr, backtick = FALSE, control = NULL, nlines = 1L))))
-      expr <- .expr
-  arglist <- pairlist(.expr = expr, ...)
+  arglist <- pairlist(.expr = if (is.symbol(expr) && is.language(get0(expr))) .expr else expr, ...)
   if (length(.args))
     arglist <- c(arglist, `names<-`(.args, `storage.mode<-`(substitute(.args)[-1L], "character")))
 
