@@ -67,7 +67,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
   if (is.character(auth)) {
     sock <- socket(protocol = "bus", dial = auth, autostart = NA)
     r <- send(sock, data = Sys.getpid(), mode = 2L, block = 2000L)
-    r && stop("sending PID to launcher timed out after 2s")
+    r && return(invisible())
     close(sock)
   }
 
