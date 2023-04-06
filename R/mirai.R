@@ -276,7 +276,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
       ctrchannel && !unresolved(cmessage) && {
         i <- .subset2(cmessage, "data")
         if (i) {
-          if (i > 0 && i <= n) {
+          if (i > 0 && i <= n && !activevec[i]) {
             close(servers[[i]])
             servers[[i]] <- socket(protocol = "req")
             active[[i]] <- cv()
@@ -997,9 +997,9 @@ launch <- function(args)
 #'
 #' @return The regenerated character URL upon success, or else NULL.
 #'
-#' @details Care should be taken when calling this function as the specified
-#'     socket will be closed and replaced immediately without waiting for any
-#'     task in progress to finish.
+#' @details As the specified socket is closed and replaced immediately, this
+#'     function will only be successful if there are no existing connections at
+#'     the socket (i.e. 'online' status shows 0).
 #'
 #' @examples
 #' if (interactive()) {

@@ -21,9 +21,9 @@ When using daemons with a local dispatcher service, replaces an existing
     a newly-generated token.
 }
 \details{
-Care should be taken when calling this function as the specified
-    socket will be closed and replaced immediately without waiting for any
-    task in progress to finish.
+As the specified socket is closed and replaced immediately, this
+    function will only be successful if there are no existing connections at
+    the socket (i.e. 'online' status shows 0).
 }
 \examples{
 if (interactive()) {
