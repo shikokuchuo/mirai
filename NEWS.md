@@ -1,4 +1,4 @@
-# mirai 0.8.2.9009 (development)
+# mirai 0.8.2.9010 (development)
 
 * `mirai()` now accepts a language object as '.expr', which will be evaluated directly.
 * `dispatcher()` gains the following arguments:

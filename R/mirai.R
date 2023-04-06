@@ -95,7 +95,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
       }
       break
     }
-    data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
+    data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = .GlobalEnv),
                      error = mk_mirai_error, interrupt = mk_interrupt_error)
     send(ctx, data = data, mode = 1L)
     if (cleanup) {
@@ -129,7 +129,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
   on.exit(close(sock))
   ctx <- context(sock)
   envir <- recv(ctx, mode = 1L)
-  data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
+  data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = .GlobalEnv),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)
   send(ctx, data = data, mode = 1L)
   msleep(2000L)
@@ -236,7 +236,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
     if (i == 1L && !auto && parse_url(opt(attr(nsock, "listener")[[1L]], "url"))[["port"]] == "0") {
       realport <- opt(attr(nsock, "listener")[[1L]], "tcp-bound-port")
       nurl <- sub("(?<=:)0(?![^/])", realport, nurl, perl = TRUE)
-      if (!vectorised) basenames[1L] <- url <- sub("(?<=:)0(?![^/])", realport, url, perl = TRUE)
+      if (!vectorised || n == 1L)
+        basenames[1L] <- url <- sub("(?<=:)0(?![^/])", realport, url, perl = TRUE)
       servernames[i] <- nurl
     } else {
       servernames[i] <- opt(attr(nsock, "listener")[[1L]], "url")
@@ -428,21 +429,22 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   missing(.expr) && stop("missing expression, perhaps wrap in {}?")
 
   expr <- substitute(.expr)
-  dexpr <- deparse(expr, backtick = FALSE, control = NULL, nlines = 1L)
-  arglist <- list(.expr = if (length(dexpr) == 1L && is.language(get0(dexpr))) .expr else expr, ...)
+  if (length(expr) == 1L)
+    if (is.language(get0(deparse(expr, backtick = FALSE, control = NULL, nlines = 1L))))
+      expr <- .expr
+  arglist <- pairlist(.expr = expr, ...)
   if (length(.args))
     arglist <- c(arglist, `names<-`(.args, `storage.mode<-`(substitute(.args)[-1L], "character")))
-  envir <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
   if (length(..[[.compute]][["sock"]])) {
     aio <- request(context(..[[.compute]][["sock"]]),
-                   data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+                   data = arglist, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
 
   } else {
     url <- sprintf(.urlfmt, new_token())
     sock <- socket(protocol = "req", listen = url)
     launch(sprintf("mirai::.(\"%s\")", url))
-    aio <- request(context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    aio <- request(context(sock), data = arglist, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `weakref<-`(aio, sock)
 
   }
