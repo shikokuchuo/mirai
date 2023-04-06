@@ -104,6 +104,7 @@ if (Sys.getenv("NOT_CRAN") == "true") {
   nanotesto(status[, "online"])
   nanotesto(status[, "instance"])
   nanotestn(saisei(i = 1L))
+  Sys.sleep(1L)
   nanotestz(daemons(0))
   Sys.sleep(1L)
 }

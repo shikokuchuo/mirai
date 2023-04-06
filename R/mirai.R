@@ -1026,8 +1026,11 @@ launch <- function(args)
 #' @export
 #'
 saisei <- function(i, .compute = "default")
-  if (length(..[[.compute]][["sockc"]]))
-    query_nodes(..[[.compute]][["sockc"]], as.integer(i))
+  if (length(..[[.compute]][["sockc"]])) {
+    r <- query_nodes(..[[.compute]][["sockc"]], as.integer(i))
+    is.character(r) || return()
+    r
+  }
 
 # internals --------------------------------------------------------------------
 
