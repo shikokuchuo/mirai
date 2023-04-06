@@ -4,7 +4,7 @@
 \alias{saisei}
 \title{Saisei - Regenerate Token}
 \usage{
-saisei(i, .compute = "default")
+saisei(i = 1L, .compute = "default")
 }
 \arguments{
 \item{i}{integer \code{i}th daemon to replace.}

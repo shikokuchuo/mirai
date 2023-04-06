@@ -278,14 +278,11 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
         i <- .subset2(cmessage, "data")
         if (i) {
           if (i > 0L && i <= n && !activevec[i]) {
-            close(servers[[i]])
-            servers[[i]] <- socket(protocol = "req")
-            active[[i]] <- cv()
-            pipe_notify(servers[[i]], cv = active[[i]], cv2 = cv, flag = FALSE) && stop()
+            close(attr(servers[[i]], "listener")[[1L]])
+            attr(servers[[i]], "listener") <- NULL
+            cv_reset(active[[i]])
             data <- servernames[i] <- append_token(auto, basenames[i])
             listen(servers[[i]], url = data, error = TRUE)
-            if (lock)
-              lock(servers[[i]], cv = active[[i]])
           } else {
             data <- 1L
           }
@@ -1027,7 +1024,7 @@ launch <- function(args)
 #'
 #' @export
 #'
-saisei <- function(i, .compute = "default")
+saisei <- function(i = 1L, .compute = "default")
   if (length(..[[.compute]][["sockc"]])) {
     r <- query_nodes(..[[.compute]][["sockc"]], as.integer(i))
     is.character(r) || return()
