@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9007</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9008</span>
       </span>
     </div>
 
@@ -85,9 +85,9 @@ profile has its own set of daemons for connecting to different resources).</p></
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Care should be taken when calling this function as the specified
-    socket will be closed and replaced immediately without waiting for any
-    task in progress to finish.</p>
+    <p>As the specified socket is closed and replaced immediately, this
+    function will only be successful if there are no existing connections at
+    the socket (i.e. 'online' status shows 0).</p>
     </div>
 
     <div id="ref-examples">
