@@ -50,9 +50,7 @@ against more than one server trying to connect to a unique URL.}
 \item{...}{additional arguments passed through to \code{\link{server}} if
 launching local daemons i.e. 'url' is not specified.}
 
-\item{monitor}{(for package internal use, not applicable if called
-independently) the client URL used for monitoring purposes as a character
-string.}
+\item{monitor}{(for package internal use only) do not set this parameter.}
 }
 \value{
 Invisible NULL.

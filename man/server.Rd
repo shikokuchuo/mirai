@@ -13,7 +13,8 @@ server(
   timerstart = 0L,
   exitlinger = 1000L,
   ...,
-  cleanup = TRUE
+  cleanup = TRUE,
+  auth = NULL
 )
 }
 \arguments{
@@ -52,6 +53,8 @@ expected to return very large objects (> GBs).}
 global environment, options values and loaded packages after each task
 evaluation. This option should not be modified. Do not set to FALSE
 unless you are certain you want such persistence across evaluations.}
+
+\item{auth}{(for package internal use only) do not set this parameter.}
 }
 \value{
 Invisible NULL.

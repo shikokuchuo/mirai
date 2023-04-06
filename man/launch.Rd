@@ -2,27 +2,31 @@
 % Please edit documentation in R/mirai.R
 \name{launch}
 \alias{launch}
-\title{Launch Background Process}
+\title{Launch Daemon}
 \usage{
-launch(args)
+launch(url, ...)
 }
 \arguments{
-\item{args}{character string, which will be shell quoted by \code{\link{shQuote}}
-before being passed as argument.}
+\item{url}{the client URL for the server to dial into as a character string,
+including the port to connect to and (optionally) a path for websocket
+URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
+
+\item{...}{(optional) additional arguments passed to \code{\link{server}}.}
 }
 \value{
-Invisibly, an exit code (zero upon success).
+Integer process ID of the launched server, or else an integer error
+    value.
 }
 \description{
-Utility function which calls \code{Rscript} in a background process, with
-    'args' passed as command line argument to \code{Rscript -e 'args'}. May
-    be used to re-launch local daemons that have timed out, for instance.
+Utility function which calls \code{\link{server}} in a background
+    \code{Rscript} process. May be used to re-launch local daemons that have
+    timed out.
 }
 \examples{
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-launch('mirai::server("abstract://mirai", idletime = 60000L)')
+launch("abstract://mirai", idletime = 60000L)
 
 }
 

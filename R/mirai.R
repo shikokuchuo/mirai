@@ -49,6 +49,7 @@
 #'     global environment, options values and loaded packages after each task
 #'     evaluation. This option should not be modified. Do not set to FALSE
 #'     unless you are certain you want such persistence across evaluations.
+#' @param auth (for package internal use only) do not set this parameter.
 #'
 #' @return Invisible NULL.
 #'
@@ -61,7 +62,14 @@
 #'
 server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
                    walltime = Inf, timerstart = 0L, exitlinger = 1000L, ...,
-                   cleanup = TRUE) {
+                   cleanup = TRUE, auth = NULL) {
+
+  if (is.character(auth)) {
+    sock <- socket(protocol = "bus", dial = auth, autostart = NA)
+    r <- send(sock, data = Sys.getpid(), mode = 2L, block = 2000L)
+    r && stop("failed to send PID to launcher")
+    close(sock)
+  }
 
   sock <- socket(protocol = "rep", dial = url, autostart = asyncdial || NA)
 
@@ -163,9 +171,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 #'     against more than one server trying to connect to a unique URL.
 #' @param ... additional arguments passed through to \code{\link{server}} if
 #'     launching local daemons i.e. 'url' is not specified.
-#' @param monitor (for package internal use, not applicable if called
-#'     independently) the client URL used for monitoring purposes as a character
-#'     string.
+#' @param monitor (for package internal use only) do not set this parameter.
 #'
 #' @return Invisible NULL.
 #'
@@ -247,7 +253,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
       sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
 
     if (auto)
-      launch(sprintf("mirai::server(\"%s\"%s)", nurl, dotstring))
+      launch_daemon(sprintf("mirai::server(\"%s\"%s)", nurl, dotstring))
 
     servers[[i]] <- nsock
     active[[i]] <- ncv
@@ -440,7 +446,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   } else {
     url <- sprintf(.urlfmt, new_token())
     sock <- socket(protocol = "req", listen = url)
-    launch(sprintf("mirai::.(\"%s\")", url))
+    launch_daemon(sprintf("mirai::.(\"%s\")", url))
     aio <- request(context(sock), data = arglist, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `weakref<-`(aio, sock)
 
@@ -682,7 +688,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
           sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
         args <- sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)",
                         urld, paste(sprintf("\"%s\"", url), collapse = ","), n, urlc, dotstring)
-        launch(args)
+        launch_daemon(args)
         request_ack(sock)
         `[[<-`(..[[.compute]], "sockc", sockc)
         proc <- n
@@ -718,13 +724,13 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         urlc <- sprintf("%s%s", urld, "c")
         sockc <- socket(protocol = "bus", listen = urlc)
         args <- sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", urld, n, urlc, dotstring)
-        launch(args)
+        launch_daemon(args)
         request_ack(sock)
         `[[<-`(..[[.compute]], "sockc", sockc)
       } else {
         args <- sprintf("mirai::server(\"%s\"%s)", urld, dotstring)
         for (i in seq_len(n))
-          launch(args)
+          launch_daemon(args)
       }
       `[[<-`(`[[<-`(..[[.compute]], "sock", sock), "proc", n)
     }
@@ -969,29 +975,41 @@ print.miraiInterrupt <- function(x, ...) {
 
 }
 
-#' Launch Background Process
+#' Launch Daemon
 #'
-#' Utility function which calls \code{Rscript} in a background process, with
-#'     'args' passed as command line argument to \code{Rscript -e 'args'}. May
-#'     be used to re-launch local daemons that have timed out, for instance.
+#' Utility function which calls \code{\link{server}} in a background
+#'     \code{Rscript} process. May be used to re-launch local daemons that have
+#'     timed out.
 #'
-#' @param args character string, which will be shell quoted by \code{\link{shQuote}}
-#'     before being passed as argument.
+#' @param url the client URL for the server to dial into as a character string,
+#'     including the port to connect to and (optionally) a path for websocket
+#'     URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
+#' @param ... (optional) additional arguments passed to \code{\link{server}}.
 #'
-#' @return Invisibly, an exit code (zero upon success).
+#' @return Integer process ID of the launched server, or else an integer error
+#'     value.
 #'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' launch('mirai::server("abstract://mirai", idletime = 60000L)')
+#' launch("abstract://mirai", idletime = 60000L)
 #'
 #' }
 #'
 #' @export
 #'
-launch <- function(args)
-  system2(command = .command, args = c("-e", shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE)
+launch <- function(url, ...) {
+
+  purl <- sprintf(.urlfmt, new_token())
+  sock <- socket(protocol = "bus", listen = purl)
+  dotstring <- if (missing(...)) "" else
+    sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
+  args <- sprintf("mirai::server(\"%s\"%s,auth=\"%s\")", url, dotstring, purl)
+  launch_daemon(args)
+  recv(sock, mode = 5L, block = 2000L)
+
+}
 
 #' Saisei - Regenerate Token
 #'
@@ -1032,6 +1050,9 @@ saisei <- function(i = 1L, .compute = "default")
   }
 
 # internals --------------------------------------------------------------------
+
+launch_daemon <- function(args)
+  system2(command = .command, args = c("-e", shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE)
 
 query_nodes <- function(sock, command) {
   send(sock, data = command, mode = 2L)
