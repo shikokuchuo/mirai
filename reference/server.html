@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9012</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9013</span>
       </span>
     </div>
 
@@ -72,7 +72,8 @@
 <span>  timerstart <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  exitlinger <span class="op">=</span> <span class="fl">1000L</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  cleanup <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  cleanup <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  auth <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -130,6 +131,10 @@ expected to return very large objects (&gt; GBs).</p></dd>
 global environment, options values and loaded packages after each task
 evaluation. This option should not be modified. Do not set to FALSE
 unless you are certain you want such persistence across evaluations.</p></dd>
+
+
+<dt>auth</dt>
+<dd><p>(for package internal use only) do not set this parameter.</p></dd>
 
 </dl></div>
     <div id="value">
