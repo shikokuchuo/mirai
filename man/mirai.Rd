@@ -7,8 +7,9 @@
 mirai(.expr, ..., .args = list(), .timeout = NULL, .compute = "default")
 }
 \arguments{
-\item{.expr}{an expression to evaluate asynchronously. This may be of
-arbitrary length, wrapped in \{\} if necessary.}
+\item{.expr}{an expression to evaluate asynchronously (of arbitrary length,
+wrapped in \{\} if necessary). Alternatively, a language object may be
+supplied, in which case it will be evaluated directly.}
 
 \item{...}{(optional) named arguments specifying objects referenced in '.expr'.}
 
@@ -91,6 +92,12 @@ n <- 10L
 m <- mirai({source(file, local = TRUE); r}, .args = list(file, n))
 call_mirai(m)[["data"]]
 unlink(file)
+
+lang <- quote(a + b + 2)
+a <- 2
+b <- 3
+m <- mirai(lang, .args = list(a, b))
+call_mirai(m)$data
 
 }
 

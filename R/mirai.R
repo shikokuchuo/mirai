@@ -339,8 +339,9 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 #'     immediately with a 'mirai', which will resolve to the evaluated result
 #'     once complete.
 #'
-#' @param .expr an expression to evaluate asynchronously. This may be of
-#'     arbitrary length, wrapped in \{\} if necessary.
+#' @param .expr an expression to evaluate asynchronously (of arbitrary length,
+#'     wrapped in \{\} if necessary). Alternatively, a language object may be
+#'     supplied, in which case it will be evaluated directly.
 #' @param ... (optional) named arguments specifying objects referenced in '.expr'.
 #' @param .args (optional) list supplying objects referenced in '.expr' (used in
 #'     addition to or instead of named arguments specified as '...').
@@ -412,6 +413,12 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 #' call_mirai(m)[["data"]]
 #' unlink(file)
 #'
+#' lang <- quote(a + b + 2)
+#' a <- 2
+#' b <- 3
+#' m <- mirai(lang, .args = list(a, b))
+#' call_mirai(m)$data
+#'
 #' }
 #'
 #' @export
@@ -420,7 +427,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 
   missing(.expr) && stop("missing expression, perhaps wrap in {}?")
 
-  arglist <- list(.expr = substitute(.expr), ...)
+  expr <- substitute(.expr)
+  dexpr <- deparse(expr)
+  arglist <- list(.expr = if (length(dexpr) == 1L && is.language(get0(dexpr))) .expr else expr, ...)
   if (length(.args))
     arglist <- c(arglist, `names<-`(.args, `storage.mode<-`(substitute(.args)[-1L], "character")))
   envir <- list2env(arglist, envir = NULL, parent = .GlobalEnv)

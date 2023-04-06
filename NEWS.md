@@ -1,5 +1,6 @@
-# mirai 0.8.2.9008 (development)
+# mirai 0.8.2.9009 (development)
 
+* `mirai()` now accepts a language object as '.expr', which will be evaluated directly.
 * `dispatcher()` gains the following arguments:
   + `token` for appending a unique token to each URL the dispatcher listens at.
   + `lock` for locking sockets to prevent more than one server connecting at a unique URL.
