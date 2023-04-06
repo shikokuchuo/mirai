@@ -277,7 +277,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
       ctrchannel && !unresolved(cmessage) && {
         i <- .subset2(cmessage, "data")
         if (i) {
-          if (i > 0 && i <= n && !activevec[i]) {
+          if (i > 0L && i <= n && !activevec[i]) {
             close(servers[[i]])
             servers[[i]] <- socket(protocol = "req")
             active[[i]] <- cv()
@@ -287,7 +287,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
             if (lock)
               lock(servers[[i]], cv = active[[i]])
           } else {
-            data <- NULL
+            data <- 1L
           }
 
         } else {
