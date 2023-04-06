@@ -4,7 +4,7 @@
 \alias{launch}
 \title{Launch Daemon}
 \usage{
-launch(url, ...)
+launch(url, ..., env = NULL)
 }
 \arguments{
 \item{url}{the client URL for the server to dial into as a character string,
@@ -12,6 +12,9 @@ including the port to connect to and (optionally) a path for websocket
 URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 
 \item{...}{(optional) additional arguments passed to \code{\link{server}}.}
+
+\item{env}{(optional) character vector of name=value strings to set
+environment variables in the new process.}
 }
 \value{
 Integer process ID of the launched server, or else an integer error

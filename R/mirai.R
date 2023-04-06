@@ -985,6 +985,8 @@ print.miraiInterrupt <- function(x, ...) {
 #'     including the port to connect to and (optionally) a path for websocket
 #'     URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
 #' @param ... (optional) additional arguments passed to \code{\link{server}}.
+#' @param env (optional) character vector of name=value strings to set
+#'     environment variables in the new process.
 #'
 #' @return Integer process ID of the launched server, or else an integer error
 #'     value.
@@ -999,14 +1001,15 @@ print.miraiInterrupt <- function(x, ...) {
 #'
 #' @export
 #'
-launch <- function(url, ...) {
+launch <- function(url, ..., env = NULL) {
 
   purl <- sprintf(.urlfmt, new_token())
   sock <- socket(protocol = "bus", listen = purl)
   dotstring <- if (missing(...)) "" else
     sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
   args <- sprintf("mirai::server(\"%s\"%s,auth=\"%s\")", url, dotstring, purl)
-  launch_daemon(args)
+  system2(command = .command, args = c("-e", shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE,
+          env = if (is.character(env)) env else character())
   r <- recv(sock, mode = 5L, block = 2000L)
   close(sock)
   r
