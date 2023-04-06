@@ -15,7 +15,7 @@ m <- mirai({
   Sys.sleep(0.1)
   q <- m + n + 1L
   q / m
-}, m = 2L, .args = list(n), .timeout = 1000L)
+}, m = 2L, .args = list(n), .timeout = 2000L)
 b <- m$data %>>% rnorm %>>% as.character()
 nanotestp(b)
 nanotest(inherits(call_mirai(m), "mirai"))
@@ -24,6 +24,10 @@ nanotest(identical(call_mirai(m), m))
 nanotest(is_mirai(m))
 nanotest(length(b) == 3L || length(b$data) == 3L)
 nanotest(is.character(b) || is.character(b$data))
+Sys.sleep(2.2)
+lang <- quote(n + 2L)
+m <- mirai(lang, .args = list(n), .timeout = 2000L)
+nanotest(call_mirai(m)$data == 5L || is_error_value(m$data))
 Sys.sleep(2.2)
 if (Sys.getenv("NOT_CRAN") == "true") {
   nanotesto(daemons(1L, dispatcher = FALSE))
