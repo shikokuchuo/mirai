@@ -67,7 +67,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
   if (is.character(auth)) {
     sock <- socket(protocol = "bus", dial = auth, autostart = NA)
     r <- send(sock, data = Sys.getpid(), mode = 2L, block = 2000L)
-    r && stop("failed to send PID to launcher")
+    r && stop("sending PID to launcher timed out after 2s")
     close(sock)
   }
 
@@ -1007,7 +1007,9 @@ launch <- function(url, ...) {
     sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
   args <- sprintf("mirai::server(\"%s\"%s,auth=\"%s\")", url, dotstring, purl)
   launch_daemon(args)
-  recv(sock, mode = 5L, block = 2000L)
+  r <- recv(sock, mode = 5L, block = 2000L)
+  close(sock)
+  r
 
 }
 
