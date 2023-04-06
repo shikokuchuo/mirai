@@ -1005,7 +1005,14 @@ launch <- function(url, ..., env = NULL) {
   dotstring <- if (missing(...)) "" else
     sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
   args <- sprintf("mirai::server(\"%s\"%s,auth=\"%s\")", url, dotstring, purl)
-  system2(command = .command, args = c("-e", shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE,
+  if (.Platform[["OS.type"]] == "unix") {
+    command <- .command
+    cmdargs <- "-e"
+  } else {
+    command <- file.path(R.home("bin"), "R.exe")
+    cmdargs <- "--no-echo --norestore -e"
+  }
+  system2(command = command, args = c(cmdargs, shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE,
           env = if (is.character(env)) env else character())
   r <- recv(sock, mode = 5L, block = 2000L)
   close(sock)
