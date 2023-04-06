@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9014</span>
       </span>
     </div>
 
@@ -63,7 +63,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">launch</span><span class="op">(</span><span class="va">url</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">launch</span><span class="op">(</span><span class="va">url</span>, <span class="va">...</span>, env <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -76,6 +76,11 @@ URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.</p></dd>
 
 <dt>...</dt>
 <dd><p>(optional) additional arguments passed to <code><a href="server.html">server</a></code>.</p></dd>
+
+
+<dt>env</dt>
+<dd><p>(optional) character vector of name=value strings to set
+environment variables in the new process.</p></dd>
 
 </dl></div>
     <div id="value">
