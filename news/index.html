@@ -67,7 +67,7 @@
 <li>
 <code><a href="../reference/saisei.html">saisei()</a></code> implemented to regenerate the token used by a given dispatcher socket.</li>
 <li>
-<code><a href="../reference/launch.html">launch()</a></code> re-implemented with simpler interface, and returns the process ID (PID) of the process it launches.</li>
+<code><a href="../reference/launch_server.html">launch_server()</a></code> replaces <code>launch()</code> for launching local instances, with a simpler interface directly mapping to <code><a href="../reference/server.html">server()</a></code>.</li>
 <li>Local IPC socket URLs revised to use unique tokens.</li>
 <li>Daemons status matrix headers updated to ‘online’, ‘instance’, ‘assigned’, and ‘complete’.</li>
 <li>Requires nanonext &gt;= [0.8.2].</li>
@@ -81,7 +81,7 @@
 </ul></li>
 <li>Server and dispatcher processes exit automatically if the connection with the client is dropped. This significantly reduces the likelihood of orphaned processes.</li>
 <li>
-<code><a href="../reference/launch.html">launch()</a></code> exported as a utility for easily re-launching daemons that have timed out, for instance.</li>
+<code>launch()</code> exported as a utility for easily re-launching daemons that have timed out, for instance.</li>
 <li>Correct passthrough of <code>...</code> variables in the <code><a href="../reference/daemons.html">daemons()</a></code> call.</li>
 <li>Requires nanonext &gt;= 0.8.1.</li>
 <li>Internal performance enhancements.</li>
