@@ -95,7 +95,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
       }
       break
     }
-    data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = .GlobalEnv),
+    data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
                      error = mk_mirai_error, interrupt = mk_interrupt_error)
     send(ctx, data = data, mode = 1L)
     if (cleanup) {
@@ -129,7 +129,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
   on.exit(close(sock))
   ctx <- context(sock)
   envir <- recv(ctx, mode = 1L)
-  data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = .GlobalEnv),
+  data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)
   send(ctx, data = data, mode = 1L)
   msleep(2000L)
@@ -424,19 +424,20 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   missing(.expr) && stop("missing expression, perhaps wrap in {}?")
 
   expr <- substitute(.expr)
-  arglist <- pairlist(.expr = if (is.symbol(expr) && is.language(get0(expr))) .expr else expr, ...)
+  arglist <- list(.expr = if (is.symbol(expr) && is.language(get0(expr))) .expr else expr, ...)
   if (length(.args))
     arglist <- c(arglist, `names<-`(.args, `storage.mode<-`(substitute(.args)[-1L], "character")))
+  envir <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
   if (length(..[[.compute]][["sock"]])) {
     aio <- request(context(..[[.compute]][["sock"]]),
-                   data = arglist, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+                   data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
 
   } else {
     url <- sprintf(.urlfmt, new_token())
     sock <- socket(protocol = "req", listen = url)
     launch_daemon(sprintf("mirai::.(\"%s\")", url))
-    aio <- request(context(sock), data = arglist, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    aio <- request(context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `weakref<-`(aio, sock)
 
   }
