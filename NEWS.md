@@ -5,7 +5,7 @@
   + `token` for appending a unique token to each URL the dispatcher listens at.
   + `lock` for locking sockets to prevent more than one server connecting at a unique URL.
 * `saisei()` implemented to regenerate the token used by a given dispatcher socket.
-* `launch()` re-implemented with simpler interface, and returns the process ID (PID) of the process it launches.
+* `launch_server()` replaces `launch()` for launching local instances, with a simpler interface directly mapping to `server()`.
 * Local IPC socket URLs revised to use unique tokens.
 * Daemons status matrix headers updated to 'online', 'instance', 'assigned', and 'complete'.
 * Requires nanonext >= [0.8.2].

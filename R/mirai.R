@@ -49,7 +49,6 @@
 #'     global environment, options values and loaded packages after each task
 #'     evaluation. This option should not be modified. Do not set to FALSE
 #'     unless you are certain you want such persistence across evaluations.
-#' @param auth (for package internal use only) do not set this parameter.
 #'
 #' @return Invisible NULL.
 #'
@@ -62,14 +61,7 @@
 #'
 server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
                    walltime = Inf, timerstart = 0L, exitlinger = 1000L, ...,
-                   cleanup = TRUE, auth = NULL) {
-
-  if (is.character(auth)) {
-    sock <- socket(protocol = "bus", dial = auth, autostart = NA)
-    r <- send(sock, data = Sys.getpid(), mode = 2L, block = 2000L)
-    r && return(invisible())
-    close(sock)
-  }
+                   cleanup = TRUE) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = asyncdial || NA)
 
@@ -972,7 +964,7 @@ print.miraiInterrupt <- function(x, ...) {
 
 }
 
-#' Launch Daemon
+#' Launch mirai Server
 #'
 #' Utility function which calls \code{\link{server}} in a background
 #'     \code{Rscript} process. May be used to re-launch local daemons that have
@@ -982,41 +974,25 @@ print.miraiInterrupt <- function(x, ...) {
 #'     including the port to connect to and (optionally) a path for websocket
 #'     URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
 #' @param ... (optional) additional arguments passed to \code{\link{server}}.
-#' @param env (optional) character vector of name=value strings to set
-#'     environment variables in the new process.
 #'
-#' @return Integer process ID of the launched server, or else an integer error
-#'     value.
+#' @return Invisibly, integer system exit code (zero upon success).
 #'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' launch("abstract://mirai", idletime = 60000L)
+#' launch_server("abstract://mirai", idletime = 60000L)
 #'
 #' }
 #'
 #' @export
 #'
-launch <- function(url, ..., env = NULL) {
+launch_server <- function(url, ...) {
 
-  purl <- sprintf(.urlfmt, new_token())
-  sock <- socket(protocol = "bus", listen = purl)
   dotstring <- if (missing(...)) "" else
     sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
-  args <- sprintf("mirai::server(\"%s\"%s,auth=\"%s\")", url, dotstring, purl)
-  if (.Platform[["OS.type"]] == "unix") {
-    command <- .command
-    cmdargs <- "-e"
-  } else {
-    command <- file.path(R.home("bin"), "R.exe")
-    cmdargs <- "--no-echo --norestore -e"
-  }
-  system2(command = command, args = c(cmdargs, shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE,
-          env = if (is.character(env)) env else character())
-  r <- recv(sock, mode = 5L, block = 2000L)
-  close(sock)
-  r
+  args <- sprintf("mirai::server(\"%s\"%s)", url, dotstring)
+  launch_daemon(args)
 
 }
 

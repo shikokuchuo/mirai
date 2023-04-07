@@ -108,7 +108,7 @@ if (Sys.getenv("NOT_CRAN") == "true") {
   nanotesto(status[, "instance"])
   nanotestz(daemons(0))
   Sys.sleep(1L)
-  nanotest(is.integer(launch("tcp://127.0.0.1:5555", asyncdial = FALSE)))
+  nanotest(is.integer(launch_server("tcp://127.0.0.1:5555", asyncdial = FALSE)))
   Sys.sleep(1L)
 }
 Sys.sleep(1L)
