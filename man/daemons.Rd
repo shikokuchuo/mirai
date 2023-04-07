@@ -19,7 +19,7 @@ the client and ensures FIFO scheduling, queueing tasks if necessary
 (futher details below).}
 
 \item{...}{additional arguments passed through to \code{\link{dispatcher}} if
-using active dispatch and/or \code{\link{server}} if launching local daemons.}
+using dispatcher and/or \code{\link{server}} if launching local daemons.}
 
 \item{.compute}{(optional) character compute profile to use for creating the
 daemons (each compute profile has its own set of daemons for connecting
