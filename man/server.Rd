@@ -13,7 +13,7 @@ server(
   timerstart = 0L,
   exitlinger = 1000L,
   ...,
-  cleanup = TRUE
+  cleanup = NULL
 )
 }
 \arguments{
@@ -48,10 +48,15 @@ expected to return very large objects (> GBs).}
 
 \item{...}{reserved but not currently used.}
 
-\item{cleanup}{[default TRUE] logical value whether to perform cleanup of the
-global environment, options values and loaded packages after each task
-evaluation. This option should not be modified. Do not set to FALSE
-unless you are certain you want such persistence across evaluations.}
+\item{cleanup}{[default NULL] The default NULL is equivalent to a value of 7L
+and performs all cleanup steps below apart from garbage collection.
+Integer additive bitmask controlling whether to perform cleanup of the
+global environment (1L), reset options to an initial state (2L), reset
+loaded packages to an initial state (3L), and perform garbage collection
+(4L) after each evaluation. This option should not normally be modified.
+Do not set unless you are certain you require persistence across
+evaluations. Note: it may be an error to reset options but not loaded
+packages if the package sets options on load.}
 }
 \value{
 Invisible NULL.

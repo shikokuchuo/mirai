@@ -45,10 +45,15 @@
 #'     currently in progress. The default can be set wider if computations are
 #'     expected to return very large objects (> GBs).
 #' @param ... reserved but not currently used.
-#' @param cleanup [default TRUE] logical value whether to perform cleanup of the
-#'     global environment, options values and loaded packages after each task
-#'     evaluation. This option should not be modified. Do not set to FALSE
-#'     unless you are certain you want such persistence across evaluations.
+#' @param cleanup [default NULL] The default NULL is equivalent to a value of 7L
+#'     and performs all cleanup steps below apart from garbage collection.
+#'     Integer additive bitmask controlling whether to perform cleanup of the
+#'     global environment (1L), reset options to an initial state (2L), reset
+#'     loaded packages to an initial state (3L), and perform garbage collection
+#'     (4L) after each evaluation. This option should not normally be modified.
+#'     Do not set unless you are certain you require persistence across
+#'     evaluations. Note: it may be an error to reset options but not loaded
+#'     packages if the package sets options on load.
 #'
 #' @return Invisible NULL.
 #'
@@ -61,7 +66,7 @@
 #'
 server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
                    walltime = Inf, timerstart = 0L, exitlinger = 1000L, ...,
-                   cleanup = TRUE) {
+                   cleanup = NULL) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = asyncdial || NA)
 
@@ -78,8 +83,22 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE) && stop()
   count <- 0L
   if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
-  op <- options()
-  se <- search()
+
+  if (!is.integer(cleanup))
+    cleanup <- if (is.logical(cleanup)) cleanup * 7L else 7L # compatibility for crew <= 0.0.5
+  cleanup_globals <- cleanup_options <- cleanup_packages <- cleanup_gc <- FALSE
+  for (i in 3:0) {
+    if (cleanup >= 2 ^ i) {
+      cleanup <- cleanup - 2 ^ i
+      switch (i + 1L,
+              cleanup_globals <- TRUE,
+              cleanup_options <- TRUE,
+              cleanup_packages <- TRUE,
+              cleanup_gc <- TRUE)
+    }
+  }
+  if (cleanup_options) op <- options()
+  if (cleanup_packages) se <- search()
   start <- mclock()
 
   while (count < maxtasks && mclock() - start < walltime) {
@@ -98,11 +117,10 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
     data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
                      error = mk_mirai_error, interrupt = mk_interrupt_error)
     send(ctx, data = data, mode = 1L)
-    if (cleanup) {
-      rm(list = ls(.GlobalEnv, all.names = TRUE, sorted = FALSE), envir = .GlobalEnv)
-      lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
-      options(op)
-    }
+    if (cleanup_globals) rm(list = ls(.GlobalEnv, all.names = TRUE, sorted = FALSE), envir = .GlobalEnv)
+    if (cleanup_packages) lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
+    if (cleanup_options) options(op)
+    if (cleanup_gc) gc(verbose = FALSE, reset = TRUE, full = TRUE)
     if (count < timerstart) start <- mclock()
     count <- count + 1L
 
