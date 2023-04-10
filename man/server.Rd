@@ -51,9 +51,9 @@ expected to return very large objects (> GBs).}
 \item{cleanup}{[default NULL] The default NULL is equivalent to a value of 7L
 and performs all cleanup steps below apart from garbage collection.
 Integer additive bitmask controlling whether to perform cleanup of the
-global environment (1L), reset options to an initial state (2L), reset
-loaded packages to an initial state (3L), and perform garbage collection
-(4L) after each evaluation. This option should not normally be modified.
+global environment (1L), reset loaded packages to an initial state (2L),
+reset options to an initial state (4L), and perform garbage collection
+(8L) after each evaluation. This option should not normally be modified.
 Do not set unless you are certain you require persistence across
 evaluations. Note: it may be an error to reset options but not loaded
 packages if the package sets options on load.}

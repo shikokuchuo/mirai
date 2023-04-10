@@ -48,9 +48,9 @@
 #' @param cleanup [default NULL] The default NULL is equivalent to a value of 7L
 #'     and performs all cleanup steps below apart from garbage collection.
 #'     Integer additive bitmask controlling whether to perform cleanup of the
-#'     global environment (1L), reset options to an initial state (2L), reset
-#'     loaded packages to an initial state (3L), and perform garbage collection
-#'     (4L) after each evaluation. This option should not normally be modified.
+#'     global environment (1L), reset loaded packages to an initial state (2L),
+#'     reset options to an initial state (4L), and perform garbage collection
+#'     (8L) after each evaluation. This option should not normally be modified.
 #'     Do not set unless you are certain you require persistence across
 #'     evaluations. Note: it may be an error to reset options but not loaded
 #'     packages if the package sets options on load.
@@ -86,17 +86,16 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 
   if (!is.integer(cleanup))
     cleanup <- if (is.logical(cleanup)) cleanup * 7L else 7L # compatibility for crew <= 0.0.5
-  cleanup_globals <- cleanup_options <- cleanup_packages <- cleanup_gc <- FALSE
-  for (i in 3:0) {
+  cleanup_globals <- cleanup_packages <- cleanup_options <- cleanup_gc <- FALSE
+  for (i in 3:0)
     if (cleanup >= 2 ^ i) {
       cleanup <- cleanup - 2 ^ i
       switch (i + 1L,
               cleanup_globals <- TRUE,
-              cleanup_options <- TRUE,
               cleanup_packages <- TRUE,
+              cleanup_options <- TRUE,
               cleanup_gc <- TRUE)
     }
-  }
   if (cleanup_options) op <- options()
   if (cleanup_packages) se <- search()
   start <- mclock()

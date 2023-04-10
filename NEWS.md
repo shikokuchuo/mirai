@@ -1,12 +1,12 @@
-# mirai 0.8.2.9019 (development)
+# mirai 0.8.2.9020 (development)
 
-* `mirai()` now accepts a language object as '.expr', which will be evaluated directly.
+* `mirai()` now accepts a language or expression object being passed to '.expr' for evaluation.
 * `dispatcher()` gains the following arguments:
   + `token` for appending a unique token to each URL the dispatcher listens at.
   + `lock` for locking sockets to prevent more than one server connecting at a unique URL.
 * `saisei()` implemented to regenerate the token used by a given dispatcher socket.
 * `launch_server()` replaces `launch()` for launching local instances, with a simpler interface directly mapping to `server()`.
-* Local IPC socket URLs revised to use unique tokens.
+* Automatically-launched local daemons revised to use unique tokens in their URLs.
 * Daemons status matrix headers updated to 'online', 'instance', 'assigned', and 'complete'.
 * Requires nanonext >= [0.8.2].
 * Internal performance enhancements.
