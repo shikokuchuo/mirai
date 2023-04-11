@@ -15,15 +15,16 @@ badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc)](https://sh
 
 Minimalist async evaluation framework for R.
 
-Lightweight parallel code execution, local or distributed across the
-network.
+Lightweight parallel code execution and distributed computing.
 
-Designed for simplicity, a ‘mirai’ evaluates an arbitrary expression
-asynchronously, resolving automatically upon completion.
+Designed for simplicity, a ‘mirai’ evaluates an R expression
+asynchronously, on local or network resources, resolving automatically
+upon completion.
 
-Leverages ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen) to provide efficient
-task scheduling, scalability beyond R connection limits, and transports
-faster than TCP/IP for inter-process communications.
+Features efficient task scheduling, scalability beyond R connection
+limits, and transports faster than TCP/IP for inter-process
+communications, courtesy of ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen)
+technology.
 
 `mirai()` returns a ‘mirai’ object immediately. ‘mirai’ (未来 みらい) is
 Japanese for ‘future’.
@@ -108,7 +109,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.22 -1.108 0.955 0.627 6.239 ...
+#>  num [1:100000000] -2.025 13.353 1.962 -0.772 1.372 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +117,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.22 -1.108 0.955 0.627 6.239 ...
+#>  num [1:100000000] -2.025 13.353 1.962 -0.772 1.372 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -210,8 +211,8 @@ for (i in 1:10) {
 #> iteration 5 successful 
 #> iteration 6 successful 
 #> iteration 7 successful 
-#> iteration 8 successful 
 #> Error: random error 
+#> iteration 8 successful 
 #> iteration 9 successful 
 #> iteration 10 successful
 ```
@@ -255,12 +256,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://486aa91c7d1bfe058b34b2fc505ee9a1b0db1fb8      1        1        0        0
-#> abstract://f04d3468f98c348497b60e95d7aff4015cd9ed37      1        1        0        0
-#> abstract://4756b9b93cf2fa8abc34ae20e265fbf1c0c03841      1        1        0        0
-#> abstract://e0c99a50d5642a892b3c11249cfe304414d647f1      1        1        0        0
-#> abstract://de84219c6d02f6fe442711c84584297c106319fb      1        1        0        0
-#> abstract://7b384f64b451369b974a570637a72c6cddd0f4b5      1        1        0        0
+#> abstract://ee5cdf1c6cdfb8d006499770fefb27b7893b4d2f      1        1        0        0
+#> abstract://40578bb54361b87677a7b069648fa5fbc2311951      1        1        0        0
+#> abstract://143a3a4d38857b153a0a6bbf875b16e99ec04531      1        1        0        0
+#> abstract://ddfee3eecc7d1a89e9af1a2cdb24f6051e348602      1        1        0        0
+#> abstract://6505537ab60f22e7ee1a56dea55b873231a92701      1        1        0        0
+#> abstract://a69ae7820f12c24ab0cb5979eae87c7ab7180e52      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` launches a `dispatcher()` background
@@ -445,7 +446,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:39359"
+#> [1] "tcp://:33363"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -460,7 +461,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:39359")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:33363")'
 
 –
 
@@ -478,7 +479,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:39359"
+#> [1] "tcp://:33363"
 ```
 
 To reset all connections and revert to default behaviour:

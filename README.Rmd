@@ -24,11 +24,11 @@ knitr::opts_chunk$set(
 
 Minimalist async evaluation framework for R.
 
-Lightweight parallel code execution, local or distributed across the network.
+Lightweight parallel code execution and distributed computing.
 
-Designed for simplicity, a 'mirai' evaluates an arbitrary expression asynchronously, resolving automatically upon completion.
+Designed for simplicity, a 'mirai' evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion.
 
-Leverages 'nanonext' and 'NNG' (Nanomsg Next Gen) to provide efficient task scheduling, scalability beyond R connection limits, and transports faster than TCP/IP for inter-process communications.
+Features efficient task scheduling, scalability beyond R connection limits, and transports faster than TCP/IP for inter-process communications, courtesy of 'nanonext' and 'NNG' (Nanomsg Next Gen) technology.
 
 `mirai()` returns a 'mirai' object immediately. 'mirai' (未来 みらい) is Japanese for 'future'.
 

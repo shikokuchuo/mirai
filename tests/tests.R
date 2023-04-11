@@ -88,7 +88,7 @@ if (Sys.getenv("NOT_CRAN") == "true") {
   nanotest(daemons(n = 2, "tcp://127.0.0.1:0") == 2L)
   Sys.sleep(1.5)
   nanotest(is.integer(launch_server(row.names(daemons()[["daemons"]])[1L], asyncdial = FALSE)))
-  Sys.sleep(0.5)
+  Sys.sleep(1L)
   nanotest(is.matrix(status <- daemons()[["daemons"]]))
   nanotest(is.integer(attr(dn1 <- dimnames(status)[[1L]], "dispatcher_pid")))
   nanotest(is.character(parse1 <- nanonext::parse_url(dn1[1L])))
