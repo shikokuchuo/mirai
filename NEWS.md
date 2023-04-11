@@ -1,6 +1,6 @@
-# mirai 0.8.2.9020 (development)
+# mirai 0.8.2.9021 (development)
 
-* `mirai()` now accepts a language or expression object being passed to '.expr' for evaluation.
+* `mirai()` now accepts a language or expression object being passed to '.expr' for evaluation (thanks @HenrikBengtsson).
 * `dispatcher()` gains the following arguments:
   + `token` for appending a unique token to each URL the dispatcher listens at.
   + `lock` for locking sockets to prevent more than one server connecting at a unique URL.
