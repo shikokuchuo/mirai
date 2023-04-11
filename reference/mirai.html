@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9020</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9021</span>
       </span>
     </div>
 
@@ -72,17 +72,18 @@
     <h2>Arguments</h2>
     <dl><dt>.expr</dt>
 <dd><p>an expression to evaluate asynchronously (of arbitrary length,
-wrapped in {} if necessary). Alternatively, a language object may be
-supplied, in which case it will be evaluated directly.</p></dd>
+wrapped in {} if necessary), or a language object passed by <a href="https://rdrr.io/r/base/name.html" class="external-link">name</a>.</p></dd>
 
 
 <dt>...</dt>
-<dd><p>(optional) named arguments specifying objects referenced in '.expr'.</p></dd>
+<dd><p>(optional) named arguments (<code>name = value</code> pairs) specifying
+objects referenced in '.expr'.</p></dd>
 
 
 <dt>.args</dt>
-<dd><p>(optional) list supplying objects referenced in '.expr' (used in
-addition to or instead of named arguments specified as '...').</p></dd>
+<dd><p>(optional) list of the <a href="https://rdrr.io/r/base/name.html" class="external-link">name</a> of objects referenced in
+'.expr', which are to be found in the current scope (used in addition to
+or instead of named arguments specified as '...').</p></dd>
 
 
 <dt>.timeout</dt>
