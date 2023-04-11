@@ -356,9 +356,9 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 #'     wrapped in \{\} if necessary), or a language object passed by \link{name}.
 #' @param ... (optional) named arguments (\code{name = value} pairs) specifying
 #'     objects referenced in '.expr'.
-#' @param .args (optional) list of the \link{name} of objects referenced in
-#'     '.expr', which are to be found in the current scope (used in addition to
-#'     or instead of named arguments specified as '...').
+#' @param .args (optional) list of objects referenced in '.expr' to be passed by
+#'     \link{name}, i.e. also found in the current scope with the same name
+#'     (used in addition to or instead of named arguments specified as '...').
 #' @param .timeout (optional) integer value in milliseconds or NULL for no
 #'     timeout. A mirai will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
@@ -391,9 +391,9 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 #'     \code{\link{is_error_value}} tests for all error conditions including
 #'     'mirai' errors, interrupts, and timeouts.
 #'
-#'     Specify '.compute' to send the mirai to a specific server destination, if
-#'     multiple compute profiles have been set up via \code{\link{daemons}},
-#'     otherwise leave as 'default'.
+#'     Specify '.compute' to send the mirai using a specific compute profile, if
+#'     they have been previously created using \code{\link{daemons}}, otherwise
+#'     leave as 'default'.
 #'
 #' @examples
 #' if (interactive()) {
