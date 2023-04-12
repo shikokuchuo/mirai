@@ -21,7 +21,7 @@
 #'     or network resources, resolving automatically upon completion. Features
 #'     efficient task scheduling, scalability beyond R connection limits, and
 #'     transports faster than TCP/IP for inter-process communications, courtesy
-#'     of 'nanonext' and 'NNG' (Nanomsg Next Gen) technology.
+#'     of 'nanonext' and 'NNG' (Nanomsg Next Gen).
 #'
 #' @section Notes:
 #'
@@ -74,11 +74,7 @@ NULL
            .urlfmt <<- "ipc:///tmp/%s"
          })
 
-.onUnload <- function(libpath)
-  invisible(lapply(.., function(x) if (length(x[["sock"]])) close(x[["sock"]])))
-
 .command <- NULL
-
 .urlfmt <- NULL
 
 .. <- `[[<-`(new.env(hash = FALSE), "default", new.env(hash = FALSE))

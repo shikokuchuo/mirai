@@ -23,8 +23,7 @@ upon completion.
 
 Features efficient task scheduling, scalability beyond R connection
 limits, and transports faster than TCP/IP for inter-process
-communications, courtesy of ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen)
-technology.
+communications, courtesy of ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen).
 
 `mirai()` returns a ‘mirai’ object immediately. ‘mirai’ (未来 みらい) is
 Japanese for ‘future’.
