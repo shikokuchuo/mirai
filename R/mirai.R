@@ -456,7 +456,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
     sock <- socket(protocol = "req", listen = url)
     launch_daemon(sprintf("mirai::.(\"%s\")", url))
     aio <- request(context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
-    `weakref<-`(.subset2(aio, "aio"), sock)
+    `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
   }
 
