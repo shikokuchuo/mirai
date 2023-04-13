@@ -102,7 +102,7 @@ if (Sys.getenv("NOT_CRAN") == "true") {
   nanotestz(daemons(0))
   Sys.sleep(1L)
   option <- FALSE
-  nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, token = !option, lock = TRUE, cleanup = option))
+  nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, token = !option, cleanup = option))
   mq <- mirai("server", .timeout = 1000)
   nanotest(call_mirai(mq)$data == "server" || is_error_value(mq$data))
   nanotest(is.matrix(status <- daemons()[["daemons"]]))
