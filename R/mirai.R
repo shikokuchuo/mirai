@@ -238,7 +238,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
           sub(ports[1L], ports[i], url, fixed = TRUE)
     basenames[i] <- nurl
     if (auto || token)
-      nurl <- append_token(auto, nurl)
+      nurl <- append_token(url = nurl, auto = auto)
     nsock <- socket(protocol = "req")
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE) && stop()
@@ -291,7 +291,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
             close(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
             cv_reset(active[[i]])
-            data <- servernames[i] <- append_token(auto, basenames[i])
+            data <- servernames[i] <- append_token(url = basenames[i], auto = auto)
             listen(servers[[i]], url = data, error = TRUE)
           } else {
             data <- 1L
@@ -1070,7 +1070,7 @@ request_ack <- function(sock) {
 
 new_token <- function() sha1(random(n = 8L))
 
-append_token <- function(auto, url)
+append_token <- function(url, auto)
   if (auto) sprintf("%s%s", url, new_token()) else sprintf("%s/%s", url, new_token())
 
 mk_mirai_error <- function(e) `class<-`(if (length(call <- .subset2(e, "call")))
