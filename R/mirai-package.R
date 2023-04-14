@@ -52,7 +52,7 @@
 #' @importFrom nanonext call_aio context cv cv_reset cv_value is_error_value
 #'     listen lock mclock msleep opt parse_url pipe_notify random recv
 #'     recv_aio_signal request request_signal send sha1 socket stat stop_aio
-#'     unresolved wait
+#'     unresolved until wait
 #'
 #' @docType package
 #' @name mirai-package
