@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9028</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9030</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.2.9028" id="mirai-0829028-development">mirai 0.8.2.9028 (development)<a class="anchor" aria-label="anchor" href="#mirai-0829028-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.2.9030" id="mirai-0829030-development">mirai 0.8.2.9030 (development)<a class="anchor" aria-label="anchor" href="#mirai-0829030-development"></a></h2>
 <ul><li>
 <code><a href="../reference/mirai.html">mirai()</a></code> now accepts a language or expression object being passed to ‘.expr’ for evaluation (thanks <a href="https://github.com/HenrikBengtsson" class="external-link">@HenrikBengtsson</a>).</li>
 <li>
@@ -70,6 +70,7 @@
 <code><a href="../reference/launch_server.html">launch_server()</a></code> replaces <code>launch()</code> for launching local instances, with a simpler interface directly mapping to <code><a href="../reference/server.html">server()</a></code>.</li>
 <li>Automatically-launched local daemons revised to use unique tokens in their URLs.</li>
 <li>Daemons status matrix headers updated to ‘online’, ‘instance’, ‘assigned’, and ‘complete’.</li>
+<li>Fixes potential issue when attempting to use <code><a href="../reference/mirai.html">mirai()</a></code> with timeouts and no connection to a server.</li>
 <li>Requires nanonext &gt;= [0.8.2].</li>
 <li>Internal performance enhancements.</li>
 </ul></div>
