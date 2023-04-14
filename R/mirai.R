@@ -272,7 +272,6 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
   }
 
   on.exit(lapply(servers, close), add = TRUE, after = TRUE)
-  msleep(500L)
 
   suspendInterrupts(
     repeat {
@@ -448,8 +447,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   envir <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
   if (length(..[[.compute]][["sock"]])) {
-    aio <- request(context(..[[.compute]][["sock"]]), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout,
-                   socket = length(..[[.compute]][["sockc"]]) || stat(..[[.compute]][["sock"]], "pipes"))
+    aio <- request(context(..[[.compute]][["sock"]], verify = is.null(..[[.compute]][["sockc"]]) || NA),
+                   data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
 
   } else {
     url <- sprintf(.urlfmt, new_token())
@@ -459,10 +458,10 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
       pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = FALSE)
       launch_daemon(sprintf("mirai::.(\"%s\")", url))
       wait(cv)
-      aio <- request(context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout, socket = TRUE)
+      aio <- request(context(sock, verify = NA), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     } else {
       launch_daemon(sprintf("mirai::.(\"%s\")", url))
-      aio <- request(context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+      aio <- request(context(sock, verify = FALSE), data = envir, send_mode = 1L, recv_mode = 1L)
     }
 
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
