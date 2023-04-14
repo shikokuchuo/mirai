@@ -102,7 +102,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 
   while (count < maxtasks && mclock() - start < walltime) {
 
-    ctx <- context(sock)
+    ctx <- context(sock, verify = FALSE)
     aio <- recv_aio_signal(ctx, mode = 1L, timeout = idletime, cv = cv)
     wait(cv) || return(invisible())
     envir <- .subset2(call_aio(aio), "data")
@@ -144,7 +144,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 
   sock <- socket(protocol = "rep", dial = url)
   on.exit(close(sock))
-  ctx <- context(sock)
+  ctx <- context(sock, verify = FALSE)
   envir <- recv(ctx, mode = 1L)
   data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)
@@ -213,7 +213,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 
   ctrchannel <- is.character(monitor)
   if (ctrchannel) {
-    ctx <- context(sock)
+    ctx <- context(sock, verify = FALSE)
     recv(ctx, mode = 5L, block = 2000L) && stop()
     send(ctx, 0L, mode = 2L, block = 2000L) && stop()
     close(ctx)
@@ -266,7 +266,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 
     servers[[i]] <- nsock
     active[[i]] <- ncv
-    ctx <- context(sock)
+    ctx <- context(sock, verify = FALSE)
     req <- recv_aio_signal(ctx, mode = 1L, cv = cv)
     queue[[i]] <- list(ctx = ctx, req = req)
   }
@@ -334,7 +334,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
           q <- queue[[i]][["daemon"]]
           serverfree[q] <- TRUE
           complete[q] <- complete[q] + 1L
-          ctx <- context(sock)
+          ctx <- context(sock, verify = FALSE)
           req <- recv_aio_signal(ctx, mode = 1L, cv = cv)
           queue[[i]] <- list(ctx = ctx, req = req)
         }
