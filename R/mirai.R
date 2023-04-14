@@ -454,8 +454,17 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   } else {
     url <- sprintf(.urlfmt, new_token())
     sock <- socket(protocol = "req", listen = url)
-    launch_daemon(sprintf("mirai::.(\"%s\")", url))
-    aio <- request(context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    if (length(.timeout)) {
+      cv <- cv()
+      pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = FALSE)
+      launch_daemon(sprintf("mirai::.(\"%s\")", url))
+      wait(cv)
+      aio <- request(context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout, socket = TRUE)
+    } else {
+      launch_daemon(sprintf("mirai::.(\"%s\")", url))
+      aio <- request(context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    }
+
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
   }
@@ -692,11 +701,14 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         urlc <- sprintf("%s%s", urld, "c")
         sock <- socket(protocol = "req", listen = urld)
         sockc <- socket(protocol = "bus", listen = urlc)
+        cv <- cv()
+        pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = FALSE)
         dotstring <- if (missing(...)) "" else
           sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
         args <- sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)",
                         urld, paste(sprintf("\"%s\"", url), collapse = ","), n, urlc, dotstring)
         launch_daemon(args)
+        wait(cv)
         request_ack(sock)
         `[[<-`(..[[.compute]], "sockc", sockc)
         proc <- n
@@ -731,8 +743,11 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
       if (dispatcher) {
         urlc <- sprintf("%s%s", urld, "c")
         sockc <- socket(protocol = "bus", listen = urlc)
+        cv <- cv()
+        pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = FALSE)
         args <- sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", urld, n, urlc, dotstring)
         launch_daemon(args)
+        wait(cv)
         request_ack(sock)
         `[[<-`(..[[.compute]], "sockc", sockc)
       } else {

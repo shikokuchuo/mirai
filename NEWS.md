@@ -1,4 +1,4 @@
-# mirai 0.8.2.9028 (development)
+# mirai 0.8.2.9030 (development)
 
 * `mirai()` now accepts a language or expression object being passed to '.expr' for evaluation (thanks @HenrikBengtsson).
 * `dispatcher()` gains the following arguments:
@@ -8,6 +8,7 @@
 * `launch_server()` replaces `launch()` for launching local instances, with a simpler interface directly mapping to `server()`.
 * Automatically-launched local daemons revised to use unique tokens in their URLs.
 * Daemons status matrix headers updated to 'online', 'instance', 'assigned', and 'complete'.
+* Fixes potential issue when attempting to use `mirai()` with timeouts and no connection to a server.
 * Requires nanonext >= [0.8.2].
 * Internal performance enhancements.
 
