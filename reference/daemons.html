@@ -24,7 +24,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9035</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9036</span>
       </span>
     </div>
 
@@ -244,10 +244,14 @@ to different resources).</p></dd>
 
 
 <p>Specifying the <code>.timeout</code> argument in <code><a href="mirai.html">mirai</a></code> will ensure
-    that the 'mirai' always resolves. However, the task may not have
-    completed and still be ongoing in the daemon process. In such situations,
-    using a dispatcher ensures that queued tasks are not assigned to the busy
-    process, however performance may still be degraded if they remain in use.</p>
+    that the 'mirai' always resolves.</p>
+<p>However, the task may not have completed and still be ongoing in the
+    daemon process. In such situations, dispatcher ensures that queued tasks
+    are not assigned to the busy process, however performance may still be
+    degraded if they remain in use. If a process hangs, they may be restarted
+    manually, or else <code><a href="saisei.html">saisei</a></code> specifying <code>force = TRUE</code> may
+    be used to regenerate any particular URL for a new <code><a href="server.html">server</a></code>
+    to connect to.</p>
     </div>
 
     <div id="ref-examples">
