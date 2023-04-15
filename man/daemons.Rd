@@ -189,10 +189,15 @@ For viewing the currrent status, specify \code{daemons()} with no
 
 
     Specifying the \code{.timeout} argument in \code{\link{mirai}} will ensure
-    that the 'mirai' always resolves. However, the task may not have
-    completed and still be ongoing in the daemon process. In such situations,
-    using a dispatcher ensures that queued tasks are not assigned to the busy
-    process, however performance may still be degraded if they remain in use.
+    that the 'mirai' always resolves.
+
+    However, the task may not have completed and still be ongoing in the
+    daemon process. In such situations, dispatcher ensures that queued tasks
+    are not assigned to the busy process, however performance may still be
+    degraded if they remain in use. If a process hangs, they may be restarted
+    manually, or else \code{\link{saisei}} specifying \code{force = TRUE} may
+    be used to regenerate any particular URL for a new \code{\link{server}}
+    to connect to.
 }
 
 \examples{

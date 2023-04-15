@@ -291,7 +291,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
       ctrchannel && !unresolved(cmessage) && {
         i <- .subset2(cmessage, "data")
         if (i) {
-          if (i > 0L && i <= n && !activevec[i]) {
+          if (i > 0L && i <= n && !activevec[i] || i < 0L && -i <= n) {
+            i <- abs(i)
             close(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
             cv_reset(active[[i]])
@@ -640,10 +641,15 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' @section Timeouts:
 #'
 #'     Specifying the \code{.timeout} argument in \code{\link{mirai}} will ensure
-#'     that the 'mirai' always resolves. However, the task may not have
-#'     completed and still be ongoing in the daemon process. In such situations,
-#'     using a dispatcher ensures that queued tasks are not assigned to the busy
-#'     process, however performance may still be degraded if they remain in use.
+#'     that the 'mirai' always resolves.
+#'
+#'     However, the task may not have completed and still be ongoing in the
+#'     daemon process. In such situations, dispatcher ensures that queued tasks
+#'     are not assigned to the busy process, however performance may still be
+#'     degraded if they remain in use. If a process hangs, they may be restarted
+#'     manually, or else \code{\link{saisei}} specifying \code{force = TRUE} may
+#'     be used to regenerate any particular URL for a new \code{\link{server}}
+#'     to connect to.
 #'
 #' @examples
 #' if (interactive()) {
@@ -762,6 +768,78 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
   ..[[.compute]][["proc"]] %||% 0L
 
 }
+
+#' Launch mirai Server
+#'
+#' Utility function which calls \code{\link{server}} in a background
+#'     \code{Rscript} process. May be used to re-launch local daemons that have
+#'     timed out.
+#'
+#' @param url the client URL for the server to dial into as a character string,
+#'     including the port to connect to and (optionally) a path for websocket
+#'     URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
+#' @param ... (optional) additional arguments passed to \code{\link{server}}.
+#'
+#' @return Invisibly, integer system exit code (zero upon success).
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' launch_server("abstract://mirai", idletime = 60000L)
+#'
+#' }
+#'
+#' @export
+#'
+launch_server <- function(url, ...) {
+
+  dotstring <- if (missing(...)) "" else
+    sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
+  args <- sprintf("mirai::server(\"%s\"%s)", url, dotstring)
+  launch_daemon(args)
+
+}
+
+#' Saisei - Regenerate Token
+#'
+#' When using daemons with a local dispatcher service, regenerates the token for
+#'     the URL a dispatcher socket listens at.
+#'
+#' @param i integer \code{i}th URL to replace.
+#' @param force [default FALSE] logical value whether to replace the listener
+#'     even when there is an existing connection.
+#' @param .compute (optional) character compute profile to use (each compute
+#'     profile has its own set of daemons for connecting to different resources).
+#'
+#' @return The regenerated character URL upon success, or else NULL.
+#'
+#' @details As the specified listener is closed and replaced immediately, this
+#'     function will only be successful if there are no existing connections at
+#'     the socket (i.e. 'online' status shows 0), unless the argument 'force' is
+#'     specified as TRUE.
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' daemons(1, token = TRUE)
+#' daemons()
+#' saisei(i = 1L)
+#' daemons()
+#'
+#' daemons(0)
+#'
+#' }
+#'
+#' @export
+#'
+saisei <- function(i = 1L, force = FALSE, .compute = "default")
+  if (length(..[[.compute]][["sockc"]])) {
+    r <- query_nodes(..[[.compute]][["sockc"]], as.integer(if (force) -i else i))
+    is.character(r) || return()
+    r
+  }
 
 #' mirai (Call Value)
 #'
@@ -996,76 +1074,6 @@ print.miraiInterrupt <- function(x, ...) {
   invisible(x)
 
 }
-
-#' Launch mirai Server
-#'
-#' Utility function which calls \code{\link{server}} in a background
-#'     \code{Rscript} process. May be used to re-launch local daemons that have
-#'     timed out.
-#'
-#' @param url the client URL for the server to dial into as a character string,
-#'     including the port to connect to and (optionally) a path for websocket
-#'     URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
-#' @param ... (optional) additional arguments passed to \code{\link{server}}.
-#'
-#' @return Invisibly, integer system exit code (zero upon success).
-#'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
-#' launch_server("abstract://mirai", idletime = 60000L)
-#'
-#' }
-#'
-#' @export
-#'
-launch_server <- function(url, ...) {
-
-  dotstring <- if (missing(...)) "" else
-    sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
-  args <- sprintf("mirai::server(\"%s\"%s)", url, dotstring)
-  launch_daemon(args)
-
-}
-
-#' Saisei - Regenerate Token
-#'
-#' When using daemons with a local dispatcher service, replaces an existing
-#'     socket at the dispatcher with a new one, listening to a URL incorporating
-#'     a newly-generated token.
-#'
-#' @param i integer \code{i}th daemon to replace.
-#' @param .compute (optional) character compute profile to use (each compute
-#'     profile has its own set of daemons for connecting to different resources).
-#'
-#' @return The regenerated character URL upon success, or else NULL.
-#'
-#' @details As the specified socket is closed and replaced immediately, this
-#'     function will only be successful if there are no existing connections at
-#'     the socket (i.e. 'online' status shows 0).
-#'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
-#' daemons(1, token = TRUE)
-#' daemons()
-#' saisei(i = 1L)
-#' daemons()
-#'
-#' daemons(0)
-#'
-#' }
-#'
-#' @export
-#'
-saisei <- function(i = 1L, .compute = "default")
-  if (length(..[[.compute]][["sockc"]])) {
-    r <- query_nodes(..[[.compute]][["sockc"]], as.integer(i))
-    is.character(r) || return()
-    r
-  }
 
 # internals --------------------------------------------------------------------
 

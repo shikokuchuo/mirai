@@ -74,9 +74,6 @@ NULL
            .urlfmt <<- "ipc:///tmp/%s"
          })
 
-.onUnload <- function(libpath)
-  invisible(lapply(.., function(x) if (length(x[["sock"]])) close(x[["sock"]])))
-
 .command <- NULL
 .urlfmt <- NULL
 

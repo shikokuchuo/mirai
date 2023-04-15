@@ -4,10 +4,13 @@
 \alias{saisei}
 \title{Saisei - Regenerate Token}
 \usage{
-saisei(i = 1L, .compute = "default")
+saisei(i = 1L, force = FALSE, .compute = "default")
 }
 \arguments{
-\item{i}{integer \code{i}th daemon to replace.}
+\item{i}{integer \code{i}th URL to replace.}
+
+\item{force}{[default FALSE] logical value whether to replace the listener
+even when there is an existing connection.}
 
 \item{.compute}{(optional) character compute profile to use (each compute
 profile has its own set of daemons for connecting to different resources).}
@@ -16,14 +19,14 @@ profile has its own set of daemons for connecting to different resources).}
 The regenerated character URL upon success, or else NULL.
 }
 \description{
-When using daemons with a local dispatcher service, replaces an existing
-    socket at the dispatcher with a new one, listening to a URL incorporating
-    a newly-generated token.
+When using daemons with a local dispatcher service, regenerates the token for
+    the URL a dispatcher socket listens at.
 }
 \details{
-As the specified socket is closed and replaced immediately, this
+As the specified listener is closed and replaced immediately, this
     function will only be successful if there are no existing connections at
-    the socket (i.e. 'online' status shows 0).
+    the socket (i.e. 'online' status shows 0), unless the argument 'force' is
+    specified as TRUE.
 }
 \examples{
 if (interactive()) {
