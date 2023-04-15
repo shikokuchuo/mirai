@@ -354,11 +354,13 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 #'
 #' @param .expr an expression to evaluate asynchronously (of arbitrary length,
 #'     wrapped in \{\} if necessary), or a language object passed by \link{name}.
-#' @param ... (optional) named arguments (\code{name = value} pairs) specifying
+#' @param ... (optional) named arguments (name = value pairs) specifying
 #'     objects referenced in '.expr'.
-#' @param .args (optional) list of objects referenced in '.expr' to be passed by
-#'     \link{name}, i.e. also found in the current scope with the same name
-#'     (used in addition to or instead of named arguments specified as '...').
+#' @param .args (optional) either (i) a list of objects to be passed by
+#'     \link{name}, i.e. also found in the current scope with the same name, or
+#'     else (ii) a list of name = value pairs as in '...' above.
+#'     Objects specified by this argument are used in addition to or instead of
+#'     named arguments specified as '...'.
 #' @param .timeout (optional) integer value in milliseconds or NULL for no
 #'     timeout. A mirai will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
@@ -391,9 +393,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 #'     \code{\link{is_error_value}} tests for all error conditions including
 #'     'mirai' errors, interrupts, and timeouts.
 #'
-#'     Specify '.compute' to send the mirai using a specific compute profile, if
-#'     they have been previously created using \code{\link{daemons}}, otherwise
-#'     leave as 'default'.
+#'     Specify '.compute' to send the mirai using a specific compute profile (if
+#'     previously created by \code{\link{daemons}}), otherwise leave as 'default'.
 #'
 #' @examples
 #' if (interactive()) {
@@ -427,10 +428,9 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 #' call_mirai(m)[["data"]]
 #' unlink(file)
 #'
-#' lang <- quote(a + b + 2)
-#' a <- 2
-#' b <- 3
-#' m <- mirai(lang, .args = list(a, b))
+#' expr <- quote(a + b + 2)
+#' args <- list(a = 2, b = 3)
+#' m <- mirai(.expr = expr, .args = args)
 #' call_mirai(m)$data
 #'
 #' }
@@ -443,8 +443,13 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 
   expr <- substitute(.expr)
   arglist <- list(.expr = if (is.symbol(expr) && is.language(get0(expr))) .expr else expr, ...)
-  if (length(.args))
-    arglist <- c(arglist, `names<-`(.args, `storage.mode<-`(substitute(.args)[-1L], "character")))
+
+  if (length(.args)) {
+    is.list(.args) || stop("'.args' must be specified as a list")
+    arglist <- if (length(names(.args))) c(arglist, .args) else
+      c(arglist, `names<-`(.args, `storage.mode<-`(substitute(.args)[-1L], "character")))
+  }
+
   envir <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
   if (length(..[[.compute]][["sock"]])) {

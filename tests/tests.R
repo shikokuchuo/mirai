@@ -58,9 +58,10 @@ for (i in 1L) {
   Sys.sleep(2.2)
   nanotestp(m)
   nanotestp(b)
-  `lang obj` <- quote(n + 2L)
-  m <- mirai(`lang obj`, .args = list(n), .timeout = 2000L)
-  nanotest(call_mirai(m)$data == 5L || is_error_value(m$data))
+  `lang obj` <- quote(m + n + 2L)
+  args <- list(m = 2L, n = 4L)
+  m <- mirai(.expr = `lang obj`, .args = args, .timeout = 2000L)
+  nanotest(call_mirai(m)$data == 8L || is_error_value(m$data))
   Sys.sleep(2.2)
   nanotest(daemons(url = value <- mirai:::append_token(sprintf(mirai:::.urlfmt, ""), TRUE), dispatcher = FALSE) == value)
   nanotestz(daemons(0L))
@@ -132,3 +133,4 @@ for (i in 1L) {
 
 }
 
+Sys.sleep(1L)

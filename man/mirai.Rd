@@ -10,12 +10,14 @@ mirai(.expr, ..., .args = list(), .timeout = NULL, .compute = "default")
 \item{.expr}{an expression to evaluate asynchronously (of arbitrary length,
 wrapped in \{\} if necessary), or a language object passed by \link{name}.}
 
-\item{...}{(optional) named arguments (\code{name = value} pairs) specifying
+\item{...}{(optional) named arguments (name = value pairs) specifying
 objects referenced in '.expr'.}
 
-\item{.args}{(optional) list of objects referenced in '.expr' to be passed by
-\link{name}, i.e. also found in the current scope with the same name
-(used in addition to or instead of named arguments specified as '...').}
+\item{.args}{(optional) either (i) a list of objects to be passed by
+\link{name}, i.e. also found in the current scope with the same name, or
+else (ii) a list of name = value pairs as in '...' above.
+Objects specified by this argument are used in addition to or instead of
+named arguments specified as '...'.}
 
 \item{.timeout}{(optional) integer value in milliseconds or NULL for no
 timeout. A mirai will resolve to an 'errorValue' 5 (timed out) if
@@ -58,9 +60,8 @@ This function will return a 'mirai' object immediately.
     \code{\link{is_error_value}} tests for all error conditions including
     'mirai' errors, interrupts, and timeouts.
 
-    Specify '.compute' to send the mirai using a specific compute profile, if
-    they have been previously created using \code{\link{daemons}}, otherwise
-    leave as 'default'.
+    Specify '.compute' to send the mirai using a specific compute profile (if
+    previously created by \code{\link{daemons}}), otherwise leave as 'default'.
 }
 \examples{
 if (interactive()) {
@@ -94,10 +95,9 @@ m <- mirai({source(file, local = TRUE); r}, .args = list(file, n))
 call_mirai(m)[["data"]]
 unlink(file)
 
-lang <- quote(a + b + 2)
-a <- 2
-b <- 3
-m <- mirai(lang, .args = list(a, b))
+expr <- quote(a + b + 2)
+args <- list(a = 2, b = 3)
+m <- mirai(.expr = expr, .args = args)
 call_mirai(m)$data
 
 }
