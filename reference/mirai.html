@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9036</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9037</span>
       </span>
     </div>
 
@@ -76,14 +76,16 @@ wrapped in {} if necessary), or a language object passed by <a href="https://rdr
 
 
 <dt>...</dt>
-<dd><p>(optional) named arguments (<code>name = value</code> pairs) specifying
+<dd><p>(optional) named arguments (name = value pairs) specifying
 objects referenced in '.expr'.</p></dd>
 
 
 <dt>.args</dt>
-<dd><p>(optional) list of objects referenced in '.expr' to be passed by
-<a href="https://rdrr.io/r/base/name.html" class="external-link">name</a>, i.e. also found in the current scope with the same name
-(used in addition to or instead of named arguments specified as '...').</p></dd>
+<dd><p>(optional) either (i) a list of objects to be passed by
+<a href="https://rdrr.io/r/base/name.html" class="external-link">name</a>, i.e. also found in the current scope with the same name, or
+else (ii) a list of name = value pairs as in '...' above.
+Objects specified by this argument are used in addition to or instead of
+named arguments specified as '...'.</p></dd>
 
 
 <dt>.timeout</dt>
@@ -122,9 +124,8 @@ when sending the mirai.</p></dd>
     <code><a href="is_mirai_error.html">is_mirai_error</a></code> may be used to test for this.</p>
 <p><code><a href="is_mirai_error.html">is_error_value</a></code> tests for all error conditions including
     'mirai' errors, interrupts, and timeouts.</p>
-<p>Specify '.compute' to send the mirai using a specific compute profile, if
-    they have been previously created using <code><a href="daemons.html">daemons</a></code>, otherwise
-    leave as 'default'.</p>
+<p>Specify '.compute' to send the mirai using a specific compute profile (if
+    previously created by <code><a href="daemons.html">daemons</a></code>), otherwise leave as 'default'.</p>
     </div>
 
     <div id="ref-examples">
@@ -160,10 +161,9 @@ when sending the mirai.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">[[</span><span class="st">"data"</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">file</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">lang</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="va">a</span> <span class="op">+</span> <span class="va">b</span> <span class="op">+</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
-<span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fl">3</span></span></span>
-<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">mirai</span><span class="op">(</span><span class="va">lang</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="va">a</span> <span class="op">+</span> <span class="va">b</span> <span class="op">+</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">args</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">2</span>, b <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">mirai</span><span class="op">(</span>.expr <span class="op">=</span> <span class="va">expr</span>, .args <span class="op">=</span> <span class="va">args</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
