@@ -316,7 +316,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
         for (q in free)
           for (i in seq_n) {
             if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
-              ctx <- context(servers[[q]])
+              ctx <- context(servers[[q]], verify = FALSE)
               queue[[i]][["rctx"]] <- ctx
               queue[[i]][["res"]] <- request_signal(ctx, data = .subset2(queue[[i]][["req"]], "data"),
                                                     send_mode = 1L, recv_mode = 1L, cv = cv)
