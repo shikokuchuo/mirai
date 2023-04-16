@@ -243,6 +243,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
     if (auto || token)
       nurl <- append_token(url = nurl, auto = auto)
     nsock <- socket(protocol = "req")
+    `opt<-`(nsock, "req:resend-time", .intmax)
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE) && stop()
     listen(nsock, url = nurl, error = TRUE)
@@ -458,6 +459,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   } else {
     url <- sprintf(.urlfmt, new_token())
     sock <- socket(protocol = "req", listen = url)
+    `opt<-`(sock, "req:resend-time", .intmax)
     if (length(.timeout)) {
       cv <- cv()
       pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
@@ -709,6 +711,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         urld <- sprintf(.urlfmt, new_token())
         urlc <- sprintf("%s%s", urld, "c")
         sock <- socket(protocol = "req", listen = urld)
+        `opt<-`(sock, "req:resend-time", .intmax)
         sockc <- socket(protocol = "bus", listen = urlc)
         cv <- cv()
         pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
@@ -723,6 +726,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         proc <- n
       } else {
         sock <- socket(protocol = "req", listen = url)
+        `opt<-`(sock, "req:resend-time", .intmax)
         proc <- opt(attr(sock, "listener")[[1L]], "url")
         if (parse_url(proc)[["port"]] == "0")
           proc <- sub("(?<=:)0(?![^/])", opt(attr(sock, "listener")[[1L]], "tcp-bound-port"), proc, perl = TRUE)
@@ -747,6 +751,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
       n > 0L || stop("the number of daemons must be zero or greater")
       urld <- sprintf(.urlfmt, new_token())
       sock <- socket(protocol = "req", listen = urld)
+      `opt<-`(sock, "req:resend-time", .intmax)
       dotstring <- if (missing(...)) "" else
         sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
       if (dispatcher) {

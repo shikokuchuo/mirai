@@ -50,7 +50,7 @@
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
 #' @importFrom nanonext call_aio context cv cv_reset cv_value is_error_value
-#'     listen lock mclock msleep opt parse_url pipe_notify random recv
+#'     listen lock mclock msleep opt opt<- parse_url pipe_notify random recv
 #'     recv_aio_signal request request_signal send sha1 socket stat stop_aio
 #'     unresolved until wait
 #'
@@ -64,18 +64,22 @@ NULL
          Linux = {
            .command <<- file.path(R.home("bin"), "Rscript")
            .urlfmt <<- "abstract://%s"
+           .intmax <<- .Machine[["integer.max"]]
          },
          Windows = {
            .command <<- file.path(R.home("bin"), "Rscript.exe")
            .urlfmt <<- "ipc://%s"
+           .intmax <<- .Machine[["integer.max"]]
          },
          {
            .command <<- file.path(R.home("bin"), "Rscript")
            .urlfmt <<- "ipc:///tmp/%s"
+           .intmax <<- .Machine[["integer.max"]]
          })
 
 .command <- NULL
 .urlfmt <- NULL
+.intmax <- NULL
 
 .. <- `[[<-`(new.env(hash = FALSE), "default", new.env(hash = FALSE))
 
