@@ -292,8 +292,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
       ctrchannel && !unresolved(cmessage) && {
         i <- .subset2(cmessage, "data")
         if (i) {
-          if (i > 0L && i <= n && !activevec[i] || i < 0L && -i <= n) {
-            i <- abs(i)
+          if (i > 0L && i <= n && !activevec[i] || i < 0L && (i <- -i) <= n) {
             close(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
             cv_reset(active[[i]])

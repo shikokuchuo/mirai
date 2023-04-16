@@ -86,7 +86,7 @@ library(mirai)
 m <- mirai({
   res <- rnorm(n) + m
   res / rev(res)
-}, n = 1e8, m = runif(1))
+}, m = runif(1), n = 1e8)
 
 m
 #> < mirai >
@@ -108,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -2.025 13.353 1.962 -0.772 1.372 ...
+#>  num [1:100000000] 0.718 -4.001 1.026 0.736 -0.16 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +116,26 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -2.025 13.353 1.962 -0.772 1.372 ...
+#>  num [1:100000000] 0.718 -4.001 1.026 0.736 -0.16 ...
+```
+
+For easy programmatic use of `mirai`, ‘.expr’ accepts a pre-constructed
+language object to evaluate, and also a list of named arguments passed
+via ‘.args’. So, the following would produce the same results as the
+above:
+
+``` r
+expr <- quote({
+  res <- rnorm(n) + m
+  res / rev(res)
+})
+
+args <- list(m = runif(1), n = 1e8)
+
+m <- mirai(.expr = expr, .args = args)
+
+call_mirai(m)$data |> str()
+#>  num [1:100000000] 1.455 0.691 0.835 1.765 0.352 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -133,8 +152,10 @@ operations concurrently in a separate process.
 
 A ‘mirai’ object is returned immediately.
 
-Below, ‘.args’ accepts a list of objects already present in the calling
-environment to be passed to the mirai.
+Below, ‘.args’ is used to pass a list of objects already present in the
+calling environment to the mirai by name (see `base::name`). This is an
+alternative use of ‘.args’, and can be combined with `...` to also pass
+in `name = value` pairs.
 
 ``` r
 library(mirai)
@@ -209,8 +230,8 @@ for (i in 1:10) {
 #> iteration 4 successful 
 #> iteration 5 successful 
 #> iteration 6 successful 
-#> iteration 7 successful 
 #> Error: random error 
+#> iteration 7 successful 
 #> iteration 8 successful 
 #> iteration 9 successful 
 #> iteration 10 successful
@@ -255,12 +276,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://ee5cdf1c6cdfb8d006499770fefb27b7893b4d2f      1        1        0        0
-#> abstract://40578bb54361b87677a7b069648fa5fbc2311951      1        1        0        0
-#> abstract://143a3a4d38857b153a0a6bbf875b16e99ec04531      1        1        0        0
-#> abstract://ddfee3eecc7d1a89e9af1a2cdb24f6051e348602      1        1        0        0
-#> abstract://6505537ab60f22e7ee1a56dea55b873231a92701      1        1        0        0
-#> abstract://a69ae7820f12c24ab0cb5979eae87c7ab7180e52      1        1        0        0
+#> abstract://985d3a9681b606e1a46a203e81f3f49ca68f5af4      1        1        0        0
+#> abstract://556a2d6a54bab94eb8ff09df26e522222c201291      1        1        0        0
+#> abstract://6fae9639af17ca0ce157c8f2511c18005c28c7f3      1        1        0        0
+#> abstract://f8997dfac7acfcc2eb2bdcb35e9b71f1c36c6a6a      1        1        0        0
+#> abstract://68dc04328f4d5f2d678e6d65064c7c5269ea945e      1        1        0        0
+#> abstract://331f99c0deb7317ae706c8ce37f5921878ea16b5      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` launches a `dispatcher()` background
@@ -390,10 +411,10 @@ daemons()
 #> 
 #> $daemons
 #>              online instance assigned complete
-#> ws://:5555/1      1        1        0        0
-#> ws://:5555/2      1        1        0        0
-#> ws://:5555/3      1        1        0        0
-#> ws://:5555/4      1        1        0        0
+#> ws://:5555/1      0        0        0        0
+#> ws://:5555/2      0        0        0        0
+#> ws://:5555/3      0        0        0        0
+#> ws://:5555/4      0        0        0        0
 ```
 
 As per the local case, `$connections` will show the single connection to
@@ -445,7 +466,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:33363"
+#> [1] "tcp://:46017"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -460,7 +481,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:33363")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:46017")'
 
 –
 
@@ -478,7 +499,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:33363"
+#> [1] "tcp://:46017"
 ```
 
 To reset all connections and revert to default behaviour:

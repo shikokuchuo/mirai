@@ -81,7 +81,7 @@ library(mirai)
 m <- mirai({
   res <- rnorm(n) + m
   res / rev(res)
-}, n = 1e8, m = runif(1))
+}, m = runif(1), n = 1e8)
 
 m
 ```
@@ -109,6 +109,21 @@ Alternatively, explicitly call and wait for the result using `call_mirai()`.
 call_mirai(m)$data |> str()
 ```
 
+For easy programmatic use of `mirai`, '.expr' accepts a pre-constructed language object to evaluate, and also a list of named arguments passed via '.args'. So, the following would produce the same results as the above:
+
+```{r equiv}
+expr <- quote({
+  res <- rnorm(n) + m
+  res / rev(res)
+})
+
+args <- list(m = runif(1), n = 1e8)
+
+m <- mirai(.expr = expr, .args = args)
+
+call_mirai(m)$data |> str()
+```
+
 [&laquo; Back to ToC](#table-of-contents)
 
 ### Example 2: I/O-bound Operations
@@ -121,7 +136,7 @@ Cache data in memory and use `mirai()` to perform periodic write operations conc
 
 A 'mirai' object is returned immediately.
 
-Below, '.args' accepts a list of objects already present in the calling environment to be passed to the mirai.
+Below, '.args' is used to pass a list of objects already present in the calling environment to the mirai by name (see `base::name`). This is an alternative use of '.args', and can be combined with `...` to also pass in `name = value` pairs.
 
 ```{r exec2}
 library(mirai)
