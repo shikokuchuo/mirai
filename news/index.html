@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9037</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.2.9038</span>
       </span>
     </div>
 
@@ -54,11 +54,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.2.9037" id="mirai-0829037-development">mirai 0.8.2.9037 (development)<a class="anchor" aria-label="anchor" href="#mirai-0829037-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.2.9038" id="mirai-0829038-development">mirai 0.8.2.9038 (development)<a class="anchor" aria-label="anchor" href="#mirai-0829038-development"></a></h2>
 <ul><li>
 <code><a href="../reference/mirai.html">mirai()</a></code> gains the following enhancements (thanks <a href="https://github.com/HenrikBengtsson" class="external-link">@HenrikBengtsson</a>):
 <ul><li>accepts a language or expression object being passed to ‘.expr’ for evaluation.</li>
-<li>accepts ‘name = value’ pairs being passed to ‘.args’ as well as the existing ‘…’.</li>
+<li>accepts a list of ‘name = value’ pairs being passed to ‘.args’ as well as the existing ‘…’.</li>
+<li>objects specified via ‘…’ now take precedence over ‘.args’ if the same named object appears.</li>
 </ul></li>
 <li>
 <code><a href="../reference/dispatcher.html">dispatcher()</a></code> gains the following arguments:
