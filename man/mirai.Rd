@@ -11,13 +11,12 @@ mirai(.expr, ..., .args = list(), .timeout = NULL, .compute = "default")
 wrapped in \{\} if necessary), or a language object passed by \link{name}.}
 
 \item{...}{(optional) named arguments (name = value pairs) specifying
-objects referenced in '.expr'.}
+objects referenced in '.expr'. Used in addition to or instead of, and
+taking precedence over, named arguments specified via '.args'.}
 
 \item{.args}{(optional) either (i) a list of objects to be passed by
 \link{name}, i.e. also found in the current scope with the same name, or
-else (ii) a list of name = value pairs as in '...' above.
-Objects specified by this argument are used in addition to or instead of
-named arguments specified as '...'.}
+else (ii) a list of name = value pairs, as in '...'.}
 
 \item{.timeout}{(optional) integer value in milliseconds or NULL for no
 timeout. A mirai will resolve to an 'errorValue' 5 (timed out) if

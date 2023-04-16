@@ -355,12 +355,11 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 #' @param .expr an expression to evaluate asynchronously (of arbitrary length,
 #'     wrapped in \{\} if necessary), or a language object passed by \link{name}.
 #' @param ... (optional) named arguments (name = value pairs) specifying
-#'     objects referenced in '.expr'.
+#'     objects referenced in '.expr'. Used in addition to or instead of, and
+#'     taking precedence over, named arguments specified via '.args'.
 #' @param .args (optional) either (i) a list of objects to be passed by
 #'     \link{name}, i.e. also found in the current scope with the same name, or
-#'     else (ii) a list of name = value pairs as in '...' above.
-#'     Objects specified by this argument are used in addition to or instead of
-#'     named arguments specified as '...'.
+#'     else (ii) a list of name = value pairs, as in '...'.
 #' @param .timeout (optional) integer value in milliseconds or NULL for no
 #'     timeout. A mirai will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
@@ -442,12 +441,12 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   missing(.expr) && stop("missing expression, perhaps wrap in {}?")
 
   expr <- substitute(.expr)
-  arglist <- list(.expr = if (is.symbol(expr) && is.language(get0(expr))) .expr else expr, ...)
+  arglist <- list(..., .expr = if (is.symbol(expr) && is.language(get0(expr, envir = sys.frame(-1L)))) .expr else expr)
 
   if (length(.args)) {
     is.list(.args) || stop("'.args' must be specified as a list")
-    arglist <- if (length(names(.args))) c(arglist, .args) else
-      c(arglist, `names<-`(.args, `storage.mode<-`(substitute(.args)[-1L], "character")))
+    arglist <- if (length(names(.args))) c(.args, arglist) else
+      c(`names<-`(.args, `storage.mode<-`(substitute(.args)[-1L], "character")), arglist)
   }
 
   envir <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
