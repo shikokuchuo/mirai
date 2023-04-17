@@ -37,7 +37,7 @@ Setting daemons: integer number of daemons set, or the character
     for each server: URL, online status, instance number (increments each
     time a server connects to the URL), cumulative tasks assigned and
     completed (reset if a server re-connects), or else an integer 'errorValue'
-    if communication with the dispatcher was not successful. If not using
+    if communication with the dispatcher was unsuccessful. If not using
     dispatcher: the number of daemons set, or else the client URL.}
     }
 }

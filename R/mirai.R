@@ -84,8 +84,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
   count <- 0L
   if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
 
-  if (!is.integer(cleanup))
-    cleanup <- if (is.logical(cleanup)) cleanup * 7L else 7L # compatibility for crew <= 0.0.5
+  if (!is.integer(cleanup)) cleanup <- 7L
   cleanup_globals <- cleanup_packages <- cleanup_options <- cleanup_gc <- FALSE
   for (i in 3:0)
     if (cleanup >= 2 ^ i) {
@@ -514,7 +513,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     for each server: URL, online status, instance number (increments each
 #'     time a server connects to the URL), cumulative tasks assigned and
 #'     completed (reset if a server re-connects), or else an integer 'errorValue'
-#'     if communication with the dispatcher was not successful. If not using
+#'     if communication with the dispatcher was unsuccessful. If not using
 #'     dispatcher: the number of daemons set, or else the client URL.}
 #'     }
 #'
@@ -1091,12 +1090,7 @@ launch_daemon <- function(args)
 
 query_nodes <- function(sock, command) {
   send(sock, data = command, mode = 2L)
-  r <- recv(sock, mode = 1L, block = 2000L)
-  if (exists("crew_controller_callr") && is.matrix(r)) {
-    r <- cbind(r, r[, "assigned"] - r[, "complete"])
-    dimnames(r)[[2L]] <- c("status_online", "instance #", "tasks_assigned", "tasks_complete", "status_busy")
-  } # compatibility for crew <= 0.0.5
-  r
+  recv(sock, mode = 1L, block = 2000L)
 }
 
 request_ack <- function(sock) {
