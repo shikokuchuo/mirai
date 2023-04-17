@@ -1,4 +1,4 @@
-# mirai 0.8.2.9039 (development)
+# mirai 0.8.3
 
 * `mirai()` gains the following enhancements (thanks @HenrikBengtsson):
   + accepts a language or expression object being passed to '.expr' for evaluation.

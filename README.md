@@ -28,9 +28,6 @@ communications, courtesy of ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen).
 `mirai()` returns a ‘mirai’ object immediately. ‘mirai’ (未来 みらい) is
 Japanese for ‘future’.
 
-The asynchronous ‘mirai’ task runs in an ephemeral or persistent
-process, spawned locally or distributed across the network.
-
 {mirai} has a tiny pure R code base, relying solely on {nanonext}, a
 high-performance binding for the ‘NNG’ (Nanomsg Next Gen) C library with
 zero package dependencies.
@@ -93,7 +90,8 @@ m
 #>  - $data for evaluated result
 ```
 
-Above, all named objects are passed through to the mirai.
+Above, all specified `name = value` pairs are passed through to the
+‘mirai’.
 
 The ‘mirai’ yields an ‘unresolved’ logical NA value whilst the async
 operation is ongoing.
@@ -108,7 +106,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.718 -4.001 1.026 0.736 -0.16 ...
+#>  num [1:100000000] 0.97 5.532 -2.559 -0.254 0.303 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,13 +114,12 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.718 -4.001 1.026 0.736 -0.16 ...
+#>  num [1:100000000] 0.97 5.532 -2.559 -0.254 0.303 ...
 ```
 
-For easy programmatic use of `mirai`, ‘.expr’ accepts a pre-constructed
-language object to evaluate, and also a list of named arguments passed
-via ‘.args’. So, the following would produce the same results as the
-above:
+For easy programmatic use of `mirai()`, ‘.expr’ accepts a
+pre-constructed language object, and also a list of named arguments
+passed via ‘.args’. So, the following would be equivalent to the above:
 
 ``` r
 expr <- quote({
@@ -135,7 +132,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 1.455 0.691 0.835 1.765 0.352 ...
+#>  num [1:100000000] 0.221 -0.603 -2.056 -0.347 -1.014 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -150,12 +147,10 @@ synchronously without disrupting the execution flow.
 Cache data in memory and use `mirai()` to perform periodic write
 operations concurrently in a separate process.
 
-A ‘mirai’ object is returned immediately.
-
 Below, ‘.args’ is used to pass a list of objects already present in the
-calling environment to the mirai by name (see `base::name`). This is an
-alternative use of ‘.args’, and can be combined with `...` to also pass
-in `name = value` pairs.
+calling environment to the mirai by name. This is an alternative use of
+‘.args’, and may be combined with `...` to also pass in `name = value`
+pairs.
 
 ``` r
 library(mirai)
@@ -165,6 +160,8 @@ file <- tempfile()
 
 m <- mirai(write.csv(x, file = file), .args = list(x, file))
 ```
+
+A ‘mirai’ object is returned immediately.
 
 `unresolved()` may be used in control flow statements to perform actions
 which depend on resolution of the ‘mirai’, both before and after.
@@ -196,12 +193,12 @@ the next write.
 Use case: isolating code that can potentially fail in a separate process
 to ensure continued uptime.
 
-As part of a data science or machine learning pipeline, iterations of
+As part of a data science / machine learning pipeline, iterations of
 model training may periodically fail for stochastic and uncontrollable
 reasons (e.g. buggy memory management on graphics cards).
 
-Running each iteration in a ‘mirai’ process isolates this
-potentially-problematic code such that if it does fail, it does not
+Running each iteration in a ‘mirai’ isolates this
+potentially-problematic code such that even if it does fail, it does not
 bring down the entire pipeline.
 
 ``` r
@@ -230,8 +227,8 @@ for (i in 1:10) {
 #> iteration 4 successful 
 #> iteration 5 successful 
 #> iteration 6 successful 
-#> Error: random error 
 #> iteration 7 successful 
+#> Error: random error 
 #> iteration 8 successful 
 #> iteration 9 successful 
 #> iteration 10 successful
@@ -276,20 +273,20 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://985d3a9681b606e1a46a203e81f3f49ca68f5af4      1        1        0        0
-#> abstract://556a2d6a54bab94eb8ff09df26e522222c201291      1        1        0        0
-#> abstract://6fae9639af17ca0ce157c8f2511c18005c28c7f3      1        1        0        0
-#> abstract://f8997dfac7acfcc2eb2bdcb35e9b71f1c36c6a6a      1        1        0        0
-#> abstract://68dc04328f4d5f2d678e6d65064c7c5269ea945e      1        1        0        0
-#> abstract://331f99c0deb7317ae706c8ce37f5921878ea16b5      1        1        0        0
+#> abstract://6910477e0d73f6158ceb229482f08568443e2cd1      1        1        0        0
+#> abstract://a4a1cbd88330c8b6f2f312e037e865496ffe34a1      1        1        0        0
+#> abstract://7e754a74b5b31f58a94427ecf7c8b8dd1a4290c5      1        1        0        0
+#> abstract://91290cbcfedec37ddacf5ff1d101cdc3ac4d4a29      1        1        0        0
+#> abstract://038e1d4c08ce14ab61ddc273db85b68fa8b5bfa6      1        1        0        0
+#> abstract://cccec64e89d21aba0b9a7093fdf724379cf88921      1        1        0        0
 ```
 
-The default `dispatcher = TRUE` launches a `dispatcher()` background
-process that connects to individual background `server()` processes on
-the local machine. This ensures that tasks are dispatched efficiently on
-a first-in first-out (FIFO) basis to servers for processing. Tasks are
-queued at the dispatcher and sent to a server as soon as it can accept
-the task for immediate execution.
+The default `dispatcher = TRUE` creates a `dispatcher()` background
+process that connects to individual daemon processes on the local
+machine on behalf of the client. This ensures that tasks are dispatched
+efficiently on a first-in first-out (FIFO) basis to servers for
+processing. Tasks are queued at the dispatcher and sent to a daemon as
+soon as it can accept the task for immediate execution.
 
 ``` r
 daemons(0)
@@ -359,7 +356,8 @@ examples below.
 
 The default `dispatcher = TRUE` creates a background `dispatcher()`
 process on the local client machine, which listens to a vector of URLs
-that remote servers dial in to, with each server having its unique URL.
+that remote `server()` processes dial in to, with each server having its
+unique URL.
 
 It is recommended to use a websocket URL starting `ws://` instead of TCP
 in this scenario (used interchangeably with `tcp://`). A websocket URL
@@ -411,10 +409,10 @@ daemons()
 #> 
 #> $daemons
 #>              online instance assigned complete
-#> ws://:5555/1      0        0        0        0
-#> ws://:5555/2      0        0        0        0
-#> ws://:5555/3      0        0        0        0
-#> ws://:5555/4      0        0        0        0
+#> ws://:5555/1      1        1        0        0
+#> ws://:5555/2      1        1        0        0
+#> ws://:5555/3      1        1        0        0
+#> ws://:5555/4      1        1        0        0
 ```
 
 As per the local case, `$connections` will show the single connection to
@@ -454,7 +452,7 @@ dispatcher are terminated.
 #### Connecting to Remote Servers Directly
 
 By specifying `dispatcher = FALSE`, remote servers connect directly to
-the client. The client listens at the below address, and distributes
+the client. The client listens at a single URL address, and distributes
 tasks to all connected server processes.
 
 ``` r
@@ -466,14 +464,14 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:46017"
+#> [1] "tcp://:38185"
 ```
 
 Note that above, the port number is specified as zero. This is a
 wildcard value that will automatically cause a free ephemeral port to be
 assigned. The actual assigned port is provided as the return value of
-the call, or it may be queried at any time by requesting the status
-using `daemons()`.
+the call, or it may be queried at any time by requesting the status via
+`daemons()`.
 
 –
 
@@ -481,13 +479,12 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:46017")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:38185")'
 
 –
 
-On the client, requesting the status will return the client URL for
-`daemons`. The number of daemons connecting to this URL is not limited
-and network resources may be added and removed at any time, with tasks
+The number of daemons connecting to the client URL is not limited and
+network resources may be added or removed at any time, with tasks
 automatically distributed to all server processes.
 
 `$connections` will show the actual number of connected server
@@ -499,7 +496,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:46017"
+#> [1] "tcp://:38185"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -515,9 +512,8 @@ This causes all connected server instances to exit automatically.
 
 ### Compute Profiles
 
-The `daemons` interface allows the easy specification of compute
-profiles. This is for managing tasks with heterogeneous compute
-requirements:
+The `daemons()` interface also allows the specification of compute
+profiles for managing tasks with heterogeneous compute requirements:
 
 - send tasks to different servers or server clusters with the
   appropriate specifications (in terms of CPUs / memory / GPU /
