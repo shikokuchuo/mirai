@@ -214,8 +214,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
   ctrchannel <- is.character(monitor)
   if (ctrchannel) {
     ctx <- context(sock, verify = FALSE)
-    recv(ctx, mode = 5L, block = 2000L) && stop()
-    send(ctx, 0L, mode = 2L, block = 2000L) && stop()
+    recv(ctx, mode = 5L, block = 5000L) && stop()
+    send(ctx, 0L, mode = 2L, block = 5000L) && stop()
     close(ctx)
     statnames <- c("online", "instance", "assigned", "complete")
     attr(servernames, "dispatcher_pid") <- Sys.getpid()
@@ -513,8 +513,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     \item{\code{daemons}} {- if using dispatcher: a matrix of statistics
 #'     for each server: URL, online status, instance number (increments each
 #'     time a server connects to the URL), cumulative tasks assigned and
-#'     completed (reset if a server re-connects). If not using dispatcher: the
-#'     number of daemons set, or else the client URL.}
+#'     completed (reset if a server re-connects), or else an integer 'errorValue'
+#'     if communication with the dispatcher was not successful. If not using
+#'     dispatcher: the number of daemons set, or else the client URL.}
 #'     }
 #'
 #' @details For viewing the currrent status, specify \code{daemons()} with no
@@ -1099,8 +1100,8 @@ query_nodes <- function(sock, command) {
 }
 
 request_ack <- function(sock) {
-  r <- request(context(sock), data = 0L, send_mode = 2L, recv_mode = 5L, timeout = 2000L)
-  .subset2(call_aio(r), "data") && stop("dispatcher process launch - timed out after 2s")
+  r <- request(context(sock), data = 0L, send_mode = 2L, recv_mode = 5L, timeout = 5000L)
+  .subset2(call_aio(r), "data") && stop("dispatcher process launch - timed out after 5s")
 }
 
 new_token <- function() sha1(random(n = 8L))

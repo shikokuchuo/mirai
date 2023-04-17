@@ -36,8 +36,9 @@ Setting daemons: integer number of daemons set, or the character
     \item{\code{daemons}} {- if using dispatcher: a matrix of statistics
     for each server: URL, online status, instance number (increments each
     time a server connects to the URL), cumulative tasks assigned and
-    completed (reset if a server re-connects). If not using dispatcher: the
-    number of daemons set, or else the client URL.}
+    completed (reset if a server re-connects), or else an integer 'errorValue'
+    if communication with the dispatcher was not successful. If not using
+    dispatcher: the number of daemons set, or else the client URL.}
     }
 }
 \description{
