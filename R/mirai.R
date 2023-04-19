@@ -197,10 +197,13 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop("at least one URL must be supplied for 'url' or 'n' must be at least 1")
 
-  sock <- socket(protocol = "rep", dial = client, autostart = asyncdial || NA)
+  sock <- socket(protocol = "rep")
   on.exit(close(sock))
+  scv <- cv()
   cv <- cv()
+  pipe_notify(sock, cv = scv, add = TRUE, remove = FALSE, flag = FALSE) && stop()
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE) && stop()
+  dial(sock, url = client, autostart = asyncdial || NA, error = TRUE)
 
   auto <- is.null(url)
   vectorised <- length(url) == n
@@ -212,10 +215,6 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 
   ctrchannel <- is.character(monitor)
   if (ctrchannel) {
-    ctx <- context(sock, verify = FALSE)
-    recv(ctx, mode = 5L, block = 5000L) && stop()
-    send(ctx, 0L, mode = 2L, block = 5000L) && stop()
-    close(ctx)
     statnames <- c("online", "instance", "assigned", "complete")
     attr(servernames, "dispatcher_pid") <- Sys.getpid()
     sockc <- socket(protocol = "bus", dial = monitor, autostart = asyncdial || NA)
@@ -272,6 +271,9 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
   }
 
   on.exit(lapply(servers, close), add = TRUE, after = TRUE)
+
+  wait(scv)
+  scv <- NULL
 
   suspendInterrupts(
     repeat {
@@ -720,7 +722,6 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
                         urld, paste(sprintf("\"%s\"", url), collapse = ","), n, urlc, dotstring)
         launch_daemon(args)
         until(cv, 5000L) && stop("connection to local dispatcher process timed out after 5s")
-        request_ack(sock)
         `[[<-`(..[[.compute]], "sockc", sockc)
         proc <- n
       } else {
@@ -761,7 +762,6 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         args <- sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", urld, n, urlc, dotstring)
         launch_daemon(args)
         until(cv, 5000L) && stop("connection to local dispatcher process timed out after 5s")
-        request_ack(sock)
         `[[<-`(..[[.compute]], "sockc", sockc)
       } else {
         args <- sprintf("mirai::server(\"%s\"%s)", urld, dotstring)
@@ -1091,11 +1091,6 @@ launch_daemon <- function(args)
 query_nodes <- function(sock, command) {
   send(sock, data = command, mode = 2L)
   recv(sock, mode = 1L, block = 2000L)
-}
-
-request_ack <- function(sock) {
-  r <- request(context(sock), data = 0L, send_mode = 2L, recv_mode = 5L, timeout = 5000L)
-  .subset2(call_aio(r), "data") && stop("dispatcher process launch - timed out after 5s")
 }
 
 new_token <- function() sha1(random(n = 8L))
