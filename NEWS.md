@@ -1,4 +1,6 @@
-# mirai 0.8.3.9000 (development)
+# mirai 0.8.3.9001 (development)
+
+* Internal performance enhancements.
 
 # mirai 0.8.3
 

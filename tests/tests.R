@@ -40,7 +40,6 @@ for (i in 1L) {
   nanotestp(r)
   Sys.sleep(1L)
 
-  Sys.info()[["sysname"]] != "Windows" || length(R.version$crt) || break
   n <- 3L
   m <- mirai({
     Sys.sleep(0.1)
