@@ -68,22 +68,22 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
                    walltime = Inf, timerstart = 0L, exitlinger = 1000L, ...,
                    cleanup = NULL) {
 
-  sock <- socket(protocol = "rep", dial = url, autostart = asyncdial || NA)
+  sock <- socket(protocol = "rep")
+  on.exit(close(sock))
+  scv <- cv()
+  cv <- cv()
+  pipe_notify(sock, cv = scv, add = TRUE, remove = FALSE, flag = FALSE) && stop()
+  pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE) && stop()
+  dial(sock, url = url, autostart = asyncdial || NA, error = TRUE)
 
   devnull <- file(nullfile(), open = "w", blocking = FALSE)
   sink(file = devnull)
   sink(file = devnull, type = "message")
   on.exit({
-    close(sock)
     sink()
     sink(type = "message")
     close(devnull)
-  })
-  cv <- cv()
-  pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE) && stop()
-  count <- 0L
-  if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
-
+  }, add = TRUE)
   if (!is.integer(cleanup)) cleanup <- 7L
   cleanup_globals <- cleanup_packages <- cleanup_options <- cleanup_gc <- FALSE
   for (i in 3:0)
@@ -97,6 +97,10 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
     }
   if (cleanup_options) op <- options()
   if (cleanup_packages) se <- search()
+  if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
+  count <- 0L
+  wait(scv)
+  sc <- NULL
   start <- mclock()
 
   while (count < maxtasks && mclock() - start < walltime) {
@@ -212,16 +216,6 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
   instance <- istore <- complete <- assigned <- integer(n)
   serverfree <- !integer(n)
   active <- servers <- queue <- vector(mode = "list", length = n)
-
-  ctrchannel <- is.character(monitor)
-  if (ctrchannel) {
-    statnames <- c("online", "instance", "assigned", "complete")
-    attr(servernames, "dispatcher_pid") <- Sys.getpid()
-    sockc <- socket(protocol = "bus", dial = monitor, autostart = asyncdial || NA)
-    on.exit(close(sockc), add = TRUE, after = FALSE)
-    cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
-  }
-
   if (!auto) {
     baseurl <- parse_url(url)
     if (grepl("tcp", baseurl[["scheme"]], fixed = TRUE)) {
@@ -231,6 +225,21 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
       ports <- NULL
     }
   }
+
+  ctrchannel <- is.character(monitor)
+  if (ctrchannel) {
+    statnames <- c("online", "instance", "assigned", "complete")
+    attr(servernames, "dispatcher_pid") <- Sys.getpid()
+    sockc <- socket(protocol = "bus")
+    on.exit(close(sockc), add = TRUE, after = FALSE)
+    pipe_notify(sockc, cv = scv, add = TRUE, remove = FALSE, flag = FALSE) && stop()
+    dial(sockc, url = monitor, autostart = asyncdial || NA, error = TRUE)
+    wait(scv)
+    cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
+  }
+
+  wait(scv)
+  scv <- NULL
 
   for (i in seq_n) {
     nurl <- if (auto) sprintf(.urlfmt, "") else
@@ -271,9 +280,6 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
   }
 
   on.exit(lapply(servers, close), add = TRUE, after = TRUE)
-
-  wait(scv)
-  scv <- NULL
 
   suspendInterrupts(
     repeat {
