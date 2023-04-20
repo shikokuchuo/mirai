@@ -226,6 +226,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
     }
   }
 
+  wait(scv)
+
   ctrchannel <- is.character(monitor)
   if (ctrchannel) {
     statnames <- c("online", "instance", "assigned", "complete")
@@ -238,7 +240,6 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
     cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
   }
 
-  wait(scv)
   scv <- NULL
 
   for (i in seq_n) {
