@@ -1,5 +1,6 @@
-# mirai 0.8.3.9001 (development)
+# mirai 0.8.3.9002 (development)
 
+* Implements `resolve()` which is designed to wrap a piped expression using `%>>%` to ensure stability of return types.
 * Internal performance enhancements.
 
 # mirai 0.8.3

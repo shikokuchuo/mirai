@@ -18,13 +18,20 @@
 
 #' Deferred Evaluation Pipe
 #'
-#' Pipe a possibly unresolved value forward into a function.
+#' Pipe a possibly unresolved value forward into a function. The piped expression
+#'     should be wrapped in \code{resolve()}.
 #'
-#' @param x a value that is possibly an 'unresolvedValue'.
+#' @param x a 'mirai' or mirai value at \code{$data} that is possibly an
+#'     'unresolvedValue'.
 #' @param f a function that accepts 'x' as its first argument.
+#' @param expr a piped expression.
 #'
-#' @return The evaluated result, or if x is an 'unresolvedValue', an
-#'     'unresolvedExpr'.
+#' @return The evaluated result, or if the mirai value of x is an
+#'     'unresolvedValue', an 'unresolvedExpr'.
+#'
+#'     It is advisable to wrap \code{resolve()} around a piped expression to
+#'     ensure stability of return types, as this is guaranteed to return either
+#'     an 'unresolvedExpr' or 'resolvedExpr'.
 #'
 #' @details An 'unresolvedExpr' encapsulates the eventual evaluation result.
 #'     Query its \code{$data} element for resolution. Once resolved, the object
@@ -36,6 +43,12 @@
 #'
 #'     \code{\link{unresolved}} may be used on an 'unresolvedExpr' or its
 #'     \code{$data} element to test for resolution.
+#'
+#'     Wrapping a piped expression in \code{\link{resolve}} does not force
+#'     immediate resolution of the expression, but ensures that the returned
+#'     value is always an 'unresolvedExpr' or 'resolvedExpr' as the case may be,
+#'     otherwise if 'x' is already resolved, the evaluated result would be
+#'     returned directly.
 #'
 #' @section Usage:
 #'
@@ -55,7 +68,7 @@
 #' # Only run examples in interactive R sessions
 #'
 #' m <- mirai({Sys.sleep(0.5); 1})
-#' b <- m$data %>>% c(2, 3) %>>% as.character()
+#' b <- resolve(m %>>% c(2, 3) %>>% as.character())
 #' b
 #' b$data
 #' call_mirai(m)
@@ -67,6 +80,7 @@
 #' @export
 #'
 `%>>%` <- function(x, f) {
+  if (inherits(x, "mirai")) x <- .subset2(x, "data")
   if (unresolved(x)) {
     mc <- match.call()
     data <- NULL
@@ -74,7 +88,7 @@
     makeActiveBinding(sym = "data", fun = function(x) {
       if (is.null(data)) {
         data <- eval(mc, envir = parent.frame(), enclos = NULL)
-        if (!inherits(data, "unresolvedExpr")) `class<-`(env, "resolvedExpr")
+        if (!inherits(data, "unresolvedExpr")) `class<-`(env, c("resolvedExpr", "unresolvedExpr"))
       }
       data
     }, env = env)
@@ -91,6 +105,13 @@
     }
   }
 }
+
+#' @rdname grapes-greater-than-greater-than-grapes
+#' @export
+#'
+resolve <- function(expr)
+  if (inherits(expr, "unresolvedExpr")) expr else
+    `class<-`(`[[<-`(new.env(hash = FALSE), "data", expr), c("resolvedExpr", "unresolvedExpr"))
 
 #' @export
 #'

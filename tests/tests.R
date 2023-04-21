@@ -44,14 +44,14 @@ m <- mirai({
   q <- m + n + 1L
   q / m
 }, m = 2L, .args = list(n))
-b <- m$data %>>% rnorm %>>% as.character()
+b <- resolve(m$data %>>% rnorm %>>% as.character())
 nanotestp(b)
 nanotest(inherits(call_mirai(m), "mirai"))
 nanotest(m$data == 3L || is_error_value(m$data))
 nanotest(identical(call_mirai(m), m))
 nanotest(is_mirai(m))
-nanotest(length(b) == 3L || length(b$data) == 3L)
-nanotest(is.character(b) || is.character(b$data))
+nanotest(length(b$data) == 3L)
+nanotest(is.environment(b) && is.character(b$data))
 Sys.sleep(2.2)
 nanotestp(m)
 nanotestp(b)
