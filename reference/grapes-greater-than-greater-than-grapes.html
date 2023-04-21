@@ -101,13 +101,14 @@
     at <code>$data</code>.</p>
 <p>Supports stringing together a series of piped expressions (as per
     the below example).</p>
-<p><code><a href="unresolved.html">unresolved</a></code> may be used on an 'unresolvedExpr' or its
-    <code>$data</code> element to test for resolution.</p>
 <p>Wrapping a piped expression in <code>resolve</code> does not force
     immediate resolution of the expression, but ensures that the return value
     is always an 'unresolvedExpr' or 'resolvedExpr' as the case may be,
     otherwise if 'x' is already resolved, the evaluated result would be
     returned directly.</p>
+<p><code><a href="unresolved.html">unresolved</a></code> may be used on the <code>$data</code> element of an
+    expression returned by <code>resolve</code> to test for resolution (not
+    the expression itself).</p>
     </div>
     <div id="usage">
     <h2>Usage</h2>
@@ -128,12 +129,15 @@
 <span class="r-in"><span><span class="co"># Only run examples in interactive R sessions</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span>; <span class="fl">1</span><span class="op">}</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">resolve</span><span class="op">(</span><span class="va">m</span> <span class="op">%&gt;&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span> <span class="op">%&gt;&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">resolve</span><span class="op">(</span><span class="va">m</span> <span class="op">%&gt;&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span> <span class="op">%&gt;&gt;%</span> <span class="va">as.character</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="unresolved.html">unresolved</a></span><span class="op">(</span><span class="va">b</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">b</span></span></span>
 <span class="r-in"><span><span class="va">b</span><span class="op">$</span><span class="va">data</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">b</span><span class="op">$</span><span class="va">data</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="unresolved.html">unresolved</a></span><span class="op">(</span><span class="va">b</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">b</span></span></span>
+<span class="r-in"><span><span class="va">b</span><span class="op">$</span><span class="va">data</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
