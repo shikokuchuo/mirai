@@ -87,10 +87,10 @@
   if (unresolved(x)) {
     mc <- match.call(expand.dots = FALSE)
     data <- NULL
-    env <- `class<-`(new.env(hash = FALSE), c("unresolvedExpr", "unresolvedValue", "recvAio"))
+    env <- `class<-`(new.env(hash = FALSE, parent = parent.frame()), c("unresolvedExpr", "unresolvedValue", "recvAio"))
     makeActiveBinding(sym = "data", fun = function(x) {
       if (is.null(data)) {
-        data <- eval(mc)
+        data <- eval(mc, envir = env, enclos = NULL)
         if (!inherits(data, "unresolvedExpr")) `class<-`(env, "resolvedExpr")
       }
       data
