@@ -85,7 +85,7 @@
 `%>>%` <- function(x, f) {
   if (inherits(x, "mirai")) x <- .subset2(x, "data")
   if (unresolved(x)) {
-    mc <- match.call(expand.dots = FALSE)
+    mc <- match.call()
     data <- NULL
     env <- `class<-`(new.env(hash = FALSE, parent = parent.frame()), c("unresolvedExpr", "unresolvedValue", "recvAio"))
     makeActiveBinding(sym = "data", fun = function(x) {
