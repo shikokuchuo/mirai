@@ -44,9 +44,8 @@ An 'unresolvedExpr' encapsulates the eventual evaluation result.
     otherwise if 'x' is already resolved, the evaluated result would be
     returned directly.
 
-    \code{\link{unresolved}} may be used on the \code{$data} element of an
-    expression returned by \code{\link{resolve}} to test for resolution (not
-    the expression itself).
+    \code{\link{unresolved}} may be used on the expression returned by
+    \code{\link{resolve}} or its \code{$data} element to test for resolution.
 }
 \section{Usage}{
 
@@ -69,12 +68,12 @@ if (interactive()) {
 
 m <- mirai({Sys.sleep(0.5); 1})
 b <- resolve(m \%>>\% c(2, 3) \%>>\% as.character)
-unresolved(b$data)
+unresolved(b)
 b
 b$data
 
 call_mirai(m)
-unresolved(b$data)
+unresolved(b)
 b
 b$data
 

@@ -1,6 +1,8 @@
 # mirai 0.8.3.9002 (development)
 
-* Implements `resolve()` which is designed to wrap a piped expression using `%>>%` to ensure stability of return types.
+* Implements `resolve()` which is designed to wrap a `%>>%` piped expression to ensure stability of return types.
+* Deferred evaluation pipe `%>>%` expressions may now be tested using `unresolved()` in the same way as a 'mirai'.
+* Requires nanonext >= [0.8.2.9002].
 * Internal performance enhancements.
 
 # mirai 0.8.3

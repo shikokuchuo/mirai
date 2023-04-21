@@ -448,7 +448,7 @@ The result may be queried at `$data`, which will return another 'unresolvedExpr'
 
 A piped expression should be wrapped in `resolve()` to ensure that the return value is always an 'unresolvedExpr' or 'resolvedExpr' as the case may be.
 
-It is possible to use `unresolved()` around the `$data` element of an expression returned by `resolve()` to test for resolution, as in the example below.
+It is possible to use `unresolved()` around an expression returned by `resolve()`, or its `$data` element, to test for resolution, as in the example below.
 
 The pipe operator semantics are similar to R's base pipe `|>`:
 
@@ -460,12 +460,12 @@ The pipe operator semantics are similar to R's base pipe `|>`:
 m <- mirai({nanonext::msleep(500); 1})
 b <- resolve(m %>>% c(2, 3) %>>% as.character)
 
-unresolved(b$data)
+unresolved(b)
 b
 b$data
 
 nanonext::msleep(1000)
-unresolved(b$data)
+unresolved(b)
 b
 b$data
 
