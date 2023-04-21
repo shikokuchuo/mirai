@@ -41,14 +41,15 @@
 #'     Supports stringing together a series of piped expressions (as per
 #'     the below example).
 #'
-#'     \code{\link{unresolved}} may be used on an 'unresolvedExpr' or its
-#'     \code{$data} element to test for resolution.
-#'
 #'     Wrapping a piped expression in \code{\link{resolve}} does not force
 #'     immediate resolution of the expression, but ensures that the return value
 #'     is always an 'unresolvedExpr' or 'resolvedExpr' as the case may be,
 #'     otherwise if 'x' is already resolved, the evaluated result would be
 #'     returned directly.
+#'
+#'     \code{\link{unresolved}} may be used on the \code{$data} element of an
+#'     expression returned by \code{\link{resolve}} to test for resolution (not
+#'     the expression itself).
 #'
 #' @section Usage:
 #'
@@ -68,12 +69,15 @@
 #' # Only run examples in interactive R sessions
 #'
 #' m <- mirai({Sys.sleep(0.5); 1})
-#' b <- resolve(m %>>% c(2, 3) %>>% as.character())
+#' b <- resolve(m %>>% c(2, 3) %>>% as.character)
+#' unresolved(b$data)
 #' b
 #' b$data
+#'
 #' call_mirai(m)
-#' b$data
+#' unresolved(b$data)
 #' b
+#' b$data
 #'
 #' }
 #'
@@ -88,7 +92,7 @@
     makeActiveBinding(sym = "data", fun = function(x) {
       if (is.null(data)) {
         data <- eval(mc, envir = parent.frame(), enclos = NULL)
-        if (!inherits(data, "unresolvedExpr")) `class<-`(env, c("resolvedExpr", "unresolvedExpr"))
+        if (!inherits(data, "unresolvedExpr")) `class<-`(env, "resolvedExpr")
       }
       data
     }, env = env)
@@ -110,8 +114,8 @@
 #' @export
 #'
 resolve <- function(expr)
-  if (inherits(expr, "unresolvedExpr")) expr else
-    `class<-`(`[[<-`(new.env(hash = FALSE), "data", expr), c("resolvedExpr", "unresolvedExpr"))
+  if (inherits(expr, c("unresolvedExpr", "resolvedExpr"))) expr else
+    `class<-`(`[[<-`(new.env(hash = FALSE), "data", expr), "resolvedExpr")
 
 #' @export
 #'

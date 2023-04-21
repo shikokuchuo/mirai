@@ -106,7 +106,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -14.147 0.143 -0.66 -2.173 1.691 ...
+#>  num [1:100000000] 2.406 -1.491 0.501 -2.216 0.752 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -114,7 +114,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -14.147 0.143 -0.66 -2.173 1.691 ...
+#>  num [1:100000000] 2.406 -1.491 0.501 -2.216 0.752 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -132,7 +132,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.762 -1.167 0.153 0.735 -0.364 ...
+#>  num [1:100000000] -0.501 0.355 -3.511 1.292 -0.717 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -224,11 +224,11 @@ for (i in 1:10) {
 #> iteration 1 successful 
 #> iteration 2 successful 
 #> iteration 3 successful 
-#> Error: random error 
 #> iteration 4 successful 
 #> iteration 5 successful 
 #> iteration 6 successful 
 #> iteration 7 successful 
+#> Error: random error 
 #> iteration 8 successful 
 #> iteration 9 successful 
 #> iteration 10 successful
@@ -273,12 +273,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://6dc3475b8921d0918ad106edcc9053f83cf7edfa      1        1        0        0
-#> abstract://1bc9ba733584780944a17a33b05466fae3a4b493      1        1        0        0
-#> abstract://c86aed754fd58fd59ef89768fef5edc072e543d3      1        1        0        0
-#> abstract://8107a3e0e1aa4a981417392a9f16ac147bad9728      1        1        0        0
-#> abstract://03975133e6848da70f77aed9cad42951450fd6f4      1        1        0        0
-#> abstract://f93d60c6aa8036b3d848524d23d37f59b40a0a7f      1        1        0        0
+#> abstract://b5a2a8b13722d5b27a17c4c737574ced89de8dc9      1        1        0        0
+#> abstract://87c152adc5638db0c9984e0c7571f9cbb1061587      1        1        0        0
+#> abstract://b7070af58d4555886603c819545589a870a38144      1        1        0        0
+#> abstract://cf157b017dd171b4eb5d8bbd5cb8fe325929c1de      1        1        0        0
+#> abstract://4dbcfdc088f911bbcaf54c95dee883fde4099551      1        1        0        0
+#> abstract://fb4074bb5ceb32fa5954c0218eee465a803fb982      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -464,7 +464,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:35701"
+#> [1] "tcp://:37923"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -479,7 +479,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:35701")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:37923")'
 
 –
 
@@ -496,7 +496,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:35701"
+#> [1] "tcp://:37923"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -602,8 +602,9 @@ A piped expression should be wrapped in `resolve()` to ensure that the
 return value is always an ‘unresolvedExpr’ or ‘resolvedExpr’ as the case
 may be.
 
-It is possible to use `unresolved()` around a ‘unresolvedExpr’ or its
-`$data` element to test for resolution, as in the example below.
+It is possible to use `unresolved()` around the `$data` element of an
+expression returned by `resolve()` to test for resolution, as in the
+example below.
 
 The pipe operator semantics are similar to R’s base pipe `|>`:
 
@@ -613,17 +614,23 @@ The pipe operator semantics are similar to R’s base pipe `|>`:
 ``` r
 m <- mirai({nanonext::msleep(500); 1})
 b <- resolve(m %>>% c(2, 3) %>>% as.character)
+
+unresolved(b$data)
+#> [1] TRUE
 b
 #> < unresolvedExpr >
 #>  - $data to query resolution
 b$data
 #> < unresolvedExpr >
 #>  - $data to query resolution
-nanonext::msleep(800)
-b$data
-#> [1] "1" "2" "3"
+
+nanonext::msleep(1000)
+unresolved(b$data)
+#> [1] FALSE
 b
 #> < resolvedExpr: $data >
+b$data
+#> [1] "1" "2" "3"
 ```
 
 [« Back to ToC](#table-of-contents)
