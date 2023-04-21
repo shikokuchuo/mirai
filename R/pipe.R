@@ -85,12 +85,12 @@
 `%>>%` <- function(x, f) {
   if (inherits(x, "mirai")) x <- .subset2(x, "data")
   if (unresolved(x)) {
-    mc <- match.call()
+    mc <- match.call(expand.dots = FALSE)
     data <- NULL
     env <- `class<-`(new.env(hash = FALSE), c("unresolvedExpr", "unresolvedValue", "recvAio"))
     makeActiveBinding(sym = "data", fun = function(x) {
       if (is.null(data)) {
-        data <- eval(mc, envir = parent.frame(), enclos = NULL)
+        data <- eval(mc)
         if (!inherits(data, "unresolvedExpr")) `class<-`(env, "resolvedExpr")
       }
       data
@@ -100,11 +100,11 @@
     x <- substitute(x)
     y <- substitute(f)
     if (is.symbol(y)) {
-      eval(as.call(c(y, x)), envir = parent.frame(2L), enclos = NULL)
+      eval.parent(as.call(c(y, x)))
     } else {
       f <- y[[1L]]
       y[[1L]] <- NULL
-      eval(as.call(c(f, x, y)), envir = parent.frame(2L), enclos = NULL)
+      eval.parent(as.call(c(f, x, y)))
     }
   }
 }
