@@ -442,9 +442,11 @@ is_error_value(m3$data)
 
 {mirai} implements a deferred evaluation pipe `%>>%` for working with potentially unresolved values.
 
-Pipe a mirai `$data` value forward into a function or series of functions and it initially returns an 'unresolvedExpr'.
+Pipe a 'mirai' or mirai `$data` value forward into a function or series of functions and it initially returns an 'unresolvedExpr'.
 
 The result may be queried at `$data`, which will return another 'unresolvedExpr' whilst unresolved. However when the original value resolves, the 'unresolvedExpr' will simultaneously resolve into a 'resolvedExpr', for which the evaluated result will be available at `$data`. 
+
+A piped expression should be wrapped in `resolve()` to ensure that the return value is always an 'unresolvedExpr' or 'resolvedExpr' as the case may be.
 
 It is possible to use `unresolved()` around a 'unresolvedExpr' or its `$data` element to test for resolution, as in the example below.
 
@@ -456,7 +458,7 @@ The pipe operator semantics are similar to R's base pipe `|>`:
 
 ```{r pipe}
 m <- mirai({nanonext::msleep(500); 1})
-b <- m$data %>>% c(2, 3) %>>% as.character()
+b <- resolve(m %>>% c(2, 3) %>>% as.character)
 b
 b$data
 nanonext::msleep(800)

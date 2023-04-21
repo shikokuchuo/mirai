@@ -42,8 +42,8 @@ An 'unresolvedExpr' encapsulates the eventual evaluation result.
     \code{$data} element to test for resolution.
 
     Wrapping a piped expression in \code{\link{resolve}} does not force
-    immediate resolution of the expression, but ensures that the returned
-    value is always an 'unresolvedExpr' or 'resolvedExpr' as the case may be,
+    immediate resolution of the expression, but ensures that the return value
+    is always an 'unresolvedExpr' or 'resolvedExpr' as the case may be,
     otherwise if 'x' is already resolved, the evaluated result would be
     returned directly.
 }

@@ -106,7 +106,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.97 5.532 -2.559 -0.254 0.303 ...
+#>  num [1:100000000] -14.147 0.143 -0.66 -2.173 1.691 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -114,7 +114,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.97 5.532 -2.559 -0.254 0.303 ...
+#>  num [1:100000000] -14.147 0.143 -0.66 -2.173 1.691 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -132,7 +132,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.221 -0.603 -2.056 -0.347 -1.014 ...
+#>  num [1:100000000] -0.762 -1.167 0.153 0.735 -0.364 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -224,11 +224,11 @@ for (i in 1:10) {
 #> iteration 1 successful 
 #> iteration 2 successful 
 #> iteration 3 successful 
+#> Error: random error 
 #> iteration 4 successful 
 #> iteration 5 successful 
 #> iteration 6 successful 
 #> iteration 7 successful 
-#> Error: random error 
 #> iteration 8 successful 
 #> iteration 9 successful 
 #> iteration 10 successful
@@ -273,12 +273,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://6910477e0d73f6158ceb229482f08568443e2cd1      1        1        0        0
-#> abstract://a4a1cbd88330c8b6f2f312e037e865496ffe34a1      1        1        0        0
-#> abstract://7e754a74b5b31f58a94427ecf7c8b8dd1a4290c5      1        1        0        0
-#> abstract://91290cbcfedec37ddacf5ff1d101cdc3ac4d4a29      1        1        0        0
-#> abstract://038e1d4c08ce14ab61ddc273db85b68fa8b5bfa6      1        1        0        0
-#> abstract://cccec64e89d21aba0b9a7093fdf724379cf88921      1        1        0        0
+#> abstract://6dc3475b8921d0918ad106edcc9053f83cf7edfa      1        1        0        0
+#> abstract://1bc9ba733584780944a17a33b05466fae3a4b493      1        1        0        0
+#> abstract://c86aed754fd58fd59ef89768fef5edc072e543d3      1        1        0        0
+#> abstract://8107a3e0e1aa4a981417392a9f16ac147bad9728      1        1        0        0
+#> abstract://03975133e6848da70f77aed9cad42951450fd6f4      1        1        0        0
+#> abstract://f93d60c6aa8036b3d848524d23d37f59b40a0a7f      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -464,7 +464,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:38185"
+#> [1] "tcp://:35701"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -479,7 +479,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:38185")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:35701")'
 
 –
 
@@ -496,7 +496,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:38185"
+#> [1] "tcp://:35701"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -589,14 +589,18 @@ and timeouts.
 {mirai} implements a deferred evaluation pipe `%>>%` for working with
 potentially unresolved values.
 
-Pipe a mirai `$data` value forward into a function or series of
-functions and it initially returns an ‘unresolvedExpr’.
+Pipe a ‘mirai’ or mirai `$data` value forward into a function or series
+of functions and it initially returns an ‘unresolvedExpr’.
 
 The result may be queried at `$data`, which will return another
 ‘unresolvedExpr’ whilst unresolved. However when the original value
 resolves, the ‘unresolvedExpr’ will simultaneously resolve into a
 ‘resolvedExpr’, for which the evaluated result will be available at
 `$data`.
+
+A piped expression should be wrapped in `resolve()` to ensure that the
+return value is always an ‘unresolvedExpr’ or ‘resolvedExpr’ as the case
+may be.
 
 It is possible to use `unresolved()` around a ‘unresolvedExpr’ or its
 `$data` element to test for resolution, as in the example below.
@@ -608,7 +612,7 @@ The pipe operator semantics are similar to R’s base pipe `|>`:
 
 ``` r
 m <- mirai({nanonext::msleep(500); 1})
-b <- m$data %>>% c(2, 3) %>>% as.character()
+b <- resolve(m %>>% c(2, 3) %>>% as.character)
 b
 #> < unresolvedExpr >
 #>  - $data to query resolution
