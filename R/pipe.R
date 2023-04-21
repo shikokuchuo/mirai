@@ -83,7 +83,6 @@
 #' @export
 #'
 `%>>%` <- function(x, f) {
-  if (inherits(x, "mirai")) x <- .subset2(x, "data")
   if (unresolved(x)) {
     mc <- match.call()
     data <- NULL
@@ -97,7 +96,7 @@
     }, env = env)
     env
   } else {
-    x <- substitute(x)
+    x <- if (inherits(x, "mirai")) `[[<-`(quote(.subset2(x, "data")), 2L, substitute(x)) else substitute(x)
     y <- substitute(f)
     if (is.symbol(y)) {
       eval.parent(as.call(c(y, x)))
