@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9004</span>
       </span>
     </div>
 
@@ -54,10 +54,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.3.9003" id="mirai-0839003-development">mirai 0.8.3.9003 (development)<a class="anchor" aria-label="anchor" href="#mirai-0839003-development"></a></h2>
-<ul><li>Implements <code><a href="../reference/grapes-greater-than-greater-than-grapes.html">resolve()</a></code> which is designed to wrap a <code>%&gt;&gt;%</code> piped expression to ensure stability of return types.</li>
-<li>Deferred evaluation pipe <code>%&gt;&gt;%</code> expressions may now be tested using <code><a href="../reference/unresolved.html">unresolved()</a></code> in the same way as a ‘mirai’.</li>
-<li>Use of the deferred evaluation pipe <code>%&gt;&gt;%</code> within functions has been fixed.</li>
+<h2 class="page-header" data-toc-text="0.8.3.9004" id="mirai-0839004-development">mirai 0.8.3.9004 (development)<a class="anchor" aria-label="anchor" href="#mirai-0839004-development"></a></h2>
+<ul><li>The deferred evaluation pipe <code>%&gt;&gt;%</code> gains the following enhancements:
+<ul><li>implements <code><a href="../reference/grapes-greater-than-greater-than-grapes.html">resolve()</a></code> which is designed to wrap a piped expression to guarantee that either an ‘unresolvedExpr’ or ‘resolvedExpr’ is always returned.</li>
+<li>expressions may now be tested using <code><a href="../reference/unresolved.html">unresolved()</a></code> in the same way as a ‘mirai’.</li>
+<li>may now be used generally, including within functions etc.</li>
+</ul></li>
 <li>Requires nanonext &gt;= [0.8.2.9002].</li>
 <li>Internal performance enhancements.</li>
 </ul></div>
