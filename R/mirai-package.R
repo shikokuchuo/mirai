@@ -33,7 +33,7 @@
 #'     This may be overriden if required by specifying 'url' in the
 #'     \code{\link{daemons}} interface, and starting server and/or dispatcher
 #'     processes manually using \code{\link{server}} and \code{\link{dispatcher}}
-#'     respectively, on the same machine.
+#'     respectively, on the local machine.
 #'
 #' @section Links:
 #'
