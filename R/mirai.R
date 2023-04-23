@@ -45,15 +45,13 @@
 #'     currently in progress. The default can be set wider if computations are
 #'     expected to return very large objects (> GBs).
 #' @param ... reserved but not currently used.
-#' @param cleanup [default NULL] The default NULL is equivalent to a value of 7L
-#'     and performs all cleanup steps below apart from garbage collection.
-#'     Integer additive bitmask controlling whether to perform cleanup of the
-#'     global environment (1L), reset loaded packages to an initial state (2L),
-#'     reset options to an initial state (4L), and perform garbage collection
-#'     (8L) after each evaluation. This option should not normally be modified.
-#'     Do not set unless you are certain you require persistence across
-#'     evaluations. Note: it may be an error to reset options but not loaded
-#'     packages if the package sets options on load.
+#' @param cleanup [default 7L] Integer additive bitmask controlling whether to
+#'     perform cleanup of the global environment (1L), reset loaded packages to
+#'     an initial state (2L), reset options to an initial state (4L), and
+#'     perform garbage collection (8L) after each evaluation. This option should
+#'     not normally be modified. Do not set unless you are certain you require
+#'     persistence across evaluations. Note: it may be an error to reset options
+#'     but not loaded packages if packages set options on load.
 #'
 #' @return Invisible NULL.
 #'
@@ -66,7 +64,7 @@
 #'
 server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
                    walltime = Inf, timerstart = 0L, exitlinger = 1000L, ...,
-                   cleanup = NULL) {
+                   cleanup = 7L) {
 
   sock <- socket(protocol = "rep")
   on.exit(close(sock))
@@ -84,7 +82,6 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
     sink(type = "message")
     close(devnull)
   }, add = TRUE)
-  if (!is.integer(cleanup)) cleanup <- 7L
   cleanup_globals <- cleanup_packages <- cleanup_options <- cleanup_gc <- FALSE
   for (i in 3:0)
     if (cleanup >= 2 ^ i) {
@@ -1125,8 +1122,8 @@ mk_mirai_error <- function(e)
     if (length(call <- .subset2(e, "call"))) {
       call <- deparse(call, backtick = TRUE, control = NULL, nlines = 1L)
       if (call == "eval(expr = ._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = NULL)")
-        call <- "top level evaluation"
-      sprintf("Error in %s: %s", call, .subset2(e, "message"))
+        sprintf("Error: %s", .subset2(e, "message")) else
+          sprintf("Error in %s: %s", call, .subset2(e, "message"))
     } else {
       sprintf("Error: %s", .subset2(e, "message"))
     },

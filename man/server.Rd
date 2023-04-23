@@ -13,7 +13,7 @@ server(
   timerstart = 0L,
   exitlinger = 1000L,
   ...,
-  cleanup = NULL
+  cleanup = 7L
 )
 }
 \arguments{
@@ -48,15 +48,13 @@ expected to return very large objects (> GBs).}
 
 \item{...}{reserved but not currently used.}
 
-\item{cleanup}{[default NULL] The default NULL is equivalent to a value of 7L
-and performs all cleanup steps below apart from garbage collection.
-Integer additive bitmask controlling whether to perform cleanup of the
-global environment (1L), reset loaded packages to an initial state (2L),
-reset options to an initial state (4L), and perform garbage collection
-(8L) after each evaluation. This option should not normally be modified.
-Do not set unless you are certain you require persistence across
-evaluations. Note: it may be an error to reset options but not loaded
-packages if the package sets options on load.}
+\item{cleanup}{[default 7L] Integer additive bitmask controlling whether to
+perform cleanup of the global environment (1L), reset loaded packages to
+an initial state (2L), reset options to an initial state (4L), and
+perform garbage collection (8L) after each evaluation. This option should
+not normally be modified. Do not set unless you are certain you require
+persistence across evaluations. Note: it may be an error to reset options
+but not loaded packages if packages set options on load.}
 }
 \value{
 Invisible NULL.
