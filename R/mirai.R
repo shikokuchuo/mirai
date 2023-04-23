@@ -196,7 +196,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
                        token = FALSE, lock = FALSE, ..., monitor = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
-  n > 0L || stop("at least one URL must be supplied for 'url' or 'n' must be at least 1")
+  n > 0L || stop(.messages[["missing_url"]])
 
   sock <- socket(protocol = "rep")
   on.exit(close(sock))
@@ -268,7 +268,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
       sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
 
     if (auto)
-      launch_daemon(sprintf("mirai::server(\"%s\"%s)", nurl, dotstring))
+      launch_daemon(2L, nurl, dotstring)
 
     servers[[i]] <- nsock
     active[[i]] <- ncv
@@ -468,13 +468,13 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 #'
 mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "default") {
 
-  missing(.expr) && stop("missing expression, perhaps wrap in {}?")
+  missing(.expr) && stop(.messages[["missing_expression"]])
 
   expr <- substitute(.expr)
   arglist <- list(..., .expr = if (is.symbol(expr) && is.language(get0(expr, envir = sys.frame(-1L)))) .expr else expr)
 
   if (length(.args)) {
-    is.list(.args) || stop("'.args' must be specified as a list")
+    is.list(.args) || stop(.messages[["requires_list"]])
     arglist <- if (length(names(.args))) c(.args, arglist) else
       c(`names<-`(.args, `storage.mode<-`(substitute(.args)[-1L], "character")), arglist)
   }
@@ -492,11 +492,11 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
     if (length(.timeout)) {
       cv <- cv()
       pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-      launch_daemon(sprintf("mirai::.server(\"%s\")", url))
-      until(cv, 5000L) && stop("connection to local server process timed out after 5s")
+      launch_daemon(1L, url)
+      until(cv, 5000L) && stop(.messages[["connection_timeout"]])
       aio <- request(context(sock, verify = NA), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     } else {
-      launch_daemon(sprintf("mirai::.server(\"%s\")", url))
+      launch_daemon(1L, url)
       aio <- request(context(sock, verify = FALSE), data = envir, send_mode = 1L, recv_mode = 1L)
     }
 
@@ -735,8 +735,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 
     if (is.null(..[[.compute]][["sock"]])) {
       if (dispatcher) {
-        n <- if (missing(n)) length(url) else if (is.numeric(n) && n > 0L) as.integer(n) else
-          stop("'n' must be 1 or greater if specified with a client URL")
+        n <- if (missing(n)) length(url) else if (is.numeric(n) && n > 0L) as.integer(n) else stop(.messages[["n_one"]])
         parse_url(url)
         urld <- sprintf(.urlfmt, new_token())
         urlc <- sprintf("%s%s", urld, "c")
@@ -747,10 +746,8 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
         dotstring <- if (missing(...)) "" else
           sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
-        args <- sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)",
-                        urld, paste(sprintf("\"%s\"", url), collapse = ","), n, urlc, dotstring)
-        launch_daemon(args)
-        until(cv, 5000L) && stop("connection to local dispatcher process timed out after 5s")
+        launch_daemon(5L, urld, paste(sprintf("\"%s\"", url), collapse = ","), n, urlc, dotstring)
+        until(cv, 5000L) && stop(.messages[["connection_timeout"]])
         `[[<-`(..[[.compute]], "sockc", sockc)
         proc <- n
       } else {
@@ -765,7 +762,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 
   } else {
 
-    is.numeric(n) || stop("'n' must be numeric, did you mean to provide 'url'?")
+    is.numeric(n) || stop(.messages[["numeric_n"]])
     n <- as.integer(n)
 
     if (n == 0L) {
@@ -777,7 +774,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 
     } else if (is.null(..[[.compute]][["sock"]])) {
 
-      n > 0L || stop("the number of daemons must be zero or greater")
+      n > 0L || stop(.messages[["n_zero"]])
       urld <- sprintf(.urlfmt, new_token())
       sock <- socket(protocol = "req", listen = urld)
       `opt<-`(sock, "req:resend-time", .intmax)
@@ -788,14 +785,12 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         sockc <- socket(protocol = "bus", listen = urlc)
         cv <- cv()
         pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-        args <- sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", urld, n, urlc, dotstring)
-        launch_daemon(args)
-        until(cv, 5000L) && stop("connection to local dispatcher process timed out after 5s")
+        launch_daemon(4L, urld, n, urlc, dotstring)
+        until(cv, 5000L) && stop(.messages[["connection_timeout"]])
         `[[<-`(..[[.compute]], "sockc", sockc)
       } else {
-        args <- sprintf("mirai::server(\"%s\"%s)", urld, dotstring)
         for (i in seq_len(n))
-          launch_daemon(args)
+          launch_daemon(2L, urld, dotstring)
       }
       `[[<-`(`[[<-`(..[[.compute]], "sock", sock), "proc", n)
     }
@@ -833,8 +828,7 @@ launch_server <- function(url, ...) {
 
   dotstring <- if (missing(...)) "" else
     sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
-  args <- sprintf("mirai::server(\"%s\"%s)", url, dotstring)
-  launch_daemon(args)
+  launch_daemon(2L, url, dotstring)
 
 }
 
@@ -1104,8 +1098,15 @@ print.miraiInterrupt <- function(x, ...) {
 
 # internals --------------------------------------------------------------------
 
-launch_daemon <- function(args)
+launch_daemon <- function(type, arg1, arg2, arg3, arg4, arg5) {
+  args <- switch(type,
+                 sprintf("mirai::.server(\"%s\")", arg1),
+                 sprintf("mirai::server(\"%s\"%s)", arg1, arg2),
+                 sprintf("mirai::server(\"%s\"%s,asyncdial=%s)", arg1, arg2, arg3),
+                 sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", arg1, arg2, arg3, arg4),
+                 sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)", arg1, arg2, arg3, arg4, arg5))
   system2(command = .command, args = c("-e", shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE)
+}
 
 query_nodes <- function(sock, command) {
   send(sock, data = command, mode = 2L)
