@@ -1,9 +1,9 @@
-# mirai 0.8.3.9004 (development)
+# mirai 0.8.3.9005 (development)
 
 * The deferred evaluation pipe `%>>%` gains the following enhancements:
-  + `resolve()` implemented to wrap a piped expression to guarantee return of either an 'unresolvedExpr' or 'resolvedExpr'.
+  + `.()` implemented to wrap a piped expression, ensuring return of either an 'unresolvedExpr' or 'resolvedExpr'.
   + expressions may now be tested using `unresolved()` in the same way as a 'mirai'.
-  + may now be used generally, including within functions etc.
+  + pipe is now safe for general use, including within functions.
 * Requires nanonext >= [0.8.2.9002].
 * Internal performance enhancements.
 

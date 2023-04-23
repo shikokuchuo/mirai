@@ -2,12 +2,12 @@
 % Please edit documentation in R/pipe.R
 \name{\%>>\%}
 \alias{\%>>\%}
-\alias{resolve}
+\alias{.}
 \title{Deferred Evaluation Pipe}
 \usage{
 x \%>>\% f
 
-resolve(expr)
+.(expr)
 }
 \arguments{
 \item{x}{a 'mirai' or mirai value at \code{$data} that is possibly an
@@ -27,7 +27,7 @@ The evaluated result, or if the mirai value of x is an
 }
 \description{
 Pipe a possibly unresolved value forward into a function. The piped expression
-    should be wrapped in \code{resolve()}.
+    should be wrapped in \code{.()}.
 }
 \details{
 An 'unresolvedExpr' encapsulates the eventual evaluation result.
@@ -38,14 +38,13 @@ An 'unresolvedExpr' encapsulates the eventual evaluation result.
     Supports stringing together a series of piped expressions (as per
     the below example).
 
-    Wrapping a piped expression in \code{\link{resolve}} does not force
-    immediate resolution of the expression, but ensures that the return value
-    is always an 'unresolvedExpr' or 'resolvedExpr' as the case may be,
+    Wrap a piped expression in \code{.()} to ensure that the return value is
+    always an 'unresolvedExpr' or 'resolvedExpr' as the case may be,
     otherwise if 'x' is already resolved, the evaluated result would be
     returned directly.
 
-    \code{\link{unresolved}} may be used on the expression returned by
-    \code{\link{resolve}} or its \code{$data} element to test for resolution.
+    \code{\link{unresolved}} may be used on an expression or its \code{$data}
+    element to test for resolution.
 }
 \section{Usage}{
 
@@ -67,7 +66,7 @@ if (interactive()) {
 # Only run examples in interactive R sessions
 
 m <- mirai({Sys.sleep(0.5); 1})
-b <- resolve(m \%>>\% c(2, 3) \%>>\% as.character)
+b <- .(m \%>>\% c(2, 3) \%>>\% as.character)
 unresolved(b)
 b
 b$data

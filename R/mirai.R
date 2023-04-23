@@ -132,7 +132,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 
 }
 
-#' mirai dot Daemon
+#' mirai dot Server (Async Executor)
 #'
 #' Implements an ephemeral executor/server for the remote process.
 #'
@@ -143,7 +143,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 #' @keywords internal
 #' @export
 #'
-. <- function(url) {
+.server <- function(url) {
 
   sock <- socket(protocol = "rep", dial = url)
   on.exit(close(sock))
@@ -495,11 +495,11 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
     if (length(.timeout)) {
       cv <- cv()
       pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-      launch_daemon(sprintf("mirai::.(\"%s\")", url))
+      launch_daemon(sprintf("mirai::.server(\"%s\")", url))
       until(cv, 5000L) && stop("connection to local server process timed out after 5s")
       aio <- request(context(sock, verify = NA), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     } else {
-      launch_daemon(sprintf("mirai::.(\"%s\")", url))
+      launch_daemon(sprintf("mirai::.server(\"%s\")", url))
       aio <- request(context(sock, verify = FALSE), data = envir, send_mode = 1L, recv_mode = 1L)
     }
 

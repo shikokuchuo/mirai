@@ -44,8 +44,8 @@ m <- mirai({
   q <- m + n + 1L
   q / m
 }, m = 2L, .args = list(n))
-b <- resolve(m %>>% rnorm() %>>% as.character)
-b2 <- resolve(m$data %>>% as.character())
+b <- .(m %>>% rnorm() %>>% as.character)
+b2 <- .(m$data %>>% as.character())
 nanotestp(b)
 nanotest(inherits(call_mirai(m), "mirai"))
 nanotest(m$data == 3L || is_error_value(m$data))

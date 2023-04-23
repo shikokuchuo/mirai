@@ -110,7 +110,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 1.81 4.639 -0.171 1.169 0.629 ...
+#>  num [1:100000000] 0.666 -1.023 -0.984 0.521 0.122 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -118,7 +118,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 1.81 4.639 -0.171 1.169 0.629 ...
+#>  num [1:100000000] 0.666 -1.023 -0.984 0.521 0.122 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -136,7 +136,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.6127 0.3918 16.2422 0.4743 -0.0176 ...
+#>  num [1:100000000] 0.634 2.201 0.943 -0.291 -15.436 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -228,10 +228,10 @@ for (i in 1:10) {
 #> iteration 1 successful 
 #> iteration 2 successful 
 #> iteration 3 successful 
+#> Error: random error 
 #> iteration 4 successful 
 #> iteration 5 successful 
 #> iteration 6 successful 
-#> Error: random error 
 #> iteration 7 successful 
 #> iteration 8 successful 
 #> iteration 9 successful 
@@ -277,12 +277,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://006c6f9fadddf283fbcda794b2f80b9bf0828428      1        1        0        0
-#> abstract://3c32eaa384f4161960cc2112a23a914007ca2a70      1        1        0        0
-#> abstract://7709b8aecad0ee346dda24390abb65e2e58e84b1      1        1        0        0
-#> abstract://2ec96c6db4355f2ef07959febcaa771ea76416d6      1        1        0        0
-#> abstract://9e21781ee53f6052be530e3e706c7a4833209d1a      1        1        0        0
-#> abstract://47d6d17e6accc86b77b0c1a1800f937d588b5ac3      1        1        0        0
+#> abstract://d2e99637ff4396017efe166e9ca84778c6f9573a      1        1        0        0
+#> abstract://12040b059966439069d3765bbd24034eedf72db9      1        1        0        0
+#> abstract://f3fbae6a8a8fc679a0ac739ce3f546707b1ce23d      1        1        0        0
+#> abstract://376952417bc9a9abaf7cee80cb65c5975f0ac1cc      1        1        0        0
+#> abstract://b3cfef322f2d3dd90389f6e5c1cd5c7a10322dd9      1        1        0        0
+#> abstract://4ad2bd3a788c01a3e4df820f35509f83f659c456      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -468,7 +468,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:42701"
+#> [1] "tcp://:39009"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -483,7 +483,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:42701")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:39009")'
 
 –
 
@@ -500,7 +500,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:42701"
+#> [1] "tcp://:39009"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -602,13 +602,12 @@ resolves, the ‘unresolvedExpr’ will simultaneously resolve into a
 ‘resolvedExpr’, for which the evaluated result will be available at
 `$data`.
 
-A piped expression should be wrapped in `resolve()` to ensure that the
-return value is always an ‘unresolvedExpr’ or ‘resolvedExpr’ as the case
-may be.
+A piped expression should be wrapped in `.()` to ensure that the return
+value is always an ‘unresolvedExpr’ or ‘resolvedExpr’ as the case may
+be.
 
-It is possible to use `unresolved()` around an expression returned by
-`resolve()`, or its `$data` element, to test for resolution, as in the
-example below.
+It is possible to use `unresolved()` around an expression, or its
+`$data` element, to test for resolution, as in the example below.
 
 The pipe operator semantics are similar to R’s base pipe `|>`:
 
@@ -617,7 +616,7 @@ The pipe operator semantics are similar to R’s base pipe `|>`:
 
 ``` r
 m <- mirai({nanonext::msleep(500); 1})
-b <- resolve(m %>>% c(2, 3) %>>% as.character)
+b <- .(m %>>% c(2, 3) %>>% as.character)
 
 unresolved(b)
 #> [1] TRUE
