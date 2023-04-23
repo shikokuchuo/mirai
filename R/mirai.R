@@ -1117,18 +1117,13 @@ new_token <- function() sha1(random(n = 8L))
 append_token <- function(url, auto)
   if (auto) sprintf("%s%s", url, new_token()) else sprintf("%s/%s", url, new_token())
 
-mk_mirai_error <- function(e)
-  `class<-`(
-    if (length(call <- .subset2(e, "call"))) {
-      call <- deparse(call, backtick = TRUE, control = NULL, nlines = 1L)
-      if (call == "eval(expr = ._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = NULL)")
-        sprintf("Error: %s", .subset2(e, "message")) else
-          sprintf("Error in %s: %s", call, .subset2(e, "message"))
-    } else {
-      sprintf("Error: %s", .subset2(e, "message"))
-    },
-    c("miraiError", "errorValue")
-  )
+mk_mirai_error <- function(e) {
+  call <- deparse(.subset2(e, "call"), backtick = TRUE, control = NULL, nlines = 1L)
+  msg <- if (call == "NULL" || call == "eval(expr = ._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = NULL)")
+    sprintf("Error: %s", .subset2(e, "message")) else
+      sprintf("Error in %s: %s", call, .subset2(e, "message"))
+  `class<-`(msg, c("miraiError", "errorValue"))
+}
 
 mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
 

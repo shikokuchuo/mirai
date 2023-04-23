@@ -4,7 +4,7 @@
   + `.()` implemented to wrap a piped expression, ensuring return of either an 'unresolvedExpr' or 'resolvedExpr'.
   + expressions may now be tested using `unresolved()` in the same way as a 'mirai'.
   + pipe is now safe for general use, including within functions.
-* Improved error message in the case of an error in top level evaluation in a 'mirai'.
+* Improved error message for top level evaluation errors in a 'mirai'.
 * Requires nanonext >= [0.8.2.9002].
 * Internal performance enhancements.
 
