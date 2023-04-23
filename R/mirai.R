@@ -108,15 +108,15 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
     ctx <- context(sock, verify = FALSE)
     aio <- recv_aio_signal(ctx, mode = 1L, timeout = idletime, cv = cv)
     wait(cv) || return(invisible())
-    envir <- .subset2(call_aio(aio), "data")
-    is.integer(envir) && {
+    ._mirai_. <- .subset2(call_aio(aio), "data")
+    is.integer(._mirai_.) && {
       count < timerstart && {
         start <- mclock()
         next
       }
       break
     }
-    data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
+    data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                      error = mk_mirai_error, interrupt = mk_interrupt_error)
     send(ctx, data = data, mode = 1L)
     if (cleanup_globals) rm(list = ls(.GlobalEnv, all.names = TRUE, sorted = FALSE), envir = .GlobalEnv)
@@ -148,8 +148,8 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
   sock <- socket(protocol = "rep", dial = url)
   on.exit(close(sock))
   ctx <- context(sock, verify = FALSE)
-  envir <- recv(ctx, mode = 1L)
-  data <- tryCatch(eval(expr = envir[[".expr"]], envir = envir, enclos = NULL),
+  ._mirai_. <- recv(ctx, mode = 1L)
+  data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)
   send(ctx, data = data, mode = 1L)
   msleep(2000L)
@@ -1120,9 +1120,18 @@ new_token <- function() sha1(random(n = 8L))
 append_token <- function(url, auto)
   if (auto) sprintf("%s%s", url, new_token()) else sprintf("%s/%s", url, new_token())
 
-mk_mirai_error <- function(e) `class<-`(if (length(call <- .subset2(e, "call")))
-  sprintf("Error in %s: %s", deparse(call, nlines = 1L), .subset2(e, "message")) else
-    sprintf("Error: %s", .subset2(e, "message")), c("miraiError", "errorValue"))
+mk_mirai_error <- function(e)
+  `class<-`(
+    if (length(call <- .subset2(e, "call"))) {
+      call <- deparse(call, backtick = TRUE, control = NULL, nlines = 1L)
+      if (call == "eval(expr = ._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = NULL)")
+        call <- "top level evaluation"
+      sprintf("Error in %s: %s", call, .subset2(e, "message"))
+    } else {
+      sprintf("Error: %s", .subset2(e, "message"))
+    },
+    c("miraiError", "errorValue")
+  )
 
 mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
 
