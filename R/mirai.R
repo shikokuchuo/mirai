@@ -264,11 +264,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
       servernames[i] <- opt(attr(nsock, "listener")[[1L]], "url")
     }
 
-    dotstring <- if (missing(...)) "" else
-      sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
-
     if (auto)
-      launch_daemon(2L, nurl, dotstring)
+      launch_daemon(2L, nurl, parse_dots(...))
 
     servers[[i]] <- nsock
     active[[i]] <- ncv
@@ -744,9 +741,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         sockc <- socket(protocol = "bus", listen = urlc)
         cv <- cv()
         pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-        dotstring <- if (missing(...)) "" else
-          sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
-        launch_daemon(5L, urld, paste(sprintf("\"%s\"", url), collapse = ","), n, urlc, dotstring)
+        launch_daemon(5L, urld, paste(sprintf("\"%s\"", url), collapse = ","), n, urlc, parse_dots(...))
         until(cv, 5000L) && stop(.messages[["connection_timeout"]])
         `[[<-`(..[[.compute]], "sockc", sockc)
         proc <- n
@@ -778,19 +773,17 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
       urld <- sprintf(.urlfmt, new_token())
       sock <- socket(protocol = "req", listen = urld)
       `opt<-`(sock, "req:resend-time", .intmax)
-      dotstring <- if (missing(...)) "" else
-        sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
       if (dispatcher) {
         urlc <- sprintf("%s%s", urld, "c")
         sockc <- socket(protocol = "bus", listen = urlc)
         cv <- cv()
         pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-        launch_daemon(4L, urld, n, urlc, dotstring)
+        launch_daemon(4L, urld, n, urlc, parse_dots(...))
         until(cv, 5000L) && stop(.messages[["connection_timeout"]])
         `[[<-`(..[[.compute]], "sockc", sockc)
       } else {
         for (i in seq_len(n))
-          launch_daemon(2L, urld, dotstring)
+          launch_daemon(2L, urld, parse_dots(...))
       }
       `[[<-`(`[[<-`(..[[.compute]], "sock", sock), "proc", n)
     }
@@ -824,13 +817,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 #'
 #' @export
 #'
-launch_server <- function(url, ...) {
-
-  dotstring <- if (missing(...)) "" else
-    sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
-  launch_daemon(2L, url, dotstring)
-
-}
+launch_server <- function(url, ...) launch_daemon(2L, url, parse_dots(...))
 
 #' Saisei - Regenerate Token
 #'
@@ -1107,6 +1094,10 @@ launch_daemon <- function(type, arg1, arg2, arg3, arg4, arg5) {
                  sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)", arg1, arg2, arg3, arg4, arg5))
   system2(command = .command, args = c("-e", shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE)
 }
+
+parse_dots <- function(...)
+  if (missing(...)) "" else
+    sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
 
 query_nodes <- function(sock, command) {
   send(sock, data = command, mode = 2L)
