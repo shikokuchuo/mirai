@@ -231,7 +231,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
     attr(servernames, "dispatcher_pid") <- Sys.getpid()
     sockc <- socket(protocol = "bus")
     on.exit(close(sockc), add = TRUE, after = FALSE)
-    pipe_notify(sockc, cv = scv, add = TRUE, remove = FALSE, flag = FALSE) && stop()
+    pipe_notify(sockc, cv = scv, add = TRUE, remove = FALSE, flag = FALSE)
     dial(sockc, url = monitor, autostart = asyncdial || NA, error = TRUE)
     wait(scv)
     cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
