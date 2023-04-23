@@ -447,14 +447,14 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 #' n <- 10L
 #' file <- tempfile()
 #' cat("r <- rnorm(n)", file = file)
-#' args <- list(file = file, n = n)
+#' globals <- list(file = file, n = n)
 #' m <- mirai(
 #'   {
-#'     list2env(args, envir = .GlobalEnv)
+#'     list2env(globals, envir = .GlobalEnv)
 #'     source(file)
 #'     r
 #'   },
-#'   .args = list(args)
+#'   globals = globals
 #' )
 #' call_mirai(m)[["data"]]
 #' unlink(file)
