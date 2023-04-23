@@ -80,10 +80,14 @@ A ‘mirai’ object is returned immediately.
 ``` r
 library(mirai)
 
-m <- mirai({
-  res <- rnorm(n) + m
-  res / rev(res)
-}, m = runif(1), n = 1e8)
+m <- mirai(
+  {
+    res <- rnorm(n) + m
+    res / rev(res)
+  },
+  m = runif(1),
+  n = 1e8
+)
 
 m
 #> < mirai >
@@ -106,7 +110,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.20765 -0.00406 0.11435 0.7097 1.19834 ...
+#>  num [1:100000000] 1.81 4.639 -0.171 1.169 0.629 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -114,7 +118,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.20765 -0.00406 0.11435 0.7097 1.19834 ...
+#>  num [1:100000000] 1.81 4.639 -0.171 1.169 0.629 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -132,7 +136,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -219.16 -2.648 -0.637 -0.623 4.106 ...
+#>  num [1:100000000] 0.6127 0.3918 16.2422 0.4743 -0.0176 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -226,8 +230,8 @@ for (i in 1:10) {
 #> iteration 3 successful 
 #> iteration 4 successful 
 #> iteration 5 successful 
-#> Error: random error 
 #> iteration 6 successful 
+#> Error: random error 
 #> iteration 7 successful 
 #> iteration 8 successful 
 #> iteration 9 successful 
@@ -273,12 +277,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://28b126bb9de94621fd7b7d75152366c6cd6221fd      1        1        0        0
-#> abstract://7ca8b8bd0d125cf4d181eef9a377555b645e68e1      1        1        0        0
-#> abstract://b1933b866d60de40a862f7bf3301f1cbaa8b07b0      1        1        0        0
-#> abstract://24168350922a40fd81f5e770ffbd206a315db1db      1        1        0        0
-#> abstract://b34730e0025c139025cff61dadc89329d76580a5      1        1        0        0
-#> abstract://7526e987e7424b571d7ccef60d8b7332df26e820      1        1        0        0
+#> abstract://006c6f9fadddf283fbcda794b2f80b9bf0828428      1        1        0        0
+#> abstract://3c32eaa384f4161960cc2112a23a914007ca2a70      1        1        0        0
+#> abstract://7709b8aecad0ee346dda24390abb65e2e58e84b1      1        1        0        0
+#> abstract://2ec96c6db4355f2ef07959febcaa771ea76416d6      1        1        0        0
+#> abstract://9e21781ee53f6052be530e3e706c7a4833209d1a      1        1        0        0
+#> abstract://47d6d17e6accc86b77b0c1a1800f937d588b5ac3      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -464,7 +468,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:38357"
+#> [1] "tcp://:42701"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -479,7 +483,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:38357")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:42701")'
 
 –
 
@@ -496,7 +500,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:38357"
+#> [1] "tcp://:42701"
 ```
 
 To reset all connections and revert to default behaviour:

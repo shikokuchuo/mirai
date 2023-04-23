@@ -50,33 +50,23 @@ This function will wait for the async operation to complete if still
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-m <- mirai(x + y + 1, x = 2, y = 3)
-m
-m$data
-Sys.sleep(0.2)
-m$data
-
+# using call_mirai()
 df1 <- data.frame(a = 1, b = 2)
 df2 <- data.frame(a = 3, b = 1)
 m <- mirai(as.matrix(rbind(df1, df2)), .args = list(df1, df2), .timeout = 1000)
 call_mirai(m)$data
 
+# using unresolved()
 m <- mirai({
   res <- rnorm(n)
   res / rev(res)
-}, n = 1e6)
+  },
+  n = 1e6)
 while (unresolved(m)) {
   cat("unresolved\n")
   Sys.sleep(0.1)
 }
 str(m$data)
-
-file <- tempfile()
-cat("r <- rnorm(n)", file = file)
-n <- 10L
-m <- mirai({source(file, local = TRUE); r}, .args = list(file, n))
-call_mirai(m)[["data"]]
-unlink(file)
 
 }
 
