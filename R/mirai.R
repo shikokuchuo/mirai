@@ -119,7 +119,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
     if (cleanup_globals) rm(list = ls(.GlobalEnv, all.names = TRUE, sorted = FALSE), envir = .GlobalEnv)
     if (cleanup_packages) lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
     if (cleanup_options) options(op)
-    if (cleanup_gc) gc(verbose = FALSE, reset = TRUE, full = TRUE)
+    if (cleanup_gc) gc(verbose = FALSE)
     if (count < timerstart) start <- mclock()
     count <- count + 1L
 
