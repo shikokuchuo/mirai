@@ -247,8 +247,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
     basenames[i] <- nurl
     if (auto || token)
       nurl <- append_token(url = nurl, auto = auto)
-    nsock <- socket(protocol = "req")
-    `opt<-`(nsock, "req:resend-time", .intmax)
+    nsock <- req_socket(NULL)
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE)
     listen(nsock, url = nurl, error = TRUE)
@@ -484,8 +483,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 
   } else {
     url <- sprintf(.urlfmt, new_token())
-    sock <- socket(protocol = "req", listen = url)
-    `opt<-`(sock, "req:resend-time", .intmax)
+    sock <- req_socket(url)
     if (length(.timeout)) {
       cv <- cv()
       pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
@@ -736,8 +734,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         parse_url(url)
         urld <- sprintf(.urlfmt, new_token())
         urlc <- sprintf("%s%s", urld, "c")
-        sock <- socket(protocol = "req", listen = urld)
-        `opt<-`(sock, "req:resend-time", .intmax)
+        sock <- req_socket(urld)
         sockc <- socket(protocol = "bus", listen = urlc)
         cv <- cv()
         pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
@@ -746,8 +743,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         `[[<-`(..[[.compute]], "sockc", sockc)
         proc <- n
       } else {
-        sock <- socket(protocol = "req", listen = url)
-        `opt<-`(sock, "req:resend-time", .intmax)
+        sock <- req_socket(url)
         proc <- opt(attr(sock, "listener")[[1L]], "url")
         if (parse_url(proc)[["port"]] == "0")
           proc <- sub("(?<=:)0(?![^/])", opt(attr(sock, "listener")[[1L]], "tcp-bound-port"), proc, perl = TRUE)
@@ -771,8 +767,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 
       n > 0L || stop(.messages[["n_zero"]])
       urld <- sprintf(.urlfmt, new_token())
-      sock <- socket(protocol = "req", listen = urld)
-      `opt<-`(sock, "req:resend-time", .intmax)
+      sock <- req_socket(urld)
       if (dispatcher) {
         urlc <- sprintf("%s%s", urld, "c")
         sockc <- socket(protocol = "bus", listen = urlc)
@@ -1085,6 +1080,9 @@ print.miraiInterrupt <- function(x, ...) {
 
 # internals --------------------------------------------------------------------
 
+append_token <- function(url, auto)
+  if (auto) sprintf("%s%s", url, new_token()) else sprintf("%s/%s", url, new_token())
+
 launch_daemon <- function(type, arg1, arg2, arg3, arg4, arg5) {
   args <- switch(type,
                  sprintf("mirai::.server(\"%s\")", arg1),
@@ -1095,6 +1093,8 @@ launch_daemon <- function(type, arg1, arg2, arg3, arg4, arg5) {
   system2(command = .command, args = c("-e", shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE)
 }
 
+new_token <- function() sha1(random(n = 8L))
+
 parse_dots <- function(...)
   if (missing(...)) "" else
     sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
@@ -1104,10 +1104,10 @@ query_nodes <- function(sock, command) {
   recv(sock, mode = 1L, block = 2000L)
 }
 
-new_token <- function() sha1(random(n = 8L))
+req_socket <- function(url)
+  `opt<-`(socket(protocol = "req", listen = url), "req:resend-time", .Machine[["integer.max"]])
 
-append_token <- function(url, auto)
-  if (auto) sprintf("%s%s", url, new_token()) else sprintf("%s/%s", url, new_token())
+mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
 
 mk_mirai_error <- function(e) {
   call <- deparse(.subset2(e, "call"), backtick = TRUE, control = NULL, nlines = 1L)
@@ -1116,8 +1116,6 @@ mk_mirai_error <- function(e) {
       sprintf("Error in %s: %s", call, .subset2(e, "message"))
   `class<-`(msg, c("miraiError", "errorValue"))
 }
-
-mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
 
 `%||%` <- function(x, y) if (length(x)) x else y
 

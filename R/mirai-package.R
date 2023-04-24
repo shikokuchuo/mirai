@@ -64,22 +64,18 @@ NULL
          Linux = {
            .command <<- file.path(R.home("bin"), "Rscript")
            .urlfmt <<- "abstract://%s"
-           .intmax <<- .Machine[["integer.max"]]
          },
          Windows = {
            .command <<- file.path(R.home("bin"), "Rscript.exe")
            .urlfmt <<- "ipc://%s"
-           .intmax <<- .Machine[["integer.max"]]
          },
          {
            .command <<- file.path(R.home("bin"), "Rscript")
            .urlfmt <<- "ipc:///tmp/%s"
-           .intmax <<- .Machine[["integer.max"]]
          })
 
 .command <- NULL
 .urlfmt <- NULL
-.intmax <- NULL
 
 .. <- `[[<-`(new.env(hash = FALSE), "default", new.env(hash = FALSE))
 
