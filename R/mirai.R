@@ -97,7 +97,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
   if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
   count <- 0L
   wait(scv)
-  sc <- NULL
+  scv <- NULL
   start <- mclock()
 
   while (count < maxtasks && mclock() - start < walltime) {
@@ -149,7 +149,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
   data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)
   send(ctx, data = data, mode = 1L)
-  msleep(2000L)
+  msleep(.exitlinger)
 
 }
 
@@ -383,8 +383,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 #'     (although interruptible with e.g. ctrl+c).
 #'
 #'     The expression '.expr' will be evaluated in a separate R process in a
-#'     clean environment consisting only of the named objects passed as '...'
-#'     and/or the list supplied to '.args'.
+#'     clean environment, which is not the global environment, consisting only
+#'     of the named objects passed as '...' and/or the list supplied to '.args'.
 #'
 #'     If an error occurs in evaluation, the error message is returned as a
 #'     character string of class 'miraiError' and 'errorValue'.
@@ -488,7 +488,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
       cv <- cv()
       pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
       launch_daemon(1L, url)
-      until(cv, 5000L) && stop(.messages[["connection_timeout"]])
+      until(cv, .timelimit) && stop(.messages[["connection_timeout"]])
       aio <- request(context(sock, verify = NA), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     } else {
       launch_daemon(1L, url)
@@ -739,7 +739,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         cv <- cv()
         pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
         launch_daemon(5L, urld, paste(sprintf("\"%s\"", url), collapse = ","), n, urlc, parse_dots(...))
-        until(cv, 5000L) && stop(.messages[["connection_timeout"]])
+        until(cv, .timelimit) && stop(.messages[["connection_timeout"]])
         `[[<-`(..[[.compute]], "sockc", sockc)
         proc <- n
       } else {
@@ -774,7 +774,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         cv <- cv()
         pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
         launch_daemon(4L, urld, n, urlc, parse_dots(...))
-        until(cv, 5000L) && stop(.messages[["connection_timeout"]])
+        until(cv, .timelimit) && stop(.messages[["connection_timeout"]])
         `[[<-`(..[[.compute]], "sockc", sockc)
       } else {
         for (i in seq_len(n))

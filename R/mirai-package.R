@@ -88,4 +88,6 @@ NULL
   numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
   requires_list = "'.args' must be specified as a list"
 )
+.timelimit <- 5000L
+.exitlinger <- 2000L
 

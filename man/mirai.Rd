@@ -49,8 +49,8 @@ This function will return a 'mirai' object immediately.
     (although interruptible with e.g. ctrl+c).
 
     The expression '.expr' will be evaluated in a separate R process in a
-    clean environment consisting only of the named objects passed as '...'
-    and/or the list supplied to '.args'.
+    clean environment, which is not the global environment, consisting only
+    of the named objects passed as '...' and/or the list supplied to '.args'.
 
     If an error occurs in evaluation, the error message is returned as a
     character string of class 'miraiError' and 'errorValue'.
