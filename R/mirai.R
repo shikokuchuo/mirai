@@ -86,11 +86,11 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
   for (i in 3:0)
     if (cleanup >= 2 ^ i) {
       cleanup <- cleanup - 2 ^ i
-      switch (i + 1L,
-              cleanup_globals <- TRUE,
-              cleanup_packages <- TRUE,
-              cleanup_options <- TRUE,
-              cleanup_gc <- TRUE)
+      switch(i + 1L,
+             cleanup_globals <- TRUE,
+             cleanup_packages <- TRUE,
+             cleanup_options <- TRUE,
+             cleanup_gc <- TRUE)
     }
   if (cleanup_options) op <- options()
   if (cleanup_packages) se <- search()
@@ -1120,4 +1120,3 @@ mk_mirai_error <- function(e) {
 `%||%` <- function(x, y) if (length(x)) x else y
 
 ifle <- function(x, f, a, y) if (length(x)) f(x, a) else y
-
