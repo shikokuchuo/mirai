@@ -483,9 +483,15 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   } else {
     url <- sprintf(.urlfmt, new_token())
     sock <- req_socket(url)
-    launch_daemon(1L, url)
+    if (length(.timeout)) {
+      cv <- cv()
+      pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
+      launch_daemon(1L, url)
+      until(cv, .timelimit) && stop(.messages[["connection_timeout"]])
+    } else {
+      launch_daemon(1L, url)
+    }
     aio <- request(context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
-    `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
   }
 
