@@ -227,7 +227,6 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 
   ctrchannel <- is.character(monitor)
   if (ctrchannel) {
-    statnames <- c("online", "instance", "assigned", "complete")
     attr(servernames, "dispatcher_pid") <- Sys.getpid()
     sockc <- socket(protocol = "bus")
     on.exit(close(sockc), add = TRUE, after = FALSE)
@@ -245,8 +244,10 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
         if (is.null(ports)) sprintf("%s/%d", url, i) else
           sub(ports[1L], ports[i], url, fixed = TRUE)
     basenames[i] <- nurl
-    if (auto || token)
-      nurl <- append_token(url = nurl, auto = auto)
+    if (auto)
+      nurl <- sprintf("%s%s", nurl, new_token()) else
+        if (token)
+          nurl <- sprintf("%s/%s", nurl, new_token())
     nsock <- req_socket(NULL)
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE)
@@ -297,15 +298,18 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
             close(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
             cv_reset(active[[i]])
-            data <- servernames[i] <- append_token(url = basenames[i], auto = auto)
+            data <- servernames[i] <- if (auto) sprintf("%s%s", basenames[i], new_token()) else
+              sprintf("%s/%s", basenames[i], new_token())
             listen(servers[[i]], url = data, error = TRUE)
           } else {
             data <- 1L
           }
 
         } else {
-          data <- `attributes<-`(c(activevec, instance, assigned, complete),
-                                 list(dim = c(n, 4L), dimnames = list(servernames, statnames)))
+          data <- `attributes<-`(
+            c(activevec, instance, assigned, complete),
+            list(dim = c(n, 4L), dimnames = list(servernames, c("online", "instance", "assigned", "complete")))
+          )
         }
         send(sockc, data = data, mode = 1L)
         cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
@@ -1076,9 +1080,6 @@ print.miraiInterrupt <- function(x, ...) {
 }
 
 # internals --------------------------------------------------------------------
-
-append_token <- function(url, auto)
-  if (auto) sprintf("%s%s", url, new_token()) else sprintf("%s/%s", url, new_token())
 
 launch_daemon <- function(type, arg1, arg2, arg3, arg4, arg5) {
   args <- switch(type,
