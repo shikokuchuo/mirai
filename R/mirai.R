@@ -492,6 +492,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
       launch_daemon(1L, url)
     }
     aio <- request(context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
   }
 
