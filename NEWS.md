@@ -1,4 +1,4 @@
-# mirai 0.8.3.9012 (development)
+# mirai 0.8.3.9013 (development)
 
 * The deferred evaluation pipe `%>>%` gains the following enhancements:
   + `.()` implemented to wrap a piped expression, ensuring return of either an 'unresolvedExpr' or 'resolvedExpr'.
