@@ -1098,7 +1098,7 @@ parse_dots <- function(...)
 
 query_nodes <- function(sock, command) {
   send(sock, data = command, mode = 2L)
-  recv(sock, mode = 1L, block = 2000L)
+  recv(sock, mode = 1L, block = 3000L)
 }
 
 req_socket <- function(url)
