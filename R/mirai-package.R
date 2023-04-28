@@ -59,7 +59,9 @@
 #'
 NULL
 
-.onLoad <- function(libname, pkgname)
+.onLoad <- function(libname, pkgname) {
+
+  .. <<- `[[<-`(new.env(hash = FALSE), "default", new.env(hash = FALSE))
   switch(Sys.info()[["sysname"]],
          Linux = {
            .command <<- file.path(R.home("bin"), "Rscript")
@@ -74,10 +76,11 @@ NULL
            .urlfmt <<- "ipc:///tmp/%s"
          })
 
+}
+
+.. <- NULL
 .command <- NULL
 .urlfmt <- NULL
-
-.. <- `[[<-`(new.env(hash = FALSE), "default", new.env(hash = FALSE))
 
 .messages <- list(
   connection_timeout = "connection to local process timed out after 5s",
