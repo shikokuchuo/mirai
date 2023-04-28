@@ -68,11 +68,9 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 
   sock <- socket(protocol = "rep")
   on.exit(close(sock))
-  scv <- cv()
   cv <- cv()
-  pipe_notify(sock, cv = scv, add = TRUE, remove = FALSE, flag = FALSE)
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
-  dial(sock, url = url, autostart = asyncdial || NA, error = TRUE)
+  dial_and_sync_socket(sock = sock, url = url, asyncdial = asyncdial)
 
   devnull <- file(nullfile(), open = "w", blocking = FALSE)
   sink(file = devnull)
@@ -96,8 +94,6 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
   if (cleanup_packages) se <- search()
   if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
   count <- 0L
-  wait(scv)
-  scv <- NULL
   start <- mclock()
 
   while (count < maxtasks && mclock() - start < walltime) {
@@ -202,11 +198,9 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 
   sock <- socket(protocol = "rep")
   on.exit(close(sock))
-  scv <- cv()
   cv <- cv()
-  pipe_notify(sock, cv = scv, add = TRUE, remove = FALSE, flag = FALSE)
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
-  dial(sock, url = client, autostart = asyncdial || NA, error = TRUE)
+  dial_and_sync_socket(sock = sock, url = client, asyncdial = asyncdial)
 
   auto <- is.null(url)
   vectorised <- length(url) == n
@@ -225,16 +219,12 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
     }
   }
 
-  wait(scv)
-
   ctrchannel <- is.character(monitor)
   if (ctrchannel) {
     attr(servernames, "dispatcher_pid") <- Sys.getpid()
     sockc <- socket(protocol = "bus")
     on.exit(close(sockc), add = TRUE, after = FALSE)
-    pipe_notify(sockc, cv = scv, add = TRUE, remove = FALSE, flag = FALSE)
-    dial(sockc, url = monitor, autostart = asyncdial || NA, error = TRUE)
-    wait(scv)
+    dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
     cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
   }
 
@@ -1083,6 +1073,13 @@ launch_and_sync_daemon <- function(sock, type, ..., timeout = 5000L) {
   pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
   launch_daemon(type = type, ...)
   until(cv, timeout) && stop(.messages[["connection_timeout"]])
+}
+
+dial_and_sync_socket <- function(sock, url, asyncdial) {
+  cv <- cv()
+  pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = FALSE)
+  dial(sock, url = url, autostart = asyncdial || NA, error = TRUE)
+  wait(cv)
 }
 
 auto_tokenized_url <- function(fmt = .urlfmt, complexity = 8L)
