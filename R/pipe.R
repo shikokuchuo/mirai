@@ -84,12 +84,12 @@
 #'
 `%>>%` <- function(x, f) {
   if (unresolved(x)) {
-    mc <- match.call()
+    syscall <- sys.call()
     data <- NULL
     env <- `class<-`(new.env(hash = FALSE, parent = parent.frame()), c("unresolvedExpr", "unresolvedValue", "recvAio"))
     makeActiveBinding(sym = "data", fun = function(x) {
       if (is.null(data)) {
-        data <- eval(mc, envir = env, enclos = NULL)
+        data <- eval(syscall, envir = env, enclos = NULL)
         if (!inherits(data, "unresolvedExpr")) `class<-`(env, "resolvedExpr")
       }
       data

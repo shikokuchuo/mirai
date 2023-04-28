@@ -228,8 +228,6 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
     cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
   }
 
-  scv <- NULL
-
   for (i in seq_n) {
     nurl <- if (auto) sprintf(.urlfmt, "") else
       if (vectorised) url[i] else
@@ -242,8 +240,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE)
     listen(nsock, url = nurl, error = TRUE)
-    if (lock)
-      lock(nsock, cv = ncv)
+    if (lock) lock(nsock, cv = ncv)
     listener <- attr(nsock, "listener")[[1L]]
     if (i == 1L && !auto && parse_url(opt(listener, "url"))[["port"]] == "0") {
       realport <- opt(listener, "tcp-bound-port")
@@ -255,8 +252,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
       servernames[i] <- opt(listener, "url")
     }
 
-    if (auto)
-      launch_daemon(type = 2L, nurl, parse_dots(...))
+    if (auto) launch_daemon(type = 2L, nurl, parse_dots(...))
 
     servers[[i]] <- nsock
     active[[i]] <- ncv
@@ -294,7 +290,6 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
           } else {
             data <- 1L
           }
-
         } else {
           data <- status_matrix(n, servernames, activevec, instance, assigned, complete)
         }
@@ -473,9 +468,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   } else {
     url <- auto_tokenized_url()
     sock <- req_socket(url)
-    if (length(.timeout))
-      launch_and_sync_daemon(sock = sock, type = 1L, url) else
-        launch_daemon(type = 1L, url)
+    if (length(.timeout)) launch_and_sync_daemon(sock = sock, type = 1L, url) else launch_daemon(type = 1L, url)
     aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
@@ -802,7 +795,7 @@ launch_server <- function(url, ...)
 #' @param .compute (optional) character compute profile to use (each compute
 #'     profile has its own set of daemons for connecting to different resources).
 #'
-#' @return The regenerated character URL upon success, or else NULL.
+#' @return The regenerated character URL upon success, or else invisible NULL.
 #'
 #' @details As the specified listener is closed and replaced immediately, this
 #'     function will only be successful if there are no existing connections at
@@ -827,7 +820,7 @@ launch_server <- function(url, ...)
 saisei <- function(i = 1L, force = FALSE, .compute = "default")
   if (length(..[[.compute]][["sockc"]])) {
     r <- query_nodes(..[[.compute]][["sockc"]], as.integer(if (force) -i else i))
-    is.character(r) || return()
+    is.character(r) || return(invisible())
     r
   }
 

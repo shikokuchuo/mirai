@@ -16,7 +16,7 @@ even when there is an existing connection.}
 profile has its own set of daemons for connecting to different resources).}
 }
 \value{
-The regenerated character URL upon success, or else NULL.
+The regenerated character URL upon success, or else invisible NULL.
 }
 \description{
 When using daemons with a local dispatcher service, regenerates the token for
