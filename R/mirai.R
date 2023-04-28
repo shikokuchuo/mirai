@@ -102,8 +102,8 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 
   while (count < maxtasks && mclock() - start < walltime) {
 
-    rctx <- ctx(sock)
-    aio <- recv_aio_signal(rctx, mode = 1L, timeout = idletime, cv = cv)
+    ctx <- .context(sock)
+    aio <- recv_aio_signal(ctx, mode = 1L, timeout = idletime, cv = cv)
     wait(cv) || return(invisible())
     ._mirai_. <- .subset2(call_aio(aio), "data")
     is.integer(._mirai_.) && {
@@ -115,7 +115,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
     }
     data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                      error = mk_mirai_error, interrupt = mk_interrupt_error)
-    send(rctx, data = data, mode = 1L)
+    send(ctx, data = data, mode = 1L)
     if (cleanup_globals) rm(list = ls(.GlobalEnv, all.names = TRUE, sorted = FALSE), envir = .GlobalEnv)
     if (cleanup_packages) lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
     if (cleanup_options) options(op)
@@ -144,11 +144,11 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 
   sock <- socket(protocol = "rep", dial = url)
   on.exit(close(sock))
-  rctx <- ctx(sock)
-  ._mirai_. <- recv(rctx, mode = 1L)
+  ctx <- .context(sock)
+  ._mirai_. <- recv(ctx, mode = 1L)
   data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)
-  send(rctx, data = data, mode = 1L)
+  send(ctx, data = data, mode = 1L)
   msleep(.exitlinger)
 
 }
@@ -269,9 +269,9 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 
     servers[[i]] <- nsock
     active[[i]] <- ncv
-    rctx <- ctx(sock)
-    req <- recv_aio_signal(rctx, mode = 1L, cv = cv)
-    queue[[i]] <- list(rctx = rctx, req = req)
+    ctx <- .context(sock)
+    req <- recv_aio_signal(ctx, mode = 1L, cv = cv)
+    queue[[i]] <- list(ctx = ctx, req = req)
   }
 
   on.exit(lapply(servers, close), add = TRUE, after = TRUE)
@@ -322,7 +322,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
         for (q in free)
           for (i in seq_n) {
             if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
-              queue[[i]][["res"]] <- request_signal(ctx(servers[[q]]),
+              queue[[i]][["res"]] <- request_signal(.context(servers[[q]]),
                                                     data = .subset2(queue[[i]][["req"]], "data"),
                                                     send_mode = 1L, recv_mode = 1L, cv = cv)
               queue[[i]][["daemon"]] <- q
@@ -335,13 +335,13 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 
       for (i in seq_n)
         if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
-          send(queue[[i]][["rctx"]], data = .subset2(queue[[i]][["res"]], "data"), mode = 1L)
+          send(queue[[i]][["ctx"]], data = .subset2(queue[[i]][["res"]], "data"), mode = 1L)
           q <- queue[[i]][["daemon"]]
           serverfree[q] <- TRUE
           complete[q] <- complete[q] + 1L
-          rctx <- ctx(sock)
-          req <- recv_aio_signal(rctx, mode = 1L, cv = cv)
-          queue[[i]] <- list(rctx = rctx, req = req)
+          ctx <- .context(sock)
+          req <- recv_aio_signal(ctx, mode = 1L, cv = cv)
+          queue[[i]] <- list(ctx = ctx, req = req)
         }
 
     }
@@ -481,7 +481,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   envir <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
   if (length(..[[.compute]][["sock"]])) {
-    aio <- request(ctx(..[[.compute]][["sock"]]), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    aio <- request(.context(..[[.compute]][["sock"]]), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
 
   } else {
     url <- sprintf(.urlfmt, new_token())
@@ -494,7 +494,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
     } else {
       launch_daemon(1L, url)
     }
-    aio <- request(ctx(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
   }
