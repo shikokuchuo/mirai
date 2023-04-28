@@ -134,13 +134,15 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 #' Implements an ephemeral executor/server for the remote process.
 #'
 #' @inheritParams server
+#' @param exitlinger [default 2000L] time in milliseconds to linger before
+#'     exiting to allow the socket to complete sends currently in progress.
 #'
 #' @return Invisible NULL.
 #'
 #' @keywords internal
 #' @export
 #'
-.server <- function(url) {
+.server <- function(url, exitlinger = 2000L) {
 
   sock <- socket(protocol = "rep", dial = url)
   on.exit(close(sock))
@@ -149,7 +151,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
   data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)
   send(ctx, data = data, mode = 1L)
-  msleep(.exitlinger)
+  msleep(exitlinger)
 
 }
 
@@ -244,28 +246,27 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
         if (is.null(ports)) sprintf("%s/%d", url, i) else
           sub(ports[1L], ports[i], url, fixed = TRUE)
     basenames[i] <- nurl
-    if (auto)
-      nurl <- sprintf("%s%s", nurl, new_token()) else
-        if (token)
-          nurl <- sprintf("%s/%s", nurl, new_token())
+    if (auto || token)
+      nurl <- new_tokenized_url(fmt = if (auto) "%s%s" else "%s/%s", url = nurl)
     nsock <- req_socket(NULL)
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE)
     listen(nsock, url = nurl, error = TRUE)
     if (lock)
       lock(nsock, cv = ncv)
-    if (i == 1L && !auto && parse_url(opt(attr(nsock, "listener")[[1L]], "url"))[["port"]] == "0") {
-      realport <- opt(attr(nsock, "listener")[[1L]], "tcp-bound-port")
+    listener <- attr(nsock, "listener")[[1L]]
+    if (i == 1L && !auto && parse_url(opt(listener, "url"))[["port"]] == "0") {
+      realport <- opt(listener, "tcp-bound-port")
       nurl <- sub("(?<=:)0(?![^/])", realport, nurl, perl = TRUE)
       if (!vectorised || n == 1L)
         basenames[1L] <- url <- sub("(?<=:)0(?![^/])", realport, url, perl = TRUE)
       servernames[i] <- nurl
     } else {
-      servernames[i] <- opt(attr(nsock, "listener")[[1L]], "url")
+      servernames[i] <- opt(listener, "url")
     }
 
     if (auto)
-      launch_daemon(2L, nurl, parse_dots(...))
+      launch_daemon(type = 2L, nurl, parse_dots(...))
 
     servers[[i]] <- nsock
     active[[i]] <- ncv
@@ -298,18 +299,14 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
             close(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
             cv_reset(active[[i]])
-            data <- servernames[i] <- if (auto) sprintf("%s%s", basenames[i], new_token()) else
-              sprintf("%s/%s", basenames[i], new_token())
+            data <- servernames[i] <- new_tokenized_url(fmt = if (auto) "%s%s" else "%s/%s", url = basenames[i])
             listen(servers[[i]], url = data, error = TRUE)
           } else {
             data <- 1L
           }
 
         } else {
-          data <- `attributes<-`(
-            c(activevec, instance, assigned, complete),
-            list(dim = c(n, 4L), dimnames = list(servernames, c("online", "instance", "assigned", "complete")))
-          )
+          data <- status_matrix(n, servernames, activevec, instance, assigned, complete)
         }
         send(sockc, data = data, mode = 1L)
         cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
@@ -484,16 +481,11 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
     aio <- request(.context(..[[.compute]][["sock"]]), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
 
   } else {
-    url <- sprintf(.urlfmt, new_token())
+    url <- auto_tokenized_url()
     sock <- req_socket(url)
-    if (length(.timeout)) {
-      cv <- cv()
-      pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-      launch_daemon(1L, url)
-      until(cv, .timelimit) && stop(.messages[["connection_timeout"]])
-    } else {
-      launch_daemon(1L, url)
-    }
+    if (length(.timeout))
+      launch_and_sync_daemon(sock = sock, type = 1L, url) else
+        launch_daemon(type = 1L, url)
     aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
@@ -732,14 +724,11 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
       if (dispatcher) {
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n > 0L) as.integer(n) else stop(.messages[["n_one"]])
         parse_url(url)
-        urld <- sprintf(.urlfmt, new_token())
+        urld <- auto_tokenized_url()
         urlc <- sprintf("%s%s", urld, "c")
         sock <- req_socket(urld)
         sockc <- socket(protocol = "bus", listen = urlc)
-        cv <- cv()
-        pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-        launch_daemon(5L, urld, paste(sprintf("\"%s\"", url), collapse = ","), n, urlc, parse_dots(...))
-        until(cv, .timelimit) && stop(.messages[["connection_timeout"]])
+        launch_and_sync_daemon(sock = sock, type = 5L, urld, url, n, urlc, parse_dots(...))
         `[[<-`(..[[.compute]], "sockc", sockc)
         proc <- n
       } else {
@@ -766,19 +755,16 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
     } else if (is.null(..[[.compute]][["sock"]])) {
 
       n > 0L || stop(.messages[["n_zero"]])
-      urld <- sprintf(.urlfmt, new_token())
+      urld <- auto_tokenized_url()
       sock <- req_socket(urld)
       if (dispatcher) {
         urlc <- sprintf("%s%s", urld, "c")
         sockc <- socket(protocol = "bus", listen = urlc)
-        cv <- cv()
-        pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-        launch_daemon(4L, urld, n, urlc, parse_dots(...))
-        until(cv, .timelimit) && stop(.messages[["connection_timeout"]])
+        launch_and_sync_daemon(sock = sock, type = 4L, urld, n, urlc, parse_dots(...))
         `[[<-`(..[[.compute]], "sockc", sockc)
       } else {
         for (i in seq_len(n))
-          launch_daemon(2L, urld, parse_dots(...))
+          launch_daemon(type = 2L, urld, parse_dots(...))
       }
       `[[<-`(`[[<-`(..[[.compute]], "sock", sock), "proc", n)
     }
@@ -812,7 +798,8 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 #'
 #' @export
 #'
-launch_server <- function(url, ...) launch_daemon(2L, url, parse_dots(...))
+launch_server <- function(url, ...)
+  launch_daemon(type = 2L, url, parse_dots(...))
 
 #' Saisei - Regenerate Token
 #'
@@ -1080,29 +1067,45 @@ print.miraiInterrupt <- function(x, ...) {
 
 # internals --------------------------------------------------------------------
 
-launch_daemon <- function(type, arg1, arg2, arg3, arg4, arg5) {
+launch_daemon <- function(type, ...) {
   args <- switch(type,
-                 sprintf("mirai::.server(\"%s\")", arg1),
-                 sprintf("mirai::server(\"%s\"%s)", arg1, arg2),
-                 sprintf("mirai::server(\"%s\"%s,asyncdial=%s)", arg1, arg2, arg3),
-                 sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", arg1, arg2, arg3, arg4),
-                 sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)", arg1, arg2, arg3, arg4, arg5))
+                 sprintf("mirai::.server(\"%s\")", ..1),
+                 sprintf("mirai::server(\"%s\"%s)", ..1, ..2),
+                 sprintf("mirai::server(\"%s\"%s,asyncdial=%s)", ..1, ..2, ..3),
+                 sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", ..1, ..2, ..3, ..4),
+                 sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)",
+                         ..1, paste(sprintf("\"%s\"", ..2), collapse = ","), ..3, ..4, ..5))
   system2(command = .command, args = c("-e", shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE)
 }
 
-new_token <- function() sha1(random(n = 8L))
+launch_and_sync_daemon <- function(sock, type, ..., timeout = 5000L) {
+  cv <- cv()
+  pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
+  launch_daemon(type = type, ...)
+  until(cv, timeout) && stop(.messages[["connection_timeout"]])
+}
+
+auto_tokenized_url <- function(fmt = .urlfmt, complexity = 8L)
+  sprintf(fmt = fmt, sha1(random(complexity)))
+
+new_tokenized_url <- function(fmt, url, complexity = 8L)
+  sprintf(fmt = fmt, url, sha1(random(complexity)))
 
 parse_dots <- function(...)
   if (missing(...)) "" else
     sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
 
-query_nodes <- function(sock, command) {
+req_socket <- function(url, resendtime = .Machine[["integer.max"]])
+  `opt<-`(socket(protocol = "req", listen = url), "req:resend-time", resendtime)
+
+query_nodes <- function(sock, command, timeout = 3000L) {
   send(sock, data = command, mode = 2L)
-  recv(sock, mode = 1L, block = 3000L)
+  recv(sock, mode = 1L, block = timeout)
 }
 
-req_socket <- function(url)
-  `opt<-`(socket(protocol = "req", listen = url), "req:resend-time", .Machine[["integer.max"]])
+status_matrix <- function(n, servernames, activevec, instance, assigned, complete)
+  `attributes<-`(c(activevec, instance, assigned, complete),
+                 list(dim = c(n, 4L), dimnames = list(servernames, c("online", "instance", "assigned", "complete"))))
 
 mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
 
