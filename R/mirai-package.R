@@ -50,9 +50,9 @@
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
 #' @importFrom nanonext call_aio .context cv cv_reset cv_value dial
-#'     is_error_value listen lock mclock msleep opt opt<- parse_url pipe_notify
-#'     random recv recv_aio_signal request request_signal send sha1 socket stat
-#'     stop_aio unresolved until wait
+#'     is_error_value listen lock mclock msleep nanonext_version opt opt<-
+#'     parse_url pipe_notify random recv recv_aio_signal request request_signal
+#'     send sha1 socket stat stop_aio unresolved until wait
 #'
 #' @docType package
 #' @name mirai-package

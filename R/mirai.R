@@ -1034,6 +1034,20 @@ print.miraiInterrupt <- function(x, ...) {
 
 }
 
+#' mirai Version Information
+#'
+#' Provides the package version, \{nanonext\} package version, NNG and mbed TLS
+#'     library versions in a single string.
+#'
+#' @return A character vector of length one.
+#'
+#' @examples
+#' mirai_version()
+#'
+#' @export
+#'
+mirai_version <- function() sprintf("mirai 0.8.3.9019 | %s", nanonext_version())
+
 # internals --------------------------------------------------------------------
 
 launch_daemon <- function(type, ...) {
