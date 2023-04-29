@@ -71,6 +71,10 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
   cv <- cv()
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock = sock, url = url, asyncdial = asyncdial)
+  op <- options()
+  se <- search()
+  count <- 0L
+  if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
 
   devnull <- file(nullfile(), open = "w", blocking = FALSE)
   sink(file = devnull)
@@ -80,22 +84,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
     sink(type = "message")
     close(devnull)
   }, add = TRUE)
-  cleanup_globals <- cleanup_packages <- cleanup_options <- cleanup_gc <- FALSE
-  for (i in 3:0)
-    if (cleanup >= 2 ^ i) {
-      cleanup <- cleanup - 2 ^ i
-      switch(i + 1L,
-             cleanup_globals <- TRUE,
-             cleanup_packages <- TRUE,
-             cleanup_options <- TRUE,
-             cleanup_gc <- TRUE)
-    }
-  if (cleanup_options) op <- options()
-  if (cleanup_packages) se <- search()
-  if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
-  count <- 0L
   start <- mclock()
-
   while (count < maxtasks && mclock() - start < walltime) {
 
     ctx <- .context(sock)
@@ -112,10 +101,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
     data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                      error = mk_mirai_error, interrupt = mk_interrupt_error)
     send(ctx, data = data, mode = 1L)
-    if (cleanup_globals) rm(list = ls(.GlobalEnv, all.names = TRUE, sorted = FALSE), envir = .GlobalEnv)
-    if (cleanup_packages) lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
-    if (cleanup_options) options(op)
-    if (cleanup_gc) gc(verbose = FALSE)
+    perform_cleanup(cleanup = cleanup, op = op, se = se)
     if (count < timerstart) start <- mclock()
     count <- count + 1L
 
@@ -1096,6 +1082,23 @@ query_nodes <- function(sock, command, timeout = 3000L) {
 status_matrix <- function(n, servernames, activevec, instance, assigned, complete)
   `attributes<-`(c(activevec, instance, assigned, complete),
                  list(dim = c(n, 4L), dimnames = list(servernames, c("online", "instance", "assigned", "complete"))))
+
+perform_cleanup <- function(cleanup, op, se) {
+  if (cleanup > 7L) {
+    gc(verbose = FALSE)
+    cleanup <- cleanup - 7L
+  }
+  if (cleanup > 3L) {
+    options(op)
+    cleanup <- cleanup - 3L
+  }
+  if (cleanup > 1L) {
+    lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
+    cleanup <- cleanup - 1L
+  }
+  if (cleanup > 0L)
+    rm(list = ls(.GlobalEnv, all.names = TRUE, sorted = FALSE), envir = .GlobalEnv)
+}
 
 mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
 
