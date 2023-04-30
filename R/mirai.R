@@ -230,10 +230,9 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
     listener <- attr(nsock, "listener")[[1L]]
     if (i == 1L && !auto && parse_url(opt(listener, "url"))[["port"]] == "0") {
       realport <- opt(listener, "tcp-bound-port")
-      nurl <- sub("(?<=:)0(?![^/])", realport, nurl, perl = TRUE)
+      servernames[i] <- sub_real_port(port = realport, url = nurl)
       if (!vectorised || n == 1L)
-        basenames[1L] <- url <- sub("(?<=:)0(?![^/])", realport, url, perl = TRUE)
-      servernames[i] <- nurl
+        basenames[1L] <- url <- sub_real_port(port = realport, url = url)
     } else {
       servernames[i] <- opt(listener, "url")
     }
@@ -702,9 +701,10 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         proc <- n
       } else {
         sock <- req_socket(url)
-        proc <- opt(attr(sock, "listener")[[1L]], "url")
+        listener <- attr(sock, "listener")[[1L]]
+        proc <- opt(listener, "url")
         if (parse_url(proc)[["port"]] == "0")
-          proc <- sub("(?<=:)0(?![^/])", opt(attr(sock, "listener")[[1L]], "tcp-bound-port"), proc, perl = TRUE)
+          proc <- sub_real_port(port = opt(listener, "tcp-bound-port"), url = proc)
       }
       `[[<-`(`[[<-`(..[[.compute]], "sock", sock), "proc", proc)
     }
@@ -1046,7 +1046,7 @@ print.miraiInterrupt <- function(x, ...) {
 #'
 #' @export
 #'
-mirai_version <- function() sprintf("mirai 0.8.3.9019 | %s", nanonext_version())
+mirai_version <- function() sprintf("mirai %s | %s", .mirai_version, nanonext_version())
 
 # internals --------------------------------------------------------------------
 
@@ -1075,6 +1075,9 @@ dial_and_sync_socket <- function(sock, url, asyncdial) {
   wait(cv)
 }
 
+sub_real_port <- function(port, url)
+  sub("(?<=:)0(?![^/])", port, url, perl = TRUE)
+
 auto_tokenized_url <- function(fmt = .urlfmt, complexity = 8L)
   sprintf(fmt = fmt, sha1(random(complexity)))
 
@@ -1085,8 +1088,8 @@ parse_dots <- function(...)
   if (missing(...)) "" else
     sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
 
-req_socket <- function(url, resendtime = .Machine[["integer.max"]])
-  `opt<-`(socket(protocol = "req", listen = url), "req:resend-time", resendtime)
+req_socket <- function(url)
+  `opt<-`(socket(protocol = "req", listen = url), "req:resend-time", .Machine[["integer.max"]])
 
 query_nodes <- function(sock, command, timeout = 3000L) {
   send(sock, data = command, mode = 2L)

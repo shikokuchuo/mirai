@@ -82,6 +82,8 @@ NULL
 .command <- NULL
 .urlfmt <- NULL
 
+.mirai_version <- "0.8.3.2020"
+
 .messages <- list(
   connection_timeout = "connection to local process timed out after 5s",
   missing_url = "at least one URL must be supplied for 'url' or 'n' must be at least 1",
