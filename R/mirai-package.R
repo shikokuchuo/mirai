@@ -82,7 +82,7 @@ NULL
 .command <- NULL
 .urlfmt <- NULL
 
-.mirai_version <- "0.8.3.2020"
+.mirai_version <- "0.8.3.2021"
 
 .messages <- list(
   connection_timeout = "connection to local process timed out after 5s",

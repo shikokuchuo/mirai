@@ -110,7 +110,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.666 -1.023 -0.984 0.521 0.122 ...
+#>  num [1:100000000] 0.0931 0.9034 -9.7398 0.4077 0.4131 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -118,7 +118,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.666 -1.023 -0.984 0.521 0.122 ...
+#>  num [1:100000000] 0.0931 0.9034 -9.7398 0.4077 0.4131 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -136,7 +136,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.634 2.201 0.943 -0.291 -15.436 ...
+#>  num [1:100000000] -0.95501 -0.00515 0.13988 3.826 -0.2515 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -228,8 +228,8 @@ for (i in 1:10) {
 #> iteration 1 successful 
 #> iteration 2 successful 
 #> iteration 3 successful 
-#> Error: random error 
 #> iteration 4 successful 
+#> Error: random error 
 #> iteration 5 successful 
 #> iteration 6 successful 
 #> iteration 7 successful 
@@ -277,12 +277,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://d2e99637ff4396017efe166e9ca84778c6f9573a      1        1        0        0
-#> abstract://12040b059966439069d3765bbd24034eedf72db9      1        1        0        0
-#> abstract://f3fbae6a8a8fc679a0ac739ce3f546707b1ce23d      1        1        0        0
-#> abstract://376952417bc9a9abaf7cee80cb65c5975f0ac1cc      1        1        0        0
-#> abstract://b3cfef322f2d3dd90389f6e5c1cd5c7a10322dd9      1        1        0        0
-#> abstract://4ad2bd3a788c01a3e4df820f35509f83f659c456      1        1        0        0
+#> abstract://6694fa0bd7b1005eb7c6ed54f51528fda411ce4a      1        1        0        0
+#> abstract://7cd62744de61426f9d2b3a2e5e2c376be4cf7e0f      1        1        0        0
+#> abstract://f1216ca351bc5bde1e4fde4e958e9ee1313ba581      1        1        0        0
+#> abstract://fa074e4705709163165a7112d60567a36489590c      1        1        0        0
+#> abstract://bb838c151c8734d0628ac9950688cdf15a233eef      1        1        0        0
+#> abstract://67f72a0751a6bb2688d6766246660f0b6b32906c      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background

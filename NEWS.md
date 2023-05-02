@@ -1,4 +1,4 @@
-# mirai 0.8.3.9020 (development)
+# mirai 0.8.3.9021 (development)
 
 * New `mirai_version()` utility provides the package version, and versions of its depdendencies (`nanonext`, NNG and mbed TLS libraries) in a single string.
 * The deferred evaluation pipe `%>>%` gains the following enhancements:

@@ -219,7 +219,7 @@ daemons()
 # Reset to zero
 daemons(0)
 
-# 2 remote servers via dispatcher (using zero wildcard)
+# 2 remote daemons via dispatcher (using zero wildcard)
 daemons(2, url = "ws://:0")
 # View status
 daemons()

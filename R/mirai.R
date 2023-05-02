@@ -197,7 +197,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
   active <- servers <- queue <- vector(mode = "list", length = n)
   if (!auto) {
     baseurl <- parse_url(url)
-    if (grepl("tcp", baseurl[["scheme"]], fixed = TRUE)) {
+    if (substr(baseurl[["scheme"]], 1L, 3L) == "tcp") {
       ports <- if (baseurl[["port"]] == "0") integer(n) else seq.int(baseurl[["port"]], length.out = n)
       token <- FALSE
     } else {
@@ -660,7 +660,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' # Reset to zero
 #' daemons(0)
 #'
-#' # 2 remote servers via dispatcher (using zero wildcard)
+#' # 2 remote daemons via dispatcher (using zero wildcard)
 #' daemons(2, url = "ws://:0")
 #' # View status
 #' daemons()
