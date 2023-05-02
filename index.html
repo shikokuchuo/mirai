@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9020</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9021</span>
       </span>
     </div>
 
@@ -153,11 +153,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.666 -1.023 -0.984 0.521 0.122 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.0931 0.9034 -9.7398 0.4077 0.4131 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.666 -1.023 -0.984 0.521 0.122 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.0931 0.9034 -9.7398 0.4077 0.4131 ...</span></span></code></pre></div>
 <p>For easy programmatic use of <code><a href="reference/mirai.html">mirai()</a></code>, ‘.expr’ accepts a pre-constructed language object, and also a list of named arguments passed via ‘.args’. So, the following would be equivalent to the above:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -170,7 +170,7 @@
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span>.expr <span class="op">=</span> <span class="va">expr</span>, .args <span class="op">=</span> <span class="va">args</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.634 2.201 0.943 -0.291 -15.436 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.95501 -0.00515 0.13988 3.826 -0.2515 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -234,8 +234,8 @@
 <span><span class="co">#&gt; iteration 1 successful </span></span>
 <span><span class="co">#&gt; iteration 2 successful </span></span>
 <span><span class="co">#&gt; iteration 3 successful </span></span>
-<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 4 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 5 successful </span></span>
 <span><span class="co">#&gt; iteration 6 successful </span></span>
 <span><span class="co">#&gt; iteration 7 successful </span></span>
@@ -266,12 +266,12 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt;                                                     online instance assigned complete</span></span>
-<span><span class="co">#&gt; abstract://d2e99637ff4396017efe166e9ca84778c6f9573a      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://12040b059966439069d3765bbd24034eedf72db9      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://f3fbae6a8a8fc679a0ac739ce3f546707b1ce23d      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://376952417bc9a9abaf7cee80cb65c5975f0ac1cc      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://b3cfef322f2d3dd90389f6e5c1cd5c7a10322dd9      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://4ad2bd3a788c01a3e4df820f35509f83f659c456      1        1        0        0</span></span></code></pre></div>
+<span><span class="co">#&gt; abstract://6694fa0bd7b1005eb7c6ed54f51528fda411ce4a      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://7cd62744de61426f9d2b3a2e5e2c376be4cf7e0f      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://f1216ca351bc5bde1e4fde4e958e9ee1313ba581      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://fa074e4705709163165a7112d60567a36489590c      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://bb838c151c8734d0628ac9950688cdf15a233eef      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://67f72a0751a6bb2688d6766246660f0b6b32906c      1        1        0        0</span></span></code></pre></div>
 <p>The default <code>dispatcher = TRUE</code> creates a <code><a href="reference/dispatcher.html">dispatcher()</a></code> background process that connects to individual daemon processes on the local machine on behalf of the client. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to servers for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
