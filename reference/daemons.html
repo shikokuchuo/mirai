@@ -92,7 +92,7 @@ path e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.</p></dd>
 <dd><p>[default TRUE] logical value whether to use dispatcher.
 Dispatcher is a background process that connects to servers on behalf of
 the client and ensures FIFO scheduling, queueing tasks if necessary
-(futher details below).</p></dd>
+(see Dispatcher section below).</p></dd>
 
 
 <dt>...</dt>
@@ -115,12 +115,12 @@ to different resources).</p></dd>
 
 
 <p>Viewing current status: a named list comprising:</p><ul><li><p><strong>connections</strong> - number of active connections at the client.
-    Will always be 1L when using dispatcher as there is only a single
-    connection to the dispatcher, which then connects to the servers in turn.</p></li>
-<li><p><strong>daemons</strong> - if using dispatcher: a status matrix (see below
-    section), or else an integer 'errorValue' if communication with the
-    dispatcher was unsuccessful. If not using dispatcher: the number of
-    daemons set, or else the client URL.</p></li>
+    Always 1L when using dispatcher as there is only a single connection to
+    the dispatcher, which then in turn connects to the servers.</p></li>
+<li><p><strong>daemons</strong> - if using dispatcher: a status matrix (see
+    Status Matrix section below), or else an integer 'errorValue' if
+    communication with the dispatcher was unsuccessful. If not using
+    dispatcher: the number of daemons set, or else the client URL.</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
@@ -146,7 +146,11 @@ to different resources).</p></dd>
 <p>By default <code>dispatcher = TRUE</code>. This launches a background process
     running <code><a href="dispatcher.html">dispatcher</a></code>.  A dispatcher connects to servers on
     behalf of the client and queues tasks until a server is able to begin
-    immediate execution of that task, ensuring FIFO scheduling.</p>
+    immediate execution of that task, ensuring FIFO scheduling. Dispatcher
+    uses synchronisation primitives from {nanonext}, waiting rather than
+    polling for tasks, which is efficient both in terms of consuming no
+    resources while waiting, and also being fully synchronised with events
+    (having no latency).</p>
 <p>By specifying <code>dispatcher = FALSE</code>, servers connect to the client
     directly rather than through a dispatcher. The client sends tasks to
     connected servers immediately in an evenly-distributed fashion. However,
@@ -184,7 +188,7 @@ to different resources).</p></dd>
     'ws://:0' will automatically assign a free ephemeral port. Use
     <code>daemons()</code> to inspect the actual assigned port at any time.</p>
 <p><strong>With Dispatcher</strong></p>
-<p>When using a dispatcher, it is recommended to use a websocket URL rather
+<p>When using dispatcher, it is recommended to use a websocket URL rather
     than TCP, as this requires only one port to connect to all servers: a
     websocket URL supports a path after the port number, which can be made
     unique for each server.</p>
@@ -195,10 +199,12 @@ to different resources).</p></dd>
     numbers / paths. In this case it is optional to supply 'n' as this can
     be inferred by the length of vector supplied.</p>
 <p>Individual <code><a href="server.html">server</a></code> instances should then be started on the
-    remote resource, which dial in to each of these client URLs.</p>
-<p>Server instances may be scaled up or down dynamically, subject to the
-    maximum number initially specified, with the dispatcher adjusting
-    automatically.</p>
+    remote resource, which dial in to each of these client URLs. At most one
+    server should be dialled into each URL at any given time.</p>
+<p>The dispatcher automatically adjusts to the number of servers actually
+    connected. Hence it is possible to dynamically scale up or down the
+    number of servers as required, subject to the maximum number initially
+    specified.</p>
 <p>Alternatively, supplying a single TCP URL will listen on a block of URLs
     with ports starting from the supplied port number and incrementing by one
     for 'n' specified e.g. the client URL 'tcp://192.168.0.2:5555' with
@@ -255,10 +261,6 @@ to different resources).</p></dd>
 <p>'complete' shows the cumulative number of tasks completed by the server
     instance.</p>
 <p>The URLs are stored as row names to the matrix.</p>
-<p>The dispatcher will automatically adjust to the number of servers
-    actually connected. Hence it is possible to dynamically scale up or down
-    the number of servers according to requirements (limited to the ‘n’ URLs
-    assigned at the dispatcher).</p>
     </div>
     <div id="timeouts">
     <h2>Timeouts</h2>
