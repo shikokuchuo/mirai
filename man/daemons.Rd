@@ -30,15 +30,13 @@ Setting daemons: integer number of daemons set, or the character
     client URL.
 
     Viewing current status: a named list comprising: \itemize{
-    \item{\code{connections}} {- number of active connections at the client.
+    \item{\strong{connections}} {- number of active connections at the client.
     Will always be 1L when using dispatcher as there is only a single
     connection to the dispatcher, which then connects to the servers in turn.}
-    \item{\code{daemons}} {- if using dispatcher: a matrix of statistics
-    for each server: URL, online status, instance number (increments each
-    time a server connects to the URL), cumulative tasks assigned and
-    completed (reset if a server re-connects), or else an integer 'errorValue'
-    if communication with the dispatcher was unsuccessful. If not using
-    dispatcher: the number of daemons set, or else the client URL.}
+    \item{\strong{daemons}} {- if using dispatcher: a status matrix (see below
+    section), or else an integer 'errorValue' if communication with the
+    dispatcher was unsuccessful. If not using dispatcher: the number of
+    daemons set, or else the client URL.}
     }
 }
 \description{
@@ -186,6 +184,34 @@ For viewing the currrent status, specify \code{daemons()} with no
     argument specified.
 }
 
+\section{Status Matrix}{
+
+
+    When using dispatcher, calling \code{daemons()} returns a matrix with the
+    following columns:
+
+    'online' shows as 1 when there is an active connection, or else 0 if a
+    server has yet to connect or has disconnected.
+
+    'instance' increments by 1 every time there is a new connection at a
+    URL. When this happens, the 'assigned' and 'complete' statistics will
+    also reset. This is designed to track new server instances connecting
+    after previous ones have ended (due to time-outs etc.).
+
+    'assigned' shows the cumulative number of tasks assigned to the server
+    instance by the dispatcher.
+
+    'complete' shows the cumulative number of tasks completed by the server
+    instance.
+
+    The URLs are stored as row names to the matrix.
+
+    The dispatcher will automatically adjust to the number of servers
+    actually connected. Hence it is possible to dynamically scale up or down
+    the number of servers according to requirements (limited to the ‘n’ URLs
+    assigned at the dispatcher).
+}
+
 \section{Timeouts}{
 
 
@@ -194,10 +220,10 @@ For viewing the currrent status, specify \code{daemons()} with no
 
     However, the task may not have completed and still be ongoing in the
     daemon process. In such situations, dispatcher ensures that queued tasks
-    are not assigned to the busy process, however performance may still be
-    degraded if they remain in use. If a process hangs, they may be restarted
-    manually, or else \code{\link{saisei}} specifying \code{force = TRUE} may
-    be used to regenerate any particular URL for a new \code{\link{server}}
+    are not assigned to the busy process, however overall performance may
+    still be degraded if they remain in use. If a process hangs and cannot be
+    restarted manually, \code{\link{saisei}} specifying \code{force = TRUE}
+    may be used to regenerate any particular URL for a new \code{\link{server}}
     to connect to.
 }
 
