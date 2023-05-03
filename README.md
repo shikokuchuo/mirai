@@ -46,7 +46,8 @@ zero package dependencies.
 7.  [Compute Profiles](#compute-profiles)
 8.  [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
 9.  [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
-10. [Links](#links)
+10. [Crew, Targets, Shiny](#crew-targets-shiny)
+11. [Links](#links)
 
 ### Installation
 
@@ -110,7 +111,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.0931 0.9034 -9.7398 0.4077 0.4131 ...
+#>  num [1:100000000] 0.726 42.783 0.205 0.336 -3.703 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -118,7 +119,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.0931 0.9034 -9.7398 0.4077 0.4131 ...
+#>  num [1:100000000] 0.726 42.783 0.205 0.336 -3.703 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -136,7 +137,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.95501 -0.00515 0.13988 3.826 -0.2515 ...
+#>  num [1:100000000] 22.407 -3.701 -10.948 1.228 -0.235 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -277,12 +278,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://6694fa0bd7b1005eb7c6ed54f51528fda411ce4a      1        1        0        0
-#> abstract://7cd62744de61426f9d2b3a2e5e2c376be4cf7e0f      1        1        0        0
-#> abstract://f1216ca351bc5bde1e4fde4e958e9ee1313ba581      1        1        0        0
-#> abstract://fa074e4705709163165a7112d60567a36489590c      1        1        0        0
-#> abstract://bb838c151c8734d0628ac9950688cdf15a233eef      1        1        0        0
-#> abstract://67f72a0751a6bb2688d6766246660f0b6b32906c      1        1        0        0
+#> abstract://2ebfa4801ba4c86e2ef1a75b21452cd1db787fa1      1        1        0        0
+#> abstract://30662fb343cb1cf06cc3a62f0b49b36f2cfa217c      1        1        0        0
+#> abstract://f5bdf9080702c8c05ae9f7fa9e21e53c159df359      1        1        0        0
+#> abstract://3d2ab4fe206ea5dc7aeee8f55bb9e6bcc2d5f99a      1        1        0        0
+#> abstract://a1e5e87a611d93e10305389f19a00aeb863c2ccc      1        1        0        0
+#> abstract://0302b1192fc61f35218866237abb8185cd4e60d3      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -291,6 +292,11 @@ machine on behalf of the client. This ensures that tasks are dispatched
 efficiently on a first-in first-out (FIFO) basis to servers for
 processing. Tasks are queued at the dispatcher and sent to a daemon as
 soon as it can accept the task for immediate execution.
+
+Dispatcher uses synchronisation primitives from {nanonext}, waiting upon
+rather than polling for tasks, which is efficient both in terms of
+consuming no resources while waiting, and also being fully synchronised
+with events (having no latency).
 
 ``` r
 daemons(0)
@@ -426,7 +432,7 @@ statistics for the remote servers.
 `online` shows as 1 when there is an active connection, or else 0 if a
 server has yet to connect or has disconnected.
 
-`instance` will increment by 1 every time there is a new connection at a
+`instance` increments by 1 every time there is a new connection at a
 URL. When this happens, the `assigned` and `complete` statistics will
 also reset. This is designed to track new server instances connecting
 after previous ones have ended (due to time-outs etc.).
@@ -437,9 +443,9 @@ instance by the dispatcher.
 `complete` shows the cumulative number of tasks completed by the server
 instance.
 
-The dispatcher will automatically adjust to the number of servers
-actually connected. Hence it is possible to dynamically scale up or down
-the number of servers according to requirements (limited to the ‘n’ URLs
+The dispatcher automatically adjusts to the number of servers actually
+connected. Hence it is possible to dynamically scale up or down the
+number of servers according to requirements (limited to the ‘n’ URLs
 assigned at the dispatcher).
 
 To reset all connections and revert to default behaviour:
@@ -468,7 +474,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:39009"
+#> [1] "tcp://:33465"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -483,7 +489,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:39009")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:33465")'
 
 –
 
@@ -500,7 +506,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:39009"
+#> [1] "tcp://:33465"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -638,6 +644,30 @@ b$data
 
 [« Back to ToC](#table-of-contents)
 
+### Crew, Targets, Shiny
+
+The {crew} package <https://wlandau.github.io/crew/> (available on CRAN)
+by William Landau is a distributed worker-launcher that provides an
+R6-based interface extending {mirai} to different computing platforms
+for distributed workers. It has been integrated with and adopted as the
+predominant high-performance computing backend for {targets}
+<https://docs.ropensci.org/targets/>, a Make-like pipeline tool for
+statistics and data science, as of its v1.0.0 release.
+
+{crew} further provides an extensible interface for plugins to different
+distributed computing platforms, from traditional clusters to cloud
+services. To date, the {crew.cluster} package
+<https://wlandau.github.io/crew.cluster/> has been released to CRAN,
+which enables mirai-based workflows on traditional high-performance
+computing clusters such as Sun Grid Engine (SGE).
+
+{mirai} also serves as the backend for enterprise asynchronous Shiny
+<https://shiny.rstudio.com/> applications. This is supported in the
+first instance through the {crew} interface, and that package provides a
+Shiny vignette with a tutorial and sample code for this purpose.
+
+[« Back to ToC](#table-of-contents)
+
 ### Links
 
 {mirai} website: <https://shikokuchuo.net/mirai/><br /> {mirai} on CRAN:
@@ -650,10 +680,6 @@ Listed in CRAN Task View: <br /> - High Performance Computing:
 on CRAN: <https://cran.r-project.org/package=nanonext>
 
 NNG website: <https://nng.nanomsg.org/><br />
-
-The {crew} package <https://wlandau.github.io/crew/> (available on CRAN)
-by William Landau further extends {mirai} to different computing
-platforms for distributed workers.
 
 [« Back to ToC](#table-of-contents)
 

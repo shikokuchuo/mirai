@@ -45,7 +45,8 @@ Features efficient task scheduling, scalability beyond R connection limits, and 
 7. [Compute Profiles](#compute-profiles)
 8. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
 9. [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
-10. [Links](#links)
+10. [Crew, Targets, Shiny](#crew-targets-shiny)
+11. [Links](#links)
 
 ### Installation
 
@@ -232,6 +233,8 @@ daemons()
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background process that connects to individual daemon processes on the local machine on behalf of the client. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to servers for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.
 
+Dispatcher uses synchronisation primitives from \{nanonext\}, waiting upon rather than polling for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).
+
 ```{r daemons4}
 daemons(0)
 ```
@@ -326,13 +329,13 @@ As per the local case, `$connections` will show the single connection to the dis
 
 `online` shows as 1 when there is an active connection, or else 0 if a server has yet to connect or has disconnected.
 
-`instance` will increment by 1 every time there is a new connection at a URL. When this happens, the `assigned` and `complete` statistics will also reset. This is designed to track new server instances connecting after previous ones have ended (due to time-outs etc.).
+`instance` increments by 1 every time there is a new connection at a URL. When this happens, the `assigned` and `complete` statistics will also reset. This is designed to track new server instances connecting after previous ones have ended (due to time-outs etc.).
 
 `assigned` shows the cumulative number of tasks assigned to the server instance by the dispatcher.
 
 `complete` shows the cumulative number of tasks completed by the server instance.
 
-The dispatcher will automatically adjust to the number of servers actually connected. Hence it is possible to dynamically scale up or down the number of servers according to requirements (limited to the 'n' URLs assigned at the dispatcher).
+The dispatcher automatically adjusts to the number of servers actually connected. Hence it is possible to dynamically scale up or down the number of servers according to requirements (limited to the 'n' URLs assigned at the dispatcher).
 
 To reset all connections and revert to default behaviour:
 
@@ -477,6 +480,16 @@ b$data
 
 [&laquo; Back to ToC](#table-of-contents)
 
+### Crew, Targets, Shiny
+
+The {crew} package <https://wlandau.github.io/crew/> (available on CRAN) by William Landau is a distributed worker-launcher that provides an R6-based interface extending {mirai} to different computing platforms for distributed workers. It has been integrated with and adopted as the predominant high-performance computing backend for {targets} <https://docs.ropensci.org/targets/>, a Make-like pipeline tool for statistics and data science, as of its v1.0.0 release.
+
+{crew} further provides an extensible interface for plugins to different distributed computing platforms, from traditional clusters to cloud services. To date, the {crew.cluster} package <https://wlandau.github.io/crew.cluster/> has been released to CRAN, which enables mirai-based workflows on traditional high-performance computing clusters such as Sun Grid Engine (SGE).
+
+{mirai} also serves as the backend for enterprise asynchronous Shiny <https://shiny.rstudio.com/> applications. This is supported in the first instance through the {crew} interface, and that package provides a Shiny vignette with a tutorial and sample code for this purpose.
+
+[&laquo; Back to ToC](#table-of-contents)
+
 ### Links
 
 {mirai} website: <https://shikokuchuo.net/mirai/><br />
@@ -489,8 +502,6 @@ Listed in CRAN Task View: <br />
 {nanonext} on CRAN: <https://cran.r-project.org/package=nanonext>
 
 NNG website: <https://nng.nanomsg.org/><br />
-
-The {crew} package <https://wlandau.github.io/crew/> (available on CRAN) by William Landau further extends {mirai} to different computing platforms for distributed workers.
 
 [&laquo; Back to ToC](#table-of-contents)
 
