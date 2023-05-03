@@ -16,7 +16,7 @@ path e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 \item{dispatcher}{[default TRUE] logical value whether to use dispatcher.
 Dispatcher is a background process that connects to servers on behalf of
 the client and ensures FIFO scheduling, queueing tasks if necessary
-(futher details below).}
+(see Dispatcher section below).}
 
 \item{...}{additional arguments passed through to \code{\link{dispatcher}} if
 using dispatcher and/or \code{\link{server}} if launching local daemons.}
@@ -31,12 +31,12 @@ Setting daemons: integer number of daemons set, or the character
 
     Viewing current status: a named list comprising: \itemize{
     \item{\strong{connections}} {- number of active connections at the client.
-    Will always be 1L when using dispatcher as there is only a single
-    connection to the dispatcher, which then connects to the servers in turn.}
-    \item{\strong{daemons}} {- if using dispatcher: a status matrix (see below
-    section), or else an integer 'errorValue' if communication with the
-    dispatcher was unsuccessful. If not using dispatcher: the number of
-    daemons set, or else the client URL.}
+    Always 1L when using dispatcher as there is only a single connection to
+    the dispatcher, which then in turn connects to the servers.}
+    \item{\strong{daemons}} {- if using dispatcher: a status matrix (see
+    Status Matrix section below), or else an integer 'errorValue' if
+    communication with the dispatcher was unsuccessful. If not using
+    dispatcher: the number of daemons set, or else the client URL.}
     }
 }
 \description{
@@ -76,7 +76,11 @@ For viewing the currrent status, specify \code{daemons()} with no
     By default \code{dispatcher = TRUE}. This launches a background process
     running \code{\link{dispatcher}}.  A dispatcher connects to servers on
     behalf of the client and queues tasks until a server is able to begin
-    immediate execution of that task, ensuring FIFO scheduling.
+    immediate execution of that task, ensuring FIFO scheduling. Dispatcher
+    uses synchronisation primitives from \{nanonext\}, waiting rather than
+    polling for tasks, which is efficient both in terms of consuming no
+    resources while waiting, and also being fully synchronised with events
+    (having no latency).
 
     By specifying \code{dispatcher = FALSE}, servers connect to the client
     directly rather than through a dispatcher. The client sends tasks to
@@ -119,7 +123,7 @@ For viewing the currrent status, specify \code{daemons()} with no
 
     \strong{With Dispatcher}
 
-    When using a dispatcher, it is recommended to use a websocket URL rather
+    When using dispatcher, it is recommended to use a websocket URL rather
     than TCP, as this requires only one port to connect to all servers: a
     websocket URL supports a path after the port number, which can be made
     unique for each server.
@@ -133,11 +137,13 @@ For viewing the currrent status, specify \code{daemons()} with no
     be inferred by the length of vector supplied.
 
     Individual \code{\link{server}} instances should then be started on the
-    remote resource, which dial in to each of these client URLs.
+    remote resource, which dial in to each of these client URLs. At most one
+    server should be dialled into each URL at any given time.
 
-    Server instances may be scaled up or down dynamically, subject to the
-    maximum number initially specified, with the dispatcher adjusting
-    automatically.
+    The dispatcher automatically adjusts to the number of servers actually
+    connected. Hence it is possible to dynamically scale up or down the
+    number of servers as required, subject to the maximum number initially
+    specified.
 
     Alternatively, supplying a single TCP URL will listen on a block of URLs
     with ports starting from the supplied port number and incrementing by one
@@ -205,11 +211,6 @@ For viewing the currrent status, specify \code{daemons()} with no
     instance.
 
     The URLs are stored as row names to the matrix.
-
-    The dispatcher will automatically adjust to the number of servers
-    actually connected. Hence it is possible to dynamically scale up or down
-    the number of servers according to requirements (limited to the ‘n’ URLs
-    assigned at the dispatcher).
 }
 
 \section{Timeouts}{
