@@ -707,7 +707,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 
   missing(n) && missing(url) &&
     return(list(connections = ifle(..[[.compute]][["sock"]], stat, "pipes", 0),
-                daemons = ifle(..[[.compute]][["sockc"]], query_nodes, 0L, ..[[.compute]][["proc"]] %||% 0L)))
+                daemons = ifle(..[[.compute]][["sockc"]], query_dispatcher, 0L, ..[[.compute]][["proc"]] %||% 0L)))
 
   if (is.null(..[[.compute]])) `[[<-`(.., .compute, new.env(hash = FALSE, parent = environment(daemons)))
 
@@ -830,7 +830,7 @@ launch_server <- function(url, ...)
 #'
 saisei <- function(i = 1L, force = FALSE, .compute = "default")
   if (length(..[[.compute]][["sockc"]])) {
-    r <- query_nodes(..[[.compute]][["sockc"]], as.integer(if (force) -i else i))
+    r <- query_dispatcher(..[[.compute]][["sockc"]], as.integer(if (force) -i else i))
     is.character(r) || return(invisible())
     r
   }
@@ -1116,7 +1116,7 @@ parse_dots <- function(...)
 req_socket <- function(url)
   `opt<-`(socket(protocol = "req", listen = url), "req:resend-time", .Machine[["integer.max"]])
 
-query_nodes <- function(sock, command, timeout = 3000L) {
+query_dispatcher <- function(sock, command, timeout = 3000L) {
   send(sock, data = command, mode = 2L)
   recv(sock, mode = 1L, block = timeout)
 }
