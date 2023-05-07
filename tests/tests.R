@@ -8,7 +8,6 @@ nanotestp <- function(x) invisible(is.character(capture.output(print(x))) || sto
 nanotesterr <- function(x, e = "")
   invisible(grepl(e, tryCatch(x, error = identity)[["message"]], fixed = TRUE) || stop())
 
-nanotest(is.character(ver <- mirai_version()) && length(ver) == 1L)
 nanotest(is.list(daemons()))
 nanotestz(daemons()[["connections"]])
 nanotestz(daemons()[["daemons"]])

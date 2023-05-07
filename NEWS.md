@@ -1,12 +1,11 @@
-# mirai 0.8.3.9021 (development)
+# mirai 0.8.3.9022 (development)
 
-* New `mirai_version()` utility provides the package version, and versions of its depdendencies (`nanonext`, NNG and mbed TLS libraries) in a single string.
 * The deferred evaluation pipe `%>>%` gains the following enhancements:
   + `.()` implemented to wrap a piped expression, ensuring return of either an 'unresolvedExpr' or 'resolvedExpr'.
   + expressions may be tested using `unresolved()` in the same way as a 'mirai'.
   + allows for general use in all contexts, including within functions.
 * Improved error messages for top level evaluation errors in a 'mirai'.
-* Requires nanonext >= [0.8.2.9017].
+* Requires nanonext >= 0.8.3.
 * Internal performance enhancements.
 
 # mirai 0.8.3
