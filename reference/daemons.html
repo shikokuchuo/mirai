@@ -83,9 +83,10 @@
 
 
 <dt>url</dt>
-<dd><p>(optional) the client URL as a character vector, including a
-port accepting incoming connections and (optionally for websockets) a
-path e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.</p></dd>
+<dd><p>[default NULL] if specified (for connecting to remote servers),
+the client URL as a character vector, including a port accepting incoming
+connections (and optionally for websockets a path) e.g.
+'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.</p></dd>
 
 
 <dt>dispatcher</dt>
@@ -101,9 +102,9 @@ using dispatcher and/or <code><a href="server.html">server</a></code> if launchi
 
 
 <dt>.compute</dt>
-<dd><p>(optional) character compute profile to use for creating the
-daemons (each compute profile has its own set of daemons for connecting
-to different resources).</p></dd>
+<dd><p>[default 'default'] character compute profile to use for
+creating the daemons (each compute profile has its own set of daemons for
+connecting to different resources).</p></dd>
 
 </dl></div>
     <div id="value">

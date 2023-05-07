@@ -77,8 +77,8 @@ wrapped in {} if necessary), or a language object passed by <a href="https://rdr
 
 <dt>...</dt>
 <dd><p>(optional) named arguments (name = value pairs) specifying
-objects referenced in '.expr'. Used in addition to or instead of, and
-taking precedence over, named arguments specified via '.args'.</p></dd>
+objects referenced in '.expr'. Used in addition to and taking precedence
+over, any arguments specified via '.args'.</p></dd>
 
 
 <dt>.args</dt>
@@ -88,14 +88,14 @@ else (ii) a list of name = value pairs, as in '...'.</p></dd>
 
 
 <dt>.timeout</dt>
-<dd><p>(optional) integer value in milliseconds or NULL for no
-timeout. A mirai will resolve to an 'errorValue' 5 (timed out) if
+<dd><p>[default NULL] for no timeout, or an integer value in
+milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
 evaluation exceeds this limit.</p></dd>
 
 
 <dt>.compute</dt>
-<dd><p>(optional) character value for the compute profile to use
-when sending the mirai.</p></dd>
+<dd><p>[default 'default'] character value for the compute profile
+to use when sending the mirai.</p></dd>
 
 </dl></div>
     <div id="value">
