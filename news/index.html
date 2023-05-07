@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9022</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9023</span>
       </span>
     </div>
 
@@ -54,8 +54,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.3.9022" id="mirai-0839022-development">mirai 0.8.3.9022 (development)<a class="anchor" aria-label="anchor" href="#mirai-0839022-development"></a></h2>
-<ul><li>The deferred evaluation pipe <code>%&gt;&gt;%</code> gains the following enhancements:
+<h2 class="page-header" data-toc-text="0.8.3.9023" id="mirai-0839023-development">mirai 0.8.3.9023 (development)<a class="anchor" aria-label="anchor" href="#mirai-0839023-development"></a></h2>
+<ul><li>Calling <code><a href="../reference/saisei.html">saisei()</a></code> with no arguments when dispatcher is active now returns all the URLs the dispatcher is listening at, along with the PID of the dispatcher process.</li>
+<li>The deferred evaluation pipe <code>%&gt;&gt;%</code> gains the following enhancements:
 <ul><li>
 <code><a href="../reference/deferred-execution-pipe.html">.()</a></code> implemented to wrap a piped expression, ensuring return of either an ‘unresolvedExpr’ or ‘resolvedExpr’.</li>
 <li>expressions may be tested using <code><a href="../reference/unresolved.html">unresolved()</a></code> in the same way as a ‘mirai’.</li>
