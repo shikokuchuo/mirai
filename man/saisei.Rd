@@ -4,7 +4,7 @@
 \alias{saisei}
 \title{Saisei - Regenerate Token}
 \usage{
-saisei(i = 1L, force = FALSE, .compute = "default")
+saisei(i, force = FALSE, .compute = "default")
 }
 \arguments{
 \item{i}{integer \code{i}th URL to replace.}
@@ -18,6 +18,10 @@ resources).}
 }
 \value{
 The regenerated character URL upon success, or else invisible NULL.
+
+    If \code{saisei()} is called with no arguments, a named list of two
+    elements: \code{$urls} - a character vector of the URLs dispatcher is
+    listening at, and \code{$pid} - the integer process ID for dispatcher.
 }
 \description{
 When using daemons with a local dispatcher service, regenerates the token for
@@ -33,10 +37,12 @@ As the specified listener is closed and replaced immediately, this
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-daemons(1, token = TRUE)
+daemons(1L)
+Sys.sleep(1L)
 daemons()
-saisei(i = 1L)
+saisei(i = 1L, force = TRUE)
 daemons()
+saisei()
 
 daemons(0)
 
