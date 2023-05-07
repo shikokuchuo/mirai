@@ -326,16 +326,16 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
 #' @param .expr an expression to evaluate asynchronously (of arbitrary length,
 #'     wrapped in \{\} if necessary), or a language object passed by \link{name}.
 #' @param ... (optional) named arguments (name = value pairs) specifying
-#'     objects referenced in '.expr'. Used in addition to or instead of, and
-#'     taking precedence over, named arguments specified via '.args'.
+#'     objects referenced in '.expr'. Used in addition to and taking precedence
+#'     over, any arguments specified via '.args'.
 #' @param .args (optional) either (i) a list of objects to be passed by
 #'     \link{name}, i.e. also found in the current scope with the same name, or
 #'     else (ii) a list of name = value pairs, as in '...'.
-#' @param .timeout (optional) integer value in milliseconds or NULL for no
-#'     timeout. A mirai will resolve to an 'errorValue' 5 (timed out) if
+#' @param .timeout [default NULL] for no timeout, or an integer value in
+#'     milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
-#' @param .compute (optional) character value for the compute profile to use
-#'     when sending the mirai.
+#' @param .compute [default 'default'] character value for the compute profile
+#'     to use when sending the mirai.
 #'
 #' @return A 'mirai' object.
 #'
@@ -475,18 +475,19 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     approach of distributing tasks to servers in an even fashion.
 #'
 #' @param n integer number of daemons (server processes) to set.
-#' @param url (optional) the client URL as a character vector, including a
-#'     port accepting incoming connections and (optionally for websockets) a
-#'     path e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
+#' @param url [default NULL] if specified (for connecting to remote servers),
+#'     the client URL as a character vector, including a port accepting incoming
+#'     connections (and optionally for websockets a path) e.g.
+#'     'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
 #' @param dispatcher [default TRUE] logical value whether to use dispatcher.
 #'     Dispatcher is a background process that connects to servers on behalf of
 #'     the client and ensures FIFO scheduling, queueing tasks if necessary
 #'     (see Dispatcher section below).
 #' @param ... additional arguments passed through to \code{\link{dispatcher}} if
 #'     using dispatcher and/or \code{\link{server}} if launching local daemons.
-#' @param .compute (optional) character compute profile to use for creating the
-#'     daemons (each compute profile has its own set of daemons for connecting
-#'     to different resources).
+#' @param .compute [default 'default'] character compute profile to use for
+#'     creating the daemons (each compute profile has its own set of daemons for
+#'     connecting to different resources).
 #'
 #' @return Setting daemons: integer number of daemons set, or the character
 #'     client URL.
@@ -803,8 +804,9 @@ launch_server <- function(url, ...)
 #' @param i integer \code{i}th URL to replace.
 #' @param force [default FALSE] logical value whether to replace the listener
 #'     even when there is an existing connection.
-#' @param .compute (optional) character compute profile to use (each compute
-#'     profile has its own set of daemons for connecting to different resources).
+#' @param .compute [default 'default'] character compute profile to use (each
+#'     compute profile has its own set of daemons for connecting to different
+#'     resources).
 #'
 #' @return The regenerated character URL upon success, or else invisible NULL.
 #'

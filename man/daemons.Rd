@@ -9,9 +9,10 @@ daemons(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 \arguments{
 \item{n}{integer number of daemons (server processes) to set.}
 
-\item{url}{(optional) the client URL as a character vector, including a
-port accepting incoming connections and (optionally for websockets) a
-path e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
+\item{url}{[default NULL] if specified (for connecting to remote servers),
+the client URL as a character vector, including a port accepting incoming
+connections (and optionally for websockets a path) e.g.
+'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 
 \item{dispatcher}{[default TRUE] logical value whether to use dispatcher.
 Dispatcher is a background process that connects to servers on behalf of
@@ -21,9 +22,9 @@ the client and ensures FIFO scheduling, queueing tasks if necessary
 \item{...}{additional arguments passed through to \code{\link{dispatcher}} if
 using dispatcher and/or \code{\link{server}} if launching local daemons.}
 
-\item{.compute}{(optional) character compute profile to use for creating the
-daemons (each compute profile has its own set of daemons for connecting
-to different resources).}
+\item{.compute}{[default 'default'] character compute profile to use for
+creating the daemons (each compute profile has its own set of daemons for
+connecting to different resources).}
 }
 \value{
 Setting daemons: integer number of daemons set, or the character
