@@ -749,8 +749,8 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
       length(envir[["proc"]]) || return(0L)
 
       close(envir[["sock"]])
+      if (length(envir[["sockc"]])) close(envir[["sockc"]])
       `[[<-`(`[[<-`(`[[<-`(envir, "sock", NULL), "sockc", NULL), "proc", NULL)
-      gc(verbose = FALSE)
 
     } else if (is.null(envir[["sock"]])) {
 
