@@ -706,16 +706,19 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default") {
 
+  envir <- ..[[.compute]]
   missing(n) && missing(url) &&
-    return(list(connections = if (length(..[[.compute]][["sock"]])) stat(..[[.compute]][["sock"]], "pipes") else 0L,
-                daemons = if (length(..[[.compute]][["sockc"]]))
-                  query_status(..[[.compute]]) else ..[[.compute]][["proc"]] %||% 0L))
+    return(list(connections = if (length(envir[["sock"]])) stat(envir[["sock"]], "pipes") else 0L,
+                daemons = if (length(envir[["sockc"]])) query_status(envir) else envir[["proc"]] %||% 0L))
 
-  if (is.null(..[[.compute]])) `[[<-`(.., .compute, new.env(hash = FALSE, parent = environment(daemons)))
+  if (is.null(envir)) {
+    `[[<-`(.., .compute, new.env(hash = FALSE, parent = environment(daemons)))
+    envir <- ..[[.compute]]
+  }
 
   if (is.character(url)) {
 
-    if (is.null(..[[.compute]][["sock"]])) {
+    if (is.null(envir[["sock"]])) {
       if (dispatcher) {
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n > 0L) as.integer(n) else stop(.messages[["n_one"]])
         parse_url(url)
@@ -724,7 +727,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         sock <- req_socket(urld)
         sockc <- socket(protocol = "bus", listen = urlc)
         launch_and_sync_daemon(sock = sock, type = 5L, urld, url, n, urlc, parse_dots(...))
-        recv_and_store(sock = sockc, env = ..[[.compute]])
+        recv_and_store(sockc = sockc, envir = envir)
         proc <- n
       } else {
         sock <- req_socket(url)
@@ -733,7 +736,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         if (parse_url(proc)[["port"]] == "0")
           proc <- sub_real_port(port = opt(listener, "tcp-bound-port"), url = proc)
       }
-      `[[<-`(`[[<-`(..[[.compute]], "sock", sock), "proc", proc)
+      `[[<-`(`[[<-`(envir, "sock", sock), "proc", proc)
     }
 
   } else {
@@ -742,13 +745,13 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
     n <- as.integer(n)
 
     if (n == 0L) {
-      length(..[[.compute]][["proc"]]) || return(0L)
+      length(envir[["proc"]]) || return(0L)
 
-      close(..[[.compute]][["sock"]])
-      `[[<-`(`[[<-`(`[[<-`(..[[.compute]], "sock", NULL), "sockc", NULL), "proc", NULL)
+      close(envir[["sock"]])
+      `[[<-`(`[[<-`(`[[<-`(envir, "sock", NULL), "sockc", NULL), "proc", NULL)
       gc(verbose = FALSE)
 
-    } else if (is.null(..[[.compute]][["sock"]])) {
+    } else if (is.null(envir[["sock"]])) {
 
       n > 0L || stop(.messages[["n_zero"]])
       urld <- auto_tokenized_url()
@@ -757,17 +760,17 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         urlc <- sprintf("%s%s", urld, "c")
         sockc <- socket(protocol = "bus", listen = urlc)
         launch_and_sync_daemon(sock = sock, type = 4L, urld, n, urlc, parse_dots(...))
-        recv_and_store(sock = sockc, env = ..[[.compute]])
+        recv_and_store(sockc = sockc, envir = envir)
       } else {
         for (i in seq_len(n))
           launch_daemon(type = 2L, urld, parse_dots(...))
       }
-      `[[<-`(`[[<-`(..[[.compute]], "sock", sock), "proc", n)
+      `[[<-`(`[[<-`(envir, "sock", sock), "proc", n)
     }
 
   }
 
-  ..[[.compute]][["proc"]] %||% 0L
+  envir[["proc"]] %||% 0L
 
 }
 
@@ -837,14 +840,18 @@ launch_server <- function(url, ...)
 #'
 #' @export
 #'
-saisei <- function(i, force = FALSE, .compute = "default")
-  if (length(..[[.compute]][["sockc"]])) {
-    missing(i) && return(list(urls = ..[[.compute]][["urls"]], pid = ..[[.compute]][["pid"]]))
-    r <- query_dispatcher(sock = ..[[.compute]][["sockc"]], command = as.integer(if (force) -i else i), mode = 2L)
+saisei <- function(i, force = FALSE, .compute = "default") {
+
+  envir <- ..[[.compute]]
+  if (length(envir[["sockc"]])) {
+    missing(i) && return(list(urls = envir[["urls"]], pid = envir[["pid"]]))
+    r <- query_dispatcher(sock = envir[["sockc"]], command = as.integer(if (force) -i else i), mode = 2L)
     nzchar(r) || return(invisible())
-    ..[[.compute]][["urls"]][i] <- r
+    envir[["urls"]][i] <- r
     r
   }
+
+}
 
 #' mirai (Call Value)
 #'
@@ -1118,18 +1125,18 @@ query_dispatcher <- function(sock, command, mode, timeout = 3000L) {
   recv(sock, mode = mode, block = timeout)
 }
 
-query_status <- function(env) {
-  res <- query_dispatcher(sock = env[["sockc"]], command = 0L, mode = 5L)
+query_status <- function(envir) {
+  res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L)
   is_error_value(res) && return(res)
-  `attributes<-`(res, list(dim = c(length(env[["urls"]]), 4L),
-                           dimnames = list(`attr<-`(env[["urls"]], "dispatcher_pid", env[["pid"]]),
+  `attributes<-`(res, list(dim = c(length(envir[["urls"]]), 4L),
+                           dimnames = list(`attr<-`(envir[["urls"]], "dispatcher_pid", envir[["pid"]]),
                                            c("online", "instance", "assigned", "complete"))))
 }
 
-recv_and_store <- function(sock, env, timeout = 3000L) {
-  res <- recv(sock, mode = 2L, block = timeout)
+recv_and_store <- function(sockc, envir, timeout = 3000L) {
+  res <- recv(sockc, mode = 2L, block = timeout)
   is.integer(res) && stop(.messages[["connection_timeout"]])
-  `[[<-`(`[[<-`(`[[<-`(env, "sockc", sock), "urls", res[-1L]), "pid", as.integer(res[1L]))
+  `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L]))
 }
 
 perform_cleanup <- function(cleanup, op, se) {
