@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9027</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9028</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.3.9027" id="mirai-0839027-development">mirai 0.8.3.9027 (development)<a class="anchor" aria-label="anchor" href="#mirai-0839027-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.3.9028" id="mirai-0839028-development">mirai 0.8.3.9028 (development)<a class="anchor" aria-label="anchor" href="#mirai-0839028-development"></a></h2>
 <ul><li>The deferred evaluation pipe <code>%&gt;&gt;%</code> gains the following enhancements:
 <ul><li>
 <code><a href="../reference/deferred-execution-pipe.html">.()</a></code> implemented to wrap a piped expression, ensuring return of either an ‘unresolvedExpr’ or ‘resolvedExpr’.</li>
@@ -62,6 +62,7 @@
 <li>allows for general use in all contexts, including within functions.</li>
 </ul></li>
 <li>Improved error messages for top level evaluation errors in a ‘mirai’.</li>
+<li>In the status matrix returned by <code><a href="../reference/daemons.html">daemons()</a></code>, ‘instance’ now records cumulative instances and are not reset even if the URL is regenerated with <code><a href="../reference/saisei.html">saisei()</a></code>.</li>
 <li>Requires nanonext &gt;= 0.8.3.</li>
 <li>Internal performance enhancements.</li>
 </ul></div>

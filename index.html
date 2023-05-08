@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9027</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.3.9028</span>
       </span>
     </div>
 
@@ -154,11 +154,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -3.79 -5.676 -0.736 1.809 0.585 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.626 -0.342 5.688 1.138 -0.343 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -3.79 -5.676 -0.736 1.809 0.585 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.626 -0.342 5.688 1.138 -0.343 ...</span></span></code></pre></div>
 <p>For easy programmatic use of <code><a href="reference/mirai.html">mirai()</a></code>, ‘.expr’ accepts a pre-constructed language object, and also a list of named arguments passed via ‘.args’. So, the following would be equivalent to the above:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -171,7 +171,7 @@
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span>.expr <span class="op">=</span> <span class="va">expr</span>, .args <span class="op">=</span> <span class="va">args</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -2.245 -7.804 0.887 0.884 0.902 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.925 2 0.498 0.47 2.234 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -239,8 +239,8 @@
 <span><span class="co">#&gt; iteration 5 successful </span></span>
 <span><span class="co">#&gt; iteration 6 successful </span></span>
 <span><span class="co">#&gt; iteration 7 successful </span></span>
-<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 8 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 9 successful </span></span>
 <span><span class="co">#&gt; iteration 10 successful</span></span></code></pre></div>
 <p>Further, by testing the return value of each ‘mirai’ for errors, error-handling code is then able to automate recovery and re-attempts, as in the above example. Further details on <a href="#errors-interrupts-and-timeouts">error handling</a> can be found in the section below.</p>
@@ -267,12 +267,12 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt;                                                     online instance assigned complete</span></span>
-<span><span class="co">#&gt; abstract://b2da0b45047ae4bf420225639dde5855e7f07d77      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://fc91fa2b8cd281152dc300ac291bf07a8e952ea2      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://19810cc22c2e3b1d996332b4749022fdd1076252      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://7059dad2542c010137178816dbe1ab40b7c21db8      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://884d67b01c51e47794f563e3991cc409f42f8ced      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://462cac2c9a61ce88e5d8ac10e9af13c51d1f86c7      1        1        0        0</span></span></code></pre></div>
+<span><span class="co">#&gt; abstract://a6e5c6e0a134cbaac61ef4399d6e693e73d4903f      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://0353f524b7a1cf42dd3214e7f01210cf9765cd22      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://96c0bef1230e5647012acd74fbfe204081f54b3f      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://d02aea0cd4e32663f933a216962d101dcf55707f      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://e80b2f9f965ef8ca039a14549ed02d9db2e0e0dd      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://575d0d9a1baa796c488dbdc98ade7eef03b47e0b      1        1        0        0</span></span></code></pre></div>
 <p>The default <code>dispatcher = TRUE</code> creates a <code><a href="reference/dispatcher.html">dispatcher()</a></code> background process that connects to individual daemon processes on the local machine on behalf of the client. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to servers for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.</p>
 <p>Dispatcher uses synchronisation primitives from <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link"><code>nanonext</code></a>, waiting upon rather than polling for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -347,7 +347,7 @@
 <span><span class="co">#&gt; ws://:5555/4      1        1        0        0</span></span></code></pre></div>
 <p>As per the local case, <code>$connections</code> will show the single connection to the dispatcher process, however <code>$daemons</code> will provide the matrix of statistics for the remote servers.</p>
 <p><code>online</code> shows as 1 when there is an active connection, or else 0 if a server has yet to connect or has disconnected.</p>
-<p><code>instance</code> increments by 1 every time there is a new connection at a URL. When this happens, the <code>assigned</code> and <code>complete</code> statistics will also reset. This is designed to track new server instances connecting after previous ones have ended (due to time-outs etc.).</p>
+<p><code>instance</code> increments by 1 every time there is a new connection, regardless of whether the URL has been regenerated by <code><a href="reference/saisei.html">saisei()</a></code>. When this happens, the <code>assigned</code> and <code>complete</code> statistics will also reset. This is designed to track new server instances connecting after previous ones have ended (due to time-outs etc.).</p>
 <p><code>assigned</code> shows the cumulative number of tasks assigned to the server instance by the dispatcher.</p>
 <p><code>complete</code> shows the cumulative number of tasks completed by the server instance.</p>
 <p>The dispatcher automatically adjusts to the number of servers actually connected. Hence it is possible to dynamically scale up or down the number of servers according to requirements (limited to the ‘n’ URLs assigned at the dispatcher).</p>
@@ -362,15 +362,15 @@
 </h4>
 <p>By specifying <code>dispatcher = FALSE</code>, remote servers connect directly to the client. The client listens at a single URL address, and distributes tasks to all connected server processes.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://10.111.5.13:39691"</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://10.111.5.13:0"</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://:0"</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tcp://:39691"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:41245"</span></span></code></pre></div>
 <p>Note that above, the port number is specified as zero. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided as the return value of the call, or it may be queried at any time by requesting the status via <code><a href="reference/daemons.html">daemons()</a></code>.</p>
 <p>–</p>
 <p>On the server, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation from a shell. This sets up a remote daemon process that connects to the client URL and receives tasks:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://10.111.5.13:0")'</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://10.111.5.13:41245")'</span></span></code></pre></div>
 <p>–</p>
 <p>The number of daemons connecting to the client URL is not limited and network resources may be added or removed at any time, with tasks automatically distributed to all server processes.</p>
 <p><code>$connections</code> will show the actual number of connected server instances.</p>
@@ -380,7 +380,7 @@
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "tcp://:39691"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:41245"</span></span></code></pre></div>
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
