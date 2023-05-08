@@ -212,7 +212,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
           sub(ports[1L], ports[i], url, fixed = TRUE)
     basenames[i] <- nurl
     if (auto || token)
-      nurl <- new_tokenized_url(fmt = if (auto) "%s%s" else "%s/%s", url = nurl)
+      nurl <- new_tokenized_url(url = nurl, auto = auto)
     nsock <- req_socket(NULL)
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE)
@@ -270,7 +270,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
             close(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
             cv_reset(active[[i]])
-            data <- servernames[i] <- new_tokenized_url(fmt = if (auto) "%s%s" else "%s/%s", url = basenames[i])
+            data <- servernames[i] <- new_tokenized_url(url = basenames[i], auto = auto)
             listen(servers[[i]], url = data, error = TRUE)
           } else {
             data <- ""
@@ -723,7 +723,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n > 0L) as.integer(n) else stop(.messages[["n_one"]])
         parse_url(url)
         urld <- auto_tokenized_url()
-        urlc <- sprintf("%s%s", urld, "c")
+        urlc <- new_control_url(urld)
         sock <- req_socket(urld)
         sockc <- socket(protocol = "bus", listen = urlc)
         launch_and_sync_daemon(sock = sock, type = 5L, urld, url, n, urlc, parse_dots(...))
@@ -757,7 +757,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
       urld <- auto_tokenized_url()
       sock <- req_socket(urld)
       if (dispatcher) {
-        urlc <- sprintf("%s%s", urld, "c")
+        urlc <- new_control_url(urld)
         sockc <- socket(protocol = "bus", listen = urlc)
         launch_and_sync_daemon(sock = sock, type = 4L, urld, n, urlc, parse_dots(...))
         recv_and_store(sockc = sockc, envir = envir)
@@ -1100,11 +1100,12 @@ dial_and_sync_socket <- function(sock, url, asyncdial) {
 sub_real_port <- function(port, url)
   sub("(?<=:)0(?![^/])", port, url, perl = TRUE)
 
-auto_tokenized_url <- function(fmt = .urlfmt, complexity = 8L)
-  sprintf(fmt = fmt, sha1(random(complexity)))
+auto_tokenized_url <- function() sprintf(.urlfmt, sha1(random(8L)))
 
-new_tokenized_url <- function(fmt, url, complexity = 8L)
-  sprintf(fmt = fmt, url, sha1(random(complexity)))
+new_control_url <- function(url) sprintf("%s%s", url, "c")
+
+new_tokenized_url <- function(url, auto)
+  sprintf(if (auto) "%s%s" else "%s/%s", url, sha1(random(8L)))
 
 parse_dots <- function(...)
   if (missing(...)) "" else
