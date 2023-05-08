@@ -112,7 +112,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -0.7 -2.15 2.47 -1.8 1.5 ...
+#>  num [1:100000000] -3.79 -5.676 -0.736 1.809 0.585 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -120,7 +120,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.7 -2.15 2.47 -1.8 1.5 ...
+#>  num [1:100000000] -3.79 -5.676 -0.736 1.809 0.585 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -138,7 +138,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -2.0175 -0.2603 -0.5844 0.6812 0.0165 ...
+#>  num [1:100000000] -2.245 -7.804 0.887 0.884 0.902 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -182,7 +182,6 @@ while (unresolved(m)) {
   cat("while unresolved\n")
   Sys.sleep(0.5)
 }
-#> while unresolved
 #> while unresolved
 #> while unresolved
 
@@ -235,6 +234,7 @@ for (i in 1:10) {
 #> iteration 5 successful 
 #> iteration 6 successful 
 #> iteration 7 successful 
+#> Error: random error 
 #> iteration 8 successful 
 #> iteration 9 successful 
 #> iteration 10 successful
@@ -278,20 +278,13 @@ daemons()
 #> [1] 1
 #> 
 #> $daemons
-#>                                                     online instance assigned
-#> abstract://474aad852e25cd057e369046617509157c51422b      1        1        0
-#> abstract://ac5a46c7f62f13669027e9a5e0fa14fd0be1c620      1        1        0
-#> abstract://f6131beacecd22975e2781bf167a5977636bb59f      1        1        0
-#> abstract://846b6f7197f904501cc946b9301fe48918fa9802      1        1        0
-#> abstract://78f971ad4c8bb7530b250922fd302b50313d9c21      1        1        0
-#> abstract://aefdffcefb66627ffda0f1c3a1fd642a12781e3b      1        1        0
-#>                                                     complete
-#> abstract://474aad852e25cd057e369046617509157c51422b        0
-#> abstract://ac5a46c7f62f13669027e9a5e0fa14fd0be1c620        0
-#> abstract://f6131beacecd22975e2781bf167a5977636bb59f        0
-#> abstract://846b6f7197f904501cc946b9301fe48918fa9802        0
-#> abstract://78f971ad4c8bb7530b250922fd302b50313d9c21        0
-#> abstract://aefdffcefb66627ffda0f1c3a1fd642a12781e3b        0
+#>                                                     online instance assigned complete
+#> abstract://b2da0b45047ae4bf420225639dde5855e7f07d77      1        1        0        0
+#> abstract://fc91fa2b8cd281152dc300ac291bf07a8e952ea2      1        1        0        0
+#> abstract://19810cc22c2e3b1d996332b4749022fdd1076252      1        1        0        0
+#> abstract://7059dad2542c010137178816dbe1ab40b7c21db8      1        1        0        0
+#> abstract://884d67b01c51e47794f563e3991cc409f42f8ced      1        1        0        0
+#> abstract://462cac2c9a61ce88e5d8ac10e9af13c51d1f86c7      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -428,10 +421,10 @@ daemons()
 #> 
 #> $daemons
 #>              online instance assigned complete
-#> ws://:5555/1      0        0        0        0
-#> ws://:5555/2      0        0        0        0
-#> ws://:5555/3      0        0        0        0
-#> ws://:5555/4      0        0        0        0
+#> ws://:5555/1      1        1        0        0
+#> ws://:5555/2      1        1        0        0
+#> ws://:5555/3      1        1        0        0
+#> ws://:5555/4      1        1        0        0
 ```
 
 As per the local case, `$connections` will show the single connection to
@@ -475,7 +468,7 @@ the client. The client listens at a single URL address, and distributes
 tasks to all connected server processes.
 
 ``` r
-daemons(url = "tcp://10.111.5.13:0", dispatcher = FALSE)
+daemons(url = "tcp://10.111.5.13:39691", dispatcher = FALSE)
 ```
 
 Alternatively, simply supply a colon followed by the port number to
@@ -483,7 +476,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:44241"
+#> [1] "tcp://:39691"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -515,7 +508,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:44241"
+#> [1] "tcp://:39691"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -675,7 +668,7 @@ high-performance computing clusters such as Sun Grid Engine (SGE).
 [`crew`](https://wlandau.github.io/crew/) package provides a Shiny
 vignette with tutorial and sample code for this purpose. The
 [`crew`](https://wlandau.github.io/crew/) interface provides a nice
-abstraction that makes it easy to deploy `mirai` for
+abstraction layer that makes it easy to deploy `mirai` for
 [`shiny`](https://shiny.rstudio.com/); `mirai` itself is sufficient,
 although requires the individual `mirai()` requests to be managed using
 a list or equivalent.

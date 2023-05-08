@@ -486,7 +486,7 @@ The [`crew`](https://wlandau.github.io/crew/) package (available on CRAN) by Wil
 
 [`crew`](https://wlandau.github.io/crew/) further provides an extensible interface for plugins to different distributed computing platforms, from traditional clusters to cloud services. The [`crew.cluster`](https://wlandau.github.io/crew.cluster/) package (available on CRAN) enables mirai-based workflows on traditional high-performance computing clusters such as Sun Grid Engine (SGE).
 
-`mirai` also serves as the backend for enterprise asynchronous [`shiny`](https://shiny.rstudio.com/) applications. The [`crew`](https://wlandau.github.io/crew/) package provides a Shiny vignette with tutorial and sample code for this purpose. The [`crew`](https://wlandau.github.io/crew/) interface provides a nice abstraction that makes it easy to deploy `mirai` for [`shiny`](https://shiny.rstudio.com/); `mirai` itself is sufficient, although requires the individual `mirai()` requests to be managed using a list or equivalent.
+`mirai` also serves as the backend for enterprise asynchronous [`shiny`](https://shiny.rstudio.com/) applications. The [`crew`](https://wlandau.github.io/crew/) package provides a Shiny vignette with tutorial and sample code for this purpose. The [`crew`](https://wlandau.github.io/crew/) interface provides a nice abstraction layer that makes it easy to deploy `mirai` for [`shiny`](https://shiny.rstudio.com/); `mirai` itself is sufficient, although requires the individual `mirai()` requests to be managed using a list or equivalent.
 
 [&laquo; Back to ToC](#table-of-contents)
 
