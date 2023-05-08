@@ -269,8 +269,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
           if (i > 0L && i <= n && !activevec[i] || i < 0L && (i <- -i) <= n) {
             close(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
-            cv_reset(active[[i]])
             data <- servernames[i] <- new_tokenized_url(url = basenames[i], auto = auto)
+            cv_reset(active[[i]])
             listen(servers[[i]], url = data, error = TRUE)
           } else {
             data <- ""
