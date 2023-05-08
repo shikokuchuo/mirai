@@ -1,6 +1,5 @@
-# mirai 0.8.3.9024 (development)
+# mirai 0.8.3.9025 (development)
 
-* Calling `saisei()` with no arguments when dispatcher is active now returns all the URLs the dispatcher is listening at, along with the PID of the dispatcher process.
 * The deferred evaluation pipe `%>>%` gains the following enhancements:
   + `.()` implemented to wrap a piped expression, ensuring return of either an 'unresolvedExpr' or 'resolvedExpr'.
   + expressions may be tested using `unresolved()` in the same way as a 'mirai'.

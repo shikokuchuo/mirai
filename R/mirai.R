@@ -805,18 +805,14 @@ launch_server <- function(url, ...)
 #' When using daemons with a local dispatcher service, regenerates the token for
 #'     the URL a dispatcher socket listens at.
 #'
-#' @param i integer \code{i}th URL to replace.
+#' @param i [default 1L] integer \code{i}th URL to replace.
 #' @param force [default FALSE] logical value whether to replace the listener
 #'     even when there is an existing connection.
 #' @param .compute [default 'default'] character compute profile to use (each
 #'     compute profile has its own set of daemons for connecting to different
 #'     resources).
 #'
-#' @return The regenerated character URL upon success, or else invisible NULL.
-#'
-#'     If \code{saisei()} is called with no arguments, a named list of two
-#'     elements: \code{$urls} - a character vector of the URLs dispatcher is
-#'     listening at, and \code{$pid} - the integer process ID for dispatcher.
+#' @return The regenerated character URL upon success, or else NULL.
 #'
 #' @details As the specified listener is closed and replaced immediately, this
 #'     function will only be successful if there are no existing connections at
@@ -832,7 +828,6 @@ launch_server <- function(url, ...)
 #' daemons()
 #' saisei(i = 1L, force = TRUE)
 #' daemons()
-#' saisei()
 #'
 #' daemons(0)
 #'
@@ -840,16 +835,14 @@ launch_server <- function(url, ...)
 #'
 #' @export
 #'
-saisei <- function(i, force = FALSE, .compute = "default") {
+saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 
   envir <- ..[[.compute]]
-  if (length(envir[["sockc"]])) {
-    missing(i) && return(list(urls = envir[["urls"]], pid = envir[["pid"]]))
-    r <- query_dispatcher(sock = envir[["sockc"]], command = as.integer(if (force) -i else i), mode = 2L)
-    nzchar(r) || return(invisible())
-    envir[["urls"]][i] <- r
-    r
-  }
+  length(envir[["sockc"]]) || return()
+  r <- query_dispatcher(sock = envir[["sockc"]], command = as.integer(if (force) -i else i), mode = 2L)
+  nzchar(r) || return()
+  envir[["urls"]][i] <- r
+  r
 
 }
 
