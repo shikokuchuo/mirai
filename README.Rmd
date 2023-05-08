@@ -32,7 +32,7 @@ Features efficient task scheduling, scalability beyond R connection limits, and 
 
 `mirai()` returns a 'mirai' object immediately. 'mirai' (未来 みらい) is Japanese for 'future'.
 
-{mirai} has a tiny pure R code base, relying solely on {nanonext}, a high-performance binding for the 'NNG' (Nanomsg Next Gen) C library with zero package dependencies.
+`mirai` has a tiny pure R code base, relying solely on [`nanonext`](https://doi.org/10.5281/zenodo.7903429), a high-performance binding for the 'NNG' (Nanomsg Next Gen) C library with zero package dependencies.
 
 ### Table of Contents
 
@@ -233,7 +233,7 @@ daemons()
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background process that connects to individual daemon processes on the local machine on behalf of the client. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to servers for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.
 
-Dispatcher uses synchronisation primitives from \{nanonext\}, waiting upon rather than polling for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).
+Dispatcher uses synchronisation primitives from [`nanonext`](https://doi.org/10.5281/zenodo.7903429), waiting upon rather than polling for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).
 
 ```{r daemons4}
 daemons(0)
@@ -447,7 +447,7 @@ is_error_value(m3$data)
 
 ### Deferred Evaluation Pipe
 
-{mirai} implements a deferred evaluation pipe `%>>%` for working with potentially unresolved values.
+`mirai` implements a deferred evaluation pipe `%>>%` for working with potentially unresolved values.
 
 Pipe a 'mirai' or mirai `$data` value forward into a function or series of functions and it initially returns an 'unresolvedExpr'.
 
@@ -482,24 +482,24 @@ b$data
 
 ### Crew, Targets, Shiny
 
-The {crew} package <https://wlandau.github.io/crew/> (available on CRAN) by William Landau is a distributed worker-launcher that provides an R6-based interface extending {mirai} to different computing platforms for distributed workers. It has been integrated with and adopted as the predominant high-performance computing backend for {targets} <https://docs.ropensci.org/targets/>, a Make-like pipeline tool for statistics and data science, as of its v1.0.0 release.
+The [`crew`](https://wlandau.github.io/crew/) package (available on CRAN) by William Landau is a distributed worker-launcher that provides an R6-based interface extending `mirai` to different computing platforms for distributed workers. It has been integrated with and adopted as the predominant high-performance computing backend for [`targets`](https://docs.ropensci.org/targets/), a Make-like pipeline tool for statistics and data science.
 
-{crew} further provides an extensible interface for plugins to different distributed computing platforms, from traditional clusters to cloud services. To date, the {crew.cluster} package <https://wlandau.github.io/crew.cluster/> has been released to CRAN, which enables mirai-based workflows on traditional high-performance computing clusters such as Sun Grid Engine (SGE).
+[`crew`](https://wlandau.github.io/crew/) further provides an extensible interface for plugins to different distributed computing platforms, from traditional clusters to cloud services. The [`crew.cluster`](https://wlandau.github.io/crew.cluster/) package (available on CRAN) enables mirai-based workflows on traditional high-performance computing clusters such as Sun Grid Engine (SGE).
 
-{mirai} also serves as the backend for enterprise asynchronous Shiny <https://shiny.rstudio.com/> applications. This is supported in the first instance through the {crew} interface, and that package provides a Shiny vignette with a tutorial and sample code for this purpose.
+`mirai` also serves as the backend for enterprise asynchronous [`shiny`](https://shiny.rstudio.com/) applications. The [`crew`](https://wlandau.github.io/crew/) package provides a Shiny vignette with tutorial and sample code for this purpose. The [`crew`](https://wlandau.github.io/crew/) interface provides a nice abstraction that makes it easy to deploy `mirai` for [`shiny`](https://shiny.rstudio.com/); `mirai` itself is sufficient, although requires the individual `mirai()` requests to be managed using a list or equivalent.
 
 [&laquo; Back to ToC](#table-of-contents)
 
 ### Links
 
-{mirai} website: <https://shikokuchuo.net/mirai/><br />
-{mirai} on CRAN: <https://cran.r-project.org/package=mirai>
+`mirai` website: <https://shikokuchuo.net/mirai/><br />
+`mirai` on CRAN: <https://cran.r-project.org/package=mirai>
 
 Listed in CRAN Task View: <br />
 - High Performance Computing: <https://cran.r-project.org/view=HighPerformanceComputing>
 
-{nanonext} website: <https://shikokuchuo.net/nanonext/><br />
-{nanonext} on CRAN: <https://cran.r-project.org/package=nanonext>
+`nanonext` website: <https://shikokuchuo.net/nanonext/><br />
+`nanonext` on CRAN: <https://cran.r-project.org/package=nanonext>
 
 NNG website: <https://nng.nanomsg.org/><br />
 

@@ -78,7 +78,7 @@ For viewing the currrent status, specify \code{daemons()} with no
     running \code{\link{dispatcher}}.  A dispatcher connects to servers on
     behalf of the client and queues tasks until a server is able to begin
     immediate execution of that task, ensuring FIFO scheduling. Dispatcher
-    uses synchronisation primitives from \{nanonext\}, waiting rather than
+    uses synchronisation primitives from \code{nanonext}, waiting rather than
     polling for tasks, which is efficient both in terms of consuming no
     resources while waiting, and also being fully synchronised with events
     (having no latency).
