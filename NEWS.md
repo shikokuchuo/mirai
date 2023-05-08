@@ -1,10 +1,11 @@
-# mirai 0.8.3.9027 (development)
+# mirai 0.8.3.9028 (development)
 
 * The deferred evaluation pipe `%>>%` gains the following enhancements:
   + `.()` implemented to wrap a piped expression, ensuring return of either an 'unresolvedExpr' or 'resolvedExpr'.
   + expressions may be tested using `unresolved()` in the same way as a 'mirai'.
   + allows for general use in all contexts, including within functions.
 * Improved error messages for top level evaluation errors in a 'mirai'.
+* In the status matrix returned by `daemons()`, 'instance' now records cumulative instances and are not reset even if the URL is regenerated with `saisei()`.
 * Requires nanonext >= 0.8.3.
 * Internal performance enhancements.
 
