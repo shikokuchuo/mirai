@@ -154,11 +154,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.7 -2.15 2.47 -1.8 1.5 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -3.79 -5.676 -0.736 1.809 0.585 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.7 -2.15 2.47 -1.8 1.5 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -3.79 -5.676 -0.736 1.809 0.585 ...</span></span></code></pre></div>
 <p>For easy programmatic use of <code><a href="reference/mirai.html">mirai()</a></code>, ‘.expr’ accepts a pre-constructed language object, and also a list of named arguments passed via ‘.args’. So, the following would be equivalent to the above:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -171,7 +171,7 @@
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span>.expr <span class="op">=</span> <span class="va">expr</span>, .args <span class="op">=</span> <span class="va">args</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -2.0175 -0.2603 -0.5844 0.6812 0.0165 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -2.245 -7.804 0.887 0.884 0.902 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -198,7 +198,6 @@
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"while unresolved\n"</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="co">#&gt; while unresolved</span></span>
 <span><span class="co">#&gt; while unresolved</span></span>
 <span><span class="co">#&gt; while unresolved</span></span>
 <span></span>
@@ -240,6 +239,7 @@
 <span><span class="co">#&gt; iteration 5 successful </span></span>
 <span><span class="co">#&gt; iteration 6 successful </span></span>
 <span><span class="co">#&gt; iteration 7 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 8 successful </span></span>
 <span><span class="co">#&gt; iteration 9 successful </span></span>
 <span><span class="co">#&gt; iteration 10 successful</span></span></code></pre></div>
@@ -266,20 +266,13 @@
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt;                                                     online instance assigned</span></span>
-<span><span class="co">#&gt; abstract://474aad852e25cd057e369046617509157c51422b      1        1        0</span></span>
-<span><span class="co">#&gt; abstract://ac5a46c7f62f13669027e9a5e0fa14fd0be1c620      1        1        0</span></span>
-<span><span class="co">#&gt; abstract://f6131beacecd22975e2781bf167a5977636bb59f      1        1        0</span></span>
-<span><span class="co">#&gt; abstract://846b6f7197f904501cc946b9301fe48918fa9802      1        1        0</span></span>
-<span><span class="co">#&gt; abstract://78f971ad4c8bb7530b250922fd302b50313d9c21      1        1        0</span></span>
-<span><span class="co">#&gt; abstract://aefdffcefb66627ffda0f1c3a1fd642a12781e3b      1        1        0</span></span>
-<span><span class="co">#&gt;                                                     complete</span></span>
-<span><span class="co">#&gt; abstract://474aad852e25cd057e369046617509157c51422b        0</span></span>
-<span><span class="co">#&gt; abstract://ac5a46c7f62f13669027e9a5e0fa14fd0be1c620        0</span></span>
-<span><span class="co">#&gt; abstract://f6131beacecd22975e2781bf167a5977636bb59f        0</span></span>
-<span><span class="co">#&gt; abstract://846b6f7197f904501cc946b9301fe48918fa9802        0</span></span>
-<span><span class="co">#&gt; abstract://78f971ad4c8bb7530b250922fd302b50313d9c21        0</span></span>
-<span><span class="co">#&gt; abstract://aefdffcefb66627ffda0f1c3a1fd642a12781e3b        0</span></span></code></pre></div>
+<span><span class="co">#&gt;                                                     online instance assigned complete</span></span>
+<span><span class="co">#&gt; abstract://b2da0b45047ae4bf420225639dde5855e7f07d77      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://fc91fa2b8cd281152dc300ac291bf07a8e952ea2      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://19810cc22c2e3b1d996332b4749022fdd1076252      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://7059dad2542c010137178816dbe1ab40b7c21db8      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://884d67b01c51e47794f563e3991cc409f42f8ced      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://462cac2c9a61ce88e5d8ac10e9af13c51d1f86c7      1        1        0        0</span></span></code></pre></div>
 <p>The default <code>dispatcher = TRUE</code> creates a <code><a href="reference/dispatcher.html">dispatcher()</a></code> background process that connects to individual daemon processes on the local machine on behalf of the client. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to servers for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.</p>
 <p>Dispatcher uses synchronisation primitives from <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link"><code>nanonext</code></a>, waiting upon rather than polling for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -348,10 +341,10 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt;              online instance assigned complete</span></span>
-<span><span class="co">#&gt; ws://:5555/1      0        0        0        0</span></span>
-<span><span class="co">#&gt; ws://:5555/2      0        0        0        0</span></span>
-<span><span class="co">#&gt; ws://:5555/3      0        0        0        0</span></span>
-<span><span class="co">#&gt; ws://:5555/4      0        0        0        0</span></span></code></pre></div>
+<span><span class="co">#&gt; ws://:5555/1      1        1        0        0</span></span>
+<span><span class="co">#&gt; ws://:5555/2      1        1        0        0</span></span>
+<span><span class="co">#&gt; ws://:5555/3      1        1        0        0</span></span>
+<span><span class="co">#&gt; ws://:5555/4      1        1        0        0</span></span></code></pre></div>
 <p>As per the local case, <code>$connections</code> will show the single connection to the dispatcher process, however <code>$daemons</code> will provide the matrix of statistics for the remote servers.</p>
 <p><code>online</code> shows as 1 when there is an active connection, or else 0 if a server has yet to connect or has disconnected.</p>
 <p><code>instance</code> increments by 1 every time there is a new connection at a URL. When this happens, the <code>assigned</code> and <code>complete</code> statistics will also reset. This is designed to track new server instances connecting after previous ones have ended (due to time-outs etc.).</p>
@@ -369,11 +362,11 @@
 </h4>
 <p>By specifying <code>dispatcher = FALSE</code>, remote servers connect directly to the client. The client listens at a single URL address, and distributes tasks to all connected server processes.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://10.111.5.13:0"</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://10.111.5.13:39691"</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://:0"</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tcp://:44241"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:39691"</span></span></code></pre></div>
 <p>Note that above, the port number is specified as zero. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided as the return value of the call, or it may be queried at any time by requesting the status via <code><a href="reference/daemons.html">daemons()</a></code>.</p>
 <p>–</p>
 <p>On the server, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation from a shell. This sets up a remote daemon process that connects to the client URL and receives tasks:</p>
@@ -387,7 +380,7 @@
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "tcp://:44241"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:39691"</span></span></code></pre></div>
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
@@ -481,7 +474,7 @@
 </h3>
 <p>The <a href="https://wlandau.github.io/crew/" class="external-link"><code>crew</code></a> package (available on CRAN) by William Landau is a distributed worker-launcher that provides an R6-based interface extending <code>mirai</code> to different computing platforms for distributed workers. It has been integrated with and adopted as the predominant high-performance computing backend for <a href="https://docs.ropensci.org/targets/" class="external-link"><code>targets</code></a>, a Make-like pipeline tool for statistics and data science.</p>
 <p><a href="https://wlandau.github.io/crew/" class="external-link"><code>crew</code></a> further provides an extensible interface for plugins to different distributed computing platforms, from traditional clusters to cloud services. The <a href="https://wlandau.github.io/crew.cluster/" class="external-link"><code>crew.cluster</code></a> package (available on CRAN) enables mirai-based workflows on traditional high-performance computing clusters such as Sun Grid Engine (SGE).</p>
-<p><code>mirai</code> also serves as the backend for enterprise asynchronous <a href="https://shiny.rstudio.com/" class="external-link"><code>shiny</code></a> applications. The <a href="https://wlandau.github.io/crew/" class="external-link"><code>crew</code></a> package provides a Shiny vignette with tutorial and sample code for this purpose. The <a href="https://wlandau.github.io/crew/" class="external-link"><code>crew</code></a> interface provides a nice abstraction that makes it easy to deploy <code>mirai</code> for <a href="https://shiny.rstudio.com/" class="external-link"><code>shiny</code></a>; <code>mirai</code> itself is sufficient, although requires the individual <code><a href="reference/mirai.html">mirai()</a></code> requests to be managed using a list or equivalent.</p>
+<p><code>mirai</code> also serves as the backend for enterprise asynchronous <a href="https://shiny.rstudio.com/" class="external-link"><code>shiny</code></a> applications. The <a href="https://wlandau.github.io/crew/" class="external-link"><code>crew</code></a> package provides a Shiny vignette with tutorial and sample code for this purpose. The <a href="https://wlandau.github.io/crew/" class="external-link"><code>crew</code></a> interface provides a nice abstraction layer that makes it easy to deploy <code>mirai</code> for <a href="https://shiny.rstudio.com/" class="external-link"><code>shiny</code></a>; <code>mirai</code> itself is sufficient, although requires the individual <code><a href="reference/mirai.html">mirai()</a></code> requests to be managed using a list or equivalent.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
