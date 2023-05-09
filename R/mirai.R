@@ -217,7 +217,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE)
     listen(nsock, url = nurl, error = TRUE)
-    if (lock) lock(nsock, cv = ncv)
+    if (lock)
+      lock(nsock, cv = ncv)
     listener <- attr(nsock, "listener")[[1L]]
     if (i == 1L && !auto && parse_url(opt(listener, "url"))[["port"]] == "0") {
       realport <- opt(listener, "tcp-bound-port")
@@ -228,7 +229,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
       servernames[i] <- opt(listener, "url")
     }
 
-    if (auto) launch_daemon(type = 2L, nurl, parse_dots(...))
+    if (auto)
+      launch_daemon(type = 2L, nurl, parse_dots(...))
 
     servers[[i]] <- nsock
     active[[i]] <- ncv
@@ -289,9 +291,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
         for (q in free)
           for (i in seq_n) {
             if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
-              queue[[i]][["res"]] <- request_signal(.context(servers[[q]]),
-                                                    data = .subset2(queue[[i]][["req"]], "data"),
-                                                    send_mode = 1L, recv_mode = 1L, cv = cv)
+              queue[[i]][["res"]] <- request_signal(.context(servers[[q]]), data = .subset2(queue[[i]][["req"]], "data"), send_mode = 1L, recv_mode = 1L, cv = cv)
               queue[[i]][["daemon"]] <- q
               serverfree[q] <- FALSE
               assigned[q] <- assigned[q] + 1L

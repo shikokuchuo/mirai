@@ -112,7 +112,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.00316 -0.81093 1.08813 -0.85167 0.99652 ...
+#>  num [1:100000000] 1.369 0.836 -0.218 0.476 2.641 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -120,7 +120,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.00316 -0.81093 1.08813 -0.85167 0.99652 ...
+#>  num [1:100000000] 1.369 0.836 -0.218 0.476 2.641 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -138,7 +138,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 601.004 0.281 0.648 -457.555 -1.84 ...
+#>  num [1:100000000] 19.59 -2.174 -7.987 0.295 -0.21 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -233,9 +233,9 @@ for (i in 1:10) {
 #> iteration 4 successful 
 #> iteration 5 successful 
 #> iteration 6 successful 
-#> Error: random error 
 #> iteration 7 successful 
 #> iteration 8 successful 
+#> Error: random error 
 #> iteration 9 successful 
 #> iteration 10 successful
 ```
@@ -279,12 +279,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://ba01bc4f2a306dd7a064dd8db3a5314462303468      1        1        0        0
-#> abstract://947f17806fd9d88561751ae53691c9db6a327ca6      1        1        0        0
-#> abstract://22f9c49ad8b38560fa38802a97931b90260c8dba      1        1        0        0
-#> abstract://f247e5431c820fef26230534f456ab46b871fe85      1        1        0        0
-#> abstract://0978259f7e021a3fa638c850283c4c7fca465a75      1        1        0        0
-#> abstract://29c87268fa2450867c3cf877f8fc2637d0e9d8b6      1        1        0        0
+#> abstract://e7534011d9c165ba2d5000f16a56e2172b75ffbc      1        1        0        0
+#> abstract://ab0c3f1663964d6575fae13c51c36f01e24b7433      1        1        0        0
+#> abstract://b110d9d72f3a45b76d9beb5de27f9cf788c03997      1        1        0        0
+#> abstract://e2f6c11fbe59f4bd5c7359eedf77a6e305108b26      1        1        0        0
+#> abstract://6953e4d0a3938074e92e9e1f6c8f772897c86092      1        1        0        0
+#> abstract://88139ccc4a4419fdcbc03a7e95bf6db33b714137      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -478,7 +478,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:40161"
+#> [1] "tcp://:37225"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -493,7 +493,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:40161")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:37225")'
 
 –
 
@@ -510,7 +510,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:40161"
+#> [1] "tcp://:37225"
 ```
 
 To reset all connections and revert to default behaviour:
