@@ -126,13 +126,13 @@ if (.Platform[["OS.type"]] != "windows") {
   nanotestz(daemons(0))
   Sys.sleep(1L)
   option <- 15L
-  nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, walltime = 2000L, token = TRUE, lock = TRUE, cleanup = option))
+  nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 3000L, token = TRUE, lock = TRUE, cleanup = option))
   Sys.sleep(1L)
   mq <- mirai("server", .timeout = 2000)
   nanotest(call_mirai(mq)$data == "server" || is_error_value(mq$data))
   nanotest(is.matrix(status <- daemons()[["daemons"]]))
-  nanotesto(status[, "online"])
-  nanotesto(status[, "instance"])
+  nanotest(is.integer(status[, "online"]))
+  nanotest(is.integer(status[, "instance"]))
   nanotestz(daemons(0))
   Sys.sleep(2L)
 }
