@@ -1,12 +1,12 @@
 library(mirai)
 
-nanotest <- function(x) invisible(x || stop())
-nanotestn <- function(x) invisible(is.null(x) || stop())
-nanotestz <- function(x) invisible(x == 0L || stop())
-nanotesto <- function(x) invisible(x == 1L || stop())
-nanotestp <- function(x) invisible(is.character(capture.output(print(x))) || stop())
+nanotest <- function(x) invisible(x || stop("is not TRUE when expected to be TRUE"))
+nanotestn <- function(x) invisible(is.null(x) || stop("is not NULL when expected to be NULL"))
+nanotestz <- function(x) invisible(x == 0L || stop("is not 0L when expected to be 0L"))
+nanotesto <- function(x) invisible(x == 1L || stop("is not 1L when expected to be 1L"))
+nanotestp <- function(x) invisible(is.character(capture.output(print(x))) || stop("output cannot be captured as a character value"))
 nanotesterr <- function(x, e = "")
-  invisible(grepl(e, tryCatch(x, error = identity)[["message"]], fixed = TRUE) || stop())
+  invisible(grepl(e, tryCatch(x, error = identity)[["message"]], fixed = TRUE) || stop("expected error message '", e, "' not generated"))
 
 nanotest(is.list(daemons()))
 nanotestz(daemons()[["connections"]])
@@ -84,7 +84,7 @@ nanotest(mn$data == "test1")
 nanotest(mp$data == "test2")
 Sys.sleep(1L)
 
-if (.Platform[["OS.type"]] != "windows") {
+if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
   nanotest(daemons(.compute = "new")[["connections"]] == 0L)
   nanotestz(daemons(0L, .compute = "new"))
   Sys.sleep(1L)
