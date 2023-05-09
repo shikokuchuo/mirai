@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
 [![mirai status badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e)](https://shikokuchuo.r-universe.dev) 
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
 [![codecov](https://codecov.io/gh/shikokuchuo/mirai/branch/main/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/mirai)
+[![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)
 <!-- badges: end -->
 
 Minimalist async evaluation framework for R.
@@ -32,7 +33,7 @@ Features efficient task scheduling, scalability beyond R connection limits, and 
 
 `mirai()` returns a 'mirai' object immediately. 'mirai' (未来 みらい) is Japanese for 'future'.
 
-`mirai` has a tiny pure R code base, relying solely on [`nanonext`](https://doi.org/10.5281/zenodo.7903429), a high-performance binding for the 'NNG' (Nanomsg Next Gen) C library with zero package dependencies.
+[`mirai`](https://doi.org/10.5281/zenodo.7912722) has a tiny pure R code base, relying solely on [`nanonext`](https://doi.org/10.5281/zenodo.7903429), a high-performance binding for the 'NNG' (Nanomsg Next Gen) C library with zero package dependencies.
 
 ### Table of Contents
 
