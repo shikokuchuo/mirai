@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.4.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.4.9002</span>
       </span>
     </div>
 
@@ -65,7 +65,7 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">server</span><span class="op">(</span></span>
 <span>  <span class="va">url</span>,</span>
-<span>  asyncdial <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  asyncdial <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  maxtasks <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  idletime <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  walltime <span class="op">=</span> <span class="cn">Inf</span>,</span>
@@ -85,12 +85,12 @@ URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.</p></dd>
 
 
 <dt>asyncdial</dt>
-<dd><p>[default TRUE] whether to perform dials asynchronously. An
-asynchronous dial is more resilient and will continue retrying if not
-immediately successful. However this can mask potential connection issues
-and specifying FALSE will error if a connection is not immediately
-possible (e.g. <code><a href="daemons.html">daemons</a></code> has yet to be called on the client,
-or the specified port is not open etc.).</p></dd>
+<dd><p>[default FALSE] whether to perform dials asynchronously. The
+default FALSE will error if a connection is not immediately possible
+(e.g. <code><a href="daemons.html">daemons</a></code> has yet to be called on the client, or the
+specified port is not open etc.). Specifying TRUE continues retrying
+(indefinitely) if not immediately successful, which is more resilient but
+can mask potential connection issues.</p></dd>
 
 
 <dt>maxtasks</dt>

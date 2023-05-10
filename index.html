@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.4.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.4.9002</span>
       </span>
     </div>
 
@@ -154,11 +154,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.578 1.105 0.961 -1.703 -0.223 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.174 -5.781 1.115 -0.444 1.194 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.578 1.105 0.961 -1.703 -0.223 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.174 -5.781 1.115 -0.444 1.194 ...</span></span></code></pre></div>
 <p>For easy programmatic use of <code><a href="reference/mirai.html">mirai()</a></code>, ‘.expr’ accepts a pre-constructed language object, and also a list of named arguments passed via ‘.args’. So, the following would be equivalent to the above:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -171,7 +171,7 @@
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span>.expr <span class="op">=</span> <span class="va">expr</span>, .args <span class="op">=</span> <span class="va">args</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 3.8692 2.5274 -0.0584 -1.0054 1.6905 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.0221 1.192 -0.4676 -1.3978 -0.8437 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -237,10 +237,10 @@
 <span><span class="co">#&gt; iteration 3 successful </span></span>
 <span><span class="co">#&gt; iteration 4 successful </span></span>
 <span><span class="co">#&gt; iteration 5 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 6 successful </span></span>
 <span><span class="co">#&gt; iteration 7 successful </span></span>
 <span><span class="co">#&gt; iteration 8 successful </span></span>
-<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 9 successful </span></span>
 <span><span class="co">#&gt; iteration 10 successful</span></span></code></pre></div>
 <p>Further, by testing the return value of each ‘mirai’ for errors, error-handling code is then able to automate recovery and re-attempts, as in the above example. Further details on <a href="#errors-interrupts-and-timeouts">error handling</a> can be found in the section below.</p>
@@ -267,12 +267,12 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt;                                                     online instance assigned complete</span></span>
-<span><span class="co">#&gt; abstract://780beecbcc81a0b3a9bc7ee1a1792723db0a91b3      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://bcf9a34b1734563ff6c4a0b7bffa90f240fd5502      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://f4f4380ce40bc1cf8a9049e7378849f6bf23be6d      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://7873046d5a11717fc6fa91c7706d510960704124      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://a5d02ebc0bb6f800743a3594f31ac8d43721f921      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://096ea014e818018a191695da3a9546326805a12c      1        1        0        0</span></span></code></pre></div>
+<span><span class="co">#&gt; abstract://e1dd3bc7f970cf1df1c96be172a0638c6d1f5933      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://9094018c5e2aa87a526f5c3de6953e35340c8054      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://36b6705cf5928b8a7de4e9065ea30367a872a879      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://67d5cb47bf656f95902a73b4e28efd0fac4a96d2      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://a79cff350c04afcbbb1bd74d45af3f7ef4d8092e      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://fc6df3fa9e207c722f1415813110bdc2769f8445      1        1        0        0</span></span></code></pre></div>
 <p>The default <code>dispatcher = TRUE</code> creates a <code><a href="reference/dispatcher.html">dispatcher()</a></code> background process that connects to individual daemon processes on the local machine on behalf of the client. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to servers for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.</p>
 <p>Dispatcher uses synchronisation primitives from <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link"><code>nanonext</code></a>, waiting upon rather than polling for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -332,6 +332,7 @@
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("ws://10.111.5.13:5555/2")'</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("ws://10.111.5.13:5555/3")'</span></span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("ws://10.111.5.13:5555/4")'</span></span></code></pre></div>
+<p>Note that <code><a href="reference/daemons.html">daemons()</a></code> should be set up on the client before launching <code><a href="reference/server.html">server()</a></code> on remote resources, otherwise the server instances will exit if a connection is not immediately available. Alternatievly specifying <code>server(asyncdial = TRUE)</code> will allow servers to wait (indefinitely) for a connection to become available.</p>
 <p>–</p>
 <p>Requesting status, on the client:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
@@ -366,11 +367,12 @@
 <p>Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://:0"</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tcp://:43157"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:39271"</span></span></code></pre></div>
 <p>Note that above, the port number is specified as zero. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided as the return value of the call, or it may be queried at any time by requesting the status via <code><a href="reference/daemons.html">daemons()</a></code>.</p>
 <p>–</p>
 <p>On the server, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation from a shell. This sets up a remote daemon process that connects to the client URL and receives tasks:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://10.111.5.13:43157")'</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://10.111.5.13:39271")'</span></span></code></pre></div>
+<p>As before, <code><a href="reference/daemons.html">daemons()</a></code> should be set up on the client before launching <code><a href="reference/server.html">server()</a></code> on remote resources, otherwise the server instances will exit if a connection is not immediately available. Alternatievly specifying <code>server(asyncdial = TRUE)</code> will allow servers to wait (indefinitely) for a connection to become available.</p>
 <p>–</p>
 <p>The number of daemons connecting to the client URL is not limited and network resources may be added or removed at any time, with tasks automatically distributed to all server processes.</p>
 <p><code>$connections</code> will show the actual number of connected server instances.</p>
@@ -380,7 +382,7 @@
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "tcp://:43157"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:39271"</span></span></code></pre></div>
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
