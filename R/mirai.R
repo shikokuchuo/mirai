@@ -809,8 +809,12 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 #'
 #' @export
 #'
-launch_server <- function(url, ...)
+launch_server <- function(url, ...) {
+
+  parse_url(url)
   launch_daemon(type = 2L, url, parse_dots(...))
+
+}
 
 #' Saisei - Regenerate Token
 #'

@@ -113,7 +113,7 @@ Sys.sleep(1L)
 if (.Platform[["OS.type"]] != "windows") {
   nanotest(daemons(n = 2, "tcp://127.0.0.1:0") == 2L)
   Sys.sleep(1L)
-  nanotest(is.integer(launch_server(row.names(daemons()[["daemons"]])[1L], maxtasks = 1L)))
+  nanotest(is.integer(launch_server(mirai:::..[["default"]][["urls"]][1L], maxtasks = 1L)))
   Sys.sleep(1L)
   tstatus <- daemons()[["daemons"]]
   nanotest(is.matrix(tstatus) || is_error_value(tstatus))
