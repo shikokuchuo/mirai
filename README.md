@@ -114,7 +114,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.578 1.105 0.961 -1.703 -0.223 ...
+#>  num [1:100000000] 0.174 -5.781 1.115 -0.444 1.194 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -122,7 +122,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.578 1.105 0.961 -1.703 -0.223 ...
+#>  num [1:100000000] 0.174 -5.781 1.115 -0.444 1.194 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -140,7 +140,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 3.8692 2.5274 -0.0584 -1.0054 1.6905 ...
+#>  num [1:100000000] 0.0221 1.192 -0.4676 -1.3978 -0.8437 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -234,10 +234,10 @@ for (i in 1:10) {
 #> iteration 3 successful 
 #> iteration 4 successful 
 #> iteration 5 successful 
+#> Error: random error 
 #> iteration 6 successful 
 #> iteration 7 successful 
 #> iteration 8 successful 
-#> Error: random error 
 #> iteration 9 successful 
 #> iteration 10 successful
 ```
@@ -281,12 +281,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://780beecbcc81a0b3a9bc7ee1a1792723db0a91b3      1        1        0        0
-#> abstract://bcf9a34b1734563ff6c4a0b7bffa90f240fd5502      1        1        0        0
-#> abstract://f4f4380ce40bc1cf8a9049e7378849f6bf23be6d      1        1        0        0
-#> abstract://7873046d5a11717fc6fa91c7706d510960704124      1        1        0        0
-#> abstract://a5d02ebc0bb6f800743a3594f31ac8d43721f921      1        1        0        0
-#> abstract://096ea014e818018a191695da3a9546326805a12c      1        1        0        0
+#> abstract://e1dd3bc7f970cf1df1c96be172a0638c6d1f5933      1        1        0        0
+#> abstract://9094018c5e2aa87a526f5c3de6953e35340c8054      1        1        0        0
+#> abstract://36b6705cf5928b8a7de4e9065ea30367a872a879      1        1        0        0
+#> abstract://67d5cb47bf656f95902a73b4e28efd0fac4a96d2      1        1        0        0
+#> abstract://a79cff350c04afcbbb1bd74d45af3f7ef4d8092e      1        1        0        0
+#> abstract://fc6df3fa9e207c722f1415813110bdc2769f8445      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -412,6 +412,12 @@ into one of the unique URLs that the dispatcher is listening to:
     Rscript -e 'mirai::server("ws://10.111.5.13:5555/3")'
     Rscript -e 'mirai::server("ws://10.111.5.13:5555/4")'
 
+Note that `daemons()` should be set up on the client before launching
+`server()` on remote resources, otherwise the server instances will exit
+if a connection is not immediately available. Alternatievly specifying
+`server(asyncdial = TRUE)` will allow servers to wait (indefinitely) for
+a connection to become available.
+
 –
 
 Requesting status, on the client:
@@ -480,7 +486,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:43157"
+#> [1] "tcp://:39271"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -495,7 +501,13 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:43157")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:39271")'
+
+As before, `daemons()` should be set up on the client before launching
+`server()` on remote resources, otherwise the server instances will exit
+if a connection is not immediately available. Alternatievly specifying
+`server(asyncdial = TRUE)` will allow servers to wait (indefinitely) for
+a connection to become available.
 
 –
 
@@ -512,7 +524,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:43157"
+#> [1] "tcp://:39271"
 ```
 
 To reset all connections and revert to default behaviour:

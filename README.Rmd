@@ -314,6 +314,9 @@ Rscript -e 'mirai::server("ws://10.111.5.13:5555/3")'
 Rscript -e 'mirai::server("ws://10.111.5.13:5555/4")'
 
 ```
+
+Note that `daemons()` should be set up on the client before launching `server()` on remote resources, otherwise the server instances will exit if a connection is not immediately available. Alternatievly specifying `server(asyncdial = TRUE)` will allow servers to wait (indefinitely) for a connection to become available.
+
 ```{r remotes2, include=FALSE}
 Sys.sleep(1)
 ```
@@ -373,6 +376,8 @@ On the server, `server()` may be called from an R session, or an Rscript invocat
 ```
 Rscript -e 'mirai::server("tcp://10.111.5.13:0")'
 ```
+
+As before, `daemons()` should be set up on the client before launching `server()` on remote resources, otherwise the server instances will exit if a connection is not immediately available. Alternatievly specifying `server(asyncdial = TRUE)` will allow servers to wait (indefinitely) for a connection to become available.
 
 --
 

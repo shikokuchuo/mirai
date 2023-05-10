@@ -8,7 +8,7 @@ dispatcher(
   client,
   url = NULL,
   n = NULL,
-  asyncdial = TRUE,
+  asyncdial = FALSE,
   token = FALSE,
   lock = FALSE,
   ...,
@@ -32,12 +32,12 @@ Otherwise 'n' will be inferred from the number of URLs supplied as '...'.
 Where a single URL is supplied and 'n' > 1, 'n' unique URLs will be
 automatically assigned for servers to dial into.}
 
-\item{asyncdial}{[default TRUE] whether to perform dials asynchronously. An
-asynchronous dial is more resilient and will continue retrying if not
-immediately successful. However this can mask potential connection issues
-and specifying FALSE will error if a connection is not immediately
-possible (e.g. \code{\link{daemons}} has yet to be called on the client,
-or the specified port is not open etc.).}
+\item{asyncdial}{[default FALSE] whether to perform dials asynchronously. The
+default FALSE will error if a connection is not immediately possible
+(e.g. \code{\link{daemons}} has yet to be called on the client, or the
+specified port is not open etc.). Specifying TRUE continues retrying
+(indefinitely) if not immediately successful, which is more resilient but
+can mask potential connection issues.}
 
 \item{token}{[default FALSE] if TRUE, appends a unique 40-character token
 to each URL path the dispatcher listens at (not applicable for TCP URLs

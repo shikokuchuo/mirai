@@ -6,7 +6,7 @@
 \usage{
 server(
   url,
-  asyncdial = TRUE,
+  asyncdial = FALSE,
   maxtasks = Inf,
   idletime = Inf,
   walltime = Inf,
@@ -21,12 +21,12 @@ server(
 including the port to connect to and (optionally) a path for websocket
 URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 
-\item{asyncdial}{[default TRUE] whether to perform dials asynchronously. An
-asynchronous dial is more resilient and will continue retrying if not
-immediately successful. However this can mask potential connection issues
-and specifying FALSE will error if a connection is not immediately
-possible (e.g. \code{\link{daemons}} has yet to be called on the client,
-or the specified port is not open etc.).}
+\item{asyncdial}{[default FALSE] whether to perform dials asynchronously. The
+default FALSE will error if a connection is not immediately possible
+(e.g. \code{\link{daemons}} has yet to be called on the client, or the
+specified port is not open etc.). Specifying TRUE continues retrying
+(indefinitely) if not immediately successful, which is more resilient but
+can mask potential connection issues.}
 
 \item{maxtasks}{[default Inf] the maximum number of tasks to execute (task
 limit) before exiting.}

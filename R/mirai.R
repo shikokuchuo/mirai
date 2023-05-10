@@ -25,12 +25,12 @@
 #' @param url the client or dispatcher URL to dial into as a character string,
 #'     including the port to connect to and (optionally) a path for websocket
 #'     URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
-#' @param asyncdial [default TRUE] whether to perform dials asynchronously. An
-#'     asynchronous dial is more resilient and will continue retrying if not
-#'     immediately successful. However this can mask potential connection issues
-#'     and specifying FALSE will error if a connection is not immediately
-#'     possible (e.g. \code{\link{daemons}} has yet to be called on the client,
-#'     or the specified port is not open etc.).
+#' @param asyncdial [default FALSE] whether to perform dials asynchronously. The
+#'     default FALSE will error if a connection is not immediately possible
+#'     (e.g. \code{\link{daemons}} has yet to be called on the client, or the
+#'     specified port is not open etc.). Specifying TRUE continues retrying
+#'     (indefinitely) if not immediately successful, which is more resilient but
+#'     can mask potential connection issues.
 #' @param maxtasks [default Inf] the maximum number of tasks to execute (task
 #'     limit) before exiting.
 #' @param idletime [default Inf] maximum idle time, since completion of the last
@@ -62,7 +62,7 @@
 #'
 #' @export
 #'
-server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
+server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
                    walltime = Inf, timerstart = 0L, exitlinger = 1000L, ...,
                    cleanup = 7L) {
 
@@ -126,7 +126,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 #'
 .server <- function(url, exitlinger = 2000L) {
 
-  sock <- socket(protocol = "rep", dial = url)
+  sock <- socket(protocol = "rep", dial = url, autostart = NA)
   on.exit(close(sock))
   ctx <- .context(sock)
   ._mirai_. <- recv(ctx, mode = 1L)
@@ -176,7 +176,7 @@ server <- function(url, asyncdial = TRUE, maxtasks = Inf, idletime = Inf,
 #'
 #' @export
 #'
-dispatcher <- function(client, url = NULL, n = NULL, asyncdial = TRUE,
+dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
                        token = FALSE, lock = FALSE, ..., monitor = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
