@@ -63,6 +63,8 @@ args <- list(m = 2L, n = 4L)
 m <- mirai(.expr = `lang obj`, .args = args, .timeout = 2000L)
 nanotest(call_mirai(m)$data == 8L || is_error_value(m$data))
 Sys.sleep(2.2)
+m <- mirai(1)
+Sys.sleep(2.2)
 nanotest(daemons(url = value <- mirai:::auto_tokenized_url(), dispatcher = FALSE) == value)
 nanotestz(daemons(0L))
 Sys.sleep(0.5)
@@ -131,6 +133,9 @@ if (.Platform[["OS.type"]] != "windows") {
   }
   nanotestz(daemons(0))
   Sys.sleep(1L)
+}
+
+if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
   option <- 15L
   nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 2000L, token = TRUE, lock = TRUE, cleanup = option))
   Sys.sleep(1L)
