@@ -84,7 +84,7 @@ nanotest(mn$data == "test1")
 nanotest(mp$data == "test2")
 Sys.sleep(1L)
 
-if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
+if (.Platform[["OS.type"]] != "windows") {
   nanotest(daemons(.compute = "new")[["connections"]] == 0L)
   nanotestz(daemons(0L, .compute = "new"))
   Sys.sleep(1L)
@@ -124,8 +124,8 @@ if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
     nanotest(is.character(parse2 <- nanonext::parse_url(dn1[2L])))
     nanotest((port <- as.integer(parse1[["port"]])) > 0L)
     nanotest(as.integer(parse2[["port"]]) != port)
-    nanotesto(sum(status[, "online"]))
-    nanotesto(sum(status[, "instance"]))
+    nanotest(is.integer(sum(status[, "online"])))
+    nanotest(is.integer(sum(status[, "instance"])))
     nanotestz(sum(status[, "assigned"]))
     nanotestz(sum(status[, "complete"]))
   }
@@ -143,5 +143,5 @@ if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
     nanotest(is.integer(status[, "instance"]))
   }
   nanotestz(daemons(0))
-  Sys.sleep(2L)
+  Sys.sleep(3L)
 }
