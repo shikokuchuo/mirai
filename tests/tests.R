@@ -131,9 +131,9 @@ if (is.matrix(status)) {
 nanotestz(daemons(0))
 Sys.sleep(1L)
 option <- 15L
-nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 3000L, token = TRUE, lock = TRUE, cleanup = option))
+nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 2000L, token = TRUE, lock = TRUE, cleanup = option))
 Sys.sleep(1L)
-mq <- mirai("server", .timeout = 2000)
+mq <- mirai("server", .timeout = 1000)
 nanotest(call_mirai(mq)$data == "server" || is_error_value(mq$data))
 status <- daemons()[["daemons"]]
 nanotest(is.matrix(status) || is_error_value(status))
@@ -142,4 +142,4 @@ if (is.matrix(status)) {
   nanotest(is.integer(status[, "instance"]))
 }
 nanotestz(daemons(0))
-Sys.sleep(3L)
+Sys.sleep(2L)
