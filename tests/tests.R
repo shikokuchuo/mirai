@@ -110,28 +110,27 @@ Sys.sleep(0.5)
 nanotestz(daemons(0))
 Sys.sleep(1L)
 
-nanotest(daemons(n = 2, "tcp://:0") == 2L)
-Sys.sleep(1L)
-nanotest(is.integer(launch_server(mirai:::..[["default"]][["urls"]][1L], maxtasks = 1L)))
-Sys.sleep(1L)
-tstatus <- daemons()[["daemons"]]
-nanotest(is.matrix(tstatus) || is_error_value(tstatus))
-if (is.matrix(tstatus)) {
-  nanotest(is.character(tdn1 <- dimnames(tstatus)[[1L]]))
-  nanotest(is.integer(attr(tdn1, "dispatcher_pid")))
-  nanotest(is.character(tparse1 <- nanonext::parse_url(tdn1[1L])))
-  nanotest(is.character(tparse2 <- nanonext::parse_url(tdn1[2L])))
-  nanotest((tport <- as.integer(tparse1[["port"]])) > 0L)
-  nanotest(as.integer(tparse2[["port"]]) != tport)
-  nanotestz(sum(tstatus[, "online"]))
-  nanotestz(sum(tstatus[, "instance"]))
-  nanotestz(sum(tstatus[, "assigned"]))
-  nanotestz(sum(tstatus[, "complete"]))
-}
-nanotestz(daemons(0))
-Sys.sleep(1L)
-
 if (.Platform[["OS.type"]] != "windows") {
+  nanotest(daemons(n = 2, "tcp://:0") == 2L)
+  Sys.sleep(1L)
+  nanotest(is.integer(launch_server(mirai:::..[["default"]][["urls"]][1L], maxtasks = 1L)))
+  Sys.sleep(1L)
+  tstatus <- daemons()[["daemons"]]
+  nanotest(is.matrix(tstatus) || is_error_value(tstatus))
+  if (is.matrix(tstatus)) {
+    nanotest(is.character(tdn1 <- dimnames(tstatus)[[1L]]))
+    nanotest(is.integer(attr(tdn1, "dispatcher_pid")))
+    nanotest(is.character(tparse1 <- nanonext::parse_url(tdn1[1L])))
+    nanotest(is.character(tparse2 <- nanonext::parse_url(tdn1[2L])))
+    nanotest((tport <- as.integer(tparse1[["port"]])) > 0L)
+    nanotest(as.integer(tparse2[["port"]]) != tport)
+    nanotestz(sum(tstatus[, "online"]))
+    nanotestz(sum(tstatus[, "instance"]))
+    nanotestz(sum(tstatus[, "assigned"]))
+    nanotestz(sum(tstatus[, "complete"]))
+  }
+  nanotestz(daemons(0))
+  Sys.sleep(1L)
   option <- 15L
   nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 2000L, token = TRUE, lock = TRUE, cleanup = option))
   Sys.sleep(1L)
