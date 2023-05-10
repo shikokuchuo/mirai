@@ -2,9 +2,9 @@ library(mirai)
 
 nanotest <- function(x) invisible(x || stop("is not TRUE when expected to be TRUE"))
 nanotestn <- function(x) invisible(is.null(x) || stop("is not NULL when expected to be NULL"))
-nanotestz <- function(x) invisible(x == 0L || stop("is not 0L when expected to be 0L"))
-nanotesto <- function(x) invisible(x == 1L || stop("is not 1L when expected to be 1L"))
-nanotestp <- function(x) invisible(is.character(capture.output(print(x))) || stop("output cannot be captured as a character value"))
+nanotestz <- function(x) invisible(x == 0L || stop("does not equal 0L as expected"))
+nanotesto <- function(x) invisible(x == 1L || stop("does not equal 1L as expected"))
+nanotestp <- function(x) invisible(is.character(capture.output(print(x))) || stop("print output of expression cannot be captured as a character value"))
 nanotesterr <- function(x, e = "")
   invisible(grepl(e, tryCatch(x, error = identity)[["message"]], fixed = TRUE) || stop("expected error message '", e, "' not generated"))
 

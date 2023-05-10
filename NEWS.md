@@ -1,4 +1,6 @@
-# mirai 0.8.4.9000 (development)
+# mirai 0.8.4.9001
+
+* Ensure all tests pass on CRAN.
 
 # mirai 0.8.4
 
