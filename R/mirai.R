@@ -791,11 +791,19 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 #'
 #' @return Invisibly, integer system exit code (zero upon success).
 #'
+#' @details Consider specifying the argument 'asyncdial' [default FALSE] whether
+#'     to perform dials asynchronously. The default FALSE will error if a
+#'     connection is not immediately possible (e.g. \code{\link{daemons}} has
+#'     yet to be called on the client, or the specified port is not open etc.).
+#'     Specifying TRUE continues retrying (indefinitely) if not immediately
+#'     successful, which is more resilient but can mask potential connection
+#'     issues.
+#'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' launch_server("abstract://mirai", idletime = 60000L)
+#' launch_server("abstract://mirai", asyncdial = FALSE, idletime = 60000L)
 #'
 #' }
 #'
