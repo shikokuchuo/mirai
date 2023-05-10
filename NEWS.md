@@ -1,4 +1,4 @@
-# mirai 0.8.4.9007
+# mirai 0.8.4.9009
 
 * `server()` and `dispatcher()` argument 'asyncdial' is now FALSE by default, causing these functions to exit if a connection is not immediately available. This means that for distributed computing purposes, `dameons()` should be called before `server()` is launched on remote resources, or else `server(asyncdial = TRUE)` allows servers to wait for a connection.
 * `launch_server()` now parses the passed URL for correctness before attempting to launch a server, producing an error if not valid.
