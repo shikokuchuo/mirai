@@ -59,7 +59,6 @@
 <code><a href="../reference/server.html">server()</a></code> and <code><a href="../reference/dispatcher.html">dispatcher()</a></code> argument ‘asyncdial’ is now FALSE by default, causing these functions to exit if a connection is not immediately available. This means that for distributed computing purposes, <code>dameons()</code> should be called before <code><a href="../reference/server.html">server()</a></code> is launched on remote resources, or else <code>server(asyncdial = TRUE)</code> allows servers to wait for a connection.</li>
 <li>
 <code><a href="../reference/launch_server.html">launch_server()</a></code> now parses the passed URL for correctness before attempting to launch a server, producing an error if not valid.</li>
-<li>Ensure all tests pass on CRAN.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.8.4" id="mirai-084">mirai 0.8.4<small>2023-05-09</small><a class="anchor" aria-label="anchor" href="#mirai-084"></a></h2>
