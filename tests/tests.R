@@ -110,38 +110,36 @@ Sys.sleep(0.5)
 nanotestz(daemons(0))
 Sys.sleep(1L)
 
-if (.Platform[["OS.type"]] != "windows") {
-  nanotest(daemons(n = 2, "tcp://127.0.0.1:0") == 2L)
-  Sys.sleep(1L)
-  nanotest(is.integer(launch_server(mirai:::..[["default"]][["urls"]][1L], maxtasks = 1L)))
-  Sys.sleep(1L)
-  tstatus <- daemons()[["daemons"]]
-  nanotest(is.matrix(tstatus) || is_error_value(tstatus))
-  if (is.matrix(tstatus)) {
-    nanotest(is.character(tdn1 <- dimnames(tstatus)[[1L]]))
-    nanotest(is.integer(attr(tdn1, "dispatcher_pid")))
-    nanotest(is.character(tparse1 <- nanonext::parse_url(tdn1[1L])))
-    nanotest(is.character(tparse2 <- nanonext::parse_url(tdn1[2L])))
-    nanotest((tport <- as.integer(tparse1[["port"]])) > 0L)
-    nanotest(as.integer(tparse2[["port"]]) != tport)
-    nanotest(is.integer(sum(tstatus[, "online"])))
-    nanotest(is.integer(sum(tstatus[, "instance"])))
-    nanotestz(sum(tstatus[, "assigned"]))
-    nanotestz(sum(tstatus[, "complete"]))
-  }
-  nanotestz(daemons(0))
-  Sys.sleep(1L)
-  option <- 15L
-  nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 2000L, token = TRUE, lock = TRUE, cleanup = option))
-  Sys.sleep(1L)
-  mq <- mirai("server", .timeout = 1000)
-  nanotest(call_mirai(mq)$data == "server" || is_error_value(mq$data))
-  dstatus <- daemons()[["daemons"]]
-  nanotest(is.matrix(dstatus) || is_error_value(dstatus))
-  if (is.matrix(dstatus)) {
-    nanotest(is.integer(dstatus[, "online"]))
-    nanotest(is.integer(dstatus[, "instance"]))
-  }
-  nanotestz(daemons(0))
-  Sys.sleep(2L)
+nanotest(daemons(n = 2, "tcp://127.0.0.1:0") == 2L)
+Sys.sleep(1L)
+if (.Platform[["OS.type"]] != "windows") nanotest(is.integer(launch_server(mirai:::..[["default"]][["urls"]][1L], maxtasks = 1L)))
+Sys.sleep(1L)
+tstatus <- daemons()[["daemons"]]
+nanotest(is.matrix(tstatus) || is_error_value(tstatus))
+if (is.matrix(tstatus)) {
+  nanotest(is.character(tdn1 <- dimnames(tstatus)[[1L]]))
+  nanotest(is.integer(attr(tdn1, "dispatcher_pid")))
+  nanotest(is.character(tparse1 <- nanonext::parse_url(tdn1[1L])))
+  nanotest(is.character(tparse2 <- nanonext::parse_url(tdn1[2L])))
+  nanotest((tport <- as.integer(tparse1[["port"]])) > 0L)
+  nanotest(as.integer(tparse2[["port"]]) != tport)
+  nanotest(is.integer(sum(tstatus[, "online"])))
+  nanotest(is.integer(sum(tstatus[, "instance"])))
+  nanotestz(sum(tstatus[, "assigned"]))
+  nanotestz(sum(tstatus[, "complete"]))
 }
+nanotestz(daemons(0))
+Sys.sleep(1L)
+option <- 15L
+nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 2000L, token = TRUE, lock = TRUE, cleanup = option))
+Sys.sleep(1L)
+mq <- mirai("server", .timeout = 1000)
+nanotest(call_mirai(mq)$data == "server" || is_error_value(mq$data))
+dstatus <- daemons()[["daemons"]]
+nanotest(is.matrix(dstatus) || is_error_value(dstatus))
+if (is.matrix(dstatus)) {
+  nanotest(is.integer(dstatus[, "online"]))
+  nanotest(is.integer(dstatus[, "instance"]))
+}
+nanotestz(daemons(0))
+Sys.sleep(2L)
