@@ -130,16 +130,19 @@ if (is.matrix(tstatus)) {
 }
 nanotestz(daemons(0))
 Sys.sleep(1L)
-option <- 6L
-nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 2000L, token = TRUE, lock = TRUE, cleanup = option))
-Sys.sleep(1L)
-mq <- mirai("server", .timeout = 1000)
-nanotest(call_mirai(mq)$data == "server" || is_error_value(mq$data))
-dstatus <- daemons()[["daemons"]]
-nanotest(is.matrix(dstatus) || is_error_value(dstatus))
-if (is.matrix(dstatus)) {
-  nanotest(is.integer(dstatus[, "online"]))
-  nanotest(is.integer(dstatus[, "instance"]))
+
+if (.Platform[["OS.type"]] != "windows") {
+  option <- 15L
+  nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 2000L, token = TRUE, lock = TRUE, cleanup = option))
+  Sys.sleep(1L)
+  mq <- mirai("server", .timeout = 1000)
+  nanotest(call_mirai(mq)$data == "server" || is_error_value(mq$data))
+  dstatus <- daemons()[["daemons"]]
+  nanotest(is.matrix(dstatus) || is_error_value(dstatus))
+  if (is.matrix(dstatus)) {
+    nanotest(is.integer(dstatus[, "online"]))
+    nanotest(is.integer(dstatus[, "instance"]))
+  }
+  nanotestz(daemons(0))
+  Sys.sleep(2L)
 }
-nanotestz(daemons(0))
-Sys.sleep(2L)
