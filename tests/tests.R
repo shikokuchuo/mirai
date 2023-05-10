@@ -130,7 +130,7 @@ if (is.matrix(tstatus)) {
 }
 nanotestz(daemons(0))
 Sys.sleep(1L)
-option <- 15L
+option <- 6L
 nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 2000L, token = TRUE, lock = TRUE, cleanup = option))
 Sys.sleep(1L)
 mq <- mirai("server", .timeout = 1000)
