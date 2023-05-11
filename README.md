@@ -114,7 +114,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.174 -5.781 1.115 -0.444 1.194 ...
+#>  num [1:100000000] 0.979 4.203 -1.831 -1.095 0.989 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -122,7 +122,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.174 -5.781 1.115 -0.444 1.194 ...
+#>  num [1:100000000] 0.979 4.203 -1.831 -1.095 0.989 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -140,7 +140,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.0221 1.192 -0.4676 -1.3978 -0.8437 ...
+#>  num [1:100000000] -0.0605 0.028 0.5511 2.0078 2.4548 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -234,9 +234,9 @@ for (i in 1:10) {
 #> iteration 3 successful 
 #> iteration 4 successful 
 #> iteration 5 successful 
-#> Error: random error 
 #> iteration 6 successful 
 #> iteration 7 successful 
+#> Error: random error 
 #> iteration 8 successful 
 #> iteration 9 successful 
 #> iteration 10 successful
@@ -281,12 +281,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://e1dd3bc7f970cf1df1c96be172a0638c6d1f5933      1        1        0        0
-#> abstract://9094018c5e2aa87a526f5c3de6953e35340c8054      1        1        0        0
-#> abstract://36b6705cf5928b8a7de4e9065ea30367a872a879      1        1        0        0
-#> abstract://67d5cb47bf656f95902a73b4e28efd0fac4a96d2      1        1        0        0
-#> abstract://a79cff350c04afcbbb1bd74d45af3f7ef4d8092e      1        1        0        0
-#> abstract://fc6df3fa9e207c722f1415813110bdc2769f8445      1        1        0        0
+#> abstract://468732a6e8be82a622cf6dbd8220c805367bb7cd      1        1        0        0
+#> abstract://3064e511ef24c088c5245fc3772430e7697d1c21      1        1        0        0
+#> abstract://ca212bbae9956bf24762ec16b3e4c419e9738f96      1        1        0        0
+#> abstract://c2663a4fde6083722bb8bf3c9f97690f9f566416      1        1        0        0
+#> abstract://ffacdf5eeedee8f1224d8d42054fea4673dc5349      1        1        0        0
+#> abstract://4bcc8dbac9c0bb4833e61346ee3f2df08166bac6      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -486,7 +486,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:39271"
+#> [1] "tcp://:40007"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -501,7 +501,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:39271")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:40007")'
 
 As before, `daemons()` should be set up on the client before launching
 `server()` on remote resources, otherwise the server instances will exit
@@ -524,7 +524,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:39271"
+#> [1] "tcp://:40007"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -680,14 +680,14 @@ traditional clusters to cloud services. The
 high-performance computing clusters such as Sun Grid Engine (SGE).
 
 `mirai` also serves as the backend for enterprise asynchronous
-[`shiny`](https://shiny.rstudio.com/) applications. The
+[`shiny`](https://cran.r-project.org/package=shiny) applications. The
 [`crew`](https://wlandau.github.io/crew/) package provides a Shiny
 vignette with tutorial and sample code for this purpose. The
 [`crew`](https://wlandau.github.io/crew/) interface provides a nice
 abstraction layer that makes it easy to deploy `mirai` for
-[`shiny`](https://shiny.rstudio.com/); `mirai` itself is sufficient,
-although requires the individual `mirai()` requests to be managed using
-a list or equivalent.
+[`shiny`](https://cran.r-project.org/package=shiny); `mirai` itself is
+sufficient, although requires the individual `mirai()` requests to be
+managed using a list or equivalent.
 
 [« Back to ToC](#table-of-contents)
 
