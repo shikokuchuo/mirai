@@ -192,7 +192,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
   vectorised <- length(url) == n
   seq_n <- seq_len(n)
   basenames <- servernames <- character(n)
-  activestore <- instance <- complete <- assigned <- integer(n)
+  instance <- istore <- complete <- assigned <- integer(n)
   serverfree <- !integer(n)
   active <- servers <- queue <- vector(mode = "list", length = n)
   if (!auto) {
@@ -257,10 +257,10 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
 
       cv_values <- as.integer(lapply(active, cv_value))
       activevec <- cv_values %% 2L
-      changes <- (activevec - activestore) > 0L
-      activestore <- activevec
+      instance <- (cv_values + activevec) / 2L
+      changes <- (instance - istore) > 0L
+      istore <- instance
       if (any(changes)) {
-        instance[changes] <- instance[changes] + 1L
         assigned[changes] <- 0L
         complete[changes] <- 0L
       }
@@ -272,7 +272,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
             close(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
             data <- servernames[i] <- new_tokenized_url(url = basenames[i], auto = auto)
-            instance[i] <- 0L
+            cv_reset(active[[i]])
             listen(servers[[i]], url = data, error = TRUE)
           } else {
             data <- ""
