@@ -206,13 +206,12 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
   }
 
   for (i in seq_n) {
-    nurl <- if (auto) sprintf(.urlfmt, "") else
+    burl <- if (auto) sprintf(.urlfmt, "") else
       if (vectorised) url[i] else
         if (is.null(ports)) sprintf("%s/%d", url, i) else
           sub(ports[1L], ports[i], url, fixed = TRUE)
-    basenames[i] <- nurl
-    if (auto || token)
-      nurl <- new_tokenized_url(url = nurl, auto = auto)
+    basenames[i] <- burl
+    nurl <- if (auto || token) new_tokenized_url(url = burl, auto = auto) else burl
     nsock <- req_socket(NULL)
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE)
@@ -223,8 +222,10 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
     if (i == 1L && !auto && parse_url(opt(listener, "url"))[["port"]] == "0") {
       realport <- opt(listener, "tcp-bound-port")
       servernames[i] <- sub_real_port(port = realport, url = nurl)
-      if (!vectorised || n == 1L)
-        basenames[1L] <- url <- sub_real_port(port = realport, url = url)
+      if (!vectorised || n == 1L) {
+        url <- sub_real_port(port = realport, url = url)
+        basenames[1L] <- sub_real_port(port = realport, url = burl)
+      }
     } else {
       servernames[i] <- opt(listener, "url")
     }
@@ -268,7 +269,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
       ctrchannel && !unresolved(cmessage) && {
         i <- .subset2(cmessage, "data")
         if (i) {
-          if (i > 0L && i <= n && !activevec[i] || i < 0L && (i <- -i) <= n) {
+          if ((i > 0L && i <= n && !activevec[i] || i < 0L && (i <- -i) <= n) &&
+              substr(basenames[i], 1L, 3L) != "tcp") {
             close(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
             data <- servernames[i] <- new_tokenized_url(url = basenames[i], auto = auto)

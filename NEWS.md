@@ -1,4 +1,7 @@
-# mirai 0.8.7.9001 (development)
+# mirai 0.8.7.9002 (development)
+
+* When using daemons with dispatcher, ensures the first URL retains the same format if `saisei(i = 1L)` is called.
+* Ensures `saisei()` always returns `NULL` if 'tcp://' URLs are being used as they do not support tokens.
 
 # mirai 0.8.7
 
