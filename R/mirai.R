@@ -244,9 +244,10 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
 
   ctrchannel <- is.character(monitor)
   if (ctrchannel) {
-    sockc <- socket(protocol = "bus")
+    sockc <- socket(protocol = "rep")
     on.exit(close(sockc), add = TRUE, after = FALSE)
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
+    recv(sockc, mode = 5L, block = 3000L)
     send(sockc, c(Sys.getpid(), servernames), mode = 2L)
     cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
   }
@@ -728,7 +729,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         urld <- auto_tokenized_url()
         urlc <- new_control_url(urld)
         sock <- req_socket(urld)
-        sockc <- socket(protocol = "bus", listen = urlc)
+        sockc <- req_socket(urlc)
         launch_and_sync_daemon(sock = sock, type = 5L, urld, url, n, urlc, parse_dots(...))
         recv_and_store(sockc = sockc, envir = envir)
         proc <- n
@@ -764,7 +765,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
       sock <- req_socket(urld)
       if (dispatcher) {
         urlc <- new_control_url(urld)
-        sockc <- socket(protocol = "bus", listen = urlc)
+        sockc <- req_socket(urlc)
         launch_and_sync_daemon(sock = sock, type = 4L, urld, n, urlc, parse_dots(...))
         recv_and_store(sockc = sockc, envir = envir)
       } else {
@@ -1146,6 +1147,7 @@ query_status <- function(envir) {
 }
 
 recv_and_store <- function(sockc, envir, timeout = 3000L) {
+  send(sockc, 0L, mode = 2L, block = timeout)
   res <- recv(sockc, mode = 2L, block = timeout)
   is.integer(res) && stop(.messages[["connection_timeout"]])
   `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L]))
