@@ -247,8 +247,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
     sockc <- socket(protocol = "rep")
     on.exit(close(sockc), add = TRUE, after = FALSE)
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
-    recv(sockc, mode = 5L, block = 3000L)
-    send(sockc, c(Sys.getpid(), servernames), mode = 2L)
+    recv(sockc, mode = 5L, block = .block)
+    send(sockc, c(Sys.getpid(), servernames), mode = 2L, block = .block)
     cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
   }
 
@@ -283,7 +283,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
         } else {
           data <- as.integer(c(activevec, instance, assigned, complete))
         }
-        send(sockc, data = data, mode = 2L)
+        send(sockc, data = data, mode = 2L, block = .block)
         cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
         next
       }
@@ -1133,9 +1133,9 @@ parse_dots <- function(...)
 req_socket <- function(url)
   `opt<-`(socket(protocol = "req", listen = url), "req:resend-time", .Machine[["integer.max"]])
 
-query_dispatcher <- function(sock, command, mode, timeout = 3000L) {
-  send(sock, data = command, mode = 2L)
-  recv(sock, mode = mode, block = timeout)
+query_dispatcher <- function(sock, command, mode) {
+  send(sock, data = command, mode = 2L, block = .block)
+  recv(sock, mode = mode, block = .block)
 }
 
 query_status <- function(envir) {
@@ -1146,9 +1146,9 @@ query_status <- function(envir) {
                                            c("online", "instance", "assigned", "complete"))))
 }
 
-recv_and_store <- function(sockc, envir, timeout = 3000L) {
-  send(sockc, 0L, mode = 2L, block = timeout)
-  res <- recv(sockc, mode = 2L, block = timeout)
+recv_and_store <- function(sockc, envir) {
+  send(sockc, 0L, mode = 2L, block = .block)
+  res <- recv(sockc, mode = 2L, block = .block)
   is.integer(res) && stop(.messages[["connection_timeout"]])
   `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L]))
 }
