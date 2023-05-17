@@ -244,11 +244,12 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
 
   ctrchannel <- is.character(monitor)
   if (ctrchannel) {
-    sockc <- socket(protocol = "rep")
+    sockc <- bus_socket(NULL)
     on.exit(close(sockc), add = TRUE, after = FALSE)
+    ccv <- cv()
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
-    recv(sockc, mode = 5L, block = .block)
-    send(sockc, c(Sys.getpid(), servernames), mode = 2L, block = .block)
+    send(sockc, c(Sys.getpid(), servernames), mode = 2L)
+    csignal <- recv_aio_signal(sockc, mode = 5L, cv = ccv)
     cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
   }
 
@@ -267,8 +268,9 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
         complete[changes] <- 0L
       }
 
-      ctrchannel && (!unresolved(cmessage) || !unresolved(cmessage)) && {
-        i <- .subset2(cmessage, "data")
+      ctrchannel && cv_value(ccv) && {
+        wait(ccv)
+        i <- .subset2(call_aio(cmessage), "data")
         if (i) {
           if ((i > 0L && i <= n && !activevec[i] || i < 0L && (i <- -i) <= n) &&
               substr(basenames[i], 1L, 3L) != "tcp") {
@@ -283,7 +285,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
         } else {
           data <- as.integer(c(activevec, instance, assigned, complete))
         }
-        send(sockc, data = data, mode = 2L, block = .block)
+        send(sockc, data = data, mode = 2L)
+        csignal <- recv_aio_signal(sockc, mode = 5L, cv = ccv)
         cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
         next
       }
@@ -729,7 +732,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         urld <- auto_tokenized_url()
         urlc <- new_control_url(urld)
         sock <- req_socket(urld)
-        sockc <- req_socket(urlc)
+        sockc <- bus_socket(urlc)
         launch_and_sync_daemon(sock = sock, type = 5L, urld, url, n, urlc, parse_dots(...))
         recv_and_store(sockc = sockc, envir = envir)
         proc <- n
@@ -765,7 +768,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
       sock <- req_socket(urld)
       if (dispatcher) {
         urlc <- new_control_url(urld)
-        sockc <- req_socket(urlc)
+        sockc <- bus_socket(urlc)
         launch_and_sync_daemon(sock = sock, type = 4L, urld, n, urlc, parse_dots(...))
         recv_and_store(sockc = sockc, envir = envir)
       } else {
@@ -1102,11 +1105,11 @@ launch_daemon <- function(type, ...) {
   system2(command = .command, args = c("-e", shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE)
 }
 
-launch_and_sync_daemon <- function(sock, type, ..., timeout = 5000L) {
+launch_and_sync_daemon <- function(sock, type, ...) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
   launch_daemon(type = type, ...)
-  until(cv, timeout) && stop(.messages[["connection_timeout"]])
+  until(cv, .timelimit) && stop(.messages[["connection_timeout"]])
 }
 
 dial_and_sync_socket <- function(sock, url, asyncdial) {
@@ -1133,10 +1136,13 @@ parse_dots <- function(...)
 req_socket <- function(url)
   `opt<-`(socket(protocol = "req", listen = url), "req:resend-time", .Machine[["integer.max"]])
 
+bus_socket <- function(url)
+  `opt<-`(socket(protocol = "bus", listen = url), "recv-buffer", 2L)
+
 query_dispatcher <- function(sock, command, mode) {
-  ctx <- .context(sock)
-  send(ctx, data = command, mode = 2L, block = .block)
-  recv(ctx, mode = mode, block = .block)
+  send(sock, data = command, mode = 2L)
+  send(sock, data = command, mode = 2L)
+  recv(sock, mode = mode, block = .timelimit)
 }
 
 query_status <- function(envir) {
@@ -1148,8 +1154,7 @@ query_status <- function(envir) {
 }
 
 recv_and_store <- function(sockc, envir) {
-  send(sockc, 0L, mode = 2L, block = .block)
-  res <- recv(sockc, mode = 2L, block = .block)
+  res <- recv(sockc, mode = 2L, block = .timelimit)
   is.integer(res) && stop(.messages[["connection_timeout"]])
   `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L]))
 }
