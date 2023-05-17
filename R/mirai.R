@@ -267,7 +267,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
         complete[changes] <- 0L
       }
 
-      ctrchannel && !unresolved(cmessage) && {
+      ctrchannel && (!unresolved(cmessage) || !unresolved(cmessage)) && {
         i <- .subset2(cmessage, "data")
         if (i) {
           if ((i > 0L && i <= n && !activevec[i] || i < 0L && (i <- -i) <= n) &&
@@ -1134,8 +1134,9 @@ req_socket <- function(url)
   `opt<-`(socket(protocol = "req", listen = url), "req:resend-time", .Machine[["integer.max"]])
 
 query_dispatcher <- function(sock, command, mode) {
-  send(sock, data = command, mode = 2L, block = .block)
-  recv(sock, mode = mode, block = .block)
+  ctx <- .context(sock)
+  send(ctx, data = command, mode = 2L, block = .block)
+  recv(ctx, mode = mode, block = .block)
 }
 
 query_status <- function(envir) {
