@@ -14,26 +14,20 @@ badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e)](https://sh
 [![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)
 <!-- badges: end -->
 
-Minimalist async evaluation framework for R.
-
-Lightweight parallel code execution and distributed computing.
-
-Designed for simplicity, a ‘mirai’ evaluates an R expression
-asynchronously, on local or network resources, resolving automatically
-upon completion.
-
-Features efficient task scheduling, scalability beyond R connection
-limits, and transports faster than TCP/IP for inter-process
+Minimalist async evaluation framework for R. <br /><br /> Lightweight
+parallel code execution and distributed computing. <br /><br /> Designed
+for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on
+local or network resources, resolving automatically upon completion.
+<br /><br /> Features efficient task scheduling, scalability beyond R
+connection limits, and transports faster than TCP/IP for inter-process
 communications, courtesy of ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen).
-
-`mirai()` returns a ‘mirai’ object immediately. ‘mirai’ (未来 みらい) is
-Japanese for ‘future’.
-
+<br /><br /> `mirai()` returns a ‘mirai’ object immediately. ‘mirai’
+(未来 みらい) is Japanese for ‘future’. <br /><br />
 [`mirai`](https://doi.org/10.5281/zenodo.7912722) has a tiny pure R code
 base, relying solely on
 [`nanonext`](https://doi.org/10.5281/zenodo.7903429), a high-performance
 binding for the ‘NNG’ (Nanomsg Next Gen) C library with zero package
-dependencies.
+dependencies. <br /><br />
 
 ### Table of Contents
 
@@ -114,7 +108,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.979 4.203 -1.831 -1.095 0.989 ...
+#>  num [1:100000000] -0.259 -0.649 -0.478 2.404 -0.196 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -122,7 +116,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.979 4.203 -1.831 -1.095 0.989 ...
+#>  num [1:100000000] -0.259 -0.649 -0.478 2.404 -0.196 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -140,7 +134,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.0605 0.028 0.5511 2.0078 2.4548 ...
+#>  num [1:100000000] 0.161 1.262 2.379 0.125 2.52 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -235,8 +229,8 @@ for (i in 1:10) {
 #> iteration 4 successful 
 #> iteration 5 successful 
 #> iteration 6 successful 
-#> iteration 7 successful 
 #> Error: random error 
+#> iteration 7 successful 
 #> iteration 8 successful 
 #> iteration 9 successful 
 #> iteration 10 successful
@@ -281,12 +275,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://468732a6e8be82a622cf6dbd8220c805367bb7cd      1        1        0        0
-#> abstract://3064e511ef24c088c5245fc3772430e7697d1c21      1        1        0        0
-#> abstract://ca212bbae9956bf24762ec16b3e4c419e9738f96      1        1        0        0
-#> abstract://c2663a4fde6083722bb8bf3c9f97690f9f566416      1        1        0        0
-#> abstract://ffacdf5eeedee8f1224d8d42054fea4673dc5349      1        1        0        0
-#> abstract://4bcc8dbac9c0bb4833e61346ee3f2df08166bac6      1        1        0        0
+#> abstract://9858020485675ba7599639ad4ff3f39b3ef210c7      1        1        0        0
+#> abstract://1de661e71e6ed7d2e77e632265e6c8fae6c6954c      1        1        0        0
+#> abstract://6c5291a07f7dffeb13bec35b392e5234f06724a2      1        1        0        0
+#> abstract://9de63c7a5994e087e1b01aaa72c2c5332598eded      1        1        0        0
+#> abstract://9ade85eb85f7a08428c1bdc532e826370feb6a41      1        1        0        0
+#> abstract://b0d5ef2253f078aec71d283c816bdd63bda7da17      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -486,7 +480,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:40007"
+#> [1] "tcp://:44331"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -501,7 +495,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:40007")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:44331")'
 
 As before, `daemons()` should be set up on the client before launching
 `server()` on remote resources, otherwise the server instances will exit
@@ -524,7 +518,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:40007"
+#> [1] "tcp://:44331"
 ```
 
 To reset all connections and revert to default behaviour:
