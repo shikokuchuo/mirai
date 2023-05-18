@@ -1,4 +1,4 @@
-# mirai 0.8.7.9007 (development)
+# mirai 0.8.7.9008 (development)
 
 * Improvements to dispatcher:
   + Optimal scheduling when tasks are submitted prior to any servers coming online.
