@@ -243,11 +243,9 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
   if (ctrchannel) {
     sockc <- bus_socket(NULL)
     on.exit(close(sockc), add = TRUE, after = FALSE)
-    ccv <- cv()
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
     r <- send(sockc, c(Sys.getpid(), servernames), mode = 2L, block = .timelimit)
     r && stop(.messages[["connection_timeout"]])
-    csignal <- recv_aio_signal(sockc, mode = 5L, cv = ccv)
     cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
   }
 
@@ -266,8 +264,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
         complete[changes] <- 0L
       }
 
-      ctrchannel && cv_value(ccv) && {
-        wait(ccv)
+      ctrchannel && !.unresolved2(cmessage) && {
         i <- .subset2(call_aio(cmessage), "data")
         if (i) {
           if ((i > 0L && i <= n && !activevec[i] || i < 0L && (i <- -i) <= n) &&
@@ -285,7 +282,6 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
         }
         r <- send(sockc, data = data, mode = 2L, block = .timelimit)
         r && stop(.messages[["connection_timeout"]])
-        csignal <- recv_aio_signal(sockc, mode = 5L, cv = ccv)
         cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
         next
       }
@@ -1150,7 +1146,6 @@ bus_socket <- function(url)
   `opt<-`(socket(protocol = "bus", listen = url), "recv-buffer", 2L)
 
 query_dispatcher <- function(sock, command, mode) {
-  send(sock, data = command, mode = 2L, block = .timelimit)
   send(sock, data = command, mode = 2L, block = .timelimit)
   recv(sock, mode = mode, block = .timelimit)
 }
