@@ -1,10 +1,11 @@
-# mirai 0.8.7.9009 (development)
+# mirai 0.8.7.9010 (development)
 
 * Improvements to dispatcher:
   + Optimal scheduling when tasks are submitted prior to any servers coming online.
   + `daemons()` status requests have been rendered more robust.
   + Ensures the first URL retains the same format if `saisei(i = 1L)` is called.
 * Ensures `saisei()` always returns `NULL` if 'tcp://' URLs are being used as they do not support tokens.
+* Requires nanonext >= [0.8.3.9003].
 
 # mirai 0.8.7
 

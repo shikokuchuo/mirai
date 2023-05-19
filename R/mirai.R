@@ -291,7 +291,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
       }
 
       for (i in which(activevec == 0L))
-        if (length(queue[[i]]) == 2L && .unresolved(queue[[i]][["req"]])) {
+        if (length(queue[[i]]) == 2L && .unresolved2(queue[[i]][["req"]])) {
           stop_aio(queue[[i]][["req"]])
           queue[[i]] <- list()
         }
@@ -301,8 +301,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
       if (length(free))
         for (q in free)
           for (i in seq_n) {
-            if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
-              queue[[i]][["res"]] <- request_signal(.context(servers[[q]]), data = .subset2(queue[[i]][["req"]], "data"), send_mode = 1L, recv_mode = 1L, cv = cv)
+            if (length(queue[[i]]) == 2L && !.unresolved2(queue[[i]][["req"]])) {
+              queue[[i]][["res"]] <- request_signal(.context(servers[[q]]), data = .subset2(call_aio(queue[[i]][["req"]]), "data"), send_mode = 1L, recv_mode = 1L, cv = cv)
               queue[[i]][["daemon"]] <- q
               serverfree[q] <- FALSE
               assigned[q] <- assigned[q] + 1L
@@ -312,8 +312,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
           }
 
       for (i in seq_n)
-        if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
-          send(queue[[i]][["ctx"]], data = .subset2(queue[[i]][["res"]], "data"), mode = 1L)
+        if (length(queue[[i]]) > 2L && !.unresolved2(queue[[i]][["res"]])) {
+          send(queue[[i]][["ctx"]], data = .subset2(call_aio(queue[[i]][["res"]]), "data"), mode = 1L)
           q <- queue[[i]][["daemon"]]
           serverfree[q] <- TRUE
           complete[q] <- complete[q] + 1L
