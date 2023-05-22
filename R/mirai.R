@@ -1143,7 +1143,7 @@ req_socket <- function(url)
   `opt<-`(socket(protocol = "req", listen = url), "req:resend-time", .Machine[["integer.max"]])
 
 ctrl_socket <- function(url)
-  `opt<-`(socket(protocol = "pair", listen = url), "recv-buffer", 1L)
+  socket(protocol = "pair", listen = url)
 
 query_dispatcher <- function(sock, command, mode) {
   send(sock, data = command, mode = 2L, block = .timelimit)
