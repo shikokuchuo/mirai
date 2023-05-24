@@ -197,7 +197,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
   active <- servers <- queue <- vector(mode = "list", length = n)
   if (!auto) {
     baseurl <- parse_url(url)
-    if (substr(baseurl[["scheme"]], 1L, 3L) == "tcp") {
+    if (substr(baseurl[["scheme"]], 1L, 1L) == "t") {
       ports <- if (baseurl[["port"]] == "0") integer(n) else seq.int(baseurl[["port"]], length.out = n)
       token <- FALSE
     } else {
@@ -268,7 +268,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
         i <- .subset2(cmessage, "data")
         if (i) {
           if ((i > 0L && i <= n && !activevec[i] || i < 0L && (i <- -i) <= n) &&
-              substr(basenames[i], 1L, 3L) != "tcp") {
+              substr(basenames[i], 1L, 1L) != "t") {
             close(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
             data <- servernames[i] <- new_tokenized_url(url = basenames[i], auto = auto)

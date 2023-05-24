@@ -1,4 +1,4 @@
-# mirai 0.8.7.9015 (development)
+# mirai 0.8.7.9016 (development)
 
 * Improvements to dispatcher:
   + Ensures the first URL retains the same format if `saisei(i = 1L)` is called.
