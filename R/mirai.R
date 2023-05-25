@@ -241,7 +241,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
 
   ctrchannel <- is.character(monitor)
   if (ctrchannel) {
-    sockc <- ctrl_socket(NULL)
+    sockc <- socket(protocol = "pair")
     on.exit(close(sockc), add = TRUE, after = FALSE)
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
     r <- send(sockc, c(Sys.getpid(), servernames), mode = 2L, block = .timelimit)
@@ -738,7 +738,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         urld <- auto_tokenized_url()
         urlc <- new_control_url(urld)
         sock <- req_socket(urld)
-        sockc <- ctrl_socket(urlc)
+        sockc <- socket(protocol = "pair", listen = urlc)
         launch_and_sync_daemon(sock = sock, type = 5L, urld, url, n, urlc, parse_dots(...))
         recv_and_store(sockc = sockc, envir = envir)
         proc <- n
@@ -774,7 +774,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
       sock <- req_socket(urld)
       if (dispatcher) {
         urlc <- new_control_url(urld)
-        sockc <- ctrl_socket(urlc)
+        sockc <- socket(protocol = "pair", listen = urlc)
         launch_and_sync_daemon(sock = sock, type = 4L, urld, n, urlc, parse_dots(...))
         recv_and_store(sockc = sockc, envir = envir)
       } else {
@@ -1141,9 +1141,6 @@ parse_dots <- function(...)
 
 req_socket <- function(url)
   `opt<-`(socket(protocol = "req", listen = url), "req:resend-time", .Machine[["integer.max"]])
-
-ctrl_socket <- function(url)
-  socket(protocol = "pair", listen = url)
 
 query_dispatcher <- function(sock, command, mode) {
   send(sock, data = command, mode = 2L, block = .timelimit)
