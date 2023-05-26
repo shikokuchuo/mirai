@@ -267,11 +267,11 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
       ctrchannel && !unresolved(cmessage) && {
         i <- .subset2(cmessage, "data")
         if (i) {
-          if ((i > 0L && i <= n && !activevec[i] || i < 0L && (i <- -i) <= n) &&
-              substr(basenames[i], 1L, 1L) != "t") {
+          if ((i > 0L && i <= n && !activevec[[i]] || i < 0L && (i <- -i) <= n) &&
+              substr(basenames[[i]], 1L, 1L) != "t") {
             close(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
-            data <- servernames[i] <- new_tokenized_url(url = basenames[i], auto = auto)
+            data <- servernames[[i]] <- new_tokenized_url(url = basenames[[i]], auto = auto)
             cv_reset(active[[i]])
             listen(servers[[i]], url = data, error = TRUE)
           } else {
@@ -300,19 +300,19 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
             if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
               queue[[i]][["res"]] <- request_signal(.context(servers[[q]]), data = .subset2(queue[[i]][["req"]], "data"), send_mode = 1L, recv_mode = 1L, cv = cv)
               queue[[i]][["daemon"]] <- q
-              serverfree[q] <- FALSE
-              assigned[q] <- assigned[q] + 1L
+              serverfree[[q]] <- FALSE
+              assigned[[q]] <- assigned[[q]] + 1L
               break
             }
-            serverfree[q] || break
+            serverfree[[q]] || break
           }
 
       for (i in seq_n)
         if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
           send(queue[[i]][["ctx"]], data = .subset2(queue[[i]][["res"]], "data"), mode = 1L)
           q <- queue[[i]][["daemon"]]
-          serverfree[q] <- TRUE
-          complete[q] <- complete[q] + 1L
+          serverfree[[q]] <- TRUE
+          complete[[q]] <- complete[[q]] + 1L
           queue[[i]] <- list()
         }
 
@@ -869,7 +869,7 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
   length(envir[["sockc"]]) || return()
   r <- query_dispatcher(sock = envir[["sockc"]], command = as.integer(if (force) -i else i), mode = 2L)
   is.character(r) && nzchar(r) || return()
-  envir[["urls"]][i] <- r
+  envir[["urls"]][[i]] <- r
   r
 
 }
@@ -1158,7 +1158,7 @@ query_status <- function(envir) {
 recv_and_store <- function(sockc, envir) {
   res <- recv(sockc, mode = 2L, block = .timelimit)
   is.integer(res) && stop(.messages[["connection_timeout"]])
-  `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L]))
+  `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[[1L]]))
 }
 
 perform_cleanup <- function(cleanup, op, se) {

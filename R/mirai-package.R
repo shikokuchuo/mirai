@@ -83,12 +83,15 @@ NULL
 .urlfmt <- NULL
 .timelimit <- 5000L
 
-.messages <- list(
-  connection_timeout = "connection to local process timed out after 5s",
-  missing_url = "at least one URL must be supplied for 'url' or 'n' must be at least 1",
-  missing_expression = "missing expression, perhaps wrap in {}?",
-  n_one = "'n' must be 1 or greater if specified with a client URL",
-  n_zero = "the number of daemons must be zero or greater",
-  numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
-  requires_list = "'.args' must be specified as a list"
+.messages <- list2env(
+  list(
+    connection_timeout = "connection to local process timed out after 5s",
+    missing_url = "at least one URL must be supplied for 'url' or 'n' must be at least 1",
+    missing_expression = "missing expression, perhaps wrap in {}?",
+    n_one = "'n' must be 1 or greater if specified with a client URL",
+    n_zero = "the number of daemons must be zero or greater",
+    numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
+    requires_list = "'.args' must be specified as a list"
+  ),
+  hash = TRUE
 )
