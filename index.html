@@ -150,11 +150,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.183 -2.513 -2.968 0.601 0.688 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -1.3812 1.7866 -0.0619 0.065 0.6158 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.183 -2.513 -2.968 0.601 0.688 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -1.3812 1.7866 -0.0619 0.065 0.6158 ...</span></span></code></pre></div>
 <p>For easy programmatic use of <code><a href="reference/mirai.html">mirai()</a></code>, ‘.expr’ accepts a pre-constructed language object, and also a list of named arguments passed via ‘.args’. So, the following would be equivalent to the above:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -167,7 +167,7 @@
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span>.expr <span class="op">=</span> <span class="va">expr</span>, .args <span class="op">=</span> <span class="va">args</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 1.454 -1.121 8.028 -2.133 0.583 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.341 -0.462 2.837 2.296 0.35 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -263,12 +263,12 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt;                                                     online instance assigned complete</span></span>
-<span><span class="co">#&gt; abstract://bfc4d0ea7628eeaf69cb5108a0a9fdb93f8311da      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://3ba241f86267c76cf66416afa4910eb2a1d3a0b3      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://c966467d8017f9a848a81ce5a6211d446e07f45f      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://2b811732cfc49d71aad7776b5807f53cd02c464a      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://809064b55fdea09b2759871084053c0475a647f0      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://e7eb0a8b8013c150d03486ec6e05e83bd63a0f6c      1        1        0        0</span></span></code></pre></div>
+<span><span class="co">#&gt; abstract://047aeee8fbd7d20e059ee06adb98ead9cc2681b1      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://746c24589484a06fa349a0843aaff927417f01e9      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://a58117812e407b012257e62bbf7613427f69c3c6      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://c5b16d1d0ca4ecbc9ee5a4ab947e17b46a07828e      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://4a6475e34f7f624eb692fe39ae542d9ce15cd205      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://3c95291d2fb4d04763287723fc2e0db7aa9e8798      1        1        0        0</span></span></code></pre></div>
 <p>The default <code>dispatcher = TRUE</code> creates a <code><a href="reference/dispatcher.html">dispatcher()</a></code> background process that connects to individual daemon processes on the local machine on behalf of the client. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to servers for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.</p>
 <p>Dispatcher uses synchronisation primitives from <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link"><code>nanonext</code></a>, waiting upon rather than polling for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -363,11 +363,11 @@
 <p>Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://:0"</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tcp://:42863"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:41957"</span></span></code></pre></div>
 <p>Note that above, the port number is specified as zero. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided as the return value of the call, or it may be queried at any time by requesting the status via <code><a href="reference/daemons.html">daemons()</a></code>.</p>
 <p>–</p>
 <p>On the server, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation from a shell. This sets up a remote daemon process that connects to the client URL and receives tasks:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://10.111.5.13:42863")'</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://10.111.5.13:41957")'</span></span></code></pre></div>
 <p>As before, <code><a href="reference/daemons.html">daemons()</a></code> should be set up on the client before launching <code><a href="reference/server.html">server()</a></code> on remote resources, otherwise the server instances will exit if a connection is not immediately available. Alternatievly specifying <code>server(asyncdial = TRUE)</code> will allow servers to wait (indefinitely) for a connection to become available.</p>
 <p>–</p>
 <p>The number of daemons connecting to the client URL is not limited and network resources may be added or removed at any time, with tasks automatically distributed to all server processes.</p>
@@ -378,7 +378,7 @@
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "tcp://:42863"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:41957"</span></span></code></pre></div>
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
@@ -474,8 +474,8 @@
 <p><a href="https://docs.ropensci.org/targets/" class="external-link"><code>targets</code></a>, a Make-like pipeline tool for statistics and data science, has integrated and adopted <a href="https://wlandau.github.io/crew/" class="external-link"><code>crew</code></a> as its predominant high-performance computing backend.</p>
 <p><code>mirai</code> can also serve as the backend for enterprise asynchronous <a href="https://cran.r-project.org/package=shiny" class="external-link"><code>shiny</code></a> applications in one of two ways:</p>
 <ol style="list-style-type: decimal">
-<li><p><a href="https://github.com/shikokuchuo/mirai.promises/" class="external-link"><code>mirai.promises</code></a>, which enables a <code>mirai</code> to be used interchageably with a <code>promise</code> in <a href="https://cran.r-project.org/package=shiny" class="external-link"><code>shiny</code></a> or <a href="https://cran.r-project.org/package=plumber" class="external-link"><code>plumber</code></a> pipelines; or</p></li>
-<li><p><a href="https://wlandau.github.io/crew/" class="external-link"><code>crew</code></a> provides an interface that makes it easy to deploy <code>mirai</code> for <a href="https://cran.r-project.org/package=shiny" class="external-link"><code>shiny</code></a>. The package provides a Shiny vignette with tutorial and sample code for this purpose.</p></li>
+<li><p><a href="https://github.com/shikokuchuo/mirai.promises/" class="external-link"><code>mirai.promises</code></a>, which enables a ‘mirai’ to be used interchageably with a ‘promise’ in <a href="https://cran.r-project.org/package=shiny" class="external-link"><code>shiny</code></a> or <a href="https://cran.r-project.org/package=plumber" class="external-link"><code>plumber</code></a> pipelines; or</p></li>
+<li><p><a href="https://wlandau.github.io/crew/" class="external-link"><code>crew</code></a> provides an interface that makes it easy to deploy <code>mirai</code> for <a href="https://cran.r-project.org/package=shiny" class="external-link"><code>shiny</code></a>. The package provides a <a href="https://wlandau.github.io/crew/articles/shiny.html" class="external-link">Shiny vignette</a> with tutorial and sample code for this purpose.</p></li>
 </ol>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
