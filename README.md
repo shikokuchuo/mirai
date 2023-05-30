@@ -110,7 +110,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -0.183 -2.513 -2.968 0.601 0.688 ...
+#>  num [1:100000000] -1.3812 1.7866 -0.0619 0.065 0.6158 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -118,7 +118,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.183 -2.513 -2.968 0.601 0.688 ...
+#>  num [1:100000000] -1.3812 1.7866 -0.0619 0.065 0.6158 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -136,7 +136,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 1.454 -1.121 8.028 -2.133 0.583 ...
+#>  num [1:100000000] 0.341 -0.462 2.837 2.296 0.35 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -277,12 +277,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://bfc4d0ea7628eeaf69cb5108a0a9fdb93f8311da      1        1        0        0
-#> abstract://3ba241f86267c76cf66416afa4910eb2a1d3a0b3      1        1        0        0
-#> abstract://c966467d8017f9a848a81ce5a6211d446e07f45f      1        1        0        0
-#> abstract://2b811732cfc49d71aad7776b5807f53cd02c464a      1        1        0        0
-#> abstract://809064b55fdea09b2759871084053c0475a647f0      1        1        0        0
-#> abstract://e7eb0a8b8013c150d03486ec6e05e83bd63a0f6c      1        1        0        0
+#> abstract://047aeee8fbd7d20e059ee06adb98ead9cc2681b1      1        1        0        0
+#> abstract://746c24589484a06fa349a0843aaff927417f01e9      1        1        0        0
+#> abstract://a58117812e407b012257e62bbf7613427f69c3c6      1        1        0        0
+#> abstract://c5b16d1d0ca4ecbc9ee5a4ab947e17b46a07828e      1        1        0        0
+#> abstract://4a6475e34f7f624eb692fe39ae542d9ce15cd205      1        1        0        0
+#> abstract://3c95291d2fb4d04763287723fc2e0db7aa9e8798      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -482,7 +482,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:42863"
+#> [1] "tcp://:41957"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -497,7 +497,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:42863")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:41957")'
 
 As before, `daemons()` should be set up on the client before launching
 `server()` on remote resources, otherwise the server instances will exit
@@ -520,7 +520,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:42863"
+#> [1] "tcp://:41957"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -678,7 +678,7 @@ high-performance computing backend.
 of two ways:
 
 1.  [`mirai.promises`](https://github.com/shikokuchuo/mirai.promises/),
-    which enables a `mirai` to be used interchageably with a `promise`
+    which enables a ‘mirai’ to be used interchageably with a ‘promise’
     in [`shiny`](https://cran.r-project.org/package=shiny) or
     [`plumber`](https://cran.r-project.org/package=plumber) pipelines;
     or
@@ -686,8 +686,9 @@ of two ways:
 2.  [`crew`](https://wlandau.github.io/crew/) provides an interface that
     makes it easy to deploy `mirai` for
     [`shiny`](https://cran.r-project.org/package=shiny). The package
-    provides a Shiny vignette with tutorial and sample code for this
-    purpose.
+    provides a [Shiny
+    vignette](https://wlandau.github.io/crew/articles/shiny.html) with
+    tutorial and sample code for this purpose.
 
 [« Back to ToC](#table-of-contents)
 
