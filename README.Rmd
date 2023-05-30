@@ -47,7 +47,7 @@ Features efficient task scheduling, scalability beyond R connection limits, and 
 7. [Compute Profiles](#compute-profiles)
 8. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
 9. [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
-10. [Crew, Targets, Shiny](#crew-targets-shiny)
+10. [Integrations with Crew, Targets, Shiny](#integrations-with-crew-targets-shiny)
 11. [Thanks](#thanks)
 12. [Links](#links)
 
@@ -488,13 +488,17 @@ b$data
 
 [&laquo; Back to ToC](#table-of-contents)
 
-### Crew, Targets, Shiny
+### Integrations with Crew, Targets, Shiny
 
-The [`crew`](https://wlandau.github.io/crew/) package (available on CRAN) by [William Landau](https://github.com/wlandau/) is a distributed worker-launcher that provides an R6-based interface extending `mirai` to different computing platforms for distributed workers. It has been integrated with and adopted as the predominant high-performance computing backend for [`targets`](https://docs.ropensci.org/targets/), a Make-like pipeline tool for statistics and data science.
+The [`crew`](https://wlandau.github.io/crew/) package is a distributed worker-launcher that provides an R6-based interface extending `mirai` to different distributed computing platforms, from traditional clusters to cloud services. The [`crew.cluster`](https://wlandau.github.io/crew.cluster/) package enables mirai-based workflows on traditional high-performance computing clusters such as Sun Grid Engine (SGE).
 
-[`crew`](https://wlandau.github.io/crew/) further provides an extensible interface for plugins to different distributed computing platforms, from traditional clusters to cloud services. The [`crew.cluster`](https://wlandau.github.io/crew.cluster/) package (available on CRAN) enables mirai-based workflows on traditional high-performance computing clusters such as Sun Grid Engine (SGE).
+[`targets`](https://docs.ropensci.org/targets/), a Make-like pipeline tool for statistics and data science, has integrated and adopted [`crew`](https://wlandau.github.io/crew/) as its predominant high-performance computing backend.
 
-`mirai` also serves as the backend for enterprise asynchronous [`shiny`](https://cran.r-project.org/package=shiny) applications. The [`crew`](https://wlandau.github.io/crew/) package provides a Shiny vignette with tutorial and sample code for this purpose. The [`crew`](https://wlandau.github.io/crew/) interface provides a nice abstraction layer that makes it easy to deploy `mirai` for [`shiny`](https://cran.r-project.org/package=shiny); `mirai` itself is sufficient, although requires the individual `mirai()` requests to be managed using a list or equivalent.
+`mirai` can also serve as the backend for enterprise asynchronous [`shiny`](https://cran.r-project.org/package=shiny) applications in one of two ways:
+
+1. [`mirai.promises`](https://github.com/shikokuchuo/mirai.promises/), which enables a `mirai` to be used interchageably with a `promise` in [`shiny`](https://cran.r-project.org/package=shiny) or [`plumber`](https://cran.r-project.org/package=plumber) pipelines; or
+
+2. [`crew`](https://wlandau.github.io/crew/) provides an interface that makes it easy to deploy `mirai` for [`shiny`](https://cran.r-project.org/package=shiny). The package provides a Shiny vignette with tutorial and sample code for this purpose.
 
 [&laquo; Back to ToC](#table-of-contents)
 
@@ -502,7 +506,7 @@ The [`crew`](https://wlandau.github.io/crew/) package (available on CRAN) by [Wi
 
 [William Landau](https://github.com/wlandau/) has been instrumental in shaping development of the package, from being the first to request persistent daemons, through to robustness testing for the high performance computing requirements of [`crew`](https://wlandau.github.io/crew/) and [`targets`](https://docs.ropensci.org/targets/).
 
-[Henrik Bengtsson](https://github.com/HenrikBengtsson/) has shared valuable insights leading to the interface accepting broader usage patterns, yet retaining its simplicity.
+[Henrik Bengtsson](https://github.com/HenrikBengtsson/) has shared valuable insights leading to the interface accepting broader usage patterns.
 
 [&laquo; Back to ToC](#table-of-contents)
 

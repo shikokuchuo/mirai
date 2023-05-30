@@ -43,7 +43,8 @@ dependencies. <br /><br />
 7.  [Compute Profiles](#compute-profiles)
 8.  [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
 9.  [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
-10. [Crew, Targets, Shiny](#crew-targets-shiny)
+10. [Integrations with Crew, Targets,
+    Shiny](#integrations-with-crew-targets-shiny)
 11. [Thanks](#thanks)
 12. [Links](#links)
 
@@ -109,7 +110,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -5.44 1.397 -0.875 1.108 -0.657 ...
+#>  num [1:100000000] -0.183 -2.513 -2.968 0.601 0.688 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -117,7 +118,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -5.44 1.397 -0.875 1.108 -0.657 ...
+#>  num [1:100000000] -0.183 -2.513 -2.968 0.601 0.688 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -135,7 +136,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 1.3 0.113 1.652 2.309 1.747 ...
+#>  num [1:100000000] 1.454 -1.121 8.028 -2.133 0.583 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -227,10 +228,10 @@ for (i in 1:10) {
 #> iteration 1 successful 
 #> iteration 2 successful 
 #> iteration 3 successful 
-#> Error: random error 
 #> iteration 4 successful 
 #> iteration 5 successful 
 #> iteration 6 successful 
+#> Error: random error 
 #> iteration 7 successful 
 #> iteration 8 successful 
 #> iteration 9 successful 
@@ -276,12 +277,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://3a92465f74a8333bbc2b270bf297a90a9e825397      1        1        0        0
-#> abstract://f9cf2a856fa9b52abf505ba1ed30a8448c5ae3a6      1        1        0        0
-#> abstract://f795142300fdd6e05d6c89cc9d0432385a9bb7bf      1        1        0        0
-#> abstract://2b11f507589088a325384f693ce0e9deaed45a54      1        1        0        0
-#> abstract://0b8d4ea896535946c30dcac31d72426cd1cf67d4      1        1        0        0
-#> abstract://15f27cc21e31a4d0a2ec34b7e76ebbaa0ec325f8      1        1        0        0
+#> abstract://bfc4d0ea7628eeaf69cb5108a0a9fdb93f8311da      1        1        0        0
+#> abstract://3ba241f86267c76cf66416afa4910eb2a1d3a0b3      1        1        0        0
+#> abstract://c966467d8017f9a848a81ce5a6211d446e07f45f      1        1        0        0
+#> abstract://2b811732cfc49d71aad7776b5807f53cd02c464a      1        1        0        0
+#> abstract://809064b55fdea09b2759871084053c0475a647f0      1        1        0        0
+#> abstract://e7eb0a8b8013c150d03486ec6e05e83bd63a0f6c      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -481,7 +482,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:40761"
+#> [1] "tcp://:42863"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -496,7 +497,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:40761")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:42863")'
 
 As before, `daemons()` should be set up on the client before launching
 `server()` on remote resources, otherwise the server instances will exit
@@ -519,7 +520,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:40761"
+#> [1] "tcp://:42863"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -657,32 +658,36 @@ b$data
 
 [« Back to ToC](#table-of-contents)
 
-### Crew, Targets, Shiny
+### Integrations with Crew, Targets, Shiny
 
-The [`crew`](https://wlandau.github.io/crew/) package (available on
-CRAN) by [William Landau](https://github.com/wlandau/) is a distributed
+The [`crew`](https://wlandau.github.io/crew/) package is a distributed
 worker-launcher that provides an R6-based interface extending `mirai` to
-different computing platforms for distributed workers. It has been
-integrated with and adopted as the predominant high-performance
-computing backend for [`targets`](https://docs.ropensci.org/targets/), a
-Make-like pipeline tool for statistics and data science.
-
-[`crew`](https://wlandau.github.io/crew/) further provides an extensible
-interface for plugins to different distributed computing platforms, from
-traditional clusters to cloud services. The
+different distributed computing platforms, from traditional clusters to
+cloud services. The
 [`crew.cluster`](https://wlandau.github.io/crew.cluster/) package
-(available on CRAN) enables mirai-based workflows on traditional
-high-performance computing clusters such as Sun Grid Engine (SGE).
+enables mirai-based workflows on traditional high-performance computing
+clusters such as Sun Grid Engine (SGE).
 
-`mirai` also serves as the backend for enterprise asynchronous
-[`shiny`](https://cran.r-project.org/package=shiny) applications. The
-[`crew`](https://wlandau.github.io/crew/) package provides a Shiny
-vignette with tutorial and sample code for this purpose. The
-[`crew`](https://wlandau.github.io/crew/) interface provides a nice
-abstraction layer that makes it easy to deploy `mirai` for
-[`shiny`](https://cran.r-project.org/package=shiny); `mirai` itself is
-sufficient, although requires the individual `mirai()` requests to be
-managed using a list or equivalent.
+[`targets`](https://docs.ropensci.org/targets/), a Make-like pipeline
+tool for statistics and data science, has integrated and adopted
+[`crew`](https://wlandau.github.io/crew/) as its predominant
+high-performance computing backend.
+
+`mirai` can also serve as the backend for enterprise asynchronous
+[`shiny`](https://cran.r-project.org/package=shiny) applications in one
+of two ways:
+
+1.  [`mirai.promises`](https://github.com/shikokuchuo/mirai.promises/),
+    which enables a `mirai` to be used interchageably with a `promise`
+    in [`shiny`](https://cran.r-project.org/package=shiny) or
+    [`plumber`](https://cran.r-project.org/package=plumber) pipelines;
+    or
+
+2.  [`crew`](https://wlandau.github.io/crew/) provides an interface that
+    makes it easy to deploy `mirai` for
+    [`shiny`](https://cran.r-project.org/package=shiny). The package
+    provides a Shiny vignette with tutorial and sample code for this
+    purpose.
 
 [« Back to ToC](#table-of-contents)
 
@@ -697,7 +702,7 @@ performance computing requirements of
 
 [Henrik Bengtsson](https://github.com/HenrikBengtsson/) has shared
 valuable insights leading to the interface accepting broader usage
-patterns, yet retaining its simplicity.
+patterns.
 
 [« Back to ToC](#table-of-contents)
 
