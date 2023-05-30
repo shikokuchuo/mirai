@@ -496,7 +496,7 @@ The [`crew`](https://wlandau.github.io/crew/) package is a distributed worker-la
 
 `mirai` can also serve as the backend for enterprise asynchronous [`shiny`](https://cran.r-project.org/package=shiny) applications in one of two ways:
 
-1. [`mirai.promises`](https://github.com/shikokuchuo/mirai.promises/), which enables a 'mirai' to be used interchageably with a 'promise' in [`shiny`](https://cran.r-project.org/package=shiny) or [`plumber`](https://cran.r-project.org/package=plumber) pipelines; or
+1. [`mirai.promises`](https://github.com/shikokuchuo/mirai.promises/), which enables a 'mirai' to be used interchangeably with a 'promise' in [`shiny`](https://cran.r-project.org/package=shiny) or [`plumber`](https://cran.r-project.org/package=plumber) pipelines; or
 
 2. [`crew`](https://wlandau.github.io/crew/) provides an interface that makes it easy to deploy `mirai` for [`shiny`](https://cran.r-project.org/package=shiny). The package provides a [Shiny vignette](https://wlandau.github.io/crew/articles/shiny.html) with tutorial and sample code for this purpose.
 

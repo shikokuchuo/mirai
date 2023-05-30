@@ -678,7 +678,7 @@ high-performance computing backend.
 of two ways:
 
 1.  [`mirai.promises`](https://github.com/shikokuchuo/mirai.promises/),
-    which enables a ‘mirai’ to be used interchageably with a ‘promise’
+    which enables a ‘mirai’ to be used interchangeably with a ‘promise’
     in [`shiny`](https://cran.r-project.org/package=shiny) or
     [`plumber`](https://cran.r-project.org/package=plumber) pipelines;
     or
