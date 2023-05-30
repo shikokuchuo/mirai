@@ -44,7 +44,8 @@ dependencies. <br /><br />
 8.  [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
 9.  [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
 10. [Crew, Targets, Shiny](#crew-targets-shiny)
-11. [Links](#links)
+11. [Thanks](#thanks)
+12. [Links](#links)
 
 ### Installation
 
@@ -108,7 +109,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -0.259 -0.649 -0.478 2.404 -0.196 ...
+#>  num [1:100000000] -5.44 1.397 -0.875 1.108 -0.657 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -116,7 +117,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.259 -0.649 -0.478 2.404 -0.196 ...
+#>  num [1:100000000] -5.44 1.397 -0.875 1.108 -0.657 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -134,7 +135,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.161 1.262 2.379 0.125 2.52 ...
+#>  num [1:100000000] 1.3 0.113 1.652 2.309 1.747 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -226,10 +227,10 @@ for (i in 1:10) {
 #> iteration 1 successful 
 #> iteration 2 successful 
 #> iteration 3 successful 
+#> Error: random error 
 #> iteration 4 successful 
 #> iteration 5 successful 
 #> iteration 6 successful 
-#> Error: random error 
 #> iteration 7 successful 
 #> iteration 8 successful 
 #> iteration 9 successful 
@@ -275,12 +276,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://9858020485675ba7599639ad4ff3f39b3ef210c7      1        1        0        0
-#> abstract://1de661e71e6ed7d2e77e632265e6c8fae6c6954c      1        1        0        0
-#> abstract://6c5291a07f7dffeb13bec35b392e5234f06724a2      1        1        0        0
-#> abstract://9de63c7a5994e087e1b01aaa72c2c5332598eded      1        1        0        0
-#> abstract://9ade85eb85f7a08428c1bdc532e826370feb6a41      1        1        0        0
-#> abstract://b0d5ef2253f078aec71d283c816bdd63bda7da17      1        1        0        0
+#> abstract://3a92465f74a8333bbc2b270bf297a90a9e825397      1        1        0        0
+#> abstract://f9cf2a856fa9b52abf505ba1ed30a8448c5ae3a6      1        1        0        0
+#> abstract://f795142300fdd6e05d6c89cc9d0432385a9bb7bf      1        1        0        0
+#> abstract://2b11f507589088a325384f693ce0e9deaed45a54      1        1        0        0
+#> abstract://0b8d4ea896535946c30dcac31d72426cd1cf67d4      1        1        0        0
+#> abstract://15f27cc21e31a4d0a2ec34b7e76ebbaa0ec325f8      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -480,7 +481,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:44331"
+#> [1] "tcp://:40761"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -495,7 +496,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:44331")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:40761")'
 
 As before, `daemons()` should be set up on the client before launching
 `server()` on remote resources, otherwise the server instances will exit
@@ -518,7 +519,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:44331"
+#> [1] "tcp://:40761"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -659,12 +660,12 @@ b$data
 ### Crew, Targets, Shiny
 
 The [`crew`](https://wlandau.github.io/crew/) package (available on
-CRAN) by William Landau is a distributed worker-launcher that provides
-an R6-based interface extending `mirai` to different computing platforms
-for distributed workers. It has been integrated with and adopted as the
-predominant high-performance computing backend for
-[`targets`](https://docs.ropensci.org/targets/), a Make-like pipeline
-tool for statistics and data science.
+CRAN) by [William Landau](https://github.com/wlandau/) is a distributed
+worker-launcher that provides an R6-based interface extending `mirai` to
+different computing platforms for distributed workers. It has been
+integrated with and adopted as the predominant high-performance
+computing backend for [`targets`](https://docs.ropensci.org/targets/), a
+Make-like pipeline tool for statistics and data science.
 
 [`crew`](https://wlandau.github.io/crew/) further provides an extensible
 interface for plugins to different distributed computing platforms, from
@@ -682,6 +683,21 @@ abstraction layer that makes it easy to deploy `mirai` for
 [`shiny`](https://cran.r-project.org/package=shiny); `mirai` itself is
 sufficient, although requires the individual `mirai()` requests to be
 managed using a list or equivalent.
+
+[« Back to ToC](#table-of-contents)
+
+### Thanks
+
+[William Landau](https://github.com/wlandau/) has been instrumental in
+shaping development of the package, from being the first to request
+persistent daemons, through to robustness testing for the high
+performance computing requirements of
+[`crew`](https://wlandau.github.io/crew/) and
+[`targets`](https://docs.ropensci.org/targets/).
+
+[Henrik Bengtsson](https://github.com/HenrikBengtsson/) has shared
+valuable insights leading to the interface accepting broader usage
+patterns, yet retaining its simplicity.
 
 [« Back to ToC](#table-of-contents)
 
