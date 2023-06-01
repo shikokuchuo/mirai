@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.7.9020</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.7.9021</span>
       </span>
     </div>
 
@@ -65,7 +65,14 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mirai</span><span class="op">(</span><span class="va">.expr</span>, <span class="va">...</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, .timeout <span class="op">=</span> <span class="cn">NULL</span>, .compute <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mirai</span><span class="op">(</span></span>
+<span>  <span class="va">.expr</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  .timeout <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .refhook <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .compute <span class="op">=</span> <span class="st">"default"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -91,6 +98,14 @@ else (ii) a list of name = value pairs, as in '...'.</p></dd>
 <dd><p>[default NULL] for no timeout, or an integer value in
 milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
 evaluation exceeds this limit.</p></dd>
+
+
+<dt>.refhook</dt>
+<dd><p>[default NULL] maps to the 'refhook' argument of
+<code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">serialize</a></code> or <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize</a></code> as the
+case may be for providing a hook function to handle reference objects. As
+this argument is used in both cases, the function should contain the
+logic to distinguish between them if necessary.</p></dd>
 
 
 <dt>.compute</dt>
