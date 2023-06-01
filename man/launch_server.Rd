@@ -4,12 +4,18 @@
 \alias{launch_server}
 \title{Launch mirai Server}
 \usage{
-launch_server(url, ...)
+launch_server(url, refhook = NULL, ...)
 }
 \arguments{
 \item{url}{the client URL for the server to dial into as a character string,
 including the port to connect to and (optionally) a path for websocket
 URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
+
+\item{refhook}{[default NULL] maps to the 'refhook' argument of
+\code{\link{serialize}} or \code{\link{unserialize}} as the
+case may be for providing a hook function to handle reference objects. As
+this argument is used in both cases, the function should contain the logic
+to distinguish between them if necessary.}
 
 \item{...}{(optional) additional arguments passed to \code{\link{server}}.}
 }

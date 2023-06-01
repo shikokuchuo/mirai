@@ -4,12 +4,18 @@
 \alias{.server}
 \title{mirai dot Server (Async Executor)}
 \usage{
-.server(url, exitlinger = 2000L)
+.server(url, refhook = NULL, exitlinger = 2000L)
 }
 \arguments{
 \item{url}{the client or dispatcher URL to dial into as a character string,
 including the port to connect to and (optionally) a path for websocket
 URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
+
+\item{refhook}{[default NULL] maps to the 'refhook' argument of
+\code{\link{serialize}} or \code{\link{unserialize}} as the
+case may be for providing a hook function to handle reference objects. As
+this argument is used in both cases, the function should contain the logic
+to distinguish between them if necessary.}
 
 \item{exitlinger}{[default 2000L] time in milliseconds to linger before
 exiting to allow the socket to complete sends currently in progress.}

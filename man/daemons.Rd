@@ -4,7 +4,14 @@
 \alias{daemons}
 \title{daemons (Persistent Server Processes)}
 \usage{
-daemons(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
+daemons(
+  n,
+  url = NULL,
+  dispatcher = TRUE,
+  refhook = NULL,
+  ...,
+  .compute = "default"
+)
 }
 \arguments{
 \item{n}{integer number of daemons (server processes) to set.}
@@ -18,6 +25,12 @@ connections (and optionally for websockets a path) e.g.
 Dispatcher is a background process that connects to servers on behalf of
 the client and ensures FIFO scheduling, queueing tasks if necessary
 (see Dispatcher section below).}
+
+\item{refhook}{[default NULL] maps to the 'refhook' argument of
+\code{\link{serialize}} or \code{\link{unserialize}} as the
+case may be for providing a hook function to handle reference objects. As
+this argument is used in both cases, the function should contain the logic
+to distinguish between them if necessary.}
 
 \item{...}{additional arguments passed through to \code{\link{dispatcher}} if
 using dispatcher and/or \code{\link{server}} if launching local daemons.}

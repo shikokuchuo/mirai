@@ -12,6 +12,7 @@ server(
   walltime = Inf,
   timerstart = 0L,
   exitlinger = 1000L,
+  refhook = NULL,
   ...,
   cleanup = 7L
 )
@@ -45,6 +46,12 @@ upon launch.}
 exiting due to a timer / task limit, to allow sockets to complete sends
 currently in progress. The default can be set wider if computations are
 expected to return very large objects (> GBs).}
+
+\item{refhook}{[default NULL] maps to the 'refhook' argument of
+\code{\link{serialize}} or \code{\link{unserialize}} as the
+case may be for providing a hook function to handle reference objects. As
+this argument is used in both cases, the function should contain the logic
+to distinguish between them if necessary.}
 
 \item{...}{reserved but not currently used.}
 

@@ -44,6 +44,11 @@
 #'     exiting due to a timer / task limit, to allow sockets to complete sends
 #'     currently in progress. The default can be set wider if computations are
 #'     expected to return very large objects (> GBs).
+#' @param refhook [default NULL] maps to the 'refhook' argument of
+#'     \code{\link{serialize}} or \code{\link{unserialize}} as the
+#'     case may be for providing a hook function to handle reference objects. As
+#'     this argument is used in both cases, the function should contain the logic
+#'     to distinguish between them if necessary.
 #' @param ... reserved but not currently used.
 #' @param cleanup [default 7L] Integer additive bitmask controlling whether to
 #'     perform cleanup of the global environment (1L), reset loaded packages to
@@ -63,8 +68,8 @@
 #' @export
 #'
 server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
-                   walltime = Inf, timerstart = 0L, exitlinger = 1000L, ...,
-                   cleanup = 7L) {
+                   walltime = Inf, timerstart = 0L, exitlinger = 1000L,
+                   refhook = NULL, ..., cleanup = 7L) {
 
   sock <- socket(protocol = "rep")
   on.exit(close(sock))
@@ -75,6 +80,7 @@ server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
   se <- search()
   count <- 0L
   if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
+  if (is.character(refhook)) refhook <- unserialize(base64dec(refhook, convert = FALSE))
 
   devnull <- file(nullfile(), open = "w", blocking = FALSE)
   sink(file = devnull)
@@ -88,7 +94,7 @@ server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
   while (count < maxtasks && mclock() - start < walltime) {
 
     ctx <- .context(sock)
-    aio <- recv_aio_signal(ctx, mode = 1L, timeout = idletime, cv = cv)
+    aio <- recv_aio_signal(ctx, mode = 1L, timeout = idletime, refhook = refhook, cv = cv)
     wait(cv) || return(invisible())
     ._mirai_. <- .subset2(aio, "data")
     is.integer(._mirai_.) && {
@@ -100,7 +106,7 @@ server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
     }
     data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                      error = mk_mirai_error, interrupt = mk_interrupt_error)
-    send(ctx, data = data, mode = 1L)
+    send(ctx, data = data, mode = 1L, refhook = refhook)
     perform_cleanup(cleanup = cleanup, op = op, se = se)
     if (count < timerstart) start <- mclock()
     count <- count + 1L
@@ -124,15 +130,16 @@ server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
 #' @keywords internal
 #' @export
 #'
-.server <- function(url, exitlinger = 2000L) {
+.server <- function(url, refhook = NULL, exitlinger = 2000L) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = NA)
   on.exit(close(sock))
+  if (is.character(refhook)) refhook <- unserialize(base64dec(refhook, convert = FALSE))
   ctx <- .context(sock)
-  ._mirai_. <- recv(ctx, mode = 1L)
+  ._mirai_. <- recv(ctx, mode = 1L, refhook = refhook)
   data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)
-  send(ctx, data = data, mode = 1L)
+  send(ctx, data = data, mode = 1L, refhook = refhook)
   msleep(exitlinger)
 
 }
@@ -176,8 +183,8 @@ server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
 #'
 #' @export
 #'
-dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
-                       token = FALSE, lock = FALSE, ..., monitor = NULL) {
+dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = FALSE,
+                       lock = FALSE, refhook = NULL, ..., monitor = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(.messages[["missing_url"]])
@@ -188,6 +195,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock = sock, url = client, asyncdial = asyncdial)
 
+  if (is.character(refhook)) refhook <- unserialize(base64dec(refhook, convert = FALSE))
   auto <- is.null(url)
   vectorised <- length(url) == n
   seq_n <- seq_len(n)
@@ -231,7 +239,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
     }
 
     if (auto)
-      launch_daemon(type = 2L, nurl, parse_dots(...))
+      launch_daemon(type = 2L, refhook = refhook, nurl, parse_dots(...))
 
     servers[[i]] <- nsock
     active[[i]] <- ncv
@@ -298,7 +306,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
         for (q in free)
           for (i in seq_n) {
             if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
-              queue[[i]][["res"]] <- request_signal(.context(servers[[q]]), data = .subset2(queue[[i]][["req"]], "data"), send_mode = 1L, recv_mode = 1L, cv = cv)
+              queue[[i]][["res"]] <- request_signal(.context(servers[[q]]), data = .subset2(queue[[i]][["req"]], "data"), send_mode = 1L, recv_mode = 1L, refhook = refhook, cv = cv)
               queue[[i]][["daemon"]] <- q
               serverfree[[q]] <- FALSE
               assigned[[q]] <- assigned[[q]] + 1L
@@ -309,7 +317,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
 
       for (i in seq_n)
         if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
-          send(queue[[i]][["ctx"]], data = .subset2(queue[[i]][["res"]], "data"), mode = 1L)
+          send(queue[[i]][["ctx"]], data = .subset2(queue[[i]][["res"]], "data"), mode = 1L, refhook = refhook)
           q <- queue[[i]][["daemon"]]
           serverfree[[q]] <- TRUE
           complete[[q]] <- complete[[q]] + 1L
@@ -319,7 +327,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
       for (i in which(activevec == 1L))
         if (!length(queue[[i]])) {
           ctx <- .context(sock)
-          req <- recv_aio_signal(ctx, mode = 1L, cv = cv)
+          req <- recv_aio_signal(ctx, mode = 1L, refhook = refhook, cv = cv)
           queue[[i]] <- list(ctx = ctx, req = req)
         }
 
@@ -346,6 +354,11 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
 #' @param .timeout [default NULL] for no timeout, or an integer value in
 #'     milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
+#' @param .refhook [default NULL] maps to the 'refhook' argument of
+#'     \code{\link{serialize}} or \code{\link{unserialize}} as the
+#'     case may be for providing a hook function to handle reference objects. As
+#'     this argument is used in both cases, the function should contain the
+#'     logic to distinguish between them if necessary.
 #' @param .compute [default 'default'] character value for the compute profile
 #'     to use when sending the mirai.
 #'
@@ -444,7 +457,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
 #'
 #' @export
 #'
-mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "default") {
+mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .refhook = NULL, .compute = "default") {
 
   missing(.expr) && stop(.messages[["missing_expression"]])
 
@@ -460,13 +473,13 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   envir <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
   if (length(..[[.compute]][["sock"]])) {
-    aio <- request(.context(..[[.compute]][["sock"]]), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    aio <- request(.context(..[[.compute]][["sock"]]), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout, refhook = .refhook)
 
   } else {
     url <- auto_tokenized_url()
     sock <- req_socket(url)
-    if (length(.timeout)) launch_and_sync_daemon(sock = sock, type = 1L, url) else launch_daemon(type = 1L, url)
-    aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    if (length(.timeout)) launch_and_sync_daemon(sock = sock, type = 1L, refhook = .refhook, url) else launch_daemon(type = 1L, refhook = .refhook, url)
+    aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout, refhook = .refhook)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
   }
@@ -500,6 +513,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' @param .compute [default 'default'] character compute profile to use for
 #'     creating the daemons (each compute profile has its own set of daemons for
 #'     connecting to different resources).
+#' @inheritParams server
 #'
 #' @return Setting daemons: integer number of daemons set, or the character
 #'     client URL.
@@ -717,7 +731,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #' @export
 #'
-daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default") {
+daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, ..., .compute = "default") {
 
   envir <- ..[[.compute]]
   missing(n) && missing(url) &&
@@ -739,7 +753,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         urlc <- new_control_url(urld)
         sock <- req_socket(urld)
         sockc <- socket(protocol = "pair", listen = urlc)
-        launch_and_sync_daemon(sock = sock, type = 5L, urld, url, n, urlc, parse_dots(...))
+        launch_and_sync_daemon(sock = sock, type = 5L, refhook = refhook, urld, url, n, urlc, parse_dots(...))
         recv_and_store(sockc = sockc, envir = envir)
         proc <- n
       } else {
@@ -775,11 +789,11 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
       if (dispatcher) {
         urlc <- new_control_url(urld)
         sockc <- socket(protocol = "pair", listen = urlc)
-        launch_and_sync_daemon(sock = sock, type = 4L, urld, n, urlc, parse_dots(...))
+        launch_and_sync_daemon(sock = sock, type = 4L, refhook = refhook, urld, n, urlc, parse_dots(...))
         recv_and_store(sockc = sockc, envir = envir)
       } else {
         for (i in seq_len(n))
-          launch_daemon(type = 2L, urld, parse_dots(...))
+          launch_daemon(type = 2L, refhook = refhook, urld, parse_dots(...))
       }
       `[[<-`(`[[<-`(envir, "sock", sock), "proc", n)
     }
@@ -800,6 +814,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 #'     including the port to connect to and (optionally) a path for websocket
 #'     URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
 #' @param ... (optional) additional arguments passed to \code{\link{server}}.
+#' @inheritParams server
 #'
 #' @return Invisibly, integer system exit code (zero upon success).
 #'
@@ -821,10 +836,10 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 #'
 #' @export
 #'
-launch_server <- function(url, ...) {
+launch_server <- function(url, refhook = NULL, ...) {
 
   parse_url(url)
-  launch_daemon(type = 2L, url, parse_dots(...))
+  launch_daemon(type = 2L, refhook = refhook, url, parse_dots(...))
 
 }
 
@@ -1100,21 +1115,21 @@ print.miraiInterrupt <- function(x, ...) {
 
 # internals --------------------------------------------------------------------
 
-launch_daemon <- function(type, ...) {
+launch_daemon <- function(type, refhook, ...) {
   args <- switch(type,
-                 sprintf("mirai::.server(\"%s\")", ..1),
-                 sprintf("mirai::server(\"%s\"%s)", ..1, ..2),
-                 sprintf("mirai::server(\"%s\"%s,asyncdial=%s)", ..1, ..2, ..3),
-                 sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", ..1, ..2, ..3, ..4),
-                 sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)",
-                         ..1, paste(sprintf("\"%s\"", ..2), collapse = ","), ..3, ..4, ..5))
+                 if (length(refhook)) sprintf("mirai::.server(\"%s\",\"%s\")", ..1, base64enc(refhook)) else sprintf("mirai::.server(\"%s\")", ..1),
+                 if (length(refhook)) sprintf("mirai::server(\"%s\",refhook=\"%s\"%s)", ..1, base64enc(refhook), ..2) else sprintf("mirai::server(\"%s\"%s)", ..1, ..2),
+                 "",
+                 if (length(refhook)) sprintf("mirai::dispatcher(\"%s\",refhook=\"%s\",n=%d,monitor=\"%s\"%s)", ..1, base64enc(refhook), ..2, ..3, ..4) else sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", ..1, ..2, ..3, ..4),
+                 if (length(refhook)) sprintf("mirai::dispatcher(\"%s\",c(%s),refhook=\"%s\",n=%d,monitor=\"%s\"%s)", ..1, paste(sprintf("\"%s\"", ..2), collapse = ","), base64enc(refhook), ..3, ..4, ..5) else
+                   sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)", ..1, paste(sprintf("\"%s\"", ..2), collapse = ","), ..3, ..4, ..5))
   system2(command = .command, args = c("-e", shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE)
 }
 
-launch_and_sync_daemon <- function(sock, type, ...) {
+launch_and_sync_daemon <- function(sock, type, refhook, ...) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-  launch_daemon(type = type, ...)
+  launch_daemon(type = type, refhook = refhook, ...)
   until(cv, .timelimit) && stop(.messages[["connection_timeout"]])
 }
 
