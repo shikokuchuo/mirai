@@ -80,7 +80,7 @@ server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
   se <- search()
   count <- 0L
   if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
-  if (is.character(refhook)) refhook <- unserialize(base64dec(refhook, convert = FALSE))
+  refhook(refhook)
 
   devnull <- file(nullfile(), open = "w", blocking = FALSE)
   sink(file = devnull)
@@ -94,7 +94,7 @@ server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
   while (count < maxtasks && mclock() - start < walltime) {
 
     ctx <- .context(sock)
-    aio <- recv_aio_signal(ctx, mode = 1L, timeout = idletime, refhook = refhook, cv = cv)
+    aio <- recv_aio_signal(ctx, mode = 1L, timeout = idletime, cv = cv)
     wait(cv) || return(invisible())
     ._mirai_. <- .subset2(aio, "data")
     is.integer(._mirai_.) && {
@@ -106,7 +106,7 @@ server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
     }
     data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                      error = mk_mirai_error, interrupt = mk_interrupt_error)
-    send(ctx, data = data, mode = 1L, refhook = refhook)
+    send(ctx, data = data, mode = 1L)
     perform_cleanup(cleanup = cleanup, op = op, se = se)
     if (count < timerstart) start <- mclock()
     count <- count + 1L
@@ -130,16 +130,15 @@ server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
 #' @keywords internal
 #' @export
 #'
-.server <- function(url, refhook = NULL, exitlinger = 2000L) {
+.server <- function(url, exitlinger = 2000L) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = NA)
   on.exit(close(sock))
-  if (is.character(refhook)) refhook <- unserialize(base64dec(refhook, convert = FALSE))
   ctx <- .context(sock)
-  ._mirai_. <- recv(ctx, mode = 1L, refhook = refhook)
+  ._mirai_. <- recv(ctx, mode = 1L)
   data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)
-  send(ctx, data = data, mode = 1L, refhook = refhook)
+  send(ctx, data = data, mode = 1L)
   msleep(exitlinger)
 
 }
@@ -195,7 +194,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = 
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock = sock, url = client, asyncdial = asyncdial)
 
-  if (is.character(refhook)) refhook <- unserialize(base64dec(refhook, convert = FALSE))
+  refhook <- refhook(refhook)
   auto <- is.null(url)
   vectorised <- length(url) == n
   seq_n <- seq_len(n)
@@ -306,7 +305,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = 
         for (q in free)
           for (i in seq_n) {
             if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
-              queue[[i]][["res"]] <- request_signal(.context(servers[[q]]), data = .subset2(queue[[i]][["req"]], "data"), send_mode = 1L, recv_mode = 1L, refhook = refhook, cv = cv)
+              queue[[i]][["res"]] <- request_signal(.context(servers[[q]]), data = .subset2(queue[[i]][["req"]], "data"), send_mode = 1L, recv_mode = 1L, cv = cv)
               queue[[i]][["daemon"]] <- q
               serverfree[[q]] <- FALSE
               assigned[[q]] <- assigned[[q]] + 1L
@@ -317,7 +316,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = 
 
       for (i in seq_n)
         if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
-          send(queue[[i]][["ctx"]], data = .subset2(queue[[i]][["res"]], "data"), mode = 1L, refhook = refhook)
+          send(queue[[i]][["ctx"]], data = .subset2(queue[[i]][["res"]], "data"), mode = 1L)
           q <- queue[[i]][["daemon"]]
           serverfree[[q]] <- TRUE
           complete[[q]] <- complete[[q]] + 1L
@@ -327,7 +326,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = 
       for (i in which(activevec == 1L))
         if (!length(queue[[i]])) {
           ctx <- .context(sock)
-          req <- recv_aio_signal(ctx, mode = 1L, refhook = refhook, cv = cv)
+          req <- recv_aio_signal(ctx, mode = 1L, cv = cv)
           queue[[i]] <- list(ctx = ctx, req = req)
         }
 
@@ -354,11 +353,6 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = 
 #' @param .timeout [default NULL] for no timeout, or an integer value in
 #'     milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
-#' @param .refhook [default NULL] maps to the 'refhook' argument of
-#'     \code{\link{serialize}} or \code{\link{unserialize}} as the
-#'     case may be for providing a hook function to handle reference objects. As
-#'     this argument is used in both cases, the function should contain the
-#'     logic to distinguish between them if necessary.
 #' @param .compute [default 'default'] character value for the compute profile
 #'     to use when sending the mirai.
 #'
@@ -457,7 +451,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = 
 #'
 #' @export
 #'
-mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .refhook = NULL, .compute = "default") {
+mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "default") {
 
   missing(.expr) && stop(.messages[["missing_expression"]])
 
@@ -473,13 +467,13 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .refhook = NULL, 
   envir <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
   if (length(..[[.compute]][["sock"]])) {
-    aio <- request(.context(..[[.compute]][["sock"]]), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout, refhook = .refhook)
+    aio <- request(.context(..[[.compute]][["sock"]]), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
 
   } else {
     url <- auto_tokenized_url()
     sock <- req_socket(url)
-    if (length(.timeout)) launch_and_sync_daemon(sock = sock, type = 1L, refhook = .refhook, url) else launch_daemon(type = 1L, refhook = .refhook, url)
-    aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout, refhook = .refhook)
+    if (length(.timeout)) launch_and_sync_daemon(sock = sock, type = 1L, refhook = NULL, url) else launch_daemon(type = 1L, refhook = NULL, url)
+    aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
   }
@@ -814,7 +808,6 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, ..., .comp
 #'     including the port to connect to and (optionally) a path for websocket
 #'     URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
 #' @param ... (optional) additional arguments passed to \code{\link{server}}.
-#' @inheritParams server
 #'
 #' @return Invisibly, integer system exit code (zero upon success).
 #'
@@ -836,10 +829,10 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, ..., .comp
 #'
 #' @export
 #'
-launch_server <- function(url, refhook = NULL, ...) {
+launch_server <- function(url, ...) {
 
   parse_url(url)
-  launch_daemon(type = 2L, refhook = refhook, url, parse_dots(...))
+  launch_daemon(type = 2L, refhook = refhook(), url, parse_dots(...))
 
 }
 
@@ -1117,7 +1110,7 @@ print.miraiInterrupt <- function(x, ...) {
 
 launch_daemon <- function(type, refhook, ...) {
   args <- switch(type,
-                 if (length(refhook)) sprintf("mirai::.server(\"%s\",\"%s\")", ..1, base64enc(refhook)) else sprintf("mirai::.server(\"%s\")", ..1),
+                 sprintf("mirai::.server(\"%s\")", ..1),
                  if (length(refhook)) sprintf("mirai::server(\"%s\",refhook=\"%s\"%s)", ..1, base64enc(refhook), ..2) else sprintf("mirai::server(\"%s\"%s)", ..1, ..2),
                  "",
                  if (length(refhook)) sprintf("mirai::dispatcher(\"%s\",refhook=\"%s\",n=%d,monitor=\"%s\"%s)", ..1, base64enc(refhook), ..2, ..3, ..4) else sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", ..1, ..2, ..3, ..4),

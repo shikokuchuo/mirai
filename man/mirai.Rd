@@ -4,14 +4,7 @@
 \alias{mirai}
 \title{mirai (Evaluate Async)}
 \usage{
-mirai(
-  .expr,
-  ...,
-  .args = list(),
-  .timeout = NULL,
-  .refhook = NULL,
-  .compute = "default"
-)
+mirai(.expr, ..., .args = list(), .timeout = NULL, .compute = "default")
 }
 \arguments{
 \item{.expr}{an expression to evaluate asynchronously (of arbitrary length,
@@ -28,12 +21,6 @@ else (ii) a list of name = value pairs, as in '...'.}
 \item{.timeout}{[default NULL] for no timeout, or an integer value in
 milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
 evaluation exceeds this limit.}
-
-\item{.refhook}{[default NULL] maps to the 'refhook' argument of
-\code{\link{serialize}} or \code{\link{unserialize}} as the
-case may be for providing a hook function to handle reference objects. As
-this argument is used in both cases, the function should contain the
-logic to distinguish between them if necessary.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use when sending the mirai.}
