@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.7.9021</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.7.9022</span>
       </span>
     </div>
 
@@ -59,7 +59,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.server</span><span class="op">(</span><span class="va">url</span>, refhook <span class="op">=</span> <span class="cn">NULL</span>, exitlinger <span class="op">=</span> <span class="fl">2000L</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.server</span><span class="op">(</span><span class="va">url</span>, exitlinger <span class="op">=</span> <span class="fl">2000L</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -68,14 +68,6 @@
 <dd><p>the client or dispatcher URL to dial into as a character string,
 including the port to connect to and (optionally) a path for websocket
 URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.</p></dd>
-
-
-<dt>refhook</dt>
-<dd><p>[default NULL] maps to the 'refhook' argument of
-<code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">serialize</a></code> or <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize</a></code> as the
-case may be for providing a hook function to handle reference objects. As
-this argument is used in both cases, the function should contain the logic
-to distinguish between them if necessary.</p></dd>
 
 
 <dt>exitlinger</dt>
