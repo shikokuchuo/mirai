@@ -31,7 +31,7 @@ Consider specifying the argument 'asyncdial' [default FALSE] whether
     issues.
 
     Any 'refhook' argument already set via \code{\link{daemons}} is passed to
-    the server automatically, without the need to specify it in '...'.
+    the server automatically, without the need to specify in '\code{...}'.
 }
 \examples{
 if (interactive()) {

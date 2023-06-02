@@ -85,9 +85,9 @@ For viewing the currrent status, specify \code{daemons()} with no
     task is complete.
 
     If setting 'refhook', the same function must be provided for all compute
-    profiles. Servers launched manually, i.e. not through \code{\link{daemons}}
-    or \code{\link{launch_server}}, must use the same 'refhook' argument to
-    ensure seamless operation.
+    profiles. Servers launched manually, i.e. other than through this
+    function or \code{\link{launch_server}}, must use the same 'refhook'
+    argument to ensure seamless operation.
 }
 \section{Dispatcher}{
 
