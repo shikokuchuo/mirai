@@ -51,7 +51,8 @@ expected to return very large objects (> GBs).}
 \code{\link{serialize}} and \code{\link{unserialize}} for providing a
 hook function to handle reference objects. As the same function is used
 in both cases, it should contain the necessary logic to distinguish
-between them as required.}
+between them as required. Accepts a function or function encoded via
+\code{\link[nanonext]{base64enc}}.}
 
 \item{...}{reserved but not currently used.}
 

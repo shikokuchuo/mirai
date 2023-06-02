@@ -48,7 +48,8 @@
 #'     \code{\link{serialize}} and \code{\link{unserialize}} for providing a
 #'     hook function to handle reference objects. As the same function is used
 #'     in both cases, it should contain the necessary logic to distinguish
-#'     between them as required.
+#'     between them as required. Accepts a function or function encoded via
+#'     \code{\link[nanonext]{base64enc}}.
 #' @param ... reserved but not currently used.
 #' @param cleanup [default 7L] Integer additive bitmask controlling whether to
 #'     perform cleanup of the global environment (1L), reset loaded packages to

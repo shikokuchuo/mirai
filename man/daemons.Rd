@@ -30,7 +30,8 @@ the client and ensures FIFO scheduling, queueing tasks if necessary
 \code{\link{serialize}} and \code{\link{unserialize}} for providing a
 hook function to handle reference objects. As the same function is used
 in both cases, it should contain the necessary logic to distinguish
-between them as required.}
+between them as required. Accepts a function or function encoded via
+\code{\link[nanonext]{base64enc}}.}
 
 \item{...}{additional arguments passed through to \code{\link{dispatcher}} if
 using dispatcher and/or \code{\link{server}} if launching local daemons.}

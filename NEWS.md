@@ -1,4 +1,4 @@
-# mirai 0.8.7.9022 (development)
+# mirai 0.8.7.9023 (development)
 
 * Adds argument 'refhook' to `daemons()`, `server()` and `dispatcher()` for providing a hook function to handle reference objects.
 * Improvements to dispatcher:
