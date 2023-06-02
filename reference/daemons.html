@@ -105,10 +105,10 @@ the client and ensures FIFO scheduling, queueing tasks if necessary
 
 <dt>refhook</dt>
 <dd><p>[default NULL] maps to the 'refhook' argument of
-<code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">serialize</a></code> or <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize</a></code> as the
-case may be for providing a hook function to handle reference objects. As
-this argument is used in both cases, the function should contain the logic
-to distinguish between them if necessary.</p></dd>
+<code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">serialize</a></code> and <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize</a></code> for providing a
+hook function to handle reference objects. As the same function is used
+in both cases, it should contain the necessary logic to distinguish
+between them as required.</p></dd>
 
 
 <dt>...</dt>
@@ -145,7 +145,7 @@ connecting to different resources).</p></dd>
 <p>Use <code>daemons(0)</code> to reset daemon connections:</p><ul><li><p>A reset is required before revising settings for the same compute
     profile, otherwise changes are not registered.</p></li>
 <li><p>All connected daemons and/or dispatchers exit automatically.</p></li>
-<li><p>{mirai} reverts to the default behaviour of creating a new
+<li><p><span class="pkg">mirai</span> reverts to the default behaviour of creating a new
     background process for each request.</p></li>
 </ul><p>When specifying a client URL, all daemons dialing into the client are
     detected automatically and resources may be added or removed at any time.</p>
@@ -153,6 +153,10 @@ connecting to different resources).</p></dd>
     and daemon processes automatically exit as soon as their connections are
     dropped. If a daemon is processing a task, it will exit as soon as the
     task is complete.</p>
+<p>If setting 'refhook', the same function must be provided for all compute
+    profiles. Servers launched manually, i.e. not through <code>daemons</code>
+    or <code><a href="launch_server.html">launch_server</a></code>, must use the same 'refhook' argument to
+    ensure seamless operation.</p>
     </div>
     <div id="dispatcher">
     <h2>Dispatcher</h2>

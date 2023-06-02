@@ -121,10 +121,10 @@ against more than one server trying to connect to a unique URL.</p></dd>
 
 <dt>refhook</dt>
 <dd><p>[default NULL] maps to the 'refhook' argument of
-<code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">serialize</a></code> or <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize</a></code> as the
-case may be for providing a hook function to handle reference objects. As
-this argument is used in both cases, the function should contain the logic
-to distinguish between them if necessary.</p></dd>
+<code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">serialize</a></code> and <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize</a></code> for providing a
+hook function to handle reference objects. As the same function is used
+in both cases, it should contain the necessary logic to distinguish
+between them as required.</p></dd>
 
 
 <dt>...</dt>
