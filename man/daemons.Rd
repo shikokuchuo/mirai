@@ -27,10 +27,10 @@ the client and ensures FIFO scheduling, queueing tasks if necessary
 (see Dispatcher section below).}
 
 \item{refhook}{[default NULL] maps to the 'refhook' argument of
-\code{\link{serialize}} or \code{\link{unserialize}} as the
-case may be for providing a hook function to handle reference objects. As
-this argument is used in both cases, the function should contain the logic
-to distinguish between them if necessary.}
+\code{\link{serialize}} and \code{\link{unserialize}} for providing a
+hook function to handle reference objects. As the same function is used
+in both cases, it should contain the necessary logic to distinguish
+between them as required.}
 
 \item{...}{additional arguments passed through to \code{\link{dispatcher}} if
 using dispatcher and/or \code{\link{server}} if launching local daemons.}
@@ -72,7 +72,7 @@ For viewing the currrent status, specify \code{daemons()} with no
     \item{A reset is required before revising settings for the same compute
     profile, otherwise changes are not registered.}
     \item{All connected daemons and/or dispatchers exit automatically.}
-    \item{\{mirai\} reverts to the default behaviour of creating a new
+    \item{\pkg{mirai} reverts to the default behaviour of creating a new
     background process for each request.}
     }
 
@@ -83,6 +83,11 @@ For viewing the currrent status, specify \code{daemons()} with no
     and daemon processes automatically exit as soon as their connections are
     dropped. If a daemon is processing a task, it will exit as soon as the
     task is complete.
+
+    If setting 'refhook', the same function must be provided for all compute
+    profiles. Servers launched manually, i.e. not through \code{\link{daemons}}
+    or \code{\link{launch_server}}, must use the same 'refhook' argument to
+    ensure seamless operation.
 }
 \section{Dispatcher}{
 

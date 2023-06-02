@@ -49,10 +49,10 @@ accepted, preventing further connection attempts. This provides safety
 against more than one server trying to connect to a unique URL.}
 
 \item{refhook}{[default NULL] maps to the 'refhook' argument of
-\code{\link{serialize}} or \code{\link{unserialize}} as the
-case may be for providing a hook function to handle reference objects. As
-this argument is used in both cases, the function should contain the logic
-to distinguish between them if necessary.}
+\code{\link{serialize}} and \code{\link{unserialize}} for providing a
+hook function to handle reference objects. As the same function is used
+in both cases, it should contain the necessary logic to distinguish
+between them as required.}
 
 \item{...}{additional arguments passed through to \code{\link{server}} if
 launching local daemons i.e. 'url' is not specified.}

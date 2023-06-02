@@ -45,10 +45,10 @@
 #'     currently in progress. The default can be set wider if computations are
 #'     expected to return very large objects (> GBs).
 #' @param refhook [default NULL] maps to the 'refhook' argument of
-#'     \code{\link{serialize}} or \code{\link{unserialize}} as the
-#'     case may be for providing a hook function to handle reference objects. As
-#'     this argument is used in both cases, the function should contain the logic
-#'     to distinguish between them if necessary.
+#'     \code{\link{serialize}} and \code{\link{unserialize}} for providing a
+#'     hook function to handle reference objects. As the same function is used
+#'     in both cases, it should contain the necessary logic to distinguish
+#'     between them as required.
 #' @param ... reserved but not currently used.
 #' @param cleanup [default 7L] Integer additive bitmask controlling whether to
 #'     perform cleanup of the global environment (1L), reset loaded packages to
@@ -472,7 +472,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   } else {
     url <- auto_tokenized_url()
     sock <- req_socket(url)
-    if (length(.timeout)) launch_and_sync_daemon(sock = sock, type = 1L, refhook = NULL, url) else launch_daemon(type = 1L, refhook = NULL, url)
+    if (length(.timeout)) launch_and_sync_daemon(sock = sock, type = 1L, refhook = NULL, url) else
+      launch_daemon(type = 1L, refhook = NULL, url)
     aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
@@ -530,7 +531,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     \item{A reset is required before revising settings for the same compute
 #'     profile, otherwise changes are not registered.}
 #'     \item{All connected daemons and/or dispatchers exit automatically.}
-#'     \item{\{mirai\} reverts to the default behaviour of creating a new
+#'     \item{\pkg{mirai} reverts to the default behaviour of creating a new
 #'     background process for each request.}
 #'     }
 #'
@@ -541,6 +542,11 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     and daemon processes automatically exit as soon as their connections are
 #'     dropped. If a daemon is processing a task, it will exit as soon as the
 #'     task is complete.
+#'
+#'     If setting 'refhook', the same function must be provided for all compute
+#'     profiles. Servers launched manually, i.e. not through \code{\link{daemons}}
+#'     or \code{\link{launch_server}}, must use the same 'refhook' argument to
+#'     ensure seamless operation.
 #'
 #' @section Dispatcher:
 #'
@@ -818,6 +824,9 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, ..., .comp
 #'     Specifying TRUE continues retrying (indefinitely) if not immediately
 #'     successful, which is more resilient but can mask potential connection
 #'     issues.
+#'
+#'     Any 'refhook' argument already set via \code{\link{daemons}} is passed to
+#'     the server automatically, without the need to specify it in '...'.
 #'
 #' @examples
 #' if (interactive()) {

@@ -48,10 +48,10 @@ currently in progress. The default can be set wider if computations are
 expected to return very large objects (> GBs).}
 
 \item{refhook}{[default NULL] maps to the 'refhook' argument of
-\code{\link{serialize}} or \code{\link{unserialize}} as the
-case may be for providing a hook function to handle reference objects. As
-this argument is used in both cases, the function should contain the logic
-to distinguish between them if necessary.}
+\code{\link{serialize}} and \code{\link{unserialize}} for providing a
+hook function to handle reference objects. As the same function is used
+in both cases, it should contain the necessary logic to distinguish
+between them as required.}
 
 \item{...}{reserved but not currently used.}
 
