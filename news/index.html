@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.7.9023</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.7.9024</span>
       </span>
     </div>
 
@@ -54,8 +54,8 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.7.9023" id="mirai-0879023-development">mirai 0.8.7.9023 (development)<a class="anchor" aria-label="anchor" href="#mirai-0879023-development"></a></h2>
-<ul><li>Adds argument ‘refhook’ to <code><a href="../reference/daemons.html">daemons()</a></code>, <code><a href="../reference/server.html">server()</a></code> and <code><a href="../reference/dispatcher.html">dispatcher()</a></code> for providing a hook function to handle reference objects.</li>
+<h2 class="page-header" data-toc-text="0.8.7.9024" id="mirai-0879024-development">mirai 0.8.7.9024 (development)<a class="anchor" aria-label="anchor" href="#mirai-0879024-development"></a></h2>
+<ul><li>Allows use of reference objects in a ‘mirai’ (such as those accessed via an external pointer), by adding argument ‘refhook’ to <code><a href="../reference/daemons.html">daemons()</a></code>, <code><a href="../reference/server.html">server()</a></code> and <code><a href="../reference/dispatcher.html">dispatcher()</a></code> for providing a hook function to handle such objects.</li>
 <li>Improvements to dispatcher:
 <ul><li>Ensures the first URL retains the same format if <code>saisei(i = 1L)</code> is called.</li>
 <li>Optimal scheduling when tasks are submitted prior to any servers coming online.</li>
@@ -64,7 +64,7 @@
 <code><a href="../reference/daemons.html">daemons()</a></code> status requests have been rendered more robust.</li>
 </ul></li>
 <li>Ensures <code><a href="../reference/saisei.html">saisei()</a></code> always returns <code>NULL</code> if ‘tcp://’ URLs are being used as they do not support tokens.</li>
-<li>Requires nanonext &gt;= [0.9.0.9002].</li>
+<li>Requires nanonext &gt;= [0.9.0.9004].</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.8.7" id="mirai-087">mirai 0.8.7<small>2023-05-11</small><a class="anchor" aria-label="anchor" href="#mirai-087"></a></h2>
