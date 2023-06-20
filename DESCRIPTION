@@ -1,7 +1,7 @@
 Package: mirai
 Type: Package
 Title: Minimalist Async Evaluation Framework for R
-Version: 0.8.7.9025
+Version: 0.8.7.9026
 Description: Lightweight parallel code execution and distributed computing.
     Designed for simplicity, a 'mirai' evaluates an R expression asynchronously,
     on local or network resources, resolving automatically upon completion.
@@ -22,7 +22,7 @@ BugReports: https://github.com/shikokuchuo/mirai/issues
 URL: https://shikokuchuo.net/mirai/, https://github.com/shikokuchuo/mirai/
 Encoding: UTF-8
 Depends: 
-    R (>= 2.12)
+    R (>= 3.5)
 Imports: 
     nanonext (>= 0.9.0.9004)
 RoxygenNote: 7.2.3

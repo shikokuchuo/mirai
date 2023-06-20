@@ -25,8 +25,8 @@ websocket URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 listen at as a character vector, including the port to connect to and
 (optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
 'ws://192.168.0.2:5555/path'. Tasks are sent to servers dialled into
-these URLs. If not supplied, 'n' URLs accessible from the same computer
-will be assigned automatically.}
+these URLs. If not supplied, 'n' local inter-process URLs will be
+assigned automatically.}
 
 \item{n}{(optional) if specified, the integer number of servers to listen for.
 Otherwise 'n' will be inferred from the number of URLs supplied as '...'.

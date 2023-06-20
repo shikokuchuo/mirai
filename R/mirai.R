@@ -157,8 +157,8 @@ server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
 #'     listen at as a character vector, including the port to connect to and
 #'     (optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
 #'     'ws://192.168.0.2:5555/path'. Tasks are sent to servers dialled into
-#'     these URLs. If not supplied, 'n' URLs accessible from the same computer
-#'     will be assigned automatically.
+#'     these URLs. If not supplied, 'n' local inter-process URLs will be
+#'     assigned automatically.
 #' @param n (optional) if specified, the integer number of servers to listen for.
 #'     Otherwise 'n' will be inferred from the number of URLs supplied as '...'.
 #'     Where a single URL is supplied and 'n' > 1, 'n' unique URLs will be
@@ -239,7 +239,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = 
     }
 
     if (auto)
-      launch_daemon(type = 2L, refhook = refhook, nurl, parse_dots(...))
+      launch_daemon(refhook = refhook, nurl, parse_dots(...))
 
     servers[[i]] <- nsock
     active[[i]] <- ncv
@@ -465,8 +465,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
     url <- auto_tokenized_url()
     sock <- req_socket(url)
     if (length(.timeout))
-      launch_and_sync_daemon(sock = sock, type = 1L, refhook = NULL, url) else
-        launch_daemon(type = 1L, refhook = NULL, url)
+      launch_and_sync_daemon(sock = sock, refhook = NULL, url) else
+        launch_daemon(refhook = NULL, url)
     aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
@@ -746,7 +746,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, ..., .comp
         urlc <- new_control_url(urld)
         sock <- req_socket(urld)
         sockc <- socket(protocol = "pair", listen = urlc)
-        launch_and_sync_daemon(sock = sock, type = 5L, refhook = refhook, urld, url, n, urlc, parse_dots(...))
+        launch_and_sync_daemon(sock = sock, refhook = refhook, urld, url, n, urlc, parse_dots(...))
         recv_and_store(sockc = sockc, envir = envir)
         proc <- n
       } else {
@@ -782,11 +782,11 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, ..., .comp
       if (dispatcher) {
         urlc <- new_control_url(urld)
         sockc <- socket(protocol = "pair", listen = urlc)
-        launch_and_sync_daemon(sock = sock, type = 4L, refhook = refhook, urld, n, urlc, parse_dots(...))
+        launch_and_sync_daemon(sock = sock, refhook = refhook, urld, n, urlc, parse_dots(...))
         recv_and_store(sockc = sockc, envir = envir)
       } else {
         for (i in seq_len(n))
-          launch_daemon(type = 2L, refhook = refhook, urld, parse_dots(...))
+          launch_daemon(refhook = refhook, urld, parse_dots(...))
       }
       `[[<-`(`[[<-`(envir, "sock", sock), "proc", n)
     }
@@ -834,7 +834,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, ..., .comp
 launch_server <- function(url, ...) {
 
   parse_url(url)
-  launch_daemon(type = 2L, refhook = refhook(), url, parse_dots(...))
+  launch_daemon(refhook = refhook(), url, parse_dots(...))
 
 }
 
@@ -1110,8 +1110,8 @@ print.miraiInterrupt <- function(x, ...) {
 
 # internals --------------------------------------------------------------------
 
-launch_daemon <- function(type, refhook, ...) {
-  args <- switch(type,
+launch_daemon <- function(refhook, ...) {
+  args <- switch(...length(),
                  sprintf("mirai::.server(\"%s\")", ..1),
                  if (length(refhook)) sprintf("mirai::server(\"%s\",refhook=\"%s\"%s)", ..1, base64enc(refhook), ..2) else sprintf("mirai::server(\"%s\"%s)", ..1, ..2),
                  "",
@@ -1121,10 +1121,10 @@ launch_daemon <- function(type, refhook, ...) {
   system2(command = .command, args = c("-e", shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE)
 }
 
-launch_and_sync_daemon <- function(sock, type, refhook, ...) {
+launch_and_sync_daemon <- function(sock, refhook, ...) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-  launch_daemon(type = type, refhook = refhook, ...)
+  launch_daemon(refhook = refhook, ...)
   until(cv, .timelimit) && stop(.messages[["connection_timeout"]])
 }
 
