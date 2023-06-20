@@ -255,8 +255,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = 
     sockc <- socket(protocol = "pair")
     on.exit(close(sockc), add = TRUE, after = FALSE)
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
-    r <- send(sockc, c(Sys.getpid(), servernames), mode = 2L, block = .timelimit)
-    r && stop(.messages[["connection_timeout"]])
+    send(sockc, c(Sys.getpid(), servernames), mode = 2L, block = .timelimit) && stop(.messages[["connection_timeout"]])
     cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
   }
 
@@ -291,8 +290,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = 
         } else {
           data <- as.integer(c(activevec, instance, assigned, complete))
         }
-        r <- send(sockc, data = data, mode = 2L, block = .timelimit)
-        r && stop(.messages[["connection_timeout"]])
+        send(sockc, data = data, mode = 2L, block = .timelimit) && stop(.messages[["connection_timeout"]])
         cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
         next
       }
@@ -321,10 +319,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = 
           ctx <- .context(sock)
           req <- recv_aio_signal(ctx, mode = 1L, cv = cv)
           queue[[i]] <- list(ctx = ctx, req = req)
-          cv_value(cv) || {
-            cv_signal(cv)
-            TRUE
-          }
+          cv_value(cv) || is.null(cv_signal(cv))
         }
 
     }
@@ -469,8 +464,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   } else {
     url <- auto_tokenized_url()
     sock <- req_socket(url)
-    if (length(.timeout)) launch_and_sync_daemon(sock = sock, type = 1L, refhook = NULL, url) else
-      launch_daemon(type = 1L, refhook = NULL, url)
+    if (length(.timeout))
+      launch_and_sync_daemon(sock = sock, type = 1L, refhook = NULL, url) else
+        launch_daemon(type = 1L, refhook = NULL, url)
     aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
