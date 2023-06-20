@@ -1,4 +1,4 @@
-# mirai 0.8.7.9024 (development)
+# mirai 0.8.7.9025 (development)
 
 * Allows use of reference objects in a 'mirai' (such as those accessed via an external pointer), by adding argument 'refhook' to `daemons()`, `server()` and `dispatcher()` for providing a hook function to handle such objects.
 * Improvements to dispatcher:

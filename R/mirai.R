@@ -243,6 +243,9 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = 
 
     servers[[i]] <- nsock
     active[[i]] <- ncv
+    ctx <- .context(sock)
+    req <- recv_aio_signal(ctx, mode = 1L, cv = cv)
+    queue[[i]] <- list(ctx = ctx, req = req)
   }
 
   on.exit(lapply(servers, close), add = TRUE, after = TRUE)
@@ -294,12 +297,6 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = 
         next
       }
 
-      for (i in which(activevec == 0L))
-        if (length(queue[[i]]) == 2L && unresolved(queue[[i]][["req"]])) {
-          stop_aio(queue[[i]][["req"]])
-          queue[[i]] <- list()
-        }
-
       free <- which(serverfree & activevec)
 
       if (length(free))
@@ -321,14 +318,13 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = 
           q <- queue[[i]][["daemon"]]
           serverfree[[q]] <- TRUE
           complete[[q]] <- complete[[q]] + 1L
-          queue[[i]] <- list()
-        }
-
-      for (i in which(activevec == 1L))
-        if (!length(queue[[i]])) {
           ctx <- .context(sock)
           req <- recv_aio_signal(ctx, mode = 1L, cv = cv)
           queue[[i]] <- list(ctx = ctx, req = req)
+          cv_value(cv) || {
+            cv_signal(cv)
+            TRUE
+          }
         }
 
     }
