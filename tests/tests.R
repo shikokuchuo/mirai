@@ -94,7 +94,6 @@ if (.Platform[["OS.type"]] != "windows") {
   nanotest(is.matrix(status) || is_error_value(status))
   if (is.matrix(status)) {
     nanotest(is.character(dn1 <- dimnames(status)[[1L]]))
-    nanotest(is.integer(attr(dn1, "dispatcher_pid")))
     nanotest(is.character(parse1 <- nanonext::parse_url(dn1[1L])))
     nanotest(is.character(parse2 <- nanonext::parse_url(dn1[2L])))
     nanotest((port <- as.integer(parse1[["port"]])) > 0L)
@@ -119,7 +118,6 @@ if (.Platform[["OS.type"]] != "windows") {
   nanotest(is.matrix(tstatus) || is_error_value(tstatus))
   if (is.matrix(tstatus)) {
     nanotest(is.character(tdn1 <- dimnames(tstatus)[[1L]]))
-    nanotest(is.integer(attr(tdn1, "dispatcher_pid")))
     nanotest(is.character(tparse1 <- nanonext::parse_url(tdn1[1L])))
     nanotest(is.character(tparse2 <- nanonext::parse_url(tdn1[2L])))
     nanotest((tport <- as.integer(tparse1[["port"]])) > 0L)

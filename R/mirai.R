@@ -239,7 +239,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = 
     }
 
     if (auto)
-      launch_daemon(refhook = refhook, nurl, parse_dots(...))
+      launch_daemon(nurl, parse_dots(...), refhook = refhook)
 
     servers[[i]] <- nsock
     active[[i]] <- ncv
@@ -464,9 +464,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   } else {
     url <- auto_tokenized_url()
     sock <- req_socket(url)
-    if (length(.timeout))
-      launch_and_sync_daemon(sock = sock, refhook = NULL, url) else
-        launch_daemon(refhook = NULL, url)
+    if (length(.timeout)) launch_and_sync_daemon(sock = sock, url) else launch_daemon(url)
     aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
@@ -736,19 +734,20 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, ..., .comp
     envir <- ..[[.compute]]
   }
 
+  refhook <- nanonext::refhook(refhook)
+
   if (is.character(url)) {
 
     if (is.null(envir[["sock"]])) {
       if (dispatcher) {
-        n <- if (missing(n)) length(url) else if (is.numeric(n) && n > 0L) as.integer(n) else stop(.messages[["n_one"]])
+        proc <- if (missing(n)) length(url) else if (is.numeric(n) && n > 0L) as.integer(n) else stop(.messages[["n_one"]])
         parse_url(url)
         urld <- auto_tokenized_url()
         urlc <- new_control_url(urld)
         sock <- req_socket(urld)
         sockc <- socket(protocol = "pair", listen = urlc)
-        launch_and_sync_daemon(sock = sock, refhook = refhook, urld, url, n, urlc, parse_dots(...))
+        launch_and_sync_daemon(sock = sock, urld, url, proc, urlc, parse_dots(...), refhook = refhook)
         recv_and_store(sockc = sockc, envir = envir)
-        proc <- n
       } else {
         sock <- req_socket(url)
         listener <- attr(sock, "listener")[[1L]]
@@ -782,11 +781,11 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, ..., .comp
       if (dispatcher) {
         urlc <- new_control_url(urld)
         sockc <- socket(protocol = "pair", listen = urlc)
-        launch_and_sync_daemon(sock = sock, refhook = refhook, urld, n, urlc, parse_dots(...))
+        launch_and_sync_daemon(sock = sock, urld, n, urlc, parse_dots(...), refhook = refhook)
         recv_and_store(sockc = sockc, envir = envir)
       } else {
         for (i in seq_len(n))
-          launch_daemon(refhook = refhook, urld, parse_dots(...))
+          launch_daemon(urld, parse_dots(...), refhook = refhook)
       }
       `[[<-`(`[[<-`(envir, "sock", sock), "proc", n)
     }
@@ -834,7 +833,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, ..., .comp
 launch_server <- function(url, ...) {
 
   parse_url(url)
-  launch_daemon(refhook = refhook(), url, parse_dots(...))
+  launch_daemon(url, parse_dots(...), refhook = refhook())
 
 }
 
@@ -1110,7 +1109,7 @@ print.miraiInterrupt <- function(x, ...) {
 
 # internals --------------------------------------------------------------------
 
-launch_daemon <- function(refhook, ...) {
+launch_daemon <- function(..., refhook = NULL) {
   args <- switch(...length(),
                  sprintf("mirai::.server(\"%s\")", ..1),
                  if (length(refhook)) sprintf("mirai::server(\"%s\",refhook=\"%s\"%s)", ..1, base64enc(refhook), ..2) else sprintf("mirai::server(\"%s\"%s)", ..1, ..2),
@@ -1121,10 +1120,10 @@ launch_daemon <- function(refhook, ...) {
   system2(command = .command, args = c("-e", shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE)
 }
 
-launch_and_sync_daemon <- function(sock, refhook, ...) {
+launch_and_sync_daemon <- function(sock, ..., refhook = NULL) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-  launch_daemon(refhook = refhook, ...)
+  launch_daemon(..., refhook = refhook)
   until(cv, .timelimit) && stop(.messages[["connection_timeout"]])
 }
 
@@ -1160,9 +1159,8 @@ query_dispatcher <- function(sock, command, mode) {
 query_status <- function(envir) {
   res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L)
   is_error_value(res) && return(res)
-  `attributes<-`(res, list(dim = c(length(envir[["urls"]]), 4L),
-                           dimnames = list(`attr<-`(envir[["urls"]], "dispatcher_pid", envir[["pid"]]),
-                                           c("online", "instance", "assigned", "complete"))))
+  `attributes<-`(res, list(dim = c(envir[["proc"]], 4L),
+                           dimnames = list(envir[["urls"]], c("online", "instance", "assigned", "complete"))))
 }
 
 recv_and_store <- function(sockc, envir) {
