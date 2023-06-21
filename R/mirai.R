@@ -295,6 +295,17 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = 
         next
       }
 
+      for (i in seq_n)
+        if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
+          send(queue[[i]][["ctx"]], data = .subset2(queue[[i]][["res"]], "data"), mode = 1L)
+          q <- queue[[i]][["daemon"]]
+          serverfree[[q]] <- TRUE
+          complete[[q]] <- complete[[q]] + 1L
+          ctx <- .context(sock)
+          req <- recv_aio_signal(ctx, mode = 1L, cv = cv)
+          queue[[i]] <- list(ctx = ctx, req = req)
+        }
+
       free <- which(serverfree & activevec)
 
       if (length(free))
@@ -309,18 +320,6 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = 
             }
             serverfree[[q]] || break
           }
-
-      for (i in seq_n)
-        if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
-          send(queue[[i]][["ctx"]], data = .subset2(queue[[i]][["res"]], "data"), mode = 1L)
-          q <- queue[[i]][["daemon"]]
-          serverfree[[q]] <- TRUE
-          complete[[q]] <- complete[[q]] + 1L
-          ctx <- .context(sock)
-          req <- recv_aio_signal(ctx, mode = 1L, cv = cv)
-          queue[[i]] <- list(ctx = ctx, req = req)
-          cv_value(cv) || is.null(cv_signal(cv))
-        }
 
     }
   )
