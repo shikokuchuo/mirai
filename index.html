@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.7.9029</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.7.9030</span>
       </span>
     </div>
 
@@ -150,11 +150,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 2.85 3.63 0.25 1.23 -1.45 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 9.626 0.589 1.027 0.261 -0.583 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 2.85 3.63 0.25 1.23 -1.45 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 9.626 0.589 1.027 0.261 -0.583 ...</span></span></code></pre></div>
 <p>For easy programmatic use of <code><a href="reference/mirai.html">mirai()</a></code>, ‘.expr’ accepts a pre-constructed language object, and also a list of named arguments passed via ‘.args’. So, the following would be equivalent to the above:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -167,7 +167,7 @@
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span>.expr <span class="op">=</span> <span class="va">expr</span>, .args <span class="op">=</span> <span class="va">args</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -2.1689 3.1048 0.1179 -1.269 0.0924 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 7.81 7.01 1.14 6.51 1.27 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -231,11 +231,11 @@
 <span><span class="co">#&gt; iteration 1 successful </span></span>
 <span><span class="co">#&gt; iteration 2 successful </span></span>
 <span><span class="co">#&gt; iteration 3 successful </span></span>
-<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 4 successful </span></span>
 <span><span class="co">#&gt; iteration 5 successful </span></span>
 <span><span class="co">#&gt; iteration 6 successful </span></span>
 <span><span class="co">#&gt; iteration 7 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 8 successful </span></span>
 <span><span class="co">#&gt; iteration 9 successful </span></span>
 <span><span class="co">#&gt; iteration 10 successful</span></span></code></pre></div>
@@ -263,12 +263,12 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt;                                                     online instance assigned complete</span></span>
-<span><span class="co">#&gt; abstract://fa3b45a0e2d35f5f97b82898742aa0cbd198bec1      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://334ead7a516f80c4c69b45ecae45e99d1ecdf343      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://0620a1e9c722af1e357e710228aa20f9f7e41a1b      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://154b6c85497a8a38d5872e3c6b3df1f2a5771c77      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://94ed649b5329764d0f68946ade8b99650ca5b0d4      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://8cbba13ba2c6db84a51aade8c6f52ef3eeb272a1      1        1        0        0</span></span></code></pre></div>
+<span><span class="co">#&gt; abstract://f442a499b18bcf25cd59668a4481433aec7cdbfb      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://abcae3c5f838a45cc2183544120be770bd9ac8f9      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://b062fa809475379303c3c283682a60e44271e202      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://26a4b4b6706c1aedf162d068c81252c15b2814a4      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://285ffd3ff21512327245b060727481bb826af865      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://25bf3d5ac753601c34539c628f1007ac94ea5454      1        1        0        0</span></span></code></pre></div>
 <p>The default <code>dispatcher = TRUE</code> creates a <code><a href="reference/dispatcher.html">dispatcher()</a></code> background process that connects to individual daemon processes on the local machine on behalf of the client. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to servers for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.</p>
 <p>Dispatcher uses synchronisation primitives from <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link"><code>nanonext</code></a>, waiting upon rather than polling for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -344,9 +344,9 @@
 <span><span class="co">#&gt; ws://:5555/4      1        1        0        0</span></span></code></pre></div>
 <p>As per the local case, <code>$connections</code> will show the single connection to the dispatcher process, however <code>$daemons</code> will provide the matrix of statistics for the remote servers.</p>
 <p><code>online</code> shows as 1 when there is an active connection, or else 0 if a server has yet to connect or has disconnected.</p>
-<p><code>instance</code> increments by 1 every time there is a new connection at a URL. When this happens, the ‘assigned’ and ‘complete’ statistics reset to zero. This counter is designed to track new server instances connecting after previous ones have ended (due to time-outs etc.). ‘instance’ itself resets to zero if the URL is regenerated by <code><a href="reference/saisei.html">saisei()</a></code>.</p>
-<p><code>assigned</code> shows the cumulative number of tasks assigned to the server instance by the dispatcher.</p>
-<p><code>complete</code> shows the cumulative number of tasks completed by the server instance.</p>
+<p><code>instance</code> increments by 1 every time there is a new connection at a URL. This counter is designed to track new server instances connecting after previous ones have ended (due to time-outs etc.). ‘instance’ resets to zero if the URL is regenerated by <code><a href="reference/saisei.html">saisei()</a></code>.</p>
+<p><code>assigned</code> shows the cumulative number of tasks assigned to the server.</p>
+<p><code>complete</code> shows the cumulative number of tasks completed by the server.</p>
 <p>The dispatcher automatically adjusts to the number of servers actually connected. Hence it is possible to dynamically scale up or down the number of servers according to requirements (limited to the ‘n’ URLs assigned at the dispatcher).</p>
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
@@ -363,11 +363,11 @@
 <p>Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://:0"</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tcp://:37421"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:33269"</span></span></code></pre></div>
 <p>Note that above, the port number is specified as zero. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided as the return value of the call, or it may be queried at any time by requesting the status via <code><a href="reference/daemons.html">daemons()</a></code>.</p>
 <p>–</p>
 <p>On the server, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation from a shell. This sets up a remote daemon process that connects to the client URL and receives tasks:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://10.111.5.13:37421")'</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://10.111.5.13:33269")'</span></span></code></pre></div>
 <p>As before, <code><a href="reference/daemons.html">daemons()</a></code> should be set up on the client before launching <code><a href="reference/server.html">server()</a></code> on remote resources, otherwise the server instances will exit if a connection is not immediately available. Alternatievly specifying <code>server(asyncdial = TRUE)</code> will allow servers to wait (indefinitely) for a connection to become available.</p>
 <p>–</p>
 <p>The number of daemons connecting to the client URL is not limited and network resources may be added or removed at any time, with tasks automatically distributed to all server processes.</p>
@@ -378,7 +378,7 @@
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "tcp://:37421"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:33269"</span></span></code></pre></div>
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
