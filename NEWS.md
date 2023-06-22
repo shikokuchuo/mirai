@@ -1,6 +1,5 @@
-# mirai 0.8.7.9029 (development)
+# mirai 0.8.7.9030 (development)
 
-* Allows use of reference objects in a 'mirai' (such as those accessed via an external pointer), by adding argument 'refhook' to `daemons()`, `server()` and `dispatcher()` for providing a hook function to handle such objects.
 * Improvements to dispatcher:
   + Ensures the first URL retains the same format if `saisei(i = 1L)` is called.
   + Optimal scheduling when tasks are submitted prior to any servers coming online.
@@ -8,8 +7,7 @@
   + `daemons()` status requests have been rendered more robust.
 * Ensures `saisei()` always returns `NULL` if 'tcp://' URLs are being used as they do not support tokens.
 * Daemons status matrix 'assigned' and 'complete' are now cumulative statistics, and not reset upon new instances.
-* Requires nanonext >= [0.9.0.9004].
-* Requires R >= 3.5.0.
+* Requires nanonext >= 0.9.0 and R >= 3.5.0.
 
 # mirai 0.8.7
 

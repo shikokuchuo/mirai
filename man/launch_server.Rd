@@ -29,9 +29,6 @@ Consider specifying the argument 'asyncdial' [default FALSE] whether
     Specifying TRUE continues retrying (indefinitely) if not immediately
     successful, which is more resilient but can mask potential connection
     issues.
-
-    Any 'refhook' argument already set via \code{\link{daemons}} is passed to
-    the server automatically, without the need to specify in '\code{...}'.
 }
 \examples{
 if (interactive()) {
