@@ -1,3 +1,8 @@
+# mirai 0.9.0.9000 (development)
+
+* Allows use of reference objects in a 'mirai' (such as those accessed via an external pointer), by adding argument 'refhook' to `daemons()`, `server()` and `dispatcher()` for providing a hook function to handle such objects.
+* Requires nanonext >= [0.9.0.9016].
+
 # mirai 0.9.0
 
 * mirai 0.9.0 is a major release focusing on stability improvements. 

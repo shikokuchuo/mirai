@@ -4,7 +4,14 @@
 \alias{daemons}
 \title{daemons (Persistent Server Processes)}
 \usage{
-daemons(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
+daemons(
+  n,
+  url = NULL,
+  dispatcher = TRUE,
+  refhook = NULL,
+  ...,
+  .compute = "default"
+)
 }
 \arguments{
 \item{n}{integer number of daemons (server processes) to set.}
@@ -18,6 +25,13 @@ connections (and optionally for websockets a path) e.g.
 Dispatcher is a background process that connects to servers on behalf of
 the client and ensures FIFO scheduling, queueing tasks if necessary
 (see Dispatcher section below).}
+
+\item{refhook}{[default NULL] maps to the 'refhook' argument of
+\code{\link{serialize}} and \code{\link{unserialize}} for providing a
+hook function to handle reference objects. As the same function is used
+in both cases, it should contain the necessary logic to distinguish
+between them as required. Accepts a function or function encoded via
+\code{\link[nanonext]{base64enc}}.}
 
 \item{...}{additional arguments passed through to \code{\link{dispatcher}} if
 using dispatcher and/or \code{\link{server}} if launching local daemons.}
@@ -70,6 +84,11 @@ For viewing the currrent status, specify \code{daemons()} with no
     and daemon processes automatically exit as soon as their connections are
     dropped. If a daemon is processing a task, it will exit as soon as the
     task is complete.
+
+    If setting 'refhook', the same function must be provided for all compute
+    profiles. Servers launched manually, i.e. other than through this
+    function or \code{\link{launch_server}}, must use the same 'refhook'
+    argument to ensure seamless operation.
 }
 \section{Dispatcher}{
 

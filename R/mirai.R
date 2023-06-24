@@ -44,6 +44,12 @@
 #'     exiting due to a timer / task limit, to allow sockets to complete sends
 #'     currently in progress. The default can be set wider if computations are
 #'     expected to return very large objects (> GBs).
+#' @param refhook [default NULL] maps to the 'refhook' argument of
+#'     \code{\link{serialize}} and \code{\link{unserialize}} for providing a
+#'     hook function to handle reference objects. As the same function is used
+#'     in both cases, it should contain the necessary logic to distinguish
+#'     between them as required. Accepts a function or function encoded via
+#'     \code{\link[nanonext]{base64enc}}.
 #' @param ... reserved but not currently used.
 #' @param cleanup [default 7L] Integer additive bitmask controlling whether to
 #'     perform cleanup of the global environment (1L), reset loaded packages to
@@ -62,8 +68,9 @@
 #'
 #' @export
 #'
-server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf, walltime = Inf,
-                   timerstart = 0L, exitlinger = 1000L, ..., cleanup = 7L) {
+server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
+                   walltime = Inf, timerstart = 0L, exitlinger = 1000L,
+                   refhook = NULL, ..., cleanup = 7L) {
 
   sock <- socket(protocol = "rep")
   on.exit(close(sock))
@@ -74,6 +81,7 @@ server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf, wallt
   se <- search()
   count <- 0L
   if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
+  refhook(refhook)
 
   devnull <- file(nullfile(), open = "w", blocking = FALSE)
   sink(file = devnull)
@@ -175,8 +183,8 @@ server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf, wallt
 #'
 #' @export
 #'
-dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
-                       token = FALSE, lock = FALSE, ..., monitor = NULL) {
+dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = FALSE,
+                       lock = FALSE, refhook = NULL, ..., monitor = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(.messages[["missing_url"]])
@@ -187,6 +195,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock = sock, url = client, asyncdial = asyncdial)
 
+  refhook <- refhook(refhook)
   auto <- is.null(url)
   vectorised <- length(url) == n
   seq_n <- seq_len(n)
@@ -230,7 +239,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
     }
 
     if (auto)
-      launch_daemon(nurl, parse_dots(...))
+      launch_daemon(nurl, parse_dots(...), refhook = refhook)
 
     servers[[i]] <- nsock
     active[[i]] <- ncv
@@ -472,6 +481,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     assigned to servers efficiently on a FIFO basis, or else the low-level
 #'     approach of distributing tasks to servers in an even fashion.
 #'
+#' @inheritParams server
 #' @param n integer number of daemons (server processes) to set.
 #' @param url [default NULL] if specified (for connecting to remote servers),
 #'     the client URL as a character vector, including a port accepting incoming
@@ -519,6 +529,11 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     and daemon processes automatically exit as soon as their connections are
 #'     dropped. If a daemon is processing a task, it will exit as soon as the
 #'     task is complete.
+#'
+#'     If setting 'refhook', the same function must be provided for all compute
+#'     profiles. Servers launched manually, i.e. other than through this
+#'     function or \code{\link{launch_server}}, must use the same 'refhook'
+#'     argument to ensure seamless operation.
 #'
 #' @section Dispatcher:
 #'
@@ -700,7 +715,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #' @export
 #'
-daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default") {
+daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, ..., .compute = "default") {
 
   envir <- ..[[.compute]]
   missing(n) && missing(url) &&
@@ -712,6 +727,8 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
     envir <- ..[[.compute]]
   }
 
+  refhook <- nanonext::refhook(refhook)
+
   if (is.character(url)) {
 
     if (is.null(envir[["sock"]])) {
@@ -722,7 +739,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
         urlc <- new_control_url(urld)
         sock <- req_socket(urld)
         sockc <- socket(protocol = "pair", listen = urlc)
-        launch_and_sync_daemon(sock = sock, urld, url, proc, urlc, parse_dots(...))
+        launch_and_sync_daemon(sock = sock, urld, url, proc, urlc, parse_dots(...), refhook = refhook)
         recv_and_store(sockc = sockc, envir = envir)
       } else {
         sock <- req_socket(url)
@@ -757,11 +774,11 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
       if (dispatcher) {
         urlc <- new_control_url(urld)
         sockc <- socket(protocol = "pair", listen = urlc)
-        launch_and_sync_daemon(sock = sock, urld, n, urlc, parse_dots(...))
+        launch_and_sync_daemon(sock = sock, urld, n, urlc, parse_dots(...), refhook = refhook)
         recv_and_store(sockc = sockc, envir = envir)
       } else {
         for (i in seq_len(n))
-          launch_daemon(urld, parse_dots(...))
+          launch_daemon(urld, parse_dots(...), refhook = refhook)
       }
       `[[<-`(`[[<-`(envir, "sock", sock), "proc", n)
     }
@@ -793,6 +810,9 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 #'     successful, which is more resilient but can mask potential connection
 #'     issues.
 #'
+#'     Any 'refhook' argument already set via \code{\link{daemons}} is passed to
+#'     the server automatically, without the need to specify in '\code{...}'.
+#'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
@@ -806,7 +826,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, ..., .compute = "default")
 launch_server <- function(url, ...) {
 
   parse_url(url)
-  launch_daemon(url, parse_dots(...))
+  launch_daemon(url, parse_dots(...), refhook = refhook())
 
 }
 
@@ -1082,20 +1102,23 @@ print.miraiInterrupt <- function(x, ...) {
 
 # internals --------------------------------------------------------------------
 
-launch_daemon <- function(...) {
+launch_daemon <- function(..., refhook = NULL) {
   args <- switch(...length(),
                  sprintf("mirai::.server(\"%s\")", ..1),
-                 sprintf("mirai::server(\"%s\"%s)", ..1, ..2),
+                 if (length(refhook)) sprintf("mirai::server(\"%s\",refhook=\"%s\"%s)", ..1, base64enc(refhook), ..2) else
+                   sprintf("mirai::server(\"%s\"%s)", ..1, ..2),
                  "",
-                 sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", ..1, ..2, ..3, ..4),
-                 sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)", ..1, paste(sprintf("\"%s\"", ..2), collapse = ","), ..3, ..4, ..5))
+                 if (length(refhook)) sprintf("mirai::dispatcher(\"%s\",refhook=\"%s\",n=%d,monitor=\"%s\"%s)", ..1, base64enc(refhook), ..2, ..3, ..4) else
+                   sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", ..1, ..2, ..3, ..4),
+                 if (length(refhook)) sprintf("mirai::dispatcher(\"%s\",c(%s),refhook=\"%s\",n=%d,monitor=\"%s\"%s)", ..1, paste(sprintf("\"%s\"", ..2), collapse = ","), base64enc(refhook), ..3, ..4, ..5) else
+                   sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)", ..1, paste(sprintf("\"%s\"", ..2), collapse = ","), ..3, ..4, ..5))
   system2(command = .command, args = c("-e", shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE)
 }
 
-launch_and_sync_daemon <- function(sock, ...) {
+launch_and_sync_daemon <- function(sock, ..., refhook = NULL) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-  launch_daemon(...)
+  launch_daemon(..., refhook = refhook)
   until(cv, .timelimit) && stop(.messages[["connection_timeout"]])
 }
 

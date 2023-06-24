@@ -11,6 +11,7 @@ dispatcher(
   asyncdial = FALSE,
   token = FALSE,
   lock = FALSE,
+  refhook = NULL,
   ...,
   monitor = NULL
 )
@@ -46,6 +47,13 @@ which do not accept a path).}
 \item{lock}{[default FALSE] if TRUE, sockets lock once a connection has been
 accepted, preventing further connection attempts. This provides safety
 against more than one server trying to connect to a unique URL.}
+
+\item{refhook}{[default NULL] maps to the 'refhook' argument of
+\code{\link{serialize}} and \code{\link{unserialize}} for providing a
+hook function to handle reference objects. As the same function is used
+in both cases, it should contain the necessary logic to distinguish
+between them as required. Accepts a function or function encoded via
+\code{\link[nanonext]{base64enc}}.}
 
 \item{...}{additional arguments passed through to \code{\link{server}} if
 launching local daemons i.e. 'url' is not specified.}
