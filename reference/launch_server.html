@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9000</span>
       </span>
     </div>
 
@@ -93,6 +93,8 @@ URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.</p></dd>
     Specifying TRUE continues retrying (indefinitely) if not immediately
     successful, which is more resilient but can mask potential connection
     issues.</p>
+<p>Any 'refhook' argument already set via <code><a href="daemons.html">daemons</a></code> is passed to
+    the server automatically, without the need to specify in '<code>...</code>'.</p>
     </div>
 
     <div id="ref-examples">
