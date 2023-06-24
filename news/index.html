@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.8.7.9030</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0</span>
       </span>
     </div>
 
@@ -54,8 +54,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.7.9030" id="mirai-0879030-development">mirai 0.8.7.9030 (development)<a class="anchor" aria-label="anchor" href="#mirai-0879030-development"></a></h2>
-<ul><li>Improvements to dispatcher:
+<h2 class="page-header" data-toc-text="0.9.0" id="mirai-090">mirai 0.9.0<a class="anchor" aria-label="anchor" href="#mirai-090"></a></h2>
+<ul><li>mirai 0.9.0 is a major release focusing on stability improvements.</li>
+<li>Improvements to dispatcher:
 <ul><li>Ensures the first URL retains the same format if <code>saisei(i = 1L)</code> is called.</li>
 <li>Optimal scheduling when tasks are submitted prior to any servers coming online.</li>
 <li>Fixes rare occasions where dispatcher running a single server instance could get stuck with a task.</li>
@@ -65,6 +66,7 @@
 <li>Ensures <code><a href="../reference/saisei.html">saisei()</a></code> always returns <code>NULL</code> if ‘tcp://’ URLs are being used as they do not support tokens.</li>
 <li>Daemons status matrix ‘assigned’ and ‘complete’ are now cumulative statistics, and not reset upon new instances.</li>
 <li>Requires nanonext &gt;= 0.9.0 and R &gt;= 3.5.0.</li>
+<li>Internal performance enhancements.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.8.7" id="mirai-087">mirai 0.8.7<small>2023-05-11</small><a class="anchor" aria-label="anchor" href="#mirai-087"></a></h2>
