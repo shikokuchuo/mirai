@@ -1,5 +1,6 @@
-# mirai 0.8.7.9030 (development)
+# mirai 0.9.0
 
+* mirai 0.9.0 is a major release focusing on stability improvements. 
 * Improvements to dispatcher:
   + Ensures the first URL retains the same format if `saisei(i = 1L)` is called.
   + Optimal scheduling when tasks are submitted prior to any servers coming online.
@@ -8,6 +9,7 @@
 * Ensures `saisei()` always returns `NULL` if 'tcp://' URLs are being used as they do not support tokens.
 * Daemons status matrix 'assigned' and 'complete' are now cumulative statistics, and not reset upon new instances.
 * Requires nanonext >= 0.9.0 and R >= 3.5.0.
+* Internal performance enhancements.
 
 # mirai 0.8.7
 

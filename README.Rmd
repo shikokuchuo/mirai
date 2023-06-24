@@ -48,7 +48,7 @@ Features efficient task scheduling, scalability beyond R connection limits, and 
 8. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
 9. [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
 10. [Integrations with Crew, Targets, Shiny](#integrations-with-crew-targets-shiny)
-11. [Thanks](#thanks)
+11. [Acknowledgements](#acknowledgements)
 12. [Links](#links)
 
 ### Installation
@@ -502,7 +502,7 @@ The [`crew`](https://wlandau.github.io/crew/) package is a distributed worker-la
 
 [&laquo; Back to ToC](#table-of-contents)
 
-### Thanks
+### Acknowledgements
 
 [William Landau](https://github.com/wlandau/) has been instrumental in shaping development of the package, from being the first to request persistent daemons, through to robustness testing for the high performance computing requirements of [`crew`](https://wlandau.github.io/crew/) and [`targets`](https://docs.ropensci.org/targets/).
 
