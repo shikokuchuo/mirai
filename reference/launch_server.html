@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9001</span>
       </span>
     </div>
 
@@ -63,7 +63,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">launch_server</span><span class="op">(</span><span class="va">url</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">launch_server</span><span class="op">(</span><span class="va">url</span>, <span class="va">...</span>, .compute <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -76,6 +76,11 @@ URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.</p></dd>
 
 <dt>...</dt>
 <dd><p>(optional) additional arguments passed to <code><a href="server.html">server</a></code>.</p></dd>
+
+
+<dt>.compute</dt>
+<dd><p>[default 'default'] character compute profile to use for
+'refhook' and 'tls' configurations.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -93,8 +98,9 @@ URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.</p></dd>
     Specifying TRUE continues retrying (indefinitely) if not immediately
     successful, which is more resilient but can mask potential connection
     issues.</p>
-<p>Any 'refhook' argument already set via <code><a href="daemons.html">daemons</a></code> is passed to
-    the server automatically, without the need to specify in '<code>...</code>'.</p>
+<p>Automatically passes any 'refhook' and 'tls' configurations already set
+    via <code><a href="daemons.html">daemons</a></code> for the specified compute profile - there is no
+    need to further specify in '<code>...</code>'.</p>
     </div>
 
     <div id="ref-examples">

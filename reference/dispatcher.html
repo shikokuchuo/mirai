@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9001</span>
       </span>
     </div>
 
@@ -69,6 +69,7 @@
 <span>  token <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  lock <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  refhook <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  monitor <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -124,8 +125,14 @@ against more than one server trying to connect to a unique URL.</p></dd>
 <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">serialize</a></code> and <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize</a></code> for providing a
 hook function to handle reference objects. As the same function is used
 in both cases, it should contain the necessary logic to distinguish
-between them as required. Accepts a function or function encoded via
+between them as required. Accepts a function or function encoded by
 <code><a href="https://shikokuchuo.net/nanonext/reference/base64enc.html" class="external-link">base64enc</a></code>.</p></dd>
+
+
+<dt>tls</dt>
+<dd><p>(optional for secure TLS connections over tls+tcp or wss) maps
+directly to the 'server' argument of <code><a href="https://shikokuchuo.net/nanonext/reference/tls_config.html" class="external-link">tls_config</a></code>.
+If not provided, a one-time configuration is automatically generated.</p></dd>
 
 
 <dt>...</dt>
