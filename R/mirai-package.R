@@ -49,11 +49,10 @@
 #' @author Charlie Gao \email{charlie.gao@@shikokuchuo.net}
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
-#' @importFrom nanonext base64dec base64enc call_aio cert_write .context cv
-#'     cv_value dial is_error_value listen lock mclock msleep opt opt<-
-#'     parse_url pipe_notify random recv recv_aio_signal refhook request
-#'     request_signal send sha1 socket stat stop_aio tls_config unresolved until
-#'     wait
+#' @importFrom nanonext base64enc call_aio cert_write .context cv cv_value dial
+#'     is_error_value listen lock mclock msleep opt opt<- parse_url pipe_notify
+#'     random recv recv_aio_signal refhook request request_signal send sha1
+#'     socket stat stop_aio tls_config unresolved until wait
 #'
 #' @docType package
 #' @name mirai-package
