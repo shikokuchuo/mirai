@@ -48,8 +48,10 @@
 #'     \code{\link{serialize}} and \code{\link{unserialize}} for providing a
 #'     hook function to handle reference objects. As the same function is used
 #'     in both cases, it should contain the necessary logic to distinguish
-#'     between them as required. Accepts a function or function encoded via
+#'     between them as required. Accepts a function or function encoded by
 #'     \code{\link[nanonext]{base64enc}}.
+#' @param tls [default NULL] required for secure TLS connections over tls+tcp or
+#'     wss, maps directly to the 'client' argument of \code{\link[nanonext]{tls_config}}.
 #' @param ... reserved but not currently used.
 #' @param cleanup [default 7L] Integer additive bitmask controlling whether to
 #'     perform cleanup of the global environment (1L), reset loaded packages to
@@ -70,13 +72,13 @@
 #'
 server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
                    walltime = Inf, timerstart = 0L, exitlinger = 1000L,
-                   refhook = NULL, ..., cleanup = 7L) {
+                   refhook = NULL, tls = NULL, ..., cleanup = 7L) {
 
   sock <- socket(protocol = "rep")
   on.exit(close(sock))
   cv <- cv()
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
-  dial_and_sync_socket(sock = sock, url = url, asyncdial = asyncdial)
+  dial_and_sync_socket(sock = sock, url = url, asyncdial = asyncdial, tls = tls)
   op <- options()
   se <- search()
   count <- 0L
@@ -169,6 +171,9 @@ server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
 #' @param lock [default FALSE] if TRUE, sockets lock once a connection has been
 #'     accepted, preventing further connection attempts. This provides safety
 #'     against more than one server trying to connect to a unique URL.
+#' @param tls (optional for secure TLS connections over tls+tcp or wss) maps
+#'     directly to the 'server' argument of \code{\link[nanonext]{tls_config}}.
+#'     If not provided, a one-time configuration is automatically generated.
 #' @param ... additional arguments passed through to \code{\link{server}} if
 #'     launching local daemons i.e. 'url' is not specified.
 #' @param monitor (for package internal use only) do not set this parameter.
@@ -183,8 +188,9 @@ server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
 #'
 #' @export
 #'
-dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = FALSE,
-                       lock = FALSE, refhook = NULL, ..., monitor = NULL) {
+dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
+                       token = FALSE, lock = FALSE, refhook = NULL, tls = NULL,
+                       ..., monitor = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(.messages[["missing_url"]])
@@ -213,6 +219,8 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = 
     }
   }
 
+  server_config <- if (length(tls)) tls_config(server = tls)
+
   for (i in seq_n) {
     burl <- if (auto) sprintf(.urlfmt, "") else
       if (vectorised) url[i] else
@@ -223,7 +231,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE, token = 
     nsock <- req_socket(NULL)
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE)
-    listen(nsock, url = nurl, error = TRUE)
+    listen(nsock, url = nurl, tls =  server_config, error = TRUE)
     if (lock)
       lock(nsock, cv = ncv)
     listener <- attr(nsock, "listener")[[1L]]
@@ -481,7 +489,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     assigned to servers efficiently on a FIFO basis, or else the low-level
 #'     approach of distributing tasks to servers in an even fashion.
 #'
-#' @inheritParams server
+#' @inheritParams dispatcher
 #' @param n integer number of daemons (server processes) to set.
 #' @param url [default NULL] if specified (for connecting to remote servers),
 #'     the client URL as a character vector, including a port accepting incoming
@@ -715,7 +723,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #' @export
 #'
-daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, ..., .compute = "default") {
+daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, tls = NULL, ..., .compute = "default") {
 
   envir <- ..[[.compute]]
   missing(n) && missing(url) &&
@@ -727,22 +735,29 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, ..., .comp
     envir <- ..[[.compute]]
   }
 
-  refhook <- nanonext::refhook(refhook)
-
   if (is.character(url)) {
 
     if (is.null(envir[["sock"]])) {
+      if (length(refhook)) {
+        refhook <- nanonext::refhook(refhook)
+        `[[<-`(envir, "refhook", refhook)
+      }
+      purl <- parse_url(url)
+      if (substr(purl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
+        tls <- cert_write(cn = purl[["hostname"]])
+        `[[<-`(envir, "tls", tls)
+      }
       if (dispatcher) {
         proc <- if (missing(n)) length(url) else if (is.numeric(n) && n > 0L) as.integer(n) else stop(.messages[["n_one"]])
-        parse_url(url)
         urld <- auto_tokenized_url()
         urlc <- new_control_url(urld)
         sock <- req_socket(urld)
         sockc <- socket(protocol = "pair", listen = urlc)
-        launch_and_sync_daemon(sock = sock, urld, url, proc, urlc, parse_dots(...), refhook = refhook)
+        launch_and_sync_daemon(sock = sock, urld, url, proc, urlc, parse_dots(...), refhook = refhook, tls = tls[["server"]])
         recv_and_store(sockc = sockc, envir = envir)
       } else {
-        sock <- req_socket(url)
+        server_config <- if (length(tls)) tls_config(server = tls[["server"]])
+        sock <- req_socket(url, tls = server_config)
         listener <- attr(sock, "listener")[[1L]]
         proc <- opt(listener, "url")
         if (parse_url(proc)[["port"]] == "0")
@@ -769,6 +784,10 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, ..., .comp
     } else if (is.null(envir[["sock"]])) {
 
       n > 0L || stop(.messages[["n_zero"]])
+      if (length(refhook)) {
+        refhook <- nanonext::refhook(refhook)
+        `[[<-`(envir, "refhook", refhook)
+      }
       urld <- auto_tokenized_url()
       sock <- req_socket(urld)
       if (dispatcher) {
@@ -799,6 +818,8 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, ..., .comp
 #'     including the port to connect to and (optionally) a path for websocket
 #'     URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
 #' @param ... (optional) additional arguments passed to \code{\link{server}}.
+#' @param .compute [default 'default'] character compute profile to use for
+#'     'refhook' and 'tls' configurations.
 #'
 #' @return Invisibly, integer system exit code (zero upon success).
 #'
@@ -810,8 +831,9 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, ..., .comp
 #'     successful, which is more resilient but can mask potential connection
 #'     issues.
 #'
-#'     Any 'refhook' argument already set via \code{\link{daemons}} is passed to
-#'     the server automatically, without the need to specify in '\code{...}'.
+#'     Automatically passes any 'refhook' and 'tls' configurations already set
+#'     via \code{\link{daemons}} for the specified compute profile - there is no
+#'     need to further specify in '\code{...}'.
 #'
 #' @examples
 #' if (interactive()) {
@@ -823,12 +845,11 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, ..., .comp
 #'
 #' @export
 #'
-launch_server <- function(url, ...) {
-
-  parse_url(url)
-  launch_daemon(url, parse_dots(...), refhook = refhook())
-
-}
+launch_server <- function(url, ..., .compute = "default")
+  launch_daemon(parse_url(url)[["rawurl"]],
+                parse_dots(...),
+                refhook = ..[[.compute]][["refhook"]],
+                tls = ..[[.compute]][["tls"]][["client"]])
 
 #' Saisei - Regenerate Token
 #'
@@ -1102,30 +1123,42 @@ print.miraiInterrupt <- function(x, ...) {
 
 # internals --------------------------------------------------------------------
 
-launch_daemon <- function(..., refhook = NULL) {
-  args <- switch(...length(),
-                 sprintf("mirai::.server(\"%s\")", ..1),
-                 if (length(refhook)) sprintf("mirai::server(\"%s\",refhook=\"%s\"%s)", ..1, base64enc(refhook), ..2) else
-                   sprintf("mirai::server(\"%s\"%s)", ..1, ..2),
-                 "",
-                 if (length(refhook)) sprintf("mirai::dispatcher(\"%s\",refhook=\"%s\",n=%d,monitor=\"%s\"%s)", ..1, base64enc(refhook), ..2, ..3, ..4) else
-                   sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", ..1, ..2, ..3, ..4),
-                 if (length(refhook)) sprintf("mirai::dispatcher(\"%s\",c(%s),refhook=\"%s\",n=%d,monitor=\"%s\"%s)", ..1, paste(sprintf("\"%s\"", ..2), collapse = ","), base64enc(refhook), ..3, ..4, ..5) else
-                   sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)", ..1, paste(sprintf("\"%s\"", ..2), collapse = ","), ..3, ..4, ..5))
+launch_daemon <- function(..., refhook = NULL, tls = NULL) {
+  args <- if (length(tls)) {
+    if (...length() == 2L) {
+      if (length(refhook)) sprintf("mirai::server(\"%s\",tls=c(\"%s\",\"%s\"),refhook=\"%s\"%s)", ..1, tls[[1L]], tls[[2L]], base64enc(refhook), ..2) else
+        sprintf("mirai::server(\"%s\",tls=c(\"%s\",\"%s\")%s)", ..1, tls[[1L]], tls[[2L]], ..2)
+    } else {
+      if (length(refhook)) sprintf("mirai::dispatcher(\"%s\",c(%s),refhook=\"%s\",tls=c(\"%s\",\"%s\"),n=%d,monitor=\"%s\"%s)", ..1, paste(sprintf("\"%s\"", ..2), collapse = ","), base64enc(refhook), tls[[1L]], tls[[2L]], ..3, ..4, ..5) else
+        sprintf("mirai::dispatcher(\"%s\",c(%s),tls=c(\"%s\",\"%s\"),n=%d,monitor=\"%s\"%s)", ..1, paste(sprintf("\"%s\"", ..2), collapse = ","), tls[[1L]], tls[[2L]], ..3, ..4, ..5)
+    }
+
+  } else {
+    switch(...length(),
+           sprintf("mirai::.server(\"%s\")", ..1),
+           if (length(refhook)) sprintf("mirai::server(\"%s\",refhook=\"%s\"%s)", ..1, base64enc(refhook), ..2) else
+             sprintf("mirai::server(\"%s\"%s)", ..1, ..2),
+           "",
+           if (length(refhook)) sprintf("mirai::dispatcher(\"%s\",refhook=\"%s\",n=%d,monitor=\"%s\"%s)", ..1, base64enc(refhook), ..2, ..3, ..4) else
+             sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", ..1, ..2, ..3, ..4),
+           if (length(refhook)) sprintf("mirai::dispatcher(\"%s\",c(%s),refhook=\"%s\",n=%d,monitor=\"%s\"%s)", ..1, paste(sprintf("\"%s\"", ..2), collapse = ","), base64enc(refhook), ..3, ..4, ..5) else
+             sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)", ..1, paste(sprintf("\"%s\"", ..2), collapse = ","), ..3, ..4, ..5))
+  }
   system2(command = .command, args = c("-e", shQuote(args)), stdout = NULL, stderr = NULL, wait = FALSE)
 }
 
-launch_and_sync_daemon <- function(sock, ..., refhook = NULL) {
+launch_and_sync_daemon <- function(sock, ..., refhook = NULL, tls = NULL) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-  launch_daemon(..., refhook = refhook)
+  launch_daemon(..., refhook = refhook, tls = tls)
   until(cv, .timelimit) && stop(.messages[["connection_timeout"]])
 }
 
-dial_and_sync_socket <- function(sock, url, asyncdial) {
+dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = FALSE)
-  dial(sock, url = url, autostart = asyncdial || NA, error = TRUE)
+  client_config <- if (length(tls)) tls_config(client = tls)
+  dial(sock, url = url, autostart = length(tls) || asyncdial || NA, tls = client_config, error = TRUE)
   wait(cv)
 }
 
@@ -1143,8 +1176,8 @@ parse_dots <- function(...)
   if (missing(...)) "" else
     sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
 
-req_socket <- function(url)
-  `opt<-`(socket(protocol = "req", listen = url), "req:resend-time", .Machine[["integer.max"]])
+req_socket <- function(url, tls = NULL)
+  `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", .Machine[["integer.max"]])
 
 query_dispatcher <- function(sock, command, mode) {
   send(sock, data = command, mode = 2L, block = .timelimit)

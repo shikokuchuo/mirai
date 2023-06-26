@@ -4,7 +4,7 @@
 \alias{launch_server}
 \title{Launch mirai Server}
 \usage{
-launch_server(url, ...)
+launch_server(url, ..., .compute = "default")
 }
 \arguments{
 \item{url}{the client URL for the server to dial into as a character string,
@@ -12,6 +12,9 @@ including the port to connect to and (optionally) a path for websocket
 URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 
 \item{...}{(optional) additional arguments passed to \code{\link{server}}.}
+
+\item{.compute}{[default 'default'] character compute profile to use for
+'refhook' and 'tls' configurations.}
 }
 \value{
 Invisibly, integer system exit code (zero upon success).
@@ -30,8 +33,9 @@ Consider specifying the argument 'asyncdial' [default FALSE] whether
     successful, which is more resilient but can mask potential connection
     issues.
 
-    Any 'refhook' argument already set via \code{\link{daemons}} is passed to
-    the server automatically, without the need to specify in '\code{...}'.
+    Automatically passes any 'refhook' and 'tls' configurations already set
+    via \code{\link{daemons}} for the specified compute profile - there is no
+    need to further specify in '\code{...}'.
 }
 \examples{
 if (interactive()) {

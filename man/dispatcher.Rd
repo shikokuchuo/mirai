@@ -12,6 +12,7 @@ dispatcher(
   token = FALSE,
   lock = FALSE,
   refhook = NULL,
+  tls = NULL,
   ...,
   monitor = NULL
 )
@@ -52,8 +53,12 @@ against more than one server trying to connect to a unique URL.}
 \code{\link{serialize}} and \code{\link{unserialize}} for providing a
 hook function to handle reference objects. As the same function is used
 in both cases, it should contain the necessary logic to distinguish
-between them as required. Accepts a function or function encoded via
+between them as required. Accepts a function or function encoded by
 \code{\link[nanonext]{base64enc}}.}
+
+\item{tls}{(optional for secure TLS connections over tls+tcp or wss) maps
+directly to the 'server' argument of \code{\link[nanonext]{tls_config}}.
+If not provided, a one-time configuration is automatically generated.}
 
 \item{...}{additional arguments passed through to \code{\link{server}} if
 launching local daemons i.e. 'url' is not specified.}
