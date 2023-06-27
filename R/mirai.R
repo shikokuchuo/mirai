@@ -738,11 +738,13 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, tls = NULL
   if (is.character(url)) {
 
     if (is.null(envir[["sock"]])) {
-      if (length(refhook)) {
+      if (length(refhook))
         refhook <- nanonext::refhook(refhook)
-        `[[<-`(envir, "refhook", refhook)
+      purl <- parse_url(url)
+      if (substr(purl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
+        tls <- write_cert(cn = purl[["hostname"]])
+        `[[<-`(envir, "tls", tls)
       }
-      check_and_create_tlsconfig(url = url, tls = tls, envir = envir)
       if (dispatcher) {
         proc <- if (missing(n)) length(url) else if (is.numeric(n) && n > 0L) as.integer(n) else stop(.messages[["n_one"]])
         urld <- auto_tokenized_url()
@@ -775,15 +777,14 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, tls = NULL
         close(envir[["sockc"]])
         `[[<-`(envir, "sockc", NULL)
       }
-      `[[<-`(`[[<-`(`[[<-`(`[[<-`(envir, "sock", NULL), "proc", NULL), "refhook", NULL), "tls", NULL)
+      nanonext::refhook(NULL)
+      `[[<-`(`[[<-`(`[[<-`(envir, "sock", NULL), "proc", NULL), "tls", NULL)
 
     } else if (is.null(envir[["sock"]])) {
 
       n > 0L || stop(.messages[["n_zero"]])
-      if (length(refhook)) {
+      if (length(refhook))
         refhook <- nanonext::refhook(refhook)
-        `[[<-`(envir, "refhook", refhook)
-      }
       urld <- auto_tokenized_url()
       sock <- req_socket(urld)
       if (dispatcher) {
@@ -815,7 +816,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, tls = NULL
 #'     URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
 #' @param ... (optional) additional arguments passed to \code{\link{server}}.
 #' @param .compute [default 'default'] character compute profile to use for
-#'     'refhook' and 'tls' configurations.
+#'     'tls' configuration (where applicable).
 #'
 #' @return Invisibly, integer system exit code (zero upon success).
 #'
@@ -827,9 +828,9 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, tls = NULL
 #'     successful, which is more resilient but can mask potential connection
 #'     issues.
 #'
-#'     Automatically passes any 'refhook' and 'tls' configurations already set
-#'     via \code{\link{daemons}} for the specified compute profile - there is no
-#'     need to further specify in '\code{...}'.
+#'     Automatically passes any 'refhook' already set via \code{\link{daemons}},
+#'     as well as the 'tls' configuration for the specified compute profile -
+#'     there is no need to further specify in '\code{...}'.
 #'
 #' @examples
 #' if (interactive()) {
@@ -844,7 +845,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, tls = NULL
 launch_server <- function(url, ..., .compute = "default")
   launch_daemon(parse_url(url)[["rawurl"]],
                 parse_dots(...),
-                refhook = ..[[.compute]][["refhook"]],
+                refhook = refhook(),
                 tls = ..[[.compute]][["tls"]][["client"]])
 
 #' Saisei - Regenerate Token
@@ -1191,16 +1192,6 @@ recv_and_store <- function(sockc, envir) {
   res <- recv(sockc, mode = 2L, block = .timelimit)
   is.integer(res) && stop(.messages[["connection_timeout"]])
   `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[[1L]]))
-}
-
-check_and_create_tlsconfig <- function(url, tls, envir) {
-  purl <- parse_url(url)
-  if (substr(purl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
-    cat("Generating TLS configuration - this may take a few seconds...", file = stderr())
-    tls <- cert_write(cn = purl[["hostname"]])
-    cat("\rGenerating TLS configuration - success                       \n", file = stderr())
-    `[[<-`(envir, "tls", tls)
-  }
 }
 
 perform_cleanup <- function(cleanup, op, se) {

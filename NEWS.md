@@ -1,8 +1,8 @@
-# mirai 0.9.0.9003 (development)
+# mirai 0.9.0.9004 (development)
 
 * Enables secure TLS `tls+tcp://` or `wss://` connections for daemons (with automatic configuration).
 * Allows use of reference objects in a 'mirai' (such as those accessed via an external pointer), by adding argument 'refhook' to `daemons()`, `server()` and `dispatcher()` for providing a hook function to handle such objects.
-* Requires nanonext >= [0.9.0.9016].
+* Requires nanonext >= [0.9.0.9017].
 
 # mirai 0.9.0
 
