@@ -82,7 +82,7 @@ if (.Platform[["OS.type"]] != "windows") {
   nanotest(daemons(n = 2L, url = value <- "ws://:0", dispatcher = FALSE) != value)
   nanotestz(daemons(0L))
   Sys.sleep(0.5)
-  nanotesto(daemons(url = "wss://:0", token = TRUE))
+  nanotesto(daemons(url = "ws://:0", token = TRUE))
   nanotestz(daemons(0L))
   Sys.sleep(1L)
   nanotesto(daemons(url = "tcp://:0", token = TRUE))
