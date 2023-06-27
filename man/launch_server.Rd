@@ -33,9 +33,9 @@ Consider specifying the argument 'asyncdial' [default FALSE] whether
     successful, which is more resilient but can mask potential connection
     issues.
 
-    Automatically passes any 'refhook' already set via \code{\link{daemons}},
-    as well as the 'tls' configuration for the specified compute profile -
-    there is no need to further specify in '\code{...}'.
+    Automatically passes the 'tls' configuration set via \code{\link{daemons}},
+    for the specified compute profile - there is no need to further specify
+    in '\code{...}'.
 }
 \examples{
 if (interactive()) {
