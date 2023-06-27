@@ -742,11 +742,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, tls = NULL
         refhook <- nanonext::refhook(refhook)
         `[[<-`(envir, "refhook", refhook)
       }
-      purl <- parse_url(url)
-      if (substr(purl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
-        tls <- cert_write(cn = purl[["hostname"]])
-        `[[<-`(envir, "tls", tls)
-      }
+      check_and_create_tlsconfig(url = url, tls = tls, envir = envir)
       if (dispatcher) {
         proc <- if (missing(n)) length(url) else if (is.numeric(n) && n > 0L) as.integer(n) else stop(.messages[["n_one"]])
         urld <- auto_tokenized_url()
@@ -1195,6 +1191,16 @@ recv_and_store <- function(sockc, envir) {
   res <- recv(sockc, mode = 2L, block = .timelimit)
   is.integer(res) && stop(.messages[["connection_timeout"]])
   `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[[1L]]))
+}
+
+check_and_create_tlsconfig <- function(url, tls, envir) {
+  purl <- parse_url(url)
+  if (substr(purl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
+    cat("Generating TLS configuration - this may take a few seconds...", file = stderr())
+    tls <- cert_write(cn = purl[["hostname"]])
+    cat("\rGenerating TLS configuration - success                       \n", file = stderr())
+    `[[<-`(envir, "tls", tls)
+  }
 }
 
 perform_cleanup <- function(cleanup, op, se) {
