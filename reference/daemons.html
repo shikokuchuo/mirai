@@ -24,7 +24,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9005</span>
       </span>
     </div>
 
@@ -77,7 +77,6 @@
 <span>  <span class="va">n</span>,</span>
 <span>  url <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dispatcher <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  refhook <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  .compute <span class="op">=</span> <span class="st">"default"</span></span>
@@ -102,15 +101,6 @@ connections (and optionally for websockets a path) e.g.
 Dispatcher is a background process that connects to servers on behalf of
 the client and ensures FIFO scheduling, queueing tasks if necessary
 (see Dispatcher section below).</p></dd>
-
-
-<dt>refhook</dt>
-<dd><p>[default NULL] maps to the 'refhook' argument of
-<code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">serialize</a></code> and <code><a href="https://rdrr.io/r/base/serialize.html" class="external-link">unserialize</a></code> for providing a
-hook function to handle reference objects. As the same function is used
-in both cases, it should contain the necessary logic to distinguish
-between them as required. Accepts a function or function encoded by
-<code><a href="https://shikokuchuo.net/nanonext/reference/base64enc.html" class="external-link">base64enc</a></code>.</p></dd>
 
 
 <dt>tls</dt>
@@ -161,10 +151,6 @@ connecting to different resources).</p></dd>
     and daemon processes automatically exit as soon as their connections are
     dropped. If a daemon is processing a task, it will exit as soon as the
     task is complete.</p>
-<p>If setting 'refhook', the same function must be provided for all compute
-    profiles. Servers launched manually, i.e. other than through this
-    function or <code><a href="launch_server.html">launch_server</a></code>, must use the same 'refhook'
-    argument to ensure seamless operation.</p>
     </div>
     <div id="dispatcher">
     <h2>Dispatcher</h2>
