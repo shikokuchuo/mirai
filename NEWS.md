@@ -1,7 +1,7 @@
-# mirai 0.9.0.9007 (development)
+# mirai 0.9.0.9008 (development)
 
 * Enables secure TLS `tls+tcp://` or `wss://` connections for `daemons()` (with automatic configuration).
-* Requires nanonext >= [0.9.0.9020].
+* Requires nanonext >= [0.9.0.9022].
 
 # mirai 0.9.0
 
