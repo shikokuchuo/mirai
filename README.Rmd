@@ -409,7 +409,11 @@ This causes all connected server instances to exit automatically.
 
 A TLS layer is implemented to secure connections to remote servers for both WebSocket and TCP transports.
 
-All that is required is to specify a secure URL of the form `wss://` or `tls+tcp://`.
+All that is required is to specify a secure URL of the form `wss://` or `tls+tcp://`. For the above example:
+
+```{r tlsremote, eval=FALSE}
+daemons(n = 4, url = "wss://10.111.5.13:5555")
+```
 
 The necessary keys and certificates are automatically generated and configured. These are designed to be single-use and are handled internally by `mirai` without requiring any user intervention.
 
