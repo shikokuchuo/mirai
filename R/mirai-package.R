@@ -51,8 +51,8 @@
 #'
 #' @importFrom nanonext call_aio .context cv cv_value dial is_error_value listen
 #'     lock mclock msleep opt opt<- parse_url pipe_notify random recv
-#'     recv_aio_signal refhook request request_signal send sha1 socket stat
-#'     stop_aio tls_config unresolved until wait write_cert
+#'     recv_aio_signal request request_signal send sha1 socket stat stop_aio
+#'     tls_config unresolved until wait write_cert
 #'
 #' @docType package
 #' @name mirai-package
