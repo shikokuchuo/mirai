@@ -1183,7 +1183,7 @@ perform_cleanup <- function(cleanup, op, se) {
 mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
 
 mk_mirai_error <- function(e) {
-  call <- deparse(.subset2(e, "call"), backtick = TRUE, control = NULL, nlines = 1L)
+  call <- deparse(.subset2(e, "call"), width.cutoff = 500L, backtick = TRUE, control = NULL, nlines = 1L)
   msg <- if (call == "NULL" || call == "eval(expr = ._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = NULL)")
     sprintf("Error: %s", .subset2(e, "message")) else
       sprintf("Error in %s: %s", call, .subset2(e, "message"))
