@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9004</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@ URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.</p></dd>
 
 <dt>.compute</dt>
 <dd><p>[default 'default'] character compute profile to use for
-'refhook' and 'tls' configurations.</p></dd>
+'tls' configuration (where applicable).</p></dd>
 
 </dl></div>
     <div id="value">
@@ -98,9 +98,9 @@ URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.</p></dd>
     Specifying TRUE continues retrying (indefinitely) if not immediately
     successful, which is more resilient but can mask potential connection
     issues.</p>
-<p>Automatically passes any 'refhook' and 'tls' configurations already set
-    via <code><a href="daemons.html">daemons</a></code> for the specified compute profile - there is no
-    need to further specify in '<code>...</code>'.</p>
+<p>Automatically passes any 'refhook' already set via <code><a href="daemons.html">daemons</a></code>,
+    as well as the 'tls' configuration for the specified compute profile -
+    there is no need to further specify in '<code>...</code>'.</p>
     </div>
 
     <div id="ref-examples">
