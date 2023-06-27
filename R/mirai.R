@@ -779,7 +779,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, refhook = NULL, tls = NULL
         close(envir[["sockc"]])
         `[[<-`(envir, "sockc", NULL)
       }
-      `[[<-`(`[[<-`(envir, "sock", NULL), "proc", NULL)
+      `[[<-`(`[[<-`(`[[<-`(`[[<-`(envir, "sock", NULL), "proc", NULL), "refhook", NULL), "tls", NULL)
 
     } else if (is.null(envir[["sock"]])) {
 
