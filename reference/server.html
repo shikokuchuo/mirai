@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9008</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9009</span>
       </span>
     </div>
 
@@ -124,7 +124,12 @@ expected to return very large objects (&gt; GBs).</p></dd>
 
 <dt>tls</dt>
 <dd><p>[default NULL] required for secure TLS connections over tls+tcp or
-wss, maps directly to the 'client' argument of <code><a href="https://shikokuchuo.net/nanonext/reference/tls_config.html" class="external-link">tls_config</a></code>.</p></dd>
+wss. <strong>Either</strong> the absolute path to a file containing X.509
+certificate(s) in PEM format, comprising the certificate authority
+certificate chain (and revocation list if present), used to validate
+certificates presented by peers, <strong>or</strong> a length 2 character vector
+comprising [i] the certificate authority certificate chain and [ii] the
+certificate revocation list or the empty character "" if not applicable.</p></dd>
 
 
 <dt>...</dt>

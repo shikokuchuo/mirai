@@ -24,7 +24,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9008</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9009</span>
       </span>
     </div>
 
@@ -104,9 +104,15 @@ the client and ensures FIFO scheduling, queueing tasks if necessary
 
 
 <dt>tls</dt>
-<dd><p>(optional for secure TLS connections over tls+tcp or wss) maps
-directly to the 'server' argument of <code><a href="https://shikokuchuo.net/nanonext/reference/tls_config.html" class="external-link">tls_config</a></code>.
-If not provided, a one-time configuration is automatically generated.</p></dd>
+<dd><p>(optional for secure TLS connections over tls+tcp or wss) if NULL,
+a one-time configuration is automatically generated. <strong>Either</strong>
+the absolute path to a single file containing the PEM encoded certificate
+and associated private key (may contain additional certificates leading
+to a validation chain, with the leaf certificate first, although the
+self-signed root is not required as the client should already have this),
+<strong>or</strong> a length 2 character vector comprising [i] the certificate
+(optionally certificate chain) and [ii] the associated private or secret
+key.</p></dd>
 
 
 <dt>...</dt>
