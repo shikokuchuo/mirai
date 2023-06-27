@@ -44,12 +44,13 @@ Features efficient task scheduling, scalability beyond R connection limits, and 
 4. [Example 3: Resilient Pipelines](#example-3-resilient-pipelines)
 5. [Daemons: Local Persistent Processes](#daemons-local-persistent-processes)
 6. [Distributed Computing: Remote Servers](#distributed-computing-remote-servers)
-7. [Compute Profiles](#compute-profiles)
-8. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
-9. [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
-10. [Integrations with Crew, Targets, Shiny](#integrations-with-crew-targets-shiny)
-11. [Acknowledgements](#acknowledgements)
-12. [Links](#links)
+7. [Distributed Computing: TLS Secure Connections](#distributed-computing-tls-secure-connections)
+8. [Compute Profiles](#compute-profiles)
+9. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
+10. [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
+11. [Integrations with Crew, Targets, Shiny](#integrations-with-crew-targets-shiny)
+12. [Acknowledgements](#acknowledgements)
+13. [Links](#links)
 
 ### Installation
 
@@ -401,6 +402,18 @@ daemons(0)
 ```
 
 This causes all connected server instances to exit automatically.
+
+[&laquo; Back to ToC](#table-of-contents)
+
+### Distributed Computing: TLS Secure Connections
+
+A TLS layer is implemented to secure connections to remote servers for both WebSocket and TCP transports.
+
+All that is required is to specify a secure URL of the form `wss://` or `tls+tcp://`.
+
+The necessary keys and certificates are automatically generated and configured. These are designed to be single-use and are handled internally by `mirai` without requiring any user intervention.
+
+Alternatively, the key/certificate pair may be specified as the 'tls' argument to `daemons()`, and the public key certificate chain as the 'tls' argument to `server()`. The private key is retained on the client, and only the public key certificates need to be distributed to the server daemons.
 
 [&laquo; Back to ToC](#table-of-contents)
 

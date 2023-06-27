@@ -40,13 +40,15 @@ dependencies. <br /><br />
     Processes](#daemons-local-persistent-processes)
 6.  [Distributed Computing: Remote
     Servers](#distributed-computing-remote-servers)
-7.  [Compute Profiles](#compute-profiles)
-8.  [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
-9.  [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
-10. [Integrations with Crew, Targets,
+7.  [Distributed Computing: TLS Secure
+    Connections](#distributed-computing-tls-secure-connections)
+8.  [Compute Profiles](#compute-profiles)
+9.  [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
+10. [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
+11. [Integrations with Crew, Targets,
     Shiny](#integrations-with-crew-targets-shiny)
-11. [Acknowledgements](#acknowledgements)
-12. [Links](#links)
+12. [Acknowledgements](#acknowledgements)
+13. [Links](#links)
 
 ### Installation
 
@@ -110,7 +112,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 2.014 0.353 -0.486 0.406 -0.108 ...
+#>  num [1:100000000] -9.413 0.183 -101.521 0.184 0.492 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -118,7 +120,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 2.014 0.353 -0.486 0.406 -0.108 ...
+#>  num [1:100000000] -9.413 0.183 -101.521 0.184 0.492 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -136,7 +138,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.58 -0.724 -0.552 -1.282 -0.949 ...
+#>  num [1:100000000] -0.953 0.942 0.665 1.167 2.046 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -227,9 +229,9 @@ for (i in 1:10) {
 }
 #> iteration 1 successful 
 #> iteration 2 successful 
-#> Error: random error 
 #> iteration 3 successful 
 #> iteration 4 successful 
+#> Error: random error 
 #> iteration 5 successful 
 #> iteration 6 successful 
 #> iteration 7 successful 
@@ -277,12 +279,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://423f95771594786387944c3fde680d8d9a586287      1        1        0        0
-#> abstract://f929afd8d0e5f72d0d853db04daefb3005cdb445      1        1        0        0
-#> abstract://068b212ffef83c82cfe6122f690d78238ee4aad8      1        1        0        0
-#> abstract://9af3255a78af6176691b1f5ab42d13e1146d66f1      1        1        0        0
-#> abstract://1959d5ea05ce4690c45113075b2d30935e25a86c      1        1        0        0
-#> abstract://f9cb2b1873dad45f9466f989a290a5c6b13ce47c      1        1        0        0
+#> abstract://a1097b71f93031d5173526cdf978d747dd8f661e      1        1        0        0
+#> abstract://03511726996f045cc26876fab9397c642e6e8cf7      1        1        0        0
+#> abstract://287d02295d760cb7b662813dd6e2b46fd7a7e8c1      1        1        0        0
+#> abstract://aa8c79609b097ca453b1501205c1bfe85f89e8c4      1        1        0        0
+#> abstract://a7e6fba3f026ba37bf53d17f9bd7db3b33fdb252      1        1        0        0
+#> abstract://225c27fe92b0a553e0cea9e9696aba632a05eb20      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -478,7 +480,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:34929"
+#> [1] "tcp://:41149"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -493,7 +495,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:34929")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:41149")'
 
 As before, `daemons()` should be set up on the client before launching
 `server()` on remote resources, otherwise the server instances will exit
@@ -516,7 +518,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:34929"
+#> [1] "tcp://:41149"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -527,6 +529,26 @@ daemons(0)
 ```
 
 This causes all connected server instances to exit automatically.
+
+[« Back to ToC](#table-of-contents)
+
+### Distributed Computing: TLS Secure Connections
+
+A TLS layer is implemented to secure connections to remote servers for
+both WebSocket and TCP transports.
+
+All that is required is to specify a secure URL of the form `wss://` or
+`tls+tcp://`.
+
+The necessary keys and certificates are automatically generated and
+configured. These are designed to be single-use and are handled
+internally by `mirai` without requiring any user intervention.
+
+Alternatively, the key/certificate pair may be specified as the ‘tls’
+argument to `daemons()`, and the public key certificate chain as the
+‘tls’ argument to `server()`. The private key is retained on the client,
+and only the public key certificates need to be distributed to the
+server daemons.
 
 [« Back to ToC](#table-of-contents)
 

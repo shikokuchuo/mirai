@@ -48,9 +48,15 @@ which do not accept a path).}
 accepted, preventing further connection attempts. This provides safety
 against more than one server trying to connect to a unique URL.}
 
-\item{tls}{(optional for secure TLS connections over tls+tcp or wss) maps
-directly to the 'server' argument of \code{\link[nanonext]{tls_config}}.
-If not provided, a one-time configuration is automatically generated.}
+\item{tls}{(optional for secure TLS connections over tls+tcp or wss) if NULL,
+a one-time configuration is automatically generated. \strong{Either}
+the absolute path to a single file containing the PEM encoded certificate
+and associated private key (may contain additional certificates leading
+to a validation chain, with the leaf certificate first, although the
+self-signed root is not required as the client should already have this),
+\strong{or} a length 2 character vector comprising [i] the certificate
+(optionally certificate chain) and [ii] the associated private or secret
+key.}
 
 \item{...}{additional arguments passed through to \code{\link{server}} if
 launching local daemons i.e. 'url' is not specified.}
