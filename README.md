@@ -112,7 +112,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.911 0.365 1.939 -1.634 1.378 ...
+#>  num [1:100000000] -0.706 -0.628 -0.667 6.361 -0.13 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -120,7 +120,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.911 0.365 1.939 -1.634 1.378 ...
+#>  num [1:100000000] -0.706 -0.628 -0.667 6.361 -0.13 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -138,7 +138,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.829 0.3649 0.0973 4.8936 -6.8956 ...
+#>  num [1:100000000] 0.154 2.844 -1.213 0.342 0.607 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -231,10 +231,10 @@ for (i in 1:10) {
 #> iteration 2 successful 
 #> iteration 3 successful 
 #> iteration 4 successful 
-#> Error: random error 
 #> iteration 5 successful 
 #> iteration 6 successful 
 #> iteration 7 successful 
+#> Error: random error 
 #> iteration 8 successful 
 #> iteration 9 successful 
 #> iteration 10 successful
@@ -279,12 +279,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://6fb86aa7b7b266b280d4125df6a07adae30d46f6      1        1        0        0
-#> abstract://82c84bcd98aa5088ccdc887b311121b6d94ff0a1      1        1        0        0
-#> abstract://31c35fee928451a11e352edb3b14856c0c703164      1        1        0        0
-#> abstract://d668aff582ff96077aa6aba46ec418c85b56825a      1        1        0        0
-#> abstract://844b6b35bced5ef02e8e1916ca0d814339784241      1        1        0        0
-#> abstract://fec29a02fd70f903f95062d3138e6953acbe158d      1        1        0        0
+#> abstract://561a5d75f04323883e214b5b05ba5447ff401e84      1        1        0        0
+#> abstract://b003b0dd490da5b6d469e1a87e1c1a04616289c6      1        1        0        0
+#> abstract://cf04fc3b336f3d3f3b432942151e60932b5dd403      1        1        0        0
+#> abstract://89767f9d1c716c05c8d728254669c0bca7b80903      1        1        0        0
+#> abstract://88e02806dcebc9dff4df3b5f642808e210ae2d9f      1        1        0        0
+#> abstract://8999d37f0a7a7e20a0a487a5a9e224a4db5237f9      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -480,7 +480,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:40233"
+#> [1] "tcp://:39131"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -495,7 +495,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:40233")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:39131")'
 
 As before, `daemons()` should be set up on the client before launching
 `server()` on remote resources, otherwise the server instances will exit
@@ -518,7 +518,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:40233"
+#> [1] "tcp://:39131"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -538,15 +538,31 @@ A TLS layer is implemented to secure connections to remote servers for
 both WebSocket and TCP transports.
 
 All that is required is to specify a secure URL of the form `wss://` or
-`tls+tcp://`. For the above example:
+`tls+tcp://`. For example:
 
 ``` r
-daemons(n = 4, url = "wss://10.111.5.13:5555")
+daemons(n = 4, url = "wss://127.0.0.1:5555")
+#> [1] 4
 ```
 
 The necessary keys and certificates are automatically generated and
 configured. These are designed to be single-use and are handled
 internally by `mirai` without requiring any user intervention.
+
+The generated TLS configuration is stored in the compute profile, and
+may be retrieved with:
+
+``` r
+tls <- cpinfo("tls")
+
+str(tls)
+#> List of 2
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEAx/kcxW26D3Hze3Amd6jrqJMonn5GaCcNWxh/YLIcHgKdCDwC\nOedWZUYhubAQ"| __truncated__
+#>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ ""
+```
+
+Note: the ‘client’ portion should be passed as the ‘tls’ argument to
+`server()`.
 
 Alternatively, the key/certificate pair may be specified as the ‘tls’
 argument to `daemons()`, and the public key certificate chain as the

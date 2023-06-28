@@ -12,9 +12,8 @@ saisei(i = 1L, force = FALSE, .compute = "default")
 \item{force}{[default FALSE] logical value whether to replace the listener
 even when there is an existing connection.}
 
-\item{.compute}{[default 'default'] character compute profile to use (each
-compute profile has its own set of daemons for connecting to different
-resources).}
+\item{.compute}{[default 'default'] character compute profile (each compute
+profile has its own set of daemons for connecting to different resources).}
 }
 \value{
 The regenerated character URL upon success, or else NULL.
