@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9011</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9012</span>
       </span>
     </div>
 
@@ -59,14 +59,15 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cpinfo</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pid"</span>, <span class="st">"tls"</span>, <span class="st">"urls"</span><span class="op">)</span>, .compute <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cpinfo</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"pid"</span>, <span class="st">"tls"</span>, <span class="st">"urls"</span><span class="op">)</span>, .compute <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>[default 'pid'] info to request, one of "pid" (dispatcher process
-ID), "tls" (TLS configuration), or "urls" (daemon URLs when using
+<dd><p>[default 'n'] info to request, one of 'n' (integer number of daemons
+set or the client URL if not using dispatcher), 'pid' (dispatcher process
+ID), 'tls' (TLS configuration), or 'urls' (daemon URLs when using
 dispatcher).</p></dd>
 
 
@@ -88,6 +89,7 @@ profile has its own set of daemons for connecting to different resources).</p></
 <span class="r-in"><span><span class="co"># Only run examples in interactive R sessions</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">cpinfo</span><span class="op">(</span><span class="st">"n"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">cpinfo</span><span class="op">(</span><span class="st">"pid"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">cpinfo</span><span class="op">(</span><span class="st">"urls"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
