@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9011</span>
       </span>
     </div>
 
@@ -151,11 +151,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.911 0.365 1.939 -1.634 1.378 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.706 -0.628 -0.667 6.361 -0.13 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.911 0.365 1.939 -1.634 1.378 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.706 -0.628 -0.667 6.361 -0.13 ...</span></span></code></pre></div>
 <p>For easy programmatic use of <code><a href="reference/mirai.html">mirai()</a></code>, ‘.expr’ accepts a pre-constructed language object, and also a list of named arguments passed via ‘.args’. So, the following would be equivalent to the above:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -168,7 +168,7 @@
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span>.expr <span class="op">=</span> <span class="va">expr</span>, .args <span class="op">=</span> <span class="va">args</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.829 0.3649 0.0973 4.8936 -6.8956 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.154 2.844 -1.213 0.342 0.607 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -233,10 +233,10 @@
 <span><span class="co">#&gt; iteration 2 successful </span></span>
 <span><span class="co">#&gt; iteration 3 successful </span></span>
 <span><span class="co">#&gt; iteration 4 successful </span></span>
-<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 5 successful </span></span>
 <span><span class="co">#&gt; iteration 6 successful </span></span>
 <span><span class="co">#&gt; iteration 7 successful </span></span>
+<span><span class="co">#&gt; Error: random error </span></span>
 <span><span class="co">#&gt; iteration 8 successful </span></span>
 <span><span class="co">#&gt; iteration 9 successful </span></span>
 <span><span class="co">#&gt; iteration 10 successful</span></span></code></pre></div>
@@ -264,12 +264,12 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt;                                                     online instance assigned complete</span></span>
-<span><span class="co">#&gt; abstract://6fb86aa7b7b266b280d4125df6a07adae30d46f6      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://82c84bcd98aa5088ccdc887b311121b6d94ff0a1      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://31c35fee928451a11e352edb3b14856c0c703164      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://d668aff582ff96077aa6aba46ec418c85b56825a      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://844b6b35bced5ef02e8e1916ca0d814339784241      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://fec29a02fd70f903f95062d3138e6953acbe158d      1        1        0        0</span></span></code></pre></div>
+<span><span class="co">#&gt; abstract://561a5d75f04323883e214b5b05ba5447ff401e84      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://b003b0dd490da5b6d469e1a87e1c1a04616289c6      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://cf04fc3b336f3d3f3b432942151e60932b5dd403      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://89767f9d1c716c05c8d728254669c0bca7b80903      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://88e02806dcebc9dff4df3b5f642808e210ae2d9f      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://8999d37f0a7a7e20a0a487a5a9e224a4db5237f9      1        1        0        0</span></span></code></pre></div>
 <p>The default <code>dispatcher = TRUE</code> creates a <code><a href="reference/dispatcher.html">dispatcher()</a></code> background process that connects to individual daemon processes on the local machine on behalf of the client. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to servers for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.</p>
 <p>Dispatcher uses synchronisation primitives from <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link"><code>nanonext</code></a>, waiting upon rather than polling for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -364,11 +364,11 @@
 <p>Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://:0"</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tcp://:40233"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:39131"</span></span></code></pre></div>
 <p>Note that above, the port number is specified as zero. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided as the return value of the call, or it may be queried at any time by requesting the status via <code><a href="reference/daemons.html">daemons()</a></code>.</p>
 <p>–</p>
 <p>On the server, <code><a href="reference/server.html">server()</a></code> may be called from an R session, or an Rscript invocation from a shell. This sets up a remote daemon process that connects to the client URL and receives tasks:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://10.111.5.13:40233")'</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::server("tcp://10.111.5.13:39131")'</span></span></code></pre></div>
 <p>As before, <code><a href="reference/daemons.html">daemons()</a></code> should be set up on the client before launching <code><a href="reference/server.html">server()</a></code> on remote resources, otherwise the server instances will exit if a connection is not immediately available. Alternatievly specifying <code>server(asyncdial = TRUE)</code> will allow servers to wait (indefinitely) for a connection to become available.</p>
 <p>–</p>
 <p>The number of daemons connecting to the client URL is not limited and network resources may be added or removed at any time, with tasks automatically distributed to all server processes.</p>
@@ -379,7 +379,7 @@
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "tcp://:40233"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:39131"</span></span></code></pre></div>
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
@@ -392,10 +392,20 @@
 <h3 id="distributed-computing-tls-secure-connections">Distributed Computing: TLS Secure Connections<a class="anchor" aria-label="anchor" href="#distributed-computing-tls-secure-connections"></a>
 </h3>
 <p>A TLS layer is implemented to secure connections to remote servers for both WebSocket and TCP transports.</p>
-<p>All that is required is to specify a secure URL of the form <code>wss://</code> or <code>tls+tcp://</code>. For the above example:</p>
+<p>All that is required is to specify a secure URL of the form <code>wss://</code> or <code>tls+tcp://</code>. For example:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, url <span class="op">=</span> <span class="st">"wss://10.111.5.13:5555"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, url <span class="op">=</span> <span class="st">"wss://127.0.0.1:5555"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
 <p>The necessary keys and certificates are automatically generated and configured. These are designed to be single-use and are handled internally by <code>mirai</code> without requiring any user intervention.</p>
+<p>The generated TLS configuration is stored in the compute profile, and may be retrieved with:</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tls</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cpinfo.html">cpinfo</a></span><span class="op">(</span><span class="st">"tls"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">tls</span><span class="op">)</span></span>
+<span><span class="co">#&gt; List of 2</span></span>
+<span><span class="co">#&gt;  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEAx/kcxW26D3Hze3Amd6jrqJMonn5GaCcNWxh/YLIcHgKdCDwC\nOedWZUYhubAQ"| __truncated__</span></span>
+<span><span class="co">#&gt;  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ ""</span></span></code></pre></div>
+<p>Note: the ‘client’ portion should be passed as the ‘tls’ argument to <code><a href="reference/server.html">server()</a></code>.</p>
 <p>Alternatively, the key/certificate pair may be specified as the ‘tls’ argument to <code><a href="reference/daemons.html">daemons()</a></code>, and the public key certificate chain as the ‘tls’ argument to <code><a href="reference/server.html">server()</a></code>. The private key is retained on the client, and only the public key certificates need to be distributed to the server daemons.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
@@ -415,7 +425,7 @@
 <h3 id="errors-interrupts-and-timeouts">Errors, Interrupts and Timeouts<a class="anchor" aria-label="anchor" href="#errors-interrupts-and-timeouts"></a>
 </h3>
 <p>If execution in a mirai fails, the error message is returned as a character string of class ‘miraiError’ and ‘errorValue’ to facilitate debugging. <code><a href="reference/is_mirai_error.html">is_mirai_error()</a></code> can be used to test for mirai execution errors.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"occurred with a custom message"</span>, call. <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m1</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; 'miraiError' chr Error: occurred with a custom message</span></span>
@@ -429,11 +439,11 @@
 <span><span class="fu"><a href="reference/is_mirai_error.html">is_error_value</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>If during a <code><a href="reference/call_mirai.html">call_mirai()</a></code> an interrupt e.g. ctrl+c is sent, the mirai will resolve to an empty character string of class ‘miraiInterrupt’ and ‘errorValue’. <code><a href="reference/is_mirai_error.html">is_mirai_interrupt()</a></code> may be used to test for such interrupts.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/is_mirai_error.html">is_mirai_interrupt</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
 <p>If execution of a mirai surpasses the timeout set via the ‘.timeout’ argument, the mirai will resolve to an ‘errorValue’. This can, amongst other things, guard against mirai processes that hang and never return.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/msleep.html" class="external-link">msleep</a></span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span>, .timeout <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m3</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; 'errorValue' int 5 | Timed out</span></span>
@@ -457,7 +467,7 @@
 <p>It is possible to use <code><a href="reference/unresolved.html">unresolved()</a></code> around an expression, or its <code>$data</code> element, to test for resolution, as in the example below.</p>
 <p>The pipe operator semantics are similar to R’s base pipe <code>|&gt;</code>:</p>
 <p><code>x %&gt;&gt;% f</code> is equivalent to <code>f(x)</code> <br><code>x %&gt;&gt;% f()</code> is equivalent to <code>f(x)</code> <br><code>x %&gt;&gt;% f(y)</code> is equivalent to <code>f(x, y)</code></p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/msleep.html" class="external-link">msleep</a></span><span class="op">(</span><span class="fl">500</span><span class="op">)</span>; <span class="fl">1</span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/deferred-execution-pipe.html">.</a></span><span class="op">(</span><span class="va">m</span> <span class="op"><a href="reference/deferred-execution-pipe.html">%&gt;&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="reference/deferred-execution-pipe.html">%&gt;&gt;%</a></span> <span class="va">as.character</span><span class="op">)</span></span>
 <span></span>
