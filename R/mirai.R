@@ -894,28 +894,29 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 #' Retrieve information for the selected compute profile (read-only).
 #'
 #' @inheritParams saisei
-#' @param x [default 'n'] info to request, one of 'n' (integer number of daemons
-#'     set or the client URL if not using dispatcher), 'pid' (dispatcher process
-#'     ID), 'tls' (TLS configuration), or 'urls' (daemon URLs when using
+#' @param x [default 'n'] information to retrieve, one of 'n' (integer number of
+#'     daemons set, or the client URL if not using dispatcher), 'pid' (dispatcher
+#'     process ID), 'tls' (TLS configuration), or 'urls' (daemon URLs when using
 #'     dispatcher).
 #'
-#' @return The requested information, or else NULL if not present.
+#' @return List, integer or character vector (as applicable), or else NULL if
+#'     not available.
 #'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
 #' daemons(1L)
-#' cpinfo("n")
-#' cpinfo("pid")
-#' cpinfo("urls")
+#' cpi("n")
+#' cpi("pid")
+#' cpi("urls")
 #' daemons(0)
 #'
 #' }
 #'
 #' @export
 #'
-cpinfo <- function(x = c("n", "pid", "tls", "urls"), .compute = "default")
+cpi <- function(x = c("n", "pid", "tls", "urls"), .compute = "default")
   ..[[.compute]][[match.arg(x, c("n", "pid", "tls", "urls"))]]
 
 #' mirai (Call Value)
