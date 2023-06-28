@@ -4,11 +4,12 @@
 \alias{cpinfo}
 \title{Compute Profile Information}
 \usage{
-cpinfo(x = c("pid", "tls", "urls"), .compute = "default")
+cpinfo(x = c("n", "pid", "tls", "urls"), .compute = "default")
 }
 \arguments{
-\item{x}{[default 'pid'] info to request, one of "pid" (dispatcher process
-ID), "tls" (TLS configuration), or "urls" (daemon URLs when using
+\item{x}{[default 'n'] info to request, one of 'n' (integer number of daemons
+set or the client URL if not using dispatcher), 'pid' (dispatcher process
+ID), 'tls' (TLS configuration), or 'urls' (daemon URLs when using
 dispatcher).}
 
 \item{.compute}{[default 'default'] character compute profile (each compute
@@ -25,6 +26,7 @@ if (interactive()) {
 # Only run examples in interactive R sessions
 
 daemons(1L)
+cpinfo("n")
 cpinfo("pid")
 cpinfo("urls")
 daemons(0)

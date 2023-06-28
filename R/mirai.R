@@ -726,7 +726,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
   envir <- ..[[.compute]]
   missing(n) && missing(url) &&
     return(list(connections = if (length(envir[["sock"]])) stat(envir[["sock"]], "pipes") else 0L,
-                daemons = if (length(envir[["sockc"]])) query_status(envir) else envir[["proc"]] %||% 0L))
+                daemons = if (length(envir[["sockc"]])) query_status(envir) else envir[["n"]] %||% 0L))
 
   if (is.null(envir)) {
     `[[<-`(.., .compute, new.env(hash = FALSE, parent = environment(daemons)))
@@ -738,27 +738,26 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
     if (is.null(envir[["sock"]])) {
       purl <- parse_url(url)
       if (substr(purl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
-        tls <- write_cert(cn = purl[["hostname"]])
-        `[[<-`(envir, "tls", tls)
-        tls <- tls[["server"]]
+        `[[<-`(envir, "tls", write_cert(cn = purl[["hostname"]]))
+        tls <- envir[["tls"]][["server"]]
       }
       if (dispatcher) {
-        proc <- if (missing(n)) length(url) else if (is.numeric(n) && n > 0L) as.integer(n) else stop(.messages[["n_one"]])
+        n <- if (missing(n)) length(url) else if (is.numeric(n) && n > 0L) as.integer(n) else stop(.messages[["n_one"]])
         urld <- auto_tokenized_url()
         urlc <- new_control_url(urld)
         sock <- req_socket(urld)
         sockc <- socket(protocol = "pair", listen = urlc)
-        launch_and_sync_daemon(sock = sock, urld, url, proc, urlc, parse_dots(...), tls = tls)
+        launch_and_sync_daemon(sock = sock, urld, url, n, urlc, parse_dots(...), tls = tls)
         recv_and_store(sockc = sockc, envir = envir)
       } else {
         server_config <- if (length(tls)) tls_config(server = tls)
         sock <- req_socket(url, tls = server_config)
         listener <- attr(sock, "listener")[[1L]]
-        proc <- opt(listener, "url")
-        if (parse_url(proc)[["port"]] == "0")
-          proc <- sub_real_port(port = opt(listener, "tcp-bound-port"), url = proc)
+        n <- opt(listener, "url")
+        if (parse_url(n)[["port"]] == "0")
+          n <- sub_real_port(port = opt(listener, "tcp-bound-port"), url = n)
       }
-      `[[<-`(`[[<-`(envir, "sock", sock), "proc", proc)
+      `[[<-`(`[[<-`(envir, "sock", sock), "n", n)
     }
 
   } else {
@@ -767,14 +766,13 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
     n <- as.integer(n)
 
     if (n == 0L) {
-      length(envir[["proc"]]) || return(0L)
+      length(envir[["n"]]) || return(0L)
 
       close(envir[["sock"]])
-      if (length(envir[["sockc"]])) {
+      if (length(envir[["sockc"]]))
         close(envir[["sockc"]])
-        `[[<-`(envir, "sockc", NULL)
-      }
-      `[[<-`(`[[<-`(`[[<-`(envir, "sock", NULL), "proc", NULL), "tls", NULL)
+      envir <- NULL
+      `[[<-`(.., .compute, new.env(hash = FALSE))
 
     } else if (is.null(envir[["sock"]])) {
 
@@ -790,12 +788,12 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
         for (i in seq_len(n))
           launch_daemon(urld, parse_dots(...))
       }
-      `[[<-`(`[[<-`(envir, "sock", sock), "proc", n)
+      `[[<-`(`[[<-`(envir, "sock", sock), "n", n)
     }
 
   }
 
-  envir[["proc"]] %||% 0L
+  envir[["n"]] %||% 0L
 
 }
 
@@ -891,8 +889,9 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 #' Retrieve information for the selected compute profile (read-only).
 #'
 #' @inheritParams saisei
-#' @param x [default 'pid'] info to request, one of "pid" (dispatcher process
-#'     ID), "tls" (TLS configuration), or "urls" (daemon URLs when using
+#' @param x [default 'n'] info to request, one of 'n' (integer number of daemons
+#'     set or the client URL if not using dispatcher), 'pid' (dispatcher process
+#'     ID), 'tls' (TLS configuration), or 'urls' (daemon URLs when using
 #'     dispatcher).
 #'
 #' @return The requested information, or else NULL if not present.
@@ -902,6 +901,7 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 #' # Only run examples in interactive R sessions
 #'
 #' daemons(1L)
+#' cpinfo("n")
 #' cpinfo("pid")
 #' cpinfo("urls")
 #' daemons(0)
@@ -910,8 +910,8 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 #'
 #' @export
 #'
-cpinfo <- function(x = c("pid", "tls", "urls"), .compute = "default")
-  ..[[.compute]][[match.arg(x, c("pid", "tls", "urls"))]]
+cpinfo <- function(x = c("n", "pid", "tls", "urls"), .compute = "default")
+  ..[[.compute]][[match.arg(x, c("n", "pid", "tls", "urls"))]]
 
 #' mirai (Call Value)
 #'
@@ -1191,7 +1191,7 @@ query_dispatcher <- function(sock, command, mode) {
 query_status <- function(envir) {
   res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L)
   is_error_value(res) && return(res)
-  `attributes<-`(res, list(dim = c(envir[["proc"]], 4L),
+  `attributes<-`(res, list(dim = c(envir[["n"]], 4L),
                            dimnames = list(envir[["urls"]], c("online", "instance", "assigned", "complete"))))
 }
 
