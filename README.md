@@ -112,7 +112,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -0.706 -0.628 -0.667 6.361 -0.13 ...
+#>  num [1:100000000] 13.386 0.462 -0.17 -3.101 28.654 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -120,7 +120,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.706 -0.628 -0.667 6.361 -0.13 ...
+#>  num [1:100000000] 13.386 0.462 -0.17 -3.101 28.654 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -138,7 +138,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.154 2.844 -1.213 0.342 0.607 ...
+#>  num [1:100000000] 0.00215 0.46655 0.89008 -12.8315 1.13978 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -182,7 +182,6 @@ while (unresolved(m)) {
   cat("while unresolved\n")
   Sys.sleep(0.5)
 }
-#> while unresolved
 #> while unresolved
 
 cat("Write complete:", is.null(m$data))
@@ -232,9 +231,9 @@ for (i in 1:10) {
 #> iteration 3 successful 
 #> iteration 4 successful 
 #> iteration 5 successful 
+#> Error: random error 
 #> iteration 6 successful 
 #> iteration 7 successful 
-#> Error: random error 
 #> iteration 8 successful 
 #> iteration 9 successful 
 #> iteration 10 successful
@@ -279,12 +278,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://561a5d75f04323883e214b5b05ba5447ff401e84      1        1        0        0
-#> abstract://b003b0dd490da5b6d469e1a87e1c1a04616289c6      1        1        0        0
-#> abstract://cf04fc3b336f3d3f3b432942151e60932b5dd403      1        1        0        0
-#> abstract://89767f9d1c716c05c8d728254669c0bca7b80903      1        1        0        0
-#> abstract://88e02806dcebc9dff4df3b5f642808e210ae2d9f      1        1        0        0
-#> abstract://8999d37f0a7a7e20a0a487a5a9e224a4db5237f9      1        1        0        0
+#> abstract://012d605363af6de6523a2973ed54af765932eb40      1        1        0        0
+#> abstract://376b02d409257f50e02957609b42c115927f29bd      1        1        0        0
+#> abstract://73d5f6884887d336b3476ca4d52bfd822d63d9e2      1        1        0        0
+#> abstract://fce68a1b6bee6dae6efba4fcbb7379f266ba1e5d      1        1        0        0
+#> abstract://3e9da02f48e9f28ec6edc7d4705b1fa7f24e1410      1        1        0        0
+#> abstract://26ea33b089305973289af3879221bca87daea5c8      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -363,6 +362,11 @@ The examples below use an illustrative local network IP address of
 A port on the client also needs to be open and available for inbound
 connections from the local network, illustratively ‘5555’ in the
 examples below.
+
+IPv6 addresses are also supported and must be enclosed in square
+brackets `[]` to avoid confusion with the final colon separating the
+port. For example, port 5555 on the IPv6 address `::ffff:a6f:50d` would
+be specified as `tcp://[::ffff:a6f:50d]:5555`.
 
 #### Connecting to Remote Servers Through Dispatcher
 
@@ -480,7 +484,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:39131"
+#> [1] "tcp://:34733"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -495,7 +499,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:39131")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:34733")'
 
 As before, `daemons()` should be set up on the client before launching
 `server()` on remote resources, otherwise the server instances will exit
@@ -518,7 +522,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:39131"
+#> [1] "tcp://:34733"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -538,10 +542,10 @@ A TLS layer is implemented to secure connections to remote servers for
 both WebSocket and TCP transports.
 
 All that is required is to specify a secure URL of the form `wss://` or
-`tls+tcp://`. For example:
+`tls+tcp://`. For example, on the IPv6 loopback address:
 
 ``` r
-daemons(n = 4, url = "wss://127.0.0.1:5555")
+daemons(n = 4, url = "wss://[::1]:5555")
 #> [1] 4
 ```
 
@@ -557,18 +561,24 @@ tls <- cpinfo("tls")
 
 str(tls)
 #> List of 2
-#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEAx/kcxW26D3Hze3Amd6jrqJMonn5GaCcNWxh/YLIcHgKdCDwC\nOedWZUYhubAQ"| __truncated__
-#>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFFTCCAv2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAiMRIwEAYDVQQDDAkxMjcu\nMC4wLjExDDAKBgNV"| __truncated__ ""
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhp"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKQIBAAKCAgEA6+QuyBc5sbCPfbfqsd6gLIgAfxCYIDYg4um3JBDb0lrhaV94\n/WNHLVjWSCqt"| __truncated__
+#>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhp"| __truncated__ ""
 ```
 
 Note: the ‘client’ portion should be passed as the ‘tls’ argument to
 `server()`.
 
-Alternatively, the key/certificate pair may be specified as the ‘tls’
-argument to `daemons()`, and the public key certificate chain as the
-‘tls’ argument to `server()`. The private key is retained on the client,
-and only the public key certificates need to be distributed to the
-server daemons.
+Alternatively, a certificate may be generated via a Certificate Signing
+Request (CSR) to a Certificate Authority (CA), which may be a public CA
+or a CA internal to your organisation.
+
+The generated certificate along with the associated private key may then
+be specified as the ‘tls’ argument to `daemons()`. The private key is
+always retained on the client and never transmitted.
+
+The certificate chain to the CA is supplied as the ‘tls’ argument to
+`server()`. As these are public key certificates, they may be freely
+distributed to the server daemons.
 
 [« Back to ToC](#table-of-contents)
 

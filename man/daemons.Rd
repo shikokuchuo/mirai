@@ -132,6 +132,11 @@ For viewing the currrent status, specify \code{daemons()} with no
     'tcp://192.168.0.2:5555' at which server processes started using
     \code{\link{server}} should connect to.
 
+    IPv6 addresses are also supported and must be enclosed in square brackets
+    [ ] to avoid confusion with the final colon separating the port. For
+    example, port 5555 on the IPv6 loopback address ::1 would be specified
+    as 'tcp://[::1]:5555'.
+
     Alternatively, to listen to port 5555 on all interfaces on the local host,
     specify either 'tcp://:5555', 'tcp://*:5555' or 'tcp://0.0.0.0:5555'.
 

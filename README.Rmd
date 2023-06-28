@@ -284,6 +284,8 @@ The examples below use an illustrative local network IP address of '10.111.5.13'
 
 A port on the client also needs to be open and available for inbound connections from the local network, illustratively '5555' in the examples below.
 
+IPv6 addresses are also supported and must be enclosed in square brackets `[]` to avoid confusion with the final colon separating the port. For example, port 5555 on the IPv6 address `::ffff:a6f:50d` would be specified as `tcp://[::ffff:a6f:50d]:5555`.
+
 #### Connecting to Remote Servers Through Dispatcher
 
 The default `dispatcher = TRUE` creates a background `dispatcher()` process on the local client machine, which listens to a vector of URLs that remote `server()` processes dial in to, with each server having its unique URL.
@@ -409,10 +411,10 @@ This causes all connected server instances to exit automatically.
 
 A TLS layer is implemented to secure connections to remote servers for both WebSocket and TCP transports.
 
-All that is required is to specify a secure URL of the form `wss://` or `tls+tcp://`. For example:
+All that is required is to specify a secure URL of the form `wss://` or `tls+tcp://`. For example, on the IPv6 loopback address:
 
 ```{r tlsremote}
-daemons(n = 4, url = "wss://127.0.0.1:5555")
+daemons(n = 4, url = "wss://[::1]:5555")
 ```
 
 The necessary keys and certificates are automatically generated and configured. These are designed to be single-use and are handled internally by `mirai` without requiring any user intervention.
@@ -428,7 +430,11 @@ str(tls)
 
 Note: the 'client' portion should be passed as the 'tls' argument to `server()`.
 
-Alternatively, the key/certificate pair may be specified as the 'tls' argument to `daemons()`, and the public key certificate chain as the 'tls' argument to `server()`. The private key is retained on the client, and only the public key certificates need to be distributed to the server daemons.
+Alternatively, a certificate may be generated via a Certificate Signing Request (CSR) to a Certificate Authority (CA), which may be a public CA or a CA internal to your organisation.
+
+The generated certificate along with the associated private key may then be specified as the 'tls' argument to `daemons()`. The private key is always retained on the client and never transmitted.
+
+The certificate chain to the CA is supplied as the 'tls' argument to `server()`. As these are public key certificates, they may be freely distributed to the server daemons.
 
 ```{r tlsclose, include=FALSE}
 daemons(0)
