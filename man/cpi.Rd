@@ -26,10 +26,17 @@ Retrieve information for the selected compute profile (read-only).
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-daemons(1L)
+daemons(n = 2L, url = "ws://[::1]:0")
+
 cpi("n")
 cpi("pid")
 cpi("urls")
+
+daemons()
+launch_server(cpi("urls")[1L])
+Sys.sleep(0.1)
+daemons()
+
 daemons(0)
 
 }
