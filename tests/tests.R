@@ -138,6 +138,7 @@ if (.Platform[["OS.type"]] != "windows") {
 
 if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
   nanotesto(daemons(url = "wss://:0", token = TRUE))
+  nanotestz(launch_server(cpi("urls")[[1L]]))
   nanotest(is.list(cpi("tls")))
   nanotestz(daemons(0L))
   Sys.sleep(1L)
