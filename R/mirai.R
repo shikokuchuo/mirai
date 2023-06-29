@@ -843,8 +843,9 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
 launch_server <- function(url, ..., .compute = "default") {
 
   parse_url(url)
-  launch_daemon(url, parse_dots(...), tls = ..[[.compute]][["tls"]][["client"]])
+  r <- launch_daemon(url, parse_dots(...), tls = ..[[.compute]][["tls"]][["client"]])
   if (substr(url, 1L, 3L) == "wss") msleep(100L)
+  r
 
 }
 
