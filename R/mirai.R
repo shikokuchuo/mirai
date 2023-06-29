@@ -744,7 +744,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
 
     if (is.null(envir[["sock"]])) {
       purl <- parse_url(url)
-      if (substr(purl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
+      if (substr(url, 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
         `[[<-`(envir, "tls", write_cert(cn = purl[["hostname"]]))
         tls <- envir[["tls"]][["server"]]
       }
@@ -840,10 +840,13 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
 #'
 #' @export
 #'
-launch_server <- function(url, ..., .compute = "default")
-  launch_daemon(parse_url(url)[["rawurl"]],
-                parse_dots(...),
-                tls = ..[[.compute]][["tls"]][["client"]])
+launch_server <- function(url, ..., .compute = "default") {
+
+  parse_url(url)
+  launch_daemon(url, parse_dots(...), tls = ..[[.compute]][["tls"]][["client"]])
+  if (substr(url, 1L, 3L) == "wss") msleep(100L)
+
+}
 
 #' Saisei - Regenerate Token
 #'
