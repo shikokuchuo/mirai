@@ -86,10 +86,6 @@ if (.Platform[["OS.type"]] != "windows") {
   nanotesto(daemons(url = "ws://:0", token = TRUE))
   nanotestz(daemons(0L))
   Sys.sleep(1L)
-  nanotesto(daemons(url = "wss://:0", token = TRUE))
-  nanotest(is.list(cpi("tls")))
-  nanotestz(daemons(0L))
-  Sys.sleep(1L)
   nanotesto(daemons(url = "tcp://:0", token = TRUE))
   nanotesto(cpi("n"))
   nanotest(is.integer(cpi("pid")))
@@ -141,6 +137,10 @@ if (.Platform[["OS.type"]] != "windows") {
 }
 
 if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
+  nanotesto(daemons(url = "wss://:0", token = TRUE))
+  nanotest(is.list(cpi("tls")))
+  nanotestz(daemons(0L))
+  Sys.sleep(1L)
   option <- 15L
   nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 2000L, token = TRUE, lock = TRUE, cleanup = option))
   Sys.sleep(1L)
