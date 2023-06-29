@@ -211,7 +211,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
   basenames <- servernames <- character(n)
   activestore <- instance <- complete <- assigned <- integer(n)
   serverfree <- !integer(n)
-  active <- servers <- queue <- vector(mode = "list", length = n)
+  config <- active <- servers <- queue <- vector(mode = "list", length = n)
   if (!auto) {
     baseurl <- parse_url(url)
     if (substr(baseurl[["scheme"]], 1L, 1L) == "t") {
@@ -222,7 +222,9 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
     }
   }
 
-  if (length(tls)) tls <- tls_config(server = tls)
+  if (length(tls))
+    for (i in seq_n)
+      config[[i]] <- tls_config(server = tls)
 
   for (i in seq_n) {
     burl <- if (auto) sprintf(.urlfmt, "") else
@@ -234,7 +236,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
     nsock <- req_socket(NULL)
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE)
-    listen(nsock, url = nurl, tls = tls, error = TRUE)
+    listen(nsock, url = nurl, tls = config[[i]], error = TRUE)
     if (lock)
       lock(nsock, cv = ncv)
     listener <- attr(nsock, "listener")[[1L]]
