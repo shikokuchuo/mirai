@@ -211,7 +211,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
   basenames <- servernames <- character(n)
   activestore <- instance <- complete <- assigned <- integer(n)
   serverfree <- !integer(n)
-  config <- active <- servers <- queue <- vector(mode = "list", length = n)
+  active <- servers <- queue <- vector(mode = "list", length = n)
   if (!auto) {
     baseurl <- parse_url(url)
     if (substr(baseurl[["scheme"]], 1L, 1L) == "t") {
@@ -222,9 +222,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
     }
   }
 
-  if (length(tls))
-    for (i in seq_n)
-      config[[i]] <- tls_config(server = tls)
+  if (length(tls)) tls <- tls_config(server = tls)
 
   for (i in seq_n) {
     burl <- if (auto) sprintf(.urlfmt, "") else
@@ -236,7 +234,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
     nsock <- req_socket(NULL)
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE)
-    listen(nsock, url = nurl, tls = config[[i]], error = TRUE)
+    listen(nsock, url = nurl, tls = tls, error = TRUE)
     if (lock)
       lock(nsock, cv = ncv)
     listener <- attr(nsock, "listener")[[1L]]
@@ -293,8 +291,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
             attr(servers[[i]], "listener") <- NULL
             data <- servernames[[i]] <- new_tokenized_url(url = basenames[[i]], auto = auto)
             instance[[i]] <- 0L
-            if (length(tls)) config[[i]] <- tls_config(server = tls)
-            listen(servers[[i]], url = data, tls = config[[i]], error = TRUE)
+            listen(servers[[i]], url = data, tls = tls, error = TRUE)
           } else {
             data <- ""
           }
@@ -844,9 +841,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
 launch_server <- function(url, ..., .compute = "default") {
 
   parse_url(url)
-  r <- launch_daemon(url, parse_dots(...), tls = ..[[.compute]][["tls"]][["client"]])
-  if (substr(url, 1L, 3L) == "wss") msleep(100L)
-  r
+  launch_daemon(url, parse_dots(...), tls = ..[[.compute]][["tls"]][["client"]])
 
 }
 
