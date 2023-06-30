@@ -293,7 +293,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
             attr(servers[[i]], "listener") <- NULL
             data <- servernames[[i]] <- new_tokenized_url(url = basenames[[i]], auto = auto)
             instance[[i]] <- 0L
-            listen(servers[[i]], url = data, error = TRUE)
+            listen(servers[[i]], url = data, tls = config[[i]], error = TRUE)
           } else {
             data <- ""
           }
