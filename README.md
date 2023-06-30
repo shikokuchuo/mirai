@@ -112,7 +112,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.3266 0.4066 -0.0851 0.1039 2.1002 ...
+#>  num [1:100000000] 0.883 2.154 -0.837 0.858 -0.27 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -120,7 +120,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.3266 0.4066 -0.0851 0.1039 2.1002 ...
+#>  num [1:100000000] 0.883 2.154 -0.837 0.858 -0.27 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -138,7 +138,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.3478 2.7518 -1.2544 -0.5025 -0.0598 ...
+#>  num [1:100000000] -0.18 -15.209 1.052 1.901 0.879 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -182,6 +182,7 @@ while (unresolved(m)) {
   cat("while unresolved\n")
   Sys.sleep(0.5)
 }
+#> while unresolved
 #> while unresolved
 
 cat("Write complete:", is.null(m$data))
@@ -230,8 +231,8 @@ for (i in 1:10) {
 #> iteration 2 successful 
 #> iteration 3 successful 
 #> iteration 4 successful 
-#> iteration 5 successful 
 #> Error: random error 
+#> iteration 5 successful 
 #> iteration 6 successful 
 #> iteration 7 successful 
 #> iteration 8 successful 
@@ -278,12 +279,12 @@ daemons()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://dc786eb67464d59da7c37b228f74ddf4e74b69aa      1        1        0        0
-#> abstract://7bc83c2056e7e1e637dfa41ad1bb8fad7553c28d      1        1        0        0
-#> abstract://75f7146ec9a1b3619d9b4080f66def033925955f      1        1        0        0
-#> abstract://dbc9207117979c2749a563adbbe91027e31d0c59      1        1        0        0
-#> abstract://1f9569e6465d37ba746673a0881ac284db70623b      1        1        0        0
-#> abstract://93ab3f643bcf4013652c0766785f1d96a80920a4      1        1        0        0
+#> abstract://0c0d6832090038fc8420d588327437fa20f5352b      1        1        0        0
+#> abstract://96188decbb42f733604868877e87b98aa5b76e6b      1        1        0        0
+#> abstract://809e3539dcc7cbf173d5dfcca53c75b4fe5dfc1b      1        1        0        0
+#> abstract://b68b775ea0851bdaac7a2545aa03b56daa74637d      1        1        0        0
+#> abstract://0031f1f211bcd9ef9be87fa093c0bad0ec18bfd5      1        1        0        0
+#> abstract://6b46a621883f4801bf1d7d82c759898a31694008      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -484,7 +485,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:40199"
+#> [1] "tcp://:41097"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -499,7 +500,7 @@ On the server, `server()` may be called from an R session, or an Rscript
 invocation from a shell. This sets up a remote daemon process that
 connects to the client URL and receives tasks:
 
-    Rscript -e 'mirai::server("tcp://10.111.5.13:40199")'
+    Rscript -e 'mirai::server("tcp://10.111.5.13:41097")'
 
 As before, `daemons()` should be set up on the client before launching
 `server()` on remote resources, otherwise the server instances will exit
@@ -522,7 +523,7 @@ daemons()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:40199"
+#> [1] "tcp://:41097"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -554,14 +555,14 @@ configured. These are designed to be single-use and are handled
 internally by `mirai` without requiring any user intervention.
 
 The generated TLS configuration is stored in the compute profile, and
-may be retrieved with the `cpi()` utility:
+may be retrieved with the `cpinfo()` utility:
 
 ``` r
-tls <- cpi("tls")
+tls <- cpinfo("tls")
 
 str(tls)
 #> List of 2
-#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhp"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJJwIBAAKCAgEA2tKWT0ae9Pup/nK6wE81q0nrSCQCkKXxtWlHMGbUugUKVljT\nad/YxYU5NUpL"| __truncated__
+#>  $ server: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhp"| __truncated__ "-----BEGIN RSA PRIVATE KEY-----\nMIIJKAIBAAKCAgEAviHE+nI0LFKcU7lgfkDBYmVWJQKUOGXO8w/RY+2eY6qvaJwP\n3w5UaPgRI2KT"| __truncated__
 #>  $ client: chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhp"| __truncated__ ""
 ```
 

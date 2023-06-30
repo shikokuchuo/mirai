@@ -419,10 +419,10 @@ daemons(n = 4, url = "wss://[::1]:5555")
 
 The necessary keys and certificates are automatically generated and configured. These are designed to be single-use and are handled internally by `mirai` without requiring any user intervention.
 
-The generated TLS configuration is stored in the compute profile, and may be retrieved with the `cpi()` utility:
+The generated TLS configuration is stored in the compute profile, and may be retrieved with the `cpinfo()` utility:
 
 ```{r cpinfo}
-tls <- cpi("tls")
+tls <- cpinfo("tls")
 
 str(tls)
 ```

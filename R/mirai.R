@@ -914,12 +914,12 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 #'
 #' daemons(n = 2L, url = "ws://[::1]:0")
 #'
-#' cpi("n")
-#' cpi("pid")
-#' cpi("urls")
+#' cpinfo("n")
+#' cpinfo("pid")
+#' cpinfo("urls")
 #'
 #' daemons()
-#' launch_server(cpi("urls")[1L])
+#' launch_server(cpinfo("urls")[1L])
 #' Sys.sleep(0.1)
 #' daemons()
 #'
@@ -929,7 +929,7 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 #'
 #' @export
 #'
-cpi <- function(x = c("n", "pid", "tls", "urls"), .compute = "default")
+cpinfo <- function(x = c("n", "pid", "tls", "urls"), .compute = "default")
   ..[[.compute]][[match.arg(x, c("n", "pid", "tls", "urls"))]]
 
 #' mirai (Call Value)
