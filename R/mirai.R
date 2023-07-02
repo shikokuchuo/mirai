@@ -77,7 +77,7 @@ server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
   on.exit(close(sock))
   cv <- cv()
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
-  tls <- dial_and_sync_socket(sock = sock, url = url, asyncdial = asyncdial, tls = tls)
+  dial_and_sync_socket(sock = sock, url = url, asyncdial = asyncdial, tls = tls)
   op <- options()
   se <- search()
   count <- 0L
@@ -222,8 +222,6 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
     }
   }
 
-  if (length(tls)) tls <- tls_config(server = tls)
-
   for (i in seq_n) {
     burl <- if (auto) sprintf(.urlfmt, "") else
       if (vectorised) url[i] else
@@ -234,7 +232,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
     nsock <- req_socket(NULL)
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE)
-    listen(nsock, url = nurl, tls = tls, error = TRUE)
+    listen(nsock, url = nurl, tls = if (length(tls)) tls_config(server = tls), error = TRUE)
     if (lock)
       lock(nsock, cv = ncv)
     listener <- attr(nsock, "listener")[[1L]]
@@ -291,7 +289,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
             attr(servers[[i]], "listener") <- NULL
             data <- servernames[[i]] <- new_tokenized_url(url = basenames[[i]], auto = auto)
             instance[[i]] <- 0L
-            listen(servers[[i]], url = data, tls = tls, error = TRUE)
+            listen(servers[[i]], url = data, tls = if (length(tls)) tls_config(server = tls), error = TRUE)
           } else {
             data <- ""
           }
@@ -755,7 +753,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
         launch_and_sync_daemon(sock = sock, urld, url, n, urlc, parse_dots(...), tls = tls)
         recv_and_store(sockc = sockc, envir = envir)
       } else {
-        if (length(tls)) envir[["tlsconfig"]] <- tls <- tls_config(server = tls)
+        if (length(tls)) tls <- tls_config(server = tls)
         sock <- req_socket(url, tls = tls)
         listener <- attr(sock, "listener")[[1L]]
         n <- opt(listener, "url")
@@ -1174,11 +1172,12 @@ launch_and_sync_daemon <- function(sock, ..., tls = NULL) {
 
 dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
   cv <- cv()
-  pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = FALSE)
+  pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
   if (length(tls)) tls <- tls_config(client = tls)
   dial(sock, url = url, autostart = length(tls) || asyncdial || NA, tls = tls, error = TRUE)
-  wait(cv)
-  tls
+  if (length(tls) && !asyncdial)
+    until(cv, .timelimit) && stop(.messages[["connection_timeout"]]) else
+      wait(cv)
 }
 
 sub_real_port <- function(port, url)
