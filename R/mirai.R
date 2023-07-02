@@ -204,6 +204,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
   cv <- cv()
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock = sock, url = client, asyncdial = asyncdial)
+  if (length(tls)) tls <- tls_config(server = tls)
 
   auto <- is.null(url)
   vectorised <- length(url) == n
@@ -232,7 +233,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
     nsock <- req_socket(NULL)
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE)
-    listen(nsock, url = nurl, tls = if (length(tls)) tls_config(server = tls), error = TRUE)
+    listen(nsock, url = nurl, tls = tls, error = TRUE)
     if (lock)
       lock(nsock, cv = ncv)
     listener <- attr(nsock, "listener")[[1L]]
@@ -289,7 +290,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
             attr(servers[[i]], "listener") <- NULL
             data <- servernames[[i]] <- new_tokenized_url(url = basenames[[i]], auto = auto)
             instance[[i]] <- 0L
-            listen(servers[[i]], url = data, tls = if (length(tls)) tls_config(server = tls), error = TRUE)
+            listen(servers[[i]], url = data, tls = tls, error = TRUE)
           } else {
             data <- ""
           }
@@ -1172,12 +1173,16 @@ launch_and_sync_daemon <- function(sock, ..., tls = NULL) {
 
 dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
   cv <- cv()
-  pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-  if (length(tls)) tls <- tls_config(client = tls)
-  dial(sock, url = url, autostart = length(tls) || asyncdial || NA, tls = tls, error = TRUE)
-  if (length(tls) && !asyncdial)
-    until(cv, .timelimit) && stop(.messages[["connection_timeout"]]) else
-      wait(cv)
+  if (length(tls) && !asyncdial) {
+    tls <- tls_config(client = tls)
+    pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
+    dial(sock, url = url, autostart = TRUE, tls = tls, error = TRUE)
+    until(cv, .timelimit) && stop(.messages[["connection_timeout"]])
+  } else {
+    pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = FALSE)
+    dial(sock, url = url, autostart = length(tls) || asyncdial || NA, tls = tls, error = TRUE)
+    wait(cv)
+  }
 }
 
 sub_real_port <- function(port, url)
