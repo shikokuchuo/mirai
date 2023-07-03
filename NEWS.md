@@ -4,7 +4,7 @@
 * New `cpinfo()` utility for retrieving compute profile information (number of daemons set, dispatcher process ID, daemon URLs, and generated TLS configurations).
 * Specifying `output=TRUE` for `daemons()` or `launch_server()` allows redirection of stdout and stderr from local daemons to the main client process (when running without dispatcher). New 'output' argument for `server()`.
 * A 'miraiError' now includes the trailing line break at the end of the character vector.
-* Requires nanonext >= [0.9.0.9037].
+* Requires nanonext >= [0.9.0.9037], with R requirement relaxed back to >= 2.12.
 
 # mirai 0.9.0
 
