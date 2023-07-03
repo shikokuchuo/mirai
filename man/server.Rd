@@ -12,6 +12,7 @@ server(
   walltime = Inf,
   timerstart = 0L,
   exitlinger = 1000L,
+  output = FALSE,
   tls = NULL,
   ...,
   cleanup = 7L
@@ -46,6 +47,12 @@ upon launch.}
 exiting due to a timer / task limit, to allow sockets to complete sends
 currently in progress. The default can be set wider if computations are
 expected to return very large objects (> GBs).}
+
+\item{output}{[default FALSE] logical value whether to output generated
+stdout, or discard it (if FALSE). Specify as TRUE in the '...' argument
+to \code{\link{daemons}} or \code{\link{launch_server}} to provide
+redirection of output to the client. Applicable only when not using
+dispatcher.}
 
 \item{tls}{[default NULL] required for secure TLS connections over tls+tcp or
 wss. \strong{Either} the absolute path to a file containing X.509
