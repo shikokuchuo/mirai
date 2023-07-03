@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9022</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9023</span>
       </span>
     </div>
 
@@ -71,6 +71,7 @@
 <span>  walltime <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  timerstart <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  exitlinger <span class="op">=</span> <span class="fl">1000L</span>,</span>
+<span>  output <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  cleanup <span class="op">=</span> <span class="fl">7L</span></span>
@@ -120,6 +121,14 @@ upon launch.</p></dd>
 exiting due to a timer / task limit, to allow sockets to complete sends
 currently in progress. The default can be set wider if computations are
 expected to return very large objects (&gt; GBs).</p></dd>
+
+
+<dt>output</dt>
+<dd><p>[default FALSE] logical value whether to output generated
+stdout, or discard it (if FALSE). Specify as TRUE in the '...' argument
+to <code><a href="daemons.html">daemons</a></code> or <code><a href="launch_server.html">launch_server</a></code> to provide
+redirection of output to the client. Applicable only when not using
+dispatcher.</p></dd>
 
 
 <dt>tls</dt>
