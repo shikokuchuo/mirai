@@ -2,10 +2,10 @@
 % Please edit documentation in R/mirai.R
 \name{dispatcher}
 \alias{dispatcher}
-\title{mirai Dispatcher}
+\title{Dispatcher}
 \usage{
 dispatcher(
-  client,
+  host,
   url = NULL,
   n = NULL,
   asyncdial = FALSE,
@@ -17,25 +17,24 @@ dispatcher(
 )
 }
 \arguments{
-\item{client}{the client URL to dial as a character string (where tasks are
-sent from), including the port to connect to and (optionally) a path for
-websocket URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
+\item{host}{the host URL to dial as a character string (where tasks are
+sent from), including the port to connect to (and optionally for
+websockets, a path), e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
 
-\item{url}{(optional) the URL or range of URLs the dispatcher should
-listen at as a character vector, including the port to connect to and
-(optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
-'ws://192.168.0.2:5555/path'. Tasks are sent to servers dialled into
-these URLs. If not supplied, 'n' local inter-process URLs will be
-assigned automatically.}
+\item{url}{(optional) the character URL or vector of URLs dispatcher should
+listen at, including the port to connect to (and optionally for websockets,
+a path), e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
+Tasks are sent to daemons dialled into these URLs. If not supplied, 'n'
+local inter-process URLs will be assigned automatically.}
 
-\item{n}{(optional) if specified, the integer number of servers to listen for.
-Otherwise 'n' will be inferred from the number of URLs supplied as '...'.
+\item{n}{(optional) if specified, the integer number of daemons to listen for.
+Otherwise 'n' will be inferred from the number of URLs supplied in 'url'.
 Where a single URL is supplied and 'n' > 1, 'n' unique URLs will be
-automatically assigned for servers to dial into.}
+automatically assigned for daemons to dial into.}
 
 \item{asyncdial}{[default FALSE] whether to perform dials asynchronously. The
 default FALSE will error if a connection is not immediately possible
-(e.g. \code{\link{daemons}} has yet to be called on the client, or the
+(e.g. \code{\link{daemons}} has yet to be called on the host, or the
 specified port is not open etc.). Specifying TRUE continues retrying
 (indefinitely) if not immediately successful, which is more resilient but
 can mask potential connection issues.}
@@ -46,19 +45,18 @@ which do not accept a path).}
 
 \item{lock}{[default FALSE] if TRUE, sockets lock once a connection has been
 accepted, preventing further connection attempts. This provides safety
-against more than one server trying to connect to a unique URL.}
+against more than one daemon attempting to connect to a unique URL.}
 
-\item{tls}{(optional for secure TLS connections over tls+tcp or wss) if NULL,
-a one-time configuration is automatically generated. \strong{Either}
-the absolute path to a single file containing the PEM encoded certificate
-and associated private key (may contain additional certificates leading
-to a validation chain, with the leaf certificate first, although the
-self-signed root is not required as the client should already have this),
-\strong{or} a length 2 character vector comprising [i] the certificate
-(optionally certificate chain) and [ii] the associated private or secret
-key.}
+\item{tls}{(optional for secure TLS connections over tls+tcp or wss)
+\strong{either} the absolute path to a single file containing the PEM
+encoded certificate and associated private key (may contain additional
+certificates leading to a validation chain, with the leaf certificate
+first, although the self-signed root is not required as the daemon should
+already have this), \strong{or} a length 2 character vector comprising
+[i] the certificate (optionally certificate chain) and [ii] the associated
+private or secret key.}
 
-\item{...}{additional arguments passed through to \code{\link{server}} if
+\item{...}{additional arguments passed through to \code{\link{daemon}} if
 launching local daemons i.e. 'url' is not specified.}
 
 \item{monitor}{(for package internal use only) do not set this parameter.}
@@ -67,13 +65,13 @@ launching local daemons i.e. 'url' is not specified.}
 Invisible NULL.
 }
 \description{
-Implements a dispatcher for tasks from a client to multiple servers for
+Implements a dispatcher for tasks from a host to multiple daemons for
     processing, using a FIFO scheduling rule, queuing tasks as required.
 }
 \details{
 The network topology is such that a dispatcher acts as a gateway
-    between clients and servers, ensuring that tasks received from clients
-    are dispatched on a FIFO basis to servers for processing. Tasks are
-    queued at the dispatcher to ensure tasks are only sent to servers that
-    can begin immediate execution of the task.
+    between the host and daemons, ensuring that tasks received from the host
+    are dispatched on a FIFO basis for processing. Tasks are queued at the
+    dispatcher to ensure tasks are only sent to daemons that can begin
+    immediate execution of the task.
 }

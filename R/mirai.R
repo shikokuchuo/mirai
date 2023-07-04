@@ -16,25 +16,25 @@
 
 # mirai ------------------------------------------------------------------------
 
-#' mirai Server (Async Executor Daemon)
+#' Daemon
 #'
-#' Implements a persistent executor/server for the remote process. Awaits data,
+#' Implements a persistent executor for the remote process. Awaits data,
 #'     evaluates an expression in an environment containing the supplied data,
-#'     and returns the result to the caller/client.
+#'     and returns the result to the host caller.
 #'
-#' @param url the client or dispatcher URL to dial into as a character string,
-#'     including the port to connect to and (optionally) a path for websocket
-#'     URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
+#' @param url the character host or dispatcher URL to dial into, including the
+#'     port to connect to (and optionally for websockets, a path), e.g.
+#'     'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
 #' @param asyncdial [default FALSE] whether to perform dials asynchronously. The
 #'     default FALSE will error if a connection is not immediately possible
-#'     (e.g. \code{\link{daemons}} has yet to be called on the client, or the
+#'     (e.g. \code{\link{daemons}} has yet to be called on the host, or the
 #'     specified port is not open etc.). Specifying TRUE continues retrying
 #'     (indefinitely) if not immediately successful, which is more resilient but
 #'     can mask potential connection issues.
-#' @param output [default FALSE] logical value whether to output generated
-#'     stdout, or discard it (if FALSE). Specify as TRUE in the '...' argument
-#'     to \code{\link{daemons}} or \code{\link{launch_server}} to provide
-#'     redirection of output to the client. Applicable only when not using
+#' @param output [default FALSE] logical value, to output generated stdout /
+#'     stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'
+#'     argument to \code{\link{daemons}} or \code{\link{launch}} to provide
+#'     redirection of output to the host process. Applicable only when not using
 #'     dispatcher.
 #' @param maxtasks [default Inf] the maximum number of tasks to execute (task
 #'     limit) before exiting.
@@ -47,8 +47,8 @@
 #'     upon launch.
 #' @param exitlinger [default 1000L] time in milliseconds to linger before
 #'     exiting due to a timer / task limit, to allow sockets to complete sends
-#'     currently in progress. The default can be set wider if computations are
-#'     expected to return very large objects (> GBs).
+#'     currently in progress. The default should be set wider if computations
+#'     are expected to return very large objects (> GBs).
 #' @param tls [default NULL] required for secure TLS connections over tls+tcp or
 #'     wss. \strong{Either} the absolute path to a file containing X.509
 #'     certificate(s) in PEM format, comprising the certificate authority
@@ -67,14 +67,20 @@
 #'
 #' @return Invisible NULL.
 #'
-#' @details The network topology is such that server daemons dial into the
-#'     client or dispatcher, which listens at the 'url' address. In this way,
-#'     network resources may be added or removed dynamically and the client or
-#'     dispatcher automatically distributes tasks to all available servers.
+#' @details The network topology is such that daemons dial into the host or
+#'     dispatcher, which listens at the 'url' address. In this way, network
+#'     resources may be added or removed dynamically and the host or
+#'     dispatcher automatically distributes tasks to all available daemons.
 #'
+#'     \strong{Note:} in previous package versions, the name of this function
+#'     was \code{server}. The usage of \code{server} is deprecated. Although it
+#'     continues to function for the time being, please update any code that
+#'     uses \code{server}.
+#'
+#' @aliases server
 #' @export
 #'
-server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
+daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
                    walltime = Inf, timerstart = 0L, exitlinger = 1000L,
                    output = FALSE, tls = NULL, ..., cleanup = 7L) {
 
@@ -125,11 +131,15 @@ server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
 
 }
 
-#' mirai dot Server (Async Executor)
+#' @export
 #'
-#' Implements an ephemeral executor/server for the remote process.
+server <- daemon
+
+#' dot Daemon
 #'
-#' @inheritParams server
+#' Implements an ephemeral executor for the remote process.
+#'
+#' @inheritParams daemon
 #' @param exitlinger [default 2000L] time in milliseconds to linger before
 #'     exiting to allow the socket to complete sends currently in progress.
 #'
@@ -138,7 +148,7 @@ server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
 #' @keywords internal
 #' @export
 #'
-.server <- function(url, exitlinger = 2000L) {
+.daemon <- function(url, exitlinger = 2000L) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = NA)
   on.exit(close(sock))
@@ -151,55 +161,53 @@ server <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
 
 }
 
-#' mirai Dispatcher
+#' Dispatcher
 #'
-#' Implements a dispatcher for tasks from a client to multiple servers for
+#' Implements a dispatcher for tasks from a host to multiple daemons for
 #'     processing, using a FIFO scheduling rule, queuing tasks as required.
 #'
-#' @inheritParams server
-#' @param client the client URL to dial as a character string (where tasks are
-#'     sent from), including the port to connect to and (optionally) a path for
-#'     websocket URLs e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
-#' @param url (optional) the URL or range of URLs the dispatcher should
-#'     listen at as a character vector, including the port to connect to and
-#'     (optionally) a path for websocket URLs e.g. 'tcp://192.168.0.2:5555' or
-#'     'ws://192.168.0.2:5555/path'. Tasks are sent to servers dialled into
-#'     these URLs. If not supplied, 'n' local inter-process URLs will be
-#'     assigned automatically.
-#' @param n (optional) if specified, the integer number of servers to listen for.
-#'     Otherwise 'n' will be inferred from the number of URLs supplied as '...'.
+#' @inheritParams daemon
+#' @param host the host URL to dial as a character string (where tasks are
+#'     sent from), including the port to connect to (and optionally for
+#'     websockets, a path), e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
+#' @param url (optional) the character URL or vector of URLs dispatcher should
+#'     listen at, including the port to connect to (and optionally for websockets,
+#'     a path), e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
+#'     Tasks are sent to daemons dialled into these URLs. If not supplied, 'n'
+#'     local inter-process URLs will be assigned automatically.
+#' @param n (optional) if specified, the integer number of daemons to listen for.
+#'     Otherwise 'n' will be inferred from the number of URLs supplied in 'url'.
 #'     Where a single URL is supplied and 'n' > 1, 'n' unique URLs will be
-#'     automatically assigned for servers to dial into.
+#'     automatically assigned for daemons to dial into.
 #' @param token [default FALSE] if TRUE, appends a unique 40-character token
 #'     to each URL path the dispatcher listens at (not applicable for TCP URLs
 #'     which do not accept a path).
 #' @param lock [default FALSE] if TRUE, sockets lock once a connection has been
 #'     accepted, preventing further connection attempts. This provides safety
-#'     against more than one server trying to connect to a unique URL.
-#' @param tls (optional for secure TLS connections over tls+tcp or wss) if NULL,
-#'     a one-time configuration is automatically generated. \strong{Either}
-#'     the absolute path to a single file containing the PEM encoded certificate
-#'     and associated private key (may contain additional certificates leading
-#'     to a validation chain, with the leaf certificate first, although the
-#'     self-signed root is not required as the client should already have this),
-#'     \strong{or} a length 2 character vector comprising [i] the certificate
-#'     (optionally certificate chain) and [ii] the associated private or secret
-#'     key.
-#' @param ... additional arguments passed through to \code{\link{server}} if
+#'     against more than one daemon attempting to connect to a unique URL.
+#' @param tls (optional for secure TLS connections over tls+tcp or wss)
+#'     \strong{either} the absolute path to a single file containing the PEM
+#'     encoded certificate and associated private key (may contain additional
+#'     certificates leading to a validation chain, with the leaf certificate
+#'     first, although the self-signed root is not required as the daemon should
+#'     already have this), \strong{or} a length 2 character vector comprising
+#'     [i] the certificate (optionally certificate chain) and [ii] the associated
+#'     private or secret key.
+#' @param ... additional arguments passed through to \code{\link{daemon}} if
 #'     launching local daemons i.e. 'url' is not specified.
 #' @param monitor (for package internal use only) do not set this parameter.
 #'
 #' @return Invisible NULL.
 #'
 #' @details The network topology is such that a dispatcher acts as a gateway
-#'     between clients and servers, ensuring that tasks received from clients
-#'     are dispatched on a FIFO basis to servers for processing. Tasks are
-#'     queued at the dispatcher to ensure tasks are only sent to servers that
-#'     can begin immediate execution of the task.
+#'     between the host and daemons, ensuring that tasks received from the host
+#'     are dispatched on a FIFO basis for processing. Tasks are queued at the
+#'     dispatcher to ensure tasks are only sent to daemons that can begin
+#'     immediate execution of the task.
 #'
 #' @export
 #'
-dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
+dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
                        token = FALSE, lock = FALSE, tls = NULL, ...,
                        monitor = NULL) {
 
@@ -210,7 +218,7 @@ dispatcher <- function(client, url = NULL, n = NULL, asyncdial = FALSE,
   on.exit(close(sock))
   cv <- cv()
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
-  dial_and_sync_socket(sock = sock, url = client, asyncdial = asyncdial)
+  dial_and_sync_socket(sock = sock, url = host, asyncdial = asyncdial)
   if (length(tls)) tls <- tls_config(server = tls)
 
   auto <- is.null(url)
@@ -487,50 +495,36 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 
 }
 
-#' daemons (Persistent Server Processes)
+#' Daemons (Configure Persistent Processes)
 #'
-#' Set 'daemons' or background persistent server processes receiving
-#'     \code{\link{mirai}} requests. These are, by default, automatically
-#'     created on the local machine. Alternatively, a client URL may be
-#'     specified to receive connections from remote servers started with
-#'     \code{\link{server}} for distributing tasks across the network. Daemons
-#'     may take advantage of the dispatcher, which ensures that tasks are
-#'     assigned to servers efficiently on a FIFO basis, or else the low-level
-#'     approach of distributing tasks to servers in an even fashion.
+#' Set 'daemons' or persistent background processes receiving \code{\link{mirai}}
+#'     requests. These are by default created on the local machine.
+#'     Alternatively, for distributing tasks across the network, a host URL
+#'     may be specified to receive connections from remote daemons started with
+#'     \code{\link{daemon}}. Daemons may use either the dispatcher, which
+#'     ensures tasks are assigned to daemons efficiently on a FIFO basis, or
+#'     else the low-level approach of distributing tasks to daemons equally.
 #'
 #' @inheritParams dispatcher
-#' @param n integer number of daemons (server processes) to set.
-#' @param url [default NULL] if specified (for connecting to remote servers),
-#'     the client URL as a character vector, including a port accepting incoming
-#'     connections (and optionally for websockets a path) e.g.
+#' @param n integer number of daemons to set.
+#' @param url [default NULL] if specified, the character URL or vector of URLs
+#'     for remote daemons to dial into, including a port accepting incoming
+#'     connections (and optionally for websockets, a path), e.g.
 #'     'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
 #' @param dispatcher [default TRUE] logical value whether to use dispatcher.
-#'     Dispatcher is a background process that connects to servers on behalf of
-#'     the client and ensures FIFO scheduling, queueing tasks if necessary
+#'     Dispatcher is a background process that connects to daemons on behalf of
+#'     the host and ensures FIFO scheduling, queueing tasks if necessary
 #'     (see Dispatcher section below).
 #' @param ... additional arguments passed through to \code{\link{dispatcher}} if
-#'     using dispatcher and/or \code{\link{server}} if launching local daemons.
+#'     using dispatcher and/or \code{\link{daemon}} if launching local daemons.
 #' @param .compute [default 'default'] character compute profile to use for
 #'     creating the daemons (each compute profile has its own set of daemons for
 #'     connecting to different resources).
 #'
-#' @return Setting daemons: integer number of daemons set, or the character
-#'     client URL.
+#' @return Integer number of daemons set, or else the character host URL (if
+#'     not using dispatcher).
 #'
-#'     Viewing current status: a named list comprising: \itemize{
-#'     \item{\strong{connections}} {- number of active connections at the client.
-#'     Always 1L when using dispatcher as there is only a single connection to
-#'     the dispatcher, which then in turn connects to the servers.}
-#'     \item{\strong{daemons}} {- if using dispatcher: a status matrix (see
-#'     Status Matrix section below), or else an integer 'errorValue' if
-#'     communication with the dispatcher was unsuccessful. If not using
-#'     dispatcher: the number of daemons set, or else the client URL.}
-#'     }
-#'
-#' @details For viewing the currrent status, specify \code{daemons()} with no
-#'     arguments.
-#'
-#'     Use \code{daemons(0)} to reset daemon connections:
+#' @details Use \code{daemons(0)} to reset daemon connections:
 #'     \itemize{
 #'     \item{A reset is required before revising settings for the same compute
 #'     profile, otherwise changes are not registered.}
@@ -539,31 +533,31 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     background process for each request.}
 #'     }
 #'
-#'     When specifying a client URL, all daemons dialing into the client are
-#'     detected automatically and resources may be added or removed at any time.
-#'
-#'     If the client session ends, for whatever reason, all connected dispatcher
+#'     If the host session ends, for whatever reason, all connected dispatcher
 #'     and daemon processes automatically exit as soon as their connections are
 #'     dropped. If a daemon is processing a task, it will exit as soon as the
 #'     task is complete.
 #'
+#'     For compatibility, \code{daemons()} with no arguments currently returns
+#'     the value of \code{\link{info}}, although this usage is deprecated.
+#'
 #' @section Dispatcher:
 #'
 #'     By default \code{dispatcher = TRUE}. This launches a background process
-#'     running \code{\link{dispatcher}}.  A dispatcher connects to servers on
-#'     behalf of the client and queues tasks until a server is able to begin
+#'     running \code{\link{dispatcher}}. Dispatcher connects to daemons on
+#'     behalf of the host and queues tasks until a daemon is able to begin
 #'     immediate execution of that task, ensuring FIFO scheduling. Dispatcher
 #'     uses synchronisation primitives from \code{nanonext}, waiting rather than
 #'     polling for tasks, which is efficient both in terms of consuming no
 #'     resources while waiting, and also being fully synchronised with events
 #'     (having no latency).
 #'
-#'     By specifying \code{dispatcher = FALSE}, servers connect to the client
-#'     directly rather than through a dispatcher. The client sends tasks to
-#'     connected servers immediately in an evenly-distributed fashion. However,
+#'     By specifying \code{dispatcher = FALSE}, daemons connect to the host
+#'     directly rather than through dispatcher. The host sends tasks to
+#'     connected daemons immediately in an evenly-distributed fashion. However,
 #'     optimal scheduling is not guaranteed as the duration of tasks cannot be
-#'     known \emph{a priori}, such that tasks can be queued at a server behind
-#'     a long-running task while other servers remain idle. Nevertheless, this
+#'     known \emph{a priori}, such that tasks can be queued at a daemon behind
+#'     a long-running task while other daemons remain idle. Nevertheless, this
 #'     provides a resource-light approach suited to working with similar-length
 #'     tasks, or where concurrent tasks typically do not exceed available daemons.
 #'
@@ -574,17 +568,17 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     hoc} basis.
 #'
 #'     Supply the argument 'n' to set the number of daemons. New background
-#'     \code{\link{server}} processes are automatically created on the local
-#'     machine connecting back to the client process, either directly or via a
+#'     \code{\link{daemon}} processes are automatically created on the local
+#'     machine connecting back to the host process, either directly or via a
 #'     dispatcher.
 #'
 #' @section Distributed Computing:
 #'
 #'     Specifying 'url' allows tasks to be distributed across the network.
 #'
-#'     The client URL should be in the form of a character string such as:
-#'     'tcp://192.168.0.2:5555' at which server processes started using
-#'     \code{\link{server}} should connect to.
+#'     The host URL should be a character value such as: 'tcp://192.168.0.2:5555'
+#'     at which daemon processes started using \code{\link{daemon}} should
+#'     connect to.
 #'
 #'     IPv6 addresses are also supported and must be enclosed in square brackets
 #'     [ ] to avoid confusion with the final colon separating the port. For
@@ -596,16 +590,16 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #'     Specifying the wildcard value zero for the port number e.g. 'tcp://:0' or
 #'     'ws://:0' will automatically assign a free ephemeral port. Use
-#'     \code{daemons()} to inspect the actual assigned port at any time.
+#'     \code{\link{info}} to inspect the actual assigned port at any time.
 #'
 #'     \strong{With Dispatcher}
 #'
 #'     When using dispatcher, it is recommended to use a websocket URL rather
-#'     than TCP, as this requires only one port to connect to all servers: a
+#'     than TCP, as this requires only one port to connect to all daemons: a
 #'     websocket URL supports a path after the port number, which can be made
-#'     unique for each server.
+#'     unique for each daemon.
 #'
-#'     Specifying a single client URL such as 'ws://192.168.0.2:5555' with
+#'     Specifying a single host URL such as 'ws://192.168.0.2:5555' with
 #'     \code{n = 6} will automatically append a sequence to the path, listening
 #'     to the URLs 'ws://192.168.0.2:5555/1' through 'ws://192.168.0.2:5555/6'.
 #'
@@ -613,32 +607,32 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     numbers / paths. In this case it is optional to supply 'n' as this can
 #'     be inferred by the length of vector supplied.
 #'
-#'     Individual \code{\link{server}} instances should then be started on the
-#'     remote resource, which dial in to each of these client URLs. At most one
-#'     server should be dialled into each URL at any given time.
+#'     Individual \code{\link{daemon}} instances should then be started on the
+#'     remote resource, which dial in to each of these host URLs. At most one
+#'     daemon should be dialled into each URL at any given time.
 #'
-#'     The dispatcher automatically adjusts to the number of servers actually
+#'     Dispatcher automatically adjusts to the number of daemons actually
 #'     connected. Hence it is possible to dynamically scale up or down the
-#'     number of servers as required, subject to the maximum number initially
+#'     number of daemons as required, subject to the maximum number initially
 #'     specified.
 #'
-#'     Alternatively, supplying a single TCP URL will listen on a block of URLs
+#'     Alternatively, supplying a single TCP URL will listen at a block of URLs
 #'     with ports starting from the supplied port number and incrementing by one
-#'     for 'n' specified e.g. the client URL 'tcp://192.168.0.2:5555' with
+#'     for 'n' specified e.g. the host URL 'tcp://192.168.0.2:5555' with
 #'     \code{n = 6} listens to the contiguous block of ports 5555 through 5560.
 #'
 #'     \strong{Without Dispatcher}
 #'
-#'     A TCP URL may be used in this case as the client listens at only one
+#'     A TCP URL may be used in this case as the host listens at only one
 #'     address, utilising a single port.
 #'
-#'     The network topology is such that server daemons (started with
-#'     \code{\link{server}}) or indeed dispatchers (started with
-#'     \code{\link{dispatcher}}) dial into the same client URL.
+#'     The network topology is such that daemons (started with \code{\link{daemon}})
+#'     or indeed dispatchers (started with \code{\link{dispatcher}}) dial into
+#'     the same host URL.
 #'
 #'     'n' is not required in this case, and disregarded if supplied, as network
-#'     resources may be added or removed at any time. The client automatically
-#'     distributes tasks to all connected servers and dispatchers.
+#'     resources may be added or removed at any time. The host automatically
+#'     distributes tasks to all connected daemons and dispatchers.
 #'
 #' @section Compute Profiles:
 #'
@@ -647,41 +641,21 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     specified. Each compute profile retains its own daemons settings, and may
 #'     be operated independently of each other. Some usage examples follow:
 #'
-#'     \strong{local / remote} daemons may be set via a client URL and creating
-#'     a new compute profile by specifying '.compute' as 'remote'. Subsequent
+#'     \strong{local / remote} daemons may be set with a host URL and specifying
+#'     '.compute' as 'remote', which creates a new compute profile. Subsequent
 #'     mirai calls may then be sent for local computation by not specifying its
 #'     '.compute' argument, or for remote computation to connected daemons by
 #'     specifying its '.compute' argument as 'remote'.
 #'
-#'     \strong{cpu / gpu} some tasks may require access to different classes of
-#'     server, such as those with GPUs. In this case, \code{daemons()} may be
-#'     called twice to set up client URLs for CPU-only and GPU servers to dial
-#'     into, specifying the '.compute' argument as 'cpu' and 'gpu' respectively.
-#'     By supplying the '.compute' argument to subsequent mirai calls, tasks may
-#'     be sent to either 'cpu' or 'gpu' servers as appropriate.
+#'     \strong{cpu / gpu} some tasks may require access to different types of
+#'     daemon, such as those with GPUs. In this case, \code{daemons()} may be
+#'     called twice to set up host URLs for CPU-only daemons and for those
+#'     with GPUs, specifying the '.compute' argument as 'cpu' and 'gpu'
+#'     respectively. By supplying the '.compute' argument to subsequent mirai
+#'     calls, tasks may be sent to either 'cpu' or 'gpu' daemons as appropriate.
 #'
-#'     Note: further actions such as viewing the status of daemons or resetting
-#'     via \code{daemons(0)} should be carried out with the desired '.compute'
-#'     argument specified.
-#'
-#' @section Status Matrix:
-#'
-#'     When using dispatcher, calling \code{daemons()} returns a matrix with the
-#'     following columns:
-#'
-#'     'online' shows as 1 when there is an active connection, or else 0 if a
-#'     server has yet to connect or has disconnected.
-#'
-#'     'instance' increments by 1 every time there is a new connection at a URL.
-#'     This counter is designed to track new server instances connecting after
-#'     previous ones have ended (due to time-outs etc.). 'instance' resets to
-#'     zero if the URL is regenerated by \code{\link{saisei}}.
-#'
-#'     'assigned' shows the cumulative number of tasks assigned to the server.
-#'
-#'     'complete' shows the cumulative number of tasks completed by the server.
-#'
-#'     The URLs are stored as row names to the matrix.
+#'     Note: further actions such as resetting daemons via \code{daemons(0)}
+#'     should be carried out with the desired '.compute' argument specified.
 #'
 #' @section Timeouts:
 #'
@@ -693,7 +667,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     are not assigned to the busy process, however overall performance may
 #'     still be degraded if they remain in use. If a process hangs and cannot be
 #'     restarted manually, \code{\link{saisei}} specifying \code{force = TRUE}
-#'     may be used to regenerate any particular URL for a new \code{\link{server}}
+#'     may be used to regenerate any particular URL for a new \code{\link{daemon}}
 #'     to connect to.
 #'
 #' @examples
@@ -702,29 +676,25 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #' # Create 2 local daemons (using dispatcher)
 #' daemons(2)
-#' # View status
-#' daemons()
+#' info()
 #' # Reset to zero
 #' daemons(0)
 #'
 #' # Create 2 local daemons (not using dispatcher)
 #' daemons(2, dispatcher = FALSE)
-#' # View status
-#' daemons()
+#' info()
 #' # Reset to zero
 #' daemons(0)
 #'
 #' # 2 remote daemons via dispatcher (using zero wildcard)
 #' daemons(2, url = "ws://:0")
-#' # View status
-#' daemons()
+#' info()
 #' # Reset to zero
 #' daemons(0)
 #'
-#' # Set client URL for remote servers to dial into (using zero wildcard)
+#' # Set host URL for remote daemons to dial into (using zero wildcard)
 #' daemons(url = "tcp://:0", dispatcher = FALSE)
-#' # View status
-#' daemons()
+#' info()
 #' # Reset to zero
 #' daemons(0)
 #'
@@ -734,10 +704,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute = "default") {
 
+  missing(n) && missing(url) && return(info(.compute))
+
   envir <- ..[[.compute]]
-  missing(n) && missing(url) &&
-    return(list(connections = if (length(envir[["sock"]])) stat(envir[["sock"]], "pipes") else 0L,
-                daemons = if (length(envir[["sockc"]])) query_status(envir) else envir[["n"]] %||% 0L))
 
   if (is.null(envir)) {
     `[[<-`(.., .compute, new.env(hash = FALSE, parent = environment(daemons)))
@@ -749,8 +718,9 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
     if (is.null(envir[["sock"]])) {
       purl <- parse_url(url)
       if (substr(url, 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
-        `[[<-`(envir, "tls", write_cert(cn = purl[["hostname"]]))
-        tls <- envir[["tls"]][["server"]]
+        tls <- write_cert(cn = purl[["hostname"]])
+        envir[["tls"]] <- weakref(envir, tls[["client"]])
+        tls <- tls[["server"]]
       }
       if (dispatcher) {
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n > 0L) as.integer(n) else stop(.messages[["n_one"]])
@@ -806,63 +776,10 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
 
 }
 
-#' Launch mirai Server
+#' Saisei (Regenerate Token)
 #'
-#' Utility function which calls \code{\link{server}} in a background
-#'     \code{Rscript} process. May be used to re-launch local daemons that have
-#'     timed out.
-#'
-#' @param url the client URL for the server to dial into as a character string,
-#'     including the port to connect to and (optionally) a path for websocket
-#'     URLs e.g. tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
-#' @param ... (optional) additional arguments passed to \code{\link{server}}.
-#' @param .compute [default 'default'] character compute profile to use for
-#'     'tls' configuration (where applicable).
-#'
-#' @return Invisibly, integer system exit code (zero upon success).
-#'
-#' @section Additional arguments:
-#'
-#'     Additional arguments may be specified as part of '\code{...}' to be
-#'     passed on to \code{\link{server}}.
-#'
-#'     'asyncdial' [default FALSE], whether to perform dials asynchronously. The
-#'     default FALSE will error if a connection is not immediately possible
-#'     (e.g. \code{\link{daemons}} has
-#'     yet to be called on the client, or the specified port is not open etc.).
-#'     Specifying TRUE continues retrying (indefinitely) if not immediately
-#'     successful, which is more resilient but can mask potential connection
-#'     issues.
-#'
-#'     'output' [default FALSE] Specify as TRUE to provide redirection of output
-#'     (stdout and stderr) from the daemon to the client. This option is only
-#'     applicable when not using dispatcher.
-#'
-#'     Client TLS configurations generated by \code{\link{daemons}} and stored
-#'     in the specified compute profile are automatically passed to the daemon.
-#'     In this case, there is no need to specify 'tls' in '\code{...}'.
-#'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
-#' launch_server("abstract://mirai", asyncdial = FALSE, idletime = 60000L)
-#'
-#' }
-#'
-#' @export
-#'
-launch_server <- function(url, ..., .compute = "default") {
-
-  parse_url(url)
-  launch_daemon(url, parse_dots(...), tls = ..[[.compute]][["tls"]][["client"]])
-
-}
-
-#' Saisei - Regenerate Token
-#'
-#' When using daemons with a local dispatcher service, regenerates the token for
-#'     the URL a dispatcher socket listens at.
+#' When using daemons with dispatcher, regenerates the token for the URL a
+#'     dispatcher socket listens at.
 #'
 #' @param i [default 1L] integer \code{i}th URL to replace.
 #' @param force [default FALSE] logical value whether to replace the listener
@@ -875,7 +792,8 @@ launch_server <- function(url, ..., .compute = "default") {
 #' @details As the specified listener is closed and replaced immediately, this
 #'     function will only be successful if there are no existing connections at
 #'     the socket (i.e. 'online' status shows 0), unless the argument 'force' is
-#'     specified as TRUE.
+#'     specified as TRUE. If a listener is forced closed while a mirai task is
+#'     still ongoing, the mirai may return with a 'errorValue' 7 (object closed).
 #'
 #' @examples
 #' if (interactive()) {
@@ -883,9 +801,9 @@ launch_server <- function(url, ..., .compute = "default") {
 #'
 #' daemons(1L)
 #' Sys.sleep(1L)
-#' daemons()
+#' info()
 #' saisei(i = 1L, force = TRUE)
-#' daemons()
+#' info()
 #'
 #' daemons(0)
 #'
@@ -904,33 +822,78 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 
 }
 
-#' Compute Profile Information
+#' Information
 #'
-#' Retrieve information for the selected compute profile (read-only).
+#' Retrieve information for the specified compute profile, comprising current
+#'     connections and daemons status. Alternatively, the self-signed X.509
+#'     certificate, and URLs at dispatcher.
 #'
 #' @inheritParams saisei
-#' @param x [default 'n'] information to retrieve, one of 'n' (integer number of
-#'     daemons set, or the client URL if not using dispatcher), 'pid' (dispatcher
-#'     process ID), 'tls' (TLS configuration), or 'urls' (daemon URLs when using
-#'     dispatcher).
+#' @param alt [default FALSE] returns the connections and daemons status matrix,
+#'     \strong{alternatively} the self-signed X.509 certificate and dispatcher
+#'     URLs.
 #'
-#' @return List, integer or character vector (as applicable), or else NULL if
-#'     not available.
+#' @return A named list comprising:
+#'     \itemize{
+#'     \item{\strong{connections}} {- number of active connections. Always 1L
+#'     when using dispatcher as there is a single connection to the dispatcher,
+#'     which in turn connects to the daemons.}
+#'     \item{\strong{daemons}} {- if using dispatcher: a status matrix (see
+#'     Status Matrix section below), or else an integer 'errorValue' if
+#'     communication with the dispatcher was unsuccessful. If not using
+#'     dispatcher: the number of daemons set, or else the host URL.}
+#'     }
+#'
+#'     Alternatively:
+#'     \itemize{
+#'     \item{\strong{tls}} {- character vector comprising the self-signed X509
+#'     certificate and empty certificate revocation list, if applicable, or else
+#'     NULL.}
+#'     \item{\strong{urls}} {- character vector comprising the URLs at
+#'     dispatcher, if applicable, or else NULL.}
+#'     }
+#'
+#' @section Status Matrix:
+#'
+#'     When using dispatcher, \code{$daemons} comprises a matrix with the
+#'     following columns:
+#'     \itemize{
+#'     \item{\strong{online}} {- shows as 1 when there is an active connection,
+#'     or else 0 if a daemon has yet to connect or has disconnected.}
+#'     \item{\strong{instance}} {- increments by 1 every time there is a new
+#'     connection at a URL. This counter is designed to track new daemon
+#'     instances connecting after previous ones have ended (due to time-outs
+#'     etc.). 'instance' resets to zero if the URL is regenerated by
+#'     \code{\link{saisei}}.}
+#'     \item{\strong{assigned}} {- shows the cumulative number of tasks assigned
+#'     to the daemon.}
+#'     \item{\strong{complete}} {- shows the cumulative number of tasks
+#'     completed by the daemon.}
+#'     }
+#'     The URLs are stored as row names to the matrix.
+#'
+#' @section Alternate Information:
+#'
+#'     The return values may be passed directly to the 'url' and 'tls'
+#'     arguments of \code{\link{daemon}} when manually launching remote daemon
+#'     instances. \code{\link{bquote}} may be used to construct the call, as per
+#'     the below example.
+#'
+#'     Note: the 'tls' argument does not need to be specified if launching local
+#'     dameons using \code{\link{launch}}, which will supply it automatically.
 #'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' daemons(n = 2L, url = "ws://[::1]:0")
+#' info()
+#' daemons(n = 2L, url = "wss://[::1]:0")
+#' info()
+#' info(alt = TRUE)
 #'
-#' cpinfo("n")
-#' cpinfo("pid")
-#' cpinfo("urls")
-#'
-#' daemons()
-#' launch_server(cpinfo("urls")[1L])
-#' Sys.sleep(0.1)
-#' daemons()
+#' # creates call to daemon
+#' call <- bquote(daemon(url = .(info(alt = TRUE)$urls[1]), tls = .(info(alt = TRUE)$tls)))
+#' call
 #'
 #' daemons(0)
 #'
@@ -938,8 +901,92 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 #'
 #' @export
 #'
-cpinfo <- function(x = c("n", "pid", "tls", "urls"), .compute = "default")
-  ..[[.compute]][[match.arg(x, c("n", "pid", "tls", "urls"))]]
+info <- function(.compute = "default", alt = FALSE) {
+
+    envir <- ..[[.compute]]
+    alt && return(list(tls = if (length(envir[["tls"]])) weakref_value(envir[["tls"]]),
+                       urls = envir[["urls"]]))
+    list(connections = if (length(envir[["sock"]])) stat(envir[["sock"]], "pipes") else 0L,
+         daemons = if (length(envir[["sockc"]])) query_status(envir) else envir[["n"]] %||% 0L)
+
+}
+
+#' Launch Daemon
+#'
+#' Utility function which calls \code{\link{daemon}} in a background
+#'     \code{Rscript} process. May be used to re-launch local daemons that have
+#'     timed out.
+#'
+#' @inheritParams saisei
+#' @param url the character host URL or vector of host URLs, including the port
+#'     to connect to (and optionally for websockets, a path), e.g.
+#'     tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'
+#'
+#'     \strong{or} integer index value, or vector of index values, of the
+#'     dispatcher URLs, where applicable.
+#' @param ... (optional) additional arguments passed to \code{\link{daemon}}.
+#'
+#' @return Invisible NULL.
+#'
+#' @section Additional arguments:
+#'
+#'     Additional arguments may be specified as part of '\code{...}' to be
+#'     passed on to \code{\link{daemon}}:
+#'
+#'     \itemize{
+#'     \item{\strong{asyncdial}} {[default FALSE] whether to perform dials
+#'     asynchronously. The default FALSE will error if a connection is not
+#'     immediately possible (e.g. \code{\link{daemons}} has yet to be called, or
+#'     the specified port is not open etc.). Specifying TRUE continues retrying
+#'     (indefinitely) if not immediately successful, which is more resilient but
+#'     can mask potential connection issues.}
+#'     \item{\strong{output}} {[default FALSE] Specify as TRUE to provide
+#'     redirection of output (stdout and stderr) from the daemon to the host
+#'     process. This option is only applicable when not using dispatcher.}
+#'     }
+#'
+#'     TLS certificates generated by \code{\link{daemons}} and stored in the
+#'     specified compute profile are automatically passed to the daemon. In this
+#'     case, there is no need to specify 'tls' as part of '\code{...}'.
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' daemons(n = 2L, url = "ws://[::1]:0")
+#' launch(1:2, maxtasks = 10L)
+#' Sys.sleep(1)
+#' info()
+#' daemons(0)
+#'
+#' daemons(n = 2L, url = "tls+tcp://[::1]:0")
+#' launch(info(alt = TRUE)$urls, idletime = 60000L, timerstart = 1L)
+#' Sys.sleep(1)
+#' info()
+#' daemons(0)
+#'
+#' }
+#'
+#' @export
+#'
+launch <- function(url, ..., .compute = "default") {
+
+  dots <- parse_dots(...)
+  tls <- if (length(..[[.compute]][["tls"]])) weakref_value(..[[.compute]][["tls"]])
+  if (is.numeric(url)) {
+    vec <- ..[[.compute]][["urls"]]
+    is.null(vec) && stop(.messages[["dispatcher_inactive"]])
+    all(url >= 0L, url <= length(vec)) || stop(.messages[["url_spec"]])
+    for (u in url)
+      launch_daemon(vec[[u]], dots, tls = tls)
+  } else {
+    for (u in url) {
+      parse_url(u)
+      launch_daemon(u, dots, tls = tls)
+    }
+  }
+
+}
 
 #' mirai (Call Value)
 #'
@@ -1170,9 +1217,9 @@ print.miraiInterrupt <- function(x, ...) {
 launch_daemon <- function(..., tls = NULL) {
   dots <- list(...)
   args <- switch(length(dots),
-                 sprintf("mirai::.server(\"%s\")", ..1),
-                 if (length(tls)) sprintf("mirai::server(\"%s\",tls=c(\"%s\",\"%s\")%s)", ..1, tls[[1L]], tls[[2L]], ..2) else
-                   sprintf("mirai::server(\"%s\"%s)", ..1, ..2),
+                 sprintf("mirai::.daemon(\"%s\")", ..1),
+                 if (length(tls)) sprintf("mirai::daemon(\"%s\",tls=c(\"%s\",\"%s\")%s)", ..1, tls[[1L]], tls[[2L]], ..2) else
+                   sprintf("mirai::daemon(\"%s\"%s)", ..1, ..2),
                  "",
                  sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", ..1, ..2, ..3, ..4),
                  if (length(tls)) sprintf("mirai::dispatcher(\"%s\",c(%s),tls=c(\"%s\",\"%s\"),n=%d,monitor=\"%s\"%s)", ..1, paste(sprintf("\"%s\"", ..2), collapse = ","), tls[[1L]], tls[[2L]], ..3, ..4, ..5) else

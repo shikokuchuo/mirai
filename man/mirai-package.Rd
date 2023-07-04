@@ -9,22 +9,21 @@
 Lightweight parallel code execution and distributed computing. Designed for
     simplicity, a 'mirai' evaluates an R expression asynchronously, on local
     or network resources, resolving automatically upon completion. Features
-    efficient task scheduling, scalability beyond R connection limits, and
-    transports faster than TCP/IP for inter-process communications, courtesy
-    of 'nanonext' and 'NNG' (Nanomsg Next Gen).
+    efficient task scheduling, fast inter-process communications, and
+    transport layer security over TCP/IP for remote connections, courtesy of
+    'nanonext' and 'NNG' (Nanomsg Next Gen).
 }
 \section{Notes}{
 
 
-    For local mirai processes, the default transport for inter-process
+    For local mirai requests, the default transport for inter-process
     communications is platform-dependent: abstract Unix domain sockets on
     Linux, Unix domain sockets on MacOS, Solaris and other POSIX platforms,
     and named pipes on Windows.
 
-    This may be overriden if required by specifying 'url' in the
-    \code{\link{daemons}} interface, and starting server and/or dispatcher
-    processes manually using \code{\link{server}} and \code{\link{dispatcher}}
-    respectively, on the local machine.
+    This may be overriden, if required, by specifying 'url' in the
+    \code{\link{daemons}} interface, and launching local daemons using
+    \code{\link{launch}}.
 }
 
 \section{Links}{

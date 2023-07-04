@@ -2,7 +2,7 @@
 % Please edit documentation in R/mirai.R
 \name{saisei}
 \alias{saisei}
-\title{Saisei - Regenerate Token}
+\title{Saisei (Regenerate Token)}
 \usage{
 saisei(i = 1L, force = FALSE, .compute = "default")
 }
@@ -19,14 +19,15 @@ profile has its own set of daemons for connecting to different resources).}
 The regenerated character URL upon success, or else NULL.
 }
 \description{
-When using daemons with a local dispatcher service, regenerates the token for
-    the URL a dispatcher socket listens at.
+When using daemons with dispatcher, regenerates the token for the URL a
+    dispatcher socket listens at.
 }
 \details{
 As the specified listener is closed and replaced immediately, this
     function will only be successful if there are no existing connections at
     the socket (i.e. 'online' status shows 0), unless the argument 'force' is
-    specified as TRUE.
+    specified as TRUE. If a listener is forced closed while a mirai task is
+    still ongoing, the mirai may return with a 'errorValue' 7 (object closed).
 }
 \examples{
 if (interactive()) {
@@ -34,9 +35,9 @@ if (interactive()) {
 
 daemons(1L)
 Sys.sleep(1L)
-daemons()
+info()
 saisei(i = 1L, force = TRUE)
-daemons()
+info()
 
 daemons(0)
 

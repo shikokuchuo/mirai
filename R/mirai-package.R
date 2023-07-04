@@ -19,21 +19,20 @@
 #' Lightweight parallel code execution and distributed computing. Designed for
 #'     simplicity, a 'mirai' evaluates an R expression asynchronously, on local
 #'     or network resources, resolving automatically upon completion. Features
-#'     efficient task scheduling, scalability beyond R connection limits, and
-#'     transports faster than TCP/IP for inter-process communications, courtesy
-#'     of 'nanonext' and 'NNG' (Nanomsg Next Gen).
+#'     efficient task scheduling, fast inter-process communications, and
+#'     transport layer security over TCP/IP for remote connections, courtesy of
+#'     'nanonext' and 'NNG' (Nanomsg Next Gen).
 #'
 #' @section Notes:
 #'
-#'     For local mirai processes, the default transport for inter-process
+#'     For local mirai requests, the default transport for inter-process
 #'     communications is platform-dependent: abstract Unix domain sockets on
 #'     Linux, Unix domain sockets on MacOS, Solaris and other POSIX platforms,
 #'     and named pipes on Windows.
 #'
-#'     This may be overriden if required by specifying 'url' in the
-#'     \code{\link{daemons}} interface, and starting server and/or dispatcher
-#'     processes manually using \code{\link{server}} and \code{\link{dispatcher}}
-#'     respectively, on the local machine.
+#'     This may be overriden, if required, by specifying 'url' in the
+#'     \code{\link{daemons}} interface, and launching local daemons using
+#'     \code{\link{launch}}.
 #'
 #' @section Links:
 #'
@@ -52,7 +51,7 @@
 #' @importFrom nanonext call_aio .context cv cv_value dial is_error_value listen
 #'     lock mclock msleep opt opt<- parse_url pipe_notify random recv
 #'     recv_aio_signal request request_signal send sha1 socket stat stop_aio
-#'     tls_config unresolved until wait write_cert
+#'     tls_config unresolved until wait weakref weakref_value write_cert
 #'
 #' @docType package
 #' @name mirai-package
@@ -86,12 +85,14 @@ NULL
 .messages <- list2env(
   list(
     connection_timeout = "connection to local process timed out after 5s",
+    dispatcher_inactive = "a numeric value for 'url' is only valid when dispatcher is active",
     missing_url = "at least one URL must be supplied for 'url' or 'n' must be at least 1",
     missing_expression = "missing expression, perhaps wrap in {}?",
-    n_one = "'n' must be 1 or greater if specified with a client URL",
+    n_one = "'n' must be 1 or greater if specified with a host URL",
     n_zero = "the number of daemons must be zero or greater",
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
-    requires_list = "'.args' must be specified as a list"
+    requires_list = "'.args' must be specified as a list",
+    url_spec = "numeric value for 'url' is out of bounds"
   ),
   hash = TRUE
 )
