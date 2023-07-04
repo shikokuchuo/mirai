@@ -22,7 +22,7 @@
     <loc>https://shikokuchuo.net/mirai/reference/call_mirai.html</loc>
   </url>
   <url>
-    <loc>https://shikokuchuo.net/mirai/reference/cpinfo.html</loc>
+    <loc>https://shikokuchuo.net/mirai/reference/daemon.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/mirai/reference/daemons.html</loc>
@@ -34,10 +34,13 @@
     <loc>https://shikokuchuo.net/mirai/reference/dispatcher.html</loc>
   </url>
   <url>
-    <loc>https://shikokuchuo.net/mirai/reference/dot-server.html</loc>
+    <loc>https://shikokuchuo.net/mirai/reference/dot-daemon.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/mirai/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://shikokuchuo.net/mirai/reference/info.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/mirai/reference/is_mirai.html</loc>
@@ -46,7 +49,7 @@
     <loc>https://shikokuchuo.net/mirai/reference/is_mirai_error.html</loc>
   </url>
   <url>
-    <loc>https://shikokuchuo.net/mirai/reference/launch_server.html</loc>
+    <loc>https://shikokuchuo.net/mirai/reference/launch.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/mirai/reference/mirai-package.html</loc>
@@ -56,9 +59,6 @@
   </url>
   <url>
     <loc>https://shikokuchuo.net/mirai/reference/saisei.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/server.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/mirai/reference/stop_mirai.html</loc>
