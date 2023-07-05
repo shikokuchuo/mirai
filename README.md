@@ -112,7 +112,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -25.31 -1.866 0.312 0.115 0.18 ...
+#>  num [1:100000000] -4.55 6.262 0.914 -0.172 -7.157 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -120,7 +120,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -25.31 -1.866 0.312 0.115 0.18 ...
+#>  num [1:100000000] -4.55 6.262 0.914 -0.172 -7.157 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -138,7 +138,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.462 -60.626 3.735 0.201 1.199 ...
+#>  num [1:100000000] 1.3575 1.9604 -0.0661 0.9758 2.1123 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -234,8 +234,8 @@ for (i in 1:10) {
 #> iteration 5 successful
 #> iteration 6 successful
 #> iteration 7 successful
-#> iteration 8 successful
 #> Error: random error
+#> iteration 8 successful
 #> iteration 9 successful
 #> iteration 10 successful
 ```
@@ -278,12 +278,12 @@ info()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://6cea0fca8a764b4cf83313b059317ffc77d088fc      1        1        0        0
-#> abstract://934023358df2e8a10884ec48e9e0cab48d229842      1        1        0        0
-#> abstract://a89be7e1eab0347848bd62542d90dd120dc26d01      1        1        0        0
-#> abstract://88b930bf3db21557a0a0a858689f4eba9f07ffc3      1        1        0        0
-#> abstract://668c4d13f5381df5da931caf0949f9e89e947476      1        1        0        0
-#> abstract://29c32c0022b010bb89f5db4998b0e464abed1895      1        1        0        0
+#> abstract://10ac823d46d7f301a7f6d46b30842c296ed082b3      1        1        0        0
+#> abstract://d945316010d5e70df19f6c7e84211b9652e39f24      1        1        0        0
+#> abstract://cea84ad8b257f9586ef4b87de454f6f110361517      1        1        0        0
+#> abstract://8884c940b3a6aba9ac192937b166737b10e6d9ca      1        1        0        0
+#> abstract://47d25ea60ea4ba99b452e50126d748c04964f663      1        1        0        0
+#> abstract://aa47e6a49730ec371ebb7b56be52c4ac5e64e9a1      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -480,7 +480,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:42445"
+#> [1] "tcp://:46053"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -494,7 +494,7 @@ On the network resource, `daemon()` may be called from an R session, or
 an Rscript invocation from a shell. This sets up a remote daemon process
 that connects to the host URL and receives tasks:
 
-    Rscript -e 'mirai::daemon("tcp://10.111.5.13:42445")'
+    Rscript -e 'mirai::daemon("tcp://10.111.5.13:46053")'
 
 As before, `daemons()` should be set up on the host machine before
 launching `daemon()` on remote resources, otherwise the daemon instances
@@ -516,7 +516,7 @@ info()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:42445"
+#> [1] "tcp://:46053"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -569,8 +569,7 @@ resource manager.
 
 ``` r
 launch(1, exec = FALSE)
-#> [[1]]
-#> [1] "Rscript -e 'mirai::daemon(\"wss://[::1]:5555/1\",tls=c(\"-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhpYmlraTEJMAcGA1UEBhMAMB4XDTAxMDEwMTAwMDAwMFoXDTMw\nMTIzMTIzNTk1OVowKjEMMAoGA1UEAwwDOjoxMQ8wDQYDVQQKDAZIaWJpa2kxCTAH\nBgNVBAYTADCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAL14LIdjZJoW\nl00L0LizYQvjCDkq5PpETspFlaZFDu7XsEnLgObQMRmOEygx66WbEwSijbbfRj/r\nRMexD8H60x/FB1nYq+ksY52NhSKYyLnzZXNalg2LTecE8DilK0nKv+p/7ik5Icmr\noqPE9b2GrqeRhfdgMcK3GniYKymOYVlrC7PsiTXfjPTtvo0ZZBOmwh9jKZmCgU4f\n49iDFX3KmmK42obaSgg5/3mF6w6UtaIJoBXfAn8fVIQW+cxFXG6oXOwTIUFJ+REd\nFtoA9etEHMDoP6338ptclUf73UwbHFl1fN4ZsiaZrlv/t4ycjUZ2w56e/VAPNrRQ\nLQ9j7Ddh3W+QflMPOsS5RCXZvoQSvzZRhs0WtHsMG405x8JFcx734vsMGRzm8alT\neZaF25E2CZ8frR0wCNbRhmTts4+wr4stVCQoKo8VSxmNxGZafi2Lx4iRXkL16HpS\nXyj+EIPZMnhhEosjMiogsXu7hzKbVtMi+Ymx+swGUavTyI6JSW1OITsW1CAxZTMf\nLvcR+0Cp2lFs+DmeEk7BbyYRsMCRCmz7A1VRkl1XGTLCZeAe6lqyzhlC1jnG7WKy\nK6A8GNj5NgJbRFJeidjF2wBqsx1THimRqDtp2n0xj4Ea0G46xg0I9HDAEb1TBsbw\n3Sz4o33u0iKjBW0CeM+jPxUHuD6+gjR9AgMBAAGjVjBUMBIGA1UdEwEB/wQIMAYB\nAf8CAQAwHQYDVR0OBBYEFLoIa720WQZVs1SXJkmrDknGNzvIMB8GA1UdIwQYMBaA\nFLoIa720WQZVs1SXJkmrDknGNzvIMA0GCSqGSIb3DQEBCwUAA4ICAQAfpVuSXp7Q\nzfv3fJ1BmJE0AtzhoQqnwLKK1MJpkkgyzELrzS2W2r2U+0LoV/GTIsI/3poTjTih\ngA58vj4PiYrtDMSICg6+QZTvI6oJGDHc0rf6EtORYzKkbFQm7uA4GMIvUtxCJjWv\nol4IekIh5myCufSjYjXd2JuOw2JB8P+eviE728o/tuYj7VTotLGjbRALvCjl3xnC\nxuqPLBT17B6WpXZVYSOid2p1qQkSFEOBVjYGOZnb79vk7hczynIMjZnCz1NhUUXm\nXgRVdxmn0trhbvjKwtJjGp1YBZUmRJj/dCN02idVveHBA2/HwL8fHLBqF5OV/IpC\nrhfnAahU5g1PTOSnG514wxfjvWGiSZ9Fj4EfjGMfHE008v8jecPen0RiLQzNgfOU\nW/PVZSL+fr9ZR6xvC/O1BO5i//SLo38d5KWzi/g0Y7otwBBStnVhyjZ734a/17Eu\nFZgKFiot4CdPfruXOyliBcL2SL5DKljtmoa1wo5dVXojhyvRSY84HpsKPGtEu2Ty\nJodpkwX0gYVYO5NQBAmWl9RIGb0ijouQl9y1+lRaZfGZNzzVA9G/FebTv6uDYZvN\nb9t2CsblzlOUEf3ScB+ICWAffVW5LDWcjkHdzmNmuTSAs1ZNYiXNUDNvpTNxqSNK\nSb9Y3IVUWS6YHCQ2Fpw15wdTW9s2bJL+oQ==\n-----END CERTIFICATE-----\n\",\"\"))'"
+#> [1] "Rscript -e 'mirai::daemon(\"wss://[::1]:5555/1\",tls=c(\"-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhpYmlraTEJMAcGA1UEBhMAMB4XDTAxMDEwMTAwMDAwMFoXDTMw\nMTIzMTIzNTk1OVowKjEMMAoGA1UEAwwDOjoxMQ8wDQYDVQQKDAZIaWJpa2kxCTAH\nBgNVBAYTADCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAMIg2axsKiLr\nyOfuDQMSNVp4PnGVidSZjyOlyQvrDaaQmjJkIp0PxRq9sRDWykCcjEd3xVRKL15N\nLAL1mriGsB0yNUWKK+TBWTGoCkk2tAnUoyjAOA2IYdsKZOVkleo/PHjAriuW2Asa\negMJjE71EvQD19g/yukMfLfdloovx7jwKnJcZUU7OpzSFA7n3TwdxMV7bNIKW3Pf\n1Tm6RsD9R9Lw0J6hT61Nd/C9uKP6KqU9MQRrLbbiOKWRBm2rl1NvkVscrI8BjBOy\nN+ktctiLeOCbUbcENvxnWaYt+tpzYoJrys36ozOd+kIUa63hGr0OsXbfEc0GwulT\nuGnF0dT2mQMOPLcxBK5rCNWnWAUZQbpWIAH3WN1voa1z0AU8smPmqhXsPk2uOfaZ\nEQxQ0MiHMTdWvqFt88jYlMGuBwacPLZIsSaEV6Q8vtZ0rUchpKmhgEoyuHjbnIVo\n1+DKQGadUq0uYrtb2n6xnl9nre9gH035X/RO0oa58XHcJrd6CRSTTs07y8js982D\ngOSjdaosBYCtSscjHY3B1MithRMkjhkqlF9mE71Oz4aeCWEt3KuRNkSi+W4iqNxH\ngwUTtVZbetzfJs8PMlhprr2kDWUwQVUuJynu+BRhc8DYvS5g1+ntqxGnIRpAGqwA\nSNw9fiIFXxF4uGIda1sOHYyQYPo2s1KNAgMBAAGjVjBUMBIGA1UdEwEB/wQIMAYB\nAf8CAQAwHQYDVR0OBBYEFNTH1grXicD8LsKTZHHzm1EU5EyLMB8GA1UdIwQYMBaA\nFNTH1grXicD8LsKTZHHzm1EU5EyLMA0GCSqGSIb3DQEBCwUAA4ICAQDBN+nOApbu\nGfHFTGahKSyrNckb5vtLy9aacu1jgAxU/T7ocOZMIb1SAHcEMkUov8BE9PscTqDT\nKImrwK8afcm/62xbAR8cNiohDEIiCcc/mDI5wD+GOr3QAS4d3gI0mcMKi6wuF/95\nGzFZivERDLKj2YE25kosL4iWNJbMtjQ7TmZRMWWxZlznq1rrH3y489NcEqtSQ9wz\nRFXb9C4yTjSnCdubaW9Mf+Or3oKW48+pOGVA6/NR6uhSpYKpdI46f+DEkE0XrJJ6\nFkhxtKRUMN5mK4/aY0xNRim2v33uKgbCF3Wrnoi6TpHifITwZG/2Lmh5xgUELawQ\nDnmgHJqhBt35U4kdDu8LY+wOV7ri4Lc757ybKK7CHSGrM+yfz5bXfZsnIO9yoynx\n/DSAIj/VqlCuf0sKpxGLlui7dscwdLWHGhWtK9NH35LSg3HmWUYk/B/ROIV80lcY\nQmAgkJpkSkTA9oq9VT0Ls1oJ3g78OHORPEgNGcROMeyNY+wTpc4wixk1IjP2aNrP\nBBxL3xtIPl9h5cDZDJU/NPFT3DSZQdNXVohp8fdFPLrWdxrodN69dsrCLB2eqlSC\n68CZINAeBmk4owQqYbTUJiHTdMXFvsgfdTuwdWPBIa78vrgcORVFXHIHHO/Rdkrz\nNbSMTAV84ewJbud2j46ar0OTIYxPJv/B7g==\n-----END CERTIFICATE-----\n\",\"\"))'"
 ```
 
 As an alternative to the automatic process, a certificate may also be
