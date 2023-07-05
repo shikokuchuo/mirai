@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9024</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9025</span>
       </span>
     </div>
 
@@ -151,11 +151,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.48 1.918 2.719 -0.869 0.347 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -25.31 -1.866 0.312 0.115 0.18 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.48 1.918 2.719 -0.869 0.347 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -25.31 -1.866 0.312 0.115 0.18 ...</span></span></code></pre></div>
 <p>For easy programmatic use of <code><a href="reference/mirai.html">mirai()</a></code>, ‘.expr’ accepts a pre-constructed language object, and also a list of named arguments passed via ‘.args’. So, the following would be equivalent to the above:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -168,7 +168,7 @@
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span>.expr <span class="op">=</span> <span class="va">expr</span>, .args <span class="op">=</span> <span class="va">args</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.266 -0.246 -2.654 1.795 -0.319 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.462 -60.626 3.735 0.201 1.199 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -236,8 +236,8 @@
 <span><span class="co">#&gt; iteration 5 successful</span></span>
 <span><span class="co">#&gt; iteration 6 successful</span></span>
 <span><span class="co">#&gt; iteration 7 successful</span></span>
-<span><span class="co">#&gt; Error: random error</span></span>
 <span><span class="co">#&gt; iteration 8 successful</span></span>
+<span><span class="co">#&gt; Error: random error</span></span>
 <span><span class="co">#&gt; iteration 9 successful</span></span>
 <span><span class="co">#&gt; iteration 10 successful</span></span></code></pre></div>
 <p>Further, by testing the return value of each ‘mirai’ for errors, error-handling code is then able to automate recovery and re-attempts, as in the above example. Further details on <a href="#errors-interrupts-and-timeouts">error handling</a> can be found in the section below.</p>
@@ -264,12 +264,12 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt;                                                     online instance assigned complete</span></span>
-<span><span class="co">#&gt; abstract://63efb16fd1fee20eaff1bd78ce73655870a5da88      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://4bc4e5d363751bda128e928b25348de755554d1c      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://6846c1a16746b1bd4e5555fd579d813aa681d64b      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://3d661351fb1af556b298a4c0d1ad1c7d7963c18f      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://0e2c0f0e86961160f0dd590d0e79bde4e401ba41      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://2af29be1f9b10ecc9fdc913345f75877a9b91a0e      1        1        0        0</span></span></code></pre></div>
+<span><span class="co">#&gt; abstract://6cea0fca8a764b4cf83313b059317ffc77d088fc      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://934023358df2e8a10884ec48e9e0cab48d229842      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://a89be7e1eab0347848bd62542d90dd120dc26d01      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://88b930bf3db21557a0a0a858689f4eba9f07ffc3      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://668c4d13f5381df5da931caf0949f9e89e947476      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://29c32c0022b010bb89f5db4998b0e464abed1895      1        1        0        0</span></span></code></pre></div>
 <p>The default <code>dispatcher = TRUE</code> creates a <code><a href="reference/dispatcher.html">dispatcher()</a></code> background process that connects to individual daemon processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to daemons for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.</p>
 <p>Dispatcher uses synchronisation primitives from <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link"><code>nanonext</code></a>, waiting upon rather than polling for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -305,7 +305,7 @@
 <h3 id="distributed-computing-remote-daemons">Distributed Computing: Remote Daemons<a class="anchor" aria-label="anchor" href="#distributed-computing-remote-daemons"></a>
 </h3>
 <p>The daemons interface may also be used to send tasks for computation to remote daemon processes on the network.</p>
-<p>Call <code><a href="reference/daemons.html">daemons()</a></code> specifying ‘url’ as a character string the host network address and a port that is able to accept incoming connections.</p>
+<p>Call <code><a href="reference/daemons.html">daemons()</a></code> specifying ‘url’ as a character value the host network address and a port that is able to accept incoming connections.</p>
 <p>The examples below use an illustrative local network IP address of ‘10.111.5.13’.</p>
 <p>A port on the host machine also needs to be open and available for inbound connections from the local network, illustratively ‘5555’ in the examples below.</p>
 <p>IPv6 addresses are also supported and must be enclosed in square brackets <code>[]</code> to avoid confusion with the final colon separating the port. For example, port 5555 on the IPv6 address <code>::ffff:a6f:50d</code> would be specified as <code>tcp://[::ffff:a6f:50d]:5555</code>.</p>
@@ -368,11 +368,11 @@
 <p>Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://:0"</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tcp://:36667"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:42445"</span></span></code></pre></div>
 <p>Note that above, the port number is specified as zero. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided as the return value of the call, or it may be queried at any time by via <code><a href="reference/info.html">info()</a></code>.</p>
 <p>–</p>
 <p>On the network resource, <code><a href="reference/daemon.html">daemon()</a></code> may be called from an R session, or an Rscript invocation from a shell. This sets up a remote daemon process that connects to the host URL and receives tasks:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::daemon("tcp://10.111.5.13:36667")'</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::daemon("tcp://10.111.5.13:42445")'</span></span></code></pre></div>
 <p>As before, <code><a href="reference/daemons.html">daemons()</a></code> should be set up on the host machine before launching <code><a href="reference/daemon.html">daemon()</a></code> on remote resources, otherwise the daemon instances will exit if a connection is not immediately available. Alternatively, specifying <code>daemon(asyncdial = TRUE)</code> will allow daemons to wait (indefinitely) for a connection to become available.</p>
 <p>–</p>
 <p>The number of daemons connecting to the host URL is not limited and network resources may be added or removed at any time, with tasks automatically distributed to all connected daemons.</p>
@@ -383,7 +383,7 @@
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "tcp://:36667"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:42445"</span></span></code></pre></div>
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
@@ -401,17 +401,17 @@
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, url <span class="op">=</span> <span class="st">"wss://[::1]:5555"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
 <p>Single-use keys and certificates are automatically generated and configured, without requiring any user intervention. The private key is always retained on the host and never transmitted, and also not stored or accessible as an R object.</p>
-<p>The generated self-signed certificate is stored as a weak reference, allowing read-only access (but not modification) through the <code><a href="reference/info.html">info()</a></code> function as shown below:</p>
+<p>The generated self-signed certificate is made available for read-only access through the <code><a href="reference/info.html">info()</a></code> function specifying ‘alt = TRUE’, as shown below:</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cert</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/info.html">info</a></span><span class="op">(</span>alt <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">tls</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">cert</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhp"| __truncated__ ...</span></span></code></pre></div>
-<p>This character vector may be passed directly to the ‘tls’ argument of <code><a href="reference/daemon.html">daemon()</a></code> for launching daemons on remote resources.</p>
-<p><code><a href="https://rdrr.io/r/base/bquote.html" class="external-link">bquote()</a></code> may also be used to conveniently generate calls to <code><a href="reference/daemon.html">daemon()</a></code>, as in the example below. The resulting language object may be further deparsed to a character vector, as required, for deployment on the remote machine.</p>
+<p>The returned character vector may be passed directly to the ‘tls’ argument of <code><a href="reference/daemon.html">daemon()</a></code> for launching daemons on remote resources.</p>
+<p><code><a href="reference/launch.html">launch()</a></code> with the argument ‘exec = FALSE’ may also be used to conveniently generate the full shell command to launch a <code><a href="reference/daemon.html">daemon()</a></code>. This may be directly deployed on a remote machine, for example via a resource manager.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/bquote.html" class="external-link">bquote</a></span><span class="op">(</span><span class="fu"><a href="reference/daemon.html">daemon</a></span><span class="op">(</span>url <span class="op">=</span> <span class="fu"><a href="reference/deferred-execution-pipe.html">.</a></span><span class="op">(</span><span class="fu"><a href="reference/info.html">info</a></span><span class="op">(</span>alt <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">urls</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>, tls <span class="op">=</span> <span class="fu"><a href="reference/deferred-execution-pipe.html">.</a></span><span class="op">(</span><span class="fu"><a href="reference/info.html">info</a></span><span class="op">(</span>alt <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">tls</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; daemon(url = "wss://[::1]:5555/1", tls = c("-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhpYmlraTEJMAcGA1UEBhMAMB4XDTAxMDEwMTAwMDAwMFoXDTMw\nMTIzMTIzNTk1OVowKjEMMAoGA1UEAwwDOjoxMQ8wDQYDVQQKDAZIaWJpa2kxCTAH\nBgNVBAYTADCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAKJxjHbF06r4\nKthgkKIZ/tTc60bksWYwILTnkal7y7VCBsaNRNRSd5lRWusZLWuMPXLUu9QvjjwT\nQ0m911TCbIKO9adlvQBWrH85IxN5+tLCCCv4QwEgAyhPy2QxFlmX1QN4gzNsxxUT\n6qW2xYwnO3kFZUbeOb188tTOLm4gE4A1TVCk2LnuPR6Y6IVqJZ7CUTKI2zbeHH/+\nBC4S92Elyv//w32d6j+9J2oZzVAARWmZvlURnn7BDiUGdrQNZOy6sKBJRZXHlers\n3RpTKreVw6uVyEfdrnuFevZ+3i3jZsTxcLk07tZmBpqWOWy/IFws328m1qzqYWvy\nw31uh/pDAh6IyAZz1spLkLw3vWyzwfsknWaGLdEQEkwVPV0XwOo20uu4Xof63jPS\nvWh29HIVqUT13csV6v935vw5PXqrJIVXnkA9iI2wc8xoy08TJihZ26n2pyI8M3o1\nTg16SQh4rSY+bh71RTm6lbeYN8Gz7RA4uYH9vfy0n0D6CgjRwWLhwbRpElfESqVn\n90tQIIAbnn9RBIgVfNU1kFUqeu2jhN8sh6Hb2qj97qTdc+sPCafj7rV9O/gQIPQQ\n6WvDUvjmZ3VE3yJ0UyuseJPufuna2YBMZf8Lt9EL/rtY9z2xRQylPiubU8XZV0YX\n58Ynik+uDTG++sMn++kDxC0NRFKhosRdAgMBAAGjVjBUMBIGA1UdEwEB/wQIMAYB\nAf8CAQAwHQYDVR0OBBYEFMIwdc78bXrU+87qv+NHVAF7STYbMB8GA1UdIwQYMBaA\nFMIwdc78bXrU+87qv+NHVAF7STYbMA0GCSqGSIb3DQEBCwUAA4ICAQCFWSqJZDFA\nzf6RNnK8vbXhlNcDWH+P2Xvoeon0tncvlVIrGscBsZ+FiNSMtrg1qivoaGoRSt2J\nlvEzR0+kYlPpyJ6hNrOEHY2ZXv/t4iOOq85LSIxGVf/Yxr6NpQB4K0eRLGQ2Ctt8\nljYmCPvwQaSVr49Mgesvd7gl/+j6dDUYk6kHR9YT7rqS9IJ3HiltYfgZBga+7A03\nXYSFtKXQqTRIbxkMzkksD6zJVvEK2K3MZ7zjTFo49OYEATLcvvOYCfRgHACNimXj\nifXPKcFuCXulruHr9e+AxobKfrNxk8e8iVBcIoTCg3UGi2u1H3yuyM5v4LZUZEUB\nWmvIS+IWVMDISjpLtSx0JmMYdPe3DjwhaD+SCW76C/z/M7eV5Wui3zPIPwIK7Esw\nBkPdd2UWZWvgwadppAl/rZ3+b16gkVUrvtqrWfAFgWwxmNf3h1R9GHgLyqWAA7gU\ns0chIPh7SQ6Vt1yBYgC6RM4kmH+QOiQr6U33OHIPhW8CeH2jiGXUjHIag6d+YPVq\nndRBwEGtG5NeLWDx54X/eoX62JxxrE8RBvcmoF2mRwVPzaXTE8clZ6KiF93eyVAj\nH7X4mdNgTxWDHfbKZNxZg1z274Hq+AMs8mP3UCnKu4Tt4P7Olhiz64dlboo0J+Zk\nlLvkA+0MzPtxd4pDEYs8Id4JuaHUyaXmvQ==\n-----END CERTIFICATE-----\n", </span></span>
-<span><span class="co">#&gt; ""))</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/launch.html">launch</a></span><span class="op">(</span><span class="fl">1</span>, exec <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [[1]]</span></span>
+<span><span class="co">#&gt; [1] "Rscript -e 'mirai::daemon(\"wss://[::1]:5555/1\",tls=c(\"-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhpYmlraTEJMAcGA1UEBhMAMB4XDTAxMDEwMTAwMDAwMFoXDTMw\nMTIzMTIzNTk1OVowKjEMMAoGA1UEAwwDOjoxMQ8wDQYDVQQKDAZIaWJpa2kxCTAH\nBgNVBAYTADCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAL14LIdjZJoW\nl00L0LizYQvjCDkq5PpETspFlaZFDu7XsEnLgObQMRmOEygx66WbEwSijbbfRj/r\nRMexD8H60x/FB1nYq+ksY52NhSKYyLnzZXNalg2LTecE8DilK0nKv+p/7ik5Icmr\noqPE9b2GrqeRhfdgMcK3GniYKymOYVlrC7PsiTXfjPTtvo0ZZBOmwh9jKZmCgU4f\n49iDFX3KmmK42obaSgg5/3mF6w6UtaIJoBXfAn8fVIQW+cxFXG6oXOwTIUFJ+REd\nFtoA9etEHMDoP6338ptclUf73UwbHFl1fN4ZsiaZrlv/t4ycjUZ2w56e/VAPNrRQ\nLQ9j7Ddh3W+QflMPOsS5RCXZvoQSvzZRhs0WtHsMG405x8JFcx734vsMGRzm8alT\neZaF25E2CZ8frR0wCNbRhmTts4+wr4stVCQoKo8VSxmNxGZafi2Lx4iRXkL16HpS\nXyj+EIPZMnhhEosjMiogsXu7hzKbVtMi+Ymx+swGUavTyI6JSW1OITsW1CAxZTMf\nLvcR+0Cp2lFs+DmeEk7BbyYRsMCRCmz7A1VRkl1XGTLCZeAe6lqyzhlC1jnG7WKy\nK6A8GNj5NgJbRFJeidjF2wBqsx1THimRqDtp2n0xj4Ea0G46xg0I9HDAEb1TBsbw\n3Sz4o33u0iKjBW0CeM+jPxUHuD6+gjR9AgMBAAGjVjBUMBIGA1UdEwEB/wQIMAYB\nAf8CAQAwHQYDVR0OBBYEFLoIa720WQZVs1SXJkmrDknGNzvIMB8GA1UdIwQYMBaA\nFLoIa720WQZVs1SXJkmrDknGNzvIMA0GCSqGSIb3DQEBCwUAA4ICAQAfpVuSXp7Q\nzfv3fJ1BmJE0AtzhoQqnwLKK1MJpkkgyzELrzS2W2r2U+0LoV/GTIsI/3poTjTih\ngA58vj4PiYrtDMSICg6+QZTvI6oJGDHc0rf6EtORYzKkbFQm7uA4GMIvUtxCJjWv\nol4IekIh5myCufSjYjXd2JuOw2JB8P+eviE728o/tuYj7VTotLGjbRALvCjl3xnC\nxuqPLBT17B6WpXZVYSOid2p1qQkSFEOBVjYGOZnb79vk7hczynIMjZnCz1NhUUXm\nXgRVdxmn0trhbvjKwtJjGp1YBZUmRJj/dCN02idVveHBA2/HwL8fHLBqF5OV/IpC\nrhfnAahU5g1PTOSnG514wxfjvWGiSZ9Fj4EfjGMfHE008v8jecPen0RiLQzNgfOU\nW/PVZSL+fr9ZR6xvC/O1BO5i//SLo38d5KWzi/g0Y7otwBBStnVhyjZ734a/17Eu\nFZgKFiot4CdPfruXOyliBcL2SL5DKljtmoa1wo5dVXojhyvRSY84HpsKPGtEu2Ty\nJodpkwX0gYVYO5NQBAmWl9RIGb0ijouQl9y1+lRaZfGZNzzVA9G/FebTv6uDYZvN\nb9t2CsblzlOUEf3ScB+ICWAffVW5LDWcjkHdzmNmuTSAs1ZNYiXNUDNvpTNxqSNK\nSb9Y3IVUWS6YHCQ2Fpw15wdTW9s2bJL+oQ==\n-----END CERTIFICATE-----\n\",\"\"))'"</span></span></code></pre></div>
 <p>As an alternative to the automatic process, a certificate may also be generated in the traditional manner via a Certificate Signing Request (CSR) to a Certificate Authority (CA), which may be a public CA or a CA internal to your organisation.</p>
 <ul>
 <li>The generated certificate along with the associated private key may then be specified as the ‘tls’ argument to <code><a href="reference/daemons.html">daemons()</a></code>.</li>
@@ -449,7 +449,7 @@
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="fu"><a href="reference/is_mirai_error.html">is_error_value</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<p>If during a <code><a href="reference/call_mirai.html">call_mirai()</a></code> an interrupt e.g. ctrl+c is sent, the mirai will resolve to an empty character string of class ‘miraiInterrupt’ and ‘errorValue’. <code><a href="reference/is_mirai_error.html">is_mirai_interrupt()</a></code> may be used to test for such interrupts.</p>
+<p>If during a <code><a href="reference/call_mirai.html">call_mirai()</a></code> an interrupt e.g. ctrl+c is sent, the mirai will resolve to an empty character vector of class ‘miraiInterrupt’ and ‘errorValue’. <code><a href="reference/is_mirai_error.html">is_mirai_interrupt()</a></code> may be used to test for such interrupts.</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/is_mirai_error.html">is_mirai_interrupt</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
