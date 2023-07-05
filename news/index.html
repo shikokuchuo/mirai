@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9025</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9026</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.0.9025" id="mirai-0909025-development">mirai 0.9.0.9025 (development)<a class="anchor" aria-label="anchor" href="#mirai-0909025-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.0.9026" id="mirai-0909026-development">mirai 0.9.0.9026 (development)<a class="anchor" aria-label="anchor" href="#mirai-0909026-development"></a></h2>
 <ul><li>Enables secure TLS connections for distributed computing:
 <ul><li>Zero-configuration experience - simply specify a <code>tls+tcp://</code> or <code>wss://</code> URL in <code><a href="../reference/daemons.html">daemons()</a></code>. Single-use keys and certificates are automatically generated.</li>
 <li>Alternatively, custom certificates may be passed to the ‘tls’ argument of <code><a href="../reference/daemons.html">daemons()</a></code> and <code><a href="../reference/daemon.html">daemon()</a></code>, such as those generated via a Ceritficate Signing Request (CSR) to a Certificate Authority (CA).</li>
@@ -67,9 +67,7 @@
 <li>
 <code>launch(exec = FALSE)</code> implemented to generate the shell command to launch a daemon as a character vector (without actually executing) to facilitate launching on remote resources.</li>
 <li>
-<code><a href="../reference/info.html">info()</a></code> implemented to retrieve connections and daemons status, replacing the call to <code><a href="../reference/daemons.html">daemons()</a></code> with no arguments (which is deprecated).</li>
-<li>
-<code>info(alt = TRUE)</code> implemented to retrieve certificate and URL information, which can be used to construct calls to <code><a href="../reference/daemon.html">daemon()</a></code> for launching manually.</li>
+<code><a href="../reference/status.html">status()</a></code> implemented to retrieve connections and daemons status, replacing the call to <code><a href="../reference/daemons.html">daemons()</a></code> with no arguments (which is deprecated).</li>
 <li>documentation updated to refer consistently to host and daemons (rather than client and server) for clarity.</li>
 </ul></li>
 <li>Specifying <code>output=TRUE</code> for <code><a href="../reference/daemons.html">daemons()</a></code> or <code><a href="../reference/launch.html">launch()</a></code> allows redirection of stdout and stderr from local daemons to the host process (when running without dispatcher). New ‘output’ argument for <code><a href="../reference/daemon.html">daemon()</a></code>.</li>
