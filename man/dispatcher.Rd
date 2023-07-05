@@ -24,8 +24,9 @@ websockets, a path), e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/pat
 \item{url}{(optional) the character URL or vector of URLs dispatcher should
 listen at, including the port to connect to (and optionally for websockets,
 a path), e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
-Tasks are sent to daemons dialled into these URLs. If not supplied, 'n'
-local inter-process URLs will be assigned automatically.}
+Specify 'tls+tcp://' or 'wss://' to use secure TLS connections. Tasks are
+sent to daemons dialled into these URLs. If not supplied, 'n' local
+inter-process URLs will be assigned automatically.}
 
 \item{n}{(optional) if specified, the integer number of daemons to listen for.
 Otherwise 'n' will be inferred from the number of URLs supplied in 'url'.
@@ -47,14 +48,13 @@ which do not accept a path).}
 accepted, preventing further connection attempts. This provides safety
 against more than one daemon attempting to connect to a unique URL.}
 
-\item{tls}{(optional for secure TLS connections over tls+tcp or wss)
-\strong{either} the absolute path to a single file containing the PEM
-encoded certificate and associated private key (may contain additional
-certificates leading to a validation chain, with the leaf certificate
-first, although the self-signed root is not required as the daemon should
-already have this), \strong{or} a length 2 character vector comprising
-[i] the certificate (optionally certificate chain) and [ii] the associated
-private or secret key.}
+\item{tls}{(required for secure TLS connections) \strong{either} the absolute
+path to a single file containing the PEM encoded certificate and
+associated private key (may contain additional certificates leading to a
+validation chain, with the leaf certificate first, although the
+self-signed root is not required as the daemon should already have this),
+\strong{or} a length 2 character vector comprising [i] the certificate
+(optionally certificate chain) and [ii] the associated private key.}
 
 \item{...}{additional arguments passed through to \code{\link{daemon}} if
 launching local daemons i.e. 'url' is not specified.}

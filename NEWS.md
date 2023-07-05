@@ -1,4 +1,4 @@
-# mirai 0.9.0.9025 (development)
+# mirai 0.9.0.9026 (development)
 
 * Enables secure TLS connections for distributed computing:
   + Zero-configuration experience - simply specify a `tls+tcp://` or `wss://` URL in `daemons()`. Single-use keys and certificates are automatically generated.
@@ -7,8 +7,7 @@
   + `daemon()` replaces `server()`, which is currently retained as an alias but deprecated.
   + `launch()` replaces `launch_server()` and now accepts a vector argument for 'url' as well as numeric values to select the relevant dispatcher URL (where applicable), returning invisible NULL instead of an integer value.
   + `launch(exec = FALSE)` implemented to generate the shell command to launch a daemon as a character vector (without actually executing) to facilitate launching on remote resources.
-  + `info()` implemented to retrieve connections and daemons status, replacing the call to `daemons()` with no arguments (which is deprecated).
-  + `info(alt = TRUE)` implemented to retrieve certificate and URL information, which can be used to construct calls to `daemon()` for launching manually.
+  + `status()` implemented to retrieve connections and daemons status, replacing the call to `daemons()` with no arguments (which is deprecated).
   + documentation updated to refer consistently to host and daemons (rather than client and server) for clarity.
 * Specifying `output=TRUE` for `daemons()` or `launch()` allows redirection of stdout and stderr from local daemons to the host process (when running without dispatcher). New 'output' argument for `daemon()`.
 * A 'miraiError' now includes the trailing line break at the end of the character vector.

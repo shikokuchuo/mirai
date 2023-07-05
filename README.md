@@ -112,7 +112,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -4.55 6.262 0.914 -0.172 -7.157 ...
+#>  num [1:100000000] 0.321 0.747 2.722 1.469 7.606 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -120,7 +120,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -4.55 6.262 0.914 -0.172 -7.157 ...
+#>  num [1:100000000] 0.321 0.747 2.722 1.469 7.606 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -138,7 +138,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 1.3575 1.9604 -0.0661 0.9758 2.1123 ...
+#>  num [1:100000000] -1.457 0.169 2.335 1.168 -3.082 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -234,9 +234,9 @@ for (i in 1:10) {
 #> iteration 5 successful
 #> iteration 6 successful
 #> iteration 7 successful
-#> Error: random error
 #> iteration 8 successful
 #> iteration 9 successful
+#> Error: random error
 #> iteration 10 successful
 ```
 
@@ -268,22 +268,22 @@ daemons(6)
 #> [1] 6
 ```
 
-To view the current status, `info()` provides the number of active
+To view the current status, `status()` provides the number of active
 connections along with a matrix of statistics for each daemon.
 
 ``` r
-info()
+status()
 #> $connections
 #> [1] 1
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://10ac823d46d7f301a7f6d46b30842c296ed082b3      1        1        0        0
-#> abstract://d945316010d5e70df19f6c7e84211b9652e39f24      1        1        0        0
-#> abstract://cea84ad8b257f9586ef4b87de454f6f110361517      1        1        0        0
-#> abstract://8884c940b3a6aba9ac192937b166737b10e6d9ca      1        1        0        0
-#> abstract://47d25ea60ea4ba99b452e50126d748c04964f663      1        1        0        0
-#> abstract://aa47e6a49730ec371ebb7b56be52c4ac5e64e9a1      1        1        0        0
+#> abstract://d8011963fee4f7860455510173cb1baf95f8fe20      1        1        0        0
+#> abstract://1d7668c11a74b13154be98a563327806d76ec892      1        1        0        0
+#> abstract://3d03eb780936af37744134fb5e3139c4f821e91c      1        1        0        0
+#> abstract://47673ffaf77cf84a9cf9e72aeca759a51c2229af      1        1        0        0
+#> abstract://63d4636a672f669f3db280766e78b9242273d2f9      1        1        0        0
+#> abstract://328d1020709b5bf95c0b310a2ef3ac3201f7e9be      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -320,7 +320,7 @@ daemons(6, dispatcher = FALSE)
 Requesting the status now shows 6 connections and 6 daemons.
 
 ``` r
-info()
+status()
 #> $connections
 #> [1] 6
 #> 
@@ -419,10 +419,10 @@ specifying `daemon(asyncdial = TRUE)` will allow daemons to wait
 
 –
 
-Requesting status information, on the host machine:
+Requesting status, on the host machine:
 
 ``` r
-info()
+status()
 #> $connections
 #> [1] 1
 #> 
@@ -480,13 +480,13 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:46053"
+#> [1] "tcp://:43163"
 ```
 
 Note that above, the port number is specified as zero. This is a
 wildcard value that will automatically cause a free ephemeral port to be
 assigned. The actual assigned port is provided as the return value of
-the call, or it may be queried at any time by via `info()`.
+the call, or it may be queried at any time by via `status()`.
 
 –
 
@@ -494,7 +494,7 @@ On the network resource, `daemon()` may be called from an R session, or
 an Rscript invocation from a shell. This sets up a remote daemon process
 that connects to the host URL and receives tasks:
 
-    Rscript -e 'mirai::daemon("tcp://10.111.5.13:46053")'
+    Rscript -e 'mirai::daemon("tcp://10.111.5.13:43163")'
 
 As before, `daemons()` should be set up on the host machine before
 launching `daemon()` on remote resources, otherwise the daemon instances
@@ -511,12 +511,12 @@ automatically distributed to all connected daemons.
 `$connections` will show the actual number of connected daemons.
 
 ``` r
-info()
+status()
 #> $connections
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:46053"
+#> [1] "tcp://:43163"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -550,26 +550,15 @@ always retained on the host and never transmitted, and also not stored
 or accessible as an R object.
 
 The generated self-signed certificate is made available for read-only
-access through the `info()` function specifying ‘alt = TRUE’, as shown
-below:
-
-``` r
-cert <- info(alt = TRUE)$tls
-str(cert)
-#>  chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhp"| __truncated__ ...
-```
-
-The returned character vector may be passed directly to the ‘tls’
-argument of `daemon()` for launching daemons on remote resources.
-
-`launch()` with the argument ‘exec = FALSE’ may also be used to
-conveniently generate the full shell command to launch a `daemon()`.
-This may be directly deployed on a remote machine, for example via a
-resource manager.
+access via the `launch()` function. `launch()` with the argument ‘exec =
+FALSE’ conveniently constructs the full shell command to launch a
+daemon, including the correctly specified ‘tls’ argument to `daemon()`.
+This command may be deployed directly on a remote machine, via a
+resource manager or SSH connection etc.
 
 ``` r
 launch(1, exec = FALSE)
-#> [1] "Rscript -e 'mirai::daemon(\"wss://[::1]:5555/1\",tls=c(\"-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhpYmlraTEJMAcGA1UEBhMAMB4XDTAxMDEwMTAwMDAwMFoXDTMw\nMTIzMTIzNTk1OVowKjEMMAoGA1UEAwwDOjoxMQ8wDQYDVQQKDAZIaWJpa2kxCTAH\nBgNVBAYTADCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAMIg2axsKiLr\nyOfuDQMSNVp4PnGVidSZjyOlyQvrDaaQmjJkIp0PxRq9sRDWykCcjEd3xVRKL15N\nLAL1mriGsB0yNUWKK+TBWTGoCkk2tAnUoyjAOA2IYdsKZOVkleo/PHjAriuW2Asa\negMJjE71EvQD19g/yukMfLfdloovx7jwKnJcZUU7OpzSFA7n3TwdxMV7bNIKW3Pf\n1Tm6RsD9R9Lw0J6hT61Nd/C9uKP6KqU9MQRrLbbiOKWRBm2rl1NvkVscrI8BjBOy\nN+ktctiLeOCbUbcENvxnWaYt+tpzYoJrys36ozOd+kIUa63hGr0OsXbfEc0GwulT\nuGnF0dT2mQMOPLcxBK5rCNWnWAUZQbpWIAH3WN1voa1z0AU8smPmqhXsPk2uOfaZ\nEQxQ0MiHMTdWvqFt88jYlMGuBwacPLZIsSaEV6Q8vtZ0rUchpKmhgEoyuHjbnIVo\n1+DKQGadUq0uYrtb2n6xnl9nre9gH035X/RO0oa58XHcJrd6CRSTTs07y8js982D\ngOSjdaosBYCtSscjHY3B1MithRMkjhkqlF9mE71Oz4aeCWEt3KuRNkSi+W4iqNxH\ngwUTtVZbetzfJs8PMlhprr2kDWUwQVUuJynu+BRhc8DYvS5g1+ntqxGnIRpAGqwA\nSNw9fiIFXxF4uGIda1sOHYyQYPo2s1KNAgMBAAGjVjBUMBIGA1UdEwEB/wQIMAYB\nAf8CAQAwHQYDVR0OBBYEFNTH1grXicD8LsKTZHHzm1EU5EyLMB8GA1UdIwQYMBaA\nFNTH1grXicD8LsKTZHHzm1EU5EyLMA0GCSqGSIb3DQEBCwUAA4ICAQDBN+nOApbu\nGfHFTGahKSyrNckb5vtLy9aacu1jgAxU/T7ocOZMIb1SAHcEMkUov8BE9PscTqDT\nKImrwK8afcm/62xbAR8cNiohDEIiCcc/mDI5wD+GOr3QAS4d3gI0mcMKi6wuF/95\nGzFZivERDLKj2YE25kosL4iWNJbMtjQ7TmZRMWWxZlznq1rrH3y489NcEqtSQ9wz\nRFXb9C4yTjSnCdubaW9Mf+Or3oKW48+pOGVA6/NR6uhSpYKpdI46f+DEkE0XrJJ6\nFkhxtKRUMN5mK4/aY0xNRim2v33uKgbCF3Wrnoi6TpHifITwZG/2Lmh5xgUELawQ\nDnmgHJqhBt35U4kdDu8LY+wOV7ri4Lc757ybKK7CHSGrM+yfz5bXfZsnIO9yoynx\n/DSAIj/VqlCuf0sKpxGLlui7dscwdLWHGhWtK9NH35LSg3HmWUYk/B/ROIV80lcY\nQmAgkJpkSkTA9oq9VT0Ls1oJ3g78OHORPEgNGcROMeyNY+wTpc4wixk1IjP2aNrP\nBBxL3xtIPl9h5cDZDJU/NPFT3DSZQdNXVohp8fdFPLrWdxrodN69dsrCLB2eqlSC\n68CZINAeBmk4owQqYbTUJiHTdMXFvsgfdTuwdWPBIa78vrgcORVFXHIHHO/Rdkrz\nNbSMTAV84ewJbud2j46ar0OTIYxPJv/B7g==\n-----END CERTIFICATE-----\n\",\"\"))'"
+#> [1] "Rscript -e 'mirai::daemon(\"wss://[::1]:5555/1\",tls=c(\"-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhpYmlraTEJMAcGA1UEBhMAMB4XDTAxMDEwMTAwMDAwMFoXDTMw\nMTIzMTIzNTk1OVowKjEMMAoGA1UEAwwDOjoxMQ8wDQYDVQQKDAZIaWJpa2kxCTAH\nBgNVBAYTADCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAJ8gkYsNaVKH\nsaLpz/kIERomyxZxbZoIGd7BFtIi/MMz+FOHi8Paj8fgHevT+PlefbZlqitFcfAO\nunNh1kgHg7EyK1bPpUh6EmCXz54k+dLDBKyQc/zGeQyHzoh0YntPEqcGBoD8H0bb\n1K+5NnHuRRdLpdfyJ6V4V64rFPBanWNFdqiurRVS0wyw6yAzIv8+bfrp/ksyF0HF\nie4N6eIh233UIuTeSKdmtHhoa63EQs4ZG7V6Bt6AHPfsbGEmAcbIrOQGsq8aGM7N\nUs3wQYGht86DIK2OOnKcX7MzDJ2MxAUTW2Hvl6ZsE7FvRgctRzQd0OE91reKUixs\ntvEzMK0BoWN9gj5Dua7ji528DQbUvUhufsD+Vk+1tBFYrQopKqLJEWz+13pPLwvD\n5oYD5Ryzb8xAPvPrBr2ACLBG3zpdA7kjpxsrdUHLbUiGMNDGH36FeeFz+swdPtU3\nQl5ZBwMeyp/ZtvIbNpVUj0jQARR1BDsfrFIJDQsh8iwKG1/s3qbirYyB02Np9oh/\nohinkL7NEceMI+4oA69RUJUkz8v0rWc3ZrCsZqe6OgLC77gnF8AawPCeIvtcXUIY\nidBS3K4IoY+I8maIIBRl/wOB/9x+pclQZxHFGZZvVji6Z8t5z6ymuOgXCUyVITT+\nDzwZYYkJfjTOk+8c8vuXS51db0Qf0V39AgMBAAGjVjBUMBIGA1UdEwEB/wQIMAYB\nAf8CAQAwHQYDVR0OBBYEFCVgU1GKv2Ek0sm4OalYEQkyuO5rMB8GA1UdIwQYMBaA\nFCVgU1GKv2Ek0sm4OalYEQkyuO5rMA0GCSqGSIb3DQEBCwUAA4ICAQBVUHnNgkDi\nRifa5p2vrtl6J0OCkaynI+6UJPVL+4nsH5dAAbyZrXuKF+cMWtmUyjKnUBg31nlI\n1tcvu9ukiKZNLiSbFmiCwpc69XDvpfS6pxE36uOQg6PXopRjkaqxYit9JyPFLotP\ngouvyt2aJFnQAs4AjfgHDCeqtqfU9TASEk7bRgYaxPSKjYS1+B1/N1+je2obBhDW\nkV7Yr3pS/4VOvXsydtK1+C9zBB6JO/fz4x9ZZLzJxsQCWG99WJWzCSncboRASWM9\nYP754lVwgzvFi+x8QaVw5DaGttk/1QjpbbJPoHBNUgtAhduvvOWdclmR/dEx8907\ntJKGd502wDVdmP42/zy9U3MH/eLXr2qnGU4spjeca995Ceyg8IcPPaQGgn+7UQxq\n5BvCEcp+qv01VtcWiaY8sVVcVb/i3zO996UVwqmRb/+/a/Ho8NthKTVTOji5v6Fc\npOJWoPPQj1iBf1aVpTBGOkDMXyxyEY84AlkZ05N4QVvCpcQY+x5MtMl35RYfZ36E\nl2yxshosMcF6cYi28U5y0atgW8mmzygbuhixNQfQiuXNUkuBZmYNddgT/0krnyZ0\nyGJjZnohJ4BDvpvHS8Ya0aBB9+u+3FVdZWvi4kATv+ni3y0cih7YPATpP+ioobNM\nNZ6jduJNWhNFxUWKEN8ja8EfpkucILHO2A==\n-----END CERTIFICATE-----\n\",\"\"))'"
 ```
 
 As an alternative to the automatic process, a certificate may also be
@@ -602,8 +591,8 @@ To create a ‘mirai’ task using a specific compute profile, specify the
 ‘.compute’ argument to `mirai()`, which defaults to the ‘default’
 compute profile.
 
-Similarly requesting information using `info()`, or launching daemons
-using `launch()` should specify the desired ‘.compute’ argument.
+Similarly using functions such as `status()` or `launch()` should
+specify the desired ‘.compute’ argument.
 
 [« Back to ToC](#table-of-contents)
 

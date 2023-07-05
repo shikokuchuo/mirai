@@ -229,10 +229,10 @@ daemons(6)
 Sys.sleep(1)
 ```
 
-To view the current status, `info()` provides the number of active connections along with a matrix of statistics for each daemon.
+To view the current status, `status()` provides the number of active connections along with a matrix of statistics for each daemon.
 
 ```{r daemons3}
-info()
+status()
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background process that connects to individual daemon processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to daemons for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.
@@ -259,7 +259,7 @@ Sys.sleep(0.5)
 Requesting the status now shows 6 connections and 6 daemons.
 
 ```{r daemonsqv}
-info()
+status()
 ```
 
 This implementation sends tasks immediately, and ensures that tasks are evenly-distributed amongst daemons. This means that optimal scheduling is not guaranteed as the duration of tasks cannot be known *a priori*. As an example, tasks could be queued at a daemon behind a long-running task, whilst other daemons remain idle.
@@ -330,10 +330,10 @@ Sys.sleep(1)
 
 --
 
-Requesting status information, on the host machine:
+Requesting status, on the host machine:
 
 ```{r remotev2}
-info()
+status()
 ```
 
 As per the local case, `$connections` shows the single connection to dispatcher, however `$daemons` now provides a matrix of statistics for the remote daemons.
@@ -371,7 +371,7 @@ Alternatively, simply supply a colon followed by the port number to listen on al
 daemons(url = "tcp://:0", dispatcher = FALSE)
 ```
 
-Note that above, the port number is specified as zero. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided as the return value of the call, or it may be queried at any time by via `info()`.
+Note that above, the port number is specified as zero. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided as the return value of the call, or it may be queried at any time by via `status()`.
 
 --
 
@@ -393,7 +393,7 @@ The number of daemons connecting to the host URL is not limited and network reso
 Sys.sleep(1)
 ```
 ```{r remotev}
-info()
+status()
 ```
 
 To reset all connections and revert to default behaviour:
@@ -418,16 +418,7 @@ daemons(n = 4, url = "wss://[::1]:5555")
 
 Single-use keys and certificates are automatically generated and configured, without requiring any user intervention. The private key is always retained on the host and never transmitted, and also not stored or accessible as an R object.
 
-The generated self-signed certificate is made available for read-only access through the `info()` function specifying 'alt = TRUE', as shown below:
-
-```{r tlscert}
-cert <- info(alt = TRUE)$tls
-str(cert)
-```
-
-The returned character vector may be passed directly to the 'tls' argument of `daemon()` for launching daemons on remote resources.
-
-`launch()` with the argument 'exec = FALSE' may also be used to conveniently generate the full shell command to launch a `daemon()`. This may be directly deployed on a remote machine, for example via a resource manager.
+The generated self-signed certificate is made available for read-only access via the `launch()` function. `launch()` with the argument 'exec = FALSE' conveniently constructs the full shell command to launch a daemon, including the correctly specified 'tls' argument to `daemon()`. This command may be deployed directly on a remote machine, via a resource manager or SSH connection etc.
 
 ```{r launchexecfalse}
 launch(1, exec = FALSE)
@@ -455,7 +446,7 @@ Simply specify the argument `.compute` when calling `daemons()` with a profile n
 
 To create a 'mirai' task using a specific compute profile, specify the '.compute' argument to `mirai()`, which defaults to the 'default' compute profile.
 
-Similarly requesting information using `info()`, or launching daemons using `launch()` should specify the desired '.compute' argument.
+Similarly using functions such as `status()` or `launch()` should specify the desired '.compute' argument.
 
 [&laquo; Back to ToC](#table-of-contents)
 

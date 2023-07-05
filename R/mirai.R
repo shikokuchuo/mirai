@@ -173,8 +173,9 @@ server <- daemon
 #' @param url (optional) the character URL or vector of URLs dispatcher should
 #'     listen at, including the port to connect to (and optionally for websockets,
 #'     a path), e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
-#'     Tasks are sent to daemons dialled into these URLs. If not supplied, 'n'
-#'     local inter-process URLs will be assigned automatically.
+#'     Specify 'tls+tcp://' or 'wss://' to use secure TLS connections. Tasks are
+#'     sent to daemons dialled into these URLs. If not supplied, 'n' local
+#'     inter-process URLs will be assigned automatically.
 #' @param n (optional) if specified, the integer number of daemons to listen for.
 #'     Otherwise 'n' will be inferred from the number of URLs supplied in 'url'.
 #'     Where a single URL is supplied and 'n' > 1, 'n' unique URLs will be
@@ -185,14 +186,13 @@ server <- daemon
 #' @param lock [default FALSE] if TRUE, sockets lock once a connection has been
 #'     accepted, preventing further connection attempts. This provides safety
 #'     against more than one daemon attempting to connect to a unique URL.
-#' @param tls (optional for secure TLS connections over tls+tcp or wss)
-#'     \strong{either} the absolute path to a single file containing the PEM
-#'     encoded certificate and associated private key (may contain additional
-#'     certificates leading to a validation chain, with the leaf certificate
-#'     first, although the self-signed root is not required as the daemon should
-#'     already have this), \strong{or} a length 2 character vector comprising
-#'     [i] the certificate (optionally certificate chain) and [ii] the associated
-#'     private or secret key.
+#' @param tls (required for secure TLS connections) \strong{either} the absolute
+#'     path to a single file containing the PEM encoded certificate and
+#'     associated private key (may contain additional certificates leading to a
+#'     validation chain, with the leaf certificate first, although the
+#'     self-signed root is not required as the daemon should already have this),
+#'     \strong{or} a length 2 character vector comprising [i] the certificate
+#'     (optionally certificate chain) and [ii] the associated private key.
 #' @param ... additional arguments passed through to \code{\link{daemon}} if
 #'     launching local daemons i.e. 'url' is not specified.
 #' @param monitor (for package internal use only) do not set this parameter.
@@ -505,16 +505,25 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     ensures tasks are assigned to daemons efficiently on a FIFO basis, or
 #'     else the low-level approach of distributing tasks to daemons equally.
 #'
-#' @inheritParams dispatcher
 #' @param n integer number of daemons to set.
 #' @param url [default NULL] if specified, the character URL or vector of URLs
-#'     for remote daemons to dial into, including a port accepting incoming
-#'     connections (and optionally for websockets, a path), e.g.
-#'     'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
+#'     on the host for remote daemons to dial into, including a port accepting
+#'     incoming connections (and optionally for websockets, a path), e.g.
+#'     'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'. Specify
+#'     'tls+tcp://' or 'wss://' to use secure TLS connections.
 #' @param dispatcher [default TRUE] logical value whether to use dispatcher.
-#'     Dispatcher is a background process that connects to daemons on behalf of
-#'     the host and ensures FIFO scheduling, queueing tasks if necessary
-#'     (see Dispatcher section below).
+#'     Dispatcher is a local background process that connects to daemons on
+#'     behalf of the host and ensures FIFO scheduling, queueing tasks if
+#'     necessary (see Dispatcher section below).
+#' @param tls (optional for secure TLS connections) if not supplied,
+#'     zero-configuration single-use keys and certificates are automatically
+#'     generated. If supplied, \strong{either} the absolute path to a single
+#'     file containing the PEM encoded certificate and associated private key
+#'     (may contain additional certificates leading to a validation chain, with
+#'     the leaf certificate first, although the self-signed root is not required
+#'     as the daemon should already have this), \strong{or} a length 2 character
+#'     vector comprising [i] the certificate (optionally certificate chain) and
+#'     [ii] the associated private key.
 #' @param ... additional arguments passed through to \code{\link{dispatcher}} if
 #'     using dispatcher and/or \code{\link{daemon}} if launching local daemons.
 #' @param .compute [default 'default'] character compute profile to use for
@@ -539,7 +548,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     task is complete.
 #'
 #'     For compatibility, \code{daemons()} with no arguments currently returns
-#'     the value of \code{\link{info}}, although this usage is deprecated.
+#'     the value of \code{\link{status}}, although this usage is deprecated.
 #'
 #' @section Dispatcher:
 #'
@@ -578,7 +587,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #'     The host URL should be a character value such as: 'tcp://192.168.0.2:5555'
 #'     at which daemon processes started using \code{\link{daemon}} should
-#'     connect to.
+#'     connect to. The full shell command to deploy on remote machines may be
+#'     generated by \code{\link{launch}} specifying 'exec = FALSE'.
 #'
 #'     IPv6 addresses are also supported and must be enclosed in square brackets
 #'     [ ] to avoid confusion with the final colon separating the port. For
@@ -590,7 +600,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #'     Specifying the wildcard value zero for the port number e.g. 'tcp://:0' or
 #'     'ws://:0' will automatically assign a free ephemeral port. Use
-#'     \code{\link{info}} to inspect the actual assigned port at any time.
+#'     \code{\link{status}} to inspect the actual assigned port at any time.
 #'
 #'     \strong{With Dispatcher}
 #'
@@ -676,25 +686,25 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #' # Create 2 local daemons (using dispatcher)
 #' daemons(2)
-#' info()
+#' status()
 #' # Reset to zero
 #' daemons(0)
 #'
 #' # Create 2 local daemons (not using dispatcher)
 #' daemons(2, dispatcher = FALSE)
-#' info()
+#' status()
 #' # Reset to zero
 #' daemons(0)
 #'
 #' # 2 remote daemons via dispatcher (using zero wildcard)
 #' daemons(2, url = "ws://:0")
-#' info()
+#' status()
 #' # Reset to zero
 #' daemons(0)
 #'
 #' # Set host URL for remote daemons to dial into (using zero wildcard)
 #' daemons(url = "tcp://:0", dispatcher = FALSE)
-#' info()
+#' status()
 #' # Reset to zero
 #' daemons(0)
 #'
@@ -704,7 +714,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute = "default") {
 
-  missing(n) && missing(url) && return(info(.compute))
+  missing(n) && missing(url) && return(status(.compute = .compute))
 
   envir <- ..[[.compute]]
 
@@ -801,9 +811,9 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
 #'
 #' daemons(1L)
 #' Sys.sleep(1L)
-#' info()
+#' status()
 #' saisei(i = 1L, force = TRUE)
-#' info()
+#' status()
 #'
 #' daemons(0)
 #'
@@ -822,16 +832,12 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 
 }
 
-#' Information
+#' Status Information
 #'
-#' Retrieve information for the specified compute profile, comprising current
-#'     connections and daemons status. Alternatively, the self-signed X.509
-#'     certificate, and URLs at dispatcher.
+#' Retrieve status information for the specified compute profile, comprising
+#'     current connections and daemons status.
 #'
 #' @inheritParams saisei
-#' @param alt [default FALSE] returns the connections and daemons status matrix,
-#'     \strong{alternatively} the self-signed X.509 certificate and dispatcher
-#'     URLs.
 #'
 #' @return A named list comprising:
 #'     \itemize{
@@ -842,15 +848,6 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 #'     Status Matrix section below), or else an integer 'errorValue' if
 #'     communication with the dispatcher was unsuccessful. If not using
 #'     dispatcher: the number of daemons set, or else the host URL.}
-#'     }
-#'
-#'     Alternatively:
-#'     \itemize{
-#'     \item{\strong{tls}} {- character vector comprising the self-signed X509
-#'     certificate and empty certificate revocation list, if applicable, or else
-#'     NULL.}
-#'     \item{\strong{urls}} {- character vector comprising the URLs at
-#'     dispatcher, if applicable, or else NULL.}
 #'     }
 #'
 #' @section Status Matrix:
@@ -872,40 +869,22 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 #'     }
 #'     The URLs are stored as row names to the matrix.
 #'
-#' @section Alternate Information:
-#'
-#'     The return values may be passed directly to the 'url' and 'tls'
-#'     arguments of \code{\link{daemon}} when manually launching remote daemon
-#'     instances. \code{\link{bquote}} may be used to construct the call, as per
-#'     the below example.
-#'
-#'     Note: the 'tls' argument does not need to be specified if launching local
-#'     dameons using \code{\link{launch}}, which will supply it automatically.
-#'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' info()
+#' status()
 #' daemons(n = 2L, url = "wss://[::1]:0")
-#' info()
-#' info(alt = TRUE)
-#'
-#' # creates call to daemon
-#' call <- bquote(daemon(url = .(info(alt = TRUE)$urls[1]), tls = .(info(alt = TRUE)$tls)))
-#' call
-#'
+#' status()
 #' daemons(0)
 #'
 #' }
 #'
 #' @export
 #'
-info <- function(.compute = "default", alt = FALSE) {
+status <- function(.compute = "default") {
 
     envir <- ..[[.compute]]
-    alt && return(list(tls = if (length(envir[["tls"]])) weakref_value(envir[["tls"]]),
-                       urls = envir[["urls"]]))
     list(connections = if (length(envir[["sock"]])) stat(envir[["sock"]], "pipes") else 0L,
          daemons = if (length(envir[["sockc"]])) query_status(envir) else envir[["n"]] %||% 0L)
 
@@ -951,9 +930,9 @@ info <- function(.compute = "default", alt = FALSE) {
 #'     process. This option is only applicable when not using dispatcher.}
 #'     }
 #'
-#'     TLS certificates generated by \code{\link{daemons}} and stored in the
-#'     specified compute profile are automatically passed to the daemon. In this
-#'     case, there is no need to specify 'tls' as part of '\code{...}'.
+#'     Zero-configuration TLS certificates generated by \code{\link{daemons}}
+#'     are automatically passed to the daemon. In this case, there is no need to
+#'     specify 'tls' as part of '\code{...}'.
 #'
 #' @section Shell command:
 #'
@@ -970,15 +949,20 @@ info <- function(.compute = "default", alt = FALSE) {
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' daemons(n = 2L, url = "ws://[::1]:0")
-#' info()
-#' launch(1:2, maxtasks = 10L)
+#' daemons(url = "ws://[::1]:0", dispatcher = FALSE)
+#' status()
+#' launch(status()$daemons, maxtasks = 10L, exec = FALSE)
+#' launch(status()$daemons, maxtasks = 10L)
 #' Sys.sleep(1)
-#' info()
+#' status()
 #' daemons(0)
 #'
 #' daemons(n = 2L, url = "tls+tcp://[::1]:0")
-#' launch(info(alt = TRUE)$urls, idletime = 60000L, timerstart = 1L, exec = FALSE)
+#' status()
+#' launch(1:2, idletime = 60000L, timerstart = 1L, exec = FALSE)
+#' launch(1:2, idletime = 60000L, timerstart = 1L)
+#' Sys.sleep(1)
+#' status()
 #' daemons(0)
 #'
 #' }

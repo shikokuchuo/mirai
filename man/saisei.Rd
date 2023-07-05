@@ -35,9 +35,9 @@ if (interactive()) {
 
 daemons(1L)
 Sys.sleep(1L)
-info()
+status()
 saisei(i = 1L, force = TRUE)
-info()
+status()
 
 daemons(0)
 
