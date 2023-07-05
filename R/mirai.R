@@ -717,13 +717,13 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
 
     if (is.null(envir[["sock"]])) {
       purl <- parse_url(url)
-      if (substr(url, 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
+      if (substr(purl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
         tls <- write_cert(cn = purl[["hostname"]])
         envir[["tls"]] <- weakref(envir, tls[["client"]])
         tls <- tls[["server"]]
       }
       if (dispatcher) {
-        n <- if (missing(n)) length(url) else if (is.numeric(n) && n > 0L) as.integer(n) else stop(.messages[["n_one"]])
+        n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(.messages[["n_one"]])
         urld <- auto_tokenized_url()
         urlc <- new_control_url(urld)
         sock <- req_socket(urld)
@@ -914,8 +914,9 @@ info <- function(.compute = "default", alt = FALSE) {
 #' Launch Daemon
 #'
 #' Utility function which calls \code{\link{daemon}} in a background
-#'     \code{Rscript} process. May be used to re-launch local daemons that have
-#'     timed out.
+#'     \code{Rscript} process, which can be used to re-launch local daemons that
+#'     have timed out. Alternatively, generates the shell commands for launching
+#'     daemons on remote resources.
 #'
 #' @inheritParams saisei
 #' @param url the character host URL or vector of host URLs, including the port
@@ -925,8 +926,20 @@ info <- function(.compute = "default", alt = FALSE) {
 #'     \strong{or} integer index value, or vector of index values, of the
 #'     dispatcher URLs, where applicable.
 #' @param ... (optional) additional arguments passed to \code{\link{daemon}}.
+#' @param exec [default TRUE] logical value whether to execute the launch. Set
+#'     to FALSE to return the complete shell command to launch the daemon as a
+#'     character vector instead.
 #'
-#' @return Invisible NULL.
+#' @return Invisible NULL (if 'exec' is TRUE), or else a list of character
+#'     vectors the same length as 'url' (if 'exec' is FALSE).
+#'
+#' @details Note: the returned shell command uses an assumed 'Rscript'
+#'     executable, not necessarily the command that would have actually been
+#'     executed on the local machine. This is to facilitate launching on a
+#'     remote resource, as the location of this executable may differ between
+#'     machines. Hence, it is assumed that 'Rscript' has been set on the search
+#'     path. Prepend the full path if necessary. If launching on Windows,
+#'     'Rscript' should be modified to 'Rscript.exe'.
 #'
 #' @section Additional arguments:
 #'
@@ -954,22 +967,21 @@ info <- function(.compute = "default", alt = FALSE) {
 #' # Only run examples in interactive R sessions
 #'
 #' daemons(n = 2L, url = "ws://[::1]:0")
+#' info()
 #' launch(1:2, maxtasks = 10L)
 #' Sys.sleep(1)
 #' info()
 #' daemons(0)
 #'
 #' daemons(n = 2L, url = "tls+tcp://[::1]:0")
-#' launch(info(alt = TRUE)$urls, idletime = 60000L, timerstart = 1L)
-#' Sys.sleep(1)
-#' info()
+#' launch(info(alt = TRUE)$urls, idletime = 60000L, timerstart = 1L, exec = FALSE)
 #' daemons(0)
 #'
 #' }
 #'
 #' @export
 #'
-launch <- function(url, ..., .compute = "default") {
+launch <- function(url, ..., .compute = "default", exec = TRUE) {
 
   dots <- parse_dots(...)
   tls <- if (length(..[[.compute]][["tls"]])) weakref_value(..[[.compute]][["tls"]])
@@ -977,12 +989,27 @@ launch <- function(url, ..., .compute = "default") {
     vec <- ..[[.compute]][["urls"]]
     is.null(vec) && stop(.messages[["dispatcher_inactive"]])
     all(url >= 0L, url <= length(vec)) || stop(.messages[["url_spec"]])
-    for (u in url)
-      launch_daemon(vec[[u]], dots, tls = tls)
+    if (exec) {
+      for (u in url)
+        launch_daemon(vec[[u]], dots, tls = tls)
+    } else {
+      xlen <- length(url)
+      out <- vector(mode = "list", length = xlen)
+      for (i in seq_len(xlen))
+        out[[i]] <- sprintf("Rscript -e %s", write_args(list(vec[[url[[i]]]], dots), tls = tls))
+      out
+    }
   } else {
-    for (u in url) {
-      parse_url(u)
-      launch_daemon(u, dots, tls = tls)
+    lapply(url, parse_url)
+    if (exec) {
+      for (u in url)
+        launch_daemon(u, dots, tls = tls)
+    } else {
+      xlen <- length(url)
+      out <- vector(mode = "list", length = xlen)
+      for (i in seq_len(xlen))
+        out[[i]] <- sprintf("Rscript -e %s", write_args(list(url[[i]], dots), tls = tls))
+      out
     }
   }
 
@@ -1214,18 +1241,26 @@ print.miraiInterrupt <- function(x, ...) {
 
 # internals --------------------------------------------------------------------
 
+parse_dots <- function(...)
+  if (missing(...)) "" else
+    sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
+
+write_args <- function(dots, tls = NULL)
+  shQuote(
+    switch(length(dots),
+           sprintf("mirai::.daemon(\"%s\")", dots[[1L]]),
+           if (length(tls)) sprintf("mirai::daemon(\"%s\",tls=c(\"%s\",\"%s\")%s)", dots[[1L]], tls[[1L]], tls[[2L]], dots[[2L]]) else
+             sprintf("mirai::daemon(\"%s\"%s)", dots[[1L]], dots[[2L]]),
+           "",
+           sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", dots[[1L]], dots[[2L]], dots[[3L]], dots[[4L]]),
+           if (length(tls)) sprintf("mirai::dispatcher(\"%s\",c(%s),tls=c(\"%s\",\"%s\"),n=%d,monitor=\"%s\"%s)", dots[[1L]], paste(sprintf("\"%s\"", dots[[2L]]), collapse = ","), tls[[1L]], tls[[2L]], dots[[3L]], dots[[4L]], dots[[5L]]) else
+             sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)", dots[[1L]], paste(sprintf("\"%s\"", dots[[2L]]), collapse = ","), dots[[3L]], dots[[4L]], dots[[5L]]))
+  )
+
 launch_daemon <- function(..., tls = NULL) {
   dots <- list(...)
-  args <- switch(length(dots),
-                 sprintf("mirai::.daemon(\"%s\")", ..1),
-                 if (length(tls)) sprintf("mirai::daemon(\"%s\",tls=c(\"%s\",\"%s\")%s)", ..1, tls[[1L]], tls[[2L]], ..2) else
-                   sprintf("mirai::daemon(\"%s\"%s)", ..1, ..2),
-                 "",
-                 sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", ..1, ..2, ..3, ..4),
-                 if (length(tls)) sprintf("mirai::dispatcher(\"%s\",c(%s),tls=c(\"%s\",\"%s\"),n=%d,monitor=\"%s\"%s)", ..1, paste(sprintf("\"%s\"", ..2), collapse = ","), tls[[1L]], tls[[2L]], ..3, ..4, ..5) else
-                   sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)", ..1, paste(sprintf("\"%s\"", ..2), collapse = ","), ..3, ..4, ..5))
   output <- ",output=TRUE" %in% dots
-  system2(command = .command, args = c("-e", shQuote(args)), stdout = if (output) "", stderr = if (output) "", wait = FALSE)
+  system2(command = .command, args = c("-e", write_args(dots, tls = tls)), stdout = if (output) "", stderr = if (output) "", wait = FALSE)
 }
 
 launch_and_sync_daemon <- function(sock, ..., tls = NULL) {
@@ -1258,10 +1293,6 @@ new_control_url <- function(url) sprintf("%s%s", url, "c")
 
 new_tokenized_url <- function(url, auto)
   sprintf(if (auto) "%s%s" else "%s/%s", url, sha1(random(8L)))
-
-parse_dots <- function(...)
-  if (missing(...)) "" else
-    sprintf(",%s", paste(names(dots <- as.expression(list(...))), dots, sep = "=", collapse = ","))
 
 req_socket <- function(url, tls = NULL)
   `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", .Machine[["integer.max"]])

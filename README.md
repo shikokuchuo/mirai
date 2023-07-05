@@ -112,7 +112,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 0.48 1.918 2.719 -0.869 0.347 ...
+#>  num [1:100000000] -25.31 -1.866 0.312 0.115 0.18 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -120,7 +120,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.48 1.918 2.719 -0.869 0.347 ...
+#>  num [1:100000000] -25.31 -1.866 0.312 0.115 0.18 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -138,7 +138,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.266 -0.246 -2.654 1.795 -0.319 ...
+#>  num [1:100000000] 0.462 -60.626 3.735 0.201 1.199 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -234,8 +234,8 @@ for (i in 1:10) {
 #> iteration 5 successful
 #> iteration 6 successful
 #> iteration 7 successful
-#> Error: random error
 #> iteration 8 successful
+#> Error: random error
 #> iteration 9 successful
 #> iteration 10 successful
 ```
@@ -278,12 +278,12 @@ info()
 #> 
 #> $daemons
 #>                                                     online instance assigned complete
-#> abstract://63efb16fd1fee20eaff1bd78ce73655870a5da88      1        1        0        0
-#> abstract://4bc4e5d363751bda128e928b25348de755554d1c      1        1        0        0
-#> abstract://6846c1a16746b1bd4e5555fd579d813aa681d64b      1        1        0        0
-#> abstract://3d661351fb1af556b298a4c0d1ad1c7d7963c18f      1        1        0        0
-#> abstract://0e2c0f0e86961160f0dd590d0e79bde4e401ba41      1        1        0        0
-#> abstract://2af29be1f9b10ecc9fdc913345f75877a9b91a0e      1        1        0        0
+#> abstract://6cea0fca8a764b4cf83313b059317ffc77d088fc      1        1        0        0
+#> abstract://934023358df2e8a10884ec48e9e0cab48d229842      1        1        0        0
+#> abstract://a89be7e1eab0347848bd62542d90dd120dc26d01      1        1        0        0
+#> abstract://88b930bf3db21557a0a0a858689f4eba9f07ffc3      1        1        0        0
+#> abstract://668c4d13f5381df5da931caf0949f9e89e947476      1        1        0        0
+#> abstract://29c32c0022b010bb89f5db4998b0e464abed1895      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -353,7 +353,7 @@ Set the number of daemons to zero to reset.
 The daemons interface may also be used to send tasks for computation to
 remote daemon processes on the network.
 
-Call `daemons()` specifying ‘url’ as a character string the host network
+Call `daemons()` specifying ‘url’ as a character value the host network
 address and a port that is able to accept incoming connections.
 
 The examples below use an illustrative local network IP address of
@@ -480,7 +480,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:36667"
+#> [1] "tcp://:42445"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -494,7 +494,7 @@ On the network resource, `daemon()` may be called from an R session, or
 an Rscript invocation from a shell. This sets up a remote daemon process
 that connects to the host URL and receives tasks:
 
-    Rscript -e 'mirai::daemon("tcp://10.111.5.13:36667")'
+    Rscript -e 'mirai::daemon("tcp://10.111.5.13:42445")'
 
 As before, `daemons()` should be set up on the host machine before
 launching `daemon()` on remote resources, otherwise the daemon instances
@@ -516,7 +516,7 @@ info()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://:36667"
+#> [1] "tcp://:42445"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -549,9 +549,9 @@ configured, without requiring any user intervention. The private key is
 always retained on the host and never transmitted, and also not stored
 or accessible as an R object.
 
-The generated self-signed certificate is stored as a weak reference,
-allowing read-only access (but not modification) through the `info()`
-function as shown below:
+The generated self-signed certificate is made available for read-only
+access through the `info()` function specifying ‘alt = TRUE’, as shown
+below:
 
 ``` r
 cert <- info(alt = TRUE)$tls
@@ -559,18 +559,18 @@ str(cert)
 #>  chr [1:2] "-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhp"| __truncated__ ...
 ```
 
-This character vector may be passed directly to the ‘tls’ argument of
-`daemon()` for launching daemons on remote resources.
+The returned character vector may be passed directly to the ‘tls’
+argument of `daemon()` for launching daemons on remote resources.
 
-`bquote()` may also be used to conveniently generate calls to
-`daemon()`, as in the example below. The resulting language object may
-be further deparsed to a character vector, as required, for deployment
-on the remote machine.
+`launch()` with the argument ‘exec = FALSE’ may also be used to
+conveniently generate the full shell command to launch a `daemon()`.
+This may be directly deployed on a remote machine, for example via a
+resource manager.
 
 ``` r
-bquote(daemon(url = .(info(alt = TRUE)$urls[1]), tls = .(info(alt = TRUE)$tls)))
-#> daemon(url = "wss://[::1]:5555/1", tls = c("-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhpYmlraTEJMAcGA1UEBhMAMB4XDTAxMDEwMTAwMDAwMFoXDTMw\nMTIzMTIzNTk1OVowKjEMMAoGA1UEAwwDOjoxMQ8wDQYDVQQKDAZIaWJpa2kxCTAH\nBgNVBAYTADCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAKJxjHbF06r4\nKthgkKIZ/tTc60bksWYwILTnkal7y7VCBsaNRNRSd5lRWusZLWuMPXLUu9QvjjwT\nQ0m911TCbIKO9adlvQBWrH85IxN5+tLCCCv4QwEgAyhPy2QxFlmX1QN4gzNsxxUT\n6qW2xYwnO3kFZUbeOb188tTOLm4gE4A1TVCk2LnuPR6Y6IVqJZ7CUTKI2zbeHH/+\nBC4S92Elyv//w32d6j+9J2oZzVAARWmZvlURnn7BDiUGdrQNZOy6sKBJRZXHlers\n3RpTKreVw6uVyEfdrnuFevZ+3i3jZsTxcLk07tZmBpqWOWy/IFws328m1qzqYWvy\nw31uh/pDAh6IyAZz1spLkLw3vWyzwfsknWaGLdEQEkwVPV0XwOo20uu4Xof63jPS\nvWh29HIVqUT13csV6v935vw5PXqrJIVXnkA9iI2wc8xoy08TJihZ26n2pyI8M3o1\nTg16SQh4rSY+bh71RTm6lbeYN8Gz7RA4uYH9vfy0n0D6CgjRwWLhwbRpElfESqVn\n90tQIIAbnn9RBIgVfNU1kFUqeu2jhN8sh6Hb2qj97qTdc+sPCafj7rV9O/gQIPQQ\n6WvDUvjmZ3VE3yJ0UyuseJPufuna2YBMZf8Lt9EL/rtY9z2xRQylPiubU8XZV0YX\n58Ynik+uDTG++sMn++kDxC0NRFKhosRdAgMBAAGjVjBUMBIGA1UdEwEB/wQIMAYB\nAf8CAQAwHQYDVR0OBBYEFMIwdc78bXrU+87qv+NHVAF7STYbMB8GA1UdIwQYMBaA\nFMIwdc78bXrU+87qv+NHVAF7STYbMA0GCSqGSIb3DQEBCwUAA4ICAQCFWSqJZDFA\nzf6RNnK8vbXhlNcDWH+P2Xvoeon0tncvlVIrGscBsZ+FiNSMtrg1qivoaGoRSt2J\nlvEzR0+kYlPpyJ6hNrOEHY2ZXv/t4iOOq85LSIxGVf/Yxr6NpQB4K0eRLGQ2Ctt8\nljYmCPvwQaSVr49Mgesvd7gl/+j6dDUYk6kHR9YT7rqS9IJ3HiltYfgZBga+7A03\nXYSFtKXQqTRIbxkMzkksD6zJVvEK2K3MZ7zjTFo49OYEATLcvvOYCfRgHACNimXj\nifXPKcFuCXulruHr9e+AxobKfrNxk8e8iVBcIoTCg3UGi2u1H3yuyM5v4LZUZEUB\nWmvIS+IWVMDISjpLtSx0JmMYdPe3DjwhaD+SCW76C/z/M7eV5Wui3zPIPwIK7Esw\nBkPdd2UWZWvgwadppAl/rZ3+b16gkVUrvtqrWfAFgWwxmNf3h1R9GHgLyqWAA7gU\ns0chIPh7SQ6Vt1yBYgC6RM4kmH+QOiQr6U33OHIPhW8CeH2jiGXUjHIag6d+YPVq\nndRBwEGtG5NeLWDx54X/eoX62JxxrE8RBvcmoF2mRwVPzaXTE8clZ6KiF93eyVAj\nH7X4mdNgTxWDHfbKZNxZg1z274Hq+AMs8mP3UCnKu4Tt4P7Olhiz64dlboo0J+Zk\nlLvkA+0MzPtxd4pDEYs8Id4JuaHUyaXmvQ==\n-----END CERTIFICATE-----\n", 
-#> ""))
+launch(1, exec = FALSE)
+#> [[1]]
+#> [1] "Rscript -e 'mirai::daemon(\"wss://[::1]:5555/1\",tls=c(\"-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhpYmlraTEJMAcGA1UEBhMAMB4XDTAxMDEwMTAwMDAwMFoXDTMw\nMTIzMTIzNTk1OVowKjEMMAoGA1UEAwwDOjoxMQ8wDQYDVQQKDAZIaWJpa2kxCTAH\nBgNVBAYTADCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAL14LIdjZJoW\nl00L0LizYQvjCDkq5PpETspFlaZFDu7XsEnLgObQMRmOEygx66WbEwSijbbfRj/r\nRMexD8H60x/FB1nYq+ksY52NhSKYyLnzZXNalg2LTecE8DilK0nKv+p/7ik5Icmr\noqPE9b2GrqeRhfdgMcK3GniYKymOYVlrC7PsiTXfjPTtvo0ZZBOmwh9jKZmCgU4f\n49iDFX3KmmK42obaSgg5/3mF6w6UtaIJoBXfAn8fVIQW+cxFXG6oXOwTIUFJ+REd\nFtoA9etEHMDoP6338ptclUf73UwbHFl1fN4ZsiaZrlv/t4ycjUZ2w56e/VAPNrRQ\nLQ9j7Ddh3W+QflMPOsS5RCXZvoQSvzZRhs0WtHsMG405x8JFcx734vsMGRzm8alT\neZaF25E2CZ8frR0wCNbRhmTts4+wr4stVCQoKo8VSxmNxGZafi2Lx4iRXkL16HpS\nXyj+EIPZMnhhEosjMiogsXu7hzKbVtMi+Ymx+swGUavTyI6JSW1OITsW1CAxZTMf\nLvcR+0Cp2lFs+DmeEk7BbyYRsMCRCmz7A1VRkl1XGTLCZeAe6lqyzhlC1jnG7WKy\nK6A8GNj5NgJbRFJeidjF2wBqsx1THimRqDtp2n0xj4Ea0G46xg0I9HDAEb1TBsbw\n3Sz4o33u0iKjBW0CeM+jPxUHuD6+gjR9AgMBAAGjVjBUMBIGA1UdEwEB/wQIMAYB\nAf8CAQAwHQYDVR0OBBYEFLoIa720WQZVs1SXJkmrDknGNzvIMB8GA1UdIwQYMBaA\nFLoIa720WQZVs1SXJkmrDknGNzvIMA0GCSqGSIb3DQEBCwUAA4ICAQAfpVuSXp7Q\nzfv3fJ1BmJE0AtzhoQqnwLKK1MJpkkgyzELrzS2W2r2U+0LoV/GTIsI/3poTjTih\ngA58vj4PiYrtDMSICg6+QZTvI6oJGDHc0rf6EtORYzKkbFQm7uA4GMIvUtxCJjWv\nol4IekIh5myCufSjYjXd2JuOw2JB8P+eviE728o/tuYj7VTotLGjbRALvCjl3xnC\nxuqPLBT17B6WpXZVYSOid2p1qQkSFEOBVjYGOZnb79vk7hczynIMjZnCz1NhUUXm\nXgRVdxmn0trhbvjKwtJjGp1YBZUmRJj/dCN02idVveHBA2/HwL8fHLBqF5OV/IpC\nrhfnAahU5g1PTOSnG514wxfjvWGiSZ9Fj4EfjGMfHE008v8jecPen0RiLQzNgfOU\nW/PVZSL+fr9ZR6xvC/O1BO5i//SLo38d5KWzi/g0Y7otwBBStnVhyjZ734a/17Eu\nFZgKFiot4CdPfruXOyliBcL2SL5DKljtmoa1wo5dVXojhyvRSY84HpsKPGtEu2Ty\nJodpkwX0gYVYO5NQBAmWl9RIGb0ijouQl9y1+lRaZfGZNzzVA9G/FebTv6uDYZvN\nb9t2CsblzlOUEf3ScB+ICWAffVW5LDWcjkHdzmNmuTSAs1ZNYiXNUDNvpTNxqSNK\nSb9Y3IVUWS6YHCQ2Fpw15wdTW9s2bJL+oQ==\n-----END CERTIFICATE-----\n\",\"\"))'"
 ```
 
 As an alternative to the automatic process, a certificate may also be
@@ -631,7 +631,7 @@ is_error_value(m2$data)
 ```
 
 If during a `call_mirai()` an interrupt e.g. ctrl+c is sent, the mirai
-will resolve to an empty character string of class ‘miraiInterrupt’ and
+will resolve to an empty character vector of class ‘miraiInterrupt’ and
 ‘errorValue’. `is_mirai_interrupt()` may be used to test for such
 interrupts.
 

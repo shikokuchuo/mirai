@@ -278,7 +278,7 @@ Set the number of daemons to zero to reset.
 
 The daemons interface may also be used to send tasks for computation to remote daemon processes on the network.
 
-Call `daemons()` specifying 'url' as a character string the host network address and a port that is able to accept incoming connections.
+Call `daemons()` specifying 'url' as a character value the host network address and a port that is able to accept incoming connections.
 
 The examples below use an illustrative local network IP address of '10.111.5.13'.
 
@@ -418,19 +418,19 @@ daemons(n = 4, url = "wss://[::1]:5555")
 
 Single-use keys and certificates are automatically generated and configured, without requiring any user intervention. The private key is always retained on the host and never transmitted, and also not stored or accessible as an R object.
 
-The generated self-signed certificate is stored as a weak reference, allowing read-only access (but not modification) through the `info()` function as shown below:
+The generated self-signed certificate is made available for read-only access through the `info()` function specifying 'alt = TRUE', as shown below:
 
 ```{r tlscert}
 cert <- info(alt = TRUE)$tls
 str(cert)
 ```
 
-This character vector may be passed directly to the 'tls' argument of `daemon()` for launching daemons on remote resources.
+The returned character vector may be passed directly to the 'tls' argument of `daemon()` for launching daemons on remote resources.
 
-`bquote()` may also be used to conveniently generate calls to `daemon()`, as in the example below. The resulting language object may be further deparsed to a character vector, as required, for deployment on the remote machine.
+`launch()` with the argument 'exec = FALSE' may also be used to conveniently generate the full shell command to launch a `daemon()`. This may be directly deployed on a remote machine, for example via a resource manager.
 
-```{r bquote}
-bquote(daemon(url = .(info(alt = TRUE)$urls[1]), tls = .(info(alt = TRUE)$tls)))
+```{r launchexecfalse}
+launch(1, exec = FALSE)
 ```
 
 As an alternative to the automatic process, a certificate may also be generated in the traditional manner via a Certificate Signing Request (CSR) to a Certificate Authority (CA), which may be a public CA or a CA internal to your organisation.
@@ -474,7 +474,7 @@ is_mirai_error(m2$data)
 is_error_value(m2$data)
 ```
 
-If during a `call_mirai()` an interrupt e.g. ctrl+c is sent, the mirai will resolve to an empty character string of class 'miraiInterrupt' and 'errorValue'. `is_mirai_interrupt()` may be used to test for such interrupts. 
+If during a `call_mirai()` an interrupt e.g. ctrl+c is sent, the mirai will resolve to an empty character vector of class 'miraiInterrupt' and 'errorValue'. `is_mirai_interrupt()` may be used to test for such interrupts. 
 
 ```{r interruptexample}
 is_mirai_interrupt(m2$data)

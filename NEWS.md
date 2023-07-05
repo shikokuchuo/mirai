@@ -1,11 +1,12 @@
-# mirai 0.9.0.9024 (development)
+# mirai 0.9.0.9025 (development)
 
-* Enables secure TLS connections for distributed computing
+* Enables secure TLS connections for distributed computing:
   + Zero-configuration experience - simply specify a `tls+tcp://` or `wss://` URL in `daemons()`. Single-use keys and certificates are automatically generated.
   + Alternatively, custom certificates may be passed to the 'tls' argument of `daemons()` and `daemon()`, such as those generated via a Ceritficate Signing Request (CSR) to a Certificate Authority (CA).
 * User interface has been optimised for consistency and ease of use:
   + `daemon()` replaces `server()`, which is currently retained as an alias but deprecated.
   + `launch()` replaces `launch_server()` and now accepts a vector argument for 'url' as well as numeric values to select the relevant dispatcher URL (where applicable), returning invisible NULL instead of an integer value.
+  + `launch(exec = FALSE)` implemented to generate the shell command to launch a daemon as a character vector (without actually executing) to facilitate launching on remote resources.
   + `info()` implemented to retrieve connections and daemons status, replacing the call to `daemons()` with no arguments (which is deprecated).
   + `info(alt = TRUE)` implemented to retrieve certificate and URL information, which can be used to construct calls to `daemon()` for launching manually.
   + documentation updated to refer consistently to host and daemons (rather than client and server) for clarity.

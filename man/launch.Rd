@@ -4,7 +4,7 @@
 \alias{launch}
 \title{Launch Daemon}
 \usage{
-launch(url, ..., .compute = "default")
+launch(url, ..., .compute = "default", exec = TRUE)
 }
 \arguments{
 \item{url}{the character host URL or vector of host URLs, including the port
@@ -18,14 +18,29 @@ launch(url, ..., .compute = "default")
 
 \item{.compute}{[default 'default'] character compute profile (each compute
 profile has its own set of daemons for connecting to different resources).}
+
+\item{exec}{[default TRUE] logical value whether to execute the launch. Set
+to FALSE to return the complete shell command to launch the daemon as a
+character vector instead.}
 }
 \value{
-Invisible NULL.
+Invisible NULL (if 'exec' is TRUE), or else a list of character
+    vectors the same length as 'url' (if 'exec' is FALSE).
 }
 \description{
 Utility function which calls \code{\link{daemon}} in a background
-    \code{Rscript} process. May be used to re-launch local daemons that have
-    timed out.
+    \code{Rscript} process, which can be used to re-launch local daemons that
+    have timed out. Alternatively, generates the shell commands for launching
+    daemons on remote resources.
+}
+\details{
+Note: the returned shell command uses an assumed 'Rscript'
+    executable, not necessarily the command that would have actually been
+    executed on the local machine. This is to facilitate launching on a
+    remote resource, as the location of this executable may differ between
+    machines. Hence, it is assumed that 'Rscript' has been set on the search
+    path. Prepend the full path if necessary. If launching on Windows,
+    'Rscript' should be modified to 'Rscript.exe'.
 }
 \section{Additional arguments}{
 
@@ -55,15 +70,14 @@ if (interactive()) {
 # Only run examples in interactive R sessions
 
 daemons(n = 2L, url = "ws://[::1]:0")
+info()
 launch(1:2, maxtasks = 10L)
 Sys.sleep(1)
 info()
 daemons(0)
 
 daemons(n = 2L, url = "tls+tcp://[::1]:0")
-launch(info(alt = TRUE)$urls, idletime = 60000L, timerstart = 1L)
-Sys.sleep(1)
-info()
+launch(info(alt = TRUE)$urls, idletime = 60000L, timerstart = 1L, exec = FALSE)
 daemons(0)
 
 }
