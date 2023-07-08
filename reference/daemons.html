@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9026</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9027</span>
       </span>
     </div>
 
@@ -103,15 +103,15 @@ necessary (see Dispatcher section below).</p></dd>
 
 
 <dt>tls</dt>
-<dd><p>(optional for secure TLS connections) if not supplied,
-zero-configuration single-use keys and certificates are automatically
-generated. If supplied, <strong>either</strong> the absolute path to a single
-file containing the PEM encoded certificate and associated private key
-(may contain additional certificates leading to a validation chain, with
-the leaf certificate first, although the self-signed root is not required
-as the daemon should already have this), <strong>or</strong> a length 2 character
-vector comprising [i] the certificate (optionally certificate chain) and
-[ii] the associated private key.</p></dd>
+<dd><p>[default NULL] (optional for secure TLS connections) if not
+supplied, zero-configuration single-use keys and certificates are
+automatically generated. If supplied, <strong>either</strong> the character path
+to a file containing the PEM encoded certificate and associated private
+key (may contain additional certificates leading to a validation chain,
+with the leaf certificate first, although the self-signed root is not
+required as the daemon should already have this), <strong>or</strong> a length 2
+character vector comprising [i] the certificate (optionally certificate
+chain) and [ii] the associated private key.</p></dd>
 
 
 <dt>...</dt>
