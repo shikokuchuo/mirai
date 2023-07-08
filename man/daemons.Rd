@@ -27,15 +27,15 @@ Dispatcher is a local background process that connects to daemons on
 behalf of the host and ensures FIFO scheduling, queueing tasks if
 necessary (see Dispatcher section below).}
 
-\item{tls}{(optional for secure TLS connections) if not supplied,
-zero-configuration single-use keys and certificates are automatically
-generated. If supplied, \strong{either} the absolute path to a single
-file containing the PEM encoded certificate and associated private key
-(may contain additional certificates leading to a validation chain, with
-the leaf certificate first, although the self-signed root is not required
-as the daemon should already have this), \strong{or} a length 2 character
-vector comprising [i] the certificate (optionally certificate chain) and
-[ii] the associated private key.}
+\item{tls}{[default NULL] (optional for secure TLS connections) if not
+supplied, zero-configuration single-use keys and certificates are
+automatically generated. If supplied, \strong{either} the character path
+to a file containing the PEM encoded certificate and associated private
+key (may contain additional certificates leading to a validation chain,
+with the leaf certificate first, although the self-signed root is not
+required as the daemon should already have this), \strong{or} a length 2
+character vector comprising [i] the certificate (optionally certificate
+chain) and [ii] the associated private key.}
 
 \item{...}{additional arguments passed through to \code{\link{dispatcher}} if
 using dispatcher and/or \code{\link{daemon}} if launching local daemons.}

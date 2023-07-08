@@ -50,7 +50,7 @@
 #'     currently in progress. The default should be set wider if computations
 #'     are expected to return very large objects (> GBs).
 #' @param tls [default NULL] required for secure TLS connections over tls+tcp or
-#'     wss. \strong{Either} the absolute path to a file containing X.509
+#'     wss. \strong{Either} the character path to a file containing X.509
 #'     certificate(s) in PEM format, comprising the certificate authority
 #'     certificate chain (and revocation list if present), used to validate
 #'     certificates presented by peers, \strong{or} a length 2 character vector
@@ -186,8 +186,8 @@ server <- daemon
 #' @param lock [default FALSE] if TRUE, sockets lock once a connection has been
 #'     accepted, preventing further connection attempts. This provides safety
 #'     against more than one daemon attempting to connect to a unique URL.
-#' @param tls (required for secure TLS connections) \strong{either} the absolute
-#'     path to a single file containing the PEM encoded certificate and
+#' @param tls [default NULL] (required for secure TLS connections) \strong{either}
+#'     the character path to a file containing the PEM encoded certificate and
 #'     associated private key (may contain additional certificates leading to a
 #'     validation chain, with the leaf certificate first, although the
 #'     self-signed root is not required as the daemon should already have this),
@@ -239,7 +239,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
   }
 
   for (i in seq_n) {
-    burl <- if (auto) sprintf(.urlfmt, "") else
+    burl <- if (auto) .urlscheme else
       if (vectorised) url[i] else
         if (is.null(ports)) sprintf("%s/%d", url, i) else
           sub(ports[1L], ports[i], url, fixed = TRUE)
@@ -515,15 +515,15 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     Dispatcher is a local background process that connects to daemons on
 #'     behalf of the host and ensures FIFO scheduling, queueing tasks if
 #'     necessary (see Dispatcher section below).
-#' @param tls (optional for secure TLS connections) if not supplied,
-#'     zero-configuration single-use keys and certificates are automatically
-#'     generated. If supplied, \strong{either} the absolute path to a single
-#'     file containing the PEM encoded certificate and associated private key
-#'     (may contain additional certificates leading to a validation chain, with
-#'     the leaf certificate first, although the self-signed root is not required
-#'     as the daemon should already have this), \strong{or} a length 2 character
-#'     vector comprising [i] the certificate (optionally certificate chain) and
-#'     [ii] the associated private key.
+#' @param tls [default NULL] (optional for secure TLS connections) if not
+#'     supplied, zero-configuration single-use keys and certificates are
+#'     automatically generated. If supplied, \strong{either} the character path
+#'     to a file containing the PEM encoded certificate and associated private
+#'     key (may contain additional certificates leading to a validation chain,
+#'     with the leaf certificate first, although the self-signed root is not
+#'     required as the daemon should already have this), \strong{or} a length 2
+#'     character vector comprising [i] the certificate (optionally certificate
+#'     chain) and [ii] the associated private key.
 #' @param ... additional arguments passed through to \code{\link{dispatcher}} if
 #'     using dispatcher and/or \code{\link{daemon}} if launching local daemons.
 #' @param .compute [default 'default'] character compute profile to use for
@@ -984,7 +984,7 @@ launch <- function(url, ..., .compute = "default", exec = TRUE) {
       xlen <- length(url)
       out <- character(xlen)
       for (i in seq_len(xlen))
-        out[[i]] <- sprintf("Rscript -e %s", write_args(list(vec[[url[[i]]]], dots), tls = tls))
+        out[[i]] <- strcat("Rscript -e ", write_args(list(vec[[url[[i]]]], dots), tls = tls))
       out
     }
   } else {
@@ -996,7 +996,7 @@ launch <- function(url, ..., .compute = "default", exec = TRUE) {
       xlen <- length(url)
       out <- character(xlen)
       for (i in seq_len(xlen))
-        out[[i]] <- sprintf("Rscript -e %s", write_args(list(url[[i]], dots), tls = tls))
+        out[[i]] <- strcat("Rscript -e ", write_args(list(url[[i]], dots), tls = tls))
       out
     }
   }
@@ -1213,7 +1213,7 @@ print.mirai <- function(x, ...) {
 #'
 print.miraiError <- function(x, ...) {
 
-  cat(sprintf("'miraiError' chr %s", x), file = stdout())
+  cat(strcat("'miraiError' chr ", x), file = stdout())
   invisible(x)
 
 }
@@ -1274,12 +1274,12 @@ dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
 sub_real_port <- function(port, url)
   sub("(?<=:)0(?![^/])", port, url, perl = TRUE)
 
-auto_tokenized_url <- function() sprintf(.urlfmt, sha1(random(8L)))
+auto_tokenized_url <- function() strcat(.urlscheme, sha1(random(8L)))
 
-new_control_url <- function(url) sprintf("%s%s", url, "c")
+new_control_url <- function(url) strcat(url, "c")
 
 new_tokenized_url <- function(url, auto)
-  sprintf(if (auto) "%s%s" else "%s/%s", url, sha1(random(8L)))
+  if (auto) strcat(url, sha1(random(8L))) else sprintf("%s/%s", url, sha1(random(8L)))
 
 req_socket <- function(url, tls = NULL)
   `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", .Machine[["integer.max"]])

@@ -56,7 +56,7 @@ redirection of output to the host process. Applicable only when not using
 dispatcher.}
 
 \item{tls}{[default NULL] required for secure TLS connections over tls+tcp or
-wss. \strong{Either} the absolute path to a file containing X.509
+wss. \strong{Either} the character path to a file containing X.509
 certificate(s) in PEM format, comprising the certificate authority
 certificate chain (and revocation list if present), used to validate
 certificates presented by peers, \strong{or} a length 2 character vector

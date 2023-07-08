@@ -51,7 +51,7 @@
 #' @importFrom nanonext call_aio .context cv cv_value dial is_error_value listen
 #'     lock mclock msleep opt opt<- parse_url pipe_notify random recv
 #'     recv_aio_signal request request_signal send sha1 socket stat stop_aio
-#'     tls_config unresolved until wait weakref weakref_value write_cert
+#'     strcat tls_config unresolved until wait weakref weakref_value write_cert
 #'
 #' @docType package
 #' @name mirai-package
@@ -64,15 +64,15 @@ NULL
   switch(Sys.info()[["sysname"]],
          Linux = {
            .command <<- file.path(R.home("bin"), "Rscript")
-           .urlfmt <<- "abstract://%s"
+           .urlscheme <<- "abstract://"
          },
          Windows = {
            .command <<- file.path(R.home("bin"), "Rscript.exe")
-           .urlfmt <<- "ipc://%s"
+           .urlscheme <<- "ipc://"
          },
          {
            .command <<- file.path(R.home("bin"), "Rscript")
-           .urlfmt <<- "ipc:///tmp/%s"
+           .urlscheme <<- "ipc:///tmp/"
          })
 
 }

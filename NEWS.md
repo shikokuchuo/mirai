@@ -1,4 +1,4 @@
-# mirai 0.9.0.9026 (development)
+# mirai 0.9.0.9027 (development)
 
 * Enables secure TLS connections for distributed computing:
   + Zero-configuration experience - simply specify a `tls+tcp://` or `wss://` URL in `daemons()`. Single-use keys and certificates are automatically generated.
@@ -11,7 +11,7 @@
   + documentation updated to refer consistently to host and daemons (rather than client and server) for clarity.
 * Specifying `output=TRUE` for `daemons()` or `launch()` allows redirection of stdout and stderr from local daemons to the host process (when running without dispatcher). New 'output' argument for `daemon()`.
 * A 'miraiError' now includes the trailing line break at the end of the character vector.
-* Requires nanonext >= [0.9.0.9038], with R requirement relaxed back to >= 2.12.
+* Requires nanonext >= [0.9.0.9039], with R requirement relaxed back to >= 2.12.
 
 # mirai 0.9.0
 

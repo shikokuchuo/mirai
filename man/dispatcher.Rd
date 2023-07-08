@@ -48,8 +48,8 @@ which do not accept a path).}
 accepted, preventing further connection attempts. This provides safety
 against more than one daemon attempting to connect to a unique URL.}
 
-\item{tls}{(required for secure TLS connections) \strong{either} the absolute
-path to a single file containing the PEM encoded certificate and
+\item{tls}{[default NULL] (required for secure TLS connections) \strong{either}
+the character path to a file containing the PEM encoded certificate and
 associated private key (may contain additional certificates leading to a
 validation chain, with the leaf certificate first, although the
 self-signed root is not required as the daemon should already have this),
