@@ -418,13 +418,15 @@ daemons(n = 4, url = "wss://[::1]:5555")
 
 Single-use keys and certificates are automatically generated and configured, without requiring any user intervention. The private key is always retained on the host and never transmitted, and also not stored or accessible as an R object.
 
-The generated self-signed certificate is made available for read-only access via the `launch()` function. `launch()` with the argument 'exec = FALSE' conveniently constructs the full shell command to launch a daemon, including the correctly specified 'tls' argument to `daemon()`. This command may be deployed directly on a remote machine, via a resource manager or SSH connection etc.
+The generated self-signed certificate is made available for read-only access via `launch_remote()`. This function conveniently constructs the full shell command to launch a daemon, including the correctly specified 'tls' argument to `daemon()`. The returned command may be deployed directly on a remote machine, e.g. via a resource manager, SSH connection etc.
 
-```{r launchexecfalse}
-launch(1, exec = FALSE)
+```{r launch_remote}
+launch_remote(1)
 ```
 
-As an alternative to the automatic process, a certificate may also be generated in the traditional manner via a Certificate Signing Request (CSR) to a Certificate Authority (CA), which may be a public CA or a CA internal to your organisation.
+__
+
+As an alternative to the automatic process described above, a certificate may also be generated in the traditional manner via a Certificate Signing Request (CSR) to a Certificate Authority (CA), which may be a public CA or a CA internal to your organisation.
 
 - The generated certificate along with the associated private key may then be specified as the 'tls' argument to `daemons()`.
 - The certificate chain to the CA is supplied as the 'tls' argument to `daemon()`. 
@@ -446,7 +448,7 @@ Simply specify the argument `.compute` when calling `daemons()` with a profile n
 
 To create a 'mirai' task using a specific compute profile, specify the '.compute' argument to `mirai()`, which defaults to the 'default' compute profile.
 
-Similarly using functions such as `status()` or `launch()` should specify the desired '.compute' argument.
+Similarly, functions such as `status()`, `launch_local()` or `launch_remote()` should be specified with the desired '.compute' argument.
 
 [&laquo; Back to ToC](#table-of-contents)
 

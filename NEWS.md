@@ -1,15 +1,15 @@
-# mirai 0.9.0.9027 (development)
+# mirai 0.9.0.9028 (development)
 
 * Enables secure TLS connections for distributed computing:
   + Zero-configuration experience - simply specify a `tls+tcp://` or `wss://` URL in `daemons()`. Single-use keys and certificates are automatically generated.
   + Alternatively, custom certificates may be passed to the 'tls' argument of `daemons()` and `daemon()`, such as those generated via a Ceritficate Signing Request (CSR) to a Certificate Authority (CA).
 * User interface has been optimised for consistency and ease of use:
+  + Documentation updated to refer consistently to host and daemons (rather than client and server) for clarity.
   + `daemon()` replaces `server()`, which is currently retained as an alias but deprecated.
-  + `launch()` replaces `launch_server()` and now accepts a vector argument for 'url' as well as numeric values to select the relevant dispatcher URL (where applicable), returning invisible NULL instead of an integer value.
-  + `launch(exec = FALSE)` implemented to generate the shell command to launch a daemon as a character vector (without actually executing) to facilitate launching on remote resources.
-  + `status()` implemented to retrieve connections and daemons status, replacing the call to `daemons()` with no arguments (which is deprecated).
-  + documentation updated to refer consistently to host and daemons (rather than client and server) for clarity.
-* Specifying `output=TRUE` for `daemons()` or `launch()` allows redirection of stdout and stderr from local daemons to the host process (when running without dispatcher). New 'output' argument for `daemon()`.
+  + `launch_local()` replaces `launch_server()` and now accepts a vector argument for 'url' as well as numeric values to select the relevant dispatcher URL (where applicable), returning invisible NULL instead of an integer value.
+* Implements `status()` to retrieve connections and daemons status, replacing the call to `daemons()` with no arguments (which is deprecated).
+* Implements `launch_remote()` to generate the complete shell command for launching a daemon as a character vector, to facilitate launching on remote resources.
+* Specifying `output=TRUE` for `daemons()` or `launch_local()` allows redirection of stdout and stderr from local daemons to the host process (when running without dispatcher). New 'output' argument for `daemon()`.
 * A 'miraiError' now includes the trailing line break at the end of the character vector.
 * Requires nanonext >= [0.9.0.9039], with R requirement relaxed back to >= 2.12.
 

@@ -31,8 +31,8 @@
 #'     and named pipes on Windows.
 #'
 #'     This may be overriden, if required, by specifying 'url' in the
-#'     \code{\link{daemons}} interface, and launching local daemons using
-#'     \code{\link{launch}}.
+#'     \code{\link{daemons}} interface and launching daemons using
+#'     \code{\link{launch_local}}.
 #'
 #' @section Links:
 #'

@@ -51,9 +51,9 @@ are expected to return very large objects (> GBs).}
 
 \item{output}{[default FALSE] logical value, to output generated stdout /
 stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'
-argument to \code{\link{daemons}} or \code{\link{launch}} to provide
-redirection of output to the host process. Applicable only when not using
-dispatcher.}
+argument to \code{\link{daemons}} or \code{\link{launch_local}} to
+provide redirection of output to the host process. Applicable only when
+not using dispatcher.}
 
 \item{tls}{[default NULL] required for secure TLS connections over tls+tcp or
 wss. \strong{Either} the character path to a file containing X.509
