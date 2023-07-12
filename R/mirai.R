@@ -1006,22 +1006,22 @@ launch_remote <- function(url, ..., .compute = "default", command = NULL, args =
   dots <- parse_dots(...)
   tls <- get_tls(.compute)
   xlen <- length(url)
-  out <- character(xlen)
+  cmds <- character(xlen)
   if (is.numeric(url)) {
     vec <- ..[[.compute]][["urls"]]
     is.null(vec) && stop(.messages[["dispatcher_inactive"]])
     all(url >= 0L, url <= length(vec)) || stop(.messages[["url_spec"]])
-    for (i in seq_along(out))
-      out[[i]] <- strcat("Rscript -e ", write_args(list(vec[[url[[i]]]], dots), tls = tls))
+    for (i in seq_along(cmds))
+      cmds[[i]] <- strcat("Rscript -e ", write_args(list(vec[[url[[i]]]], dots), tls = tls))
   } else {
     lapply(url, parse_url)
-    for (i in seq_along(out))
-      out[[i]] <- strcat("Rscript -e ", write_args(list(url[[i]], dots), tls = tls))
+    for (i in seq_along(cmds))
+      cmds[[i]] <- strcat("Rscript -e ", write_args(list(url[[i]], dots), tls = tls))
   }
   if (length(command))
-    for (i in seq_along(out))
-      system2(command, args = c(args, shQuote(out[[i]])), wait = FALSE)
-  out
+    for (cmd in cmds)
+      system2(command, args = c(args, shQuote(cmd)), wait = FALSE)
+  cmds
 
 }
 
