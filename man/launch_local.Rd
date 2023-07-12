@@ -7,7 +7,7 @@
 \usage{
 launch_local(url, ..., .compute = "default")
 
-launch_remote(url, ..., .compute = "default")
+launch_remote(url, ..., .compute = "default", command = NULL, args = NULL)
 }
 \arguments{
 \item{url}{the character host URL or vector of host URLs, including the port
@@ -22,6 +22,12 @@ launch_remote(url, ..., .compute = "default")
 
 \item{.compute}{[default 'default'] character compute profile (each compute
 profile has its own set of daemons for connecting to different resources).}
+
+\item{command}{(optional) the command used to effect the daemon launch on the
+remote machine (e.g. 'ssh').}
+
+\item{args}{(optional) additional arguments passed to 'command' (e.g. for SSH,
+the port number, hostname etc. such as '-p 22 192.168.0.2').}
 }
 \value{
 For \strong{launch_local}: Invisible NULL.
@@ -33,9 +39,10 @@ For \strong{launch_remote}: A character vector the same length as 'url'.
     \code{\link{daemon}} with the specified arguments. May be used to
     re-launch daemons that have timed out on the local machine.
 
-\code{launch_remote} returns the complete shell command for launching daemons
-    as a character vector. The command may be deployed directly on a remote
-    machine, e.g. via a resource manager, SSH connection etc.
+\code{launch_remote} returns the shell command for launching daemons as a
+    character vector. If 'command' is specified, this is executed with both
+    'args' and the returned daemons launch command as arguments, to actually
+    effect the daemon launch on the remote machine.
 }
 \section{Additional arguments}{
 
