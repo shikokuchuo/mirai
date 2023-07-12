@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9027</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9028</span>
       </span>
     </div>
 
@@ -54,23 +54,21 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.0.9027" id="mirai-0909027-development">mirai 0.9.0.9027 (development)<a class="anchor" aria-label="anchor" href="#mirai-0909027-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.0.9028" id="mirai-0909028-development">mirai 0.9.0.9028 (development)<a class="anchor" aria-label="anchor" href="#mirai-0909028-development"></a></h2>
 <ul><li>Enables secure TLS connections for distributed computing:
 <ul><li>Zero-configuration experience - simply specify a <code>tls+tcp://</code> or <code>wss://</code> URL in <code><a href="../reference/daemons.html">daemons()</a></code>. Single-use keys and certificates are automatically generated.</li>
 <li>Alternatively, custom certificates may be passed to the ‘tls’ argument of <code><a href="../reference/daemons.html">daemons()</a></code> and <code><a href="../reference/daemon.html">daemon()</a></code>, such as those generated via a Ceritficate Signing Request (CSR) to a Certificate Authority (CA).</li>
 </ul></li>
 <li>User interface has been optimised for consistency and ease of use:
-<ul><li>
+<ul><li>Documentation updated to refer consistently to host and daemons (rather than client and server) for clarity.</li>
+<li>
 <code><a href="../reference/daemon.html">daemon()</a></code> replaces <code><a href="../reference/daemon.html">server()</a></code>, which is currently retained as an alias but deprecated.</li>
 <li>
-<code><a href="../reference/launch.html">launch()</a></code> replaces <code>launch_server()</code> and now accepts a vector argument for ‘url’ as well as numeric values to select the relevant dispatcher URL (where applicable), returning invisible NULL instead of an integer value.</li>
-<li>
-<code>launch(exec = FALSE)</code> implemented to generate the shell command to launch a daemon as a character vector (without actually executing) to facilitate launching on remote resources.</li>
-<li>
-<code><a href="../reference/status.html">status()</a></code> implemented to retrieve connections and daemons status, replacing the call to <code><a href="../reference/daemons.html">daemons()</a></code> with no arguments (which is deprecated).</li>
-<li>documentation updated to refer consistently to host and daemons (rather than client and server) for clarity.</li>
+<code><a href="../reference/launch_local.html">launch_local()</a></code> replaces <code>launch_server()</code> and now accepts a vector argument for ‘url’ as well as numeric values to select the relevant dispatcher URL (where applicable), returning invisible NULL instead of an integer value.</li>
 </ul></li>
-<li>Specifying <code>output=TRUE</code> for <code><a href="../reference/daemons.html">daemons()</a></code> or <code><a href="../reference/launch.html">launch()</a></code> allows redirection of stdout and stderr from local daemons to the host process (when running without dispatcher). New ‘output’ argument for <code><a href="../reference/daemon.html">daemon()</a></code>.</li>
+<li>Implements <code><a href="../reference/status.html">status()</a></code> to retrieve connections and daemons status, replacing the call to <code><a href="../reference/daemons.html">daemons()</a></code> with no arguments (which is deprecated).</li>
+<li>Implements <code><a href="../reference/launch_local.html">launch_remote()</a></code> to generate the complete shell command for launching a daemon as a character vector, to facilitate launching on remote resources.</li>
+<li>Specifying <code>output=TRUE</code> for <code><a href="../reference/daemons.html">daemons()</a></code> or <code><a href="../reference/launch_local.html">launch_local()</a></code> allows redirection of stdout and stderr from local daemons to the host process (when running without dispatcher). New ‘output’ argument for <code><a href="../reference/daemon.html">daemon()</a></code>.</li>
 <li>A ‘miraiError’ now includes the trailing line break at the end of the character vector.</li>
 <li>Requires nanonext &gt;= [0.9.0.9039], with R requirement relaxed back to &gt;= 2.12.</li>
 </ul></div>
@@ -126,7 +124,7 @@
 <li>
 <code><a href="../reference/saisei.html">saisei()</a></code> implemented to regenerate the token used by a given dispatcher socket.</li>
 <li>
-<code>launch_server()</code> replaces <code><a href="../reference/launch.html">launch()</a></code> for launching local instances, with a simpler interface directly mapping to <code><a href="../reference/daemon.html">server()</a></code>.</li>
+<code>launch_server()</code> replaces <code>launch()</code> for launching local instances, with a simpler interface directly mapping to <code><a href="../reference/daemon.html">server()</a></code>.</li>
 <li>Automatically-launched local daemons revised to use unique tokens in their URLs.</li>
 <li>Daemons status matrix headers updated to ‘online’, ‘instance’, ‘assigned’, and ‘complete’.</li>
 <li>Fixes potential issue when attempting to use <code><a href="../reference/mirai.html">mirai()</a></code> with timeouts and no connection to a server.</li>
@@ -141,7 +139,7 @@
 </ul></li>
 <li>Server and dispatcher processes exit automatically if the connection with the client is dropped. This significantly reduces the likelihood of orphaned processes.</li>
 <li>
-<code><a href="../reference/launch.html">launch()</a></code> exported as a utility for easily re-launching daemons that have timed out, for instance.</li>
+<code>launch()</code> exported as a utility for easily re-launching daemons that have timed out, for instance.</li>
 <li>Correct passthrough of <code>...</code> variables in the <code><a href="../reference/daemons.html">daemons()</a></code> call.</li>
 <li>Requires nanonext &gt;= 0.8.1.</li>
 <li>Internal performance enhancements.</li>

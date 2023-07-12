@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9027</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9028</span>
       </span>
     </div>
 
@@ -151,11 +151,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.321 0.747 2.722 1.469 7.606 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.7791 1.3869 -1.5228 -0.5196 -0.0721 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.321 0.747 2.722 1.469 7.606 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.7791 1.3869 -1.5228 -0.5196 -0.0721 ...</span></span></code></pre></div>
 <p>For easy programmatic use of <code><a href="reference/mirai.html">mirai()</a></code>, ‘.expr’ accepts a pre-constructed language object, and also a list of named arguments passed via ‘.args’. So, the following would be equivalent to the above:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -168,7 +168,7 @@
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span>.expr <span class="op">=</span> <span class="va">expr</span>, .args <span class="op">=</span> <span class="va">args</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -1.457 0.169 2.335 1.168 -3.082 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 2.055 2.106 0.853 -1.019 -0.392 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -233,12 +233,12 @@
 <span><span class="co">#&gt; iteration 2 successful</span></span>
 <span><span class="co">#&gt; iteration 3 successful</span></span>
 <span><span class="co">#&gt; iteration 4 successful</span></span>
+<span><span class="co">#&gt; Error: random error</span></span>
 <span><span class="co">#&gt; iteration 5 successful</span></span>
 <span><span class="co">#&gt; iteration 6 successful</span></span>
 <span><span class="co">#&gt; iteration 7 successful</span></span>
 <span><span class="co">#&gt; iteration 8 successful</span></span>
 <span><span class="co">#&gt; iteration 9 successful</span></span>
-<span><span class="co">#&gt; Error: random error</span></span>
 <span><span class="co">#&gt; iteration 10 successful</span></span></code></pre></div>
 <p>Further, by testing the return value of each ‘mirai’ for errors, error-handling code is then able to automate recovery and re-attempts, as in the above example. Further details on <a href="#errors-interrupts-and-timeouts">error handling</a> can be found in the section below.</p>
 <p>The end result is a resilient and fault-tolerant pipeline that minimises downtime by eliminating interruptions of long computes.</p>
@@ -264,12 +264,12 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt;                                                     online instance assigned complete</span></span>
-<span><span class="co">#&gt; abstract://d8011963fee4f7860455510173cb1baf95f8fe20      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://1d7668c11a74b13154be98a563327806d76ec892      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://3d03eb780936af37744134fb5e3139c4f821e91c      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://47673ffaf77cf84a9cf9e72aeca759a51c2229af      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://63d4636a672f669f3db280766e78b9242273d2f9      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://328d1020709b5bf95c0b310a2ef3ac3201f7e9be      1        1        0        0</span></span></code></pre></div>
+<span><span class="co">#&gt; abstract://d9d535258645ab55ad7e1657c82d83b91cb1c101      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://b8d7ffb1e7bebe69066a7237a4e867f9ff1d77f6      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://86b3b3b87f40f6e01cf24ea998378ce535e6a8b4      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://a556913ba1a3c0ebe7d72df4f585a00b9d52b531      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://ea2222d637bf8b4abfa6926c9a67106400cbfff7      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://d97b8753fb04b1af93b75046a5a5908cff5c077f      1        1        0        0</span></span></code></pre></div>
 <p>The default <code>dispatcher = TRUE</code> creates a <code><a href="reference/dispatcher.html">dispatcher()</a></code> background process that connects to individual daemon processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to daemons for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.</p>
 <p>Dispatcher uses synchronisation primitives from <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link"><code>nanonext</code></a>, waiting upon rather than polling for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -368,11 +368,11 @@
 <p>Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://:0"</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tcp://:43163"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:45373"</span></span></code></pre></div>
 <p>Note that above, the port number is specified as zero. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided as the return value of the call, or it may be queried at any time by via <code><a href="reference/status.html">status()</a></code>.</p>
 <p>–</p>
 <p>On the network resource, <code><a href="reference/daemon.html">daemon()</a></code> may be called from an R session, or an Rscript invocation from a shell. This sets up a remote daemon process that connects to the host URL and receives tasks:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::daemon("tcp://10.111.5.13:43163")'</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>Rscript <span class="sc">-</span>e <span class="st">'mirai::daemon("tcp://10.111.5.13:45373")'</span></span></code></pre></div>
 <p>As before, <code><a href="reference/daemons.html">daemons()</a></code> should be set up on the host machine before launching <code><a href="reference/daemon.html">daemon()</a></code> on remote resources, otherwise the daemon instances will exit if a connection is not immediately available. Alternatively, specifying <code>daemon(asyncdial = TRUE)</code> will allow daemons to wait (indefinitely) for a connection to become available.</p>
 <p>–</p>
 <p>The number of daemons connecting to the host URL is not limited and network resources may be added or removed at any time, with tasks automatically distributed to all connected daemons.</p>
@@ -383,7 +383,7 @@
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "tcp://:43163"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://:45373"</span></span></code></pre></div>
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
@@ -401,11 +401,12 @@
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, url <span class="op">=</span> <span class="st">"wss://[::1]:5555"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
 <p>Single-use keys and certificates are automatically generated and configured, without requiring any user intervention. The private key is always retained on the host and never transmitted, and also not stored or accessible as an R object.</p>
-<p>The generated self-signed certificate is made available for read-only access via the <code><a href="reference/launch.html">launch()</a></code> function. <code><a href="reference/launch.html">launch()</a></code> with the argument ‘exec = FALSE’ conveniently constructs the full shell command to launch a daemon, including the correctly specified ‘tls’ argument to <code><a href="reference/daemon.html">daemon()</a></code>. This command may be deployed directly on a remote machine, via a resource manager or SSH connection etc.</p>
+<p>The generated self-signed certificate is made available for read-only access via <code><a href="reference/launch_local.html">launch_remote()</a></code>. This function conveniently constructs the full shell command to launch a daemon, including the correctly specified ‘tls’ argument to <code><a href="reference/daemon.html">daemon()</a></code>. The returned command may be deployed directly on a remote machine, e.g. via a resource manager, SSH connection etc.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/launch.html">launch</a></span><span class="op">(</span><span class="fl">1</span>, exec <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Rscript -e 'mirai::daemon(\"wss://[::1]:5555/1\",tls=c(\"-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhpYmlraTEJMAcGA1UEBhMAMB4XDTAxMDEwMTAwMDAwMFoXDTMw\nMTIzMTIzNTk1OVowKjEMMAoGA1UEAwwDOjoxMQ8wDQYDVQQKDAZIaWJpa2kxCTAH\nBgNVBAYTADCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAJ8gkYsNaVKH\nsaLpz/kIERomyxZxbZoIGd7BFtIi/MMz+FOHi8Paj8fgHevT+PlefbZlqitFcfAO\nunNh1kgHg7EyK1bPpUh6EmCXz54k+dLDBKyQc/zGeQyHzoh0YntPEqcGBoD8H0bb\n1K+5NnHuRRdLpdfyJ6V4V64rFPBanWNFdqiurRVS0wyw6yAzIv8+bfrp/ksyF0HF\nie4N6eIh233UIuTeSKdmtHhoa63EQs4ZG7V6Bt6AHPfsbGEmAcbIrOQGsq8aGM7N\nUs3wQYGht86DIK2OOnKcX7MzDJ2MxAUTW2Hvl6ZsE7FvRgctRzQd0OE91reKUixs\ntvEzMK0BoWN9gj5Dua7ji528DQbUvUhufsD+Vk+1tBFYrQopKqLJEWz+13pPLwvD\n5oYD5Ryzb8xAPvPrBr2ACLBG3zpdA7kjpxsrdUHLbUiGMNDGH36FeeFz+swdPtU3\nQl5ZBwMeyp/ZtvIbNpVUj0jQARR1BDsfrFIJDQsh8iwKG1/s3qbirYyB02Np9oh/\nohinkL7NEceMI+4oA69RUJUkz8v0rWc3ZrCsZqe6OgLC77gnF8AawPCeIvtcXUIY\nidBS3K4IoY+I8maIIBRl/wOB/9x+pclQZxHFGZZvVji6Z8t5z6ymuOgXCUyVITT+\nDzwZYYkJfjTOk+8c8vuXS51db0Qf0V39AgMBAAGjVjBUMBIGA1UdEwEB/wQIMAYB\nAf8CAQAwHQYDVR0OBBYEFCVgU1GKv2Ek0sm4OalYEQkyuO5rMB8GA1UdIwQYMBaA\nFCVgU1GKv2Ek0sm4OalYEQkyuO5rMA0GCSqGSIb3DQEBCwUAA4ICAQBVUHnNgkDi\nRifa5p2vrtl6J0OCkaynI+6UJPVL+4nsH5dAAbyZrXuKF+cMWtmUyjKnUBg31nlI\n1tcvu9ukiKZNLiSbFmiCwpc69XDvpfS6pxE36uOQg6PXopRjkaqxYit9JyPFLotP\ngouvyt2aJFnQAs4AjfgHDCeqtqfU9TASEk7bRgYaxPSKjYS1+B1/N1+je2obBhDW\nkV7Yr3pS/4VOvXsydtK1+C9zBB6JO/fz4x9ZZLzJxsQCWG99WJWzCSncboRASWM9\nYP754lVwgzvFi+x8QaVw5DaGttk/1QjpbbJPoHBNUgtAhduvvOWdclmR/dEx8907\ntJKGd502wDVdmP42/zy9U3MH/eLXr2qnGU4spjeca995Ceyg8IcPPaQGgn+7UQxq\n5BvCEcp+qv01VtcWiaY8sVVcVb/i3zO996UVwqmRb/+/a/Ho8NthKTVTOji5v6Fc\npOJWoPPQj1iBf1aVpTBGOkDMXyxyEY84AlkZ05N4QVvCpcQY+x5MtMl35RYfZ36E\nl2yxshosMcF6cYi28U5y0atgW8mmzygbuhixNQfQiuXNUkuBZmYNddgT/0krnyZ0\nyGJjZnohJ4BDvpvHS8Ya0aBB9+u+3FVdZWvi4kATv+ni3y0cih7YPATpP+ioobNM\nNZ6jduJNWhNFxUWKEN8ja8EfpkucILHO2A==\n-----END CERTIFICATE-----\n\",\"\"))'"</span></span></code></pre></div>
-<p>As an alternative to the automatic process, a certificate may also be generated in the traditional manner via a Certificate Signing Request (CSR) to a Certificate Authority (CA), which may be a public CA or a CA internal to your organisation.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/launch_local.html">launch_remote</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Rscript -e 'mirai::daemon(\"wss://[::1]:5555/1\",tls=c(\"-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhpYmlraTEJMAcGA1UEBhMAMB4XDTAxMDEwMTAwMDAwMFoXDTMw\nMTIzMTIzNTk1OVowKjEMMAoGA1UEAwwDOjoxMQ8wDQYDVQQKDAZIaWJpa2kxCTAH\nBgNVBAYTADCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBANDoi7FYh0tA\ngA/85zjQBB+pF4d9ChT22R5xq+mB0Z/paJAOCo1hBfbOF/Hc8xnZ5h8FB2n1wc4c\nYyEoRbZ7vgD+d9GVmiWNtvIhsQaY6SS/qp6fJX+fO7Pgz2NzfJrIeKP/8O9D+S7L\n6cl+E51YHNb/extmEpMzaF1uP46OvYhR2xCr63YRn+STzoaks8VaaBJyqano3CAW\njQXHcIemXh4XEK/Mr7tdb2/OKCxM2ltW1CWenylD3UFwaQaAfnLO4T8ITXd+7qhS\ny8eofVm0E5bjcqcVTDxDbczbB0V3N/wlOL8h0+0PAL/81f+OdFwuc51Z6e5G+JxP\n7ElkaEdeOgvjZb1QtdNiYrSlXavDHILM/eFPqVqtms5/fsjpmnQZbln3b2Qp+09N\nVX9QcKtV8jyxWql2f3pjbj/19zo3i1CCURcuzn9Ji7l23VMf0Gd8heEnIM8/p651\n7OPyHXR7jKaZbzFl+fLdkltolO5u1B5Y3DiBfVLoGlVQcaa9ZL6WzmyWlsfgJkLU\nhT6tBXdEWlgV1QV9Mg6lZn8BDCUdU21PMfLGNRq/f8wRZ9yj07NgfbcSZpcBXidu\nbFbawHJqixCTSzn3kXHTeKQbJYcQZWsD8O3WZxW5fTkxa9XNafWpj4zCeU8GoD4J\nASFe+yR1HVKBJJoMOmhybDsMxseCJ1B3AgMBAAGjVjBUMBIGA1UdEwEB/wQIMAYB\nAf8CAQAwHQYDVR0OBBYEFDyx7S5GfsHKAdUUvpadZa/6OarqMB8GA1UdIwQYMBaA\nFDyx7S5GfsHKAdUUvpadZa/6OarqMA0GCSqGSIb3DQEBCwUAA4ICAQB6YkVG7djb\n1wW9/Za22LqAWjE4eCzmSxeM74KnV55AI/sm7+dXGTqW37EBkSMQPIaAQz4bux74\nmnMMX5Y3+5pihRLIXzItEfFXst/7eFmLXsntov0ZrLDIsdUNsXQlV5I1D0/NXrgQ\n05n44Maxf40EIOUcYm/KQv/OMRItRxPdLyaHVITaJs/SP29LtoNnkLYVK8UQyN3a\n4Tm5dHbr1G7rFMrZcd1Sum/JsunXRq0P2/EfejeU4Jo+pSuW3spkCShFaoapZysE\nXNCP6A5xnN5/fFzA/m8kHcGIOeTSEgDoLvIA5KsHdDI5YSU5WeqA2CR0tyVPXo0R\n6hUHEf0WZzQgfIqUh0qGTQHDi1vk8g3K/ltqpg3HmB4GznZRP6y7BaCbWoJOEsiu\n0+fidPk58h4uWGo2kzflBzLOfZ/SvM057mIeytiBlIEuH9h4UpgY/cpdMqCFgQRT\nnjZrLscup0taS01TO+BcAIMUrpPa4VOG6BN99krbKdG2twD991Kl7bEbQdvFvcMl\nEwsDGOtptsqCUm5/SEgQSspIbZQ/yQw2lxFYffBmMsTFUMyPi7K9C/HhydJ+qUhf\nsJuPtgQ786WM88lTEprrE8cyOF53GEvRSLX7JCau1vJo50zSq/p9rgFYHntlJEDo\nk5Y2Iy8p/eYiercT6IMm0yvTXdFeKORDVQ==\n-----END CERTIFICATE-----\n\",\"\"))'"</span></span></code></pre></div>
+<p>__</p>
+<p>As an alternative to the automatic process described above, a certificate may also be generated in the traditional manner via a Certificate Signing Request (CSR) to a Certificate Authority (CA), which may be a public CA or a CA internal to your organisation.</p>
 <ul>
 <li>The generated certificate along with the associated private key may then be specified as the ‘tls’ argument to <code><a href="reference/daemons.html">daemons()</a></code>.</li>
 <li>The certificate chain to the CA is supplied as the ‘tls’ argument to <code><a href="reference/daemon.html">daemon()</a></code>.</li>
@@ -422,7 +423,7 @@
 </ul>
 <p>Simply specify the argument <code>.compute</code> when calling <code><a href="reference/daemons.html">daemons()</a></code> with a profile name (which is ‘default’ for the default profile). The daemons settings are saved under the named profile.</p>
 <p>To create a ‘mirai’ task using a specific compute profile, specify the ‘.compute’ argument to <code><a href="reference/mirai.html">mirai()</a></code>, which defaults to the ‘default’ compute profile.</p>
-<p>Similarly using functions such as <code><a href="reference/status.html">status()</a></code> or <code><a href="reference/launch.html">launch()</a></code> should specify the desired ‘.compute’ argument.</p>
+<p>Similarly, functions such as <code><a href="reference/status.html">status()</a></code>, <code><a href="reference/launch_local.html">launch_local()</a></code> or <code><a href="reference/launch_local.html">launch_remote()</a></code> should be specified with the desired ‘.compute’ argument.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
