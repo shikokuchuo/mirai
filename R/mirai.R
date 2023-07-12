@@ -1011,15 +1011,16 @@ launch_remote <- function(url, ..., .compute = "default", command = NULL, args =
     vec <- ..[[.compute]][["urls"]]
     is.null(vec) && stop(.messages[["dispatcher_inactive"]])
     all(url >= 0L, url <= length(vec)) || stop(.messages[["url_spec"]])
-    for (i in seq_len(xlen))
+    for (i in seq_along(out))
       out[[i]] <- strcat("Rscript -e ", write_args(list(vec[[url[[i]]]], dots), tls = tls))
   } else {
     lapply(url, parse_url)
-    for (i in seq_len(xlen))
+    for (i in seq_along(out))
       out[[i]] <- strcat("Rscript -e ", write_args(list(url[[i]], dots), tls = tls))
   }
   if (length(command))
-    system2(command, args = c(args, shQuote(out)), wait = FALSE)
+    for (i in seq_along(out))
+      system2(command, args = c(args, shQuote(out[[i]])), wait = FALSE)
   out
 
 }
