@@ -12,6 +12,8 @@ nanotest(is.list(status()))
 nanotestz(status()[["connections"]])
 nanotestz(status()[["daemons"]])
 nanotest(is.character(launch_remote("ws://[::1]:5555")))
+nanotest(is.character(launch_remote("ws://[::1]:5555", command = "echo", args = c("Test out:", ., ">/dev/null"))))
+nanotesterr(launch_remote("ws://[::1]:5555", command = "echo", args = "invalid"), "must be an element")
 nanotesto(daemons(1L, dispatcher = FALSE))
 me <- mirai(mirai::mirai(), .timeout = 2000L)
 nanotest(is_mirai_error(call_mirai(me)$data) || is_error_value(me$data))
@@ -156,6 +158,5 @@ if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
     nanotest(is.integer(dstatus[, "instance"]))
   }
   nanotestz(daemons(0))
-  nanotest(is.character(launch_remote("ws://[::1]:5555", command = "echo", args = "Test output:")))
   Sys.sleep(2L)
 }

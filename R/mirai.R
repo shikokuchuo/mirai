@@ -976,14 +976,17 @@ launch_local <- function(url, ..., .compute = "default") {
 #' Launch Daemon
 #'
 #' \code{launch_remote} returns the shell command for launching daemons as a
-#'     character vector. If 'command' is specified, this is executed with both
-#'     'args' and the returned daemons launch command as arguments, to actually
-#'     effect the daemon launch on the remote machine.
+#'     character vector. If 'command' is specified, this is executed with the
+#'     arguments in 'args' to effect the daemon launch on the remote machine.
 #'
 #' @param command (optional) the command used to effect the daemon launch on the
-#'     remote machine (e.g. 'ssh').
-#' @param args (optional) additional arguments passed to 'command' (e.g. for SSH,
-#'     the port number, hostname etc. such as '-p 22 192.168.0.2').
+#'     remote machine as a character value (e.g. \code{"ssh"}).
+#' @param args (optional) arguments passed to 'command' as a character vector
+#'     that must include an unquoted \code{.} as an element. The daemons launch
+#'     command is substituted in place of the \code{.} As an example, for SSH,
+#'     valid arguments may comprise the port, destination IP, followed by the
+#'     daemons launch command. These could be specified in the manner of:
+#'     \code{c("-p 22 192.168.0.2", .)}.
 #'
 #' @return For \strong{launch_remote}: A character vector the same length as 'url'.
 #'
@@ -1002,7 +1005,7 @@ launch_local <- function(url, ..., .compute = "default") {
 #' @rdname launch_local
 #' @export
 #'
-launch_remote <- function(url, ..., .compute = "default", command = NULL, args = NULL) {
+launch_remote <- function(url, ..., .compute = "default", command = NULL, args = c("", .)) {
 
   dots <- parse_dots(...)
   tls <- get_tls(.compute)
@@ -1019,9 +1022,15 @@ launch_remote <- function(url, ..., .compute = "default", command = NULL, args =
     for (i in seq_along(cmds))
       cmds[[i]] <- strcat("Rscript -e ", write_args(list(url[[i]], dots), tls = tls))
   }
-  if (length(command))
-    for (cmd in cmds)
-      system2(command = command, args = c(args, shQuote(cmd)), wait = FALSE)
+  if (length(command)) {
+    args <- substitute(args)
+    "." %in% as.character(args) || stop(.messages[["dot_required"]])
+    for (cmd in cmds) {
+      . <- shQuote(cmd)
+      system2(command = command, args = eval(args, enclos = NULL), wait = FALSE)
+    }
+  }
+
   cmds
 
 }
