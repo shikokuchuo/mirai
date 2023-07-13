@@ -22,7 +22,7 @@ launch_remote returns the shell command for launching daemons as a
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9031</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9032</span>
       </span>
     </div>
 
@@ -100,11 +100,11 @@ remote machine as a character value (e.g. <code>"ssh"</code>).</p></dd>
 
 
 <dt>args</dt>
-<dd><p>(optional) arguments passed to 'command' as a character vector
-that must include an unquoted <code>.</code> as an element. The daemons launch
-command is substituted in place of the <code>.</code> As an example, for SSH,
-valid arguments may comprise the port, destination IP, followed by the
-daemons launch command. These could be specified in the manner of:
+<dd><p>(optional) arguments passed to 'command', as a character vector
+that must include '<code>.</code>' (quoted or unquoted) as an element,
+which will be substituted for the daemons launch command. As an example,
+for SSH, valid arguments may comprise the port, destination IP, followed
+by the daemons launch command. These could be specified in the manner of:
 <code>c("-p 22 192.168.0.2", .)</code>.</p></dd>
 
 </dl></div>
