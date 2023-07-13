@@ -3,9 +3,8 @@
     daemon with the specified arguments. May be used to
     re-launch daemons that have timed out on the local machine.
 launch_remote returns the shell command for launching daemons as a
-    character vector. If 'command' is specified, this is executed with both
-    'args' and the returned daemons launch command as arguments, to actually
-    effect the daemon launch on the remote machine."><meta property="og:image" content="https://shikokuchuo.net/mirai/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+    character vector. If 'command' is specified, this is executed with the
+    arguments in 'args' to effect the daemon launch on the remote machine."><meta property="og:image" content="https://shikokuchuo.net/mirai/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
@@ -23,7 +22,7 @@ launch_remote returns the shell command for launching daemons as a
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9030</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9031</span>
       </span>
     </div>
 
@@ -65,15 +64,14 @@ launch_remote returns the shell command for launching daemons as a
     <code><a href="daemon.html">daemon</a></code> with the specified arguments. May be used to
     re-launch daemons that have timed out on the local machine.</p>
 <p><code>launch_remote</code> returns the shell command for launching daemons as a
-    character vector. If 'command' is specified, this is executed with both
-    'args' and the returned daemons launch command as arguments, to actually
-    effect the daemon launch on the remote machine.</p>
+    character vector. If 'command' is specified, this is executed with the
+    arguments in 'args' to effect the daemon launch on the remote machine.</p>
     </div>
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">launch_local</span><span class="op">(</span><span class="va">url</span>, <span class="va">...</span>, .compute <span class="op">=</span> <span class="st">"default"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">launch_remote</span><span class="op">(</span><span class="va">url</span>, <span class="va">...</span>, .compute <span class="op">=</span> <span class="st">"default"</span>, command <span class="op">=</span> <span class="cn">NULL</span>, args <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">launch_remote</span><span class="op">(</span><span class="va">url</span>, <span class="va">...</span>, .compute <span class="op">=</span> <span class="st">"default"</span>, command <span class="op">=</span> <span class="cn">NULL</span>, args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="va">.</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -98,12 +96,16 @@ profile has its own set of daemons for connecting to different resources).</p></
 
 <dt>command</dt>
 <dd><p>(optional) the command used to effect the daemon launch on the
-remote machine (e.g. 'ssh').</p></dd>
+remote machine as a character value (e.g. <code>"ssh"</code>).</p></dd>
 
 
 <dt>args</dt>
-<dd><p>(optional) additional arguments passed to 'command' (e.g. for SSH,
-the port number, hostname etc. such as '-p 22 192.168.0.2').</p></dd>
+<dd><p>(optional) arguments passed to 'command' as a character vector
+that must include an unquoted <code>.</code> as an element. The daemons launch
+command is substituted in place of the <code>.</code> As an example, for SSH,
+valid arguments may comprise the port, destination IP, followed by the
+daemons launch command. These could be specified in the manner of:
+<code>c("-p 22 192.168.0.2", .)</code>.</p></dd>
 
 </dl></div>
     <div id="value">

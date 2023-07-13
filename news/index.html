@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9030</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9031</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.0.9030" id="mirai-0909030-development">mirai 0.9.0.9030 (development)<a class="anchor" aria-label="anchor" href="#mirai-0909030-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.0.9031" id="mirai-0909031-development">mirai 0.9.0.9031 (development)<a class="anchor" aria-label="anchor" href="#mirai-0909031-development"></a></h2>
 <ul><li>Enables secure TLS connections for distributed computing:
 <ul><li>Zero-configuration experience - simply specify a <code>tls+tcp://</code> or <code>wss://</code> URL in <code><a href="../reference/daemons.html">daemons()</a></code>. Single-use keys and certificates are automatically generated.</li>
 <li>Alternatively, custom certificates may be passed to the ‘tls’ argument of <code><a href="../reference/daemons.html">daemons()</a></code> and <code><a href="../reference/daemon.html">daemon()</a></code>, such as those generated via a Ceritficate Signing Request (CSR) to a Certificate Authority (CA).</li>
@@ -66,7 +66,9 @@
 <li>
 <code><a href="../reference/launch_local.html">launch_local()</a></code> replaces <code>launch_server()</code> and now accepts a vector argument for ‘url’ as well as numeric values to select the relevant dispatcher URL (where applicable), returning invisible NULL instead of an integer value.</li>
 </ul></li>
-<li>Implements <code><a href="../reference/launch_local.html">launch_remote()</a></code> to launch daemons on remote machines or return the shell command for launching daemons as a character vector. An example launching via SSH on a remote machine with IP ‘192.168.0.2’, port ‘22’: <code>launch_remote(1L, command = "ssh", args = "-p 22 192.168.0.2")</code>.</li>
+<li>Implements <code><a href="../reference/launch_local.html">launch_remote()</a></code> to launch daemons on remote machines or return the shell command for launching daemons as a character vector.
+<ul><li>Example using SSH: <code>launch_remote(1L, command = "ssh", args = c("-p 22 192.168.0.2", .)</code>.</li>
+</ul></li>
 <li>Implements <code><a href="../reference/status.html">status()</a></code> to retrieve connections and daemons status, replacing the call to <code><a href="../reference/daemons.html">daemons()</a></code> with no arguments (which is deprecated).</li>
 <li>Specifying <code>output=TRUE</code> for <code><a href="../reference/daemons.html">daemons()</a></code> or <code><a href="../reference/launch_local.html">launch_local()</a></code> allows redirection of stdout and stderr from local daemons to the host process (when running without dispatcher). New ‘output’ argument for <code><a href="../reference/daemon.html">daemon()</a></code>.</li>
 <li>A ‘miraiError’ now includes the trailing line break at the end of the character vector.</li>
