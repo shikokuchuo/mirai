@@ -1020,7 +1020,7 @@ launch_remote <- function(url, ..., .compute = "default", command = NULL, args =
   }
   if (length(command))
     for (cmd in cmds)
-      system2(command, args = c(args, shQuote(cmd)), wait = FALSE)
+      system2(command = command, args = c(args, shQuote(cmd)), wait = FALSE)
   cmds
 
 }

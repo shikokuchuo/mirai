@@ -11,7 +11,7 @@
 * Implements `status()` to retrieve connections and daemons status, replacing the call to `daemons()` with no arguments (which is deprecated).
 * Specifying `output=TRUE` for `daemons()` or `launch_local()` allows redirection of stdout and stderr from local daemons to the host process (when running without dispatcher). New 'output' argument for `daemon()`.
 * A 'miraiError' now includes the trailing line break at the end of the character vector.
-* Requires nanonext >= [0.9.0.9039], with R requirement relaxed back to >= 2.12.
+* Requires nanonext >= 0.9.1, with R requirement relaxed back to >= 2.12.
 
 # mirai 0.9.0
 
