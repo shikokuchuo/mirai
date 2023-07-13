@@ -26,11 +26,11 @@ profile has its own set of daemons for connecting to different resources).}
 \item{command}{(optional) the command used to effect the daemon launch on the
 remote machine as a character value (e.g. \code{"ssh"}).}
 
-\item{args}{(optional) arguments passed to 'command' as a character vector
-that must include an unquoted \code{.} as an element. The daemons launch
-command is substituted in place of the \code{.} As an example, for SSH,
-valid arguments may comprise the port, destination IP, followed by the
-daemons launch command. These could be specified in the manner of:
+\item{args}{(optional) arguments passed to 'command', as a character vector
+that must include '\code{.}' (quoted or unquoted) as an element,
+which will be substituted for the daemons launch command. As an example,
+for SSH, valid arguments may comprise the port, destination IP, followed
+by the daemons launch command. These could be specified in the manner of:
 \code{c("-p 22 192.168.0.2", .)}.}
 }
 \value{

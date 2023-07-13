@@ -981,11 +981,11 @@ launch_local <- function(url, ..., .compute = "default") {
 #'
 #' @param command (optional) the command used to effect the daemon launch on the
 #'     remote machine as a character value (e.g. \code{"ssh"}).
-#' @param args (optional) arguments passed to 'command' as a character vector
-#'     that must include an unquoted \code{.} as an element. The daemons launch
-#'     command is substituted in place of the \code{.} As an example, for SSH,
-#'     valid arguments may comprise the port, destination IP, followed by the
-#'     daemons launch command. These could be specified in the manner of:
+#' @param args (optional) arguments passed to 'command', as a character vector
+#'     that must include '\code{.}' (quoted or unquoted) as an element,
+#'     which will be substituted for the daemons launch command. As an example,
+#'     for SSH, valid arguments may comprise the port, destination IP, followed
+#'     by the daemons launch command. These could be specified in the manner of:
 #'     \code{c("-p 22 192.168.0.2", .)}.
 #'
 #' @return For \strong{launch_remote}: A character vector the same length as 'url'.
@@ -1023,14 +1023,15 @@ launch_remote <- function(url, ..., .compute = "default", command = NULL, args =
       cmds[[i]] <- strcat("Rscript -e ", write_args(list(url[[i]], dots), tls = tls))
   }
   if (length(command)) {
-    args <- substitute(args)
-    "." %in% as.character(args) || stop(.messages[["dot_required"]])
+    sa <- substitute(args)
+    if (length(sa) > length(args)) sa[1L] <- NULL
+    sel <- as.character(sa) == "."
+    any(sel) || stop(.messages[["dot_required"]])
     for (cmd in cmds) {
-      . <- shQuote(cmd)
-      system2(command = command, args = eval(args, enclos = NULL), wait = FALSE)
+      args[sel] <- shQuote(cmd)
+      system2(command = command, args = args, wait = FALSE)
     }
   }
-
   cmds
 
 }
