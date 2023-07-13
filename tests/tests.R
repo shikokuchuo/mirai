@@ -154,5 +154,6 @@ if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
     nanotest(is.integer(dstatus[, "instance"]))
   }
   nanotestz(daemons(0))
+  nanotest(is.character(launch_remote("ws://[::1]:5555", command = "echo", args = "Test output:")))
   Sys.sleep(2L)
 }
