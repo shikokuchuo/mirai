@@ -72,19 +72,20 @@
     <h2>Arguments</h2>
     <dl><dt>.expr</dt>
 <dd><p>an expression to evaluate asynchronously (of arbitrary length,
-wrapped in {} if necessary), or a language object passed by <a href="https://rdrr.io/r/base/name.html" class="external-link">name</a>.</p></dd>
+wrapped in {} if necessary), <strong>or</strong> a language object passed by
+<a href="https://rdrr.io/r/base/name.html" class="external-link">name</a>.</p></dd>
 
 
 <dt>...</dt>
 <dd><p>(optional) named arguments (name = value pairs) specifying
-objects referenced in '.expr'. Used in addition to and taking precedence
+objects referenced in '.expr'. Used in addition to, and taking precedence
 over, any arguments specified via '.args'.</p></dd>
 
 
 <dt>.args</dt>
-<dd><p>(optional) either (i) a list of objects to be passed by
-<a href="https://rdrr.io/r/base/name.html" class="external-link">name</a>, i.e. also found in the current scope with the same name, or
-else (ii) a list of name = value pairs, as in '...'.</p></dd>
+<dd><p>(optional) <strong>either</strong> a list of objects to be passed by
+<a href="https://rdrr.io/r/base/name.html" class="external-link">name</a> (found in the current scope), <strong>or else</strong> a list of
+name = value pairs, as in '...'.</p></dd>
 
 
 <dt>.timeout</dt>
