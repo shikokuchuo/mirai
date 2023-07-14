@@ -959,17 +959,9 @@ launch_local <- function(url, ..., .compute = "default") {
 
   dots <- parse_dots(...)
   tls <- get_tls(.compute)
-  if (is.numeric(url)) {
-    vec <- ..[[.compute]][["urls"]]
-    is.null(vec) && stop(.messages[["dispatcher_inactive"]])
-    all(url >= 0L, url <= length(vec)) || stop(.messages[["url_spec"]])
-    for (u in url)
-      launch_daemon(vec[[u]], dots, tls = tls)
-  } else {
-    lapply(url, parse_url)
-    for (u in url)
-      launch_daemon(u, dots, tls = tls)
-  }
+  url <- process_url(url, .compute = .compute)
+  for (u in url)
+    launch_daemon(u, dots, tls = tls)
 
 }
 
@@ -1002,19 +994,11 @@ launch_remote <- function(url, ..., rscript = "Rscript", command = NULL, args = 
 
   dots <- parse_dots(...)
   tls <- get_tls(.compute)
-  xlen <- length(url)
-  cmds <- character(xlen)
-  if (is.numeric(url)) {
-    vec <- ..[[.compute]][["urls"]]
-    is.null(vec) && stop(.messages[["dispatcher_inactive"]])
-    all(url >= 0L, url <= length(vec)) || stop(.messages[["url_spec"]])
-    for (i in seq_along(cmds))
-      cmds[[i]] <- sprintf("%s -e %s", rscript, write_args(list(vec[[url[[i]]]], dots), tls = tls))
-  } else {
-    lapply(url, parse_url)
-    for (i in seq_along(cmds))
-      cmds[[i]] <- sprintf("%s -e %s", rscript, write_args(list(url[[i]], dots), tls = tls))
-  }
+  cmds <- character(length(url))
+  url <- process_url(url, .compute = .compute)
+  for (i in seq_along(url))
+    cmds[[i]] <- sprintf("%s -e %s", rscript, write_args(list(url[[i]], dots), tls = tls))
+
   if (length(command)) {
     sa <- substitute(args)
     if (length(sa) > length(args)) sa[1L] <- NULL
@@ -1025,6 +1009,7 @@ launch_remote <- function(url, ..., rscript = "Rscript", command = NULL, args = 
       system2(command = command, args = args, wait = FALSE)
     }
   }
+
   cmds
 
 }
@@ -1260,6 +1245,18 @@ parse_dots <- function(...)
 
 get_tls <- function(.compute)
   if (length(..[[.compute]][["tls"]])) weakref_value(..[[.compute]][["tls"]])
+
+process_url <- function(url, .compute) {
+  if (is.numeric(url)) {
+    vec <- ..[[.compute]][["urls"]]
+    is.null(vec) && stop(.messages[["dispatcher_inactive"]])
+    all(url >= 0L, url <= length(vec)) || stop(.messages[["url_spec"]])
+    url <- vec[url]
+  } else {
+    lapply(url, parse_url)
+  }
+  url
+}
 
 write_args <- function(dots, tls = NULL)
   shQuote(
