@@ -29,7 +29,7 @@ Lightweight parallel code execution and distributed computing.
 <br /><br />
 Designed for simplicity, a 'mirai' evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion.
 <br /><br />
-Features efficient task scheduling, fast inter-process communications, and transport layer security over TCP/IP for remote connections, courtesy of 'nanonext' and 'NNG' (Nanomsg Next Gen).
+Features efficient task scheduling, fast inter-process communications, and Transport Layer Security over TCP/IP for remote connections, courtesy of 'nanonext' and 'NNG' (Nanomsg Next Gen).
 <br /><br />
 `mirai()` returns a 'mirai' object immediately. 'mirai' (未来 みらい) is Japanese for 'future'.
 <br /><br />
@@ -280,7 +280,7 @@ The daemons interface may also be used to send tasks for computation to remote d
 
 Call `daemons()` specifying 'url' as a character value the host network address and a port that is able to accept incoming connections.
 
-The examples below use an illustrative local network IP address of '10.111.5.13'.
+The examples below use an illustrative local network IP address of '10.3.51.222'.
 
 A port on the host machine also needs to be open and available for inbound connections from the local network, illustratively '5555' in the examples below.
 
@@ -288,16 +288,12 @@ IPv6 addresses are also supported and must be enclosed in square brackets `[]` t
 
 #### Connecting to Remote Daemons Through Dispatcher
 
-The default `dispatcher = TRUE` creates a background `dispatcher()` process on the local host machine, which listens to a vector of URLs that remote `daemon()` processes dial in to, with each daemon having its own unique URL.
+The default `dispatcher = TRUE` creates a background `dispatcher()` process on the local machine, which listens to a vector of URLs that remote `daemon()` processes dial in to, with each daemon having its own unique URL.
 
 It is recommended to use a websocket URL starting `ws://` instead of TCP in this scenario (used interchangeably with `tcp://`). A websocket URL supports a path after the port number, which can be made unique for each daemon. In this way a dispatcher can connect to an arbitrary number of daemons over a single port.
 
-```{r localqueue, eval=FALSE}
-daemons(n = 4, url = "ws://10.111.5.13:5555")
-```
-
-```{r localreal, include=FALSE}
-daemons(n = 4, url = "ws://:5555")
+```{r localqueue}
+daemons(n = 4, url = "ws://10.3.51.222:5555")
 ```
 
 Above, a single URL was supplied, along with `n = 4` to specify that the dispatcher should listen at 4 URLs. In such a case, an integer sequence is automatically appended to the path `/1` through `/4` to produce these URLs.
@@ -305,7 +301,7 @@ Above, a single URL was supplied, along with `n = 4` to specify that the dispatc
 Alternatively, supplying a vector of URLs allows the use of arbitrary port numbers / paths, e.g.:
 
 ```{r vectorqueue, eval=FALSE}
-daemons(url = c("ws://10.111.5.13:5566/cpu", "ws://10.111.5.13:5566/gpu", "ws://10.111.5.13:7788/1"))
+daemons(url = c("ws://10.3.51.222:5566/cpu", "ws://10.3.51.222:5566/gpu", "ws://10.3.51.222:7788/1"))
 ```
 
 Above, 'n' is not specified, in which case its value is inferred from the length of the 'url' vector supplied.
@@ -315,18 +311,25 @@ Above, 'n' is not specified, in which case its value is inferred from the length
 On the remote resource, `daemon()` may be called from an R session, or directly from a shell using Rscript. Each daemon instance should dial into one of the unique URLs that the dispatcher is listening at:
 
 ```
-Rscript -e 'mirai::daemon("ws://10.111.5.13:5555/1")'
-Rscript -e 'mirai::daemon("ws://10.111.5.13:5555/2")'
-Rscript -e 'mirai::daemon("ws://10.111.5.13:5555/3")'
-Rscript -e 'mirai::daemon("ws://10.111.5.13:5555/4")'
+Rscript -e 'mirai::daemon("ws://10.3.51.222:5555/1")'
+Rscript -e 'mirai::daemon("ws://10.3.51.222:5555/2")'
+Rscript -e 'mirai::daemon("ws://10.3.51.222:5555/3")'
+Rscript -e 'mirai::daemon("ws://10.3.51.222:5555/4")'
 
 ```
 
 Note that `daemons()` should be set up on the host machine before launching `daemon()` on remote resources, otherwise the daemon instances will exit if a connection is not immediately available. Alternatively, specifying `daemon(asyncdial = TRUE)` will allow daemons to wait (indefinitely) for a connection to become available.
 
-```{r remotes2, include=FALSE}
-Sys.sleep(1)
+`launch_remote()` may also be used to launch daemons directly on a remote machine. For example, if the remote machine at 10.3.51.301 accepts SSH connections over port 22:
+
+```{r launchremote, eval=FALSE}
+launch_remote(1:4, command = "ssh", args = c("-p 22 10.3.51.301", .))
 ```
+```{r launchremotereal, echo=FALSE}
+launch_remote(1:4)
+```
+
+The returned vector comprises the shell commands executed on the remote machine.
 
 --
 
@@ -358,11 +361,7 @@ Closing the connection causes the dispatcher to exit automatically, and in turn 
 By specifying `dispatcher = FALSE`, remote daemons connect directly to the host process. The host listens at a single URL, and distributes tasks to all connected daemons.
 
 ```{r remote, eval=FALSE}
-daemons(url = "tcp://10.111.5.13:0", dispatcher = FALSE)
-```
-
-```{r remotes3, include=FALSE}
-Sys.sleep(0.5)
+daemons(url = "tcp://10.3.51.222:0", dispatcher = FALSE)
 ```
 
 Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:
@@ -371,17 +370,27 @@ Alternatively, simply supply a colon followed by the port number to listen on al
 daemons(url = "tcp://:0", dispatcher = FALSE)
 ```
 
-Note that above, the port number is specified as zero. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided as the return value of the call, or it may be queried at any time by via `status()`.
+Note that above, the port number is specified as zero. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided in the return value of the call, or it may be queried at any time via `status()`.
 
 --
 
 On the network resource, `daemon()` may be called from an R session, or an Rscript invocation from a shell. This sets up a remote daemon process that connects to the host URL and receives tasks:
 
 ```
-Rscript -e 'mirai::daemon("tcp://10.111.5.13:0")'
+Rscript -e 'mirai::daemon("tcp://10.3.51.222:0")'
+```
+Note that `daemons()` should be set up on the host machine before launching `daemon()` on remote resources, otherwise the daemon instances will exit if a connection is not immediately available. Alternatively, specifying `daemon(asyncdial = TRUE)` will allow daemons to wait (indefinitely) for a connection to become available.
+
+`launch_remote()` may also be used to launch daemons directly on a remote machine. For example, if the remote machine at 10.3.51.301 accepts SSH connections over port 22:
+
+```{r launchremoteu, eval=FALSE}
+launch_remote("tcp://10.3.51.222:0", command = "ssh", args = c("-p 22 10.3.51.301", .))
+```
+```{r launchremoteureal, echo=FALSE}
+launch_remote("tcp://10.3.51.222:0")
 ```
 
-As before, `daemons()` should be set up on the host machine before launching `daemon()` on remote resources, otherwise the daemon instances will exit if a connection is not immediately available. Alternatively, specifying `daemon(asyncdial = TRUE)` will allow daemons to wait (indefinitely) for a connection to become available.
+The returned vector comprises the shell commands executed on the remote machine.
 
 --
 
@@ -389,9 +398,6 @@ The number of daemons connecting to the host URL is not limited and network reso
 
 `$connections` will show the actual number of connected daemons.
 
-```{r remotes, include=FALSE}
-Sys.sleep(1)
-```
 ```{r remotev}
 status()
 ```
@@ -418,11 +424,13 @@ daemons(n = 4, url = "wss://[::1]:5555")
 
 Single-use keys and certificates are automatically generated and configured, without requiring any user intervention. The private key is always retained on the host and never transmitted, and also not stored or accessible as an R object.
 
-The generated self-signed certificate is made available for read-only access via `launch_remote()`. This function conveniently constructs the full shell command to launch a daemon, including the correctly specified 'tls' argument to `daemon()`. The returned command may be deployed directly on a remote machine, e.g. via a resource manager, SSH connection etc.
+The generated self-signed certificate is made available for read-only access via `launch_remote()`. This function conveniently constructs the full shell command to launch a daemon, including the correctly specified 'tls' argument to `daemon()`.
 
 ```{r launch_remote}
 launch_remote(1)
 ```
+
+The return value may be deployed manually on a remote machine, or directly via SSH or a resource manager by additionally specifying 'command' and 'args' to `launch_remote()`.
 
 __
 

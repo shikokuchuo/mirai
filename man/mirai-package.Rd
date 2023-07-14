@@ -10,7 +10,7 @@ Lightweight parallel code execution and distributed computing. Designed for
     simplicity, a 'mirai' evaluates an R expression asynchronously, on local
     or network resources, resolving automatically upon completion. Features
     efficient task scheduling, fast inter-process communications, and
-    transport layer security over TCP/IP for remote connections, courtesy of
+    Transport Layer Security over TCP/IP for remote connections, courtesy of
     'nanonext' and 'NNG' (Nanomsg Next Gen).
 }
 \section{Notes}{
