@@ -979,6 +979,10 @@ launch_local <- function(url, ..., .compute = "default") {
 #'     character vector. If 'command' is specified, this is executed with the
 #'     arguments in 'args' to effect the daemon launch on the remote machine.
 #'
+#' @param rscript [default 'Rscript'] name / path of the Rscript executable. The
+#'     default assumes 'Rscript' is on the executable search path on the remote
+#'     machine. Prepend the full path if necessary. If launching on Windows,
+#'     'Rscript' should be replaced with 'Rscript.exe'.
 #' @param command (optional) the command used to effect the daemon launch on the
 #'     remote machine as a character value (e.g. \code{"ssh"}).
 #' @param args (optional) arguments passed to 'command', as a character vector
@@ -988,24 +992,13 @@ launch_local <- function(url, ..., .compute = "default") {
 #'     by the daemons launch command. These could be specified in the manner of:
 #'     \code{c("-p 22 192.168.0.2", .)}.
 #'
-#' @return For \strong{launch_remote}: A character vector the same length as 'url'.
-#'
-#' @section Rscript in shell commands:
-#'
-#'     Shell commands returned by \code{launch_remote} use an assumed 'Rscript'
-#'     executable, and is not necessarily the same command that would be executed
-#'     by \code{launch_local}. This is to facilitate launching on remote
-#'     resources, as the location of this executable may differ between machines.
-#'
-#'     The implicit assumption is that 'Rscript' has been set on the executable
-#'     search path - prepend the full path for 'Rscript' if necessary.
-#'
-#'     If launching on Windows, 'Rscript' should be changed to 'Rscript.exe'.
+#' @return For \strong{launch_remote}: A character vector of daemon launch
+#'     commands the same length as 'url'.
 #'
 #' @rdname launch_local
 #' @export
 #'
-launch_remote <- function(url, ..., .compute = "default", command = NULL, args = c("", .)) {
+launch_remote <- function(url, ..., rscript = "Rscript", command = NULL, args = c("", .), .compute = "default") {
 
   dots <- parse_dots(...)
   tls <- get_tls(.compute)
@@ -1016,11 +1009,11 @@ launch_remote <- function(url, ..., .compute = "default", command = NULL, args =
     is.null(vec) && stop(.messages[["dispatcher_inactive"]])
     all(url >= 0L, url <= length(vec)) || stop(.messages[["url_spec"]])
     for (i in seq_along(cmds))
-      cmds[[i]] <- strcat("Rscript -e ", write_args(list(vec[[url[[i]]]], dots), tls = tls))
+      cmds[[i]] <- sprintf("%s -e %s", rscript, write_args(list(vec[[url[[i]]]], dots), tls = tls))
   } else {
     lapply(url, parse_url)
     for (i in seq_along(cmds))
-      cmds[[i]] <- strcat("Rscript -e ", write_args(list(url[[i]], dots), tls = tls))
+      cmds[[i]] <- sprintf("%s -e %s", rscript, write_args(list(url[[i]], dots), tls = tls))
   }
   if (length(command)) {
     sa <- substitute(args)
