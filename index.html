@@ -409,7 +409,7 @@
 <div class="section level3">
 <h3 id="distributed-computing-tls-secure-connections">Distributed Computing: TLS Secure Connections<a class="anchor" aria-label="anchor" href="#distributed-computing-tls-secure-connections"></a>
 </h3>
-<p>A TLS layer is implemented to secure communications from the host process or dispatcher to remote daemons.</p>
+<p>TLS can be enabled to secure communications from the local machine to remote daemons.</p>
 <p>An automatic zero-configuration default is implemented - all that is required is to specify a secure URL of the form <code>wss://</code> or <code>tls+tcp://</code>. For example, on the IPv6 loopback address:</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/daemons.html">daemons</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, url <span class="op">=</span> <span class="st">"wss://[::1]:5555"</span><span class="op">)</span></span>
