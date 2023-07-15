@@ -414,7 +414,7 @@ This causes all connected daemons to exit automatically.
 
 ### Distributed Computing: TLS Secure Connections
 
-A TLS layer is implemented to secure communications from the host process or dispatcher to remote daemons.
+TLS can be enabled to secure communications from the local machine to remote daemons.
 
 An automatic zero-configuration default is implemented - all that is required is to specify a secure URL of the form `wss://` or `tls+tcp://`. For example, on the IPv6 loopback address:
 

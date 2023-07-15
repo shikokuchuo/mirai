@@ -10,10 +10,10 @@ launch_local(url, ..., .compute = "default")
 launch_remote(
   url,
   ...,
+  .compute = "default",
   rscript = "Rscript",
   command = NULL,
-  args = c("", .),
-  .compute = "default"
+  args = c("", .)
 )
 }
 \arguments{

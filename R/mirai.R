@@ -991,7 +991,7 @@ launch_local <- function(url, ..., .compute = "default") {
 #' @rdname launch_local
 #' @export
 #'
-launch_remote <- function(url, ..., rscript = "Rscript", command = NULL, args = c("", .), .compute = "default") {
+launch_remote <- function(url, ..., .compute = "default", rscript = "Rscript", command = NULL, args = c("", .)) {
 
   dots <- parse_dots(...)
   tls <- get_tls(.compute)
