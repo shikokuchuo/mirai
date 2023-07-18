@@ -111,7 +111,7 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
     aio <- recv_aio_signal(ctx, mode = 1L, timeout = idletime, cv = cv)
     wait(cv) || return(invisible())
     ._mirai_. <- .subset2(aio, "data")
-    is.integer(._mirai_.) && {
+    is.environment(._mirai_.) || {
       count < timerstart && {
         start <- mclock()
         next
@@ -1328,7 +1328,7 @@ query_status <- function(envir) {
 
 recv_and_store <- function(sockc, envir) {
   res <- recv(sockc, mode = 2L, block = .timelimit)
-  is.integer(res) && stop(.messages[["connection_timeout"]])
+  is.object(res) && stop(.messages[["connection_timeout"]])
   `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[[1L]]))
 }
 
