@@ -228,7 +228,9 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
   activestore <- instance <- complete <- assigned <- integer(n)
   serverfree <- !integer(n)
   active <- servers <- queue <- vector(mode = "list", length = n)
-  if (!auto) {
+  if (auto) {
+    dots <- parse_dots(...)
+  } else {
     baseurl <- parse_url(url)
     if (substr(baseurl[["scheme"]], 1L, 1L) == "t") {
       ports <- if (baseurl[["port"]] == "0") integer(n) else seq.int(baseurl[["port"]], length.out = n)
@@ -264,7 +266,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
     }
 
     if (auto)
-      launch_daemon(nurl, parse_dots(...))
+      launch_daemon(nurl, dots)
 
     servers[[i]] <- nsock
     active[[i]] <- ncv
@@ -1247,7 +1249,10 @@ print.miraiInterrupt <- function(x, ...) {
 # internals --------------------------------------------------------------------
 
 parse_dots <- function(...)
-  if (missing(...)) "" else sprintf(",%s", paste(names(dots <- list(...)), dots, sep = "=", collapse = ","))
+  if (missing(...)) "" else strcat(",", paste(names(dots <- list(...)), dots, sep = "=", collapse = ","))
+
+parse_tls <- function(tls)
+  if (is.null(tls)) "" else sprintf(",tls=c(\"%s\",\"%s\")", tls[[1L]], tls[[2L]])
 
 get_tls <- function(.compute)
   if (length(..[[.compute]][["tls"]])) weakref_value(..[[.compute]][["tls"]])
@@ -1265,16 +1270,12 @@ process_url <- function(url, .compute) {
 }
 
 write_args <- function(dots, tls = NULL)
-  shQuote(
-    switch(length(dots),
-           sprintf("mirai::.daemon(\"%s\")", dots[[1L]]),
-           if (length(tls)) sprintf("mirai::daemon(\"%s\",tls=c(\"%s\",\"%s\")%s)", dots[[1L]], tls[[1L]], tls[[2L]], dots[[2L]]) else
-             sprintf("mirai::daemon(\"%s\"%s)", dots[[1L]], dots[[2L]]),
-           "",
-           sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", dots[[1L]], dots[[2L]], dots[[3L]], dots[[4L]]),
-           if (length(tls)) sprintf("mirai::dispatcher(\"%s\",c(%s),tls=c(\"%s\",\"%s\"),n=%d,monitor=\"%s\"%s)", dots[[1L]], paste(sprintf("\"%s\"", dots[[2L]]), collapse = ","), tls[[1L]], tls[[2L]], dots[[3L]], dots[[4L]], dots[[5L]]) else
-             sprintf("mirai::dispatcher(\"%s\",c(%s),n=%d,monitor=\"%s\"%s)", dots[[1L]], paste(sprintf("\"%s\"", dots[[2L]]), collapse = ","), dots[[3L]], dots[[4L]], dots[[5L]]))
-  )
+  shQuote(switch(length(dots),
+                 sprintf("mirai::.daemon(\"%s\")", dots[[1L]]),
+                 sprintf("mirai::daemon(\"%s\"%s%s)", dots[[1L]], dots[[2L]], parse_tls(tls)),
+                 "",
+                 sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", dots[[1L]], dots[[2L]], dots[[3L]], dots[[4L]]),
+                 sprintf("mirai::dispatcher(\"%s\",c(\"%s\"),n=%d,monitor=\"%s\"%s%s)", dots[[1L]], paste(dots[[2L]], collapse = "\",\""), dots[[3L]], dots[[4L]], dots[[5L]], parse_tls(tls))))
 
 launch_daemon <- function(..., tls = NULL) {
   dots <- list(...)
