@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9040</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9041</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.0.9040" id="mirai-0909040-development">mirai 0.9.0.9040 (development)<a class="anchor" aria-label="anchor" href="#mirai-0909040-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.0.9041" id="mirai-0909041-development">mirai 0.9.0.9041 (development)<a class="anchor" aria-label="anchor" href="#mirai-0909041-development"></a></h2>
 <ul><li>Secure TLS connections implemented for distributed computing:
 <ul><li>Zero-configuration experience - simply specify a <code>tls+tcp://</code> or <code>wss://</code> URL in <code><a href="../reference/daemons.html">daemons()</a></code>. Single-use keys and certificates are automatically generated.</li>
 <li>Alternatively, custom certificates may be passed to the ‘tls’ argument of <code><a href="../reference/daemons.html">daemons()</a></code> and <code><a href="../reference/daemon.html">daemon()</a></code>, such as those generated via a Ceritficate Signing Request (CSR) to a Certificate Authority (CA).</li>
@@ -70,7 +70,7 @@
 <li>
 <code><a href="../reference/launch_local.html">launch_local()</a></code> replaces <code>launch_server()</code> and now accepts a vector argument for ‘url’ as well as numeric values to select the relevant dispatcher or host URL, returning invisible NULL instead of an integer value.</li>
 <li>
-<code><a href="../reference/status.html">status()</a></code> now retrieves connections and daemons status, replacing the call to <code><a href="../reference/daemons.html">daemons()</a></code> with no arguments (which is deprecated). The return value of <code>$daemons</code> is now always the host URL when not using dispatcher, and NULL when daemons are not set.</li>
+<code><a href="../reference/status.html">status()</a></code> now retrieves connections and daemons status, replacing the call to <code><a href="../reference/daemons.html">daemons()</a></code> with no arguments (which is deprecated). The return value of <code>$daemons</code> is now always the host URL when not using dispatcher.</li>
 </ul></li>
 <li>Redirection of stdout and stderr from local daemons to the host process is now possible (when running without dispatcher) by specifying <code>output=TRUE</code> for <code><a href="../reference/daemons.html">daemons()</a></code> or <code><a href="../reference/launch_local.html">launch_local()</a></code>. <code><a href="../reference/daemon.html">daemon()</a></code> accepts a new ‘output’ argument.</li>
 <li>

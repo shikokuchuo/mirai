@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9040</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9041</span>
       </span>
     </div>
 
@@ -83,15 +83,15 @@ profile has its own set of daemons for connecting to different resources).</p></
 <li><p><strong>daemons</strong> - if using dispatcher: a status matrix (see
     Status Matrix section below), or else an integer 'errorValue' if
     communication with dispatcher was unsuccessful. If not using
-    dispatcher: the character host URL. If daemons are not set: NULL.</p></li>
+    dispatcher: the character host URL. If daemons are not set: 0L.</p></li>
 </ul></div>
     <div id="status-matrix">
     <h2>Status Matrix</h2>
     
 
 
-<p>When using dispatcher, <code>$daemons</code> comprises a matrix with the
-    following columns:</p><ul><li><p><strong>online</strong> - shows as 1 when there is an active connection,
+<p>When using dispatcher, <code>$daemons</code> comprises an integer matrix with
+    the following columns:</p><ul><li><p><strong>online</strong> - shows as 1 when there is an active connection,
     or else 0 if a daemon has yet to connect or has disconnected.</p></li>
 <li><p><strong>instance</strong> - increments by 1 every time there is a new
     connection at a URL. This counter is designed to track new daemon
@@ -102,7 +102,7 @@ profile has its own set of daemons for connecting to different resources).</p></
     to the daemon.</p></li>
 <li><p><strong>complete</strong> - shows the cumulative number of tasks
     completed by the daemon.</p></li>
-</ul><p>The URLs are stored as row names to the matrix.</p>
+</ul><p>The dispatcher URLs are stored as row names to the matrix.</p>
     </div>
 
     <div id="ref-examples">
