@@ -722,11 +722,8 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
   missing(n) && missing(url) && return(status(.compute))
 
   envir <- ..[[.compute]]
-
-  if (is.null(envir)) {
-    `[[<-`(.., .compute, new.env(hash = FALSE, parent = environment(daemons)))
-    envir <- ..[[.compute]]
-  }
+  if (is.null(envir))
+    envir <- `[[<-`(.., .compute, new.env(hash = FALSE, parent = environment(daemons)))[[.compute]]
 
   if (is.character(url)) {
 
@@ -859,13 +856,13 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 #'     \item{\strong{daemons}} {- if using dispatcher: a status matrix (see
 #'     Status Matrix section below), or else an integer 'errorValue' if
 #'     communication with dispatcher was unsuccessful. If not using
-#'     dispatcher: the character host URL. If daemons are not set: NULL.}
+#'     dispatcher: the character host URL. If daemons are not set: 0L.}
 #'     }
 #'
 #' @section Status Matrix:
 #'
-#'     When using dispatcher, \code{$daemons} comprises a matrix with the
-#'     following columns:
+#'     When using dispatcher, \code{$daemons} comprises an integer matrix with
+#'     the following columns:
 #'     \itemize{
 #'     \item{\strong{online}} {- shows as 1 when there is an active connection,
 #'     or else 0 if a daemon has yet to connect or has disconnected.}
@@ -879,7 +876,7 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 #'     \item{\strong{complete}} {- shows the cumulative number of tasks
 #'     completed by the daemon.}
 #'     }
-#'     The URLs are stored as row names to the matrix.
+#'     The dispatcher URLs are stored as row names to the matrix.
 #'
 #' @examples
 #' if (interactive()) {
@@ -897,8 +894,9 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 status <- function(.compute = "default") {
 
     envir <- ..[[.compute]]
-    list(connections = if (length(envir[["sock"]])) stat(envir[["sock"]], "pipes") else 0L,
-         daemons = if (length(envir[["sockc"]])) query_status(envir) else envir[["urls"]])
+    active <- length(envir[["sock"]])
+    list(connections = if (active) stat(envir[["sock"]], "pipes") else 0L,
+         daemons = if (length(envir[["sockc"]])) query_status(envir) else if (active) envir[["urls"]] else 0L)
 
 }
 

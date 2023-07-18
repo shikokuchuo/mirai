@@ -19,7 +19,7 @@ A named list comprising:
     \item{\strong{daemons}} {- if using dispatcher: a status matrix (see
     Status Matrix section below), or else an integer 'errorValue' if
     communication with dispatcher was unsuccessful. If not using
-    dispatcher: the character host URL. If daemons are not set: NULL.}
+    dispatcher: the character host URL. If daemons are not set: 0L.}
     }
 }
 \description{
@@ -29,8 +29,8 @@ Retrieve status information for the specified compute profile, comprising
 \section{Status Matrix}{
 
 
-    When using dispatcher, \code{$daemons} comprises a matrix with the
-    following columns:
+    When using dispatcher, \code{$daemons} comprises an integer matrix with
+    the following columns:
     \itemize{
     \item{\strong{online}} {- shows as 1 when there is an active connection,
     or else 0 if a daemon has yet to connect or has disconnected.}
@@ -44,7 +44,7 @@ Retrieve status information for the specified compute profile, comprising
     \item{\strong{complete}} {- shows the cumulative number of tasks
     completed by the daemon.}
     }
-    The URLs are stored as row names to the matrix.
+    The dispatcher URLs are stored as row names to the matrix.
 }
 
 \examples{
