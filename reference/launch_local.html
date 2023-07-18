@@ -22,7 +22,7 @@ launch_remote returns the shell command for launching daemons as a
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9038</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9039</span>
       </span>
     </div>
 
@@ -88,7 +88,7 @@ launch_remote returns the shell command for launching daemons as a
     to connect to (and optionally for websockets, a path), e.g.
     tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'</p>
 <p><strong>or</strong> integer index value, or vector of index values, of the
-    dispatcher URLs (where applicable).</p></dd>
+    dispatcher URLs, or 1L for the host URL (when not using dispatcher).</p></dd>
 
 
 <dt>...</dt>
@@ -162,7 +162,7 @@ by the daemons launch command. These could be specified in the manner of:
 <span class="r-in"><span><span class="fu"><a href="daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"ws://[::1]:0"</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="status.html">status</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">launch_local</span><span class="op">(</span><span class="fu"><a href="status.html">status</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">daemons</span>, maxtasks <span class="op">=</span> <span class="fl">10L</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">launch_remote</span><span class="op">(</span><span class="fu"><a href="status.html">status</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">daemons</span>, maxtasks <span class="op">=</span> <span class="fl">10L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">launch_remote</span><span class="op">(</span><span class="fl">1L</span>, maxtasks <span class="op">=</span> <span class="fl">10L</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="status.html">status</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
