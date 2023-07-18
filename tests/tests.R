@@ -113,6 +113,7 @@ if (.Platform[["OS.type"]] != "windows") {
     nanotestz(sum(status[, "complete"]))
   }
   nanotest(is.character(saisei(i = 1L)))
+  nanotestn(saisei(i = 0L))
   nanotestn(saisei(i = 10L))
   Sys.sleep(0.5)
   nanotestz(daemons(0))
@@ -157,6 +158,7 @@ if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
     nanotest(is.integer(dstatus[, "online"]))
     nanotest(is.integer(dstatus[, "instance"]))
   }
+  nanotestn(saisei(i = 1L))
   nanotestz(daemons(0))
   Sys.sleep(2L)
 }
