@@ -18,8 +18,8 @@ A named list comprising:
     which in turn connects to the daemons.}
     \item{\strong{daemons}} {- if using dispatcher: a status matrix (see
     Status Matrix section below), or else an integer 'errorValue' if
-    communication with the dispatcher was unsuccessful. If not using
-    dispatcher: the host URL.}
+    communication with dispatcher was unsuccessful. If not using
+    dispatcher: the character host URL. If daemons are not set: NULL.}
     }
 }
 \description{

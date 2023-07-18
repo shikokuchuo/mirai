@@ -790,7 +790,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
 
   }
 
-  envir[["n"]] %||% 0L
+  if (length(envir[["n"]])) envir[["n"]] else 0L
 
 }
 
@@ -858,8 +858,8 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 #'     which in turn connects to the daemons.}
 #'     \item{\strong{daemons}} {- if using dispatcher: a status matrix (see
 #'     Status Matrix section below), or else an integer 'errorValue' if
-#'     communication with the dispatcher was unsuccessful. If not using
-#'     dispatcher: the host URL.}
+#'     communication with dispatcher was unsuccessful. If not using
+#'     dispatcher: the character host URL. If daemons are not set: NULL.}
 #'     }
 #'
 #' @section Status Matrix:
@@ -898,7 +898,7 @@ status <- function(.compute = "default") {
 
     envir <- ..[[.compute]]
     list(connections = if (length(envir[["sock"]])) stat(envir[["sock"]], "pipes") else 0L,
-         daemons = if (length(envir[["sockc"]])) query_status(envir) else envir[["urls"]] %||% 0L)
+         daemons = if (length(envir[["sockc"]])) query_status(envir) else envir[["urls"]])
 
 }
 
@@ -1367,5 +1367,3 @@ mk_mirai_error <- function(e) {
   cat(msg, file = stderr());
   `class<-`(msg, c("miraiError", "errorValue"))
 }
-
-`%||%` <- function(x, y) if (length(x)) x else y
