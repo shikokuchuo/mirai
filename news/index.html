@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9034</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9035</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.0.9034" id="mirai-0909034-development">mirai 0.9.0.9034 (development)<a class="anchor" aria-label="anchor" href="#mirai-0909034-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.0.9035" id="mirai-0909035-development">mirai 0.9.0.9035 (development)<a class="anchor" aria-label="anchor" href="#mirai-0909035-development"></a></h2>
 <ul><li>Secure TLS connections implemented for distributed computing:
 <ul><li>Zero-configuration experience - simply specify a <code>tls+tcp://</code> or <code>wss://</code> URL in <code><a href="../reference/daemons.html">daemons()</a></code>. Single-use keys and certificates are automatically generated.</li>
 <li>Alternatively, custom certificates may be passed to the ‘tls’ argument of <code><a href="../reference/daemons.html">daemons()</a></code> and <code><a href="../reference/daemon.html">daemon()</a></code>, such as those generated via a Ceritficate Signing Request (CSR) to a Certificate Authority (CA).</li>
@@ -73,6 +73,8 @@
 <code><a href="../reference/status.html">status()</a></code> now retrieves connections and daemons status, replacing the call to <code><a href="../reference/daemons.html">daemons()</a></code> with no arguments (which is deprecated).</li>
 </ul></li>
 <li>Redirection of stdout and stderr from local daemons to the host process is now possible (when running without dispatcher) by specifying <code>output=TRUE</code> for <code><a href="../reference/daemons.html">daemons()</a></code> or <code><a href="../reference/launch_local.html">launch_local()</a></code>. <code><a href="../reference/daemon.html">daemon()</a></code> accepts a new ‘output’ argument.</li>
+<li>
+<code><a href="../reference/saisei.html">saisei()</a></code> argument validation now happens prior to sending a request to dispatcher rather than on dispatcher.</li>
 <li>A ‘miraiError’ now includes the trailing line break at the end of the character vector.</li>
 <li>Requires nanonext &gt;= 0.9.1, with R requirement relaxed back to &gt;= 2.12.</li>
 </ul></div>

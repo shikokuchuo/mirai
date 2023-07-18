@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9034</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.0.9035</span>
       </span>
     </div>
 
@@ -91,8 +91,10 @@ profile has its own set of daemons for connecting to different resources).</p></
     <p>As the specified listener is closed and replaced immediately, this
     function will only be successful if there are no existing connections at
     the socket (i.e. 'online' status shows 0), unless the argument 'force' is
-    specified as TRUE. If a listener is forced closed while a mirai task is
-    still ongoing, the mirai may return with a 'errorValue' 7 (object closed).</p>
+    specified as TRUE.</p>
+<p>If a listener is forced closed while a mirai task is still ongoing, the
+    mirai remains unresolved until a new instance connects at the regenerated
+    URL, at which time it is retried.</p>
     </div>
 
     <div id="ref-examples">
