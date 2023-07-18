@@ -22,7 +22,7 @@ launch_remote(
     tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'
 
     \strong{or} integer index value, or vector of index values, of the
-    dispatcher URLs (where applicable).}
+    dispatcher URLs, or 1L for the host URL (when not using dispatcher).}
 
 \item{...}{(optional) additional arguments passed to \code{\link{daemon}}
 (see 'additional arguments' section below).}
@@ -91,7 +91,7 @@ if (interactive()) {
 daemons(url = "ws://[::1]:0", dispatcher = FALSE)
 status()
 launch_local(status()$daemons, maxtasks = 10L)
-launch_remote(status()$daemons, maxtasks = 10L)
+launch_remote(1L, maxtasks = 10L)
 Sys.sleep(1)
 status()
 daemons(0)

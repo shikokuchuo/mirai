@@ -1,4 +1,4 @@
-# mirai 0.9.0.9038 (development)
+# mirai 0.9.0.9039 (development)
 
 * Secure TLS connections implemented for distributed computing:
   + Zero-configuration experience - simply specify a `tls+tcp://` or `wss://` URL in `daemons()`. Single-use keys and certificates are automatically generated.
@@ -8,8 +8,8 @@
 * User interface optimised for consistency and ease of use:
   + Documentation updated to refer consistently to host and daemons (rather than client and server) for clarity.
   + `daemon()` replaces `server()`, which is deprecated (although currently retained as an alias).
-  + `launch_local()` replaces `launch_server()` and now accepts a vector argument for 'url' as well as numeric values to select the relevant dispatcher URL (where applicable), returning invisible NULL instead of an integer value.
-  + `status()` now retrieves connections and daemons status, replacing the call to `daemons()` with no arguments (which is deprecated).
+  + `launch_local()` replaces `launch_server()` and now accepts a vector argument for 'url' as well as numeric values to select the relevant dispatcher or host URL, returning invisible NULL instead of an integer value.
+  + `status()` now retrieves connections and daemons status, replacing the call to `daemons()` with no arguments (which is deprecated). The return value of `$daemons` is now always the host URL when not using dispatcher.
 * Redirection of stdout and stderr from local daemons to the host process is now possible (when running without dispatcher) by specifying `output=TRUE` for `daemons()` or `launch_local()`. `daemon()` accepts a new 'output' argument.
 * `saisei()` argument validation now happens prior to sending a request to dispatcher rather than on dispatcher.
 * A 'miraiError' now includes the trailing line break at the end of the character vector.

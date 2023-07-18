@@ -532,8 +532,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     creating the daemons (each compute profile has its own set of daemons for
 #'     connecting to different resources).
 #'
-#' @return Integer number of daemons set, or else the character host URL (if
-#'     not using dispatcher).
+#' @return Integer number of daemons set (when using dispatcher), or integer
+#'     local daemons launched (without dispatcher) or else the character host
+#'     URL.
 #'
 #' @details Use \code{daemons(0)} to reset daemon connections:
 #'     \itemize{
@@ -750,6 +751,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
         n <- opt(listener, "url")
         if (parse_url(n)[["port"]] == "0")
           n <- sub_real_port(port = opt(listener, "tcp-bound-port"), url = n)
+        `[[<-`(envir, "urls", n)
       }
       `[[<-`(`[[<-`(envir, "sock", sock), "n", n)
     }
@@ -781,6 +783,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
       } else {
         for (i in seq_len(n))
           launch_daemon(urld, dots)
+        `[[<-`(envir, "urls", urld)
       }
       `[[<-`(`[[<-`(envir, "sock", sock), "n", n)
     }
@@ -856,7 +859,7 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 #'     \item{\strong{daemons}} {- if using dispatcher: a status matrix (see
 #'     Status Matrix section below), or else an integer 'errorValue' if
 #'     communication with the dispatcher was unsuccessful. If not using
-#'     dispatcher: the number of daemons set, or else the host URL.}
+#'     dispatcher: the host URL.}
 #'     }
 #'
 #' @section Status Matrix:
@@ -895,7 +898,7 @@ status <- function(.compute = "default") {
 
     envir <- ..[[.compute]]
     list(connections = if (length(envir[["sock"]])) stat(envir[["sock"]], "pipes") else 0L,
-         daemons = if (length(envir[["sockc"]])) query_status(envir) else envir[["n"]] %||% 0L)
+         daemons = if (length(envir[["sockc"]])) query_status(envir) else envir[["urls"]] %||% 0L)
 
 }
 
@@ -911,7 +914,7 @@ status <- function(.compute = "default") {
 #'     tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'
 #'
 #'     \strong{or} integer index value, or vector of index values, of the
-#'     dispatcher URLs (where applicable).
+#'     dispatcher URLs, or 1L for the host URL (when not using dispatcher).
 #' @param ... (optional) additional arguments passed to \code{\link{daemon}}
 #'     (see 'additional arguments' section below).
 #'
@@ -947,7 +950,7 @@ status <- function(.compute = "default") {
 #' daemons(url = "ws://[::1]:0", dispatcher = FALSE)
 #' status()
 #' launch_local(status()$daemons, maxtasks = 10L)
-#' launch_remote(status()$daemons, maxtasks = 10L)
+#' launch_remote(1L, maxtasks = 10L)
 #' Sys.sleep(1)
 #' status()
 #' daemons(0)

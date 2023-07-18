@@ -85,7 +85,7 @@ NULL
 .messages <- list2env(
   list(
     connection_timeout = "connection to local process timed out after 5s",
-    dispatcher_inactive = "a numeric value for 'url' is only valid when dispatcher is active",
+    dispatcher_inactive = "a numeric value for 'url' requires daemons to be set",
     dot_required = "'.' must be an element of the character vector supplied to 'args'",
     missing_url = "at least one URL must be supplied for 'url' or 'n' must be at least 1",
     missing_expression = "missing expression, perhaps wrap in {}?",

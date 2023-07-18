@@ -45,8 +45,9 @@ creating the daemons (each compute profile has its own set of daemons for
 connecting to different resources).}
 }
 \value{
-Integer number of daemons set, or else the character host URL (if
-    not using dispatcher).
+Integer number of daemons set (when using dispatcher), or integer
+    local daemons launched (without dispatcher) or else the character host
+    URL.
 }
 \description{
 Set 'daemons' or persistent background processes receiving \code{\link{mirai}}

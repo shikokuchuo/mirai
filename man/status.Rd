@@ -19,7 +19,7 @@ A named list comprising:
     \item{\strong{daemons}} {- if using dispatcher: a status matrix (see
     Status Matrix section below), or else an integer 'errorValue' if
     communication with the dispatcher was unsuccessful. If not using
-    dispatcher: the number of daemons set, or else the host URL.}
+    dispatcher: the host URL.}
     }
 }
 \description{
