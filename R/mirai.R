@@ -242,11 +242,11 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
 
   for (i in seq_n) {
     burl <- if (auto) .urlscheme else
-      if (vectorised) url[i] else
+      if (vectorised) url[[i]] else
         if (is.null(ports)) sprintf("%s/%d", url, i) else
-          sub(ports[1L], ports[i], url, fixed = TRUE)
-    basenames[i] <- burl
-    nurl <- if (auto || token) new_tokenized_url(url = burl, auto = auto) else burl
+          sub(ports[[1L]], ports[[i]], url, fixed = TRUE)
+    basenames[[i]] <- burl
+    nurl <- if (auto) auto_tokenized_url(burl) else if (token) new_tokenized_url(burl) else burl
     nsock <- req_socket(NULL)
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE)
@@ -256,13 +256,13 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
     listener <- attr(nsock, "listener")[[1L]]
     if (i == 1L && !auto && parse_url(opt(listener, "url"))[["port"]] == "0") {
       realport <- opt(listener, "tcp-bound-port")
-      servernames[i] <- sub_real_port(port = realport, url = nurl)
+      servernames[[i]] <- sub_real_port(port = realport, url = nurl)
       if (!vectorised || n == 1L) {
         url <- sub_real_port(port = realport, url = url)
-        basenames[1L] <- sub_real_port(port = realport, url = burl)
+        basenames[[1L]] <- sub_real_port(port = realport, url = burl)
       }
     } else {
-      servernames[i] <- opt(listener, "url")
+      servernames[[i]] <- opt(listener, "url")
     }
 
     if (auto)
@@ -304,7 +304,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
           if (i > 0L && !activevec[[i]] || i < 0L && (i <- -i)) {
             close(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
-            data <- servernames[[i]] <- new_tokenized_url(url = basenames[[i]], auto = auto)
+            data <- servernames[[i]] <- if (auto) auto_tokenized_url(basenames[[i]]) else new_tokenized_url(basenames[[i]])
             instance[[i]] <- 0L
             listen(servers[[i]], url = data, tls = tls, error = TRUE)
           } else {
@@ -832,7 +832,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
 saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 
   envir <- ..[[.compute]]
-  i <- as.integer(i)
+  i <- `length<-`(i, 1L)
   length(envir[["sockc"]]) && i >= 1L && i <= envir[["n"]] && substr(envir[["urls"]][[i]], 1L, 1L) != "t" || return()
   r <- query_dispatcher(sock = envir[["sockc"]], command = if (force) -i else i, mode = 2L)
   is.character(r) && nzchar(r) || return()
@@ -1011,13 +1011,11 @@ launch_remote <- function(url, ..., .compute = "default", rscript = "Rscript", c
   if (length(command)) {
     sa <- substitute(args)
     if (length(sa) > length(args))
-      sa[1L] <- NULL
+      sa[[1L]] <- NULL
     sel <- as.character(sa) == "."
     any(sel) || stop(.messages[["dot_required"]])
-    for (cmd in cmds) {
-      args[sel] <- shQuote(cmd)
-      system2(command = command, args = args, wait = FALSE)
-    }
+    for (cmd in cmds)
+      system2(command = command, args = `[<-`(args, sel, shQuote(cmd)), wait = FALSE)
   }
 
   cmds
@@ -1312,13 +1310,11 @@ dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
   }
 }
 
-sub_real_port <- function(port, url)
-  sub("(?<=:)0(?![^/])", port, url, perl = TRUE)
+sub_real_port <- function(port, url) sub("(?<=:)0(?![^/])", port, url, perl = TRUE)
 
-auto_tokenized_url <- function() strcat(.urlscheme, sha1(random(8L)))
+auto_tokenized_url <- function(url = .urlscheme) strcat(url, sha1(random(8L)))
 
-new_tokenized_url <- function(url, auto)
-  if (auto) strcat(url, sha1(random(8L))) else sprintf("%s/%s", url, sha1(random(8L)))
+new_tokenized_url <- function(url) sprintf("%s/%s", url, sha1(random(8L)))
 
 req_socket <- function(url, tls = NULL)
   `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", .Machine[["integer.max"]])
