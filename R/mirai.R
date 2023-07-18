@@ -246,7 +246,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
         if (is.null(ports)) sprintf("%s/%d", url, i) else
           sub(ports[[1L]], ports[[i]], url, fixed = TRUE)
     basenames[[i]] <- burl
-    nurl <- if (auto) auto_tokenized_url(burl) else if (token) new_tokenized_url(burl) else burl
+    nurl <- if (auto) auto_tokenized_url() else if (token) new_tokenized_url(burl) else burl
     nsock <- req_socket(NULL)
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE)
@@ -304,7 +304,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
           if (i > 0L && !activevec[[i]] || i < 0L && (i <- -i)) {
             close(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
-            data <- servernames[[i]] <- if (auto) auto_tokenized_url(basenames[[i]]) else new_tokenized_url(basenames[[i]])
+            data <- servernames[[i]] <- if (auto) auto_tokenized_url() else new_tokenized_url(basenames[[i]])
             instance[[i]] <- 0L
             listen(servers[[i]], url = data, tls = tls, error = TRUE)
           } else {
@@ -832,7 +832,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
 saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 
   envir <- ..[[.compute]]
-  i <- `length<-`(i, 1L)
+  i <- as.integer(`length<-`(i, 1L))
   length(envir[["sockc"]]) && i >= 1L && i <= envir[["n"]] && substr(envir[["urls"]][[i]], 1L, 1L) != "t" || return()
   r <- query_dispatcher(sock = envir[["sockc"]], command = if (force) -i else i, mode = 2L)
   is.character(r) && nzchar(r) || return()
@@ -1312,7 +1312,7 @@ dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
 
 sub_real_port <- function(port, url) sub("(?<=:)0(?![^/])", port, url, perl = TRUE)
 
-auto_tokenized_url <- function(url = .urlscheme) strcat(url, sha1(random(8L)))
+auto_tokenized_url <- function() strcat(.urlscheme, sha1(random(8L)))
 
 new_tokenized_url <- function(url) sprintf("%s/%s", url, sha1(random(8L)))
 
