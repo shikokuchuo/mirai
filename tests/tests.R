@@ -142,8 +142,8 @@ if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
   nanotesto(daemons(url = "wss://:0", token = TRUE))
   nanotestn(launch_local(1L))
   nanotest(grepl("CERTIFICATE", launch_remote(1L), fixed = TRUE))
-  nanotesterr(launch_local(2:4), "out of bounds")
-  nanotesterr(launch_remote(2:4), "out of bounds")
+  nanotesterr(launch_local(0:1), "out of bounds")
+  nanotesterr(launch_remote(1:2), "out of bounds")
   nanotestz(daemons(0L))
   Sys.sleep(1L)
   option <- 15L

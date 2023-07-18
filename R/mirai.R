@@ -299,8 +299,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
       ctrchannel && !unresolved(cmessage) && {
         i <- .subset2(cmessage, "data")
         if (i) {
-          if ((i > 0L && i <= n && !activevec[[i]] || i < 0L && (i <- -i) <= n) &&
-              substr(basenames[[i]], 1L, 1L) != "t") {
+          if (i > 0L && !activevec[[i]] || i < 0L && (i <- -i)) {
             close(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
             data <- servernames[[i]] <- new_tokenized_url(url = basenames[[i]], auto = auto)
@@ -715,7 +714,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute = "default") {
 
-  missing(n) && missing(url) && return(status(.compute = .compute))
+  missing(n) && missing(url) && return(status(.compute))
 
   envir <- ..[[.compute]]
 
@@ -769,14 +768,15 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
       n > 0L || stop(.messages[["n_zero"]])
       urld <- auto_tokenized_url()
       sock <- req_socket(urld)
+      dots <- parse_dots(...)
       if (dispatcher) {
         urlc <- strcat(urld, "c")
         sockc <- socket(protocol = "pair", listen = urlc)
-        launch_and_sync_daemon(sock = sock, urld, n, urlc, parse_dots(...))
+        launch_and_sync_daemon(sock = sock, urld, n, urlc, dots)
         recv_and_store(sockc = sockc, envir = envir)
       } else {
         for (i in seq_len(n))
-          launch_daemon(urld, parse_dots(...))
+          launch_daemon(urld, dots)
       }
       `[[<-`(`[[<-`(envir, "sock", sock), "n", n)
     }
@@ -803,8 +803,11 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
 #' @details As the specified listener is closed and replaced immediately, this
 #'     function will only be successful if there are no existing connections at
 #'     the socket (i.e. 'online' status shows 0), unless the argument 'force' is
-#'     specified as TRUE. If a listener is forced closed while a mirai task is
-#'     still ongoing, the mirai may return with a 'errorValue' 7 (object closed).
+#'     specified as TRUE.
+#'
+#'     If a listener is forced closed while a mirai task is still ongoing, the
+#'     mirai remains unresolved until a new instance connects at the regenerated
+#'     URL, at which time it is retried.
 #'
 #' @examples
 #' if (interactive()) {
@@ -825,8 +828,9 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
 saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 
   envir <- ..[[.compute]]
-  length(envir[["sockc"]]) || return()
-  r <- query_dispatcher(sock = envir[["sockc"]], command = as.integer(if (force) -i else i), mode = 2L)
+  i <- as.integer(i)
+  length(envir[["sockc"]]) && i >= 1L && i <= envir[["n"]] && substr(envir[["urls"]][[i]], 1L, 1L) != "t" || return()
+  r <- query_dispatcher(sock = envir[["sockc"]], command = if (force) -i else i, mode = 2L)
   is.character(r) && nzchar(r) || return()
   envir[["urls"]][[i]] <- r
   r
@@ -1002,7 +1006,8 @@ launch_remote <- function(url, ..., .compute = "default", rscript = "Rscript", c
 
   if (length(command)) {
     sa <- substitute(args)
-    if (length(sa) > length(args)) sa[1L] <- NULL
+    if (length(sa) > length(args))
+      sa[1L] <- NULL
     sel <- as.character(sa) == "."
     any(sel) || stop(.messages[["dot_required"]])
     for (cmd in cmds) {
@@ -1251,7 +1256,7 @@ process_url <- function(url, .compute) {
   if (is.numeric(url)) {
     vec <- ..[[.compute]][["urls"]]
     is.null(vec) && stop(.messages[["dispatcher_inactive"]])
-    all(url >= 0L, url <= length(vec)) || stop(.messages[["url_spec"]])
+    all(url >= 1L, url <= length(vec)) || stop(.messages[["url_spec"]])
     url <- vec[url]
   } else {
     lapply(url, parse_url)
@@ -1316,7 +1321,7 @@ query_dispatcher <- function(sock, command, mode) {
 
 query_status <- function(envir) {
   res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L)
-  is_error_value(res) && return(res)
+  is.object(res) && return(res)
   `attributes<-`(res, list(dim = c(envir[["n"]], 4L),
                            dimnames = list(envir[["urls"]], c("online", "instance", "assigned", "complete"))))
 }

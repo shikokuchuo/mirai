@@ -26,8 +26,11 @@ When using daemons with dispatcher, regenerates the token for the URL a
 As the specified listener is closed and replaced immediately, this
     function will only be successful if there are no existing connections at
     the socket (i.e. 'online' status shows 0), unless the argument 'force' is
-    specified as TRUE. If a listener is forced closed while a mirai task is
-    still ongoing, the mirai may return with a 'errorValue' 7 (object closed).
+    specified as TRUE.
+
+    If a listener is forced closed while a mirai task is still ongoing, the
+    mirai remains unresolved until a new instance connects at the regenerated
+    URL, at which time it is retried.
 }
 \examples{
 if (interactive()) {
