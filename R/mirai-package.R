@@ -79,7 +79,7 @@ NULL
 
 .. <- NULL
 .command <- NULL
-.urlfmt <- NULL
+.urlscheme <- NULL
 .timelimit <- 5000L
 
 .messages <- list2env(

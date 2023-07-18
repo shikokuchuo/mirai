@@ -542,6 +542,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     \item{All connected daemons and/or dispatchers exit automatically.}
 #'     \item{\pkg{mirai} reverts to the default behaviour of creating a new
 #'     background process for each request.}
+#'     \item{Any unresolved 'mirai' will return an 'errorValue' 7 (object
+#'     closed) after a reset.}
 #'     }
 #'
 #'     If the host session ends, for whatever reason, all connected dispatcher
@@ -740,7 +742,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld)
         sockc <- socket(protocol = "pair", listen = urlc)
-        launch_and_sync_daemon(sock = sock, urld, url, n, urlc, parse_dots(...), tls = tls)
+        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls)
         recv_and_store(sockc = sockc, envir = envir)
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls))
@@ -774,7 +776,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
       if (dispatcher) {
         urlc <- strcat(urld, "c")
         sockc <- socket(protocol = "pair", listen = urlc)
-        launch_and_sync_daemon(sock = sock, urld, n, urlc, dots)
+        launch_and_sync_daemon(sock = sock, urld, dots, n, urlc)
         recv_and_store(sockc = sockc, envir = envir)
       } else {
         for (i in seq_len(n))
@@ -1249,7 +1251,13 @@ print.miraiInterrupt <- function(x, ...) {
 # internals --------------------------------------------------------------------
 
 parse_dots <- function(...)
-  if (missing(...)) "" else strcat(",", paste(names(dots <- list(...)), dots, sep = "=", collapse = ","))
+  if (missing(...)) "" else {
+    dots <- list(...)
+    dnames <- names(dots)
+    dots <- strcat(",", paste(dnames, dots, sep = "=", collapse = ","))
+    "output" %in% dnames && return(`class<-`(dots, .urlscheme))
+    dots
+  }
 
 parse_tls <- function(tls)
   if (is.null(tls)) "" else sprintf(",tls=c(\"%s\",\"%s\")", tls[[1L]], tls[[2L]])
@@ -1274,12 +1282,12 @@ write_args <- function(dots, tls = NULL)
                  sprintf("mirai::.daemon(\"%s\")", dots[[1L]]),
                  sprintf("mirai::daemon(\"%s\"%s%s)", dots[[1L]], dots[[2L]], parse_tls(tls)),
                  "",
-                 sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", dots[[1L]], dots[[2L]], dots[[3L]], dots[[4L]]),
-                 sprintf("mirai::dispatcher(\"%s\",c(\"%s\"),n=%d,monitor=\"%s\"%s%s)", dots[[1L]], paste(dots[[2L]], collapse = "\",\""), dots[[3L]], dots[[4L]], dots[[5L]], parse_tls(tls))))
+                 sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", dots[[1L]], dots[[3L]], dots[[4L]], dots[[2L]]),
+                 sprintf("mirai::dispatcher(\"%s\",c(\"%s\"),n=%d,monitor=\"%s\"%s%s)", dots[[1L]], paste(dots[[3L]], collapse = "\",\""), dots[[4L]], dots[[5L]], dots[[2L]], parse_tls(tls))))
 
 launch_daemon <- function(..., tls = NULL) {
   dots <- list(...)
-  output <- ",output=TRUE" %in% dots
+  output <- length(dots) > 1L && is.object(dots[[2L]])
   system2(command = .command, args = c("-e", write_args(dots, tls = tls)), stdout = if (output) "", stderr = if (output) "", wait = FALSE)
 }
 

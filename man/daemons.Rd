@@ -65,6 +65,8 @@ Use \code{daemons(0)} to reset daemon connections:
     \item{All connected daemons and/or dispatchers exit automatically.}
     \item{\pkg{mirai} reverts to the default behaviour of creating a new
     background process for each request.}
+    \item{Any unresolved 'mirai' will return an 'errorValue' 7 (object
+    closed) after a reset.}
     }
 
     If the host session ends, for whatever reason, all connected dispatcher
