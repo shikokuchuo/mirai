@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1</span>
       </span>
     </div>
 
@@ -54,10 +54,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.1.9000" id="mirai-0919000-development">mirai 0.9.1.9000 (development)<a class="anchor" aria-label="anchor" href="#mirai-0919000-development"></a></h2>
-</div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.1" id="mirai-091">mirai 0.9.1<a class="anchor" aria-label="anchor" href="#mirai-091"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.1" id="mirai-091">mirai 0.9.1<small>2023-07-19</small><a class="anchor" aria-label="anchor" href="#mirai-091"></a></h2>
 <ul><li>Secure TLS connections implemented for distributed computing:
 <ul><li>Zero-configuration experience - simply specify a <code>tls+tcp://</code> or <code>wss://</code> URL in <code><a href="../reference/daemons.html">daemons()</a></code>. Single-use keys and certificates are automatically generated.</li>
 <li>Alternatively, custom certificates may be passed to the ‘tls’ argument of <code><a href="../reference/daemons.html">daemons()</a></code> and <code><a href="../reference/daemon.html">daemon()</a></code>, such as those generated via a Ceritficate Signing Request (CSR) to a Certificate Authority (CA).</li>
@@ -82,7 +79,7 @@
 <li>Requires nanonext &gt;= 0.9.1, with R requirement relaxed back to &gt;= 2.12.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.0" id="mirai-090">mirai 0.9.0<a class="anchor" aria-label="anchor" href="#mirai-090"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.0" id="mirai-090">mirai 0.9.0<small>2023-06-24</small><a class="anchor" aria-label="anchor" href="#mirai-090"></a></h2>
 <ul><li>mirai 0.9.0 is a major release focusing on stability improvements.</li>
 <li>Improvements to dispatcher:
 <ul><li>Ensures the first URL retains the same format if <code>saisei(i = 1L)</code> is called.</li>
@@ -97,14 +94,14 @@
 <li>Internal performance enhancements.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.7" id="mirai-087">mirai 0.8.7<a class="anchor" aria-label="anchor" href="#mirai-087"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.7" id="mirai-087">mirai 0.8.7<small>2023-05-11</small><a class="anchor" aria-label="anchor" href="#mirai-087"></a></h2>
 <ul><li>
 <code><a href="../reference/daemon.html">server()</a></code> and <code><a href="../reference/dispatcher.html">dispatcher()</a></code> argument ‘asyncdial’ is now FALSE by default, causing these functions to exit if a connection is not immediately available. This means that for distributed computing purposes, <code>dameons()</code> should be called before <code><a href="../reference/daemon.html">server()</a></code> is launched on remote resources, or else <code>server(asyncdial = TRUE)</code> allows servers to wait for a connection.</li>
 <li>
 <code>launch_server()</code> now parses the passed URL for correctness before attempting to launch a server, producing an error if not valid.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.4" id="mirai-084">mirai 0.8.4<a class="anchor" aria-label="anchor" href="#mirai-084"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.4" id="mirai-084">mirai 0.8.4<small>2023-05-09</small><a class="anchor" aria-label="anchor" href="#mirai-084"></a></h2>
 <ul><li>The deferred evaluation pipe <code>%&gt;&gt;%</code> gains the following enhancements:
 <ul><li>
 <code><a href="../reference/deferred-execution-pipe.html">.()</a></code> implemented to wrap a piped expression, ensuring return of either an ‘unresolvedExpr’ or ‘resolvedExpr’.</li>
@@ -116,7 +113,7 @@
 <li>Internal stability and performance enhancements.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.3" id="mirai-083">mirai 0.8.3<a class="anchor" aria-label="anchor" href="#mirai-083"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.3" id="mirai-083">mirai 0.8.3<small>2023-04-17</small><a class="anchor" aria-label="anchor" href="#mirai-083"></a></h2>
 <ul><li>
 <code><a href="../reference/mirai.html">mirai()</a></code> gains the following enhancements (thanks <a href="https://github.com/HenrikBengtsson" class="external-link">@HenrikBengtsson</a>):
 <ul><li>accepts a language or expression object being passed to ‘.expr’ for evaluation.</li>
@@ -141,7 +138,7 @@
 <li>Internal performance enhancements.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.2" id="mirai-082">mirai 0.8.2<a class="anchor" aria-label="anchor" href="#mirai-082"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.2" id="mirai-082">mirai 0.8.2<small>2023-04-03</small><a class="anchor" aria-label="anchor" href="#mirai-082"></a></h2>
 <ul><li>
 <code><a href="../reference/dispatcher.html">dispatcher()</a></code> re-implemented using an innovative non-polling design. Efficient process consumes zero processor usage when idle and features significantly higher throughput and lower latency.
 <ul><li>Arguments ‘pollfreqh’ and ‘pollfreql’ removed as no longer applicable.</li>
@@ -154,11 +151,11 @@
 <li>Internal performance enhancements.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.1" id="mirai-081">mirai 0.8.1<a class="anchor" aria-label="anchor" href="#mirai-081"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.1" id="mirai-081">mirai 0.8.1<small>2023-03-17</small><a class="anchor" aria-label="anchor" href="#mirai-081"></a></h2>
 <ul><li>Fixes issue where daemon processes may not launch for certain setups (only affecting binary package builds).</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.8.0" id="mirai-080">mirai 0.8.0<a class="anchor" aria-label="anchor" href="#mirai-080"></a></h2>
+<h2 class="page-header" data-toc-text="0.8.0" id="mirai-080">mirai 0.8.0<small>2023-03-15</small><a class="anchor" aria-label="anchor" href="#mirai-080"></a></h2>
 <ul><li>mirai 0.8.0 is a major feature release. Special thanks to <a href="https://github.com/wlandau" class="external-link">@wlandau</a> for suggestions, discussion and testing for many of the new capabilities.</li>
 <li>Compute profiles have been introduced through a new <code>.compute</code> argument in <code><a href="../reference/daemons.html">daemons()</a></code> and <code><a href="../reference/mirai.html">mirai()</a></code> for sending tasks with heterogeneous compute requirements.
 <ul><li>
@@ -194,18 +191,18 @@
 <li>Internal performance enhancements.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.2" id="mirai-072">mirai 0.7.2<a class="anchor" aria-label="anchor" href="#mirai-072"></a></h2>
+<h2 class="page-header" data-toc-text="0.7.2" id="mirai-072">mirai 0.7.2<small>2023-01-17</small><a class="anchor" aria-label="anchor" href="#mirai-072"></a></h2>
 <ul><li>Internal performance enhancements.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.1" id="mirai-071">mirai 0.7.1<a class="anchor" aria-label="anchor" href="#mirai-071"></a></h2>
+<h2 class="page-header" data-toc-text="0.7.1" id="mirai-071">mirai 0.7.1<small>2022-11-15</small><a class="anchor" aria-label="anchor" href="#mirai-071"></a></h2>
 <ul><li>Allow user interrupts of <code><a href="../reference/call_mirai.html">call_mirai()</a></code> again (regression in 0.7.0), now returning a ‘miraiInterrupt’.</li>
 <li>Adds auxiliary function <code><a href="../reference/is_mirai_error.html">is_mirai_interrupt()</a></code> to test if an object is a ‘miraiInterrupt’.</li>
 <li>Requires nanonext &gt;= 0.7.0: returned ‘errorValues’ e.g. mirai timeouts are no longer accompanied by warnings.</li>
 <li>Internal performance enhancements.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.7.0" id="mirai-070">mirai 0.7.0<a class="anchor" aria-label="anchor" href="#mirai-070"></a></h2>
+<h2 class="page-header" data-toc-text="0.7.0" id="mirai-070">mirai 0.7.0<small>2022-10-19</small><a class="anchor" aria-label="anchor" href="#mirai-070"></a></h2>
 <ul><li>
 <code><a href="../reference/daemons.html">daemons()</a></code> now takes ‘n’ and ‘.url’ arguments. ‘.url’ is an optional client URL allowing mirai tasks to be distributed across the network. Compatibility with existing interface is retained.</li>
 <li>The server function <code><a href="../reference/daemon.html">server()</a></code> is exported for creating daemon / ephemeral processes on network resources.</li>
@@ -214,12 +211,12 @@
 <li>Internal enhancements to error handling in a mirai / daemon process.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.6.0" id="mirai-060">mirai 0.6.0<a class="anchor" aria-label="anchor" href="#mirai-060"></a></h2>
+<h2 class="page-header" data-toc-text="0.6.0" id="mirai-060">mirai 0.6.0<small>2022-09-16</small><a class="anchor" aria-label="anchor" href="#mirai-060"></a></h2>
 <ul><li>Notice: older package versions will no longer be supported by ‘nanonext’ &gt;= 0.6.0. Please ensure you are using the latest version of ‘mirai’ or else refrain from upgrading ‘nanonext’.</li>
 <li>Internal enhancements to <code><a href="../reference/daemons.html">daemons()</a></code> and <code>%&gt;&gt;%</code> deferred evaluation pipe.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.5.3" id="mirai-053">mirai 0.5.3<a class="anchor" aria-label="anchor" href="#mirai-053"></a></h2>
+<h2 class="page-header" data-toc-text="0.5.3" id="mirai-053">mirai 0.5.3<small>2022-08-16</small><a class="anchor" aria-label="anchor" href="#mirai-053"></a></h2>
 <ul><li>
 <code><a href="../reference/mirai.html">mirai()</a></code> gains a ‘.args’ argument for passing a list of objects already in the calling environment, allowing for example <code>mirai(func(x, y, z), .args = list(x, y, z))</code> rather than having to specify <code>mirai(func(x, y, z), x = x, y = y, z = z)</code>.</li>
 <li>Errors from inside a mirai will now return the error message as a character string of class ‘miraiError’ and ‘errorValue’, rather than just a nul byte. Utility function <code><a href="../reference/is_mirai_error.html">is_mirai_error()</a></code> should be used in place of <code>is_nul_byte()</code>, which is no longer re-exported.</li>
@@ -228,33 +225,33 @@
 <li>All re-exports from ‘nanonext’ have been brought in-package for better documentation.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.5.2" id="mirai-052">mirai 0.5.2<a class="anchor" aria-label="anchor" href="#mirai-052"></a></h2>
+<h2 class="page-header" data-toc-text="0.5.2" id="mirai-052">mirai 0.5.2<small>2022-07-21</small><a class="anchor" aria-label="anchor" href="#mirai-052"></a></h2>
 <ul><li>Internal optimisations requiring nanonext &gt;= 0.5.2.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.5.0" id="mirai-050">mirai 0.5.0<a class="anchor" aria-label="anchor" href="#mirai-050"></a></h2>
+<h2 class="page-header" data-toc-text="0.5.0" id="mirai-050">mirai 0.5.0<small>2022-06-21</small><a class="anchor" aria-label="anchor" href="#mirai-050"></a></h2>
 <ul><li>Implements the <code>%&gt;&gt;%</code> deferred evaluation pipe.</li>
 <li>Adds ‘.timeout’ argument to <code><a href="../reference/mirai.html">mirai()</a></code> to ensure a mirai always resolves even if the child process crashes etc.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.4.1" id="mirai-041">mirai 0.4.1<a class="anchor" aria-label="anchor" href="#mirai-041"></a></h2>
+<h2 class="page-header" data-toc-text="0.4.1" id="mirai-041">mirai 0.4.1<small>2022-04-21</small><a class="anchor" aria-label="anchor" href="#mirai-041"></a></h2>
 <ul><li>Exits cleanly when daemons have not been explicitly zeroed prior to ending an R session.</li>
 <li>Fixes possible hang on Windows when shutting down daemons.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.4.0" id="mirai-040">mirai 0.4.0<a class="anchor" aria-label="anchor" href="#mirai-040"></a></h2>
+<h2 class="page-header" data-toc-text="0.4.0" id="mirai-040">mirai 0.4.0<small>2022-04-14</small><a class="anchor" aria-label="anchor" href="#mirai-040"></a></h2>
 <ul><li>Back to a pure R implementation thanks to enhanced internal design at nanonext.</li>
 <li>Adds auxiliary function <code><a href="../reference/is_mirai.html">is_mirai()</a></code> to test if an object is a mirai.</li>
 <li>Versioning system to synchronise with nanonext e.g. v0.4.x requires nanonext &gt;= 0.4.0.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.2.0" id="mirai-020">mirai 0.2.0<a class="anchor" aria-label="anchor" href="#mirai-020"></a></h2>
+<h2 class="page-header" data-toc-text="0.2.0" id="mirai-020">mirai 0.2.0<small>2022-03-28</small><a class="anchor" aria-label="anchor" href="#mirai-020"></a></h2>
 <ul><li>The value of a mirai is now stored at <code>$data</code> to optimally align with the underlying implementation.</li>
 <li>Package now contains C code (requires compilation), using weak references for simpler management of resources.</li>
 <li>Switch to abstract sockets on Linux.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.1.1" id="mirai-011">mirai 0.1.1<a class="anchor" aria-label="anchor" href="#mirai-011"></a></h2>
+<h2 class="page-header" data-toc-text="0.1.1" id="mirai-011">mirai 0.1.1<small>2022-03-15</small><a class="anchor" aria-label="anchor" href="#mirai-011"></a></h2>
 <ul><li>
 <code><a href="../reference/mirai.html">mirai()</a></code> added as an alias for <code>eval_mirai()</code>; supports evaluating arbitrary length expressions wrapped in <code><a href="https://rdrr.io/r/base/Paren.html" class="external-link">{}</a></code>.</li>
 <li>A mirai now resolves automatically without requiring <code><a href="../reference/call_mirai.html">call_mirai()</a></code>. Access the <code>$value</code> directly and an ‘unresolved’ logical NA will be returned if the async operation is yet to complete.</li>
@@ -264,7 +261,7 @@
 <li>New <code><a href="../reference/daemons.html">daemons()</a></code> interface to set and manage persistent background processes for receiving ‘mirai’ requests.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.1.0" id="mirai-010">mirai 0.1.0<a class="anchor" aria-label="anchor" href="#mirai-010"></a></h2>
+<h2 class="page-header" data-toc-text="0.1.0" id="mirai-010">mirai 0.1.0<small>2022-02-16</small><a class="anchor" aria-label="anchor" href="#mirai-010"></a></h2>
 <ul><li>Initial release.</li>
 </ul></div>
   </div>
