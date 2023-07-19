@@ -1,4 +1,4 @@
-# mirai 0.9.0.9041 (development)
+# mirai 0.9.1
 
 * Secure TLS connections implemented for distributed computing:
   + Zero-configuration experience - simply specify a `tls+tcp://` or `wss://` URL in `daemons()`. Single-use keys and certificates are automatically generated.

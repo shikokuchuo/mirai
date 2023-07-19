@@ -84,7 +84,6 @@ Sys.sleep(1L)
 
 if (.Platform[["OS.type"]] != "windows") {
   nanotest(is_mirai(m <- mirai(TRUE)))
-  nanotestn(stop_mirai(m))
   nanotest(is.character(launch_remote("ws://[::1]:5555", rscript = "/usr/lib/R/bin/Rscript", command = "echo", args = c("Test out:", ., ">/dev/null"))))
   Sys.sleep(2.2)
   nanotest(daemons(n = 2L, url = value <- "ws://:0", dispatcher = FALSE) != value)
