@@ -32,6 +32,7 @@ Retrieve status information for the specified compute profile, comprising
     When using dispatcher, \code{$daemons} comprises an integer matrix with
     the following columns:
     \itemize{
+    \item{\strong{i}} {- integer index number.}
     \item{\strong{online}} {- shows as 1 when there is an active connection,
     or else 0 if a daemon has yet to connect or has disconnected.}
     \item{\strong{instance}} {- increments by 1 every time there is a new

@@ -95,7 +95,7 @@ if (.Platform[["OS.type"]] != "windows") {
   nanotesto(daemons(url = "tcp://:0", token = TRUE))
   nanotestz(daemons(0L))
   Sys.sleep(1L)
-  nanotest(daemons(n = 2, "ws://:0") == 2L)
+  nanotest(daemons(n = 2, "ws://:0", lock = TRUE) == 2L)
   Sys.sleep(1L)
   status <- status()[["daemons"]]
   nanotest(is.matrix(status) || is_error_value(status))
@@ -114,6 +114,7 @@ if (.Platform[["OS.type"]] != "windows") {
   }
   nanotest(is.character(saisei(i = 1L)))
   nanotestn(saisei(i = 0L))
+  nanotest(is.character(saisei(i = 1L, force = TRUE)))
   nanotestn(saisei(i = 10L))
   Sys.sleep(0.5)
   nanotestz(daemons(0))

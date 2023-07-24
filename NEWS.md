@@ -1,5 +1,8 @@
 # mirai 0.9.1.9000 (development)
 
+* `saisei()` with argument `force = TRUE` now robustly closes the socket and returns any ongoing mirai as 'errorValue' 7 'Object closed'. This allows tasks that consistenly hang or crash to be cancelled rather than being repeated when a new daemon connects.
+* `status()` now returns the daemons status matrix with the column 'i' for ease of use with other functions such as `saisei()` or `launch_local()` etc. that require this.
+
 # mirai 0.9.1
 
 * Secure TLS connections implemented for distributed computing:

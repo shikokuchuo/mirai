@@ -214,8 +214,8 @@ Use \code{daemons(0)} to reset daemon connections:
     are not assigned to the busy process, however overall performance may
     still be degraded if they remain in use. If a process hangs and cannot be
     restarted manually, \code{\link{saisei}} specifying \code{force = TRUE}
-    may be used to regenerate any particular URL for a new \code{\link{daemon}}
-    to connect to.
+    may be used to cancel the task and regenerate any particular URL for a
+    new \code{\link{daemon}} to connect to.
 }
 
 \examples{

@@ -7,10 +7,10 @@
 saisei(i = 1L, force = FALSE, .compute = "default")
 }
 \arguments{
-\item{i}{[default 1L] integer \code{i}th URL to replace.}
+\item{i}{[default 1L] integer index number URL to regenerate at dispatcher.}
 
-\item{force}{[default FALSE] logical value whether to replace the listener
-even when there is an existing connection.}
+\item{force}{[default FALSE] logical value whether to regenerate the URL even
+when there is an existing active connection.}
 
 \item{.compute}{[default 'default'] character compute profile (each compute
 profile has its own set of daemons for connecting to different resources).}
@@ -23,14 +23,16 @@ When using daemons with dispatcher, regenerates the token for the URL a
     dispatcher socket listens at.
 }
 \details{
-As the specified listener is closed and replaced immediately, this
-    function will only be successful if there are no existing connections at
-    the socket (i.e. 'online' status shows 0), unless the argument 'force' is
-    specified as TRUE.
+When a URL is regenerated, the listener at the specified socket is
+    closed and replaced immediately, hence this function will only be
+    successful if there are no existing connections at the socket (i.e.
+    'online' status shows 0), unless the argument 'force' is specified as TRUE.
 
-    If a listener is forced closed while a mirai task is still ongoing, the
-    mirai remains unresolved until a new instance connects at the regenerated
-    URL, at which time it is retried.
+    If 'force' is specified as TRUE, the socket is immediately closed and
+    regenerated. If this happens while a mirai is still ongoing, it will be
+    returned as an errorValue 7 'Object closed'. This may be useful if the
+    task consistently hangs or crashes to prevent it from repeatedly failing
+    even if new daemons connect.
 }
 \examples{
 if (interactive()) {

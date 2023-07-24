@@ -301,17 +301,30 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
       ctrchannel && !unresolved(cmessage) && {
         i <- .subset2(cmessage, "data")
         if (i) {
-          if (i > 0L && !activevec[[i]] || i < 0L && (i <- -i)) {
+          if (i > 0L && !activevec[[i]]) {
             close(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
             data <- servernames[[i]] <- if (auto) auto_tokenized_url() else new_tokenized_url(basenames[[i]])
             instance[[i]] <- 0L
             listen(servers[[i]], url = data, tls = tls, error = TRUE)
+
+          } else if (i < 0L) {
+            i <- -i
+            close(servers[[i]])
+            servers[[i]] <- nsock <- req_socket(NULL)
+            pipe_notify(nsock, cv = active[[i]], cv2 = cv, flag = FALSE)
+            data <- servernames[[i]] <- if (auto) auto_tokenized_url() else new_tokenized_url(basenames[[i]])
+            instance[[i]] <- 0L
+            listen(nsock, url = data, tls = tls, error = TRUE)
+            if (lock)
+              lock(nsock, cv = active[[i]])
+
           } else {
             data <- ""
+
           }
         } else {
-          data <- as.integer(c(activevec, instance, assigned, complete))
+          data <- as.integer(c(seq_n, activevec, instance, assigned, complete))
         }
         send(sockc, data = data, mode = 2L, block = .timelimit) && stop(.messages[["connection_timeout"]])
         cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
@@ -682,8 +695,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     are not assigned to the busy process, however overall performance may
 #'     still be degraded if they remain in use. If a process hangs and cannot be
 #'     restarted manually, \code{\link{saisei}} specifying \code{force = TRUE}
-#'     may be used to regenerate any particular URL for a new \code{\link{daemon}}
-#'     to connect to.
+#'     may be used to cancel the task and regenerate any particular URL for a
+#'     new \code{\link{daemon}} to connect to.
 #'
 #' @examples
 #' if (interactive()) {
@@ -796,22 +809,24 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
 #' When using daemons with dispatcher, regenerates the token for the URL a
 #'     dispatcher socket listens at.
 #'
-#' @param i [default 1L] integer \code{i}th URL to replace.
-#' @param force [default FALSE] logical value whether to replace the listener
-#'     even when there is an existing connection.
+#' @param i [default 1L] integer index number URL to regenerate at dispatcher.
+#' @param force [default FALSE] logical value whether to regenerate the URL even
+#'     when there is an existing active connection.
 #' @param .compute [default 'default'] character compute profile (each compute
 #'     profile has its own set of daemons for connecting to different resources).
 #'
 #' @return The regenerated character URL upon success, or else NULL.
 #'
-#' @details As the specified listener is closed and replaced immediately, this
-#'     function will only be successful if there are no existing connections at
-#'     the socket (i.e. 'online' status shows 0), unless the argument 'force' is
-#'     specified as TRUE.
+#' @details When a URL is regenerated, the listener at the specified socket is
+#'     closed and replaced immediately, hence this function will only be
+#'     successful if there are no existing connections at the socket (i.e.
+#'     'online' status shows 0), unless the argument 'force' is specified as TRUE.
 #'
-#'     If a listener is forced closed while a mirai task is still ongoing, the
-#'     mirai remains unresolved until a new instance connects at the regenerated
-#'     URL, at which time it is retried.
+#'     If 'force' is specified as TRUE, the socket is immediately closed and
+#'     regenerated. If this happens while a mirai is still ongoing, it will be
+#'     returned as an errorValue 7 'Object closed'. This may be useful if the
+#'     task consistently hangs or crashes to prevent it from repeatedly failing
+#'     even if new daemons connect.
 #'
 #' @examples
 #' if (interactive()) {
@@ -864,6 +879,7 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 #'     When using dispatcher, \code{$daemons} comprises an integer matrix with
 #'     the following columns:
 #'     \itemize{
+#'     \item{\strong{i}} {- integer index number.}
 #'     \item{\strong{online}} {- shows as 1 when there is an active connection,
 #'     or else 0 if a daemon has yet to connect or has disconnected.}
 #'     \item{\strong{instance}} {- increments by 1 every time there is a new
@@ -1328,8 +1344,8 @@ query_dispatcher <- function(sock, command, mode) {
 query_status <- function(envir) {
   res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L)
   is.object(res) && return(res)
-  `attributes<-`(res, list(dim = c(envir[["n"]], 4L),
-                           dimnames = list(envir[["urls"]], c("online", "instance", "assigned", "complete"))))
+  `attributes<-`(res, list(dim = c(envir[["n"]], 5L),
+                           dimnames = list(envir[["urls"]], c("i", "online", "instance", "assigned", "complete"))))
 }
 
 recv_and_store <- function(sockc, envir) {
