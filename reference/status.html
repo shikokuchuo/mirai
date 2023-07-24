@@ -91,7 +91,8 @@ profile has its own set of daemons for connecting to different resources).</p></
 
 
 <p>When using dispatcher, <code>$daemons</code> comprises an integer matrix with
-    the following columns:</p><ul><li><p><strong>online</strong> - shows as 1 when there is an active connection,
+    the following columns:</p><ul><li><p><strong>i</strong> - integer index number.</p></li>
+<li><p><strong>online</strong> - shows as 1 when there is an active connection,
     or else 0 if a daemon has yet to connect or has disconnected.</p></li>
 <li><p><strong>instance</strong> - increments by 1 every time there is a new
     connection at a URL. This counter is designed to track new daemon
