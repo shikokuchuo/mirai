@@ -1,7 +1,8 @@
 # mirai 0.9.1.9000 (development)
 
-* `saisei()` with argument `force = TRUE` now robustly closes the socket and returns any ongoing mirai as 'errorValue' 7 'Object closed'. This allows tasks that consistenly hang or crash to be cancelled rather than being repeated when a new daemon connects.
+* `saisei()` with argument `force = TRUE` now robustly closes the socket and returns any ongoing mirai immediately (although attempting to access its value will error). This allows tasks that consistenly hang or crash to be cancelled rather than being repeated when a new daemon connects.
 * `status()` now returns the daemons status matrix with the column 'i' for ease of use with other functions such as `saisei()` or `launch_local()` etc. that require this.
+* The dispatcher process has higher performance and consumes fewer resources.
 
 # mirai 0.9.1
 

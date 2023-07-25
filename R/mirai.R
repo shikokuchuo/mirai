@@ -271,7 +271,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
     servers[[i]] <- nsock
     active[[i]] <- ncv
     ctx <- .context(sock)
-    req <- recv_aio_signal(ctx, mode = 1L, cv = cv)
+    req <- recv_aio_signal(ctx, mode = 8L, cv = cv)
     queue[[i]] <- list(ctx = ctx, req = req)
   }
 
@@ -333,12 +333,12 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
 
       for (i in seq_n)
         if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
-          send(queue[[i]][["ctx"]], data = .subset2(queue[[i]][["res"]], "data"), mode = 1L)
+          send(queue[[i]][["ctx"]], data = .subset2(queue[[i]][["res"]], "data"), mode = 2L)
           q <- queue[[i]][["daemon"]]
           serverfree[[q]] <- TRUE
           complete[[q]] <- complete[[q]] + 1L
           ctx <- .context(sock)
-          req <- recv_aio_signal(ctx, mode = 1L, cv = cv)
+          req <- recv_aio_signal(ctx, mode = 8L, cv = cv)
           queue[[i]] <- list(ctx = ctx, req = req)
         }
 
@@ -348,7 +348,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
         for (q in free)
           for (i in seq_n) {
             if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
-              queue[[i]][["res"]] <- request_signal(.context(servers[[q]]), data = .subset2(queue[[i]][["req"]], "data"), send_mode = 1L, recv_mode = 1L, cv = cv)
+              queue[[i]][["res"]] <- request_signal(.context(servers[[q]]), data = .subset2(queue[[i]][["req"]], "data"), send_mode = 2L, recv_mode = 8L, cv = cv)
               queue[[i]][["daemon"]] <- q
               serverfree[[q]] <- FALSE
               assigned[[q]] <- assigned[[q]] + 1L
@@ -556,7 +556,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     \item{All connected daemons and/or dispatchers exit automatically.}
 #'     \item{\pkg{mirai} reverts to the default behaviour of creating a new
 #'     background process for each request.}
-#'     \item{Any unresolved 'mirai' will return an 'errorValue' 7 (object
+#'     \item{Any unresolved 'mirai' will return an 'errorValue' 7 (Object
 #'     closed) after a reset.}
 #'     }
 #'
@@ -823,10 +823,11 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
 #'     'online' status shows 0), unless the argument 'force' is specified as TRUE.
 #'
 #'     If 'force' is specified as TRUE, the socket is immediately closed and
-#'     regenerated. If this happens while a mirai is still ongoing, it will be
-#'     returned as an errorValue 7 'Object closed'. This may be useful if the
-#'     task consistently hangs or crashes to prevent it from repeatedly failing
-#'     even if new daemons connect.
+#'     regenerated. If this happens while a mirai is still ongoing, the task is
+#'     returned immediately but will error when attempting to access its value
+#'     at \code{$data}. This may be used to cancel a task that consistently
+#'     hangs or crashes to prevent it from failing repeatedly even if new
+#'     daemons connect.
 #'
 #' @examples
 #' if (interactive()) {
