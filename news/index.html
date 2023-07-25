@@ -56,7 +56,7 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.9.1.9000" id="mirai-0919000-development">mirai 0.9.1.9000 (development)<a class="anchor" aria-label="anchor" href="#mirai-0919000-development"></a></h2>
 <ul><li>
-<code><a href="../reference/saisei.html">saisei()</a></code> with argument <code>force = TRUE</code> now robustly closes the socket and returns any ongoing mirai immediately (although attempting to access its value will error). This allows tasks that consistenly hang or crash to be cancelled rather than being repeated when a new daemon connects.</li>
+<code><a href="../reference/saisei.html">saisei()</a></code> with argument <code>force = TRUE</code> now robustly closes the socket and returns any ongoing mirai immediately (although attempting to access its value will error). This allows tasks that consistently hang or crash to be cancelled rather than being repeated when a new daemon connects.</li>
 <li>
 <code><a href="../reference/status.html">status()</a></code> now returns the daemons status matrix with the column ‘i’ for ease of use with other functions such as <code><a href="../reference/saisei.html">saisei()</a></code> or <code><a href="../reference/launch_local.html">launch_local()</a></code> etc. that require this.</li>
 <li>The dispatcher process has higher performance and consumes fewer resources.</li>
