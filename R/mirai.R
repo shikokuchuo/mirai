@@ -279,10 +279,11 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
 
   ctrchannel <- is.character(monitor)
   if (ctrchannel) {
-    sockc <- socket(protocol = "pair")
+    sockc <- socket(protocol = "rep")
     on.exit(close(sockc), add = TRUE, after = FALSE)
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
-    send(sockc, c(Sys.getpid(), servernames), mode = 2L, block = .timelimit) && stop(.messages[["connection_timeout"]])
+    recv(sockc, mode = 5L, block = .timelimit) && stop(.messages[["connection_timeout"]])
+    send_aio(sockc, c(Sys.getpid(), servernames), mode = 2L)
     cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
   }
 
@@ -326,7 +327,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
         } else {
           data <- as.integer(c(seq_n, activevec, instance, assigned, complete))
         }
-        send(sockc, data = data, mode = 2L, block = .timelimit) && stop(.messages[["connection_timeout"]])
+        send_aio(sockc, data = data, mode = 2L)
         cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
         next
       }
@@ -752,9 +753,9 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
         urld <- auto_tokenized_url()
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld)
-        sockc <- socket(protocol = "pair", listen = urlc)
+        sockc <- req_socket(urlc, resend = 0L)
         launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls)
-        recv_and_store(sockc = sockc, envir = envir)
+        init_monitor(sockc = sockc, envir = envir)
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls))
         listener <- attr(sock, "listener")[[1L]]
@@ -787,9 +788,9 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
       dots <- parse_dots(...)
       if (dispatcher) {
         urlc <- strcat(urld, "c")
-        sockc <- socket(protocol = "pair", listen = urlc)
+        sockc <- req_socket(urlc, resend = 0L)
         launch_and_sync_daemon(sock = sock, urld, dots, n, urlc)
-        recv_and_store(sockc = sockc, envir = envir)
+        init_monitor(sockc = sockc, envir = envir)
       } else {
         for (i in seq_len(n))
           launch_daemon(urld, dots)
@@ -1334,11 +1335,11 @@ auto_tokenized_url <- function() strcat(.urlscheme, sha1(random(8L)))
 
 new_tokenized_url <- function(url) sprintf("%s/%s", url, sha1(random(8L)))
 
-req_socket <- function(url, tls = NULL)
-  `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", .Machine[["integer.max"]])
+req_socket <- function(url, tls = NULL, resend = .intmax)
+  `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", resend)
 
 query_dispatcher <- function(sock, command, mode) {
-  send(sock, data = command, mode = 2L, block = .timelimit)
+  send_aio(sock, data = command, mode = 2L)
   recv(sock, mode = mode, block = .timelimit)
 }
 
@@ -1349,7 +1350,8 @@ query_status <- function(envir) {
                            dimnames = list(envir[["urls"]], c("i", "online", "instance", "assigned", "complete"))))
 }
 
-recv_and_store <- function(sockc, envir) {
+init_monitor <- function(sockc, envir) {
+  send_aio(sockc, data = 0L, mode = 2L)
   res <- recv(sockc, mode = 2L, block = .timelimit)
   is.object(res) && stop(.messages[["connection_timeout"]])
   `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[[1L]]))

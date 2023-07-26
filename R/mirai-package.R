@@ -50,8 +50,9 @@
 #'
 #' @importFrom nanonext call_aio .context cv cv_value dial is_error_value listen
 #'     lock mclock msleep opt opt<- parse_url pipe_notify random recv
-#'     recv_aio_signal request request_signal send sha1 socket stat stop_aio
-#'     strcat tls_config unresolved until wait weakref weakref_value write_cert
+#'     recv_aio_signal request request_signal send send_aio sha1 socket stat
+#'     stop_aio strcat tls_config unresolved until wait weakref weakref_value
+#'     write_cert
 #'
 #' @docType package
 #' @name mirai-package
@@ -79,6 +80,7 @@ NULL
 
 .. <- NULL
 .command <- NULL
+.intmax <- .Machine[["integer.max"]]
 .urlscheme <- NULL
 .timelimit <- 5000L
 
