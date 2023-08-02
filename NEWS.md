@@ -3,7 +3,7 @@
 * Dispatcher improvements and fixes:
   + Straight pass through without serialization/unserialization allows higher performance and lower memory utilisation.
   + Fixes edge cases of `status()` occasionally failing to communicate with dispatcher.
-* `saisei()` with argument `force = TRUE` now robustly closes the socket and returns any ongoing mirai immediately (although attempting to access its value will error). This allows tasks that consistently hang or crash to be cancelled rather than being repeated when a new daemon connects.
+* `saisei()` with argument `force = TRUE` now immediately regenerates the socket and returns any ongoing mirai as an 'errorValue'. This allows tasks that consistently hang or crash to be cancelled rather than being repeated when a new daemon connects.
 * `status()` now returns the daemons status matrix with the column 'i' for ease of use with other functions such as `saisei()` or `launch_local()` etc. that require this.
 * Error messages tweaked to be more accurate and informative.
 

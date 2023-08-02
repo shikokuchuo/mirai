@@ -29,11 +29,10 @@ When a URL is regenerated, the listener at the specified socket is
     'online' status shows 0), unless the argument 'force' is specified as TRUE.
 
     If 'force' is specified as TRUE, the socket is immediately closed and
-    regenerated. If this happens while a mirai is still ongoing, the task is
-    returned immediately but will error when attempting to access its value
-    at \code{$data}. This may be used to cancel a task that consistently
-    hangs or crashes to prevent it from failing repeatedly even if new
-    daemons connect.
+    regenerated. If this happens while a mirai is still ongoing, it will be
+    returned as an errorValue 7 'Object closed'. This may be used to cancel a
+    task that consistently hangs or crashes to prevent it from failing
+    repeatedly when new daemons connect.
 }
 \examples{
 if (interactive()) {

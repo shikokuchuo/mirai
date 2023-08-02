@@ -824,11 +824,10 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
 #'     'online' status shows 0), unless the argument 'force' is specified as TRUE.
 #'
 #'     If 'force' is specified as TRUE, the socket is immediately closed and
-#'     regenerated. If this happens while a mirai is still ongoing, the task is
-#'     returned immediately but will error when attempting to access its value
-#'     at \code{$data}. This may be used to cancel a task that consistently
-#'     hangs or crashes to prevent it from failing repeatedly even if new
-#'     daemons connect.
+#'     regenerated. If this happens while a mirai is still ongoing, it will be
+#'     returned as an errorValue 7 'Object closed'. This may be used to cancel a
+#'     task that consistently hangs or crashes to prevent it from failing
+#'     repeatedly when new daemons connect.
 #'
 #' @examples
 #' if (interactive()) {
@@ -1331,9 +1330,9 @@ dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
 
 sub_real_port <- function(port, url) sub("(?<=:)0(?![^/])", port, url, perl = TRUE)
 
-auto_tokenized_url <- function() strcat(.urlscheme, sha1(random(8L)))
+auto_tokenized_url <- function() strcat(.urlscheme, sha1(random(3L)))
 
-new_tokenized_url <- function(url) sprintf("%s/%s", url, sha1(random(8L)))
+new_tokenized_url <- function(url) sprintf("%s/%s", url, sha1(random(3L)))
 
 req_socket <- function(url, tls = NULL, resend = .intmax)
   `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", resend)
