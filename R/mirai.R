@@ -282,7 +282,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
     sockc <- socket(protocol = "rep")
     on.exit(close(sockc), add = TRUE, after = FALSE)
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
-    recv(sockc, mode = 5L, block = .timelimit) && stop(.messages[["host_timeout"]])
+    recv(sockc, mode = 5L, block = .timelimit) && stop(.messages[["sync_timeout"]])
     send_aio(sockc, c(Sys.getpid(), servernames), mode = 2L)
     cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
   }
@@ -1312,7 +1312,7 @@ launch_and_sync_daemon <- function(sock, ..., tls = NULL) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
   launch_daemon(..., tls = tls)
-  until(cv, .timelimit) && stop(.messages[["connection_timeout"]])
+  until(cv, .timelimit) && stop(.messages[["sync_timeout"]])
 }
 
 dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
@@ -1321,7 +1321,7 @@ dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
     tls <- tls_config(client = tls)
     pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
     dial(sock, url = url, autostart = TRUE, tls = tls, error = TRUE)
-    until(cv, .timelimit) && stop(.messages[["connection_timeout"]])
+    until(cv, .timelimit) && stop(.messages[["sync_timeout"]])
   } else {
     pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = FALSE)
     dial(sock, url = url, autostart = length(tls) || asyncdial || NA, tls = tls, error = TRUE)
@@ -1353,7 +1353,7 @@ query_status <- function(envir) {
 init_monitor <- function(sockc, envir) {
   send_aio(sockc, data = 0L, mode = 2L)
   res <- recv(sockc, mode = 2L, block = .timelimit)
-  is.object(res) && stop(.messages[["connection_timeout"]])
+  is.object(res) && stop(.messages[["sync_timeout"]])
   `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[[1L]]))
 }
 
