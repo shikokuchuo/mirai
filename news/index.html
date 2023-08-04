@@ -61,9 +61,13 @@
 </ul></li>
 <li>
 <code><a href="../reference/saisei.html">saisei()</a></code> with argument <code>force = TRUE</code> now immediately regenerates the socket and returns any ongoing mirai as an ‘errorValue’. This allows tasks that consistently hang or crash to be cancelled rather than being repeated when a new daemon connects.</li>
+<li>Tweaks to <code>status():</code>
+<ul><li>The daemons status matrix adds a column ‘i’ for ease of use with other functions such as <code><a href="../reference/saisei.html">saisei()</a></code> or <code><a href="../reference/launch_local.html">launch_local()</a></code> etc.</li>
 <li>
-<code><a href="../reference/status.html">status()</a></code> now returns the daemons status matrix with the column ‘i’ for ease of use with other functions such as <code><a href="../reference/saisei.html">saisei()</a></code> or <code><a href="../reference/launch_local.html">launch_local()</a></code> etc. that require this.</li>
-<li>Error messages tweaked to be more accurate and informative.</li>
+<code>$daemons</code> now returns NULL if daemons have not been set.</li>
+</ul></li>
+<li>Certain error messages are more accurate and informative.</li>
+<li>Requires nanonext &gt;= [0.9.1], and consequently R &gt;= 3.5.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.9.1" id="mirai-091">mirai 0.9.1<small>2023-07-19</small><a class="anchor" aria-label="anchor" href="#mirai-091"></a></h2>
