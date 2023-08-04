@@ -112,7 +112,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -0.162 1.49 -2.233 -2.9 1.346 ...
+#>  num [1:100000000] 1.298 0.457 0.211 2.446 0.834 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -120,7 +120,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.162 1.49 -2.233 -2.9 1.346 ...
+#>  num [1:100000000] 1.298 0.457 0.211 2.446 0.834 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -138,7 +138,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -10.0413 -0.3385 1.4086 0.0223 1.2357 ...
+#>  num [1:100000000] 0.263 1.275 0.731 -0.719 -0.554 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -229,11 +229,11 @@ for (i in 1:10) {
 }
 #> iteration 1 successful
 #> iteration 2 successful
-#> Error: random error
 #> iteration 3 successful
 #> iteration 4 successful
 #> iteration 5 successful
 #> iteration 6 successful
+#> Error: random error
 #> iteration 7 successful
 #> iteration 8 successful
 #> iteration 9 successful
@@ -278,12 +278,12 @@ status()
 #> 
 #> $daemons
 #>                                                     i online instance assigned complete
-#> abstract://9f675943bdc724066e04f7161a4f34bc00aae246 1      1        1        0        0
-#> abstract://ea3d1237685f970f9290af85eb35f6b50aa1d477 2      1        1        0        0
-#> abstract://e66c279e13b31eb17eadc97a5cb99cf14aa7c332 3      1        1        0        0
-#> abstract://bbfccd4974241962e2bd3fff4e517885e2cace48 4      1        1        0        0
-#> abstract://ff243d77b33b796fb7d6be84643fe012601af461 5      1        1        0        0
-#> abstract://b7f07a023517404760830e9be0fe6e1940cff47e 6      1        1        0        0
+#> abstract://0fca7f8bcc5da17ba306f8f2cc69f206dcf0d063 1      1        1        0        0
+#> abstract://1d1a41a1941321cdd0cfbbff0442c544aa59a865 2      1        1        0        0
+#> abstract://2742b8ae13049a8d3980e4e9f71f613899ed2dc3 3      1        1        0        0
+#> abstract://8211fc43f7e892320a60c985a30236995684d800 4      1        1        0        0
+#> abstract://37631a226df449c1c800114bde87760016088ee9 5      1        1        0        0
+#> abstract://c56f64f8025732dee5a7d18e607896689c613a11 6      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -326,7 +326,7 @@ status()
 #> [1] 6
 #> 
 #> $daemons
-#> [1] "abstract://ed426253dffd18e394a894b8d546003f20358888"
+#> [1] "abstract://120f4b6aa7237fdb4644fcf2b7d3178064f73cd9"
 ```
 
 This implementation sends tasks immediately, and ensures that tasks are
@@ -358,7 +358,7 @@ Call `daemons()` specifying ‘url’ as a character value the host network
 address and a port that is able to accept incoming connections.
 
 The examples below use an illustrative local network IP address of
-‘10.216.62.86’.
+‘10.75.34.138’.
 
 A port on the host machine also needs to be open and available for
 inbound connections from the local network, illustratively ‘5555’ in the
@@ -383,7 +383,7 @@ daemon. In this way a dispatcher can connect to an arbitrary number of
 daemons over a single port.
 
 ``` r
-daemons(n = 4, url = "ws://10.216.62.86:5555")
+daemons(n = 4, url = "ws://10.75.34.138:5555")
 #> [1] 4
 ```
 
@@ -396,7 +396,7 @@ Alternatively, supplying a vector of URLs allows the use of arbitrary
 port numbers / paths, e.g.:
 
 ``` r
-daemons(url = c("ws://10.216.62.86:5566/cpu", "ws://10.216.62.86:5566/gpu", "ws://10.216.62.86:7788/1"))
+daemons(url = c("ws://10.75.34.138:5566/cpu", "ws://10.75.34.138:5566/gpu", "ws://10.75.34.138:7788/1"))
 ```
 
 Above, ‘n’ is not specified, in which case its value is inferred from
@@ -408,10 +408,10 @@ On the remote resource, `daemon()` may be called from an R session, or
 directly from a shell using Rscript. Each daemon instance should dial
 into one of the unique URLs that the dispatcher is listening at:
 
-    Rscript -e 'mirai::daemon("ws://10.216.62.86:5555/1")'
-    Rscript -e 'mirai::daemon("ws://10.216.62.86:5555/2")'
-    Rscript -e 'mirai::daemon("ws://10.216.62.86:5555/3")'
-    Rscript -e 'mirai::daemon("ws://10.216.62.86:5555/4")'
+    Rscript -e 'mirai::daemon("ws://10.75.34.138:5555/1")'
+    Rscript -e 'mirai::daemon("ws://10.75.34.138:5555/2")'
+    Rscript -e 'mirai::daemon("ws://10.75.34.138:5555/3")'
+    Rscript -e 'mirai::daemon("ws://10.75.34.138:5555/4")'
 
 Note that `daemons()` should be set up on the host machine before
 launching `daemon()` on remote resources, otherwise the daemon instances
@@ -424,11 +424,11 @@ remote machine. For example, if the remote machine at 10.216.62.100
 accepts SSH connections over port 22:
 
 ``` r
-launch_remote(1:4, command = "ssh", args = c("-p 22 10.216.62.100", .))
-#> [1] "Rscript -e 'mirai::daemon(\"ws://10.216.62.86:5555/1\")'"
-#> [2] "Rscript -e 'mirai::daemon(\"ws://10.216.62.86:5555/2\")'"
-#> [3] "Rscript -e 'mirai::daemon(\"ws://10.216.62.86:5555/3\")'"
-#> [4] "Rscript -e 'mirai::daemon(\"ws://10.216.62.86:5555/4\")'"
+launch_remote(1:4, command = "ssh", args = c("-p 22 10.75.34.138", .))
+#> [1] "Rscript -e 'mirai::daemon(\"ws://10.75.34.138:5555/1\")'"
+#> [2] "Rscript -e 'mirai::daemon(\"ws://10.75.34.138:5555/2\")'"
+#> [3] "Rscript -e 'mirai::daemon(\"ws://10.75.34.138:5555/3\")'"
+#> [4] "Rscript -e 'mirai::daemon(\"ws://10.75.34.138:5555/4\")'"
 ```
 
 The returned vector comprises the shell commands executed on the remote
@@ -444,11 +444,11 @@ status()
 #> [1] 1
 #> 
 #> $daemons
-#>                       i online instance assigned complete
-#> ws://10.216.62.86:5555/1 1      1        1        0        0
-#> ws://10.216.62.86:5555/2 2      1        1        0        0
-#> ws://10.216.62.86:5555/3 3      1        1        0        0
-#> ws://10.216.62.86:5555/4 4      1        1        0        0
+#>                          i online instance assigned complete
+#> ws://10.75.34.138:5555/1 1      1        1        0        0
+#> ws://10.75.34.138:5555/2 2      1        1        0        0
+#> ws://10.75.34.138:5555/3 3      1        1        0        0
+#> ws://10.75.34.138:5555/4 4      1        1        0        0
 ```
 
 As per the local case, `$connections` shows the single connection to
@@ -490,7 +490,7 @@ the host process. The host listens at a single URL, and distributes
 tasks to all connected daemons.
 
 ``` r
-daemons(url = "tcp://10.216.62.86:0", dispatcher = FALSE)
+daemons(url = "tcp://10.75.34.138:0", dispatcher = FALSE)
 ```
 
 Alternatively, simply supply a colon followed by the port number to
@@ -498,7 +498,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:42115"
+#> [1] "tcp://:45375"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -512,7 +512,7 @@ On the network resource, `daemon()` may be called from an R session, or
 an Rscript invocation from a shell. This sets up a remote daemon process
 that connects to the host URL and receives tasks:
 
-    Rscript -e 'mirai::daemon("tcp://10.216.62.86:42115")'
+    Rscript -e 'mirai::daemon("tcp://10.75.34.138:45375")'
 
 Note that `daemons()` should be set up on the host machine before
 launching `daemon()` on remote resources, otherwise the daemon instances
@@ -521,12 +521,12 @@ specifying `daemon(asyncdial = TRUE)` will allow daemons to wait
 (indefinitely) for a connection to become available.
 
 `launch_remote()` may also be used to launch daemons directly on a
-remote machine. For example, if the remote machine at 10.216.62.100
+remote machine. For example, if the remote machine at 10.75.34.100
 accepts SSH connections over port 22:
 
 ``` r
-launch_remote("tcp://10.216.62.86:42115", command = "ssh", args = c("-p 22 10.216.62.100", .))
-#> [1] "Rscript -e 'mirai::daemon(\"tcp://10.216.62.86:42115\")'"
+launch_remote("tcp://10.75.34.138:45375", command = "ssh", args = c("-p 22 10.75.34.100", .))
+#> [1] "Rscript -e 'mirai::daemon(\"tcp://10.75.34.138:45375\")'"
 ```
 
 The returned vector comprises the shell commands executed on the remote
@@ -546,7 +546,7 @@ status()
 #> [1] 1
 #> 
 #> $daemons
-#> [1] "tcp://:42115"
+#> [1] "tcp://:45375"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -586,7 +586,7 @@ full shell command to launch a daemon, including the correctly specified
 
 ``` r
 launch_remote(1)
-#> [1] "Rscript -e 'mirai::daemon(\"wss://[::1]:5555/1\",tls=c(\"-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhpYmlraTEJMAcGA1UEBhMAMB4XDTAxMDEwMTAwMDAwMFoXDTMw\nMTIzMTIzNTk1OVowKjEMMAoGA1UEAwwDOjoxMQ8wDQYDVQQKDAZIaWJpa2kxCTAH\nBgNVBAYTADCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAKfJflZ5otTI\nMqqBnxDDgjcDrEEfBJ1E+lejdIvCv4rxmj+96Knmz2FuOZrbCCTSE+gfxc1NtpOG\ndEMauI4sDKImrFiHCzoIwGOfPAYI+SzsthLCSWLAhCw25yPZ5RlWbmOhiQR62Coc\n/sTtXouJjEsGSaQPIO9Gz+I8fq8K0f52x6pkeSj3mRbqN8ezpXSfOqOlAgRz+ID2\ngQM1yAznytP9cEBI88QbySC4uJpDRfIoJu3pWdFYCpjSJeOBPz/G8JHEXEB0pEK+\n2rVVkZR8jeYTeObhDzHB8+DnGaZxXvxtjG+wlUZVXHcwA2BjXAfrtIGWmMDULP0H\nxa44nnGzA4ObQawn1Lrbs6wbjlfTYC51ybEK5jDRep88yyx/rxvCT1WQGGgvNYTq\nA0JDy/S7X2lsnd5rAuUBzxp2CwoHLa3/X8NPEkd7IBnAwy+ez5VzI1xcuxo1KCN/\n6vzTpp2ykSjUnLATySrUEnVtiCuQK1UAsWW+dcaBmlRtMYidq0kImVvFhKNiSzK0\nEMEnfmOv8SVVjGIm2ZtBdpeUWS2FABlxf16rw17td+YE4fZl8HeHCUx2qqb4WEsU\nC5OD7T9bjOBGB0IXyo23YbsnQvxrfgnwTzH7WWYdwm0rvFLI0OIoCWuqG9OfAefy\nUNkeVrc0seh8Io1tVswH7P1tntywP6qRAgMBAAGjVjBUMBIGA1UdEwEB/wQIMAYB\nAf8CAQAwHQYDVR0OBBYEFKxbju//x8PAJwJCy8/vufXLXrFdMB8GA1UdIwQYMBaA\nFKxbju//x8PAJwJCy8/vufXLXrFdMA0GCSqGSIb3DQEBCwUAA4ICAQCK96xuPP8U\nsJcfky/UFmzXRmMCA8lv/LgKx933iROpHZNH8ZwSfdTcIiy+z9msdcSTW/FcJKMT\nYW/tPNKzuBwtA/B9CRSNYOgays739+kkChTVl5jmyrpx4ZH93I5ESar5WvayaJUk\n/gwbnfp+mYjCWeDP42QlUZzdXT6NdBFZiQJXZa0uOHvmBOr+hC7/b/jRCmQQ/BTb\nlFGXPJQnJq6gBhJvwUNJS3s/IKV8ovXBRmYMXQmueffUXSxPouSTg/XLQ8JNSo0Z\nvbEaWYDEbRrZnZ452MVkH5QyCRREeJUklJtyipxoCM11/9y1xXB7FjdeufRuENp3\nmMjDpbdx5rMQjicP86oftLbom58Ah+R8jDtZegaiugrMMX0GaFx5eZn8WNk5Lhkx\nqO5LNS/KNX1ki7BMZDu6YGbnzIXajjo0X5aJrMIp2i3eWW8UwbV6pgaxdkJUMYYJ\npPnILufqWbM5JDCr2c7Plo5r6dufM4MK1zDm5udhE/2KPg3XfjnPFcVThOJVyLdX\nT1KVewQ8OH/OTKd2EpeD5pSFPS8BFMFrVhccgVzrotE4HhayevBSiYiH6byTVdQn\nt+FvfbBkyd9Yxc7VwZk26PcVTnYJvQS9YGBn1oDbwcUrzGrLo3Nh370dTi1ZJw80\n/K0skjut3kqoNOpB9QBQGrH2f7F5VRxnpA==\n-----END CERTIFICATE-----\n\",\"\"))'"
+#> [1] "Rscript -e 'mirai::daemon(\"wss://[::1]:5555/1\",tls=c(\"-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhpYmlraTEJMAcGA1UEBhMAMB4XDTAxMDEwMTAwMDAwMFoXDTMw\nMTIzMTIzNTk1OVowKjEMMAoGA1UEAwwDOjoxMQ8wDQYDVQQKDAZIaWJpa2kxCTAH\nBgNVBAYTADCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQkPzn7mCzE\n1L+6IZYIKRzzfV/Ay0A2ROLdL4oZ+LnQO55C/UpKC6UZUKY79f4e2BR6/GtV2bCy\ntunJ3b5ZTA7cvub1uXdLUHDWFNZTYNU+ovXMnaNxHxqn0Pe9bhfOu22zp/yJeua5\napkIWLF1XRUMZFVbo6sQ27HgYNB+QykYd8N/pOj3tBD/d0TVJy0q6ftWQdKnwZPt\nIsDKeM8WItQ/2H7rbjgjaiIeENeBTUkV/agb/Pi3czRLzZqIuZkuIrSjGI/JQPmc\n1PntJ65n5eXWOawUsvYVjZoDtQ6xSD3S69EMxtgHf+Flwia/X+HZvt8h/4w2/2BD\nXMQkDhoaXfjXtYulEEDB45dTmjQE2cwUEPqDE94N3pWexf/MhnVpJOfy4iNvTiaZ\nzRK5zYyQUkWUf/XOQiiTlmEyqsCO9dV6Eu7U06xO/0gvd0xLjdEvZcpAfNA9R++X\nNZyignMPC1GXV4lorOF53RLAIFcJHU5LW81ghwlmU4Kf496itySHdXVhpO8Ka5oO\nBwS5F+Z7CF77yCfj/mYAeIMCRsStzkLX768d2hnPrbqx1/j5hRwgaXBAc99Jf+ot\nJP5PfGBeu7/3gPYdaEF7kxp1Xj1xUgg+lEnomywAzAoLl0NN1OlhvMzPQP56gk4I\nq5tje5ZmOzPMbsEqGV4Ow3NbRNWbeWRrAgMBAAGjVjBUMBIGA1UdEwEB/wQIMAYB\nAf8CAQAwHQYDVR0OBBYEFIc9LPBtO0XTqybzBuEQGecVTHaiMB8GA1UdIwQYMBaA\nFIc9LPBtO0XTqybzBuEQGecVTHaiMA0GCSqGSIb3DQEBCwUAA4ICAQCT8XBpxdn/\nujmvbEiL6/L0cSe02Gju0ibMfP6Oo2cUJNdLDAcvcAKAQvbPKkshBcaYzjHhdhkL\nuWEWwz9PxtuOF7O/ZlXaR7eLV8fzpgSt6eSmLKnx+D58h4d8TTWFd7CLe3FoKlbI\nP1jMws8PbvV6WMsueNc8m2348oTmsB5kgHUCEjRG6JPOIcJnCN3k+FtFGWanbd7T\nN5id6cuQ1ncVq+7tbhKj3w+4++xlRMjBsNbDkej3tdOZNEcGBR+8USFxxY9Ylnqa\n0mBIcDgAEEP2WNYQqCktMJZxZeQpz4m9q/Sxwff/PoQ0+3qP8wfphyuNFAnq9A7q\nEA1cOptU+E7LaReu5N3uXEYu7dRwTnBeMZO8W4zOufhIo9JxNoTuRjaJVr1cnwVq\nPhAUDfOO1RFXSe7K4gl45oC/HFPuq0fJWsyKxuLvVlkO3jYGpgjOV0AYwYorKkaw\nvTjYXtOZbA+FYcbEw8QoLPxhpBjze8UIeZdcqI2vZvRpuU6rfv0kHv5+WZTAYee5\nZvKtOLIfN0XJSVv02iJ/cb/hwvt5D1bhzOiERZ/5GLGrPSHyVrG+kdoAqgYk6aAa\nRbPzyysB7jqWoZK8v497KgJ2cwIL99+0xxrSw48Bt9qTLJw27Wk970q2LwEAu54q\njNguk5yP4+OMb2vik2SF352rAwfG3k7mMA==\n-----END CERTIFICATE-----\n\",\"\"))'"
 ```
 
 The return value may be deployed manually on a remote machine, or

@@ -13,13 +13,14 @@ profile has its own set of daemons for connecting to different resources).}
 \value{
 A named list comprising:
     \itemize{
-    \item{\strong{connections}} {- number of active connections. Always 1L
-    when using dispatcher as there is a single connection to the dispatcher,
-    which in turn connects to the daemons.}
-    \item{\strong{daemons}} {- if using dispatcher: a status matrix (see
-    Status Matrix section below), or else an integer 'errorValue' if
-    communication with dispatcher was unsuccessful. If not using
-    dispatcher: the character host URL. If daemons are not set: 0L.}
+    \item{\strong{connections}} {- integer number of active connections.
+    \cr Using dispatcher: Always 1L as there is a single connection to
+    dispatcher, which connects to the daemons in turn.}
+    \item{\strong{daemons}} {- of variable type.
+    \cr Using dispatcher: a status matrix (see Status Matrix section below),
+    or else an integer 'errorValue' if communication with dispatcher failed.
+    \cr Not using dispatcher: the character host URL.
+    \cr Not set: NULL.}
     }
 }
 \description{

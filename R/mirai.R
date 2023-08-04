@@ -866,13 +866,14 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 #'
 #' @return A named list comprising:
 #'     \itemize{
-#'     \item{\strong{connections}} {- number of active connections. Always 1L
-#'     when using dispatcher as there is a single connection to the dispatcher,
-#'     which in turn connects to the daemons.}
-#'     \item{\strong{daemons}} {- if using dispatcher: a status matrix (see
-#'     Status Matrix section below), or else an integer 'errorValue' if
-#'     communication with dispatcher was unsuccessful. If not using
-#'     dispatcher: the character host URL. If daemons are not set: 0L.}
+#'     \item{\strong{connections}} {- integer number of active connections.
+#'     \cr Using dispatcher: Always 1L as there is a single connection to
+#'     dispatcher, which connects to the daemons in turn.}
+#'     \item{\strong{daemons}} {- of variable type.
+#'     \cr Using dispatcher: a status matrix (see Status Matrix section below),
+#'     or else an integer 'errorValue' if communication with dispatcher failed.
+#'     \cr Not using dispatcher: the character host URL.
+#'     \cr Not set: NULL.}
 #'     }
 #'
 #' @section Status Matrix:
@@ -911,9 +912,9 @@ saisei <- function(i = 1L, force = FALSE, .compute = "default") {
 status <- function(.compute = "default") {
 
     envir <- ..[[.compute]]
-    active <- length(envir[["sock"]])
-    list(connections = if (active) stat(envir[["sock"]], "pipes") else 0L,
-         daemons = if (length(envir[["sockc"]])) query_status(envir) else if (active) envir[["urls"]] else 0L)
+    sock <- envir[["sock"]]
+    list(connections = if (is.null(sock)) 0L else as.integer(stat(sock, "pipes")),
+         daemons = if (is.null(envir[["sockc"]])) envir[["urls"]] else query_status(envir))
 
 }
 
