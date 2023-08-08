@@ -282,6 +282,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
     sockc <- socket(protocol = "rep")
     on.exit(close(sockc), add = TRUE, after = FALSE)
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
+    pipe_notify(sockc, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
     recv(sockc, mode = 5L, block = .timelimit) && stop(.messages[["sync_timeout"]])
     send_aio(sockc, c(Sys.getpid(), servernames), mode = 2L)
     cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)

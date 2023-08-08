@@ -3,12 +3,13 @@
 * Dispatcher improvements and fixes:
   + Straight pass through without serialization/unserialization allows higher performance and lower memory utilisation.
   + Fixes edge cases of `status()` occasionally failing to communicate with dispatcher.
+  + Fixes edge cases of ending a session with unresolved mirai resulting in a crash rather than a clean exit.
 * `saisei()` with argument `force = TRUE` now immediately regenerates the socket and returns any ongoing mirai as an 'errorValue'. This allows tasks that consistently hang or crash to be cancelled rather than being repeated when a new daemon connects.
 * Tweaks to `status():`
   + The daemons status matrix adds a column 'i' for ease of use with other functions such as `saisei()` or `launch_local()` etc.
   + `$daemons` now returns NULL if daemons have not been set.
 * Certain error messages are more accurate and informative.
-* Requires nanonext >= [0.9.1], and consequently R >= 3.5.
+* Requires nanonext >= [0.9.2], and consequently R >= 3.5.
 
 # mirai 0.9.1
 
