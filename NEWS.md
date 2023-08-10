@@ -1,4 +1,4 @@
-# mirai 0.9.1.9000 (development)
+# mirai 0.9.1.9001 (development)
 
 * Dispatcher enhancements and fixes:
   + Straight pass through without serialization/unserialization allows higher performance and lower memory utilisation.
