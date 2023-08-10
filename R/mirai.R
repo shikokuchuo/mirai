@@ -1373,7 +1373,7 @@ perform_cleanup <- function(cleanup, op, se) {
     cleanup <- cleanup - 1L
   }
   if (cleanup > 0L)
-    rm(list = ls(.GlobalEnv, all.names = TRUE, sorted = FALSE), envir = .GlobalEnv)
+    rm(list = names(.GlobalEnv), envir = .GlobalEnv)
 }
 
 mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
