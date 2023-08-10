@@ -63,7 +63,8 @@
 <li>
 <code><a href="../reference/saisei.html">saisei()</a></code> with argument <code>force = TRUE</code> now immediately regenerates the socket and returns any ongoing mirai as an ‘errorValue’. This allows tasks that consistently hang or crash to be cancelled rather than repeated when a new daemon connects.</li>
 <li>Tweaks to <code>status():</code>
-<ul><li>The daemons status matrix adds a column ‘i’ for ease of use with other functions such as <code><a href="../reference/saisei.html">saisei()</a></code> or <code><a href="../reference/launch_local.html">launch_local()</a></code>.</li>
+<ul><li>The daemons status matrix adds a column ‘i’ for ease of use with functions such as <code><a href="../reference/saisei.html">saisei()</a></code> or <code><a href="../reference/launch_local.html">launch_local()</a></code>.</li>
+<li>The ‘instance’ column is now always cumulative - regenerating a URL with <code><a href="../reference/saisei.html">saisei()</a></code> no longer resets the counter but instead turns it negative until a new daemon connects.</li>
 <li>
 <code>$daemons</code> now returns NULL if daemons have not been set.</li>
 </ul></li>
