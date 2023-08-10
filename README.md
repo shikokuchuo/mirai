@@ -590,7 +590,7 @@ launch_remote(1)
 ```
 
 The return value may be deployed manually on a remote machine by
-unescaping the double quotes around the call to `"mirai::daemons()"`, or
+unescaping the double quotes around the call to `"mirai::daemon()"`, or
 directly via SSH or a resource manager by additionally specifying
 ‘command’ and ‘args’ to `launch_remote()`.
 
