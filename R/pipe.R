@@ -86,7 +86,7 @@
   if (unresolved(x)) {
     syscall <- sys.call()
     data <- NULL
-    env <- `class<-`(new.env(hash = FALSE, parent = parent.frame()), c("unresolvedExpr", "unresolvedValue", "recvAio"))
+    env <- `class<-`(new.env(hash = FALSE, parent = parent.frame()), c("unresolvedExpr", "unresolvedValue"))
     makeActiveBinding(sym = "data", fun = function(x) {
       if (is.null(data)) {
         data <- eval(syscall, envir = env, enclos = NULL)
@@ -96,7 +96,7 @@
     }, env = env)
     env
   } else {
-    x <- if (inherits(x, "mirai")) `[[<-`(quote(.subset2(x, "data")), 2L, substitute(x)) else substitute(x)
+    x <- if (is_mirai(x)) `[[<-`(quote(.subset2(x, "data")), 2L, substitute(x)) else substitute(x)
     y <- substitute(f)
     if (is.symbol(y)) {
       eval.parent(as.call(c(y, x)))

@@ -323,7 +323,7 @@ Note that `daemons()` should be set up on the host machine before launching `dae
 `launch_remote()` may also be used to launch daemons directly on a remote machine. For example, if the remote machine at 10.216.62.100 accepts SSH connections over port 22:
 
 ```{r launchremote, eval=FALSE}
-launch_remote(1:4, command = "ssh", args = c("-p 22 10.75.34.138", .))
+launch_remote(1:4, command = "ssh", args = c("-p 22 10.75.34.100", .))
 ```
 ```{r launchremotereal, echo=FALSE}
 launch_remote(1:4)
@@ -431,14 +431,18 @@ The generated self-signed certificate is made available for read-only access via
 launch_remote(1)
 ```
 
-The return value may be deployed manually on a remote machine, or directly via SSH or a resource manager by additionally specifying 'command' and 'args' to `launch_remote()`.
+The return value may be deployed manually on a remote machine by unescaping the double quotes around the call to `"mirai::daemons()"`, or directly via SSH or a resource manager by additionally specifying 'command' and 'args' to `launch_remote()`.
 
 __
 
 As an alternative to the automatic process described above, a certificate may also be generated in the traditional manner via a Certificate Signing Request (CSR) to a Certificate Authority (CA), which may be a public CA or a CA internal to your organisation.
 
-- The generated certificate along with the associated private key may then be specified as the 'tls' argument to `daemons()`.
-- The certificate chain to the CA is supplied as the 'tls' argument to `daemon()`. 
+The following resources describe how to generate a private key and CSR:
+
+- using Mbed TLS: <https://mbed-tls.readthedocs.io/en/latest/kb/how-to/generate-a-certificate-request-csr/>
+- using OpenSSL: <https://www.feistyduck.com/library/openssl-cookbook/online/> (Chapter 1.2 Key and Certificate Management)
+
+The generated certificate along with the associated private key may then be specified as the 'tls' argument to `daemons()`. The certificate chain to the CA is supplied as the 'tls' argument to `daemon()`. 
 
 ```{r tlsclose, include=FALSE}
 daemons(0)

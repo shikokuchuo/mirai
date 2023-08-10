@@ -49,7 +49,8 @@ by the daemons launch command. These could be specified in the manner of:
 For \strong{launch_local}: Invisible NULL.
 
 For \strong{launch_remote}: A character vector of daemon launch
-    commands the same length as 'url'.
+    commands the same length as 'url'. For manual deployment, unescape the
+    double quotes around the call to \code{"mirai::daemons()"}.
 }
 \description{
 \code{launch_local} spawns a new background \code{Rscript} process calling

@@ -335,7 +335,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
 
       for (i in seq_n)
         if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
-          send(queue[[i]][["ctx"]], data = .subset2(queue[[i]][["res"]], "data"), mode = 2L)
+          send(queue[[i]][["ctx"]], data = queue[[i]][["res"]], mode = 2L)
           q <- queue[[i]][["daemon"]]
           serverfree[[q]] <- TRUE
           complete[[q]] <- complete[[q]] + 1L
@@ -350,7 +350,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
         for (q in free)
           for (i in seq_n) {
             if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
-              queue[[i]][["res"]] <- request_signal(.context(servers[[q]]), data = .subset2(queue[[i]][["req"]], "data"), send_mode = 2L, recv_mode = 8L, cv = cv)
+              queue[[i]][["res"]] <- request_signal(.context(servers[[q]]), data = queue[[i]][["req"]], send_mode = 2L, recv_mode = 8L, cv = cv)
               queue[[i]][["daemon"]] <- q
               serverfree[[q]] <- FALSE
               assigned[[q]] <- assigned[[q]] + 1L
@@ -1014,7 +1014,8 @@ launch_local <- function(url, ..., .compute = "default") {
 #'     \code{c("-p 22 192.168.0.2", .)}.
 #'
 #' @return For \strong{launch_remote}: A character vector of daemon launch
-#'     commands the same length as 'url'.
+#'     commands the same length as 'url'. For manual deployment, unescape the
+#'     double quotes around the call to \code{"mirai::daemons()"}.
 #'
 #' @rdname launch_local
 #' @export
@@ -1278,7 +1279,7 @@ parse_dots <- function(...)
   }
 
 parse_tls <- function(tls)
-  if (is.null(tls)) "" else sprintf(",tls=c(\"%s\",\"%s\")", tls[[1L]], tls[[2L]])
+  if (is.null(tls)) "" else sprintf(",tls=c('%s','%s')", tls[[1L]], tls[[2L]])
 
 get_tls <- function(.compute)
   if (length(..[[.compute]][["tls"]])) weakref_value(..[[.compute]][["tls"]])
@@ -1297,11 +1298,11 @@ process_url <- function(url, .compute) {
 
 write_args <- function(dots, tls = NULL)
   shQuote(switch(length(dots),
-                 sprintf("mirai::.daemon(\"%s\")", dots[[1L]]),
-                 sprintf("mirai::daemon(\"%s\"%s%s)", dots[[1L]], dots[[2L]], parse_tls(tls)),
+                 sprintf("mirai::.daemon('%s')", dots[[1L]]),
+                 sprintf("mirai::daemon('%s'%s%s)", dots[[1L]], dots[[2L]], parse_tls(tls)),
                  "",
-                 sprintf("mirai::dispatcher(\"%s\",n=%d,monitor=\"%s\"%s)", dots[[1L]], dots[[3L]], dots[[4L]], dots[[2L]]),
-                 sprintf("mirai::dispatcher(\"%s\",c(\"%s\"),n=%d,monitor=\"%s\"%s%s)", dots[[1L]], paste(dots[[3L]], collapse = "\",\""), dots[[4L]], dots[[5L]], dots[[2L]], parse_tls(tls))))
+                 sprintf("mirai::dispatcher('%s',n=%d,monitor='%s'%s)", dots[[1L]], dots[[3L]], dots[[4L]], dots[[2L]]),
+                 sprintf("mirai::dispatcher('%s',c('%s'),n=%d,monitor='%s'%s%s)", dots[[1L]], paste(dots[[3L]], collapse = "','"), dots[[4L]], dots[[5L]], dots[[2L]], parse_tls(tls))))
 
 launch_daemon <- function(..., tls = NULL) {
   dots <- list(...)
