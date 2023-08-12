@@ -251,8 +251,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE)
     listen(nsock, url = nurl, tls = tls, error = TRUE)
-    if (lock)
-      lock(nsock, cv = ncv)
+    lock && lock(nsock, cv = ncv)
     listener <- attr(nsock, "listener")[[1L]]
     if (i == 1L && !auto && parse_url(opt(listener, "url"))[["port"]] == "0") {
       realport <- opt(listener, "tcp-bound-port")
@@ -265,8 +264,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
       servernames[[i]] <- opt(listener, "url")
     }
 
-    if (auto)
-      launch_daemon(nurl, dots)
+    auto && launch_daemon(nurl, dots)
 
     servers[[i]] <- nsock
     active[[i]] <- ncv
@@ -318,8 +316,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
             data <- servernames[[i]] <- if (auto) auto_tokenized_url() else new_tokenized_url(basenames[[i]])
             instance[[i]] <- -instance[[i]]
             listen(nsock, url = data, tls = tls, error = TRUE)
-            if (lock)
-              lock(nsock, cv = active[[i]])
+            lock && lock(nsock, cv = active[[i]])
 
           } else {
             data <- ""
@@ -1360,20 +1357,14 @@ init_monitor <- function(sockc, envir) {
 }
 
 perform_cleanup <- function(cleanup, op, se) {
-  if (cleanup > 7L) {
-    gc(verbose = FALSE)
-    cleanup <- cleanup - 7L
-  }
-  if (cleanup > 3L) {
-    options(op)
-    cleanup <- cleanup - 3L
-  }
-  if (cleanup > 1L) {
-    lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
-    cleanup <- cleanup - 1L
-  }
-  if (cleanup > 0L)
+  if (bitwAnd(cleanup, 1L))
     rm(list = names(.GlobalEnv), envir = .GlobalEnv)
+  if (bitwAnd(cleanup, 2L))
+    lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
+  if (bitwAnd(cleanup, 4L))
+    options(op)
+  if (bitwAnd(cleanup, 8L))
+    gc(verbose = FALSE)
 }
 
 mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
