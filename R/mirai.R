@@ -808,7 +808,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
 #' When using daemons with dispatcher, regenerates the token for the URL a
 #'     dispatcher socket listens at.
 #'
-#' @param i [default 1L] integer index number URL to regenerate at dispatcher.
+#' @param i integer index number URL to regenerate at dispatcher.
 #' @param force [default FALSE] logical value whether to regenerate the URL even
 #'     when there is an existing active connection.
 #' @param .compute [default 'default'] character compute profile (each compute
@@ -843,7 +843,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
 #'
 #' @export
 #'
-saisei <- function(i = 1L, force = FALSE, .compute = "default") {
+saisei <- function(i, force = FALSE, .compute = "default") {
 
   envir <- ..[[.compute]]
   i <- as.integer(`length<-`(i, 1L))

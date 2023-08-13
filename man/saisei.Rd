@@ -4,10 +4,10 @@
 \alias{saisei}
 \title{Saisei (Regenerate Token)}
 \usage{
-saisei(i = 1L, force = FALSE, .compute = "default")
+saisei(i, force = FALSE, .compute = "default")
 }
 \arguments{
-\item{i}{[default 1L] integer index number URL to regenerate at dispatcher.}
+\item{i}{integer index number URL to regenerate at dispatcher.}
 
 \item{force}{[default FALSE] logical value whether to regenerate the URL even
 when there is an existing active connection.}
