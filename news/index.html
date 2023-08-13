@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9005</span>
       </span>
     </div>
 
@@ -54,15 +54,17 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.1.9004" id="mirai-0919004-development">mirai 0.9.1.9004 (development)<a class="anchor" aria-label="anchor" href="#mirai-0919004-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.1.9005" id="mirai-0919005-development">mirai 0.9.1.9005 (development)<a class="anchor" aria-label="anchor" href="#mirai-0919005-development"></a></h2>
 <ul><li>Dispatcher enhancements and fixes:
 <ul><li>Straight pass through without serialization/unserialization allows higher performance and lower memory utilisation.</li>
 <li>Fixes edge cases of <code><a href="../reference/status.html">status()</a></code> occasionally failing to communicate with dispatcher.</li>
 <li>Fixes edge cases of ending a session with unresolved mirai resulting in a crash rather than a clean exit.</li>
 </ul></li>
-<li>
-<code><a href="../reference/saisei.html">saisei()</a></code> with argument <code>force = TRUE</code> now immediately regenerates the socket and returns any ongoing mirai as an ‘errorValue’. This allows tasks that consistently hang or crash to be cancelled rather than repeated when a new daemon connects.</li>
-<li>Tweaks to <code>status():</code>
+<li>Tweaks to <code><a href="../reference/saisei.html">saisei()</a></code>:
+<ul><li>specifying argument ‘force’ as TRUE now immediately regenerates the socket and returns any ongoing mirai as an ‘errorValue’. This allows tasks that consistently hang or crash to be cancelled rather than repeated when a new daemon connects.</li>
+<li>argument ‘i’ is now required and no longer default to 1L.</li>
+</ul></li>
+<li>Tweaks to <code><a href="../reference/status.html">status()</a></code>:
 <ul><li>The daemons status matrix adds a column ‘i’ for ease of use with functions such as <code><a href="../reference/saisei.html">saisei()</a></code> or <code><a href="../reference/launch_local.html">launch_local()</a></code>.</li>
 <li>The ‘instance’ column is now always cumulative - regenerating a URL with <code><a href="../reference/saisei.html">saisei()</a></code> no longer resets the counter but instead turns it negative until a new daemon connects.</li>
 <li>
