@@ -55,14 +55,15 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.9.1.9005" id="mirai-0919005-development">mirai 0.9.1.9005 (development)<a class="anchor" aria-label="anchor" href="#mirai-0919005-development"></a></h2>
-<ul><li>Dispatcher enhancements and fixes:
+<ul><li>Previously deprecated function <code>server()</code> is removed in favour of <code><a href="../reference/daemon.html">daemon()</a></code>.</li>
+<li>Dispatcher enhancements and fixes:
 <ul><li>Straight pass through without serialization/unserialization allows higher performance and lower memory utilisation.</li>
 <li>Fixes edge cases of <code><a href="../reference/status.html">status()</a></code> occasionally failing to communicate with dispatcher.</li>
 <li>Fixes edge cases of ending a session with unresolved mirai resulting in a crash rather than a clean exit.</li>
 </ul></li>
 <li>Tweaks to <code><a href="../reference/saisei.html">saisei()</a></code>:
 <ul><li>specifying argument ‘force’ as TRUE now immediately regenerates the socket and returns any ongoing mirai as an ‘errorValue’. This allows tasks that consistently hang or crash to be cancelled rather than repeated when a new daemon connects.</li>
-<li>argument ‘i’ is now required and no longer default to 1L.</li>
+<li>argument ‘i’ is now required and no longer defaults to 1L.</li>
 </ul></li>
 <li>Tweaks to <code><a href="../reference/status.html">status()</a></code>:
 <ul><li>The daemons status matrix adds a column ‘i’ for ease of use with functions such as <code><a href="../reference/saisei.html">saisei()</a></code> or <code><a href="../reference/launch_local.html">launch_local()</a></code>.</li>
@@ -88,7 +89,7 @@
 <li>User interface optimised for consistency and ease of use:
 <ul><li>Documentation updated to refer consistently to host and daemons (rather than client and server) for clarity.</li>
 <li>
-<code><a href="../reference/daemon.html">daemon()</a></code> replaces <code><a href="../reference/daemon.html">server()</a></code>, which is deprecated (although currently retained as an alias).</li>
+<code><a href="../reference/daemon.html">daemon()</a></code> replaces <code>server()</code>, which is deprecated (although currently retained as an alias).</li>
 <li>
 <code><a href="../reference/launch_local.html">launch_local()</a></code> replaces <code>launch_server()</code> and now accepts a vector argument for ‘url’ as well as numeric values to select the relevant dispatcher or host URL, returning invisible NULL instead of an integer value.</li>
 <li>
@@ -118,7 +119,7 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.8.7" id="mirai-087">mirai 0.8.7<small>2023-05-11</small><a class="anchor" aria-label="anchor" href="#mirai-087"></a></h2>
 <ul><li>
-<code><a href="../reference/daemon.html">server()</a></code> and <code><a href="../reference/dispatcher.html">dispatcher()</a></code> argument ‘asyncdial’ is now FALSE by default, causing these functions to exit if a connection is not immediately available. This means that for distributed computing purposes, <code>dameons()</code> should be called before <code><a href="../reference/daemon.html">server()</a></code> is launched on remote resources, or else <code>server(asyncdial = TRUE)</code> allows servers to wait for a connection.</li>
+<code>server()</code> and <code><a href="../reference/dispatcher.html">dispatcher()</a></code> argument ‘asyncdial’ is now FALSE by default, causing these functions to exit if a connection is not immediately available. This means that for distributed computing purposes, <code>dameons()</code> should be called before <code>server()</code> is launched on remote resources, or else <code>server(asyncdial = TRUE)</code> allows servers to wait for a connection.</li>
 <li>
 <code>launch_server()</code> now parses the passed URL for correctness before attempting to launch a server, producing an error if not valid.</li>
 </ul></div>
@@ -152,7 +153,7 @@
 <li>
 <code><a href="../reference/saisei.html">saisei()</a></code> implemented to regenerate the token used by a given dispatcher socket.</li>
 <li>
-<code>launch_server()</code> replaces <code>launch()</code> for launching local instances, with a simpler interface directly mapping to <code><a href="../reference/daemon.html">server()</a></code>.</li>
+<code>launch_server()</code> replaces <code>launch()</code> for launching local instances, with a simpler interface directly mapping to <code>server()</code>.</li>
 <li>Automatically-launched local daemons revised to use unique tokens in their URLs.</li>
 <li>Daemons status matrix headers updated to ‘online’, ‘instance’, ‘assigned’, and ‘complete’.</li>
 <li>Fixes potential issue when attempting to use <code><a href="../reference/mirai.html">mirai()</a></code> with timeouts and no connection to a server.</li>
@@ -193,7 +194,7 @@
 <li>
 <code><a href="../reference/dispatcher.html">dispatcher()</a></code> is implemented as a new function for the dispatcher.</li>
 <li>
-<code><a href="../reference/daemon.html">server()</a></code> gains the following arguments:
+<code>server()</code> gains the following arguments:
 <ul><li>
 <code>asyncdial</code> to specify how the server dials into the client.</li>
 <li>
@@ -205,7 +206,7 @@
 <li>
 <code>timerstart</code> for specifying a minimum number of task completions before starting timers.</li>
 </ul></li>
-<li>Invalid URLs provided to <code><a href="../reference/daemons.html">daemons()</a></code> and <code><a href="../reference/daemon.html">server()</a></code> now error and return immediately instead of potentially causing a hang.</li>
+<li>Invalid URLs provided to <code><a href="../reference/daemons.html">daemons()</a></code> and <code>server()</code> now error and return immediately instead of potentially causing a hang.</li>
 <li>
 <code>eval_mirai()</code> is removed as an alias for <code><a href="../reference/mirai.html">mirai()</a></code>.</li>
 <li>‘mirai’ processes are no longer launched in Rscript sessions with the <code>--vanilla</code> argument to enable site / user profile and environment files to be read.</li>
@@ -227,7 +228,7 @@
 <h2 class="page-header" data-toc-text="0.7.0" id="mirai-070">mirai 0.7.0<small>2022-10-19</small><a class="anchor" aria-label="anchor" href="#mirai-070"></a></h2>
 <ul><li>
 <code><a href="../reference/daemons.html">daemons()</a></code> now takes ‘n’ and ‘.url’ arguments. ‘.url’ is an optional client URL allowing mirai tasks to be distributed across the network. Compatibility with existing interface is retained.</li>
-<li>The server function <code><a href="../reference/daemon.html">server()</a></code> is exported for creating daemon / ephemeral processes on network resources.</li>
+<li>The server function <code>server()</code> is exported for creating daemon / ephemeral processes on network resources.</li>
 <li>Mirai errors are formatted better and now print to stdout rather than stderr.</li>
 <li>Improvements to performance and stability requiring nanonext &gt;= 0.6.0.</li>
 <li>Internal enhancements to error handling in a mirai / daemon process.</li>
