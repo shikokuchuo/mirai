@@ -2,7 +2,6 @@
 % Please edit documentation in R/mirai.R
 \name{daemon}
 \alias{daemon}
-\alias{server}
 \title{Daemon}
 \usage{
 daemon(
@@ -86,9 +85,4 @@ The network topology is such that daemons dial into the host or
     dispatcher, which listens at the 'url' address. In this way, network
     resources may be added or removed dynamically and the host or
     dispatcher automatically distributes tasks to all available daemons.
-
-    \strong{Note:} in previous package versions, the name of this function
-    was \code{server}. The usage of \code{server} is deprecated. Although it
-    continues to function for the time being, please update any code that
-    uses \code{server}.
 }

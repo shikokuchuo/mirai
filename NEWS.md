@@ -1,12 +1,13 @@
 # mirai 0.9.1.9005 (development)
 
+* Previously deprecated function `server()` is removed in favour of `daemon()`.
 * Dispatcher enhancements and fixes:
   + Straight pass through without serialization/unserialization allows higher performance and lower memory utilisation.
   + Fixes edge cases of `status()` occasionally failing to communicate with dispatcher.
   + Fixes edge cases of ending a session with unresolved mirai resulting in a crash rather than a clean exit.
 * Tweaks to `saisei()`:
   + specifying argument 'force' as TRUE now immediately regenerates the socket and returns any ongoing mirai as an 'errorValue'. This allows tasks that consistently hang or crash to be cancelled rather than repeated when a new daemon connects.
-  + argument 'i' is now required and no longer default to 1L.
+  + argument 'i' is now required and no longer defaults to 1L.
 * Tweaks to `status()`:
   + The daemons status matrix adds a column 'i' for ease of use with functions such as `saisei()` or `launch_local()`.
   + The 'instance' column is now always cumulative - regenerating a URL with `saisei()` no longer resets the counter but instead turns it negative until a new daemon connects.

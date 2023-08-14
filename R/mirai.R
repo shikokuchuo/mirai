@@ -72,12 +72,6 @@
 #'     resources may be added or removed dynamically and the host or
 #'     dispatcher automatically distributes tasks to all available daemons.
 #'
-#'     \strong{Note:} in previous package versions, the name of this function
-#'     was \code{server}. The usage of \code{server} is deprecated. Although it
-#'     continues to function for the time being, please update any code that
-#'     uses \code{server}.
-#'
-#' @aliases server
 #' @export
 #'
 daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
@@ -130,10 +124,6 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
   msleep(exitlinger)
 
 }
-
-#' @export
-#'
-server <- daemon
 
 #' dot Daemon
 #'
@@ -1357,13 +1347,13 @@ init_monitor <- function(sockc, envir) {
 }
 
 perform_cleanup <- function(cleanup, op, se) {
-  if (bitwAnd(cleanup, 1L))
+  if (cleanup %% 2L)
     rm(list = names(.GlobalEnv), envir = .GlobalEnv)
   if (bitwAnd(cleanup, 2L))
     lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
   if (bitwAnd(cleanup, 4L))
     options(op)
-  if (bitwAnd(cleanup, 8L))
+  if (cleanup >= 8L)
     gc(verbose = FALSE)
 }
 
