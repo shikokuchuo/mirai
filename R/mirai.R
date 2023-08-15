@@ -93,8 +93,8 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
     sink(file = devnull)
     sink(file = devnull, type = "message")
     on.exit({
-      sink()
       sink(type = "message")
+      sink()
       close(devnull)
     }, add = TRUE)
   }
@@ -115,7 +115,11 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
     data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                      error = mk_mirai_error, interrupt = mk_interrupt_error)
     send(ctx, data = data, mode = 1L)
-    perform_cleanup(cleanup = cleanup, op = op, se = se)
+
+    if (cleanup %% 2L) rm(list = names(.GlobalEnv), envir = .GlobalEnv)
+    if (bitwAnd(cleanup, 2L)) lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
+    if (bitwAnd(cleanup, 4L)) options(op)
+    if (cleanup >= 8L) gc(verbose = FALSE)
     if (count < timerstart) start <- mclock()
     count <- count + 1L
 
@@ -1344,17 +1348,6 @@ init_monitor <- function(sockc, envir) {
   res <- recv(sockc, mode = 2L, block = .timelimit)
   is.object(res) && stop(.messages[["sync_timeout"]])
   `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[[1L]]))
-}
-
-perform_cleanup <- function(cleanup, op, se) {
-  if (cleanup %% 2L)
-    rm(list = names(.GlobalEnv), envir = .GlobalEnv)
-  if (bitwAnd(cleanup, 2L))
-    lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
-  if (bitwAnd(cleanup, 4L))
-    options(op)
-  if (cleanup >= 8L)
-    gc(verbose = FALSE)
 }
 
 mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))

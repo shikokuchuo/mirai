@@ -1,4 +1,4 @@
-# mirai 0.9.1.9005 (development)
+# mirai 0.9.1.9006 (development)
 
 * Previously deprecated function `server()` is removed in favour of `daemon()`.
 * Dispatcher enhancements and fixes:
