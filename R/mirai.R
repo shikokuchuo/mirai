@@ -83,11 +83,9 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
   cv <- cv()
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock = sock, url = url, asyncdial = asyncdial, tls = tls)
-  op <- options()
-  se <- search()
-  count <- 0L
-  if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
 
+  if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
+  clr <- as.raw(cleanup)
   if (!output) {
     devnull <- file(nullfile(), open = "w", blocking = FALSE)
     sink(file = devnull)
@@ -98,6 +96,9 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
       close(devnull)
     }, add = TRUE)
   }
+  op <- options()
+  se <- search()
+  count <- 0L
   start <- mclock()
   while (count < maxtasks && mclock() - start < walltime) {
 
@@ -117,8 +118,8 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
     send(ctx, data = data, mode = 1L)
 
     if (cleanup %% 2L) rm(list = names(.GlobalEnv), envir = .GlobalEnv)
-    if (bitwAnd(cleanup, 2L)) lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
-    if (bitwAnd(cleanup, 4L)) options(op)
+    if (clr & as.raw(2L)) lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
+    if (clr & as.raw(4L)) options(op)
     if (cleanup >= 8L) gc(verbose = FALSE)
     if (count < timerstart) start <- mclock()
     count <- count + 1L
@@ -1265,7 +1266,7 @@ parse_dots <- function(...)
     dots <- list(...)
     dnames <- names(dots)
     dots <- strcat(",", paste(dnames, dots, sep = "=", collapse = ","))
-    "output" %in% dnames && return(`class<-`(dots, .urlscheme))
+    "output" %in% dnames && return(`class<-`(dots, "output"))
     dots
   }
 
