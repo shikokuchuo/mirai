@@ -1309,10 +1309,7 @@ launch_and_sync_daemon <- function(sock, synctime, ..., tls = NULL) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
   launch_daemon(..., tls = tls)
-  until(cv, synctime) && {
-    ...length() < 3L && stop(.messages[["sync_timeout"]])
-    stop(sprintf(.messages[["sync_dispatch"]], as.character(synctime)))
-  }
+  until(cv, synctime) && stop(if (...length() < 3L) .messages[["sync_timeout"]] else sprintf(.messages[["sync_dispatch"]], as.character(synctime)))
 }
 
 dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
