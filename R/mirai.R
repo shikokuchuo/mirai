@@ -300,7 +300,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
             close(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
             data <- servernames[[i]] <- if (auto) auto_tokenized_url() else new_tokenized_url(basenames[[i]])
-            instance[[i]] <- -instance[[i]]
+            instance[[i]] <- -abs(instance[[i]])
             listen(servers[[i]], url = data, tls = tls, error = TRUE)
 
           } else if (i < 0L) {
@@ -309,7 +309,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
             servers[[i]] <- nsock <- req_socket(NULL)
             pipe_notify(nsock, cv = active[[i]], cv2 = cv, flag = FALSE)
             data <- servernames[[i]] <- if (auto) auto_tokenized_url() else new_tokenized_url(basenames[[i]])
-            instance[[i]] <- -instance[[i]]
+            instance[[i]] <- -abs(instance[[i]])
             listen(nsock, url = data, tls = tls, error = TRUE)
             lock && lock(nsock, cv = active[[i]])
 
@@ -846,7 +846,7 @@ saisei <- function(i, force = FALSE, .compute = "default") {
   envir <- ..[[.compute]]
   i <- as.integer(`length<-`(i, 1L))
   length(envir[["sockc"]]) && i > 0L && i <= envir[["n"]] && substr(envir[["urls"]][[i]], 1L, 1L) != "t" || return()
-  r <- query_dispatcher(sock = envir[["sockc"]], command = i - force * 2L * i, mode = 2L)
+  r <- query_dispatcher(sock = envir[["sockc"]], command = if (force) -i else i, mode = 2L)
   is.character(r) && nzchar(r) || return()
   envir[["urls"]][[i]] <- r
   r
