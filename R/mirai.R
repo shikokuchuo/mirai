@@ -274,8 +274,8 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
   if (ctrchannel) {
     sockc <- socket(protocol = "rep")
     on.exit(close(sockc), add = TRUE, after = FALSE)
-    dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
     pipe_notify(sockc, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
+    dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
     recv(sockc, mode = 5L, block = .timelimit) && stop(.messages[["sync_timeout"]])
     send_aio(sockc, c(Sys.getpid(), servernames), mode = 2L)
     cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
@@ -1309,7 +1309,10 @@ launch_and_sync_daemon <- function(sock, synctime, ..., tls = NULL) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
   launch_daemon(..., tls = tls)
-  until(cv, synctime) && stop(.messages[["sync_timeout"]])
+  until(cv, synctime) && {
+    ...length() < 3L && stop(.messages[["sync_timeout"]])
+    stop(sprintf(.messages[["sync_dispatch"]], as.character(synctime)))
+  }
 }
 
 dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
