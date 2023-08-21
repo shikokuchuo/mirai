@@ -523,9 +523,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' @param dispatcher [default TRUE] logical value whether to use dispatcher.
 #'     Dispatcher is a local background process that connects to daemons on
 #'     behalf of the host and ensures FIFO scheduling, queueing tasks if
-#'     necessary (see Dispatcher section below). Alternatively supply a numeric
+#'     necessary (see Dispatcher section below). Alternatively, supply a numeric
 #'     value to enable dispatcher and set the maximum time in milliseconds for
-#'     initial synchronisation (default 5000L). May be set wider to allow for
+#'     initial synchronisation (default 5000L) - may be set wider to allow for
 #'     configurations where the R startup process takes longer.
 #' @param tls [default NULL] (optional for secure TLS connections) if not
 #'     supplied, zero-configuration single-use keys and certificates are
