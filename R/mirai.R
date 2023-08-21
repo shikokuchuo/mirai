@@ -750,8 +750,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld)
         sockc <- req_socket(urlc, resend = 0L)
-        synctime <- if (is.numeric(dispatcher)) dispatcher else .timelimit
-        launch_and_sync_daemon(sock = sock, synctime = synctime, urld, parse_dots(...), url, n, urlc, tls = tls)
+        launch_and_sync_daemon(sock = sock, synctime = if (is.numeric(dispatcher)) dispatcher else .timelimit, urld, parse_dots(...), url, n, urlc, tls = tls)
         init_monitor(sockc = sockc, envir = envir)
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls))
@@ -786,8 +785,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
       if (dispatcher) {
         urlc <- strcat(urld, "c")
         sockc <- req_socket(urlc, resend = 0L)
-        synctime <- if (is.numeric(dispatcher)) dispatcher else .timelimit
-        launch_and_sync_daemon(sock = sock, synctime = synctime, urld, dots, n, urlc)
+        launch_and_sync_daemon(sock = sock, synctime = if (is.numeric(dispatcher)) dispatcher else .timelimit, urld, dots, n, urlc)
         init_monitor(sockc = sockc, envir = envir)
       } else {
         for (i in seq_len(n))
