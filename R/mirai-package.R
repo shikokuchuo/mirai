@@ -93,7 +93,7 @@ NULL
     n_zero = "the number of daemons must be zero or greater",
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
     requires_list = "'.args' must be specified as a list",
-    sync_timeout = "sync with dispatcher or daemon failed after 5s",
+    sync_timeout = "sync with dispatcher or daemon failed (typically after 5s)",
     url_spec = "numeric value for 'url' is out of bounds"
   ),
   hash = TRUE

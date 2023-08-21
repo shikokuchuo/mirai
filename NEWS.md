@@ -1,6 +1,7 @@
-# mirai 0.9.1.9007 (development)
+# mirai 0.9.1.9008 (development)
 
 * Previously deprecated function `server()` is removed in favour of `daemon()`.
+* `daemons()` now allows a numeric value for 'dispatcher' to set an initial sync time other than the default 5s, allowing for cases where the R startup process takes a long time. (thanks @alexpiper).
 * Dispatcher enhancements and fixes:
   + Straight pass through without serialization/unserialization allows higher performance and lower memory utilisation.
   + Fixes edge cases of `status()` occasionally failing to communicate with dispatcher.
@@ -14,8 +15,8 @@
   + `$daemons` now returns NULL if daemons have not been set.
 * Improved shell quoting of daemon launch commands makes it easier to deploy manually via `launch_remote()`.
 * Certain error messages are more accurate and informative.
-* General performance improvements through updates in nanonext v0.9.2.
-* Requires nanonext >= 0.9.2, and consequently R >= 3.5.
+* General performance improvements through updates in nanonext v[0.9.2].
+* Requires nanonext >= [0.9.2], and consequently R >= 3.5.
 
 # mirai 0.9.1
 
