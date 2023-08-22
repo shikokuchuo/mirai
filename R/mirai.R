@@ -523,10 +523,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' @param dispatcher [default TRUE] logical value whether to use dispatcher.
 #'     Dispatcher is a local background process that connects to daemons on
 #'     behalf of the host and ensures FIFO scheduling, queueing tasks if
-#'     necessary (see Dispatcher section below). Alternatively, supply a numeric
-#'     value to enable dispatcher and set the maximum time in milliseconds for
-#'     initial synchronisation (default 5000L) - may be set wider to allow for
-#'     configurations where the R startup process takes longer.
+#'     necessary (see Dispatcher section below). Specify NA to set a longer
+#'     20s timeout for initial synchronisation (default 5s), designed to
+#'     accommodate configurations with a longer R startup process.
 #' @param tls [default NULL] (optional for secure TLS connections) if not
 #'     supplied, zero-configuration single-use keys and certificates are
 #'     automatically generated. If supplied, \strong{either} the character path
@@ -748,13 +747,13 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
         envir[["tls"]] <- weakref(envir, tls[["client"]])
         tls <- tls[["server"]]
       }
-      if (dispatcher) {
+      if (is.na(dispatcher) || dispatcher) {
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(.messages[["n_one"]])
         urld <- auto_tokenized_url()
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld)
         sockc <- req_socket(urlc, resend = 0L)
-        launch_and_sync_daemon(sock = sock, synctime = if (is.numeric(dispatcher)) dispatcher else .timelimit, urld, parse_dots(...), url, n, urlc, tls = tls)
+        launch_and_sync_daemon(sock = sock, synctime = if (is.na(dispatcher)) .nalimit else .timelimit, urld, parse_dots(...), url, n, urlc, tls = tls)
         init_monitor(sockc = sockc, envir = envir)
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls))
@@ -786,10 +785,10 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, tls = NULL, ..., .compute 
       urld <- auto_tokenized_url()
       sock <- req_socket(urld)
       dots <- parse_dots(...)
-      if (dispatcher) {
+      if (is.na(dispatcher) || dispatcher) {
         urlc <- strcat(urld, "c")
         sockc <- req_socket(urlc, resend = 0L)
-        launch_and_sync_daemon(sock = sock, synctime = if (is.numeric(dispatcher)) dispatcher else .timelimit, urld, dots, n, urlc)
+        launch_and_sync_daemon(sock = sock, synctime = if (is.na(dispatcher)) .nalimit else .timelimit, urld, dots, n, urlc)
         init_monitor(sockc = sockc, envir = envir)
       } else {
         for (i in seq_len(n))
@@ -1286,7 +1285,7 @@ launch_and_sync_daemon <- function(sock, synctime, ..., tls = NULL) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
   launch_daemon(..., tls = tls)
-  until(cv, synctime) && stop(if (...length() < 3L) .messages[["sync_timeout"]] else sprintf(.messages[["sync_dispatch"]], as.character(synctime)))
+  until(cv, synctime) && stop(if (...length() < 3L) .messages[["sync_timeout"]] else if (synctime == .timelimit) .messages[["sync_dispatch"]] else .messages[["sync_na"]])
 }
 
 dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
