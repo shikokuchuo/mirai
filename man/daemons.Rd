@@ -48,9 +48,13 @@ creating the daemons (each compute profile has its own set of daemons for
 connecting to different resources).}
 }
 \value{
-Integer number of daemons set (when using dispatcher), or integer
-    local daemons launched (without dispatcher) or else the character host
-    URL.
+Depending on the arguments supplied:
+
+    \itemize{
+    \item{using dispatcher: integer number of daemons set.}
+    \item{or else launching local daemons: integer number of daemons launched.}
+    \item{otherwise: the character host URL.}
+    }
 }
 \description{
 Set 'daemons' or persistent background processes receiving \code{\link{mirai}}

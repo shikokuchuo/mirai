@@ -1,7 +1,7 @@
 # mirai 0.9.1.9011 (development)
 
 * Previously deprecated function `server()` is removed in favour of `daemon()`.
-* `daemons()` now allows a numeric value for 'dispatcher' to set an initial sync time other than the default 5s, allowing for cases where the R startup configuration takes longer. (thanks @alexpiper).
+* `daemons()` now allows a numeric value for 'dispatcher' to set an initial sync time other than the default 5s, allowing for cases where the R startup configuration takes longer (thanks @alexpiper).
 * Dispatcher enhancements and fixes:
   + Straight pass through without serialization/unserialization allows higher performance and lower memory utilisation.
   + Fixes edge cases of `status()` occasionally failing to communicate with dispatcher.

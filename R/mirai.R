@@ -542,9 +542,13 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     creating the daemons (each compute profile has its own set of daemons for
 #'     connecting to different resources).
 #'
-#' @return Integer number of daemons set (when using dispatcher), or integer
-#'     local daemons launched (without dispatcher) or else the character host
-#'     URL.
+#' @return Depending on the arguments supplied:
+#'
+#'     \itemize{
+#'     \item{using dispatcher: integer number of daemons set.}
+#'     \item{or else launching local daemons: integer number of daemons launched.}
+#'     \item{otherwise: the character host URL.}
+#'     }
 #'
 #' @details Use \code{daemons(0)} to reset daemon connections:
 #'     \itemize{
