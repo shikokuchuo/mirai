@@ -1050,11 +1050,6 @@ launch_remote <- function(url, ..., .compute = "default", rscript = "Rscript", c
 #' @details This function will wait for the async operation to complete if still
 #'     in progress (blocking).
 #'
-#'     A blocking call can be sent a user interrupt with e.g. ctrl+c. If the
-#'     ongoing execution in the mirai is interruptible, it will resolve into
-#'     an object of class 'miraiInterrupt' and 'errorValue'.
-#'     \code{\link{is_mirai_interrupt}} may be used to handle such cases.
-#'
 #'     If an error occurs in evaluation, the error message is returned as a
 #'     character string of class 'miraiError' and 'errorValue'.
 #'     \code{\link{is_mirai_error}} may be used to test for this.
@@ -1184,7 +1179,7 @@ is_mirai <- function(x) inherits(x, "mirai")
 
 #' Error Validators
 #'
-#' Validator functions for error value types created by \{mirai\}.
+#' Validator functions for error value types created by \pkg{mirai}.
 #'
 #' @param x an object.
 #'
@@ -1194,14 +1189,8 @@ is_mirai <- function(x) inherits(x, "mirai")
 #'     the error message is returned as a character string of class 'miraiError'
 #'     and 'errorValue'.
 #'
-#'     Is the object a 'miraiInterrupt'. When a mirai is sent a user interrupt,
-#'     e.g. by ctrl+c during an ongoing \code{\link{call_mirai}}, the mirai
-#'     will resolve to an empty character string classed as 'miraiInterrupt' and
-#'     'errorValue'.
-#'
-#'     Is the object an 'errorValue', such as a mirai timeout, a 'miraiError'
-#'     or a 'miraiInterrupt'. This is a catch-all condition that includes all
-#'     returned error values, such as timeouts, as well as the error types above.
+#'     Is the object an 'errorValue', such as a mirai timeout, or a 'miraiError'.
+#'     This is a catch-all condition that includes all returned error values.
 #'
 #' @examples
 #' if (interactive()) {
@@ -1210,13 +1199,11 @@ is_mirai <- function(x) inherits(x, "mirai")
 #' m <- mirai(stop())
 #' call_mirai(m)
 #' is_mirai_error(m$data)
-#' is_mirai_interrupt(m$data)
 #' is_error_value(m$data)
 #'
 #' m2 <- mirai(Sys.sleep(1L), .timeout = 100)
 #' call_mirai(m2)
 #' is_mirai_error(m2$data)
-#' is_mirai_interrupt(m2$data)
 #' is_error_value(m2$data)
 #'
 #' }
@@ -1224,11 +1211,6 @@ is_mirai <- function(x) inherits(x, "mirai")
 #' @export
 #'
 is_mirai_error <- function(x) inherits(x, "miraiError")
-
-#' @rdname is_mirai_error
-#' @export
-#'
-is_mirai_interrupt <- function(x) inherits(x, "miraiInterrupt")
 
 #' @rdname is_mirai_error
 #' @export
@@ -1249,15 +1231,6 @@ print.mirai <- function(x, ...) {
 print.miraiError <- function(x, ...) {
 
   cat(strcat("'miraiError' chr ", x), file = stdout())
-  invisible(x)
-
-}
-
-#' @export
-#'
-print.miraiInterrupt <- function(x, ...) {
-
-  cat("'miraiInterrupt' chr \"\"\n", file = stdout())
   invisible(x)
 
 }
@@ -1354,7 +1327,7 @@ init_monitor <- function(sockc, envir) {
   `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[[1L]]))
 }
 
-mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
+mk_interrupt_error <- function(e) `class<-`("", c("miraiError", "errorValue"))
 
 mk_mirai_error <- function(e) {
   call <- deparse(.subset2(e, "call"), width.cutoff = 500L, backtick = TRUE, control = NULL, nlines = 1L)

@@ -2,13 +2,10 @@
 % Please edit documentation in R/mirai.R
 \name{is_mirai_error}
 \alias{is_mirai_error}
-\alias{is_mirai_interrupt}
 \alias{is_error_value}
 \title{Error Validators}
 \usage{
 is_mirai_error(x)
-
-is_mirai_interrupt(x)
 
 is_error_value(x)
 }
@@ -19,21 +16,15 @@ is_error_value(x)
 Logical value TRUE or FALSE.
 }
 \description{
-Validator functions for error value types created by \{mirai\}.
+Validator functions for error value types created by \pkg{mirai}.
 }
 \details{
 Is the object a 'miraiError'. When execution in a mirai process fails,
     the error message is returned as a character string of class 'miraiError'
     and 'errorValue'.
 
-    Is the object a 'miraiInterrupt'. When a mirai is sent a user interrupt,
-    e.g. by ctrl+c during an ongoing \code{\link{call_mirai}}, the mirai
-    will resolve to an empty character string classed as 'miraiInterrupt' and
-    'errorValue'.
-
-    Is the object an 'errorValue', such as a mirai timeout, a 'miraiError'
-    or a 'miraiInterrupt'. This is a catch-all condition that includes all
-    returned error values, such as timeouts, as well as the error types above.
+    Is the object an 'errorValue', such as a mirai timeout, or a 'miraiError'.
+    This is a catch-all condition that includes all returned error values.
 }
 \examples{
 if (interactive()) {
@@ -42,13 +33,11 @@ if (interactive()) {
 m <- mirai(stop())
 call_mirai(m)
 is_mirai_error(m$data)
-is_mirai_interrupt(m$data)
 is_error_value(m$data)
 
 m2 <- mirai(Sys.sleep(1L), .timeout = 100)
 call_mirai(m2)
 is_mirai_error(m2$data)
-is_mirai_interrupt(m2$data)
 is_error_value(m2$data)
 
 }

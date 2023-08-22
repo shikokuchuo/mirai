@@ -20,11 +20,6 @@ Call the value of a mirai, waiting for the the asynchronous operation to
 This function will wait for the async operation to complete if still
     in progress (blocking).
 
-    A blocking call can be sent a user interrupt with e.g. ctrl+c. If the
-    ongoing execution in the mirai is interruptible, it will resolve into
-    an object of class 'miraiInterrupt' and 'errorValue'.
-    \code{\link{is_mirai_interrupt}} may be used to handle such cases.
-
     If an error occurs in evaluation, the error message is returned as a
     character string of class 'miraiError' and 'errorValue'.
     \code{\link{is_mirai_error}} may be used to test for this.
