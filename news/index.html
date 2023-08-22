@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9011</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.1.9010" id="mirai-0919010-development">mirai 0.9.1.9010 (development)<a class="anchor" aria-label="anchor" href="#mirai-0919010-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.1.9011" id="mirai-0919011-development">mirai 0.9.1.9011 (development)<a class="anchor" aria-label="anchor" href="#mirai-0919011-development"></a></h2>
 <ul><li>Previously deprecated function <code>server()</code> is removed in favour of <code><a href="../reference/daemon.html">daemon()</a></code>.</li>
 <li>
 <code><a href="../reference/daemons.html">daemons()</a></code> now allows a numeric value for ‘dispatcher’ to set an initial sync time other than the default 5s, allowing for cases where the R startup configuration takes longer. (thanks <a href="https://github.com/alexpiper" class="external-link">@alexpiper</a>).</li>
@@ -74,6 +74,7 @@
 <code>$daemons</code> now returns NULL if daemons have not been set.</li>
 </ul></li>
 <li>Improved shell quoting of daemon launch commands makes it easier to deploy manually via <code><a href="../reference/launch_local.html">launch_remote()</a></code>.</li>
+<li>The class <code>miraiInterrupt</code> has been retired and interrupts now generate a <code>miraiError</code> with an empty value.</li>
 <li>Certain error messages are more accurate and informative.</li>
 <li>General performance improvements through updates in nanonext v[0.9.2].</li>
 <li>Requires nanonext &gt;= [0.9.2], and consequently R &gt;= 3.5.</li>
@@ -222,7 +223,7 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.7.1" id="mirai-071">mirai 0.7.1<small>2022-11-15</small><a class="anchor" aria-label="anchor" href="#mirai-071"></a></h2>
 <ul><li>Allow user interrupts of <code><a href="../reference/call_mirai.html">call_mirai()</a></code> again (regression in 0.7.0), now returning a ‘miraiInterrupt’.</li>
-<li>Adds auxiliary function <code><a href="../reference/is_mirai_error.html">is_mirai_interrupt()</a></code> to test if an object is a ‘miraiInterrupt’.</li>
+<li>Adds auxiliary function <code>is_mirai_interrupt()</code> to test if an object is a ‘miraiInterrupt’.</li>
 <li>Requires nanonext &gt;= 0.7.0: returned ‘errorValues’ e.g. mirai timeouts are no longer accompanied by warnings.</li>
 <li>Internal performance enhancements.</li>
 </ul></div>

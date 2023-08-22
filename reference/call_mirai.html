@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9011</span>
       </span>
     </div>
 
@@ -80,10 +80,6 @@
     <h2>Details</h2>
     <p>This function will wait for the async operation to complete if still
     in progress (blocking).</p>
-<p>A blocking call can be sent a user interrupt with e.g. ctrl+c. If the
-    ongoing execution in the mirai is interruptible, it will resolve into
-    an object of class 'miraiInterrupt' and 'errorValue'.
-    <code><a href="is_mirai_error.html">is_mirai_interrupt</a></code> may be used to handle such cases.</p>
 <p>If an error occurs in evaluation, the error message is returned as a
     character string of class 'miraiError' and 'errorValue'.
     <code><a href="is_mirai_error.html">is_mirai_error</a></code> may be used to test for this.</p>
