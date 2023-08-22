@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9011</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9012</span>
       </span>
     </div>
 
@@ -99,10 +99,9 @@ incoming connections (and optionally for websockets, a path), e.g.
 <dd><p>[default TRUE] logical value whether to use dispatcher.
 Dispatcher is a local background process that connects to daemons on
 behalf of the host and ensures FIFO scheduling, queueing tasks if
-necessary (see Dispatcher section below). Alternatively, supply a numeric
-value to enable dispatcher and set the maximum time in milliseconds for
-initial synchronisation (default 5000L) - may be set wider to allow for
-configurations where the R startup process takes longer.</p></dd>
+necessary (see Dispatcher section below). Specify NA to set a longer
+20s timeout for initial synchronisation (default 5s), designed to
+accommodate configurations with a longer R startup process.</p></dd>
 
 
 <dt>tls</dt>
