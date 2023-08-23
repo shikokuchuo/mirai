@@ -1267,18 +1267,20 @@ process_url <- function(url, .compute) {
   url
 }
 
-write_args <- function(dots, tls = NULL)
+write_args <- function(dots, tls = NULL, libpath = NULL)
   shQuote(switch(length(dots),
                  sprintf("mirai::.daemon('%s')", dots[[1L]]),
                  sprintf("mirai::daemon('%s'%s%s)", dots[[1L]], dots[[2L]], parse_tls(tls)),
                  "",
-                 sprintf("mirai::dispatcher('%s',n=%d,monitor='%s'%s)", dots[[1L]], dots[[3L]], dots[[4L]], dots[[2L]]),
-                 sprintf("mirai::dispatcher('%s',c('%s'),n=%d,monitor='%s'%s%s)", dots[[1L]], paste(dots[[3L]], collapse = "','"), dots[[4L]], dots[[5L]], dots[[2L]], parse_tls(tls))))
+                 sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',n=%d,monitor='%s'%s)", libpath, dots[[1L]], dots[[3L]], dots[[4L]], dots[[2L]]),
+                 sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',c('%s'),n=%d,monitor='%s'%s%s)", libpath, dots[[1L]], paste(dots[[3L]], collapse = "','"), dots[[4L]], dots[[5L]], dots[[2L]], parse_tls(tls))))
 
 launch_daemon <- function(..., tls = NULL) {
   dots <- list(...)
-  output <- length(dots) > 1L && is.object(dots[[2L]])
-  system2(command = .command, args = c("-e", write_args(dots, tls = tls)), stdout = if (output) "", stderr = if (output) "", wait = FALSE)
+  dlen <- length(dots)
+  output <- dlen > 1L && is.object(dots[[2L]])
+  libpath <- if (dlen > 3L) file.path(attr(as.environment("package:mirai"), "path"), "..")
+  system2(command = .command, args = c(if (dlen > 3L) "--vanilla", "-e", write_args(dots, tls = tls, libpath = libpath)), stdout = if (output) "", stderr = if (output) "", wait = FALSE)
 }
 
 launch_and_sync_daemon <- function(sock, synctime, ..., tls = NULL) {
