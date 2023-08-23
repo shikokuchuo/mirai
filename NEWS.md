@@ -1,4 +1,4 @@
-# mirai 0.9.1.9014 (development)
+# mirai 0.9.1.9015 (development)
 
 * Previously deprecated function `server()` is removed in favour of `daemon()`.
 * `daemons()` argument 'dispatcher' has a new option `NA`, which allows an initial sync time of up to 20s (vs. the default 5s), accommodating configurations where R startup takes longer (thanks @alexpiper).

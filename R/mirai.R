@@ -1279,11 +1279,7 @@ launch_daemon <- function(..., tls = NULL) {
   dots <- list(...)
   dlen <- length(dots)
   output <- dlen > 1L && is.object(dots[[2L]])
-  libpath <- if (dlen > 3L) {
-    dlibs <- .dynLibs()
-    libinfo <- .subset2(dlibs, match("nanonext", as.character(lapply(dlibs, .subset2, 1L))))
-    dirname(dirname(dirname(.subset2(libinfo, "path"))))
-  }
+  libpath <- if (dlen > 3L) (lp <- .libPaths())[file.exists(file.path(lp, "mirai"))][[1L]]
   system2(command = .command, args = c(if (dlen > 3L) "--vanilla", "-e", write_args(dots, tls = tls, libpath = libpath)), stdout = if (output) "", stderr = if (output) "", wait = FALSE)
 }
 
