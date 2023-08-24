@@ -85,7 +85,7 @@ NULL
 .intmax <- .Machine[["integer.max"]]
 .messages <- list2env(
   list(
-    dispatcher_inactive = "a numeric value for 'url' requires daemons to be set",
+    daemons_unset = "a numeric value for 'url' requires daemons to be set",
     dot_required = "'.' must be an element of the character vector supplied to 'args'",
     missing_expression = "missing expression, perhaps wrap in {}?",
     missing_url = "at least one URL must be supplied for 'url' or 'n' must be at least 1",
@@ -93,12 +93,10 @@ NULL
     n_zero = "the number of daemons must be zero or greater",
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
     requires_list = "'.args' must be specified as a list",
-    sync_dispatch = "initial sync with dispatcher timed out after 5s, specify 'dispatcher = NA' to allow longer",
-    sync_na = "initial sync with dispatcher timed out after 20s",
-    sync_timeout = "sync with local process timed out after 5s",
+    sync_dispatch = "initial sync with dispatcher timed out after 5s",
+    sync_timeout = "sync between host and dispatcher/daemon timed out after 5s",
     url_spec = "numeric value for 'url' is out of bounds"
   ),
   hash = TRUE
 )
 .timelimit <- 5000L
-.nalimit <- 20000L

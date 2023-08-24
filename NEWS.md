@@ -1,9 +1,8 @@
-# mirai 0.9.1.9015 (development)
+# mirai 0.9.1.9016 (development)
 
 * Previously deprecated function `server()` is removed in favour of `daemon()`.
-* `daemons()` argument 'dispatcher' has a new option `NA`, which allows an initial sync time of up to 20s (vs. the default 5s), accommodating configurations where R startup takes longer (thanks @alexpiper).
 * Dispatcher enhancements and fixes:
-  + Runs in an R session with `--vanilla` flags for efficiency.
+  + Runs in an R session with `--vanilla` flags for efficiency, avoiding lengthy startup configurations (thanks @alexpiper).
   + Straight pass through without serialization/unserialization allows higher performance and lower memory utilisation.
   + Fixes edge cases of `status()` occasionally failing to communicate with dispatcher.
   + Fixes edge cases of ending a session with unresolved mirai resulting in a crash rather than a clean exit.
@@ -18,7 +17,7 @@
 * The class `miraiInterrupt` has been retired and interrupts now generate a `miraiError` with an empty value.
 * Certain error messages are more accurate and informative.
 * General performance improvements through updates in nanonext v[0.9.2].
-* Requires nanonext >= [0.9.2], and consequently R >= 3.5.
+* Requires nanonext >= [0.9.2] and R >= 3.5.
 
 # mirai 0.9.1
 
