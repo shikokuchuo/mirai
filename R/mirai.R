@@ -203,6 +203,9 @@ server <- daemon
 #' @param ... additional arguments passed through to \code{\link{daemon}} if
 #'     launching local daemons i.e. 'url' is not specified.
 #' @param monitor (for package internal use only) do not set this parameter.
+#' @param ext extension structured as a list of length 2. The first item should
+#'     be a function or NULL and the second a call (quoted language object) or
+#'     NULL. These will be evaluated in the context of dispatcher.
 #'
 #' @return Invisible NULL.
 #'
@@ -216,10 +219,20 @@ server <- daemon
 #'
 dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
                        token = FALSE, lock = FALSE, tls = NULL, pass = NULL, ...,
-                       monitor = NULL, rs = NULL) {
+                       monitor = NULL, rs = NULL, ext = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(.messages[["missing_url"]])
+
+  if (is.list(ext) && length(ext) == 2L) {
+    func <- ext[[1L]]
+    call <- ext[[2L]]
+    usefunc <- is.function(func)
+    usecall <- is.call(call)
+    if (usefunc) environment(func) <- environment()
+  } else {
+    usefunc <- usecall <- FALSE
+  }
 
   sock <- socket(protocol = "rep")
   on.exit(close(sock))
@@ -376,6 +389,9 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
             }
             serverfree[[q]] || break
           }
+
+      if (usefunc) func()
+      if (usecall) eval(call)
 
     }
   )
