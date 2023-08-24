@@ -96,7 +96,7 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
       close(devnull)
     }, add = TRUE)
   }
-  op <- options()
+  op <- .Options
   se <- search()
   count <- 0L
   start <- mclock()
