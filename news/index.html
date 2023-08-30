@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9016</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9017</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.1.9016" id="mirai-0919016-development">mirai 0.9.1.9016 (development)<a class="anchor" aria-label="anchor" href="#mirai-0919016-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.1.9017" id="mirai-0919017-development">mirai 0.9.1.9017 (development)<a class="anchor" aria-label="anchor" href="#mirai-0919017-development"></a></h2>
 <ul><li>Previously deprecated function <code>server()</code> is removed in favour of <code><a href="../reference/daemon.html">daemon()</a></code>.</li>
 <li>Dispatcher enhancements and fixes:
 <ul><li>Runs in an R session with <code>--vanilla</code> flags for efficiency, avoiding lengthy startup configurations (thanks <a href="https://github.com/alexpiper" class="external-link">@alexpiper</a>).</li>
@@ -69,8 +69,6 @@
 <li>Tweaks to <code><a href="../reference/status.html">status()</a></code>:
 <ul><li>The daemons status matrix adds a column ‘i’ for ease of use with functions such as <code><a href="../reference/saisei.html">saisei()</a></code> or <code><a href="../reference/launch_local.html">launch_local()</a></code>.</li>
 <li>The ‘instance’ column is now always cumulative - regenerating a URL with <code><a href="../reference/saisei.html">saisei()</a></code> no longer resets the counter but instead turns it negative until a new daemon connects.</li>
-<li>
-<code>$daemons</code> now returns NULL if daemons have not been set.</li>
 </ul></li>
 <li>Improved shell quoting of daemon launch commands makes it easier to deploy manually via <code><a href="../reference/launch_local.html">launch_remote()</a></code>.</li>
 <li>The class <code>miraiInterrupt</code> has been retired and interrupts now generate a <code>miraiError</code> with an empty value.</li>
