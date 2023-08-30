@@ -1,4 +1,4 @@
-# mirai 0.9.1.9016 (development)
+# mirai 0.9.1.9017 (development)
 
 * Previously deprecated function `server()` is removed in favour of `daemon()`.
 * Dispatcher enhancements and fixes:
@@ -12,7 +12,6 @@
 * Tweaks to `status()`:
   + The daemons status matrix adds a column 'i' for ease of use with functions such as `saisei()` or `launch_local()`.
   + The 'instance' column is now always cumulative - regenerating a URL with `saisei()` no longer resets the counter but instead turns it negative until a new daemon connects.
-  + `$daemons` now returns NULL if daemons have not been set.
 * Improved shell quoting of daemon launch commands makes it easier to deploy manually via `launch_remote()`.
 * The class `miraiInterrupt` has been retired and interrupts now generate a `miraiError` with an empty value.
 * Certain error messages are more accurate and informative.

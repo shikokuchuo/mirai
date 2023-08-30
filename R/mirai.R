@@ -870,7 +870,7 @@ saisei <- function(i, force = FALSE, .compute = "default") {
 #'     \cr Using dispatcher: a status matrix (see Status Matrix section below),
 #'     or else an integer 'errorValue' if communication with dispatcher failed.
 #'     \cr Not using dispatcher: the character host URL.
-#'     \cr Not set: NULL.}
+#'     \cr Not set: 0L.}
 #'     }
 #'
 #' @section Status Matrix:
@@ -911,7 +911,7 @@ status <- function(.compute = "default") {
     envir <- ..[[.compute]]
     sock <- envir[["sock"]]
     list(connections = if (is.null(sock)) 0L else as.integer(stat(sock, "pipes")),
-         daemons = if (is.null(envir[["sockc"]])) envir[["urls"]] else query_status(envir))
+         daemons = if (length(envir[["sockc"]])) query_status(envir) else if (length(envir[["urls"]])) envir[["urls"]] else 0L)
 
 }
 

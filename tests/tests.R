@@ -10,7 +10,7 @@ nanotesterr <- function(x, e = "")
 
 nanotest(is.list(status()))
 nanotestz(status()[["connections"]])
-nanotestn(status()[["daemons"]])
+nanotestz(status()[["daemons"]])
 nanotest(is.character(launch_remote("ws://[::1]:5555")))
 nanotesterr(launch_remote("ws://[::1]:5555", command = "echo", args = "invalid"), "must be an element")
 nanotesterr(launch_local(1L), "requires daemons to be set")
@@ -37,7 +37,7 @@ nanotest(is_mirai_error(r <- mirai:::mk_interrupt_error()))
 nanotestp(r)
 nanotestz(daemons(0L))
 nanotestz(status()[["connections"]])
-nanotestn(status()[["daemons"]])
+nanotestz(status()[["daemons"]])
 Sys.sleep(1L)
 n <- 3L
 m <- mirai({

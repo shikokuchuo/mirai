@@ -20,7 +20,7 @@ A named list comprising:
     \cr Using dispatcher: a status matrix (see Status Matrix section below),
     or else an integer 'errorValue' if communication with dispatcher failed.
     \cr Not using dispatcher: the character host URL.
-    \cr Not set: NULL.}
+    \cr Not set: 0L.}
     }
 }
 \description{
