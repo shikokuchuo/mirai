@@ -120,7 +120,7 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
     if (cleanup %% 2L) rm(list = names(.GlobalEnv), envir = .GlobalEnv)
     if (clr & as.raw(2L)) lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
     if (clr & as.raw(4L)) options(op)
-    if (cleanup >= 8L) gc(verbose = FALSE)
+    if (clr & as.raw(8L)) gc(verbose = FALSE)
     if (count < timerstart) start <- mclock()
     count <- count + 1L
 
@@ -847,7 +847,7 @@ saisei <- function(i, force = FALSE, .compute = "default") {
   envir <- ..[[.compute]]
   i <- as.integer(`length<-`(i, 1L))
   length(envir[["sockc"]]) && i > 0L && i <= envir[["n"]] && substr(envir[["urls"]][[i]], 1L, 1L) != "t" || return()
-  r <- query_dispatcher(sock = envir[["sockc"]], command = if (force) -i else i, mode = 2L)
+  r <- query_dispatcher(sock = envir[["sockc"]], command = if (force) -i else i, mode = 9L)
   is.character(r) && nzchar(r) || return()
   envir[["urls"]][[i]] <- r
   r

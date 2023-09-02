@@ -1,4 +1,4 @@
-# mirai 0.9.1.9017 (development)
+# mirai 0.9.1.9018 (development)
 
 * Previously deprecated function `server()` is removed in favour of `daemon()`.
 * Dispatcher enhancements and fixes:
@@ -15,8 +15,8 @@
 * Improved shell quoting of daemon launch commands makes it easier to deploy manually via `launch_remote()`.
 * The class `miraiInterrupt` has been retired and interrupts now generate a `miraiError` with an empty value.
 * Certain error messages are more accurate and informative.
-* General performance improvements through updates in nanonext v[0.9.2].
-* Requires nanonext >= [0.9.2] and R >= 3.5.
+* General performance improvements through updates in nanonext 0.10.0.
+* Requires nanonext >= 0.10.0 and R >= 3.5.
 
 # mirai 0.9.1
 
