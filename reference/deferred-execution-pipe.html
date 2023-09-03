@@ -108,6 +108,14 @@
 <p><code><a href="unresolved.html">unresolved</a></code> may be used on an expression or its <code>$data</code>
     element to test for resolution.</p>
     </div>
+    <div id="note">
+    <h2>Note</h2>
+    <p>The deferred evaluation pipe is generally used where the return value
+    of the expression is required.</p>
+<p>For performing side effects upon resolution of a 'mirai', the promise
+    pipe <code>%...&gt;%</code> may be more suitable (see the package
+    <span class="pkg">mirai.promises</span>).</p>
+    </div>
     <div id="usage">
     <h2>Usage</h2>
     
@@ -117,8 +125,8 @@
 <p><code>x %&gt;&gt;% f</code> is equivalent to <code>f(x)</code></p>
 <p><code>x %&gt;&gt;% f()</code> is equivalent to <code>f(x)</code></p>
 <p><code>x %&gt;&gt;% f(y)</code> is equivalent to <code>f(x, y)</code></p>
-<p>Please note that other usage is not supported and it is not a drop-in
-    replacement for magrittr's <code>%&gt;%</code> pipe.</p>
+<p>Other usage is not supported and it is not a drop-in replacement for
+    magrittr's <code>%&gt;%</code> pipe.</p>
     </div>
 
     <div id="ref-examples">
