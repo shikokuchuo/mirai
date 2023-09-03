@@ -59,8 +59,15 @@
 #'
 #'     \code{x \%>>\% f(y)} is equivalent to \code{f(x, y)}
 #'
-#'     Please note that other usage is not supported and it is not a drop-in
-#'     replacement for magrittr's \code{\%>\%} pipe.
+#'     Other usage is not supported and it is not a drop-in replacement for
+#'     magrittr's \code{\%>\%} pipe.
+#'
+#' @note The deferred evaluation pipe is generally used where the return value
+#'     of the expression is required.
+#'
+#'     For performing side effects upon resolution of a 'mirai', the promise
+#'     pipe \code{\%...>\%} may be more suitable (see the package
+#'     \pkg{mirai.promises}).
 #'
 #' @examples
 #' if (interactive()) {
