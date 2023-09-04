@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9019</span>
       </span>
     </div>
 
@@ -68,6 +68,7 @@
 <span>  asyncdial <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  token <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  lock <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  monitor <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -117,6 +118,16 @@ which do not accept a path).</p></dd>
 <dd><p>[default FALSE] if TRUE, sockets lock once a connection has been
 accepted, preventing further connection attempts. This provides safety
 against more than one daemon attempting to connect to a unique URL.</p></dd>
+
+
+<dt>seed</dt>
+<dd><p>[default NULL] (optional) supply a random seed (single value,
+interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
+RNG streams sent to each daemon. Note that reproducible results can be
+expected only for 'dispatcher = FALSE', as the unpredictable timing of
+task completions would otherwise influence the tasks sent to each daemon.
+Even for 'dispatcher = FALSE', reproducibility is not guaranteed if the
+order in which tasks are sent is not deterministic.</p></dd>
 
 
 <dt>tls</dt>
