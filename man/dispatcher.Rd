@@ -11,6 +11,7 @@ dispatcher(
   asyncdial = FALSE,
   token = FALSE,
   lock = FALSE,
+  seed = NULL,
   tls = NULL,
   ...,
   monitor = NULL
@@ -47,6 +48,14 @@ which do not accept a path).}
 \item{lock}{[default FALSE] if TRUE, sockets lock once a connection has been
 accepted, preventing further connection attempts. This provides safety
 against more than one daemon attempting to connect to a unique URL.}
+
+\item{seed}{[default NULL] (optional) supply a random seed (single value,
+interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
+RNG streams sent to each daemon. Note that reproducible results can be
+expected only for 'dispatcher = FALSE', as the unpredictable timing of
+task completions would otherwise influence the tasks sent to each daemon.
+Even for 'dispatcher = FALSE', reproducibility is not guaranteed if the
+order in which tasks are sent is not deterministic.}
 
 \item{tls}{[default NULL] (required for secure TLS connections) \strong{either}
 the character path to a file containing the PEM encoded certificate and

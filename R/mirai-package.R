@@ -53,6 +53,7 @@
 #'     recv_aio_signal request request_signal send send_aio sha1 socket stat
 #'     stop_aio strcat tls_config unresolved until wait weakref weakref_value
 #'     write_cert
+#' @importFrom parallel nextRNGStream
 #'
 #' @docType package
 #' @name mirai-package
@@ -60,6 +61,11 @@
 NULL
 
 .onLoad <- function(libname, pkgname) {
+
+  if ("package:crew" %in% search())
+    RNGkind("L'Ecuyer-CMRG") else
+      if (is.null(.GlobalEnv[[".Random.seed"]]))
+        RNGkind(RNGkind()[[1L]])
 
   .. <<- `[[<-`(new.env(hash = FALSE), "default", new.env(hash = FALSE))
   switch(Sys.info()[["sysname"]],

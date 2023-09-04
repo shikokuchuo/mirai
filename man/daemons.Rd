@@ -8,6 +8,7 @@ daemons(
   n,
   url = NULL,
   dispatcher = TRUE,
+  seed = NULL,
   tls = NULL,
   ...,
   .compute = "default"
@@ -26,6 +27,14 @@ incoming connections (and optionally for websockets, a path), e.g.
 Dispatcher is a local background process that connects to daemons on
 behalf of the host and ensures FIFO scheduling, queueing tasks if
 necessary (see Dispatcher section below).}
+
+\item{seed}{[default NULL] (optional) supply a random seed (single value,
+interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
+RNG streams sent to each daemon. Note that reproducible results can be
+expected only for 'dispatcher = FALSE', as the unpredictable timing of
+task completions would otherwise influence the tasks sent to each daemon.
+Even for 'dispatcher = FALSE', reproducibility is not guaranteed if the
+order in which tasks are sent is not deterministic.}
 
 \item{tls}{[default NULL] (optional for secure TLS connections) if not
 supplied, zero-configuration single-use keys and certificates are
@@ -79,8 +88,8 @@ Use \code{daemons(0)} to reset daemon connections:
     dropped. If a daemon is processing a task, it will exit as soon as the
     task is complete.
 
-    For compatibility, \code{daemons()} with no arguments currently returns
-    the value of \code{\link{status}}, although this usage is deprecated.
+    For historical reasons, \code{daemons()} with no arguments returns the
+    value of \code{\link{status}}.
 }
 \section{Dispatcher}{
 

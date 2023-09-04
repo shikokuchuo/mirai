@@ -1,6 +1,7 @@
-# mirai 0.9.1.9018 (development)
+# mirai 0.9.1.9019 (development)
 
-* Previously deprecated function `server()` is removed in favour of `daemon()`.
+* Uses L'Ecuyer-CMRG streams for safe and reproducible (in certain cases) random number generation across parallel processes (thanks @ltierney for discussion during R Project Sprint 2023).
+  + `daemons()` gains the new argument 'seed' to set a random seed for generating these streams.
 * Dispatcher enhancements and fixes:
   + Runs in an R session with `--vanilla` flags for efficiency, avoiding lengthy startup configurations (thanks @alexpiper).
   + Straight pass through without serialization/unserialization allows higher performance and lower memory utilisation.
