@@ -1077,6 +1077,50 @@ launch_remote <- function(url, ..., .compute = "default", rscript = "Rscript", c
 
 }
 
+#' Nextstream
+#'
+#' Retrieves the currently stored L'Ecuyer-CMRG RNG stream for the specified
+#'     compute profile and advances it to the next state.
+#'
+#' @inheritParams saisei
+#'
+#' @return An integer vector of length 7, as given by \code{.Random.seed} when
+#'     the L'Ecuyer-CMRG RNG is in use. This may be passed directly to the 'rs'
+#'     argument of \code{\link{daemon}} in order to set its RNG state.
+#'
+#' @details This function is exported for use by alternative launchers of mirai
+#'     \code{\link{daemon}} processes. The same function is used internally
+#'     within the package by functions that launch daemons.
+#'
+#' @note This function should be called exactly once for its return value. The
+#'     function also has the side effect of automatically advancing the stream
+#'     stored within the compute profile. This ensures that next time the
+#'     function is called the correct value will be returned.
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' daemons(1L)
+#' nextstream()
+#' nextstream()
+#'
+#' daemons(0)
+#'
+#' }
+#'
+#' @export
+#'
+nextstream <- function(.compute = "default") {
+
+  if (is.character(.compute)) return(nextstream(..[[.compute]]))
+  stream <- .compute[["stream"]]
+  is.null(stream) && stop(.messages[["daemons_generic"]])
+  `[[<-`(.compute, "stream", nextRNGStream(stream))
+  stream
+
+}
+
 #' mirai (Call Value)
 #'
 #' Call the value of a mirai, waiting for the the asynchronous operation to
@@ -1374,12 +1418,6 @@ create_stream <- function(n, seed, envir) {
   if (length(seed)) set.seed(seed)
   `[[<-`(envir, "stream", .GlobalEnv[[".Random.seed"]])
   if (length(oseed)) `[[<-`(.GlobalEnv, ".Random.seed", oseed) else rm(.Random.seed, envir = .GlobalEnv)
-}
-
-nextstream <- function(envir) {
-  stream <- envir[["stream"]]
-  `[[<-`(envir, "stream", nextRNGStream(stream))
-  stream
 }
 
 mk_interrupt_error <- function(e) `class<-`("", c("miraiError", "errorValue"))
