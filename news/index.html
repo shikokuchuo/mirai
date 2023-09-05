@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9020</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9021</span>
       </span>
     </div>
 
@@ -54,10 +54,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.1.9020" id="mirai-0919020-development">mirai 0.9.1.9020 (development)<a class="anchor" aria-label="anchor" href="#mirai-0919020-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.1.9021" id="mirai-0919021-development">mirai 0.9.1.9021 (development)<a class="anchor" aria-label="anchor" href="#mirai-0919021-development"></a></h2>
 <ul><li>Uses L’Ecuyer-CMRG streams for safe and reproducible (in certain cases) random number generation across parallel processes (thanks <a href="https://github.com/ltierney" class="external-link">@ltierney</a> for discussion during R Project Sprint 2023).
 <ul><li>
 <code><a href="../reference/daemons.html">daemons()</a></code> gains the new argument ‘seed’ to set a random seed for generating these streams.</li>
+<li>
+<code><a href="../reference/nextstream.html">nextstream()</a></code> gets and advances the stored L’Ecuyer-CMRG stream for a given compute profile.</li>
 </ul></li>
 <li>Dispatcher enhancements and fixes:
 <ul><li>Runs in an R session with <code>--vanilla</code> flags for efficiency, avoiding lengthy startup configurations (thanks <a href="https://github.com/alexpiper" class="external-link">@alexpiper</a>).</li>
