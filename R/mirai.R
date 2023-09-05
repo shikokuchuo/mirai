@@ -1019,7 +1019,7 @@ launch_local <- function(url, ..., .compute = "default") {
   tls <- get_tls(envir)
   url <- process_url(url, .compute = .compute)
   for (u in url)
-    if (length(envir[["streams"]]))
+    if (length(envir[["stream"]]))
       launch_daemon(u, dots, nextstream(envir), tls = tls) else
         launch_daemon(u, dots, tls = tls)
 
@@ -1059,7 +1059,7 @@ launch_remote <- function(url, ..., .compute = "default", rscript = "Rscript", c
   cmds <- character(length(url))
   url <- process_url(url, .compute = .compute)
   for (i in seq_along(url))
-    cmds[[i]] <- sprintf("%s -e %s", rscript, if (length(envir[["streams"]]))
+    cmds[[i]] <- sprintf("%s -e %s", rscript, if (length(envir[["stream"]]))
       write_args(list(url[[i]], dots, nextstream(envir)), tls = tls) else
         write_args(list(url[[i]], dots), tls = tls))
 
@@ -1373,9 +1373,7 @@ create_stream <- function(n, seed, envir) {
   RNGkind("L'Ecuyer-CMRG")
   if (length(seed)) set.seed(seed)
   `[[<-`(envir, "stream", .GlobalEnv[[".Random.seed"]])
-  if (length(oseed))
-    `[[<-`(.GlobalEnv, ".Random.seed", oseed) else
-      rm(.Random.seed, envir = .GlobalEnv)
+  if (length(oseed)) `[[<-`(.GlobalEnv, ".Random.seed", oseed) else rm(.Random.seed, envir = .GlobalEnv)
 }
 
 nextstream <- function(envir) {
