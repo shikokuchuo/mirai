@@ -1414,7 +1414,7 @@ init_monitor <- function(sockc, envir) {
 }
 
 create_stream <- function(n, seed, envir) {
-  runif(1L)
+  rexp(n = 1L)
   oseed <- .GlobalEnv[[".Random.seed"]]
   RNGkind("L'Ecuyer-CMRG")
   if (length(seed)) set.seed(seed)
