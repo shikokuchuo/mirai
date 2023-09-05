@@ -68,7 +68,7 @@ nanotest(daemons(url = value <- mirai:::auto_tokenized_url(), dispatcher = FALSE
 nanotest(grepl("://", launch_remote(status()$daemons), fixed = TRUE))
 nanotestz(daemons(0L))
 Sys.sleep(1L)
-nanotesto(daemons(1L, dispatcher = FALSE, idletime = 500L, timerstart = 1L, cleanup = 0L, .compute = "new"))
+nanotesto(daemons(1L, dispatcher = FALSE, idletime = 500L, timerstart = 1L, cleanup = 0L, seed = 1546, .compute = "new"))
 Sys.sleep(1.5)
 mn <- mirai("test1", .compute = "new")
 mp <- mirai("test2", .compute = "new")
@@ -145,7 +145,7 @@ if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
   nanotestz(daemons(0L))
   Sys.sleep(1L)
   option <- 15L
-  nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 2000L, token = TRUE, lock = TRUE, cleanup = option))
+  nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 2000L, token = TRUE, lock = TRUE, seed = 1546, cleanup = option))
   Sys.sleep(1L)
   mq <- mirai("daemon", .timeout = 1000)
   nanotest(call_mirai(mq)$data == "daemon" || is_error_value(mq$data))

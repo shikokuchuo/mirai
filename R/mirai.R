@@ -1373,7 +1373,9 @@ create_stream <- function(n, seed, envir) {
   RNGkind("L'Ecuyer-CMRG")
   if (length(seed)) set.seed(seed)
   `[[<-`(envir, "stream", .GlobalEnv[[".Random.seed"]])
-  `[[<-`(.GlobalEnv, ".Random.seed", oseed)
+  if (length(oseed))
+    `[[<-`(.GlobalEnv, ".Random.seed", oseed) else
+      rm(.Random.seed, envir = .GlobalEnv)
 }
 
 nextstream <- function(envir) {

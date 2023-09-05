@@ -62,11 +62,6 @@ NULL
 
 .onLoad <- function(libname, pkgname) {
 
-  if ("package:crew" %in% search())
-    RNGkind("L'Ecuyer-CMRG") else
-      if (is.null(.GlobalEnv[[".Random.seed"]]))
-        RNGkind(RNGkind()[[1L]])
-
   .. <<- `[[<-`(new.env(hash = FALSE), "default", new.env(hash = FALSE))
   switch(Sys.info()[["sysname"]],
          Linux = {
