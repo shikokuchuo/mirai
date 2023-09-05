@@ -1414,11 +1414,12 @@ init_monitor <- function(sockc, envir) {
 }
 
 create_stream <- function(n, seed, envir) {
+  runif(1L)
   oseed <- .GlobalEnv[[".Random.seed"]]
   RNGkind("L'Ecuyer-CMRG")
   if (length(seed)) set.seed(seed)
   `[[<-`(envir, "stream", .GlobalEnv[[".Random.seed"]])
-  if (length(oseed)) `[[<-`(.GlobalEnv, ".Random.seed", oseed) else rm(.Random.seed, envir = .GlobalEnv)
+  `[[<-`(.GlobalEnv, ".Random.seed", oseed)
 }
 
 mk_interrupt_error <- function(e) `class<-`("", c("miraiError", "errorValue"))

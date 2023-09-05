@@ -54,6 +54,7 @@
 #'     stop_aio strcat tls_config unresolved until wait weakref weakref_value
 #'     write_cert
 #' @importFrom parallel nextRNGStream
+#' @importFrom stats runif
 #'
 #' @docType package
 #' @name mirai-package
