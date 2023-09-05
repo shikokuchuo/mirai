@@ -12,8 +12,9 @@ profile has its own set of daemons for connecting to different resources).}
 }
 \value{
 An integer vector of length 7, as given by \code{.Random.seed} when
-    the L'Ecuyer-CMRG RNG is in use. This may be passed directly to the 'rs'
-    argument of \code{\link{daemon}} in order to set its RNG state.
+    the L'Ecuyer-CMRG RNG is in use - this may be passed directly to the 'rs'
+    argument of \code{\link{daemon}} in order to set its RNG state, or else
+    NULL if daemons have yet to be set (and the stream initialised).
 }
 \description{
 Retrieves the currently stored L'Ecuyer-CMRG RNG stream for the specified

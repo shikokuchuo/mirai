@@ -1085,8 +1085,9 @@ launch_remote <- function(url, ..., .compute = "default", rscript = "Rscript", c
 #' @inheritParams saisei
 #'
 #' @return An integer vector of length 7, as given by \code{.Random.seed} when
-#'     the L'Ecuyer-CMRG RNG is in use. This may be passed directly to the 'rs'
-#'     argument of \code{\link{daemon}} in order to set its RNG state.
+#'     the L'Ecuyer-CMRG RNG is in use - this may be passed directly to the 'rs'
+#'     argument of \code{\link{daemon}} in order to set its RNG state, or else
+#'     NULL if daemons have yet to be set (and the stream initialised).
 #'
 #' @details This function is exported for use by alternative launchers of mirai
 #'     \code{\link{daemon}} processes. The same function is used internally
@@ -1115,7 +1116,7 @@ nextstream <- function(.compute = "default") {
 
   if (is.character(.compute)) return(nextstream(..[[.compute]]))
   stream <- .compute[["stream"]]
-  is.null(stream) && stop(.messages[["daemons_generic"]])
+  is.null(stream) && return()
   `[[<-`(.compute, "stream", nextRNGStream(stream))
   stream
 

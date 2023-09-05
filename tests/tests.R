@@ -9,6 +9,7 @@ nanotesterr <- function(x, e = "")
   invisible(grepl(e, tryCatch(x, error = identity)[["message"]], fixed = TRUE) || stop("expected error message '", e, "' not generated"))
 
 nanotest(is.list(status()))
+nanotestn(nextstream())
 nanotestz(status()[["connections"]])
 nanotestz(status()[["daemons"]])
 nanotest(is.character(launch_remote("ws://[::1]:5555")))
