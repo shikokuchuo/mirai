@@ -380,12 +380,12 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
 #' @param .expr an expression to evaluate asynchronously (of arbitrary length,
 #'     wrapped in \{\} if necessary), \strong{or} a language object passed by
 #'     \link{name}.
-#' @param ... (optional) named arguments (tag = value pairs) specifying
+#' @param ... (optional) named arguments (name = value pairs) specifying
 #'     objects referenced in '.expr'. Used in addition to, and taking precedence
 #'     over, any arguments specified via '.args'.
 #' @param .args (optional) \strong{either} a list of objects to be passed by
 #'     \link{name} (found in the current scope), \strong{or else} a list of
-#'     tag = value pairs, as in '...'.
+#'     name = value pairs, as in '...'.
 #' @param .timeout [default NULL] for no timeout, or an integer value in
 #'     milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
