@@ -18,7 +18,7 @@ An integer vector of length 7, as given by \code{.Random.seed} when
 }
 \description{
 Retrieves the currently stored L'Ecuyer-CMRG RNG stream for the specified
-    compute profile and advances it to the next state.
+    compute profile and advances it to the next stream.
 }
 \details{
 This function is exported for use by alternative launchers of mirai

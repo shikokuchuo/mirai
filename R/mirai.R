@@ -1080,7 +1080,7 @@ launch_remote <- function(url, ..., .compute = "default", rscript = "Rscript", c
 #' Nextstream
 #'
 #' Retrieves the currently stored L'Ecuyer-CMRG RNG stream for the specified
-#'     compute profile and advances it to the next state.
+#'     compute profile and advances it to the next stream.
 #'
 #' @inheritParams saisei
 #'
