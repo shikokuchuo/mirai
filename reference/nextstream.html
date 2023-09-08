@@ -87,19 +87,20 @@ TLS configuration to be sent to daemons).</p></dd>
     <h2>Value</h2>
     
 
-<p>For <code>nextstream</code>: a length 7 integer vector, as given by</p>
-<p></p>
-<p><code>.Random.seed</code> when the L'Ecuyer-CMRG RNG is in use (may be passed
-    directly to the 'rs' argument of <code><a href="daemon.html">daemon</a></code>), or else NULL if
-    a stream has not yet been created.</p>
+<p>For <code>nextstream</code>: a length 7 integer vector, as given by <code>.Random.seed</code></p>
 
 
-<p>For <code>nextget</code>: the requested item, or NULL if not present.</p>
+<p>when the L'Ecuyer-CMRG RNG is in use (may be passed directly to the 'rs'
+    argument of <code><a href="daemon.html">daemon</a></code>), or else NULL if a stream has not yet
+    been created.</p>
+
+
+<p>For <code>nextget</code>: the requested item, or else NULL if not present.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>These function are exported for use by alternative launchers of mirai
-    <code><a href="daemon.html">daemon</a></code> processes.</p>
+    <p>These functions are exported for use by packages extending <span class="pkg">mirai</span>
+    with alternative launchers of <code><a href="daemon.html">daemon</a></code> processes.</p>
 <p>For <code>nextstream</code>: This function should be called for its return value
     when required. The function also has the side effect of automatically
     advancing the stream stored within the compute profile. This ensures that
