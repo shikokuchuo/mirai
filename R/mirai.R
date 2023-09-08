@@ -1083,13 +1083,13 @@ launch_remote <- function(url, ..., .compute = "default", rscript = "Rscript", c
 #'
 #' @inheritParams saisei
 #'
-#' @return For \code{nextstream}: a length 7 integer vector, as given by
-#'     \code{.Random.seed} when the L'Ecuyer-CMRG RNG is in use (may be passed
-#'     directly to the 'rs' argument of \code{\link{daemon}}), or else NULL if
-#'     a stream has not yet been created.
+#' @return For \code{nextstream}: a length 7 integer vector, as given by \code{.Random.seed}
+#'     when the L'Ecuyer-CMRG RNG is in use (may be passed directly to the 'rs'
+#'     argument of \code{\link{daemon}}), or else NULL if a stream has not yet
+#'     been created.
 #'
-#' @details These function are exported for use by alternative launchers of mirai
-#'     \code{\link{daemon}} processes.
+#' @details These functions are exported for use by packages extending \pkg{mirai}
+#'     with alternative launchers of \code{\link{daemon}} processes.
 #'
 #'     For \code{nextstream}: This function should be called for its return value
 #'     when required. The function also has the side effect of automatically
@@ -1136,7 +1136,7 @@ nextstream <- function(.compute = "default") {
 #'     ID), 'urls' (URLs dispatcher is listening at) or 'tls' (the stored client
 #'     TLS configuration to be sent to daemons).
 #'
-#' @return For \code{nextget}: the requested item, or NULL if not present.
+#' @return For \code{nextget}: the requested item, or else NULL if not present.
 #'
 #' @rdname nextstream
 #' @export
