@@ -1,8 +1,9 @@
-# mirai 0.9.1.9025 (development)
+# mirai 0.9.1.9026 (development)
 
 * Uses L'Ecuyer-CMRG streams for safe and reproducible (in certain cases) random number generation across parallel processes (thanks @ltierney for discussion during R Project Sprint 2023).
   + `daemons()` gains the new argument 'seed' to set a random seed for generating these streams.
-  + `nextstream()` gets and advances the stored L'Ecuyer-CMRG stream for a given compute profile.
+  + `daemon()` and `dispatcher()` gain the argument 'rs' which takes a L'Ecuyer-CMRG random seed.
+* New developer functions `nextstream()` and `nextget()`, opening interfaces for packages which extend `mirai`.
 * Dispatcher enhancements and fixes:
   + Runs in an R session with `--vanilla` flags for efficiency, avoiding lengthy startup configurations (thanks @alexpiper).
   + Straight pass through without serialization/unserialization allows higher performance and lower memory utilisation.

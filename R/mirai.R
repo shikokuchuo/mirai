@@ -811,7 +811,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, .
         for (i in seq_len(n)) nextstream(envir)
         init_monitor(sockc = sockc, envir = envir)
       } else {
-        if (is.null(seed)) {
+        if (is.null(seed) || n == 1L) {
           for (i in seq_len(n))
             launch_daemon(urld, dots, nextstream(envir))
         } else {
@@ -1076,34 +1076,40 @@ launch_remote <- function(url, ..., .compute = "default", rscript = "Rscript", c
 
 }
 
-#' Nextstream
+#' Next >> Developer Functions
 #'
-#' Retrieves the currently stored L'Ecuyer-CMRG RNG stream for the specified
-#'     compute profile and advances it to the next stream.
+#' \code{nextstream} retrieves the currently stored L'Ecuyer-CMRG RNG stream
+#'     for the specified compute profile and advances it to the next stream.
 #'
 #' @inheritParams saisei
 #'
-#' @return An integer vector of length 7, as given by \code{.Random.seed} when
-#'     the L'Ecuyer-CMRG RNG is in use - this may be passed directly to the 'rs'
-#'     argument of \code{\link{daemon}} in order to set its RNG state, or else
-#'     NULL if daemons have yet to be set (and the stream initialised).
+#' @return For \code{nextstream}: a length 7 integer vector, as given by
+#'     \code{.Random.seed} when the L'Ecuyer-CMRG RNG is in use (may be passed
+#'     directly to the 'rs' argument of \code{\link{daemon}}), or else NULL if
+#'     a stream has not yet been created.
 #'
-#' @details This function is exported for use by alternative launchers of mirai
-#'     \code{\link{daemon}} processes. The same function is used internally
-#'     within the package by functions that launch daemons.
+#' @details These function are exported for use by alternative launchers of mirai
+#'     \code{\link{daemon}} processes.
 #'
-#' @note This function should be called exactly once for its return value. The
-#'     function also has the side effect of automatically advancing the stream
-#'     stored within the compute profile. This ensures that next time the
-#'     function is called the correct value will be returned.
+#'     For \code{nextstream}: This function should be called for its return value
+#'     when required. The function also has the side effect of automatically
+#'     advancing the stream stored within the compute profile. This ensures that
+#'     next time the function is called the correct value will be returned.
 #'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
 #' daemons(1L)
-#' nextstream()
-#' nextstream()
+#' r <- nextstream()
+#' print(r)
+#' r <- nextstream()
+#' print(r)
+#'
+#' r <- nextget("pid")
+#' print(r)
+#' r <- nextget("urls")
+#' print(r)
 #'
 #' daemons(0)
 #'
@@ -1113,11 +1119,35 @@ launch_remote <- function(url, ..., .compute = "default", rscript = "Rscript", c
 #'
 nextstream <- function(.compute = "default") {
 
-  if (is.character(.compute)) return(nextstream(..[[.compute]]))
+  is.character(.compute) && return(nextstream(..[[.compute]]))
   stream <- .compute[["stream"]]
-  is.null(stream) && return()
+  length(stream) || return()
   `[[<-`(.compute, "stream", nextRNGStream(stream))
   stream
+
+}
+
+#' Next >> Developer Functions
+#'
+#' \code{nextget} retrieves the specified item from the specified compute
+#'     profile.
+#'
+#' @param x character value of item to retrieve. One of 'pid' (dispatcher process
+#'     ID), 'urls' (URLs dispatcher is listening at) or 'tls' (the stored client
+#'     TLS configuration to be sent to daemons).
+#'
+#' @return For \code{nextget}: the requested item, or NULL if not present.
+#'
+#' @rdname nextstream
+#' @export
+#'
+nextget <- function(x, .compute = "default") {
+
+  is.character(x) && is.character(.compute) || return()
+  vec <- ..[[.compute]][[x]]
+  if (x == "tls")
+    vec <- if (length(vec)) weakref_value(vec)
+  vec
 
 }
 

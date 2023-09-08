@@ -2,42 +2,59 @@
 % Please edit documentation in R/mirai.R
 \name{nextstream}
 \alias{nextstream}
-\title{Nextstream}
+\alias{nextget}
+\title{Next >> Developer Functions}
 \usage{
 nextstream(.compute = "default")
+
+nextget(x, .compute = "default")
 }
 \arguments{
 \item{.compute}{[default 'default'] character compute profile (each compute
 profile has its own set of daemons for connecting to different resources).}
+
+\item{x}{character value of item to retrieve. One of 'pid' (dispatcher process
+ID), 'urls' (URLs dispatcher is listening at) or 'tls' (the stored client
+TLS configuration to be sent to daemons).}
 }
 \value{
-An integer vector of length 7, as given by \code{.Random.seed} when
-    the L'Ecuyer-CMRG RNG is in use - this may be passed directly to the 'rs'
-    argument of \code{\link{daemon}} in order to set its RNG state, or else
-    NULL if daemons have yet to be set (and the stream initialised).
+For \code{nextstream}: a length 7 integer vector, as given by
+    \code{.Random.seed} when the L'Ecuyer-CMRG RNG is in use (may be passed
+    directly to the 'rs' argument of \code{\link{daemon}}), or else NULL if
+    a stream has not yet been created.
+
+For \code{nextget}: the requested item, or NULL if not present.
 }
 \description{
-Retrieves the currently stored L'Ecuyer-CMRG RNG stream for the specified
-    compute profile and advances it to the next stream.
+\code{nextstream} retrieves the currently stored L'Ecuyer-CMRG RNG stream
+    for the specified compute profile and advances it to the next stream.
+
+\code{nextget} retrieves the specified item from the specified compute
+    profile.
 }
 \details{
-This function is exported for use by alternative launchers of mirai
-    \code{\link{daemon}} processes. The same function is used internally
-    within the package by functions that launch daemons.
-}
-\note{
-This function should be called exactly once for its return value. The
-    function also has the side effect of automatically advancing the stream
-    stored within the compute profile. This ensures that next time the
-    function is called the correct value will be returned.
+These function are exported for use by alternative launchers of mirai
+    \code{\link{daemon}} processes.
+
+    For \code{nextstream}: This function should be called for its return value
+    when required. The function also has the side effect of automatically
+    advancing the stream stored within the compute profile. This ensures that
+    next time the function is called the correct value will be returned.
 }
 \examples{
 if (interactive()) {
 # Only run examples in interactive R sessions
 
 daemons(1L)
-nextstream()
-nextstream()
+r <- nextstream()
+print(r)
+r <- nextstream()
+print(r)
+
+r <- nextget("pid")
+print(r)
+r <- nextget("urls")
+print(r)
 
 daemons(0)
 
