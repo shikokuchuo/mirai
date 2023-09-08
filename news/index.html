@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9025</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9026</span>
       </span>
     </div>
 
@@ -54,13 +54,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.1.9025" id="mirai-0919025-development">mirai 0.9.1.9025 (development)<a class="anchor" aria-label="anchor" href="#mirai-0919025-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.1.9026" id="mirai-0919026-development">mirai 0.9.1.9026 (development)<a class="anchor" aria-label="anchor" href="#mirai-0919026-development"></a></h2>
 <ul><li>Uses L’Ecuyer-CMRG streams for safe and reproducible (in certain cases) random number generation across parallel processes (thanks <a href="https://github.com/ltierney" class="external-link">@ltierney</a> for discussion during R Project Sprint 2023).
 <ul><li>
 <code><a href="../reference/daemons.html">daemons()</a></code> gains the new argument ‘seed’ to set a random seed for generating these streams.</li>
 <li>
-<code><a href="../reference/nextstream.html">nextstream()</a></code> gets and advances the stored L’Ecuyer-CMRG stream for a given compute profile.</li>
+<code><a href="../reference/daemon.html">daemon()</a></code> and <code><a href="../reference/dispatcher.html">dispatcher()</a></code> gain the argument ‘rs’ which takes a L’Ecuyer-CMRG random seed.</li>
 </ul></li>
+<li>New developer functions <code><a href="../reference/nextstream.html">nextstream()</a></code> and <code><a href="../reference/nextstream.html">nextget()</a></code>, opening interfaces for packages which extend <code>mirai</code>.</li>
 <li>Dispatcher enhancements and fixes:
 <ul><li>Runs in an R session with <code>--vanilla</code> flags for efficiency, avoiding lengthy startup configurations (thanks <a href="https://github.com/alexpiper" class="external-link">@alexpiper</a>).</li>
 <li>Straight pass through without serialization/unserialization allows higher performance and lower memory utilisation.</li>
