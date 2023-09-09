@@ -271,7 +271,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
       servernames[[i]] <- opt(listener, "url")
     }
 
-    auto && launch_daemon(nurl, dots, nextstream(envir))
+    auto && launch_daemon(nurl, dots, next_stream(envir))
 
     servers[[i]] <- nsock
     active[[i]] <- ncv
@@ -808,15 +808,15 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, .
         urlc <- strcat(urld, "c")
         sockc <- req_socket(urlc, resend = 0L)
         launch_and_sync_daemon(sock = sock, urld, dots, n, urlc, rs = envir[["stream"]])
-        for (i in seq_len(n)) nextstream(envir)
+        for (i in seq_len(n)) next_stream(envir)
         init_monitor(sockc = sockc, envir = envir)
       } else {
         if (is.null(seed) || n == 1L) {
           for (i in seq_len(n))
-            launch_daemon(urld, dots, nextstream(envir))
+            launch_daemon(urld, dots, next_stream(envir))
         } else {
           for (i in seq_len(n))
-            launch_and_sync_daemon(sock = sock, urld, dots, nextstream(envir))
+            launch_and_sync_daemon(sock = sock, urld, dots, next_stream(envir))
         }
         `[[<-`(envir, "urls", urld)
       }
@@ -1019,7 +1019,7 @@ launch_local <- function(url, ..., .compute = "default") {
   url <- process_url(url, .compute = .compute)
   for (u in url)
     if (length(envir[["stream"]]))
-      launch_daemon(u, dots, nextstream(envir), tls = tls) else
+      launch_daemon(u, dots, next_stream(envir), tls = tls) else
         launch_daemon(u, dots, tls = tls)
 
 }
@@ -1059,7 +1059,7 @@ launch_remote <- function(url, ..., .compute = "default", rscript = "Rscript", c
   url <- process_url(url, .compute = .compute)
   for (i in seq_along(url))
     cmds[[i]] <- sprintf("%s -e %s", rscript, if (length(envir[["stream"]]))
-      write_args(list(url[[i]], dots, nextstream(envir)), tls = tls) else
+      write_args(list(url[[i]], dots, next_stream(envir)), tls = tls) else
         write_args(list(url[[i]], dots), tls = tls))
 
   if (length(command)) {
@@ -1117,15 +1117,7 @@ launch_remote <- function(url, ..., .compute = "default", rscript = "Rscript", c
 #'
 #' @export
 #'
-nextstream <- function(.compute = "default") {
-
-  is.character(.compute) && return(nextstream(..[[.compute]]))
-  stream <- .compute[["stream"]]
-  length(stream) || return()
-  `[[<-`(.compute, "stream", nextRNGStream(stream))
-  stream
-
-}
+nextstream <- function(.compute = "default") next_stream(..[[.compute]])
 
 #' Next >> Developer Functions
 #'
@@ -1143,7 +1135,6 @@ nextstream <- function(.compute = "default") {
 #'
 nextget <- function(x, .compute = "default") {
 
-  is.character(x) && is.character(.compute) || return()
   vec <- ..[[.compute]][[x]]
   if (x == "tls")
     vec <- if (length(vec)) weakref_value(vec)
@@ -1449,6 +1440,13 @@ create_stream <- function(n, seed, envir) {
   if (length(seed)) set.seed(seed)
   `[[<-`(envir, "stream", .GlobalEnv[[".Random.seed"]])
   `[[<-`(.GlobalEnv, ".Random.seed", oseed)
+}
+
+next_stream <- function(envir) {
+  stream <- envir[["stream"]]
+  length(stream) || return()
+  `[[<-`(envir, "stream", nextRNGStream(stream))
+  stream
 }
 
 mk_interrupt_error <- function(e) `class<-`("", c("miraiError", "errorValue"))
