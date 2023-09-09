@@ -1407,9 +1407,9 @@ dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
 
 sub_real_port <- function(port, url) sub("(?<=:)0(?![^/])", port, url, perl = TRUE)
 
-auto_tokenized_url <- function() strcat(.urlscheme, sha1(random(16L)))
+auto_tokenized_url <- function() strcat(.urlscheme, sha1(random(12L)))
 
-new_tokenized_url <- function(url) sprintf("%s/%s", url, sha1(random(16L)))
+new_tokenized_url <- function(url) sprintf("%s/%s", url, sha1(random(12L)))
 
 req_socket <- function(url, tls = NULL, resend = .intmax)
   `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", resend)
