@@ -456,7 +456,7 @@
 <li>When launching daemons, the certificate chain to the CA should be supplied to the ‘tls’ argument of <code><a href="reference/daemon.html">daemon()</a></code> or <code><a href="reference/launch_local.html">launch_remote()</a></code>.</li>
 </ol>
 <ul>
-<li>The certificate chain should comprise multiple certificates between <code>-----BEGIN CERTIFICATE-----</code> and <code>-----END CERTIFICATE-----</code> markers. The first one should be the newly-generated TLS certificate (the same one supplied to <code><a href="reference/daemons.html">daemons()</a></code>), and the final one should be a CA root certificate.</li>
+<li>The certificate chain should comprise multiple certificates, each between <code>-----BEGIN CERTIFICATE-----</code> and <code>-----END CERTIFICATE-----</code> markers. The first one should be the newly-generated TLS certificate, the same supplied to <code><a href="reference/daemons.html">daemons()</a></code>, and the final one should be a CA root certificate.</li>
 <li>These are the only certificates required if your certificate was signed directly by a CA. If not, then the intermediate certificates should be included in a certificate chain that starts with your TLS certificate and ends with the certificate of the CA.</li>
 <li>If these are concatenated together as a single character string <code>certchain</code> (and assuming no certificate revocation list), then the character vector <code>c(certchain, "")</code> may be supplied to the relevant ‘tls’ argument.</li>
 <li>Alternatively, if these are written to a file (and the file replicated on the remote machines), then the ‘tls’ argument may also be specified as a path/filename (assuming these are the same on each machine).</li>
