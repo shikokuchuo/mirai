@@ -62,7 +62,7 @@ certificate(s) in PEM format, comprising the certificate authority
 certificate chain (and revocation list if present), used to validate
 certificates presented by peers, \strong{or} a length 2 character vector
 comprising [i] the certificate authority certificate chain and [ii] the
-certificate revocation list or the empty character "" if not applicable.}
+certificate revocation list or empty character '' if not applicable.}
 
 \item{...}{reserved but not currently used.}
 

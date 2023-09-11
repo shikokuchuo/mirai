@@ -1,4 +1,4 @@
-# mirai 0.9.1.9028 (development)
+# mirai 0.9.1.9029 (development)
 
 * Uses L'Ecuyer-CMRG streams for safe and reproducible (in certain cases) random number generation across parallel processes (thanks @ltierney for discussion during R Project Sprint 2023).
   + `daemons()` gains the new argument 'seed' to set a random seed for generating these streams.
@@ -16,6 +16,7 @@
   + The daemons status matrix adds a column 'i' for ease of use with functions such as `saisei()` or `launch_local()`.
   + The 'instance' column is now always cumulative - regenerating a URL with `saisei()` no longer resets the counter but instead turns it negative until a new daemon connects.
 * Improved shell quoting of daemon launch commands makes it easier to deploy manually via `launch_remote()`.
+* Fixes `daemons()`, `launch_local()` and `launch_remote()` so that a manually-specified 'tls' argument comprising a filename is now correctly processed.
 * The class `miraiInterrupt` has been retired and interrupts now generate a `miraiError` with an empty value.
 * Certain error messages are more accurate and informative.
 * General performance improvements through updates in nanonext 0.10.0.
