@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9029</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9030</span>
       </span>
     </div>
 
@@ -92,8 +92,8 @@
 <dd><p>[default NULL] if specified, the character URL or vector of URLs
 on the host for remote daemons to dial into, including a port accepting
 incoming connections (and optionally for websockets, a path), e.g.
-'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'. Specify
-'tls+tcp://' or 'wss://' to use secure TLS connections.</p></dd>
+'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'. Specify a URL
+starting 'tls+tcp://' or 'wss://' to use secure TLS connections.</p></dd>
 
 
 <dt>dispatcher</dt>
@@ -117,12 +117,11 @@ order in which tasks are sent is not deterministic.</p></dd>
 <dd><p>[default NULL] (optional for secure TLS connections) if not
 supplied, zero-configuration single-use keys and certificates are
 automatically generated. If supplied, <strong>either</strong> the character path
-to a file containing the PEM encoded certificate and associated private
-key (may contain additional certificates leading to a validation chain,
-with the leaf certificate first, although the self-signed root is not
-required as the daemon should already have this), <strong>or</strong> a length 2
-character vector comprising [i] the certificate (optionally certificate
-chain) and [ii] the associated private key.</p></dd>
+to a file containing the PEM-encoded TLS certificate and associated
+private key (may contain additional certificates leading to a validation
+chain, with the TLS certificate first), <strong>or</strong> a length 2 character
+vector comprising [i] the TLS certificate (optionally certificate chain)
+and [ii] the associated private key.</p></dd>
 
 
 <dt>...</dt>
