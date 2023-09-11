@@ -415,15 +415,17 @@ This causes all connected daemons to exit automatically.
 
 ### Distributed Computing: TLS Secure Connections
 
-TLS can be enabled to secure communications from the local machine to remote daemons.
+TLS is available as an option to secure communications from the local machine to remote daemons.
 
-An automatic zero-configuration default is implemented - all that is required is to specify a secure URL of the form `wss://` or `tls+tcp://`. For example, on the IPv6 loopback address:
+#### Zero-configuration
+
+An automatic zero-configuration default is implemented. Simply specify a secure URL of the form `wss://` or `tls+tcp://` when setting daemons. For example, on the IPv6 loopback address:
 
 ```{r tlsremote}
 daemons(n = 4, url = "wss://[::1]:5555")
 ```
 
-Single-use keys and certificates are automatically generated and configured, without requiring any user intervention. The private key is always retained on the host and never transmitted, and also not stored or accessible as an R object.
+Single-use keys and certificates are automatically generated and configured, without requiring any further intervention. The private key is always retained on the host machine and never transmitted, nor even materialised as an R object.
 
 The generated self-signed certificate is made available for read-only access via `launch_remote()`. This function conveniently constructs the full shell command to launch a daemon, including the correctly specified 'tls' argument to `daemon()`.
 
@@ -433,20 +435,35 @@ launch_remote(1)
 
 The return value may be deployed manually on a remote machine by unescaping the double quotes around the call to `"mirai::daemon()"`, or directly via SSH or a resource manager by additionally specifying 'command' and 'args' to `launch_remote()`.
 
-__
+```{r tlsclose, include=FALSE}
+daemons(0)
+```
 
-As an alternative to the automatic process described above, a certificate may also be generated in the traditional manner via a Certificate Signing Request (CSR) to a Certificate Authority (CA), which may be a public CA or a CA internal to your organisation.
+#### CA Signed Certificates
 
-The following resources describe how to generate a private key and CSR:
+As an alternative to the zero-configuration option, a certificate may also be generated in the traditional manner via a Certificate Signing Request (CSR) to a Certificate Authority (CA), which may be a public CA or a CA internal to your organisation.
+
+1. Generate a private key and CSR. The following resources describe how to do so:
 
 - using Mbed TLS: <https://mbed-tls.readthedocs.io/en/latest/kb/how-to/generate-a-certificate-request-csr/>
 - using OpenSSL: <https://www.feistyduck.com/library/openssl-cookbook/online/> (Chapter 1.2 Key and Certificate Management)
 
-The generated certificate along with the associated private key may then be specified as the 'tls' argument to `daemons()`. The certificate chain to the CA is supplied as the 'tls' argument to `daemon()`. 
+2. Send or provide the generated CSR to the CA for it to sign a new TLS certificate.
 
-```{r tlsclose, include=FALSE}
-daemons(0)
-```
+- The received certificate should comprise a block of cipher text between the markers `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----`. Make sure to request the certificate in the PEM format. If only available in other formats, your TLS library should usually provide conversion utilities.
+- Check also that your private key is a block of cipher text between the markers `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----`.
+
+3. When setting daemons, the TLS certificate and private key should be provided to the 'tls' argument of `daemons()`.
+
+- If the certificate and private key have been imported as scalar character values `cert` and `key` respectively, then the 'tls' argument may be specified as the character vector `c(cert, key)`.
+- Alternatively, the certificate may be copied to a new text file, with the private key appended, in which case the path/filename of this new file may be provided to the 'tls' argument.
+
+4. When launching daemons, the certificate chain to the CA should be supplied to the 'tls' argument of `daemon()` or `launch_remote()`.
+
+- The certificate chain should comprise multiple certificates between `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` markers. The first one should be the newly-generated TLS certificate (the same one supplied to `daemons()`), and the final one should be a CA root certificate.
+- These are the only certificates required if your certificate was signed directly by a CA. If not, then the intermediate certificates should be included in a certificate chain that starts with your TLS certificate and ends with the certificate of the CA.
+- If these are concatenated together as a single character string `certchain` (and assuming no certificate revocation list), then the character vector `c(certchain, "")` may be supplied to the relevant 'tls' argument.
+- Alternatively, if these are written to a file (and the file replicated on the remote machines), then the 'tls' argument may also be specified as a path/filename (assuming these are the same on each machine).
 
 [&laquo; Back to ToC](#table-of-contents)
 
@@ -545,9 +562,13 @@ The [`crew`](https://wlandau.github.io/crew/) package is a distributed worker-la
 
 ### Thanks
 
-[William Landau](https://github.com/wlandau/) has been instrumental in shaping development of the package, from being the first to request persistent daemons, through to robustness testing for the high performance computing requirements of [`crew`](https://wlandau.github.io/crew/) and [`targets`](https://docs.ropensci.org/targets/).
+We would like to thank in particular:
 
-[Henrik Bengtsson](https://github.com/HenrikBengtsson/) has shared valuable insights leading to the interface accepting broader usage patterns.
+[William Landau](https://github.com/wlandau/), for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of [`crew`](https://wlandau.github.io/crew/) and [`targets`](https://docs.ropensci.org/targets/).
+
+[Henrik Bengtsson](https://github.com/HenrikBengtsson/), for valuable and incisive insights leading to the interface accepting broader usage patterns.
+
+[Luke Tierney](https://github.com/ltierney/), R Core, for pointing out the implementation of L'Ecuyer-CMRG streams in R, for ensuring statistical independence in parallel processing.
 
 [&laquo; Back to ToC](#table-of-contents)
 

@@ -50,12 +50,11 @@ accepted, preventing further connection attempts. This provides safety
 against more than one daemon attempting to connect to a unique URL.}
 
 \item{tls}{[default NULL] (required for secure TLS connections) \strong{either}
-the character path to a file containing the PEM encoded certificate and
-associated private key (may contain additional certificates leading to a
-validation chain, with the leaf certificate first, although the
-self-signed root is not required as the daemon should already have this),
-\strong{or} a length 2 character vector comprising [i] the certificate
-(optionally certificate chain) and [ii] the associated private key.}
+the character path to a file containing the PEM-encoded TLS certificate
+and associated private key (may contain additional certificates leading
+to a validation chain, with the TLS certificate first), \strong{or} a
+length 2 character vector comprising [i] the TLS certificate (optionally
+certificate chain) and [ii] the associated private key.}
 
 \item{...}{additional arguments passed through to \code{\link{daemon}} if
 launching local daemons i.e. 'url' is not specified.}

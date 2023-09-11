@@ -20,8 +20,8 @@ daemons(
 \item{url}{[default NULL] if specified, the character URL or vector of URLs
 on the host for remote daemons to dial into, including a port accepting
 incoming connections (and optionally for websockets, a path), e.g.
-'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'. Specify
-'tls+tcp://' or 'wss://' to use secure TLS connections.}
+'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'. Specify a URL
+starting 'tls+tcp://' or 'wss://' to use secure TLS connections.}
 
 \item{dispatcher}{[default TRUE] logical value whether to use dispatcher.
 Dispatcher is a local background process that connects to daemons on
@@ -39,12 +39,11 @@ order in which tasks are sent is not deterministic.}
 \item{tls}{[default NULL] (optional for secure TLS connections) if not
 supplied, zero-configuration single-use keys and certificates are
 automatically generated. If supplied, \strong{either} the character path
-to a file containing the PEM encoded certificate and associated private
-key (may contain additional certificates leading to a validation chain,
-with the leaf certificate first, although the self-signed root is not
-required as the daemon should already have this), \strong{or} a length 2
-character vector comprising [i] the certificate (optionally certificate
-chain) and [ii] the associated private key.}
+to a file containing the PEM-encoded TLS certificate and associated
+private key (may contain additional certificates leading to a validation
+chain, with the TLS certificate first), \strong{or} a length 2 character
+vector comprising [i] the TLS certificate (optionally certificate chain)
+and [ii] the associated private key.}
 
 \item{...}{additional arguments passed through to \code{\link{dispatcher}} if
 using dispatcher and/or \code{\link{daemon}} if launching local daemons.}

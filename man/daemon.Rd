@@ -56,13 +56,14 @@ argument to \code{\link{daemons}} or \code{\link{launch_local}} to
 provide redirection of output to the host process. Applicable only when
 not using dispatcher.}
 
-\item{tls}{[default NULL] required for secure TLS connections over tls+tcp or
-wss. \strong{Either} the character path to a file containing X.509
-certificate(s) in PEM format, comprising the certificate authority
-certificate chain (and revocation list if present), used to validate
-certificates presented by peers, \strong{or} a length 2 character vector
-comprising [i] the certificate authority certificate chain and [ii] the
-certificate revocation list or empty character '' if not applicable.}
+\item{tls}{[default NULL] required for secure TLS connections over 'tls+tcp://'
+or 'wss://'. \strong{Either} the character path to a file containing
+X.509 certificate(s) in PEM format, comprising the certificate authority
+certificate chain starting with the TLS certificate and ending with the
+CA certificate (and revocation list if present), \strong{or} a length 2
+character vector comprising [i] the certificate authority certificate chain
+and [ii] the certificate revocation list, or empty character '' if not
+applicable.}
 
 \item{...}{reserved but not currently used.}
 

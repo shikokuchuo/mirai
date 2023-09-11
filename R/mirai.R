@@ -49,13 +49,14 @@
 #'     exiting due to a timer / task limit, to allow sockets to complete sends
 #'     currently in progress. The default should be set wider if computations
 #'     are expected to return very large objects (> GBs).
-#' @param tls [default NULL] required for secure TLS connections over tls+tcp or
-#'     wss. \strong{Either} the character path to a file containing X.509
-#'     certificate(s) in PEM format, comprising the certificate authority
-#'     certificate chain (and revocation list if present), used to validate
-#'     certificates presented by peers, \strong{or} a length 2 character vector
-#'     comprising [i] the certificate authority certificate chain and [ii] the
-#'     certificate revocation list or empty character '' if not applicable.
+#' @param tls [default NULL] required for secure TLS connections over 'tls+tcp://'
+#'     or 'wss://'. \strong{Either} the character path to a file containing
+#'     X.509 certificate(s) in PEM format, comprising the certificate authority
+#'     certificate chain starting with the TLS certificate and ending with the
+#'     CA certificate (and revocation list if present), \strong{or} a length 2
+#'     character vector comprising [i] the certificate authority certificate chain
+#'     and [ii] the certificate revocation list, or empty character '' if not
+#'     applicable.
 #' @param ... reserved but not currently used.
 #' @param cleanup [default 7L] Integer additive bitmask controlling whether to
 #'     perform cleanup of the global environment (1L), reset loaded packages to
@@ -192,12 +193,11 @@ server <- daemon
 #'     accepted, preventing further connection attempts. This provides safety
 #'     against more than one daemon attempting to connect to a unique URL.
 #' @param tls [default NULL] (required for secure TLS connections) \strong{either}
-#'     the character path to a file containing the PEM encoded certificate and
-#'     associated private key (may contain additional certificates leading to a
-#'     validation chain, with the leaf certificate first, although the
-#'     self-signed root is not required as the daemon should already have this),
-#'     \strong{or} a length 2 character vector comprising [i] the certificate
-#'     (optionally certificate chain) and [ii] the associated private key.
+#'     the character path to a file containing the PEM-encoded TLS certificate
+#'     and associated private key (may contain additional certificates leading
+#'     to a validation chain, with the TLS certificate first), \strong{or} a
+#'     length 2 character vector comprising [i] the TLS certificate (optionally
+#'     certificate chain) and [ii] the associated private key.
 #' @param ... additional arguments passed through to \code{\link{daemon}} if
 #'     launching local daemons i.e. 'url' is not specified.
 #' @param monitor (for package internal use only) do not set this parameter.
@@ -531,8 +531,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' @param url [default NULL] if specified, the character URL or vector of URLs
 #'     on the host for remote daemons to dial into, including a port accepting
 #'     incoming connections (and optionally for websockets, a path), e.g.
-#'     'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'. Specify
-#'     'tls+tcp://' or 'wss://' to use secure TLS connections.
+#'     'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'. Specify a URL
+#'     starting 'tls+tcp://' or 'wss://' to use secure TLS connections.
 #' @param dispatcher [default TRUE] logical value whether to use dispatcher.
 #'     Dispatcher is a local background process that connects to daemons on
 #'     behalf of the host and ensures FIFO scheduling, queueing tasks if
@@ -547,12 +547,11 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' @param tls [default NULL] (optional for secure TLS connections) if not
 #'     supplied, zero-configuration single-use keys and certificates are
 #'     automatically generated. If supplied, \strong{either} the character path
-#'     to a file containing the PEM encoded certificate and associated private
-#'     key (may contain additional certificates leading to a validation chain,
-#'     with the leaf certificate first, although the self-signed root is not
-#'     required as the daemon should already have this), \strong{or} a length 2
-#'     character vector comprising [i] the certificate (optionally certificate
-#'     chain) and [ii] the associated private key.
+#'     to a file containing the PEM-encoded TLS certificate and associated
+#'     private key (may contain additional certificates leading to a validation
+#'     chain, with the TLS certificate first), \strong{or} a length 2 character
+#'     vector comprising [i] the TLS certificate (optionally certificate chain)
+#'     and [ii] the associated private key.
 #' @param ... additional arguments passed through to \code{\link{dispatcher}} if
 #'     using dispatcher and/or \code{\link{daemon}} if launching local daemons.
 #' @param .compute [default 'default'] character compute profile to use for

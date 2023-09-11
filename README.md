@@ -112,7 +112,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -1.6598 -0.1347 0.8196 -1.9054 0.0969 ...
+#>  num [1:100000000] -0.181 0.28 -0.495 -0.237 -1.524 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -120,7 +120,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -1.6598 -0.1347 0.8196 -1.9054 0.0969 ...
+#>  num [1:100000000] -0.181 0.28 -0.495 -0.237 -1.524 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -138,7 +138,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 23.844 0.629 -1.542 -1.991 -0.97 ...
+#>  num [1:100000000] -2.446 -10.386 4.281 -8.781 -0.408 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -278,12 +278,12 @@ status()
 #> 
 #> $daemons
 #>                                                     i online instance assigned complete
-#> abstract://7cd99c6a5df255f573bbef03afb7dc31462a3359 1      1        1        0        0
-#> abstract://61d634dfeda8d197fb1a9223c93590f2934e52e7 2      1        1        0        0
-#> abstract://2af35bcd22aa3e7f85a1892789484218b9eeb7bc 3      1        1        0        0
-#> abstract://2b21b8fed00f82c38e6dba23cfe7cbc93cef71b9 4      1        1        0        0
-#> abstract://bccc0d4e97be6c45c774558c8ea007b0ffcc462a 5      1        1        0        0
-#> abstract://bb2abf5f20d7d4f110f00452797dd4867d3410a8 6      1        1        0        0
+#> abstract://47c3c6a395d96db873c70e9126ac1e2b4dc013e3 1      1        1        0        0
+#> abstract://4f9acd70d0c6d72e4d26ca233fe5455f152de88d 2      1        1        0        0
+#> abstract://72e1665a8e6771292468b9bdbe5dbf047214919b 3      1        1        0        0
+#> abstract://1ef0855b4e91c9d743ad6a965d6cf5f3427753bd 4      1        1        0        0
+#> abstract://661716362d0043b7afc4af3c78f325adf1a05705 5      1        1        0        0
+#> abstract://29465c407d1f4f6dec74e362036c7cc52efbe180 6      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -326,7 +326,7 @@ status()
 #> [1] 6
 #> 
 #> $daemons
-#> [1] "abstract://d642fe61834da88c4612324d011842dde86e71eb"
+#> [1] "abstract://43c9058098bfcf0a746f191183003944cc4d36bb"
 ```
 
 This implementation sends tasks immediately, and ensures that tasks are
@@ -425,10 +425,10 @@ accepts SSH connections over port 22:
 
 ``` r
 launch_remote(1:4, command = "ssh", args = c("-p 22 10.75.33.100", .))
-#> [1] "Rscript -e \"mirai::daemon('ws://10.75.33.40:5555/1',rs=c(10407,1124444020,-1669596187,-1762109598,-659557509,1740519552,-189677951))\""
-#> [2] "Rscript -e \"mirai::daemon('ws://10.75.33.40:5555/2',rs=c(10407,1251812917,313935806,-658917007,1644213722,-1614465457,1395792989))\""  
-#> [3] "Rscript -e \"mirai::daemon('ws://10.75.33.40:5555/3',rs=c(10407,-109768059,167468240,-1728804673,-458376363,2099286982,1192812178))\""  
-#> [4] "Rscript -e \"mirai::daemon('ws://10.75.33.40:5555/4',rs=c(10407,394865482,-1477387539,-384063319,-467052206,888901073,1832514881))\""
+#> [1] "Rscript -e \"mirai::daemon('ws://10.75.33.40:5555/1',rs=c(10407,-1815970547,-1339765654,-1203563805,143566536,-1082411479,1417278422))\""
+#> [2] "Rscript -e \"mirai::daemon('ws://10.75.33.40:5555/2',rs=c(10407,405959200,-244221769,1111356841,-1361731184,122506747,-305152897))\""    
+#> [3] "Rscript -e \"mirai::daemon('ws://10.75.33.40:5555/3',rs=c(10407,-701349333,1543116624,-1327639670,-1527813785,1471591209,-1445047914))\""
+#> [4] "Rscript -e \"mirai::daemon('ws://10.75.33.40:5555/4',rs=c(10407,-262534619,-139950524,-1561806513,1780941170,-745422852,-418783255))\""
 ```
 
 The returned vector comprises the shell commands executed on the remote
@@ -499,7 +499,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:34297"
+#> [1] "tcp://:39491"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -513,7 +513,7 @@ On the network resource, `daemon()` may be called from an R session, or
 an Rscript invocation from a shell. This sets up a remote daemon process
 that connects to the host URL and receives tasks:
 
-    Rscript -e 'mirai::daemon("tcp://10.75.33.40:34297")'
+    Rscript -e 'mirai::daemon("tcp://10.75.33.40:39491")'
 
 Note that `daemons()` should be set up on the host machine before
 launching `daemon()` on remote resources, otherwise the daemon instances
@@ -526,8 +526,8 @@ remote machine. For example, if the remote machine at 10.75.33.100
 accepts SSH connections over port 22:
 
 ``` r
-launch_remote("tcp://10.75.33.40:0", command = "ssh", args = c("-p 22 10.75.33.100", .))
-#> [1] "Rscript -e \"mirai::daemon('tcp://10.75.33.40:0',rs=c(10407,1280437965,898212650,2141899427,-1296987256,-1479891991,1266751126))\""
+launch_remote("tcp://10.75.33.40:39491", command = "ssh", args = c("-p 22 10.75.33.100", .))
+#> [1] "Rscript -e \"mirai::daemon('tcp://10.75.33.40:39491',rs=c(10407,843044376,1360374073,-1322686554,1611754991,1048128356,1503646485))\""
 ```
 
 The returned vector comprises the shell commands executed on the remote
@@ -547,7 +547,7 @@ status()
 #> [1] 1
 #> 
 #> $daemons
-#> [1] "tcp://:34297"
+#> [1] "tcp://:39491"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -563,12 +563,14 @@ This causes all connected daemons to exit automatically.
 
 ### Distributed Computing: TLS Secure Connections
 
-TLS can be enabled to secure communications from the local machine to
-remote daemons.
+TLS is available as an option to secure communications from the local
+machine to remote daemons.
 
-An automatic zero-configuration default is implemented - all that is
-required is to specify a secure URL of the form `wss://` or
-`tls+tcp://`. For example, on the IPv6 loopback address:
+#### Zero-configuration
+
+An automatic zero-configuration default is implemented. Simply specify a
+secure URL of the form `wss://` or `tls+tcp://` when setting daemons.
+For example, on the IPv6 loopback address:
 
 ``` r
 daemons(n = 4, url = "wss://[::1]:5555")
@@ -576,9 +578,9 @@ daemons(n = 4, url = "wss://[::1]:5555")
 ```
 
 Single-use keys and certificates are automatically generated and
-configured, without requiring any user intervention. The private key is
-always retained on the host and never transmitted, and also not stored
-or accessible as an R object.
+configured, without requiring any further intervention. The private key
+is always retained on the host machine and never transmitted, nor even
+materialised as an R object.
 
 The generated self-signed certificate is made available for read-only
 access via `launch_remote()`. This function conveniently constructs the
@@ -587,7 +589,7 @@ full shell command to launch a daemon, including the correctly specified
 
 ``` r
 launch_remote(1)
-#> [1] "Rscript -e \"mirai::daemon('wss://[::1]:5555/1',tls=c('-----BEGIN CERTIFICATE-----\nMIIFJTCCAw2gAwIBAgIBATANBgkqhkiG9w0BAQsFADAqMQwwCgYDVQQDDAM6OjEx\nDzANBgNVBAoMBkhpYmlraTEJMAcGA1UEBhMAMB4XDTAxMDEwMTAwMDAwMFoXDTMw\nMTIzMTIzNTk1OVowKjEMMAoGA1UEAwwDOjoxMQ8wDQYDVQQKDAZIaWJpa2kxCTAH\nBgNVBAYTADCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALnoAxKmG76s\nKoGYi8zV0eTQhoIW06VH/6iN5z2xBQhX0ulQ92RQOGKUs3JA8VXciF3taKq6hvC5\nK6NTdXMQUvw7oGaz+RynUjc8qlQQQLtoh1hDUmS5/6/2OCaVaUZeArnj+KgFRUge\nv6DTQxy7gPWe4B7q7K7SNwmjuTtEyRGak6YMU0B4UPOksgy3JGWED5AorJzufDhk\nl879q1ZUw0dLyh/wIvTvj9altp194VxrcvgDZxUBhnm1ni/3BUDj4Gl9Q603ydsC\nPiLnRjXCENCpnnF+SGIYOD5Wp8GfDFXdvzruxPIv+ZXN9rKVxkk8qqzrqFcL6/u2\n4sgSpz4g6ZdigW6H3Rb0980LrNuM8MvOTRX8QtM4GSKY/VZVgO3ItMOVPh7iXB4I\nPhG6ZEqSsa1sSXtoxVYikGxeAF1c3Z6ut6ad1jpOmQOoDXSiR/M57d2DIGsUj9bO\nrExmLmUq6Eb2yo/lateOORj2jzkG6iUk85iB3MnCJN5a6MYnsqWOtdOLJdlUlVRA\nx3llA2y+GDuUg8HhTYEC+WoNzeArhZwhz+5Kd/dpLEfBsyZy8zUT4M6LSvxOS/oG\nXTZ5+LTI6n5HxBMDBDBvwzkjMj3T983vQIYCN1hAfXCFwWRBf1eZENHDp7FZjxZd\nprS0SWcgo6zD3f2DgZg0qvxdJyQ4faX9AgMBAAGjVjBUMBIGA1UdEwEB/wQIMAYB\nAf8CAQAwHQYDVR0OBBYEFE9Y+MjVEKIZACHciCKlCSSH8qwvMB8GA1UdIwQYMBaA\nFE9Y+MjVEKIZACHciCKlCSSH8qwvMA0GCSqGSIb3DQEBCwUAA4ICAQAQcOYP7fxr\nK10lObYRZ9wceXPGwhPu6lNx6/i0rr6WlUH5lDbjLZlnY3z4I0IukjUPXuK3Y5B3\nHqlXSd2+xus+EY+ruXCvtWXe5tUXUH3t8nLA4R0I3S3pLWwbxdtyws1U70Wr3mjV\nI1n++VeDXOMcKd1JA8HdYDYFShgdB2ypn2+H0vXVXXvM6QLcA4CXmoyb+eTZPRUQ\n4hpejhrFz64qmBCRY/WrsPHM4btS2n8qkSCbHmEJo6fjyK+4LOZp2mq0mXo9m6Jy\nD12bC1f/RY9B0L3NO67nzn66X9JUNlDWAEPPWM/fDaLFEZA6IL4fXCo2sM9FKG6y\nXvlbcfHxKdztSsPmSCTo+PAKOndUSxxo5R96hNiRhck4pN/ZXRIWkbeQQMmhnjpf\nJ9mrzH//URKo7hTGp98KxNRKbb0Wit6QNZuMh5okfgGJSOYNGhf27XJVU0enDWoM\np01KfqRgEhF1BmOewhaec+Sq0iFYJ9pVBNApnqfmhoYQx/i1piHYJ2kqXDj2QUtG\nLwHZlsqCAz8oZ0W0fCABUFNDNRd4RAp4+Zl5v2Ug4ceC8cmNXsoxJIdXBkwmSZ48\nY/dFWvOnVElUBZeAXujJ3Fz34K5ywXu/X4jSWQL2ulwDeopC/5ZtnCkrAiYVbSom\nUgXvx7mRYNytIfW4fGjMSXaIl+Wq167Gdw==\n-----END CERTIFICATE-----\n',''),rs=c(10407,-1665965894,-129505549,1598113688,-545190727,-1800039130,-484352657))\""
+#> [1] "Rscript -e \"mirai::daemon('wss://[::1]:5555/1',tls=c('-----BEGIN CERTIFICATE-----\nMIIFLTCCAxWgAwIBAgIBATANBgkqhkiG9w0BAQsFADAuMQwwCgYDVQQDDAM6OjEx\nETAPBgNVBAoMCE5hbm9uZXh0MQswCQYDVQQGEwJKUDAeFw0wMTAxMDEwMDAwMDBa\nFw0zMDEyMzEyMzU5NTlaMC4xDDAKBgNVBAMMAzo6MTERMA8GA1UECgwITmFub25l\neHQxCzAJBgNVBAYTAkpQMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA\nzXMlWnFGxSLDeq/O74Dgbf1gFbOcPS8KY8hCsk+Q/pv6HKu1F3uzqcMPlTEkYTqg\nxDXI+kQn33YVD3Hd+AiJ9inXOM9b6vvzEGZ4T9YTkfX1rl78LDkX8IU3hjwbzrDG\n/EWe/yzK9jgCPrI1kS5UIurxc0PncsqPZP8tuNlgR8r6RMvfnA96aAI3YG2mIlij\nnzSL/Fkgk5HaO35L/2lYBr7kH5C3Dp2OqKmXbH35ljp9nEB4ECV4jczRAEXbz6L9\nHx9B45hrErsrL4nV4xICU9eAyK5Yx526FDepik27GQkhBEADStMy4oQlI+mp6KTy\nqNa8ZpZ3L3sXBGo36l5a7jPZ0rkTtDlnj3hqA4TpTJC/ElNsYg2wH5Ef9wfy6nDS\njd+1mYUtRvL7a3Jeim8l/ub6XOywVq12jVHcXW/Uw+OSpPP0Lojqxxyemyj9xio/\nUR8XEHTPj5H2Olda3xw2e8arVnSAQE+MqKj5o4WoIKdN2of5U5RS5mpiF8Y6Vwwd\nlhWMvwRBPLKulyQdZg9R5YgRSaUKwXv4YaC/TWkjTNHvR64kz8QW0MwHV4ZagW46\nS/zyjMfqbtA5iR12+t25887qNELIz7PHiDuwX4Ki5fbLumAge3XFqsy0qeWcqbXu\n77lLaJRrOM+mdGOgZPtAIlZmV86/YnS2T0fCdY49/lECAwEAAaNWMFQwEgYDVR0T\nAQH/BAgwBgEB/wIBADAdBgNVHQ4EFgQUTatyw22JDOVfp3vvjxKtnL0/hz8wHwYD\nVR0jBBgwFoAUTatyw22JDOVfp3vvjxKtnL0/hz8wDQYJKoZIhvcNAQELBQADggIB\nAEBbwjDrvZwV2RqBID5It+PzEsHJuiLeCsLvRMCjYFryMBXMC/mmmS4uYE7F3g7M\nQXCYfUFVqWmv6sBJQVs4i6bCRMjKGrXOGPXNVoVTNOmBKmIijd/BlKha/iJA0crl\nTz9x91ORc1EGYKNothO9xl/t8WsFHiezS+appW8XaODxMs+F/GYnBqd9BXnp8NP1\nV6ofyvIVGzT7bzZ8o2PKSpF9NWB0jPSTflTz1oqt7/KlKL9dccMxOHRPLn7Bn6hl\n3p7O8Sflx4bHhPJcgsuaNLSsJJN4ZOJ72VX/JsxQ7SxEWZTRGtC9vTJ3+RALpB+E\n1N6AEHcyTCoGKbkKiB2aBc9YroYLKvcB9yjsZFw9EwZdparCNCotw+oe7pzg71wt\nBdwgc8Nbz6PAGzSWc1bMmovrjuedML6W5JpOqFceAXnkhpEL5OO4rteih6NBQn7c\nYo3LFLwVmuGM1Km/WufW7Vkt186S+Y5IB3u3DvTdzBfgil1Medll0zTuUGcdyreE\nlQGe9kMA1ElLY4HJCFKB17qcbyOReWZ/Zr51P+UFvLmYPM82cXV3q7uxZncFZN3Y\nvcDT2iak5iIa+XS3CP1VFDN5vnDMPJclung6AEZofPkHqYPlki2ZN7RGLaqYAsVw\nLxbwlg/T8xmfJtB1wafY9AEbvIYGqU0iS474md/fahIF\n-----END CERTIFICATE-----\n',''),rs=c(10407,2139002716,493543597,-592727158,556189571,1269983976,406152137))\""
 ```
 
 The return value may be deployed manually on a remote machine by
@@ -595,14 +597,15 @@ unescaping the double quotes around the call to `"mirai::daemon()"`, or
 directly via SSH or a resource manager by additionally specifying
 ‘command’ and ‘args’ to `launch_remote()`.
 
-\_\_
+#### CA Signed Certificates
 
-As an alternative to the automatic process described above, a
-certificate may also be generated in the traditional manner via a
-Certificate Signing Request (CSR) to a Certificate Authority (CA), which
-may be a public CA or a CA internal to your organisation.
+As an alternative to the zero-configuration option, a certificate may
+also be generated in the traditional manner via a Certificate Signing
+Request (CSR) to a Certificate Authority (CA), which may be a public CA
+or a CA internal to your organisation.
 
-The following resources describe how to generate a private key and CSR:
+1.  Generate a private key and CSR. The following resources describe how
+    to do so:
 
 - using Mbed TLS:
   <https://mbed-tls.readthedocs.io/en/latest/kb/how-to/generate-a-certificate-request-csr/>
@@ -610,9 +613,46 @@ The following resources describe how to generate a private key and CSR:
   <https://www.feistyduck.com/library/openssl-cookbook/online/> (Chapter
   1.2 Key and Certificate Management)
 
-The generated certificate along with the associated private key may then
-be specified as the ‘tls’ argument to `daemons()`. The certificate chain
-to the CA is supplied as the ‘tls’ argument to `daemon()`.
+2.  Send or provide the generated CSR to the CA for it to sign a new TLS
+    certificate.
+
+- The received certificate should comprise a block of cipher text
+  between the markers `-----BEGIN CERTIFICATE-----` and
+  `-----END CERTIFICATE-----`. Make sure to request the certificate in
+  the PEM format. If only available in other formats, your TLS library
+  should usually provide conversion utilities.
+- Check also that your private key is a block of cipher text between the
+  markers `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----`.
+
+3.  When setting daemons, the TLS certificate and private key should be
+    provided to the ‘tls’ argument of `daemons()`.
+
+- If the certificate and private key have been imported as scalar
+  character values `cert` and `key` respectively, then the ‘tls’
+  argument may be specified as the character vector `c(cert, key)`.
+- Alternatively, the certificate may be copied to a new text file, with
+  the private key appended, in which case the path/filename of this new
+  file may be provided to the ‘tls’ argument.
+
+4.  When launching daemons, the certificate chain to the CA should be
+    supplied to the ‘tls’ argument of `daemon()` or `launch_remote()`.
+
+- The certificate chain should comprise multiple certificates between
+  `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` markers.
+  The first one should be the newly-generated TLS certificate (the same
+  one supplied to `daemons()`), and the final one should be a CA root
+  certificate.
+- These are the only certificates required if your certificate was
+  signed directly by a CA. If not, then the intermediate certificates
+  should be included in a certificate chain that starts with your TLS
+  certificate and ends with the certificate of the CA.
+- If these are concatenated together as a single character string
+  `certchain` (and assuming no certificate revocation list), then the
+  character vector `c(certchain, "")` may be supplied to the relevant
+  ‘tls’ argument.
+- Alternatively, if these are written to a file (and the file replicated
+  on the remote machines), then the ‘tls’ argument may also be specified
+  as a path/filename (assuming these are the same on each machine).
 
 [« Back to ToC](#table-of-contents)
 
@@ -769,16 +809,22 @@ of two ways:
 
 ### Thanks
 
-[William Landau](https://github.com/wlandau/) has been instrumental in
-shaping development of the package, from being the first to request
-persistent daemons, through to robustness testing for the high
-performance computing requirements of
+We would like to thank in particular:
+
+[William Landau](https://github.com/wlandau/), for being instrumental in
+shaping development of the package, from initiating the original request
+for persistent daemons, through to orchestrating robustness testing for
+the high performance computing requirements of
 [`crew`](https://wlandau.github.io/crew/) and
 [`targets`](https://docs.ropensci.org/targets/).
 
-[Henrik Bengtsson](https://github.com/HenrikBengtsson/) has shared
-valuable insights leading to the interface accepting broader usage
+[Henrik Bengtsson](https://github.com/HenrikBengtsson/), for valuable
+and incisive insights leading to the interface accepting broader usage
 patterns.
+
+[Luke Tierney](https://github.com/ltierney/), R Core, for pointing out
+the implementation of L’Ecuyer-CMRG streams in R, for ensuring
+statistical independence in parallel processing.
 
 [« Back to ToC](#table-of-contents)
 
