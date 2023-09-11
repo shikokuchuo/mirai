@@ -55,8 +55,8 @@
 #'     certificate chain starting with the TLS certificate and ending with the
 #'     CA certificate (and revocation list if present), \strong{or} a length 2
 #'     character vector comprising [i] the certificate authority certificate chain
-#'     and [ii] the certificate revocation list, or empty character '' if not
-#'     applicable.
+#'     and [ii] the certificate revocation list, or empty character \code{''} if
+#'     not applicable.
 #' @param ... reserved but not currently used.
 #' @param cleanup [default 7L] Integer additive bitmask controlling whether to
 #'     perform cleanup of the global environment (1L), reset loaded packages to

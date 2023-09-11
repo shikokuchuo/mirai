@@ -637,11 +637,11 @@ or a CA internal to your organisation.
 4.  When launching daemons, the certificate chain to the CA should be
     supplied to the ‘tls’ argument of `daemon()` or `launch_remote()`.
 
-- The certificate chain should comprise multiple certificates between
-  `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` markers.
-  The first one should be the newly-generated TLS certificate (the same
-  one supplied to `daemons()`), and the final one should be a CA root
-  certificate.
+- The certificate chain should comprise multiple certificates, each
+  between `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----`
+  markers. The first one should be the newly-generated TLS certificate,
+  the same supplied to `daemons()`, and the final one should be a CA
+  root certificate.
 - These are the only certificates required if your certificate was
   signed directly by a CA. If not, then the intermediate certificates
   should be included in a certificate chain that starts with your TLS

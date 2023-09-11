@@ -460,7 +460,7 @@ As an alternative to the zero-configuration option, a certificate may also be ge
 
 4. When launching daemons, the certificate chain to the CA should be supplied to the 'tls' argument of `daemon()` or `launch_remote()`.
 
-- The certificate chain should comprise multiple certificates between `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` markers. The first one should be the newly-generated TLS certificate (the same one supplied to `daemons()`), and the final one should be a CA root certificate.
+- The certificate chain should comprise multiple certificates, each between `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` markers. The first one should be the newly-generated TLS certificate, the same supplied to `daemons()`, and the final one should be a CA root certificate.
 - These are the only certificates required if your certificate was signed directly by a CA. If not, then the intermediate certificates should be included in a certificate chain that starts with your TLS certificate and ends with the certificate of the CA.
 - If these are concatenated together as a single character string `certchain` (and assuming no certificate revocation list), then the character vector `c(certchain, "")` may be supplied to the relevant 'tls' argument.
 - Alternatively, if these are written to a file (and the file replicated on the remote machines), then the 'tls' argument may also be specified as a path/filename (assuming these are the same on each machine).
