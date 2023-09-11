@@ -16,10 +16,10 @@
   + The daemons status matrix adds a column 'i' for ease of use with functions such as `saisei()` or `launch_local()`.
   + The 'instance' column is now always cumulative - regenerating a URL with `saisei()` no longer resets the counter but instead turns it negative until a new daemon connects.
 * Improved shell quoting of daemon launch commands makes it easier to deploy manually via `launch_remote()`.
-* Fixes `daemons()`, `launch_local()` and `launch_remote()` so that a manually-specified 'tls' argument comprising a filename is now correctly processed.
+* Passing a filename to the 'tls' argument of `daemons()`, `launch_local()` or `launch_remote()` now works correctly, as documented.
 * The class `miraiInterrupt` has been retired and interrupts now generate a `miraiError` with an empty value.
 * Certain error messages are more accurate and informative.
-* General performance improvements through updates in nanonext 0.10.0.
+* General increases in performance due to updates in nanonext 0.10.0.
 * Requires nanonext >= 0.10.0 and R >= 3.5.
 
 # mirai 0.9.1

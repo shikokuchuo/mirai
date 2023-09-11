@@ -72,7 +72,7 @@ For \strong{launch_remote}: A character vector of daemon launch
     character vector. If 'command' is specified, this is executed with the
     arguments in 'args' to effect the daemon launch on the remote machine.
 }
-\note{
+\details{
 If daemons have been set, the generated command will automatically
     contain the argument 'rs' specifying the length 7 L'Ecuyer-CMRG random
     seed supplied to the daemon. The values will be different each time the

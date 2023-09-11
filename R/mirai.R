@@ -988,7 +988,7 @@ status <- function(.compute = "default") {
 #'     dispatcher.}
 #'     }
 #'
-#' @note If daemons have been set, the generated command will automatically
+#' @details If daemons have been set, the generated command will automatically
 #'     contain the argument 'rs' specifying the length 7 L'Ecuyer-CMRG random
 #'     seed supplied to the daemon. The values will be different each time the
 #'     function is called.
