@@ -18,7 +18,6 @@
 * Improves shell quoting of daemon launch commands, making it easier to deploy manually via `launch_remote()`.
 * Passing a filename to the 'tls' argument of `daemons()`, `launch_local()` or `launch_remote()` now works correctly as documented.
 * Extends and clarifies documentation surrounding use of certificate authority signed TLS certificates.
-* Retires the class `miraiInterrupt`: interrupts now generate a `miraiError` with an empty value.
 * Certain error messages are more accurate and informative.
 * Increases in performance and lower resource utilisation due to updates in nanonext 0.10.0.
 * Requires nanonext >= 0.10.0 and R >= 3.5.
