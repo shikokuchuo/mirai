@@ -79,7 +79,6 @@
 <li>Improves shell quoting of daemon launch commands, making it easier to deploy manually via <code><a href="../reference/launch_local.html">launch_remote()</a></code>.</li>
 <li>Passing a filename to the ‘tls’ argument of <code><a href="../reference/daemons.html">daemons()</a></code>, <code><a href="../reference/launch_local.html">launch_local()</a></code> or <code><a href="../reference/launch_local.html">launch_remote()</a></code> now works correctly as documented.</li>
 <li>Extends and clarifies documentation surrounding use of certificate authority signed TLS certificates.</li>
-<li>Retires the class <code>miraiInterrupt</code>: interrupts now generate a <code>miraiError</code> with an empty value.</li>
 <li>Certain error messages are more accurate and informative.</li>
 <li>Increases in performance and lower resource utilisation due to updates in nanonext 0.10.0.</li>
 <li>Requires nanonext &gt;= 0.10.0 and R &gt;= 3.5.</li>
@@ -228,7 +227,7 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.7.1" id="mirai-071">mirai 0.7.1<small>2022-11-15</small><a class="anchor" aria-label="anchor" href="#mirai-071"></a></h2>
 <ul><li>Allow user interrupts of <code><a href="../reference/call_mirai.html">call_mirai()</a></code> again (regression in 0.7.0), now returning a ‘miraiInterrupt’.</li>
-<li>Adds auxiliary function <code>is_mirai_interrupt()</code> to test if an object is a ‘miraiInterrupt’.</li>
+<li>Adds auxiliary function <code><a href="../reference/is_mirai_error.html">is_mirai_interrupt()</a></code> to test if an object is a ‘miraiInterrupt’.</li>
 <li>Requires nanonext &gt;= 0.7.0: returned ‘errorValues’ e.g. mirai timeouts are no longer accompanied by warnings.</li>
 <li>Internal performance enhancements.</li>
 </ul></div>

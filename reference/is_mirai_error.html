@@ -61,6 +61,8 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">is_mirai_error</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">is_mirai_interrupt</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">is_error_value</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -81,8 +83,12 @@
     <p>Is the object a 'miraiError'. When execution in a mirai process fails,
     the error message is returned as a character string of class 'miraiError'
     and 'errorValue'.</p>
-<p>Is the object an 'errorValue', such as a mirai timeout, or a 'miraiError'.
-    This is a catch-all condition that includes all returned error values.</p>
+<p>Is the object a 'miraiInterrupt'. When an ongoing mirai is sent a user
+    interrupt, the mirai will resolve to an empty character string classed as
+    'miraiInterrupt' and 'errorValue'.</p>
+<p>Is the object an 'errorValue', such as a mirai timeout, a 'miraiError' or
+    a 'miraiInterrupt'. This is a catch-all condition that includes all
+    returned error values.</p>
     </div>
 
     <div id="ref-examples">
@@ -93,11 +99,13 @@
 <span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="mirai.html">mirai</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">is_mirai_error</span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">is_mirai_interrupt</span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">is_error_value</span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="mirai.html">mirai</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span>, .timeout <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">is_mirai_error</span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">is_mirai_interrupt</span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">is_error_value</span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
