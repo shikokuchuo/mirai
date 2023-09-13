@@ -67,7 +67,7 @@
 #'
 #'     For performing side effects upon resolution of a 'mirai', the promise
 #'     pipe \code{\%...>\%} may be more suitable (see the package
-#'     \pkg{mirai.promises}).
+#'     \CRANpkg{mirai.promises}).
 #'
 #' @examples
 #' if (interactive()) {

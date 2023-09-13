@@ -52,7 +52,7 @@ The deferred evaluation pipe is generally used where the return value
 
     For performing side effects upon resolution of a 'mirai', the promise
     pipe \code{\%...>\%} may be more suitable (see the package
-    \pkg{mirai.promises}).
+    \CRANpkg{mirai.promises}).
 }
 \section{Usage}{
 
