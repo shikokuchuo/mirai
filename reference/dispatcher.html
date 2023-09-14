@@ -69,6 +69,7 @@
 <span>  token <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  lock <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pass <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  monitor <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rs <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -127,6 +128,12 @@ and associated private key (may contain additional certificates leading
 to a validation chain, with the TLS certificate first), <strong>or</strong> a
 length 2 character vector comprising [i] the TLS certificate (optionally
 certificate chain) and [ii] the associated private key.</p></dd>
+
+
+<dt>pass</dt>
+<dd><p>[default NULL] (required only if the secret key supplied to 'tls'
+is encrypted with a password) For security, should be provided through a
+function that returns this value, rather than directly.</p></dd>
 
 
 <dt>...</dt>
