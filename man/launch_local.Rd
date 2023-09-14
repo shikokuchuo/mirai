@@ -47,7 +47,7 @@ machine. Prepend the full path if necessary. If launching on Windows,
 'Rscript' should be replaced with 'Rscript.exe'.}
 
 \item{command}{(optional) the command used to effect the daemon launch on the
-remote machine as a character value (e.g. \code{'ssh'}).}
+remote machine as a character string (e.g. \code{'ssh'}).}
 
 \item{args}{(optional) arguments passed to 'command', as a character vector
 that must include '\code{.}' (quoted or unquoted) as an element,

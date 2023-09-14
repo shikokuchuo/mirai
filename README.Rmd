@@ -46,7 +46,7 @@ Features efficient task scheduling, fast inter-process communications, and Trans
 6. [Distributed Computing: Remote Daemons](#distributed-computing-remote-daemons)
 7. [Distributed Computing: TLS Secure Connections](#distributed-computing-tls-secure-connections)
 8. [Compute Profiles](#compute-profiles)
-9. [Errors and Timeouts](#errors-and-timeouts)
+9. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
 10. [Deferred Evaluation Pipe](#deferred-evaluation-pipe)
 11. [Integrations with Crew, Targets, Shiny](#integrations-with-crew-targets-shiny)
 12. [Thanks](#thanks)
@@ -278,7 +278,7 @@ Set the number of daemons to zero to reset.
 
 The daemons interface may also be used to send tasks for computation to remote daemon processes on the network.
 
-Call `daemons()` specifying 'url' as a character value the host network address and a port that is able to accept incoming connections.
+Call `daemons()` specifying 'url' as a character string the host network address and a port that is able to accept incoming connections.
 
 The examples below use an illustrative local network IP address of '10.75.33.40'.
 
@@ -455,7 +455,7 @@ As an alternative to the zero-configuration option, a certificate may also be ge
 
 3. When setting daemons, the TLS certificate and private key should be provided to the 'tls' argument of `daemons()`.
 
-- If the certificate and private key have been imported as scalar character values `cert` and `key` respectively, then the 'tls' argument may be specified as the character vector `c(cert, key)`.
+- If the certificate and private key have been imported as character strings `cert` and `key` respectively, then the 'tls' argument may be specified as the character vector `c(cert, key)`.
 - Alternatively, the certificate may be copied to a new text file, with the private key appended, in which case the path/filename of this new file may be provided to the 'tls' argument.
 
 4. When launching daemons, the certificate chain to the CA should be supplied to the 'tls' argument of `daemon()` or `launch_remote()`.
@@ -482,9 +482,9 @@ Similarly, functions such as `status()`, `launch_local()` or `launch_remote()` s
 
 [&laquo; Back to ToC](#table-of-contents)
 
-### Errors and Timeouts
+### Errors, Interrupts and Timeouts
 
-If execution in a mirai fails, the error message is returned as a character vector of class 'miraiError' and 'errorValue' to facilitate debugging. `is_mirai_error()` may be used to test for mirai execution errors.
+If execution in a mirai fails, the error message is returned as a character string of class 'miraiError' and 'errorValue' to facilitate debugging. `is_mirai_error()` may be used to test for mirai execution errors.
 
 ```{r errorexample}
 m1 <- mirai(stop("occurred with a custom message", call. = FALSE))
@@ -497,6 +497,12 @@ is_mirai_error(m2$data)
 is_error_value(m2$data)
 ```
 
+If a daemon instance is sent a user interrupt, the mirai will resolve to an empty character string of class 'miraiInterrupt' and 'errorValue'. `is_mirai_interrupt()` may be used to test for such interrupts. 
+
+```{r interruptexample}
+is_mirai_interrupt(m2$data)
+```
+
 If execution of a mirai surpasses the timeout set via the '.timeout' argument, the mirai will resolve to an 'errorValue'. This can, amongst other things, guard against mirai processes that have the potential to hang and never return.
 
 ```{r timeouts}
@@ -504,10 +510,11 @@ m3 <- mirai(nanonext::msleep(1000), .timeout = 500)
 call_mirai(m3)$data
 
 is_mirai_error(m3$data)
+is_mirai_interrupt(m3$data)
 is_error_value(m3$data)
 ```
 
-`is_error_value()` tests for all mirai execution errors and timeouts. 
+`is_error_value()` tests for all mirai execution errors, user interrupts and timeouts. 
 
 [&laquo; Back to ToC](#table-of-contents)
 
