@@ -10,6 +10,7 @@ daemons(
   dispatcher = TRUE,
   seed = NULL,
   tls = NULL,
+  pass = NULL,
   ...,
   .compute = "default"
 )
@@ -44,6 +45,10 @@ private key (may contain additional certificates leading to a validation
 chain, with the TLS certificate first), \strong{or} a length 2 character
 vector comprising [i] the TLS certificate (optionally certificate chain)
 and [ii] the associated private key.}
+
+\item{pass}{[default NULL] (required only if the secret key supplied to 'tls'
+is encrypted with a password) For security, should be provided through a
+function that returns this value, rather than directly.}
 
 \item{...}{additional arguments passed through to \code{\link{dispatcher}} if
 using dispatcher and/or \code{\link{daemon}} if launching local daemons.}

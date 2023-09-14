@@ -173,6 +173,7 @@ server <- daemon
 #'     processing, using a FIFO scheduling rule, queuing tasks as required.
 #'
 #' @inheritParams daemon
+#' @inheritParams daemons
 #' @param host the character host URL to dial (where tasks are sent from),
 #'     including the port to connect to (and optionally for websockets, a path),
 #'     e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
@@ -213,7 +214,7 @@ server <- daemon
 #' @export
 #'
 dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
-                       token = FALSE, lock = FALSE, tls = NULL, ...,
+                       token = FALSE, lock = FALSE, tls = NULL, pass = NULL, ...,
                        monitor = NULL, rs = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
@@ -224,7 +225,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
   cv <- cv()
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock = sock, url = host, asyncdial = asyncdial)
-  if (length(tls)) tls <- tls_config(server = tls)
+  if (length(tls)) tls <- tls_config(server = tls, pass = pass)
 
   auto <- is.null(url)
   vectorised <- length(url) == n
@@ -552,6 +553,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     chain, with the TLS certificate first), \strong{or} a length 2 character
 #'     vector comprising [i] the TLS certificate (optionally certificate chain)
 #'     and [ii] the associated private key.
+#' @param pass [default NULL] (required only if the secret key supplied to 'tls'
+#'     is encrypted with a password) For security, should be provided through a
+#'     function that returns this value, rather than directly.
 #' @param ... additional arguments passed through to \code{\link{dispatcher}} if
 #'     using dispatcher and/or \code{\link{daemon}} if launching local daemons.
 #' @param .compute [default 'default'] character compute profile to use for
@@ -747,7 +751,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #' @export
 #'
-daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, ..., .compute = "default") {
+daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, pass = NULL, ..., .compute = "default") {
 
   missing(n) && missing(url) && return(status(.compute))
 
@@ -771,10 +775,10 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, .
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld)
         sockc <- req_socket(urlc, resend = 0L)
-        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls)
+        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls, pass = pass)
         init_monitor(sockc = sockc, envir = envir)
       } else {
-        sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls))
+        sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass))
         listener <- attr(sock, "listener")[[1L]]
         n <- opt(listener, "url")
         if (parse_url(n)[["port"]] == "0")
@@ -1377,11 +1381,11 @@ parse_dots <- function(...)
     dots
   }
 
-parse_tls <- function(tls)
+parse_tls <- function(tls, pass = NULL)
   switch(length(tls) + 1L,
          "",
-         sprintf(",tls='%s'", tls),
-         sprintf(",tls=c('%s','%s')", tls[[1L]], tls[[2L]]))
+         if (length(pass)) sprintf(",tls='%s',pass='%s'", tls, pass) else sprintf(",tls='%s'", tls),
+         if (length(pass)) sprintf(",tls=c('%s','%s'),pass='%s'", tls[[1L]], tls[[2L]], pass) else sprintf(",tls=c('%s','%s')", tls[[1L]], tls[[2L]]))
 
 get_tls <- function(envir)
   if (length(envir[["tls"]])) weakref_value(envir[["tls"]])
@@ -1398,26 +1402,26 @@ process_url <- function(url, .compute) {
   url
 }
 
-write_args <- function(dots, rs = NULL, tls = NULL, libpath = NULL)
+write_args <- function(dots, rs = NULL, tls = NULL, pass = NULL, libpath = NULL)
   shQuote(switch(length(dots),
                  sprintf("mirai::.daemon('%s')", dots[[1L]]),
                  sprintf("mirai::daemon('%s'%s%s)", dots[[1L]], dots[[2L]], parse_tls(tls)),
                  sprintf("mirai::daemon('%s'%s%s,rs=c(%s))", dots[[1L]], dots[[2L]], parse_tls(tls), paste0(dots[[3L]], collapse = ",")),
                  sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',n=%d,rs=c(%s),monitor='%s'%s)", libpath, dots[[1L]], dots[[3L]], paste0(rs, collapse= ","), dots[[4L]], dots[[2L]]),
-                 sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',c('%s'),n=%d,monitor='%s'%s%s)", libpath, dots[[1L]], paste0(dots[[3L]], collapse = "','"), dots[[4L]], dots[[5L]], dots[[2L]], parse_tls(tls))))
+                 sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',c('%s'),n=%d,monitor='%s'%s%s)", libpath, dots[[1L]], paste0(dots[[3L]], collapse = "','"), dots[[4L]], dots[[5L]], dots[[2L]], parse_tls(tls, pass))))
 
-launch_daemon <- function(..., rs = NULL, tls = NULL) {
+launch_daemon <- function(..., rs = NULL, tls = NULL, pass = NULL) {
   dots <- list(...)
   dlen <- length(dots)
   output <- dlen > 1L && is.object(dots[[2L]])
   libpath <- if (dlen > 3L) (lp <- .libPaths())[file.exists(file.path(lp, "mirai"))][[1L]]
-  system2(command = .command, args = c(if (length(libpath)) "--vanilla", "-e", write_args(dots, rs = rs, tls = tls, libpath = libpath)), stdout = if (output) "", stderr = if (output) "", wait = FALSE)
+  system2(command = .command, args = c(if (length(libpath)) "--vanilla", "-e", write_args(dots, rs = rs, tls = tls, pass = pass, libpath = libpath)), stdout = if (output) "", stderr = if (output) "", wait = FALSE)
 }
 
-launch_and_sync_daemon <- function(sock, ..., rs = NULL, tls = NULL) {
+launch_and_sync_daemon <- function(sock, ..., rs = NULL, tls = NULL, pass = NULL) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-  launch_daemon(..., rs = rs, tls = tls)
+  launch_daemon(..., rs = rs, tls = tls, pass = pass)
   until(cv, .timelimit) && stop(if (...length() < 3L) .messages[["sync_timeout"]] else .messages[["sync_dispatch"]])
 }
 
