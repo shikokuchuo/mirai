@@ -776,7 +776,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, p
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld)
         sockc <- req_socket(urlc, resend = 0L)
-        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls, pass = pass)
+        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls, pass = substitute(pass))
         init_monitor(sockc = sockc, envir = envir)
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass))
@@ -1385,8 +1385,8 @@ parse_dots <- function(...)
 parse_tls <- function(tls, pass = NULL)
   switch(length(tls) + 1L,
          "",
-         if (length(pass)) sprintf(",tls='%s',pass='%s'", tls, pass) else sprintf(",tls='%s'", tls),
-         if (length(pass)) sprintf(",tls=c('%s','%s'),pass='%s'", tls[[1L]], tls[[2L]], pass) else sprintf(",tls=c('%s','%s')", tls[[1L]], tls[[2L]]))
+         if (is.language(pass)) sprintf(",tls='%s',pass=%s", tls, deparse_one(pass)) else if (is.character(pass)) sprintf(",tls='%s',pass='%s'", tls, pass) else sprintf(",tls='%s'", tls),
+         if (is.language(pass)) sprintf(",tls=c('%s','%s'),pass=%s", tls[[1L]], tls[[2L]], deparse_one(pass)) else if (is.character(pass)) sprintf(",tls=c('%s','%s'),pass='%s'", tls[[1L]], tls[[2L]], pass) else sprintf(",tls=c('%s','%s')", tls[[1L]], tls[[2L]]))
 
 get_tls <- function(envir)
   if (length(envir[["tls"]])) weakref_value(envir[["tls"]])
@@ -1486,10 +1486,12 @@ next_stream <- function(envir) {
   stream
 }
 
+deparse_one <- function(x) deparse(x, width.cutoff = 500L, backtick = TRUE, control = NULL, nlines = 1L)
+
 mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
 
 mk_mirai_error <- function(e) {
-  call <- deparse(.subset2(e, "call"), width.cutoff = 500L, backtick = TRUE, control = NULL, nlines = 1L)
+  call <- deparse_one(.subset2(e, "call"))
   msg <- if (call == "NULL" || call == "eval(expr = ._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = NULL)")
     sprintf("Error: %s\n", .subset2(e, "message")) else
       sprintf("Error in %s: %s\n", call, .subset2(e, "message"))
