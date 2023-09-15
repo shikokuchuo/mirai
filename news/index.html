@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9031</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.1.9032</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.9.1.9031" id="mirai-0919031-development">mirai 0.9.1.9031 (development)<a class="anchor" aria-label="anchor" href="#mirai-0919031-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.9.1.9032" id="mirai-0919032-development">mirai 0.9.1.9032 (development)<a class="anchor" aria-label="anchor" href="#mirai-0919032-development"></a></h2>
 <ul><li>Uses L’Ecuyer-CMRG streams for safe and reproducible (in certain cases) random number generation across parallel processes (thanks <a href="https://github.com/ltierney" class="external-link">@ltierney</a> for discussion during R Project Sprint 2023).
 <ul><li>
 <code><a href="../reference/daemons.html">daemons()</a></code> gains the new argument ‘seed’ to set a random seed for generating these streams.</li>
@@ -77,6 +77,7 @@
 <li>The ‘instance’ column is now always cumulative - regenerating a URL with <code><a href="../reference/saisei.html">saisei()</a></code> no longer resets the counter but instead turns it negative until a new daemon connects.</li>
 </ul></li>
 <li>Improves shell quoting of daemon launch commands, making it easier to deploy manually via <code><a href="../reference/launch_local.html">launch_remote()</a></code>.</li>
+<li>Cryptographic errors when using dispatcher with TLS are now reported to the user (thanks <a href="https://github.com/wlandau" class="external-link">@wlandau</a> <a href="https://github.com/shikokuchuo/mirai/issues/76" class="external-link">#76</a>).</li>
 <li>Passing a filename to the ‘tls’ argument of <code><a href="../reference/daemons.html">daemons()</a></code>, <code><a href="../reference/launch_local.html">launch_local()</a></code> or <code><a href="../reference/launch_local.html">launch_remote()</a></code> now works correctly as documented.</li>
 <li>Extends and clarifies documentation surrounding use of certificate authority signed TLS certificates.</li>
 <li>Certain error messages are more accurate and informative.</li>
