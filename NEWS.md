@@ -1,4 +1,4 @@
-# mirai 0.9.1.9031 (development)
+# mirai 0.9.1.9032 (development)
 
 * Uses L'Ecuyer-CMRG streams for safe and reproducible (in certain cases) random number generation across parallel processes (thanks @ltierney for discussion during R Project Sprint 2023).
   + `daemons()` gains the new argument 'seed' to set a random seed for generating these streams.
@@ -16,6 +16,7 @@
   + The daemons status matrix adds a column 'i' for ease of use with functions such as `saisei()` or `launch_local()`.
   + The 'instance' column is now always cumulative - regenerating a URL with `saisei()` no longer resets the counter but instead turns it negative until a new daemon connects.
 * Improves shell quoting of daemon launch commands, making it easier to deploy manually via `launch_remote()`.
+* Cryptographic errors when using dispatcher with TLS are now reported to the user (thanks @wlandau #76).
 * Passing a filename to the 'tls' argument of `daemons()`, `launch_local()` or `launch_remote()` now works correctly as documented.
 * Extends and clarifies documentation surrounding use of certificate authority signed TLS certificates.
 * Certain error messages are more accurate and informative.

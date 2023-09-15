@@ -46,7 +46,7 @@ chain, with the TLS certificate first), \strong{or} a length 2 character
 vector comprising [i] the TLS certificate (optionally certificate chain)
 and [ii] the associated private key.}
 
-\item{pass}{[default NULL] (required only if the secret key supplied to 'tls'
+\item{pass}{[default NULL] (required only if the private key supplied to 'tls'
 is encrypted with a password) For security, should be provided through a
 function that returns this value, rather than directly.}
 

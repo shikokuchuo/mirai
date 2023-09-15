@@ -553,7 +553,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     chain, with the TLS certificate first), \strong{or} a length 2 character
 #'     vector comprising [i] the TLS certificate (optionally certificate chain)
 #'     and [ii] the associated private key.
-#' @param pass [default NULL] (required only if the secret key supplied to 'tls'
+#' @param pass [default NULL] (required only if the private key supplied to 'tls'
 #'     is encrypted with a password) For security, should be provided through a
 #'     function that returns this value, rather than directly.
 #' @param ... additional arguments passed through to \code{\link{dispatcher}} if
@@ -771,6 +771,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, p
       create_stream(n = n, seed = seed, envir = envir)
       if (dispatcher) {
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(.messages[["n_one"]])
+        if (length(tls)) tls_config(server = tls, pass = pass)
         urld <- auto_tokenized_url()
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld)
