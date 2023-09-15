@@ -227,15 +227,16 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
   cv <- cv()
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock = sock, url = host, asyncdial = asyncdial)
-  if (is.null(pass)) {
-    candidate <- Sys.getenv("NANO_TEMP")
-    if (nzchar(candidate)) {
-      Sys.unsetenv("NANO_TEMP")
-      pass <- candidate
+  if (length(tls)) {
+    if (is.null(pass)) {
+      candidate <- Sys.getenv("MIRAI_TEMP_VAR")
+      if (nzchar(candidate)) {
+        Sys.unsetenv("MIRAI_TEMP_VAR")
+        pass <- candidate
+      }
     }
+    tls <- tls_config(server = tls, pass = pass)
   }
-  if (length(tls)) tls <- tls_config(server = tls, pass = pass)
-
   auto <- is.null(url)
   vectorised <- length(url) == n
   seq_n <- seq_len(n)
@@ -786,8 +787,8 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, p
         sock <- req_socket(urld)
         sockc <- req_socket(urlc, resend = 0L)
         if (is.character(pass)) {
-          on.exit(expr = Sys.unsetenv("NANO_TEMP"))
-          Sys.setenv(NANO_TEMP = pass)
+          on.exit(expr = Sys.unsetenv("MIRAI_TEMP_VAR"))
+          Sys.setenv(MIRAI_TEMP_VAR = pass)
         }
         launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls)
         init_monitor(sockc = sockc, envir = envir)
