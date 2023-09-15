@@ -48,7 +48,8 @@ and [ii] the associated private key.}
 
 \item{pass}{[default NULL] (required only if the private key supplied to 'tls'
 is encrypted with a password) For security, should be provided through a
-function that returns this value, rather than directly.}
+function that returns this value, rather than directly - this is required
+when using dispatcher and will error otherwise.}
 
 \item{...}{additional arguments passed through to \code{\link{dispatcher}} if
 using dispatcher and/or \code{\link{daemon}} if launching local daemons.}

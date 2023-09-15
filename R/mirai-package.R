@@ -89,6 +89,7 @@ NULL
   list(
     daemons_unset = "a numeric value for 'url' requires daemons to be set",
     dot_required = "'.' must be an element of the character vector supplied to 'args'",
+    indirect_pass = "'pass' must not be a character constant when using dispatcher, consider supplying a function instead",
     missing_expression = "missing expression, perhaps wrap in {}?",
     missing_url = "at least one URL must be supplied for 'url' or 'n' must be at least 1",
     n_one = "'n' must be 1 or greater if specified with 'url'",

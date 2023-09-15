@@ -173,7 +173,6 @@ server <- daemon
 #'     processing, using a FIFO scheduling rule, queuing tasks as required.
 #'
 #' @inheritParams daemon
-#' @inheritParams daemons
 #' @param host the character host URL to dial (where tasks are sent from),
 #'     including the port to connect to (and optionally for websockets, a path),
 #'     e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
@@ -199,6 +198,9 @@ server <- daemon
 #'     to a validation chain, with the TLS certificate first), \strong{or} a
 #'     length 2 character vector comprising [i] the TLS certificate (optionally
 #'     certificate chain) and [ii] the associated private key.
+#' @param pass [default NULL] (required only if the private key supplied to 'tls'
+#'     is encrypted with a password) For security, should be provided through a
+#'     function that returns this value, rather than directly.
 #' @param ... additional arguments passed through to \code{\link{daemon}} if
 #'     launching local daemons i.e. 'url' is not specified.
 #' @param monitor (for package internal use only) do not set this parameter.
@@ -555,7 +557,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     and [ii] the associated private key.
 #' @param pass [default NULL] (required only if the private key supplied to 'tls'
 #'     is encrypted with a password) For security, should be provided through a
-#'     function that returns this value, rather than directly.
+#'     function that returns this value, rather than directly - this is required
+#'     when using dispatcher and will error otherwise.
 #' @param ... additional arguments passed through to \code{\link{dispatcher}} if
 #'     using dispatcher and/or \code{\link{daemon}} if launching local daemons.
 #' @param .compute [default 'default'] character compute profile to use for
@@ -776,7 +779,9 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, p
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld)
         sockc <- req_socket(urlc, resend = 0L)
-        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls, pass = substitute(pass))
+        pass <- substitute(pass)
+        is.character(pass) && stop(.messages[["indirect_pass"]])
+        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls, pass = deparse_or_null(pass))
         init_monitor(sockc = sockc, envir = envir)
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass))
@@ -1385,8 +1390,8 @@ parse_dots <- function(...)
 parse_tls <- function(tls, pass = NULL)
   switch(length(tls) + 1L,
          "",
-         if (is.language(pass)) sprintf(",tls='%s',pass=%s", tls, deparse_one(pass)) else if (is.character(pass)) sprintf(",tls='%s',pass='%s'", tls, pass) else sprintf(",tls='%s'", tls),
-         if (is.language(pass)) sprintf(",tls=c('%s','%s'),pass=%s", tls[[1L]], tls[[2L]], deparse_one(pass)) else if (is.character(pass)) sprintf(",tls=c('%s','%s'),pass='%s'", tls[[1L]], tls[[2L]], pass) else sprintf(",tls=c('%s','%s')", tls[[1L]], tls[[2L]]))
+         if (length(pass)) sprintf(",tls='%s',pass=%s", tls, pass) else sprintf(",tls='%s'", tls),
+         if (length(pass)) sprintf(",tls=c('%s','%s'),pass=%s", tls[[1L]], tls[[2L]], pass) else sprintf(",tls=c('%s','%s')", tls[[1L]], tls[[2L]]))
 
 get_tls <- function(envir)
   if (length(envir[["tls"]])) weakref_value(envir[["tls"]])
@@ -1486,13 +1491,13 @@ next_stream <- function(envir) {
   stream
 }
 
-deparse_one <- function(x) deparse(x, width.cutoff = 500L, backtick = TRUE, control = NULL, nlines = 1L)
+deparse_or_null <- function(x) if (length(x)) deparse(x, width.cutoff = 500L, backtick = TRUE, control = NULL, nlines = 1L)
 
 mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
 
 mk_mirai_error <- function(e) {
-  call <- deparse_one(.subset2(e, "call"))
-  msg <- if (call == "NULL" || call == "eval(expr = ._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = NULL)")
+  call <- deparse_or_null(.subset2(e, "call"))
+  msg <- if (is.null(call) || call == "eval(expr = ._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = NULL)")
     sprintf("Error: %s\n", .subset2(e, "message")) else
       sprintf("Error in %s: %s\n", call, .subset2(e, "message"))
   cat(msg, file = stderr());
