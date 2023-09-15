@@ -59,7 +59,8 @@ certificate chain) and [ii] the associated private key.}
 
 \item{pass}{[default NULL] (required only if the private key supplied to 'tls'
 is encrypted with a password) For security, should be provided through a
-function that returns this value, rather than directly.}
+function that returns this value, rather than directly. (Do not specify
+if launching dispatcher via \code{\link{daemons}}).}
 
 \item{...}{additional arguments passed through to \code{\link{daemon}} if
 launching local daemons i.e. 'url' is not specified.}

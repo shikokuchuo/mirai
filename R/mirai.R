@@ -199,7 +199,8 @@ server <- daemon
 #'     certificate chain) and [ii] the associated private key.
 #' @param pass [default NULL] (required only if the private key supplied to 'tls'
 #'     is encrypted with a password) For security, should be provided through a
-#'     function that returns this value, rather than directly.
+#'     function that returns this value, rather than directly. (Do not specify
+#'     if launching dispatcher via \code{\link{daemons}}).
 #' @param ... additional arguments passed through to \code{\link{daemon}} if
 #'     launching local daemons i.e. 'url' is not specified.
 #' @param monitor (for package internal use only) do not set this parameter.
@@ -226,6 +227,13 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
   cv <- cv()
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock = sock, url = host, asyncdial = asyncdial)
+  if (is.null(pass)) {
+    candidate <- Sys.getenv("NANO_TEMP")
+    if (nzchar(candidate)) {
+      Sys.unsetenv("NANO_TEMP")
+      pass <- candidate
+    }
+  }
   if (length(tls)) tls <- tls_config(server = tls, pass = pass)
 
   auto <- is.null(url)
@@ -556,8 +564,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     and [ii] the associated private key.
 #' @param pass [default NULL] (required only if the private key supplied to 'tls'
 #'     is encrypted with a password) For security, should be provided through a
-#'     function that returns this value, rather than directly - this is required
-#'     when using dispatcher and will error otherwise.
+#'     function that returns this value, rather than directly.
 #' @param ... additional arguments passed through to \code{\link{dispatcher}} if
 #'     using dispatcher and/or \code{\link{daemon}} if launching local daemons.
 #' @param .compute [default 'default'] character compute profile to use for
@@ -778,9 +785,11 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, p
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld)
         sockc <- req_socket(urlc, resend = 0L)
-        pass <- substitute(pass)
-        is.character(pass) && stop(.messages[["indirect_pass"]])
-        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls, pass = deparse_or_null(pass))
+        if (is.character(pass)) {
+          on.exit(expr = Sys.unsetenv("NANO_TEMP"))
+          Sys.setenv(NANO_TEMP = pass)
+        }
+        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls)
         init_monitor(sockc = sockc, envir = envir)
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass))
@@ -1385,11 +1394,11 @@ parse_dots <- function(...)
     dots
   }
 
-parse_tls <- function(tls, pass = NULL)
+parse_tls <- function(tls)
   switch(length(tls) + 1L,
          "",
-         if (length(pass)) sprintf(",tls='%s',pass=%s", tls, pass) else sprintf(",tls='%s'", tls),
-         if (length(pass)) sprintf(",tls=c('%s','%s'),pass=%s", tls[[1L]], tls[[2L]], pass) else sprintf(",tls=c('%s','%s')", tls[[1L]], tls[[2L]]))
+         sprintf(",tls='%s'", tls),
+         sprintf(",tls=c('%s','%s')", tls[[1L]], tls[[2L]]))
 
 get_tls <- function(envir)
   if (length(envir[["tls"]])) weakref_value(envir[["tls"]])
@@ -1412,20 +1421,20 @@ write_args <- function(dots, rs = NULL, tls = NULL, pass = NULL, libpath = NULL)
                  sprintf("mirai::daemon('%s'%s%s)", dots[[1L]], dots[[2L]], parse_tls(tls)),
                  sprintf("mirai::daemon('%s'%s%s,rs=c(%s))", dots[[1L]], dots[[2L]], parse_tls(tls), paste0(dots[[3L]], collapse = ",")),
                  sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',n=%d,rs=c(%s),monitor='%s'%s)", libpath, dots[[1L]], dots[[3L]], paste0(rs, collapse= ","), dots[[4L]], dots[[2L]]),
-                 sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',c('%s'),n=%d,monitor='%s'%s%s)", libpath, dots[[1L]], paste0(dots[[3L]], collapse = "','"), dots[[4L]], dots[[5L]], dots[[2L]], parse_tls(tls, pass))))
+                 sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',c('%s'),n=%d,monitor='%s'%s%s)", libpath, dots[[1L]], paste0(dots[[3L]], collapse = "','"), dots[[4L]], dots[[5L]], dots[[2L]], parse_tls(tls))))
 
-launch_daemon <- function(..., rs = NULL, tls = NULL, pass = NULL) {
+launch_daemon <- function(..., rs = NULL, tls = NULL) {
   dots <- list(...)
   dlen <- length(dots)
   output <- dlen > 1L && is.object(dots[[2L]])
   libpath <- if (dlen > 3L) (lp <- .libPaths())[file.exists(file.path(lp, "mirai"))][[1L]]
-  system2(command = .command, args = c(if (length(libpath)) "--vanilla", "-e", write_args(dots, rs = rs, tls = tls, pass = pass, libpath = libpath)), stdout = if (output) "", stderr = if (output) "", wait = FALSE)
+  system2(command = .command, args = c(if (length(libpath)) "--vanilla", "-e", write_args(dots, rs = rs, tls = tls, libpath = libpath)), stdout = if (output) "", stderr = if (output) "", wait = FALSE)
 }
 
-launch_and_sync_daemon <- function(sock, ..., rs = NULL, tls = NULL, pass = NULL) {
+launch_and_sync_daemon <- function(sock, ..., rs = NULL, tls = NULL) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-  launch_daemon(..., rs = rs, tls = tls, pass = pass)
+  launch_daemon(..., rs = rs, tls = tls)
   until(cv, .timelimit) && stop(if (...length() < 3L) .messages[["sync_timeout"]] else .messages[["sync_dispatch"]])
 }
 
