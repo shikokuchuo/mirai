@@ -246,29 +246,16 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
     }
 
     if (substr(baseurl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
-      candidate <- Sys.getenv("MIRAI_TEMP_FIELD1")
-      if (nzchar(candidate)) {
-        Sys.unsetenv("MIRAI_TEMP_FIELD1")
-        tls <- candidate
-        candidate <- Sys.getenv("MIRAI_TEMP_FIELD2")
-        if (nzchar(candidate)) {
-          Sys.unsetenv("MIRAI_TEMP_FIELD2")
-          tls <- c(tls, candidate)
-        }
-      }
+      tls <- get_and_reset_env("MIRAI_TEMP_FIELD1")
+      if (length(tls))
+        tls <- c(tls, get_and_reset_env("MIRAI_TEMP_FIELD2"))
     }
     if (length(tls)) {
-      if (is.null(pass)) {
-        candidate <- Sys.getenv("MIRAI_TEMP_VAR")
-        if (nzchar(candidate)) {
-          Sys.unsetenv("MIRAI_TEMP_VAR")
-          pass <- candidate
-        }
-      }
+      if (is.null(pass))
+        pass <- get_and_reset_env("MIRAI_TEMP_VAR")
       tls <- tls_config(server = tls, pass = pass)
-      candidate <- pass <- NULL
+      pass <- NULL
     }
-
   }
 
   envir <- ..[["default"]]
@@ -1524,6 +1511,14 @@ next_stream <- function(envir) {
   length(stream) || return()
   `[[<-`(envir, "stream", nextRNGStream(stream))
   stream
+}
+
+get_and_reset_env <- function(x) {
+  candidate <- Sys.getenv(x)
+  if (nzchar(candidate)) {
+    Sys.unsetenv(x)
+    candidate
+  }
 }
 
 mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
