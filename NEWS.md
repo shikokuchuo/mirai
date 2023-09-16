@@ -1,4 +1,4 @@
-# mirai 0.9.1.9038 (development)
+# mirai 0.10.0
 
 * Uses L'Ecuyer-CMRG streams for safe and reproducible (in certain cases) random number generation across parallel processes (thanks @ltierney for discussion during R Project Sprint 2023).
   + `daemons()` gains the new argument 'seed' to set a random seed for generating these streams.
