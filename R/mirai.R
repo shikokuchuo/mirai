@@ -199,8 +199,7 @@ server <- daemon
 #'     certificate chain) and [ii] the associated private key.
 #' @param pass [default NULL] (required only if the private key supplied to 'tls'
 #'     is encrypted with a password) For security, should be provided through a
-#'     function that returns this value, rather than directly. (Do not specify
-#'     if launching dispatcher via \code{\link{daemons}}).
+#'     function that returns this value, rather than directly.
 #' @param ... additional arguments passed through to \code{\link{daemon}} if
 #'     launching local daemons i.e. 'url' is not specified.
 #' @param monitor (for package internal use only) do not set this parameter.
@@ -227,16 +226,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
   cv <- cv()
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock = sock, url = host, asyncdial = asyncdial)
-  if (length(tls)) {
-    if (is.null(pass)) {
-      candidate <- Sys.getenv("MIRAI_TEMP_VAR")
-      if (nzchar(candidate)) {
-        Sys.unsetenv("MIRAI_TEMP_VAR")
-        pass <- candidate
-      }
-    }
-    tls <- tls_config(server = tls, pass = pass)
-  }
+
   auto <- is.null(url)
   vectorised <- length(url) == n
   seq_n <- seq_len(n)
@@ -254,6 +244,31 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
     } else {
       ports <- NULL
     }
+
+    if (substr(baseurl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
+      candidate <- Sys.getenv("MIRAI_TEMP_FIELD1")
+      if (nzchar(candidate)) {
+        Sys.unsetenv("MIRAI_TEMP_FIELD1")
+        tls <- candidate
+        candidate <- Sys.getenv("MIRAI_TEMP_FIELD2")
+        if (nzchar(candidate)) {
+          Sys.unsetenv("MIRAI_TEMP_FIELD2")
+          tls <- c(tls, candidate)
+        }
+      }
+    }
+    if (length(tls)) {
+      if (is.null(pass)) {
+        candidate <- Sys.getenv("MIRAI_TEMP_VAR")
+        if (nzchar(candidate)) {
+          Sys.unsetenv("MIRAI_TEMP_VAR")
+          pass <- candidate
+        }
+      }
+      tls <- tls_config(server = tls, pass = pass)
+      pass <- NULL
+    }
+
   }
 
   envir <- ..[["default"]]
@@ -538,6 +553,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     ensures tasks are assigned to daemons efficiently on a FIFO basis, or
 #'     else the low-level approach of distributing tasks to daemons equally.
 #'
+#' @inheritParams dispatcher
 #' @param n integer number of daemons to set.
 #' @param url [default NULL] if specified, the character URL or vector of URLs
 #'     on the host for remote daemons to dial into, including a port accepting
@@ -563,9 +579,6 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     chain, with the TLS certificate first), \strong{or} a length 2 character
 #'     vector comprising [i] the TLS certificate (optionally certificate chain)
 #'     and [ii] the associated private key.
-#' @param pass [default NULL] (required only if the private key supplied to 'tls'
-#'     is encrypted with a password) For security, should be provided through a
-#'     function that returns this value, rather than directly.
 #' @param ... additional arguments passed through to \code{\link{dispatcher}} if
 #'     using dispatcher and/or \code{\link{daemon}} if launching local daemons.
 #' @param .compute [default 'default'] character compute profile to use for
@@ -786,11 +799,25 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, p
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld)
         sockc <- req_socket(urlc, resend = 0L)
-        if (is.character(pass)) {
-          on.exit(expr = Sys.unsetenv("MIRAI_TEMP_VAR"))
-          Sys.setenv(MIRAI_TEMP_VAR = pass)
+        if (is.character(tls)) {
+          switch(
+            length(tls),
+            {
+              on.exit(Sys.unsetenv("MIRAI_TEMP_FIELD1"))
+              Sys.setenv(MIRAI_TEMP_FIELD1 = tls)
+            },
+            {
+              on.exit(Sys.unsetenv(c("MIRAI_TEMP_FIELD1", "MIRAI_TEMP_FIELD2")))
+              Sys.setenv(MIRAI_TEMP_FIELD1 = tls[[1L]])
+              Sys.setenv(MIRAI_TEMP_FIELD2 = tls[[2L]])
+            }
+          )
+          if (is.character(pass)) {
+            on.exit(Sys.unsetenv("MIRAI_TEMP_VAR"), add = TRUE)
+            Sys.setenv(MIRAI_TEMP_VAR = pass)
+          }
         }
-        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls)
+        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc)
         init_monitor(sockc = sockc, envir = envir)
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass))
@@ -1416,13 +1443,13 @@ process_url <- function(url, .compute) {
   url
 }
 
-write_args <- function(dots, rs = NULL, tls = NULL, pass = NULL, libpath = NULL)
+write_args <- function(dots, rs = NULL, tls = NULL, libpath = NULL)
   shQuote(switch(length(dots),
                  sprintf("mirai::.daemon('%s')", dots[[1L]]),
                  sprintf("mirai::daemon('%s'%s%s)", dots[[1L]], dots[[2L]], parse_tls(tls)),
                  sprintf("mirai::daemon('%s'%s%s,rs=c(%s))", dots[[1L]], dots[[2L]], parse_tls(tls), paste0(dots[[3L]], collapse = ",")),
                  sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',n=%d,rs=c(%s),monitor='%s'%s)", libpath, dots[[1L]], dots[[3L]], paste0(rs, collapse= ","), dots[[4L]], dots[[2L]]),
-                 sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',c('%s'),n=%d,monitor='%s'%s%s)", libpath, dots[[1L]], paste0(dots[[3L]], collapse = "','"), dots[[4L]], dots[[5L]], dots[[2L]], parse_tls(tls))))
+                 sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',c('%s'),n=%d,monitor='%s'%s)", libpath, dots[[1L]], paste0(dots[[3L]], collapse = "','"), dots[[4L]], dots[[5L]], dots[[2L]])))
 
 launch_daemon <- function(..., rs = NULL, tls = NULL) {
   dots <- list(...)
