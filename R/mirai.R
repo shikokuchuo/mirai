@@ -266,7 +266,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
         }
       }
       tls <- tls_config(server = tls, pass = pass)
-      pass <- NULL
+      candidate <- pass <- NULL
     }
 
   }
@@ -1526,12 +1526,11 @@ next_stream <- function(envir) {
   stream
 }
 
-deparse_or_null <- function(x) if (length(x)) deparse(x, width.cutoff = 500L, backtick = TRUE, control = NULL, nlines = 1L)
-
 mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
 
 mk_mirai_error <- function(e) {
-  call <- deparse_or_null(.subset2(e, "call"))
+  x <- .subset2(e, "call")
+  call <- if (length(x)) deparse(x, width.cutoff = 500L, backtick = TRUE, control = NULL, nlines = 1L)
   msg <- if (is.null(call) || call == "eval(expr = ._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = NULL)")
     sprintf("Error: %s\n", .subset2(e, "message")) else
       sprintf("Error in %s: %s\n", call, .subset2(e, "message"))
