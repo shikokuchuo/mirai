@@ -786,25 +786,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, p
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld)
         sockc <- req_socket(urlc, resend = 0L)
-        if (is.character(tls)) {
-          switch(
-            length(tls),
-            {
-              on.exit(Sys.unsetenv("MIRAI_TEMP_FIELD1"))
-              Sys.setenv(MIRAI_TEMP_FIELD1 = tls)
-            },
-            {
-              on.exit(Sys.unsetenv(c("MIRAI_TEMP_FIELD1", "MIRAI_TEMP_FIELD2")))
-              Sys.setenv(MIRAI_TEMP_FIELD1 = tls[[1L]])
-              Sys.setenv(MIRAI_TEMP_FIELD2 = tls[[2L]])
-            }
-          )
-          if (is.character(pass)) {
-            on.exit(Sys.unsetenv("MIRAI_TEMP_VAR"), add = TRUE)
-            Sys.setenv(MIRAI_TEMP_VAR = pass)
-          }
-        }
-        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc)
+        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls, pass = pass)
         init_monitor(sockc = sockc, envir = envir)
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass))
@@ -1446,10 +1428,29 @@ launch_daemon <- function(..., rs = NULL, tls = NULL) {
   system2(command = .command, args = c(if (length(libpath)) "--vanilla", "-e", write_args(dots, rs = rs, tls = tls, libpath = libpath)), stdout = if (output) "", stderr = if (output) "", wait = FALSE)
 }
 
-launch_and_sync_daemon <- function(sock, ..., rs = NULL, tls = NULL) {
+launch_and_sync_daemon <- function(sock, ..., rs = NULL, tls = NULL, pass = NULL) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-  launch_daemon(..., rs = rs, tls = tls)
+  if (is.character(tls)) {
+    switch(
+      length(tls),
+      {
+        on.exit(Sys.unsetenv("MIRAI_TEMP_FIELD1"))
+        Sys.setenv(MIRAI_TEMP_FIELD1 = tls)
+        Sys.unsetenv("MIRAI_TEMP_FIELD2")
+      },
+      {
+        on.exit(Sys.unsetenv(c("MIRAI_TEMP_FIELD1", "MIRAI_TEMP_FIELD2")))
+        Sys.setenv(MIRAI_TEMP_FIELD1 = tls[[1L]])
+        Sys.setenv(MIRAI_TEMP_FIELD2 = tls[[2L]])
+      }
+    )
+    if (is.character(pass)) {
+      on.exit(Sys.unsetenv("MIRAI_TEMP_VAR"), add = TRUE)
+      Sys.setenv(MIRAI_TEMP_VAR = pass)
+    }
+  }
+  launch_daemon(..., rs = rs)
   until(cv, .timelimit) && stop(if (...length() < 3L) .messages[["sync_timeout"]] else .messages[["sync_dispatch"]])
 }
 

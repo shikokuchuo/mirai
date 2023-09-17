@@ -1,3 +1,5 @@
+# mirai 0.10.0.9000 (development)
+
 # mirai 0.10.0
 
 * Uses L'Ecuyer-CMRG streams for safe and reproducible (in certain cases) random number generation across parallel processes (thanks @ltierney for discussion during R Project Sprint 2023).
