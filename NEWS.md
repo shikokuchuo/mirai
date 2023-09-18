@@ -1,6 +1,8 @@
-# mirai 0.10.0.9000 (development)
+# mirai 0.10.0.9001 (development)
 
+* Ephemeral daemons now synchronise with the host process and exit as soon as the completed mirai task is received, without an 'exitlinger' period.
 * Deprecated use of alias `server()` for `daemon()` is retired.
+* Requires nanonext >= [0.10.0.9005].
 
 # mirai 0.10.0
 

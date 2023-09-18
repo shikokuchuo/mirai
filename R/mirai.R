@@ -140,24 +140,24 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
 #' Implements an ephemeral executor for the remote process.
 #'
 #' @inheritParams daemon
-#' @param exitlinger [default 2000L] time in milliseconds to linger before
-#'     exiting to allow the socket to complete sends currently in progress.
 #'
-#' @return Invisible NULL.
+#' @return Logical TRUE, invisibly.
 #'
 #' @keywords internal
 #' @export
 #'
-.daemon <- function(url, exitlinger = 2000L) {
+.daemon <- function(url) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = NA)
   on.exit(close(sock))
+  cv <- cv()
+  pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = FALSE)
   ctx <- .context(sock)
   ._mirai_. <- recv(ctx, mode = 1L)
   data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)
   send(ctx, data = data, mode = 1L)
-  msleep(exitlinger)
+  until(cv, .timelimit)
 
 }
 
@@ -516,7 +516,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
     url <- auto_tokenized_url()
     sock <- req_socket(url)
     if (length(.timeout)) launch_and_sync_daemon(sock = sock, url) else launch_daemon(url)
-    aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout, autoclose = TRUE)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
   }
