@@ -770,7 +770,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, p
       purl <- parse_url(url)
       if (substr(purl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
         tls <- write_cert(cn = purl[["hostname"]])
-        envir[["tls"]] <- weakref(envir, tls[["client"]])
+        envir[["tls"]] <- tls[["client"]]
         tls <- tls[["server"]]
       }
       create_stream(n = n, seed = seed, envir = envir)
@@ -1029,7 +1029,7 @@ launch_local <- function(url, ..., tls = NULL, .compute = "default") {
 
   envir <- ..[[.compute]]
   dots <- parse_dots(...)
-  if (is.null(tls)) tls <- get_tls(envir)
+  if (is.null(tls)) tls <- envir[["tls"]]
   url <- process_url(url, .compute = .compute)
   for (u in url)
     if (length(envir[["stream"]]))
@@ -1069,7 +1069,7 @@ launch_remote <- function(url, ..., tls = NULL, .compute = "default",
 
   envir <- ..[[.compute]]
   dots <- parse_dots(...)
-  if (is.null(tls)) tls <- get_tls(envir)
+  if (is.null(tls)) tls <- envir[["tls"]]
   cmds <- character(length(url))
   url <- process_url(url, .compute = .compute)
   for (i in seq_along(url))
@@ -1148,14 +1148,7 @@ nextstream <- function(.compute = "default") next_stream(..[[.compute]])
 #' @rdname nextstream
 #' @export
 #'
-nextget <- function(x, .compute = "default") {
-
-  vec <- ..[[.compute]][[x]]
-  if (x == "tls")
-    vec <- if (length(vec)) weakref_value(vec)
-  vec
-
-}
+nextget <- function(x, .compute = "default") ..[[.compute]][[x]]
 
 #' mirai (Call Value)
 #'
@@ -1391,9 +1384,6 @@ parse_tls <- function(tls)
          "",
          sprintf(",tls='%s'", tls),
          sprintf(",tls=c('%s','%s')", tls[[1L]], tls[[2L]]))
-
-get_tls <- function(envir)
-  if (length(envir[["tls"]])) weakref_value(envir[["tls"]])
 
 process_url <- function(url, .compute) {
   if (is.numeric(url)) {
