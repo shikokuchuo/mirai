@@ -2,7 +2,6 @@
 % Please edit documentation in R/mirai.R
 \name{daemon}
 \alias{daemon}
-\alias{server}
 \title{Daemon}
 \usage{
 daemon(

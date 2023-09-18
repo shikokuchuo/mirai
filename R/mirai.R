@@ -75,7 +75,6 @@
 #'     resources may be added or removed dynamically and the host or
 #'     dispatcher automatically distributes tasks to all available daemons.
 #'
-#' @aliases server
 #' @export
 #'
 daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
@@ -135,10 +134,6 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
   msleep(exitlinger)
 
 }
-
-#' @export
-#'
-server <- daemon
 
 #' dot Daemon
 #'
