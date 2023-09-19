@@ -108,7 +108,7 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
   while (count < maxtasks && mclock() - start < walltime) {
 
     ctx <- .context(sock)
-    aio <- recv_aio_signal(ctx, mode = 1L, timeout = idletime, cv = cv)
+    aio <- recv_aio_signal(ctx, cv = cv, mode = 1L, timeout = idletime)
     wait(cv) || return(invisible())
     ._mirai_. <- .subset2(aio, "data")
     is.environment(._mirai_.) || {
@@ -285,7 +285,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
     servers[[i]] <- nsock
     active[[i]] <- ncv
     ctx <- .context(sock)
-    req <- recv_aio_signal(ctx, mode = 8L, cv = cv)
+    req <- recv_aio_signal(ctx, cv = cv, mode = 8L)
     queue[[i]] <- list(ctx = ctx, req = req)
   }
 
@@ -299,7 +299,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
     recv(sockc, mode = 5L, block = .timelimit) && stop(.messages[["sync_timeout"]])
     send_aio(sockc, c(Sys.getpid(), servernames), mode = 2L)
-    cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
+    cmessage <- recv_aio_signal(sockc, cv = cv, mode = 5L)
   }
 
   suspendInterrupts(
@@ -342,7 +342,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
           data <- as.integer(c(seq_n, activevec, instance, assigned, complete))
         }
         send_aio(sockc, data = data, mode = 2L)
-        cmessage <- recv_aio_signal(sockc, mode = 5L, cv = cv)
+        cmessage <- recv_aio_signal(sockc, cv = cv, mode = 5L)
         next
       }
 
@@ -353,7 +353,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
           serverfree[[q]] <- TRUE
           complete[[q]] <- complete[[q]] + 1L
           ctx <- .context(sock)
-          req <- recv_aio_signal(ctx, mode = 8L, cv = cv)
+          req <- recv_aio_signal(ctx, cv = cv, mode = 8L)
           queue[[i]] <- list(ctx = ctx, req = req)
         }
 
@@ -363,7 +363,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
         for (q in free)
           for (i in seq_n) {
             if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
-              queue[[i]][["res"]] <- request_signal(.context(servers[[q]]), data = queue[[i]][["req"]], send_mode = 2L, recv_mode = 8L, cv = cv)
+              queue[[i]][["res"]] <- request_signal(.context(servers[[q]]), data = queue[[i]][["req"]], cv = cv, send_mode = 2L, recv_mode = 8L)
               queue[[i]][["daemon"]] <- q
               serverfree[[q]] <- FALSE
               assigned[[q]] <- assigned[[q]] + 1L
