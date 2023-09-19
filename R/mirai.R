@@ -105,7 +105,8 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
   se <- search()
   count <- 0L
   start <- mclock()
-  while (count < maxtasks && mclock() - start < walltime) {
+
+  repeat {
 
     ctx <- .context(sock)
     aio <- recv_aio_signal(ctx, cv = cv, mode = 1L, timeout = idletime)
@@ -120,14 +121,20 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
     }
     data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                      error = mk_mirai_error, interrupt = mk_interrupt_error)
+    count <- count + 1L
+
+    if (count >= maxtasks || (count > timerstart && mclock() - start >= walltime)) {
+      send(ctx, data = data, mode = 3L)
+      break;
+    }
+
     send(ctx, data = data, mode = 1L)
 
     if (cleanup %% 2L) rm(list = (vars <- names(.GlobalEnv))[vars != ".Random.seed"], envir = .GlobalEnv)
     if (clr & as.raw(2L)) lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
     if (clr & as.raw(4L)) options(op)
     if (clr & as.raw(8L)) gc(verbose = FALSE)
-    if (count < timerstart) start <- mclock()
-    count <- count + 1L
+    if (count <= timerstart) start <- mclock()
 
   }
 
@@ -311,8 +318,10 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
       activevec <- cv_values %% 2L
       changes <- (activevec - activestore) > 0L
       activestore <- activevec
-      if (any(changes))
+      if (any(changes)) {
         instance[changes] <- abs(instance[changes]) + 1L
+        serverfree <- serverfree | changes
+      }
 
       ctrchannel && !unresolved(cmessage) && {
         i <- .subset2(cmessage, "data")
@@ -348,9 +357,10 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
 
       for (i in seq_n)
         if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
-          send(queue[[i]][["ctx"]], data = queue[[i]][["res"]], mode = 2L)
+          req <- queue[[i]][["res"]]
+          send(queue[[i]][["ctx"]], data = req, mode = 2L)
           q <- queue[[i]][["daemon"]]
-          serverfree[[q]] <- TRUE
+          serverfree[[q]] <- parent.env(req)[["result"]][[1L]] != .seven
           complete[[q]] <- complete[[q]] + 1L
           ctx <- .context(sock)
           req <- recv_aio_signal(ctx, cv = cv, mode = 8L)

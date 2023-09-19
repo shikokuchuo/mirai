@@ -100,4 +100,5 @@ NULL
   ),
   hash = TRUE
 )
+.seven <- as.raw(7L)
 .timelimit <- 5000L
