@@ -360,7 +360,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
           req <- queue[[i]][["res"]]
           send(queue[[i]][["ctx"]], data = req, mode = 2L)
           q <- queue[[i]][["daemon"]]
-          serverfree[q] <- parent.env(req)[["result"]][1L] != .seven
+          serverfree[q] <- req[["value"]][1L] != .seven
           complete[q] <- complete[q] + 1L
           ctx <- .context(sock)
           req <- recv_aio_signal(ctx, cv = cv, mode = 8L)
