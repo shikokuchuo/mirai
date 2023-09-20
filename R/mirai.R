@@ -125,7 +125,7 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
 
     if (count >= maxtasks || (count > timerstart && mclock() - start >= walltime)) {
       send(ctx, data = data, mode = 3L)
-      until(cv, .timelimit)
+      msleep(exitlinger)
       break;
     }
 
