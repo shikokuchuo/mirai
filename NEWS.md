@@ -1,6 +1,7 @@
-# mirai 0.10.0.9003 (development)
+# mirai 0.10.0.9004 (development)
 
 * Ephemeral daemons now synchronise with the host process and exit as soon as the completed mirai task is received, without an 'exitlinger' period.
+* Daemons exiting due to 'idletime' are now no longer subject to the 'exitlinger' period as they have no computations to send back.
 * Optimises scheduling at dispatcher: tasks are no longer assigned to a daemon if it is exiting due to specified time/task-outs.
 * Deprecated use of alias `server()` for `daemon()` is retired.
 * Requires nanonext >= [0.10.0.9007].

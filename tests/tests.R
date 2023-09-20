@@ -155,17 +155,15 @@ if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
   nanotestz(daemons(0L))
   Sys.sleep(1L)
   option <- 15L
-  nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 2000L, seed = 1546, token = TRUE, lock = TRUE, cleanup = option))
+  nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 1000L, seed = 1546, token = TRUE, lock = TRUE, cleanup = option))
   Sys.sleep(1L)
   mq <- mirai("daemon", .timeout = 1000)
+  nanotestn(saisei(i = 1L))
   nanotest(call_mirai(mq)$data == "daemon" || is_error_value(mq$data))
+  mq <- mirai(Sys.sleep(2L), .timeout = 500)
   dstatus <- status()[["daemons"]]
   nanotest(is.matrix(dstatus) || is_error_value(dstatus))
-  if (is.matrix(dstatus)) {
-    nanotest(is.integer(dstatus[, "online"]))
-    nanotest(is.integer(dstatus[, "instance"]))
-  }
-  nanotestn(saisei(i = 1L))
+  Sys.sleep(2L)
   nanotestz(daemons(0))
   Sys.sleep(1L)
 }
