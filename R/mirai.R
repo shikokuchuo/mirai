@@ -821,21 +821,20 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, p
       n > 0L || stop(.messages[["n_zero"]])
       urld <- auto_tokenized_url()
       sock <- req_socket(urld)
-      dots <- parse_dots(...)
       create_stream(n = n, seed = seed, envir = envir)
       if (dispatcher) {
         urlc <- strcat(urld, "c")
         sockc <- req_socket(urlc, resend = 0L)
-        launch_and_sync_daemon(sock = sock, urld, dots, n, urlc, rs = envir[["stream"]])
+        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), n, urlc, rs = envir[["stream"]])
         for (i in seq_len(n)) next_stream(envir)
         init_monitor(sockc = sockc, envir = envir)
       } else {
         if (is.null(seed) || n == 1L) {
           for (i in seq_len(n))
-            launch_daemon(urld, dots, next_stream(envir))
+            launch_daemon(urld, parse_dots(...), next_stream(envir))
         } else {
           for (i in seq_len(n))
-            launch_and_sync_daemon(sock = sock, urld, dots, next_stream(envir))
+            launch_and_sync_daemon(sock = sock, urld, parse_dots(...), next_stream(envir))
         }
         `[[<-`(envir, "urls", urld)
       }
