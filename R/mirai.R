@@ -121,7 +121,8 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
 
     (count >= maxtasks || count > timerstart && mclock() - start >= walltime) && {
       send(ctx, data = data, mode = 0L)
-      recv(sock, mode = 8L, block = .timelimit)
+      data <- recv_aio_signal(sock, cv = cv, mode = 8L)
+      wait(cv)
       break
     }
 
