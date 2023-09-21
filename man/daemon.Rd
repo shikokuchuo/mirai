@@ -11,7 +11,6 @@ daemon(
   idletime = Inf,
   walltime = Inf,
   timerstart = 0L,
-  exitlinger = 1000L,
   output = FALSE,
   tls = NULL,
   ...,
@@ -43,11 +42,6 @@ time taken (in milliseconds) before exiting.}
 \item{timerstart}{[default 0L] number of completed tasks after which to start
 the timer for 'idletime' and 'walltime'. 0L implies timers are started
 upon launch.}
-
-\item{exitlinger}{[default 1000L] time in milliseconds to linger before
-exiting due to a timer / task limit, to allow sockets to complete sends
-currently in progress. The default should be set wider if computations
-are expected to return very large objects (> GBs).}
 
 \item{output}{[default FALSE] logical value, to output generated stdout /
 stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'

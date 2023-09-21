@@ -45,10 +45,6 @@
 #' @param timerstart [default 0L] number of completed tasks after which to start
 #'     the timer for 'idletime' and 'walltime'. 0L implies timers are started
 #'     upon launch.
-#' @param exitlinger [default 1000L] time in milliseconds to linger before
-#'     exiting due to a timer / task limit, to allow sockets to complete sends
-#'     currently in progress. The default should be set wider if computations
-#'     are expected to return very large objects (> GBs).
 #' @param tls [default NULL] required for secure TLS connections over 'tls+tcp://'
 #'     or 'wss://'. \strong{Either} the character path to a file containing
 #'     X.509 certificate(s) in PEM format, comprising the certificate authority
@@ -78,8 +74,8 @@
 #' @export
 #'
 daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
-                   walltime = Inf, timerstart = 0L, exitlinger = 1000L,
-                   output = FALSE, tls = NULL, ..., cleanup = 7L, rs = NULL) {
+                   walltime = Inf, timerstart = 0L, output = FALSE, tls = NULL,
+                   ..., cleanup = 7L, rs = NULL) {
 
   sock <- socket(protocol = "rep")
   on.exit(close(sock))
@@ -125,7 +121,7 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
 
     if (count >= maxtasks || (count > timerstart && mclock() - start >= walltime)) {
       send(ctx, data = data, mode = 3L)
-      msleep(exitlinger)
+      recv(sock, block = .timelimit)
       break
     }
 
@@ -360,7 +356,13 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
           if (is.object(req)) req <- serialize(req, NULL)
           send(queue[[i]][["ctx"]], data = req, mode = 2L)
           q <- queue[[i]][["daemon"]]
-          serverfree[q] <- req[1L] != .seven
+          if (req[1L] == .seven) {
+            ctx <- context(servers[[q]])
+            send_aio(ctx, data = 0L)
+            close(ctx)
+          } else {
+            serverfree[q] <- TRUE
+          }
           complete[q] <- complete[q] + 1L
           ctx <- .context(sock)
           req <- recv_aio_signal(ctx, cv = cv, mode = 8L)
