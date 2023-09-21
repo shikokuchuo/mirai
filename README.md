@@ -112,7 +112,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] -9.0846 17.02104 0.57708 0.00754 -0.11816 ...
+#>  num [1:100000000] 0.433 -0.615 0.264 0.396 -1.238 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -120,7 +120,7 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -9.0846 17.02104 0.57708 0.00754 -0.11816 ...
+#>  num [1:100000000] 0.433 -0.615 0.264 0.396 -1.238 ...
 ```
 
 For easy programmatic use of `mirai()`, ‘.expr’ accepts a
@@ -138,7 +138,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -1.389 1.052 -2.553 17.528 -0.794 ...
+#>  num [1:100000000] 0.0563 1.7847 -5.4265 0.4241 0.8026 ...
 ```
 
 [« Back to ToC](#table-of-contents)
@@ -232,10 +232,10 @@ for (i in 1:10) {
 #> iteration 3 successful
 #> iteration 4 successful
 #> iteration 5 successful
-#> Error: random error
 #> iteration 6 successful
 #> iteration 7 successful
 #> iteration 8 successful
+#> Error: random error
 #> iteration 9 successful
 #> iteration 10 successful
 ```
@@ -278,12 +278,12 @@ status()
 #> 
 #> $daemons
 #>                                                     i online instance assigned complete
-#> abstract://9266a70addf7098c0cd43382d18433c4aa66836c 1      1        1        0        0
-#> abstract://a4afd1471f6f9e3f3945f4f7593a778faf3d98bd 2      1        1        0        0
-#> abstract://0f558157141354dc3f19eaa9320888dd18e38219 3      1        1        0        0
-#> abstract://1f4066a857f952d29cd9f1bca055df638eab7e53 4      1        1        0        0
-#> abstract://2593f6cc3119d9a70167b2f0ed86f64dba3b2f93 5      1        1        0        0
-#> abstract://11823f25ab25529ff7be43e93a1fd1692c312e37 6      1        1        0        0
+#> abstract://fb6a049b6aeee399ee2a558328a43c5e79ebb24f 1      1        1        0        0
+#> abstract://3a3ab11a142e1d6e254597b4efe1d0948b6d6d62 2      1        1        0        0
+#> abstract://9043919ecb3451e0f878e00101664bdb683617d7 3      1        1        0        0
+#> abstract://83559e7892e2276e56b7ce5330084306d5e9a9f9 4      1        1        0        0
+#> abstract://970d61f8d05ec953f1044754c1bc3333f278b57a 5      1        1        0        0
+#> abstract://d9242f484bc99bade3e60b822a681b813619dce4 6      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background
@@ -326,7 +326,7 @@ status()
 #> [1] 6
 #> 
 #> $daemons
-#> [1] "abstract://433b4a53c73415653ff7a11afc91c7d389c37a11"
+#> [1] "abstract://ba8bd03ff2b803a462c99ab44bc894e11e931f5b"
 ```
 
 This implementation sends tasks immediately, and ensures that tasks are
@@ -425,10 +425,10 @@ accepts SSH connections over port 22:
 
 ``` r
 launch_remote(1:4, command = "ssh", args = c("-p 22 10.75.48.100", .))
-#> [1] "Rscript -e \"mirai::daemon('ws://10.75.48.93:5555/1',rs=c(10407,-977864279,-1747156650,1333456863,-746624876,1038762629,-1132657278))\""
-#> [2] "Rscript -e \"mirai::daemon('ws://10.75.48.93:5555/2',rs=c(10407,1352113970,1853298848,-1722410285,-686612439,1770409637,-667076591))\"" 
-#> [3] "Rscript -e \"mirai::daemon('ws://10.75.48.93:5555/3',rs=c(10407,-1894415476,2126239662,-790740277,-243155846,-1153709897,-483282337))\""
-#> [4] "Rscript -e \"mirai::daemon('ws://10.75.48.93:5555/4',rs=c(10407,1191519305,1229444965,-184999102,1155940357,447444428,-2035816043))\""
+#> [1] "Rscript -e \"mirai::daemon('ws://10.75.48.93:5555/1',rs=c(10407,308588828,-2000928915,1298420554,1692103747,1558610088,-1715106167))\""  
+#> [2] "Rscript -e \"mirai::daemon('ws://10.75.48.93:5555/2',rs=c(10407,569283498,167583009,2060876827,1662705836,1836311638,-1389395054))\""    
+#> [3] "Rscript -e \"mirai::daemon('ws://10.75.48.93:5555/3',rs=c(10407,-1848756624,-2134019560,1584120535,-109309549,1764510375,-1122399349))\""
+#> [4] "Rscript -e \"mirai::daemon('ws://10.75.48.93:5555/4',rs=c(10407,1366911777,189572159,-1324327429,970350800,909468298,1178682339))\""
 ```
 
 The returned vector comprises the shell commands executed on the remote
@@ -499,7 +499,7 @@ listen on all interfaces on the local host, for example:
 
 ``` r
 daemons(url = "tcp://:0", dispatcher = FALSE)
-#> [1] "tcp://:45225"
+#> [1] "tcp://:34805"
 ```
 
 Note that above, the port number is specified as zero. This is a
@@ -513,7 +513,7 @@ On the network resource, `daemon()` may be called from an R session, or
 an Rscript invocation from a shell. This sets up a remote daemon process
 that connects to the host URL and receives tasks:
 
-    Rscript -e 'mirai::daemon("tcp://10.75.48.93:45225")'
+    Rscript -e 'mirai::daemon("tcp://10.75.48.93:34805")'
 
 Note that `daemons()` should be set up on the host machine before
 launching `daemon()` on remote resources, otherwise the daemon instances
@@ -526,8 +526,8 @@ remote machine. For example, if the remote machine at 10.75.48.100
 accepts SSH connections over port 22:
 
 ``` r
-launch_remote("tcp://10.75.48.93:45225", command = "ssh", args = c("-p 22 10.75.48.100", .))
-#> [1] "Rscript -e \"mirai::daemon('tcp://10.75.48.93:45225',rs=c(10407,-1992782545,1319334308,-1219799979,-286271214,1562951019,1755913648))\""
+launch_remote("tcp://10.75.48.93:34805", command = "ssh", args = c("-p 22 10.75.48.100", .))
+#> [1] "Rscript -e \"mirai::daemon('tcp://10.75.48.93:34805',rs=c(10407,1782124358,79546639,943637508,-29676747,-1043838350,-1549965493))\""
 ```
 
 The returned vector comprises the shell commands executed on the remote
@@ -547,7 +547,7 @@ status()
 #> [1] 1
 #> 
 #> $daemons
-#> [1] "tcp://:45225"
+#> [1] "tcp://:34805"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -579,17 +579,16 @@ daemons(n = 4, url = "wss://[::1]:5555")
 
 Single-use keys and certificates are automatically generated and
 configured, without requiring any further intervention. The private key
-is always retained on the host machine and never transmitted, nor even
-materialised as an R object.
+is always retained on the host machine and never transmitted.
 
-The generated self-signed certificate is made available for read-only
-access via `launch_remote()`. This function conveniently constructs the
-full shell command to launch a daemon, including the correctly specified
-‘tls’ argument to `daemon()`.
+The generated self-signed certificate is available via
+`launch_remote()`. This function conveniently constructs the full shell
+command to launch a daemon, including the correctly specified ‘tls’
+argument to `daemon()`.
 
 ``` r
 launch_remote(1)
-#> [1] "Rscript -e \"mirai::daemon('wss://[::1]:5555/1',tls=c('-----BEGIN CERTIFICATE-----\nMIIFLTCCAxWgAwIBAgIBATANBgkqhkiG9w0BAQsFADAuMQwwCgYDVQQDDAM6OjEx\nETAPBgNVBAoMCE5hbm9uZXh0MQswCQYDVQQGEwJKUDAeFw0wMTAxMDEwMDAwMDBa\nFw0zMDEyMzEyMzU5NTlaMC4xDDAKBgNVBAMMAzo6MTERMA8GA1UECgwITmFub25l\neHQxCzAJBgNVBAYTAkpQMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA\nuMjcxAk4njDBDkyrEgDxolZ5pvQOqjRQTgX9WlaxV7gC4wJ97o2ZGBa43adFOSMF\nJCaVTzBZkBZ85hARg6U9AWZLauHrM/bcsNoGPkwya9A9HfaXDVSyGbmKn0Su2CqA\n2PifphXmCm6GBCI+shw+xaVpYo8mXx32ERZCHnCsXZO3z26NI4lA1V2sjBv+j2eX\nBaOVsf3LsoK4/1m4OKALrGr8rJCd3Cc5zPh/VzZo54Au0fpzFTNLpcPT5avo12lt\nuUCUvSzSNaQS7lAG7ngVZb+rrMMlRw6IHEbn8np2gdPnR2fORVTNaYn5GetMcoHD\nuIfWUUItrcjG4mpKs6RHwQFECxR3VfWc7XJ6QMry4IuEa8EjJ+0oYLwHWTmzVUII\nwKxXPQbA7mN2VydAa5O6vmJtPYpkGERS3VocicaGTJATMdd3k7PMI1fnJf0wptCi\nmU66vAc7PhCy9w+WDN2MjtXZFtWDF/qVP+zK0DNsEKLk2DF0h7/ywYkTHxDAyPKD\nfUi0qbwboqLZfeu9mLRpLPw7vrlC7Q9Rq3lDhtOH4ZAVqY/decyjwl3msrcvztDL\nm5HzROSaCORfn/XUtE6JsccFGrAPGKjIv54L7obfCdfSJkpAFHGlzwPqsvmQbfOc\n13ew+cPKA+tQ4sGAm4KR9toyDYgkqOJfMKR6knVEt1UCAwEAAaNWMFQwEgYDVR0T\nAQH/BAgwBgEB/wIBADAdBgNVHQ4EFgQUofQIVsT5NCA25NuK00VnKVGAZokwHwYD\nVR0jBBgwFoAUofQIVsT5NCA25NuK00VnKVGAZokwDQYJKoZIhvcNAQELBQADggIB\nAGEMHw1SdG+TP2toQHy5RC1nDDrj8NXs0zuIvSHXTGfYjQrNm8KZznlqamWYn7ji\n8lWAT5hfklG3vC9tGu/czEXhOZxxE1Nv5xiOj9PFjLXMHivIOCiVdgNEiI1+XcQE\nCgicw1Y9Z+FkrwxZwCM0/dDt/KSSwj755/7FF3rTA0/ANEeEXuG6Bj61h2XJKvkE\nHPx/df43ugaSt4/5bpRGUjT+U372tBFNnpG7vs9DhroHpA0tRyc0whUGginiu7uP\nB3XY4XrUVnn3v16H6RKlsM99aID/XKeor4mBCXGN80NUHmVIAvKQsMVPAIUejn4t\nYYH8/hPd9ie2fh41F0lGaNp8Yxh3WAbH6GwG1bFrBFX8C4O/2rfdULRPsBJi4v0v\nCaYcrLBlOCknBEvWly962KIF5rKpT9wAhJKM2VxqlSQ9JEWT+ZDYW8RHxP4FEHEq\nywF6oooKGcKFVpBjqZ8RIgvfoVaXGTzTxM2L0jFKQcH8kalYRdm75REMiDFZVbDR\n/oXK1lQhb8a0c/vcDMMpxus+gantX8/KRdn3EMNuNie02SejdIAUpvrb0lvL1aLx\nwnWyZR2Fs5Rn7TyYQoBXOYkAthchz1tkDvmjrRloBk5gqvAjl7uAzA5FjzNHdtfj\njUY457rj9NkjQ2IKxtNlwJDuCbpMzY10nevT6xy1J/NC\n-----END CERTIFICATE-----\n',''),rs=c(10407,1699173505,233453646,1102646391,323487308,525002461,-1013901318))\""
+#> [1] "Rscript -e \"mirai::daemon('wss://[::1]:5555/1',tls=c('-----BEGIN CERTIFICATE-----\nMIIFLTCCAxWgAwIBAgIBATANBgkqhkiG9w0BAQsFADAuMQwwCgYDVQQDDAM6OjEx\nETAPBgNVBAoMCE5hbm9uZXh0MQswCQYDVQQGEwJKUDAeFw0wMTAxMDEwMDAwMDBa\nFw0zMDEyMzEyMzU5NTlaMC4xDDAKBgNVBAMMAzo6MTERMA8GA1UECgwITmFub25l\neHQxCzAJBgNVBAYTAkpQMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA\n3pjPF1g7Ys9Sri0UznuWfrSthFfx6EoBdoRzepZUeFas5ypE7F0YtMbNhy6sTCUT\nGUKfCMbTkf3ivyukybS+FdhqFs9Nm4a6U3gKaUmhcRneJkGnIZyrzfgyrZDzZNyW\nHVVwiMT0g/BK+P52V1TKR5Mp5AIyZirtdJQu7l9GJqOjIgiml2j/tYox3QsTAhlJ\nUmpxp1/dV1xqd6cTyXDxCzsCT0xFEYD2lTX+e1uficYavoXOcMeLneZMiwhaJt+7\nMpU33jpvpwU1kVlSb5n/eXSGmGvtgqzDR0RGelHd977cSSqD3PiLbDmcvbhWNGW/\nYvc8arsEr2xH99pA7cCV2znSyfOZbxO3asqEH3wieCoWMmI8TPHnpls84MkCmbNw\nAO5xgHiKqzlQznNhpROWVryd5Vn9NIiwDOiuQJm8jMr9cBFDSS+TwP6ogs+PgdKx\n7+KRqfa7xgSEmGFP/0zp65N4KH56RNw4LkK0bjh5pb6At+ECjKnwvbR1PKru0dzL\nFEmyFf3gjHFC/YJV6+b9M/IR6ItRidGWJnxjsd7M0pDqR+VfVqKyD056gg8QpPUH\nVx5IGjeTkNgaCpzL3ARWwRA5oC22pkobGaQ3ocCKU76pzd8l8xtpGzFJK/ehLTUQ\nIlvC0R2wpuN7lcTAYtg60DklUgsc9fXh80cKbAlrP78CAwEAAaNWMFQwEgYDVR0T\nAQH/BAgwBgEB/wIBADAdBgNVHQ4EFgQUhsYIs/JWszswFcKNOSsF7X5gDd4wHwYD\nVR0jBBgwFoAUhsYIs/JWszswFcKNOSsF7X5gDd4wDQYJKoZIhvcNAQELBQADggIB\nANvF0t7E6DQVm8IV1JNhAX0TqfVc7hfmmvARDb2WU5TKvnfu1GNe2lEuVtcHpp+F\n6BrxEhVDdLErxATpWCjaBuaVjvAOTo0X3dAiJjqeCf06NhL2JUCWXhPcZQqwmKrM\nWErg4RDwiHUv65WHU8EtB9q/K8/bXi0ZVGN7F0tIJ2X3SYGhlq2h9FUBXa7zBmFk\nPu+ORW1SodXBTAsDXN6Lr8ISycL/tEFkSqbzrDsUulhuzYUyzk8zpic5tOBvf6iL\nO3X4lju/OAtavzG3SjTuSMBIAd/WK2xxG7DNZ/Are+N/xTbrQo0IF9CHDixB0AU8\nPf+up2RrEv5PuXNKjEwWLawtxoj3Qh5JCfnr8ziKKJ+NrpqTxaxrSDZm7q/hkY6U\nE6aLM6W75LKN2WeQoNfG3wBsMrmAjcHH9C+JpcxJOagDu3hQDKF5APImeU1dJaOz\n8i+RY7K7f5Ij4jS0mNbF0hfcmH37QLl3JQ8z6ozzeEJNKJJqXeE+DQl0On8NAc2r\nEpDPJbOeJDTL82wZSYqkpYVzh8eX9ORK489CvUErhWA4bTYJQ0X3QnAvbg4em15V\nFgQbd6Ts0pP6ObkHPtOyg3HhPSB7OkDA6TPBroIe+3380TlPvnu+tTThYvBRsY5r\npJMbvzHEq8PK83aqzg9tYasFA3Cd2AlpZ3B2bNSAG89m\n-----END CERTIFICATE-----\n',''),rs=c(10407,-1505412091,-444444414,-1199966053,-471403744,761876641,118406638))\""
 ```
 
 The return value may be deployed manually on a remote machine by
@@ -600,9 +599,9 @@ directly via SSH or a resource manager by additionally specifying
 #### CA Signed Certificates
 
 As an alternative to the zero-configuration option, a certificate may
-also be generated in the traditional manner via a Certificate Signing
-Request (CSR) to a Certificate Authority (CA), which may be a public CA
-or a CA internal to your organisation.
+also be generated via a Certificate Signing Request (CSR) to a
+Certificate Authority (CA), which may be a public CA or a CA internal to
+your organisation.
 
 1.  Generate a private key and CSR. The following resources describe how
     to do so:

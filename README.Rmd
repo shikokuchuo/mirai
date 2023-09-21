@@ -425,9 +425,9 @@ An automatic zero-configuration default is implemented. Simply specify a secure 
 daemons(n = 4, url = "wss://[::1]:5555")
 ```
 
-Single-use keys and certificates are automatically generated and configured, without requiring any further intervention. The private key is always retained on the host machine and never transmitted, nor even materialised as an R object.
+Single-use keys and certificates are automatically generated and configured, without requiring any further intervention. The private key is always retained on the host machine and never transmitted.
 
-The generated self-signed certificate is made available for read-only access via `launch_remote()`. This function conveniently constructs the full shell command to launch a daemon, including the correctly specified 'tls' argument to `daemon()`.
+The generated self-signed certificate is available via `launch_remote()`. This function conveniently constructs the full shell command to launch a daemon, including the correctly specified 'tls' argument to `daemon()`.
 
 ```{r launch_remote}
 launch_remote(1)
@@ -441,7 +441,7 @@ daemons(0)
 
 #### CA Signed Certificates
 
-As an alternative to the zero-configuration option, a certificate may also be generated in the traditional manner via a Certificate Signing Request (CSR) to a Certificate Authority (CA), which may be a public CA or a CA internal to your organisation.
+As an alternative to the zero-configuration option, a certificate may also be generated via a Certificate Signing Request (CSR) to a Certificate Authority (CA), which may be a public CA or a CA internal to your organisation.
 
 1. Generate a private key and CSR. The following resources describe how to do so:
 

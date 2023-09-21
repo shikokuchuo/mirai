@@ -1,3 +1,10 @@
+# mirai 0.10.0.9006 (development)
+
+* `daemon()` argument 'exitlinger' retired as daemons now synchronise with the host/dispatcher and exit as soon as possible.
+* Optimises scheduling at dispatcher: tasks are no longer assigned to a daemon if it is exiting due to specified time/task-outs.
+* Deprecated use of alias `server()` for `daemon()` is retired.
+* Requires nanonext >= [0.10.0.9007].
+
 # mirai 0.10.0
 
 * Uses L'Ecuyer-CMRG streams for safe and reproducible (in certain cases) random number generation across parallel processes (thanks @ltierney for discussion during R Project Sprint 2023).
