@@ -155,12 +155,12 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
   on.exit(close(sock))
   cv <- cv()
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = FALSE)
-  ctx <- .context(sock)
-  ._mirai_. <- recv(ctx, mode = 1L)
+  ._mirai_. <- recv(sock, mode = 1L, block = TRUE)
   data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)
-  send(ctx, data = data, mode = 1L)
-  until(cv, .timelimit)
+  send(sock, data = data, mode = 1L, block = TRUE)
+  data <- recv_aio_signal(sock, cv = cv, mode = 8L)
+  wait(cv)
 
 }
 
@@ -529,7 +529,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
     url <- auto_tokenized_url()
     sock <- req_socket(url)
     if (length(.timeout)) launch_and_sync_daemon(sock = sock, url) else launch_daemon(url)
-    aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout, autoclose = TRUE)
+    aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout, ack = TRUE)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
   }
