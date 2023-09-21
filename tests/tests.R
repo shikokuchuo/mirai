@@ -160,7 +160,7 @@ if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
   mq <- mirai("daemon", .timeout = 1000)
   nanotestn(saisei(i = 1L))
   nanotest(call_mirai(mq)$data == "daemon" || is_error_value(mq$data))
-  mq <- mirai(Sys.sleep(2L), .timeout = 500)
+  mq <- mirai(Sys.sleep(1.5), .timeout = 500)
   dstatus <- status()[["daemons"]]
   nanotest(is.matrix(dstatus) || is_error_value(dstatus))
   Sys.sleep(2L)
