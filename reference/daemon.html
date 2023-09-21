@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9005</span>
       </span>
     </div>
 
@@ -70,7 +70,6 @@
 <span>  idletime <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  walltime <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  timerstart <span class="op">=</span> <span class="fl">0L</span>,</span>
-<span>  exitlinger <span class="op">=</span> <span class="fl">1000L</span>,</span>
 <span>  output <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
@@ -115,13 +114,6 @@ time taken (in milliseconds) before exiting.</p></dd>
 <dd><p>[default 0L] number of completed tasks after which to start
 the timer for 'idletime' and 'walltime'. 0L implies timers are started
 upon launch.</p></dd>
-
-
-<dt>exitlinger</dt>
-<dd><p>[default 1000L] time in milliseconds to linger before
-exiting due to a timer / task limit, to allow sockets to complete sends
-currently in progress. The default should be set wider if computations
-are expected to return very large objects (&gt; GBs).</p></dd>
 
 
 <dt>output</dt>
