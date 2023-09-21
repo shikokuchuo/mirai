@@ -119,8 +119,8 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
                      error = mk_mirai_error, interrupt = mk_interrupt_error)
     count <- count + 1L
 
-    if (count >= maxtasks || (count > timerstart && mclock() - start >= walltime)) {
-      send(ctx, data = data, mode = 3L)
+    (count >= maxtasks || count > timerstart && mclock() - start >= walltime) && {
+      send(ctx, data = data, mode = 0L)
       recv(sock, mode = 8L, block = .timelimit)
       break
     }
