@@ -83,6 +83,7 @@ nanotest(mp$data == "test2" || unresolved(mp$data))
 Sys.sleep(1L)
 nanotestz(status(.compute = "new")[["connections"]])
 nanotestz(daemons(0L, .compute = "new"))
+nanotesterr(daemons(n = 1, maxtasks = "100"), "'...' arguments")
 Sys.sleep(1L)
 if (.Platform[["OS.type"]] != "windows") {
   nanotest(is_mirai(m <- mirai(TRUE)))
