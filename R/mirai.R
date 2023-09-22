@@ -120,7 +120,7 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
     count <- count + 1L
 
     (count >= maxtasks || count > timerstart && mclock() - start >= walltime) && {
-      send(ctx, data = data, mode = 0L)
+      send(ctx, data = data, mode = 3L)
       data <- recv_aio_signal(sock, cv = cv, mode = 8L)
       wait(cv)
       break
@@ -357,9 +357,9 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
           if (is.object(req)) req <- serialize(req, NULL)
           send(queue[[i]][["ctx"]], data = req, mode = 2L)
           q <- queue[[i]][["daemon"]]
-          if (req[1L] == .seven) {
+          if (req[1L] == .next_format_identifier) {
             ctx <- .context(servers[[q]])
-            send_aio(ctx, data = .seven, mode = 2L)
+            send_aio(ctx, data = .next_format_identifier, mode = 2L)
             reap(ctx)
           } else {
             serverfree[q] <- TRUE
