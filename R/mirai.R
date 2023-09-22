@@ -78,7 +78,7 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
                    ..., cleanup = 7L, rs = NULL) {
 
   sock <- socket(protocol = "rep")
-  on.exit(close(sock))
+  on.exit(reap(sock))
   cv <- cv()
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
   if (length(tls)) tls <- tls_config(client = tls)
@@ -152,7 +152,7 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
 .daemon <- function(url) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = NA)
-  on.exit(close(sock))
+  on.exit(reap(sock))
   cv <- cv()
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = FALSE)
   ._mirai_. <- recv(sock, mode = 1L, block = TRUE)
@@ -220,7 +220,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
   n > 0L || stop(.messages[["missing_url"]])
 
   sock <- socket(protocol = "rep")
-  on.exit(close(sock))
+  on.exit(reap(sock))
   cv <- cv()
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock = sock, url = host, asyncdial = asyncdial)
@@ -292,12 +292,12 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
     queue[[i]] <- list(ctx = ctx, req = req)
   }
 
-  on.exit(lapply(servers, close), add = TRUE, after = TRUE)
+  on.exit(lapply(servers, reap), add = TRUE, after = TRUE)
 
   ctrchannel <- is.character(monitor)
   if (ctrchannel) {
     sockc <- socket(protocol = "rep")
-    on.exit(close(sockc), add = TRUE, after = FALSE)
+    on.exit(reap(sockc), add = TRUE, after = FALSE)
     pipe_notify(sockc, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
     recv(sockc, mode = 5L, block = .timelimit) && stop(.messages[["sync_timeout"]])
@@ -323,7 +323,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
         i <- .subset2(cmessage, "data")
         if (i) {
           if (i > 0L && !activevec[[i]]) {
-            close(attr(servers[[i]], "listener")[[1L]])
+            reap(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
             data <- servernames[i] <- if (auto) auto_tokenized_url() else new_tokenized_url(basenames[i])
             instance[i] <- -abs(instance[i])
@@ -331,7 +331,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
 
           } else if (i < 0L) {
             i <- -i
-            close(servers[[i]])
+            reap(servers[[i]])
             servers[[i]] <- nsock <- req_socket(NULL)
             pipe_notify(nsock, cv = active[[i]], cv2 = cv, flag = FALSE)
             data <- servernames[i] <- if (auto) auto_tokenized_url() else new_tokenized_url(basenames[i])
@@ -358,9 +358,9 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
           send(queue[[i]][["ctx"]], data = req, mode = 2L)
           q <- queue[[i]][["daemon"]]
           if (req[1L] == .seven) {
-            ctx <- context(servers[[q]])
+            ctx <- .context(servers[[q]])
             send_aio(ctx, data = .seven, mode = 2L)
-            close(ctx)
+            reap(ctx)
           } else {
             serverfree[q] <- TRUE
           }
@@ -815,8 +815,8 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, p
     if (n == 0L) {
       length(envir[["n"]]) || return(0L)
 
-      close(envir[["sock"]])
-      length(envir[["sockc"]]) && close(envir[["sockc"]])
+      reap(envir[["sock"]])
+      length(envir[["sockc"]]) && reap(envir[["sockc"]])
       envir <- NULL
       `[[<-`(.., .compute, new.env(hash = FALSE))
 
@@ -1492,7 +1492,7 @@ init_monitor <- function(sockc, envir) {
   send_aio(sockc, data = 0L, mode = 2L)
   res <- recv(sockc, mode = 2L, block = .timelimit)
   is.object(res) && {
-    close(sockc)
+    reap(sockc)
     stop(.messages[["sync_timeout"]])
   }
   `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L]))
