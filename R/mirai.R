@@ -1386,7 +1386,8 @@ print.miraiInterrupt <- function(x, ...) {
 parse_dots <- function(...)
   if (missing(...)) "" else {
     dots <- list(...)
-    all(as.logical(lapply(dots, is.numeric)) | as.logical(lapply(dots, is.logical))) || stop(.messages[["wrong_dots"]])
+    for (dot in dots)
+      is.numeric(dot) || is.logical(dot) || stop(.messages[["wrong_dots"]])
     dnames <- names(dots)
     dots <- strcat(",", paste(dnames, dots, sep = "=", collapse = ","))
     "output" %in% dnames && return(`class<-`(dots, "output"))
