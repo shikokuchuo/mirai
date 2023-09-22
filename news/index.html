@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9011</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9012</span>
       </span>
     </div>
 
@@ -54,11 +54,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.0.9011" id="mirai-01009011-development">mirai 0.10.0.9011 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009011-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.10.0.9012" id="mirai-01009012-development">mirai 0.10.0.9012 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009012-development"></a></h2>
 <ul><li>
 <code><a href="../reference/daemon.html">daemon()</a></code> argument ‘exitlinger’ retired as daemons now synchronise with the host/dispatcher and exit as soon as possible.</li>
 <li>Optimises scheduling at dispatcher: tasks are no longer assigned to a daemon if it is exiting due to specified time/task-outs.</li>
 <li>An ‘errorValue’ 19 ‘Connection reset’ is now returned for a ‘mirai’ if the connection to either dispatcher or an ephemeral daemon drops, for example if they have crashed, rather than remaining unresolved.</li>
+<li>Invalid type of ‘…’ arguments specified to <code><a href="../reference/daemons.html">daemons()</a></code> or <code><a href="../reference/dispatcher.html">dispatcher()</a></code> now raise an error early rather than attempting to launch daemons that fail.</li>
 <li>Eliminates a potential crash in the host process after querying <code><a href="../reference/status.html">status()</a></code> if there is no longer a connection to dispatcher.</li>
 <li>Deprecated use of alias <code>server()</code> for <code><a href="../reference/daemon.html">daemon()</a></code> is retired.</li>
 <li>Requires nanonext &gt;= [0.10.0.9009].</li>
