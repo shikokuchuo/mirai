@@ -1,8 +1,9 @@
-# mirai 0.10.0.9010 (development)
+# mirai 0.10.0.9011 (development)
 
 * `daemon()` argument 'exitlinger' retired as daemons now synchronise with the host/dispatcher and exit as soon as possible.
 * Optimises scheduling at dispatcher: tasks are no longer assigned to a daemon if it is exiting due to specified time/task-outs.
-* An appropriate 'errorValue' is now returned if an ephemeral daemon dies (rather than remaining unresolved).
+* An 'errorValue' 19 'Connection reset' is now returned for a 'mirai' if the connection to either dispatcher or an ephemeral daemon drops, for example if they have crashed, rather than remaining unresolved.
+* Eliminates a potential crash in the host process after querying `status()` if there is no longer a connection to dispatcher.
 * Deprecated use of alias `server()` for `daemon()` is retired.
 * Requires nanonext >= [0.10.0.9009].
 

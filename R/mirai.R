@@ -816,7 +816,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, p
       length(envir[["n"]]) || return(0L)
 
       reap(envir[["sock"]])
-      length(envir[["sockc"]]) && reap(envir[["sockc"]])
+      length(envir[["sockc"]]) && attr(envir[["sockc"]], "state") == "opened" && reap(envir[["sockc"]])
       envir <- NULL
       `[[<-`(.., .compute, new.env(hash = FALSE))
 
@@ -824,15 +824,16 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, p
 
       n > 0L || stop(.messages[["n_zero"]])
       urld <- auto_tokenized_url()
-      sock <- req_socket(urld)
       create_stream(n = n, seed = seed, envir = envir)
       if (dispatcher) {
+        sock <- req_socket(urld, resend = 0L)
         urlc <- strcat(urld, "c")
         sockc <- req_socket(urlc, resend = 0L)
         launch_and_sync_daemon(sock = sock, urld, parse_dots(...), n, urlc, rs = envir[["stream"]])
         for (i in seq_len(n)) next_stream(envir)
         init_monitor(sockc = sockc, envir = envir)
       } else {
+        sock <- req_socket(urld)
         if (is.null(seed) || n == 1L) {
           for (i in seq_len(n))
             launch_daemon(urld, parse_dots(...), next_stream(envir))
@@ -1483,7 +1484,10 @@ query_dispatcher <- function(sock, command, mode) {
 
 query_status <- function(envir) {
   res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L)
-  is.object(res) && return(res)
+  is.object(res) && {
+    res != 7L && reap(envir[["sockc"]])
+    return(res)
+  }
   `attributes<-`(res, list(dim = c(envir[["n"]], 5L),
                            dimnames = list(envir[["urls"]], c("i", "online", "instance", "assigned", "complete"))))
 }

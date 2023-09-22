@@ -149,9 +149,13 @@ if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
   nanotesto(daemons(url = "wss://127.0.0.1:0", token = TRUE, pass = "test"))
   nanotestn(launch_local(1L))
   Sys.sleep(1L)
+  mq <- mirai(Sys.sleep(1L))
   nanotest(grepl("CERTIFICATE", launch_remote(1L), fixed = TRUE))
   nanotesterr(launch_local(0:1), "out of bounds")
   nanotesterr(launch_remote(1:2), "out of bounds")
+  nanotest(is.character(saisei(i = 1L, force = TRUE)))
+  Sys.sleep(0.5)
+  nanotest(is_error_value(mq[["data"]]))
   nanotestz(daemons(0L))
   Sys.sleep(1L)
   option <- 15L
