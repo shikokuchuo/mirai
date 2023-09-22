@@ -1,7 +1,8 @@
-# mirai 0.10.0.9009 (development)
+# mirai 0.10.0.9010 (development)
 
 * `daemon()` argument 'exitlinger' retired as daemons now synchronise with the host/dispatcher and exit as soon as possible.
 * Optimises scheduling at dispatcher: tasks are no longer assigned to a daemon if it is exiting due to specified time/task-outs.
+* An appropriate 'errorValue' is now returned if an ephemeral daemon dies (rather than remaining unresolved).
 * Deprecated use of alias `server()` for `daemon()` is retired.
 * Requires nanonext >= [0.10.0.9009].
 
