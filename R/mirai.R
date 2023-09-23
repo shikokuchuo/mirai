@@ -816,7 +816,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, p
       length(envir[["n"]]) || return(0L)
 
       reap(envir[["sock"]])
-      length(envir[["sockc"]]) && attr(envir[["sockc"]], "state") == "opened" && reap(envir[["sockc"]])
+      length(envir[["sockc"]]) && reap(envir[["sockc"]])
       envir <- NULL
       `[[<-`(.., .compute, new.env(hash = FALSE))
 
@@ -1480,27 +1480,20 @@ req_socket <- function(url, tls = NULL, resend = .intmax)
   `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", resend)
 
 query_dispatcher <- function(sock, command, mode) {
-  send_aio(sock, data = command, mode = 2L)
+  send(sock, data = command, mode = 2L, block = .timelimit)
   recv(sock, mode = mode, block = .timelimit)
 }
 
 query_status <- function(envir) {
   res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L)
-  is.object(res) && {
-    res != 7L && reap(envir[["sockc"]])
-    return(res)
-  }
+  is.object(res) && return(res)
   `attributes<-`(res, list(dim = c(envir[["n"]], 5L),
                            dimnames = list(envir[["urls"]], c("i", "online", "instance", "assigned", "complete"))))
 }
 
 init_monitor <- function(sockc, envir) {
-  send_aio(sockc, data = 0L, mode = 2L)
-  res <- recv(sockc, mode = 2L, block = .timelimit)
-  is.object(res) && {
-    reap(sockc)
-    stop(.messages[["sync_timeout"]])
-  }
+  res <- query_dispatcher(sockc, command = 0L, mode = 2L)
+  is.object(res) && stop(.messages[["sync_timeout"]])
   `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L]))
 }
 

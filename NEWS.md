@@ -1,4 +1,4 @@
-# mirai 0.10.0.9012 (development)
+# mirai 0.10.0.9013 (development)
 
 * `daemon()` argument 'exitlinger' retired as daemons now synchronise with the host/dispatcher and exit as soon as possible.
 * Optimises scheduling at dispatcher: tasks are no longer assigned to a daemon if it is exiting due to specified time/task-outs.
