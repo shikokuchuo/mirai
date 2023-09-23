@@ -6,7 +6,7 @@
 * Invalid type of '...' arguments specified to `daemons()` or `dispatcher()` now raise an error early rather than attempting to launch daemons that fail.
 * Eliminates a potential crash in the host process after querying `status()` if there is no longer a connection to dispatcher.
 * Deprecated use of alias `server()` for `daemon()` is retired.
-* Requires nanonext >= [0.10.0.9009].
+* Requires nanonext >= [0.10.0.9010].
 
 # mirai 0.10.0
 

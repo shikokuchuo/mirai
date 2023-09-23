@@ -23,5 +23,5 @@ Encoding: UTF-8
 Depends: 
     R (>= 3.5)
 Imports: 
-    nanonext (>= 0.10.0.9009)
+    nanonext (>= 0.10.0.9010)
 RoxygenNote: 7.2.3
