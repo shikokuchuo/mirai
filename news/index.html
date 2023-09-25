@@ -61,6 +61,8 @@
 <li>An ‘errorValue’ 19 ‘Connection reset’ is now returned for a ‘mirai’ if the connection to either dispatcher or an ephemeral daemon drops, for example if they have crashed, rather than remaining unresolved.</li>
 <li>Invalid type of ‘…’ arguments specified to <code><a href="../reference/daemons.html">daemons()</a></code> or <code><a href="../reference/dispatcher.html">dispatcher()</a></code> now raise an error early rather than attempting to launch daemons that fail.</li>
 <li>Eliminates a potential crash in the host process after querying <code><a href="../reference/status.html">status()</a></code> if there is no longer a connection to dispatcher.</li>
+<li>Reverts the trailing line break added to the end of a ‘miraiError’ character string.</li>
+<li>Deprecates the Deferred Evaluation Pipe <code>%&gt;&gt;%</code> in favour of a recommendation to use package <code>mirai.promises</code> for performing side effects upon ‘mirai’ resolution.</li>
 <li>Deprecated use of alias <code>server()</code> for <code><a href="../reference/daemon.html">daemon()</a></code> is retired.</li>
 <li>Requires nanonext &gt;= [0.10.0.9010].</li>
 </ul></div>
