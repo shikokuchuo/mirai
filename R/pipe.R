@@ -18,8 +18,8 @@
 
 #' Deferred Evaluation Pipe
 #'
-#' Pipe a possibly unresolved value forward into a function. The piped expression
-#'     should be wrapped in \code{.()}.
+#' [DEPRECATED] Pipe a possibly unresolved value forward into a function. The
+#'     piped expression should be wrapped in \code{.()}.
 #'
 #' @param x a 'mirai' or mirai value at \code{$data} that is possibly an
 #'     'unresolvedValue'.
@@ -28,10 +28,6 @@
 #'
 #' @return The evaluated result, or if the mirai value of x is an
 #'     'unresolvedValue', an 'unresolvedExpr'.
-#'
-#'     It is advisable to wrap \code{resolve()} around a piped expression to
-#'     ensure stability of return types, as this is guaranteed to return either
-#'     an 'unresolvedExpr' or 'resolvedExpr'.
 #'
 #' @details An 'unresolvedExpr' encapsulates the eventual evaluation result.
 #'     Query its \code{$data} element for resolution. Once resolved, the object
@@ -62,12 +58,11 @@
 #'     Other usage is not supported and it is not a drop-in replacement for
 #'     magrittr's \code{\%>\%} pipe.
 #'
-#' @note The deferred evaluation pipe is generally used where the return value
-#'     of the expression is required.
+#' @note THIS PIPE IS DEPRECATED AND WILL BE REMOVED IN A FUTURE PACKAGE VERSION.
 #'
-#'     For performing side effects upon resolution of a 'mirai', the promise
-#'     pipe \code{\%...>\%} may be more suitable (see the package
-#'     \CRANpkg{mirai.promises}).
+#'     In nearly all cases, using package \CRANpkg{mirai.promises} with the
+#'     promise pipe \code{\%...>\%} will be more suitable, allowing side effects
+#'     to be performed upon resolution of a 'mirai'.
 #'
 #' @examples
 #' if (interactive()) {

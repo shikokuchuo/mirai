@@ -20,14 +20,10 @@ x \%>>\% f
 \value{
 The evaluated result, or if the mirai value of x is an
     'unresolvedValue', an 'unresolvedExpr'.
-
-    It is advisable to wrap \code{resolve()} around a piped expression to
-    ensure stability of return types, as this is guaranteed to return either
-    an 'unresolvedExpr' or 'resolvedExpr'.
 }
 \description{
-Pipe a possibly unresolved value forward into a function. The piped expression
-    should be wrapped in \code{.()}.
+[DEPRECATED] Pipe a possibly unresolved value forward into a function. The
+    piped expression should be wrapped in \code{.()}.
 }
 \details{
 An 'unresolvedExpr' encapsulates the eventual evaluation result.
@@ -47,12 +43,11 @@ An 'unresolvedExpr' encapsulates the eventual evaluation result.
     element to test for resolution.
 }
 \note{
-The deferred evaluation pipe is generally used where the return value
-    of the expression is required.
+THIS PIPE IS DEPRECATED AND WILL BE REMOVED IN A FUTURE PACKAGE VERSION.
 
-    For performing side effects upon resolution of a 'mirai', the promise
-    pipe \code{\%...>\%} may be more suitable (see the package
-    \CRANpkg{mirai.promises}).
+    In nearly all cases, using package \CRANpkg{mirai.promises} with the
+    promise pipe \code{\%...>\%} will be more suitable, allowing side effects
+    to be performed upon resolution of a 'mirai'.
 }
 \section{Usage}{
 
