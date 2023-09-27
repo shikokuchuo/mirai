@@ -1,4 +1,4 @@
-# mirai 0.10.0.9014 (development)
+# mirai 0.10.0.9015 (development)
 
 * Implements an alternative communications backend for R, adding methods for the 'parallel' base package.
   + `make_cluster()` creates a 'miraiCluster', compatible with existing functions taking a 'cluster' object.

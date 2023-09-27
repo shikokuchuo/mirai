@@ -62,7 +62,8 @@ NULL
 
 .onLoad <- function(libname, pkgname) {
 
-  .. <<- `[[<-`(new.env(hash = FALSE), "default", new.env(hash = FALSE))
+  .. <<- new.env(hash = FALSE, parent = environment(daemons))
+  `[[<-`(.., "default", new.env(hash = FALSE, parent = ..))
   switch(
     Sys.info()[["sysname"]],
     Linux = {

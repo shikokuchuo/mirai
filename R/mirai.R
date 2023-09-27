@@ -785,7 +785,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, resilience = TRUE,
 
   envir <- ..[[.compute]]
   if (is.null(envir))
-    envir <- `[[<-`(.., .compute, new.env(hash = FALSE, parent = environment(daemons)))[[.compute]]
+    envir <- `[[<-`(.., .compute, new.env(hash = FALSE, parent = ..))[[.compute]]
 
   if (is.character(url)) {
 
@@ -828,7 +828,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, resilience = TRUE,
       reap(envir[["sock"]])
       length(envir[["sockc"]]) && reap(envir[["sockc"]])
       envir <- NULL
-      `[[<-`(.., .compute, new.env(hash = FALSE))
+      `[[<-`(.., .compute, new.env(hash = FALSE, parent = ..))
 
     } else if (is.null(envir[["sock"]])) {
 
