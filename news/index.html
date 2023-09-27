@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9014</span>
       </span>
     </div>
 
@@ -54,8 +54,17 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.0.9013" id="mirai-01009013-development">mirai 0.10.0.9013 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009013-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.10.0.9014" id="mirai-01009014-development">mirai 0.10.0.9014 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009014-development"></a></h2>
+<ul><li>Implements an alternative communications backend for R, adding methods for the ‘parallel’ base package.
 <ul><li>
+<code><a href="../reference/make_cluster.html">make_cluster()</a></code> creates a ‘miraiCluster’, compatible with existing functions taking a ‘cluster’ object.</li>
+<li>Fulfils a request by R Core at R Project Sprint 2023, and requires R &gt;= 4.4 (currently R-devel).</li>
+</ul></li>
+<li>
+<code><a href="../reference/daemons.html">daemons()</a></code> adds argument ‘resilience’ to control the behaviour, when not using dispatcher, of whether to retry failed tasks on other daemons.</li>
+<li>
+<code><a href="../reference/mirai.html">mirai()</a></code> adds argument logical argument ‘.signal’ for whether to signal the condition variable within the compute profile upon resolution of the ‘mirai’.</li>
+<li>
 <code><a href="../reference/daemon.html">daemon()</a></code> argument ‘exitlinger’ retired as daemons now synchronise with the host/dispatcher and exit as soon as possible.</li>
 <li>Optimises scheduling at dispatcher: tasks are no longer assigned to a daemon if it is exiting due to specified time/task-outs.</li>
 <li>An ‘errorValue’ 19 ‘Connection reset’ is now returned for a ‘mirai’ if the connection to either dispatcher or an ephemeral daemon drops, for example if they have crashed, rather than remaining unresolved.</li>
@@ -64,7 +73,7 @@
 <li>Reverts the trailing line break added to the end of a ‘miraiError’ character string.</li>
 <li>Deprecates the Deferred Evaluation Pipe <code>%&gt;&gt;%</code> in favour of a recommendation to use package <code>mirai.promises</code> for performing side effects upon ‘mirai’ resolution.</li>
 <li>Deprecated use of alias <code>server()</code> for <code><a href="../reference/daemon.html">daemon()</a></code> is retired.</li>
-<li>Requires nanonext &gt;= [0.10.0.9010].</li>
+<li>Requires nanonext &gt;= 0.10.1.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.10.0" id="mirai-0100">mirai 0.10.0<small>2023-09-16</small><a class="anchor" aria-label="anchor" href="#mirai-0100"></a></h2>

@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9014</span>
       </span>
     </div>
 
@@ -75,6 +75,7 @@
 <span>  <span class="va">n</span>,</span>
 <span>  url <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dispatcher <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  resilience <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pass <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -102,6 +103,12 @@ starting 'tls+tcp://' or 'wss://' to use secure TLS connections.</p></dd>
 Dispatcher is a local background process that connects to daemons on
 behalf of the host and ensures FIFO scheduling, queueing tasks if
 necessary (see Dispatcher section below).</p></dd>
+
+
+<dt>resilience</dt>
+<dd><p>[default TRUE] (applicable for when not using dispatcher)
+logical value whether to retry failed tasks on other daemons. If FALSE,
+an appropriate 'errorValue' will be returned in such cases.</p></dd>
 
 
 <dt>seed</dt>
