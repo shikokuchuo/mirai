@@ -8,6 +8,7 @@ daemons(
   n,
   url = NULL,
   dispatcher = TRUE,
+  resilience = TRUE,
   seed = NULL,
   tls = NULL,
   pass = NULL,
@@ -28,6 +29,10 @@ starting 'tls+tcp://' or 'wss://' to use secure TLS connections.}
 Dispatcher is a local background process that connects to daemons on
 behalf of the host and ensures FIFO scheduling, queueing tasks if
 necessary (see Dispatcher section below).}
+
+\item{resilience}{[default TRUE] (applicable for when not using dispatcher)
+logical value whether to retry failed tasks on other daemons. If FALSE,
+an appropriate 'errorValue' will be returned in such cases.}
 
 \item{seed}{[default NULL] (optional) supply a random seed (single value,
 interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG

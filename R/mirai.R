@@ -409,6 +409,10 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
 #' @param .timeout [default NULL] for no timeout, or an integer value in
 #'     milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
+#' @param .signal [default FALSE] logical value, whether to signal the condition
+#'     variable within the compute profile (only applicable when daemons have
+#'     been set). See \code{\link[nanonext]{cv}} for further information on
+#'     condition variables.
 #' @param .compute [default 'default'] character value for the compute profile
 #'     to use when sending the mirai.
 #'
@@ -507,7 +511,7 @@ dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
 #'
 #' @export
 #'
-mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "default") {
+mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .signal = FALSE, .compute = "default") {
 
   missing(.expr) && stop(.messages[["missing_expression"]])
 
@@ -523,7 +527,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   envir <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
   if (length(..[[.compute]][["sock"]])) {
-    aio <- request(.context(..[[.compute]][["sock"]]), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    aio <- if (.signal)
+      request_signal(.context(..[[.compute]][["sock"]]), data = envir, cv = ..[[.compute]][["cv"]], send_mode = 1L, recv_mode = 1L, timeout = .timeout) else
+        request(.context(..[[.compute]][["sock"]]), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
 
   } else {
     url <- auto_tokenized_url()
@@ -559,6 +565,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     Dispatcher is a local background process that connects to daemons on
 #'     behalf of the host and ensures FIFO scheduling, queueing tasks if
 #'     necessary (see Dispatcher section below).
+#' @param resilience [default TRUE] (applicable for when not using dispatcher)
+#'     logical value whether to retry failed tasks on other daemons. If FALSE,
+#'     an appropriate 'errorValue' will be returned in such cases.
 #' @param seed [default NULL] (optional) supply a random seed (single value,
 #'     interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
 #'     RNG streams sent to each daemon. Note that reproducible results can be
@@ -769,7 +778,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #' @export
 #'
-daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, pass = NULL, ..., .compute = "default") {
+daemons <- function(n, url = NULL, dispatcher = TRUE, resilience = TRUE,
+                    seed = NULL, tls = NULL, pass = NULL, ..., .compute = "default") {
 
   missing(n) && missing(url) && return(status(.compute))
 
@@ -792,19 +802,19 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, p
         if (length(tls)) tls_config(server = tls, pass = pass)
         urld <- auto_tokenized_url()
         urlc <- strcat(urld, "c")
-        sock <- req_socket(urld)
+        sock <- req_socket(urld, resend = 0L)
         sockc <- req_socket(urlc, resend = 0L)
         launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls, pass = pass)
         init_monitor(sockc = sockc, envir = envir)
       } else {
-        sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass))
+        sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass), resend = resilience * .intmax)
         listener <- attr(sock, "listener")[[1L]]
         n <- opt(listener, "url")
         if (parse_url(n)[["port"]] == "0")
           n <- sub_real_port(port = opt(listener, "tcp-bound-port"), url = n)
         `[[<-`(envir, "urls", n)
       }
-      `[[<-`(`[[<-`(envir, "sock", sock), "n", n)
+      `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv())
     }
 
   } else {
@@ -833,7 +843,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, p
         for (i in seq_len(n)) next_stream(envir)
         init_monitor(sockc = sockc, envir = envir)
       } else {
-        sock <- req_socket(urld)
+        sock <- req_socket(urld, resend = resilience * .intmax)
         if (is.null(seed) || n == 1L) {
           for (i in seq_len(n))
             launch_daemon(urld, parse_dots(...), next_stream(envir))
@@ -843,7 +853,7 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, seed = NULL, tls = NULL, p
         }
         `[[<-`(envir, "urls", urld)
       }
-      `[[<-`(`[[<-`(envir, "sock", sock), "n", n)
+      `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv())
     }
 
   }
@@ -1530,5 +1540,5 @@ mk_mirai_error <- function(e) {
     sprintf("Error: %s", .subset2(e, "message")) else
       sprintf("Error in %s: %s", call, .subset2(e, "message"))
   cat(strcat(msg, "\n"), file = stderr());
-  `class<-`(msg, c("miraiError", "errorValue"))
+  `class<-`(msg, c("miraiError", "errorValue", "try-error"))
 }

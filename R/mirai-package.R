@@ -52,7 +52,7 @@
 #'     lock mclock msleep opt opt<- parse_url pipe_notify random reap recv
 #'     recv_aio_signal request request_signal send send_aio socket stat stop_aio
 #'     strcat tls_config unresolved until wait write_cert
-#' @importFrom parallel nextRNGStream
+#' @importFrom parallel nextRNGStream stopCluster
 #' @importFrom stats rexp
 #'
 #' @docType package
@@ -63,19 +63,28 @@ NULL
 .onLoad <- function(libname, pkgname) {
 
   .. <<- `[[<-`(new.env(hash = FALSE), "default", new.env(hash = FALSE))
-  switch(Sys.info()[["sysname"]],
-         Linux = {
-           .command <<- file.path(R.home("bin"), "Rscript")
-           .urlscheme <<- "abstract://"
-         },
-         Windows = {
-           .command <<- file.path(R.home("bin"), "Rscript.exe")
-           .urlscheme <<- "ipc://"
-         },
-         {
-           .command <<- file.path(R.home("bin"), "Rscript")
-           .urlscheme <<- "ipc:///tmp/"
-         })
+  switch(
+    Sys.info()[["sysname"]],
+    Linux = {
+      .command <<- file.path(R.home("bin"), "Rscript")
+      .urlscheme <<- "abstract://"
+    },
+    Windows = {
+      .command <<- file.path(R.home("bin"), "Rscript.exe")
+      .urlscheme <<- "ipc://"
+    },
+    {
+      .command <<- file.path(R.home("bin"), "Rscript")
+      .urlscheme <<- "ipc:///tmp/"
+    }
+  )
+
+  if ((rversion <- unlist(getRversion()))[1L] >= 4 && rversion[2L] >= 4 || rversion[1L] >= 5) {
+    envir <- getNamespace("parallel")
+    registerS3method("recvData", "miraiNode", recvData.miraiNode, envir)
+    registerS3method("sendData", "miraiNode", sendData.miraiNode, envir)
+    registerS3method("recvOneData", "miraiCluster", recvOneData.miraiCluster, envir)
+  }
 
 }
 
@@ -94,6 +103,7 @@ NULL
     n_zero = "the number of daemons must be zero or greater",
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
     requires_list = "'.args' must be specified as a list",
+    requires_n = "specifying 'url' without 'ssh' requires 'n'",
     sync_dispatch = "initial sync with dispatcher timed out after 5s",
     sync_timeout = "sync between host and dispatcher/daemon timed out after 5s",
     url_spec = "numeric value for 'url' is out of bounds",
@@ -103,3 +113,7 @@ NULL
 )
 .next_format_identifier <- as.raw(7L)
 .timelimit <- 5000L
+
+recvData <- NULL
+recvOneData <- NULL
+sendData <- NULL

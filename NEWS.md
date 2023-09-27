@@ -1,5 +1,10 @@
-# mirai 0.10.0.9013 (development)
+# mirai 0.10.0.9014 (development)
 
+* Implements an alternative communications backend for R, adding methods for the 'parallel' base package.
+  + `make_cluster()` creates a 'miraiCluster', compatible with existing functions taking a 'cluster' object.
+  + Fulfils a request by R Core at R Project Sprint 2023, and requires R >= 4.4 (currently R-devel).
+* `daemons()` adds argument 'resilience' to control the behaviour, when not using dispatcher, of whether to retry failed tasks on other daemons.
+* `mirai()` adds argument logical argument '.signal' for whether to signal the condition variable within the compute profile upon resolution of the 'mirai'.
 * `daemon()` argument 'exitlinger' retired as daemons now synchronise with the host/dispatcher and exit as soon as possible.
 * Optimises scheduling at dispatcher: tasks are no longer assigned to a daemon if it is exiting due to specified time/task-outs.
 * An 'errorValue' 19 'Connection reset' is now returned for a 'mirai' if the connection to either dispatcher or an ephemeral daemon drops, for example if they have crashed, rather than remaining unresolved.
@@ -8,7 +13,7 @@
 * Reverts the trailing line break added to the end of a 'miraiError' character string.
 * Deprecates the Deferred Evaluation Pipe `%>>%` in favour of a recommendation to use package `mirai.promises` for performing side effects upon 'mirai' resolution.
 * Deprecated use of alias `server()` for `daemon()` is retired.
-* Requires nanonext >= [0.10.0.9010].
+* Requires nanonext >= 0.10.1.
 
 # mirai 0.10.0
 
