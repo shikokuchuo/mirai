@@ -105,7 +105,7 @@ make_cluster <- function(n, url = NULL, ssh = list(nodes = character(), port = 2
   cl <- vector(mode = "list", length = n)
   for (i in seq_along(cl))
     cl[[i]] <- `attributes<-`(new.env(), list(class = "miraiNode", node = i, id = id))
-  reg.finalizer(.subset2(cl, 1L), stop_cluster)
+  reg.finalizer(.subset2(cl, 1L), stop_cluster, TRUE)
 
   `attributes<-`(cl, list(class = c("miraiCluster", "cluster"), id = id))
 

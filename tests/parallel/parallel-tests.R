@@ -7,9 +7,8 @@ nanotesti <- function(a, b) invisible(identical(a, b) || stop("the arguments are
 nanotesterr <- function(x, e = "")
   invisible(grepl(e, tryCatch(x, error = identity)[["message"]], fixed = TRUE) || stop("expected error message '", e, "' not generated"))
 
-nanotest(inherits(cluster <- make_cluster(2), "miraiCluster"))
-
 # benchmarking
+cluster <- make_cluster(2)
 oldcluster <- makePSOCKcluster(2)
 cat("\n1. Starting benchmarks\n + with parLapply\n   miraiCluster:\n")
 print(system.time(parLapply(cluster, 1:3e6, identity)))
@@ -20,11 +19,20 @@ print(system.time(parLapplyLB(cluster, 1:3e6, identity)))
 cat("   PSOCKcluster:\n")
 print(system.time(parLapplyLB(oldcluster, 1:3e6, identity)))
 stopCluster(oldcluster)
+
 cat("\n2. Starting tests\n")
 start <- nanonext::mclock()
+
 # testing functions from parallel package
+cluster <- make_cluster(2)
+nanotest(inherits(cluster, "miraiCluster"))
 nanotest(inherits(cluster, "cluster"))
 nanotest(length(cluster) == 2L)
+
+clusterSetRNGStream(cluster, 123)
+j <- clusterEvalQ(cluster, expr = .GlobalEnv[[".Random.seed"]])
+a <- parSapply(cluster, 1:4, rnorm)
+
 setDefaultCluster(cluster)
 res <- parLapply(X = 1:10, fun = rnorm)
 nanotest(is.list(res) && length(res) == 10L)
@@ -47,23 +55,22 @@ nanotesterr(clusterEvalQ(cluster, elephant()), "Error in elephant(): could not f
 # testing examples from parallel package
 nanotest(inherits(cl <- make_cluster(2), "miraiCluster"))
 nanotest(attr(cl, "id") != attr(cluster, "id"))
+
+clusterSetRNGStream(cl, 123)
+k <- clusterEvalQ(cl, expr = .GlobalEnv[[".Random.seed"]])
+b <- parSapply(cl, 1:4, rnorm)
+nanotesti(j, k)
+nanotesti(a, b)
+
 identical(clusterApply(cl, 1:2, get("+"), 3), list(4, 5))
 xx <- 1
-clusterExport(cl, "xx")
+clusterExport(cl, "xx", environment())
 nanotesti(clusterCall(cl, function(y) xx + y, 2), list(3,3))
 nanotesti(clusterMap(cl, function(x, y) seq_len(x) + y, c(a =  1, b = 2, c = 3), c(A = 10, B = 0, C = -10)),
           list (a = 11, b = c(1, 2), c = c(-9, -8, -7)))
 nanotesti(parSapply(cl, 1:20, get("+"), 3), as.double(4:23))
-clusterSetRNGStream(cl, 123)
-j <- clusterEvalQ(cl, expr = .GlobalEnv[[".Random.seed"]])
-a <- parSapply(cl, 1:4, rnorm)
-clusterSetRNGStream(cl, 123)
-k <- clusterEvalQ(cl, expr = .GlobalEnv[[".Random.seed"]])
-b <- parSapply(cl, 1:4, rnorm)
-nanotesti(a, b)
-nanotesti(j, k)
-nanotestn(stopCluster(cl))
 
+nanotestn(stopCluster(cl))
 nanotestn(stop_cluster(cluster))
 nanotesterr(parLapply(cluster, 1:10, runif), "cluster is no longer active")
 cat(sprintf(" + all tests successful in %.3f s\n\n", (nanonext::mclock() - start) / 1000))
