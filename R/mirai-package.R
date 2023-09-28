@@ -123,6 +123,7 @@ NULL
 .next_format_identifier <- as.raw(7L)
 .timelimit <- 5000L
 
+.unresolved_marker <- `class<-`(new.env(parent = emptyenv()), "unresolvedValue")
 recvData <- NULL
 recvOneData <- NULL
 sendData <- NULL

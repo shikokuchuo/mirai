@@ -170,11 +170,10 @@ recvOneData.miraiCluster <- function(cl) {
     stop(.messages[["nodes_failed"]])
   }
 
-  res <- !as.logical(lapply(cl, function(x) unresolved(.subset2(x, "mirai"))))
-  node <- which.max(res)
+  node <- which.min(lapply(cl, node_unresolved))
   m <- .subset2(.subset2(cl, node), "mirai")
   out <- list(node = node, value = list(value = .subset2(m, "value"), tag = .subset2(m, "tag")))
-  assign("value", `class<-`(new.env(hash = FALSE, parent = emptyenv()), "unresolvedValue"), m)
+  assign("value", .unresolved_marker, m)
   out
 
 }
@@ -197,5 +196,9 @@ print.miraiNode <- function(x, ...) {
   invisible(x)
 
 }
+
+# internals --------------------------------------------------------------------
+
+node_unresolved <- function(node) unresolved(.subset2(node, "mirai"))
 
 # nocov end

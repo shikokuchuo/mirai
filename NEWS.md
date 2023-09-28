@@ -1,10 +1,10 @@
 # mirai 0.10.0.9015 (development)
 
 * Implements an alternative communications backend for R, adding methods for the 'parallel' base package.
-  + `make_cluster()` creates a 'miraiCluster', compatible with existing functions taking a 'cluster' object.
+  + `make_cluster()` creates a 'miraiCluster', compatible with all existing functions taking a 'cluster' object.
   + Fulfils a request by R Core at R Project Sprint 2023, and requires R >= 4.4 (currently R-devel).
 * `daemons()` adds argument 'resilience' to control the behaviour, when not using dispatcher, of whether to retry failed tasks on other daemons.
-* `mirai()` adds argument logical argument '.signal' for whether to signal the condition variable within the compute profile upon resolution of the 'mirai'.
+* `mirai()` adds logical argument '.signal' for whether to signal the condition variable within the compute profile upon resolution of the 'mirai'.
 * `daemon()` argument 'exitlinger' retired as daemons now synchronise with the host/dispatcher and exit as soon as possible.
 * Optimises scheduling at dispatcher: tasks are no longer assigned to a daemon if it is exiting due to specified time/task-outs.
 * An 'errorValue' 19 'Connection reset' is now returned for a 'mirai' if the connection to either dispatcher or an ephemeral daemon drops, for example if they have crashed, rather than remaining unresolved.
