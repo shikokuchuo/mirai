@@ -121,16 +121,20 @@ time allowed for connection setup in seconds [default 5].</p></dd>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>The defaults correspond most closely to existing usage in the
-    <span class="pkg">parallel</span> package, although '...' arguments are passed onto
-    <code><a href="daemons.html">daemons</a></code> for additional customisation if desired.</p>
-<p>For remote nodes, the 'ssh' argument is a convenience feature with the
-    most common settings. If used, the number of nodes is inferred from the
-    length of the character vector 'nodes' and 'n' is disregarded if supplied.</p>
-<p>By specifying 'url' and 'n', nodes may also be launched by alternative
-    means, for example using <code><a href="launch_local.html">launch_remote</a></code>.</p>
-<p>Note: requires R &gt;= 4.4 (currently R-devel). Methods will not work with
-    prior R versions.</p>
+    <p>The behaviour of clusters created by this function is designed to be
+    as close as possible to clusters created by the <span class="pkg">parallel</span> package.
+    However, '...' arguments are passed onto <code><a href="daemons.html">daemons</a></code> for
+    additional customisation if desired.</p>
+<p>For remote nodes, the 'ssh' argument is an optional convenience
+    feature. If used, the number of nodes is inferred from the length of the
+    character vector 'nodes' and 'n' is disregarded if supplied.</p>
+<p>Alternatively, by specifying 'url' and 'n', nodes may also be launched by
+    other means, for example using <code><a href="launch_local.html">launch_remote</a></code>.</p>
+    </div>
+    <div id="note">
+    <h2>Note</h2>
+    <p>Requires R &gt;= 4.4 (currently R-devel). Clusters created with this
+    function will not work with prior R versions.</p>
     </div>
 
     <div id="ref-examples">
