@@ -16,6 +16,9 @@
 
 # mirai.parallel ---------------------------------------------------------------
 
+# nocov start
+# tested manually in tests/parallel/parallel-tests.R
+
 #' Make Mirai Cluster
 #'
 #' \code{make_cluster} creates a cluster of type 'miraiCluster', which may be
@@ -194,3 +197,5 @@ print.miraiNode <- function(x, ...) {
   invisible(x)
 
 }
+
+# nocov end

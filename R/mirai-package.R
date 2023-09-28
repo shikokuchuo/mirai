@@ -60,6 +60,9 @@
 #'
 NULL
 
+# nocov start
+# indirectly tested
+
 .onLoad <- function(libname, pkgname) {
 
   .. <<- new.env(hash = FALSE, parent = environment(daemons))
@@ -89,6 +92,8 @@ NULL
   }
 
 }
+
+# nocov end
 
 .. <- NULL
 .command <- NULL
