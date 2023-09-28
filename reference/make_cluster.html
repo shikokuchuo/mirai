@@ -67,7 +67,12 @@ stop_cluster stops a cluster created by make_cluster."><meta property="og:image"
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">make_cluster</span><span class="op">(</span><span class="va">n</span>, url <span class="op">=</span> <span class="cn">NULL</span>, ssh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>nodes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>, port <span class="op">=</span> <span class="fl">22</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">make_cluster</span><span class="op">(</span></span>
+<span>  <span class="va">n</span>,</span>
+<span>  url <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ssh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>nodes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>, port <span class="op">=</span> <span class="fl">22</span>, timeout <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">stop_cluster</span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -75,22 +80,24 @@ stop_cluster stops a cluster created by make_cluster."><meta property="og:image"
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>n</dt>
-<dd><p>if specified, the integer number of local nodes to launch.</p></dd>
+<dd><p>integer number of nodes (launched on the local machine unless 'url'
+is specified).</p></dd>
 
 
 <dt>url</dt>
-<dd><p>if specified, the character URL on the host for remote nodes to
-dial into, including a port accepting incoming connections, e.g.
-'tcp://192.168.0.2:5555'. Specify a URL starting 'tls+tcp://' for secure
-TLS connections.</p></dd>
+<dd><p>(specify for remote nodes), the character URL on the host for
+remote nodes to dial into, including a port accepting incoming connections,
+e.g. 'tcp://10.75.37.40:5555'. Specify a URL starting 'tls+tcp://' to use
+secure TLS connections.</p></dd>
 
 
 <dt>ssh</dt>
-<dd><p>(if 'url' is specified) a named list with 'nodes' being a character
-vector of hostnames or IP addresses of remote machines on which to launch
-nodes, e.g. <code>c('192.168.0.1', 'nodename')</code>, and optionally 'port' as
-the numeric port number on which to connect (defaults to standard SSH port
-22 if not specified).</p></dd>
+<dd><p>(if 'url' is specified, for launching remote nodes via SSH) a named
+list with 'nodes' being a character vector of hostnames or IP addresses
+of the remote machines on which to launch nodes, e.g.
+<code>c('10.75.37.90', 'nodename')</code>, and optionally 'port' as the numeric
+port number on which to connect [default 22] and 'timeout' as the maximum
+time allowed for connection setup in seconds [default 5].</p></dd>
 
 
 <dt>...</dt>
@@ -99,11 +106,6 @@ the numeric port number on which to connect (defaults to standard SSH port
 
 <dt>cl</dt>
 <dd><p>a 'miraiCluster'.</p></dd>
-
-
-<dt>port</dt>
-<dd><p>(if 'url' is specified) the port over which to connect via SSH
-(defaults to 22).</p></dd>
 
 </dl></div>
     <div id="value">
@@ -122,6 +124,11 @@ the numeric port number on which to connect (defaults to standard SSH port
     <p>The defaults correspond most closely to existing usage in the
     <span class="pkg">parallel</span> package, although '...' arguments are passed onto
     <code><a href="daemons.html">daemons</a></code> for additional customisation if desired.</p>
+<p>For remote nodes, the 'ssh' argument is a convenience feature with the
+    most common settings. If used, the number of nodes is inferred from the
+    length of the character vector 'nodes' and 'n' is disregarded if supplied.</p>
+<p>By specifying 'url' and 'n', nodes may also be launched by alternative
+    means, for example using <code><a href="launch_local.html">launch_remote</a></code>.</p>
 <p>Note: requires R &gt;= 4.4 (currently R-devel). Methods will not work with
     prior R versions.</p>
     </div>
