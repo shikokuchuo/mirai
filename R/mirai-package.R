@@ -61,7 +61,7 @@
 NULL
 
 # nocov start
-# indirectly tested
+# tested implicitly
 
 .onLoad <- function(libname, pkgname) {
 

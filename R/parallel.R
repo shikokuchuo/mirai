@@ -26,18 +26,18 @@
 #'     package such as \code{\link[parallel]{clusterApply}} or
 #'     \code{\link[parallel]{parLapply}}.
 #'
-#' @param n if specified, the integer number of local nodes to launch.
-#' @param url if specified, the character URL on the host for remote nodes to
-#'     dial into, including a port accepting incoming connections, e.g.
-#'     'tcp://192.168.0.2:5555'. Specify a URL starting 'tls+tcp://' for secure
-#'     TLS connections.
-#' @param ssh (if 'url' is specified) a named list with 'nodes' being a character
-#'     vector of hostnames or IP addresses of remote machines on which to launch
-#'     nodes, e.g. \code{c('192.168.0.1', 'nodename')}, and optionally 'port' as
-#'     the numeric port number on which to connect (defaults to standard SSH port
-#'     22 if not specified).
-#' @param port (if 'url' is specified) the port over which to connect via SSH
-#'     (defaults to 22).
+#' @param n integer number of nodes (launched on the local machine unless 'url'
+#'     is specified).
+#' @param url (specify for remote nodes), the character URL on the host for
+#'     remote nodes to dial into, including a port accepting incoming connections,
+#'     e.g. 'tcp://10.75.37.40:5555'. Specify a URL starting 'tls+tcp://' to use
+#'     secure TLS connections.
+#' @param ssh (if 'url' is specified, for launching remote nodes via SSH) a named
+#'     list with 'nodes' being a character vector of hostnames or IP addresses
+#'     of the remote machines on which to launch nodes, e.g.
+#'     \code{c('10.75.37.90', 'nodename')}, and optionally 'port' as the numeric
+#'     port number on which to connect [default 22] and 'timeout' as the maximum
+#'     time allowed for connection setup in seconds [default 5].
 #' @param ... additional arguments passed onto \code{\link{daemons}}.
 #'
 #' @return For \strong{make_cluster}: An object of class 'miraiCluster' and
@@ -49,6 +49,13 @@
 #' @details The defaults correspond most closely to existing usage in the
 #'     \pkg{parallel} package, although '...' arguments are passed onto
 #'     \code{\link{daemons}} for additional customisation if desired.
+#'
+#'     For remote nodes, the 'ssh' argument is a convenience feature with the
+#'     most common settings. If used, the number of nodes is inferred from the
+#'     length of the character vector 'nodes' and 'n' is disregarded if supplied.
+#'
+#'     By specifying 'url' and 'n', nodes may also be launched by alternative
+#'     means, for example using \code{\link{launch_remote}}.
 #'
 #'     Note: requires R >= 4.4 (currently R-devel). Methods will not work with
 #'     prior R versions.
@@ -76,7 +83,7 @@
 #'
 #' @export
 #'
-make_cluster <- function(n, url = NULL, ssh = list(nodes = character(), port = 22), ...) {
+make_cluster <- function(n, url = NULL, ssh = list(nodes = character(), port = 22, timeout = 5), ...) {
 
   id <- sprintf("`%d`", length(..))
 
@@ -86,9 +93,15 @@ make_cluster <- function(n, url = NULL, ssh = list(nodes = character(), port = 2
 
     if (length(nodes)) {
       port <- if (length(ssh[["port"]])) as.character(ssh[["port"]]) else "22"
+      timeout <- if (length(ssh[["timeout"]])) as.character(ssh[["timeout"]]) else "5"
       daemons(url = url, dispatcher = FALSE, resilience = FALSE, cleanup = 0L, ..., .compute = id)
       for (node in nodes)
-        launch_remote(1L, command = "ssh", args = c("-p", port, node, .), .compute = id)
+        launch_remote(
+          url = 1L,
+          command = "ssh",
+          args = c(sprintf("-o ConnectTimeout=%s -fTp", timeout), port, node, .),
+          .compute = id
+        )
       n <- length(nodes)
 
     } else {
