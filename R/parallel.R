@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # mirai. If not, see <https://www.gnu.org/licenses/>.
 
-# mirai.parallel ---------------------------------------------------------------
+# mirai x parallel -------------------------------------------------------------
 
 # nocov start
 # tested manually in tests/parallel/parallel-tests.R
@@ -108,7 +108,7 @@ make_cluster <- function(n, url = NULL, ssh = list(nodes = character(), port = 2
   cl <- vector(mode = "list", length = n)
   for (i in seq_along(cl))
     cl[[i]] <- `attributes<-`(new.env(), list(class = "miraiNode", node = i, id = id))
-  reg.finalizer(.subset2(cl, 1L), stop_cluster, TRUE)
+  reg.finalizer(cl[[1L]], stop_cluster, TRUE)
 
   `attributes<-`(cl, list(class = c("miraiCluster", "cluster"), id = id))
 
@@ -156,7 +156,7 @@ sendData.miraiNode <- function(node, data) {
 #' @method recvData miraiNode
 #' @export
 #'
-recvData.miraiNode <- function(node) call_mirai(node[["mirai"]])
+recvData.miraiNode <- function(node) call_mirai(.subset2(node, "mirai"))
 
 #' @method recvOneData miraiCluster
 #' @export
@@ -170,11 +170,11 @@ recvOneData.miraiCluster <- function(cl) {
     stop(.messages[["nodes_failed"]])
   }
 
-  res <- !as.logical(lapply(cl, function(x) unresolved(x[["mirai"]])))
+  res <- !as.logical(lapply(cl, function(x) unresolved(.subset2(x, "mirai"))))
   node <- which.max(res)
-  envir <- cl[[node]][["mirai"]]
-  out <- list(node = node, value = list(value = envir[["value"]], tag = envir[["tag"]]))
-  assign("value", `class<-`(new.env(hash = FALSE), "unresolvedValue"), envir)
+  m <- .subset2(.subset2(cl, node), "mirai")
+  out <- list(node = node, value = list(value = .subset2(m, "value"), tag = .subset2(m, "tag")))
+  assign("value", `class<-`(new.env(hash = FALSE, parent = emptyenv()), "unresolvedValue"), m)
   out
 
 }
