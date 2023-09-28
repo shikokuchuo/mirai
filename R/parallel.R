@@ -76,14 +76,18 @@
 make_cluster <- function(n, url = NULL, ssh = list(nodes = character(), port = 22), ...) {
 
   id <- sprintf("`%d`", length(..))
+
   if (is.character(url)) {
+
     nodes <- ssh[["nodes"]]
+
     if (length(nodes)) {
       port <- if (length(ssh[["port"]])) as.character(ssh[["port"]]) else "22"
       daemons(url = url, dispatcher = FALSE, resilience = FALSE, cleanup = 0L, ..., .compute = id)
       for (node in nodes)
         launch_remote(1L, command = "ssh", args = c("-p", port, node, .), .compute = id)
       n <- length(nodes)
+
     } else {
       missing(n) && stop(.messages[["requires_n"]])
       daemons(url = url, dispatcher = FALSE, resilience = FALSE, cleanup = 0L, ..., .compute = id)
@@ -97,10 +101,12 @@ make_cluster <- function(n, url = NULL, ssh = list(nodes = character(), port = 2
   }
 
   pipe_notify(..[[id]][["sock"]], cv = ..[[id]][["cv"]], add = FALSE, remove = TRUE, flag = TRUE)
+
   cl <- vector(mode = "list", length = n)
   for (i in seq_along(cl))
     cl[[i]] <- `attributes<-`(new.env(), list(class = "miraiNode", node = i, id = id))
   reg.finalizer(.subset2(cl, 1L), stop_cluster)
+
   `attributes<-`(cl, list(class = c("miraiCluster", "cluster"), id = id))
 
 }
@@ -131,22 +137,16 @@ stopCluster.miraiCluster <- stop_cluster
 #'
 sendData.miraiNode <- function(node, data) {
 
-  length(..[[attr(node, "id")]]) || stop("cluster is no longer active")
+  length(..[[attr(node, "id")]]) || stop(.messages[["cluster_inactive"]])
+
   value <- data[["data"]]
-  if (length(value[["tag"]])) {
-    node[["mirai"]] <- mirai(
-      do.call(node, data, quote = TRUE),
-      node = value[["fun"]], data = value[["args"]],
-      .signal = TRUE, .compute = attr(node, "id")
-    )
+  has_tag <- !is.null(value[["tag"]])
+
+  node[["mirai"]] <- mirai(do.call(node, data, quote = TRUE), node = value[["fun"]], data = value[["args"]],
+                           .signal = has_tag, .compute = attr(node, "id"))
+
+  if (has_tag)
     assign("tag", value[["tag"]], node[["mirai"]])
-  } else {
-    node[["mirai"]] <- mirai(
-      do.call(node, data, quote = TRUE),
-      node = value[["fun"]], data = value[["args"]],
-      .compute = attr(node, "id")
-    )
-  }
 
 }
 
@@ -161,10 +161,12 @@ recvData.miraiNode <- function(node) call_mirai(node[["mirai"]])
 recvOneData.miraiCluster <- function(cl) {
 
   envir <- ..[[attr(cl, "id")]]
+
   wait(envir[["cv"]]) || {
     stop_cluster(cl)
-    stop("one or more nodes failed... cluster stopped")
+    stop(.messages[["nodes_failed"]])
   }
+
   res <- !as.logical(lapply(cl, function(x) unresolved(x[["mirai"]])))
   node <- which.max(res)
   envir <- cl[[node]][["mirai"]]

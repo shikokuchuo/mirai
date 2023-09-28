@@ -80,11 +80,12 @@ NULL
     }
   )
 
-  if ((rversion <- unlist(getRversion()))[1L] >= 4 && rversion[2L] >= 4 || rversion[1L] >= 5) {
-    envir <- getNamespace("parallel")
-    registerS3method("recvData", "miraiNode", recvData.miraiNode, envir)
-    registerS3method("sendData", "miraiNode", sendData.miraiNode, envir)
-    registerS3method("recvOneData", "miraiCluster", recvOneData.miraiCluster, envir)
+  rversion <- .subset2(getRversion(), 1L)
+  if (rversion[1L] >= 4 && rversion[2L] >= 4 || rversion[1L] >= 5) {
+    ns <- getNamespace("parallel")
+    registerS3method("recvData", "miraiNode", recvData.miraiNode, ns)
+    registerS3method("sendData", "miraiNode", sendData.miraiNode, ns)
+    registerS3method("recvOneData", "miraiCluster", recvOneData.miraiCluster, ns)
   }
 
 }
@@ -96,12 +97,14 @@ NULL
 .intmax <- .Machine[["integer.max"]]
 .messages <- list2env(
   list(
+    cluster_inactive = "cluster is no longer active",
     daemons_unset = "a numeric value for 'url' requires daemons to be set",
     dot_required = "'.' must be an element of the character vector supplied to 'args'",
     missing_expression = "missing expression, perhaps wrap in {}?",
     missing_url = "at least one URL must be supplied for 'url' or 'n' must be at least 1",
     n_one = "'n' must be 1 or greater if specified with 'url'",
     n_zero = "the number of daemons must be zero or greater",
+    nodes_failed = "one or more nodes failed... cluster stopped",
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
     requires_list = "'.args' must be specified as a list",
     requires_n = "specifying 'url' without 'ssh' requires 'n'",
