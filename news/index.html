@@ -57,13 +57,13 @@
 <h2 class="page-header" data-toc-text="0.10.0.9015" id="mirai-01009015-development">mirai 0.10.0.9015 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009015-development"></a></h2>
 <ul><li>Implements an alternative communications backend for R, adding methods for the ‘parallel’ base package.
 <ul><li>
-<code><a href="../reference/make_cluster.html">make_cluster()</a></code> creates a ‘miraiCluster’, compatible with existing functions taking a ‘cluster’ object.</li>
+<code><a href="../reference/make_cluster.html">make_cluster()</a></code> creates a ‘miraiCluster’, compatible with all existing functions taking a ‘cluster’ object.</li>
 <li>Fulfils a request by R Core at R Project Sprint 2023, and requires R &gt;= 4.4 (currently R-devel).</li>
 </ul></li>
 <li>
 <code><a href="../reference/daemons.html">daemons()</a></code> adds argument ‘resilience’ to control the behaviour, when not using dispatcher, of whether to retry failed tasks on other daemons.</li>
 <li>
-<code><a href="../reference/mirai.html">mirai()</a></code> adds argument logical argument ‘.signal’ for whether to signal the condition variable within the compute profile upon resolution of the ‘mirai’.</li>
+<code><a href="../reference/mirai.html">mirai()</a></code> adds logical argument ‘.signal’ for whether to signal the condition variable within the compute profile upon resolution of the ‘mirai’.</li>
 <li>
 <code><a href="../reference/daemon.html">daemon()</a></code> argument ‘exitlinger’ retired as daemons now synchronise with the host/dispatcher and exit as soon as possible.</li>
 <li>Optimises scheduling at dispatcher: tasks are no longer assigned to a daemon if it is exiting due to specified time/task-outs.</li>
