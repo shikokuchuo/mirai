@@ -115,6 +115,7 @@ NULL
     requires_n = "specifying 'url' without 'ssh' requires 'n'",
     sync_dispatch = "initial sync with dispatcher timed out after 5s",
     sync_timeout = "sync between host and dispatcher/daemon timed out after 5s",
+    tunnel_requires = "SSH tunnelling requires 'url' hostname to be 'localhost' or '127.0.0.1'",
     url_spec = "numeric value for 'url' is out of bounds",
     wrong_dots = "'...' arguments should only be of integer, numeric or logical type"
   ),

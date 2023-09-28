@@ -32,12 +32,18 @@
 #'     remote nodes to dial into, including a port accepting incoming connections,
 #'     e.g. 'tcp://10.75.37.40:5555'. Specify a URL starting 'tls+tcp://' to use
 #'     secure TLS connections.
-#' @param ssh (if 'url' is specified, for launching remote nodes via SSH) a named
-#'     list with 'nodes' being a character vector of hostnames or IP addresses
-#'     of the remote machines on which to launch nodes, e.g.
-#'     \code{c('10.75.37.90', 'nodename')}, and optionally 'port' as the numeric
-#'     port number on which to connect [default 22] and 'timeout' as the maximum
-#'     time allowed for connection setup in seconds [default 5].
+#' @param ssh_nodes (if 'url' is specified, for launching remote nodes via SSH)
+#'     a character vector of hostnames or IP addresses of the remote machines on
+#'     which to launch nodes, e.g. \code{c('10.75.37.90', 'nodename')}.
+#' @param ssh_port [default 22] numeric port number on which to connect.
+#' @param ssh_timeout [default 5] maximum time allowed for connection setup in
+#'     seconds.
+#' @param ssh_tunnel [default FALSE] logical value whether to use SSH reverse
+#'     tunnelling. If TRUE, a tunnel is created between the same local and
+#'     remote port specified as part of 'url'. 'url' in this case must be either
+#'     'localhost' or '127.0.0.1'. This is as the host listens at 'url' on the
+#'     local machine, whilst the nodes dial into the same 'url' on the remote
+#'     machine, and the SSH tunnel connects both ends.
 #' @param ... additional arguments passed onto \code{\link{daemons}}.
 #'
 #' @return For \strong{make_cluster}: An object of class 'miraiCluster' and
@@ -51,12 +57,14 @@
 #'     However, '...' arguments are passed onto \code{\link{daemons}} for
 #'     additional customisation if desired.
 #'
-#'     For remote nodes, the 'ssh' argument is an optional convenience
+#'     For remote nodes, the 'ssh_' arguments are an optional convenience
 #'     feature. If used, the number of nodes is inferred from the length of the
-#'     character vector 'nodes' and 'n' is disregarded if supplied.
+#'     character vector 'ssh_nodes' and 'n' is disregarded if supplied. For ease
+#'     of use, SSH tunnelling assumes the same ports are available for forwarding
+#'     on both host and nodes, whilst this is not strictly necessary.
 #'
 #'     Alternatively, by specifying 'url' and 'n', nodes may also be launched by
-#'     other means, for example using \code{\link{launch_remote}}.
+#'     other more customisable means, for example using \code{\link{launch_remote}}.
 #'
 #' @note Requires R >= 4.4 (currently R-devel). Clusters created with this
 #'     function will not work with prior R versions.
@@ -84,26 +92,33 @@
 #'
 #' @export
 #'
-make_cluster <- function(n, url = NULL, ssh = list(nodes = character(), port = 22, timeout = 5), ...) {
+make_cluster <- function(n, url = NULL, ssh_nodes = character(), ssh_port = 22,
+                         ssh_timeout = 5, ssh_tunnel = FALSE, ...) {
 
   id <- sprintf("`%d`", length(..))
 
   if (is.character(url)) {
 
-    nodes <- ssh[["nodes"]]
-
-    if (length(nodes)) {
-      port <- if (length(ssh[["port"]])) as.character(ssh[["port"]]) else "22"
-      timeout <- if (length(ssh[["timeout"]])) as.character(ssh[["timeout"]]) else "5"
+    if (length(ssh_nodes)) {
       daemons(url = url, dispatcher = FALSE, resilience = FALSE, cleanup = 0L, ..., .compute = id)
-      for (node in nodes)
+      for (node in ssh_nodes)
         launch_remote(
           url = 1L,
           command = "ssh",
-          args = c(sprintf("-o ConnectTimeout=%s -fTp", timeout), port, node, .),
+          args = c(
+            if (ssh_tunnel) {
+              purl <- parse_url(url)
+              purl[["hostname"]] %in% c("localhost", "127.0.0.1") || stop(.messages[["tunnel_requires"]])
+              sprintf("-R %s:%s", purl[["port"]], purl[["host"]])
+            },
+            sprintf("-o ConnectTimeout=%s -fTp", as.character(ssh_timeout)),
+            as.character(ssh_port),
+            node,
+            .
+          ),
           .compute = id
         )
-      n <- length(nodes)
+      n <- length(ssh_nodes)
 
     } else {
       missing(n) && stop(.messages[["requires_n"]])
