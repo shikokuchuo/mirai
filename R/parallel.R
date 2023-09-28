@@ -46,19 +46,20 @@
 #'
 #'     For \strong{stop_cluster}: invisible NULL.
 #'
-#' @details The defaults correspond most closely to existing usage in the
-#'     \pkg{parallel} package, although '...' arguments are passed onto
-#'     \code{\link{daemons}} for additional customisation if desired.
+#' @details The behaviour of clusters created by this function is designed to be
+#'     as close as possible to clusters created by the \pkg{parallel} package.
+#'     However, '...' arguments are passed onto \code{\link{daemons}} for
+#'     additional customisation if desired.
 #'
-#'     For remote nodes, the 'ssh' argument is a convenience feature with the
-#'     most common settings. If used, the number of nodes is inferred from the
-#'     length of the character vector 'nodes' and 'n' is disregarded if supplied.
+#'     For remote nodes, the 'ssh' argument is an optional convenience
+#'     feature. If used, the number of nodes is inferred from the length of the
+#'     character vector 'nodes' and 'n' is disregarded if supplied.
 #'
-#'     By specifying 'url' and 'n', nodes may also be launched by alternative
-#'     means, for example using \code{\link{launch_remote}}.
+#'     Alternatively, by specifying 'url' and 'n', nodes may also be launched by
+#'     other means, for example using \code{\link{launch_remote}}.
 #'
-#'     Note: requires R >= 4.4 (currently R-devel). Methods will not work with
-#'     prior R versions.
+#' @note Requires R >= 4.4 (currently R-devel). Clusters created with this
+#'     function will not work with prior R versions.
 #'
 #' @examples
 #' if (interactive()) {
