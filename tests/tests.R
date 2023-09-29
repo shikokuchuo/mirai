@@ -90,6 +90,7 @@ nanotesterr(ssh_args("remotehost", tunnel = TRUE), "must be called in the correc
 if (.Platform[["OS.type"]] != "windows") {
   nanotest(is_mirai(m <- mirai(TRUE)))
   nanotest(is.character(launch_remote("ws://[::1]:5555", command = "echo", args = c("Test out:", ".", ">/dev/null"), rscript = "/usr/lib/R/bin/Rscript")))
+  nanotest(is.character(launch_remote("tcp://localhost:5555", command = "echo", args = ssh_args("remotehost", tunnel = TRUE))))
   Sys.sleep(1L)
   nanotestn(launch_local(mirai:::auto_tokenized_url(), .compute = "test"))
   Sys.sleep(1L)

@@ -1173,7 +1173,6 @@ ssh_args <- function(names, port = 22, timeout = 5, tunnel = FALSE) {
     url <- dynGet("url", ifnotfound = stop(.messages[["correct_context"]]))
     purl <- lapply(url, parse_check_local_url)
     plen <- length(purl)
-    arglen <- max(nlen, plen)
   }
 
   nlen <- length(names)
