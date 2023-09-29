@@ -21,7 +21,7 @@ stop_cluster stops a cluster created by make_cluster."><meta property="og:image"
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9016</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9017</span>
       </span>
     </div>
 
@@ -70,11 +70,10 @@ stop_cluster stops a cluster created by make_cluster."><meta property="og:image"
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">make_cluster</span><span class="op">(</span></span>
 <span>  <span class="va">n</span>,</span>
 <span>  url <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  ssh_nodes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  ssh_port <span class="op">=</span> <span class="fl">22</span>,</span>
-<span>  ssh_timeout <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  ssh_tunnel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  command <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"."</span><span class="op">)</span>,</span>
+<span>  rscript <span class="op">=</span> <span class="st">"Rscript"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">stop_cluster</span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
@@ -94,32 +93,28 @@ e.g. 'tcp://10.75.37.40:5555'. Specify a URL starting 'tls+tcp://' to use
 secure TLS connections.</p></dd>
 
 
-<dt>ssh_nodes</dt>
-<dd><p>(if 'url' is specified, for launching remote nodes via SSH)
-a character vector of hostnames or IP addresses of the remote machines on
-which to launch nodes, e.g. <code>c('10.75.37.90', 'nodename')</code>.</p></dd>
-
-
-<dt>ssh_port</dt>
-<dd><p>[default 22] numeric port number on which to connect.</p></dd>
-
-
-<dt>ssh_timeout</dt>
-<dd><p>[default 5] maximum time allowed for connection setup in
-seconds.</p></dd>
-
-
-<dt>ssh_tunnel</dt>
-<dd><p>[default FALSE] logical value whether to use SSH reverse
-tunnelling. If TRUE, a tunnel is created between the same local and
-remote port specified as part of 'url'. 'url' in this case must be either
-'localhost' or '127.0.0.1'. This is as the host listens at 'url' on the
-local machine, whilst the nodes dial into the same 'url' on the remote
-machine, and the SSH tunnel connects both ends.</p></dd>
-
-
 <dt>...</dt>
 <dd><p>additional arguments passed onto <code><a href="daemons.html">daemons</a></code>.</p></dd>
+
+
+<dt>command</dt>
+<dd><p>(optional) the command used to effect the daemon launch on the
+remote machine as a character string (e.g. <code>'ssh'</code>).</p></dd>
+
+
+<dt>args</dt>
+<dd><p>(optional) arguments passed to 'command', as a character vector
+that must include <code>"."</code> as an element, which will be substituted
+for the daemon launch command. Alternatively, a list of character
+vectors, such as those produced by <code><a href="ssh_args.html">ssh_args</a></code>, a convenience
+function for constructing valid SSH arguments.</p></dd>
+
+
+<dt>rscript</dt>
+<dd><p>(for remote only) name / path of the Rscript executable on
+the remote machine. The default assumes 'Rscript' is on the executable
+search path. Prepend the full path if necessary. If launching on Windows,
+'Rscript' should be replaced with 'Rscript.exe'.</p></dd>
 
 
 <dt>cl</dt>
@@ -143,13 +138,13 @@ machine, and the SSH tunnel connects both ends.</p></dd>
     as close as possible to clusters created by the <span class="pkg">parallel</span> package.
     However, '...' arguments are passed onto <code><a href="daemons.html">daemons</a></code> for
     additional customisation if desired.</p>
-<p>For remote nodes, the 'ssh_' arguments are an optional convenience
-    feature. If used, the number of nodes is inferred from the length of the
-    character vector 'ssh_nodes' and 'n' is disregarded if supplied. For ease
-    of use, SSH tunnelling assumes the same ports are available for forwarding
-    on both host and nodes, whilst this is not strictly necessary.</p>
-<p>Alternatively, by specifying 'url' and 'n', nodes may also be launched by
-    other more customisable means, for example using <code><a href="launch_local.html">launch_remote</a></code>.</p>
+<p>For remote nodes, the arguments 'command', 'args' and 'rscript' map
+    directly to the relevant arguments of <code><a href="launch_local.html">launch_remote</a></code>. If
+    launching remote nodes, the number of nodes is inferred from the length
+    of 'args' and 'n' is disregarded if supplied.</p>
+<p>Alternatively, by specifying only 'url' and 'n', the host connection
+    listening at 'url' is set up, and nodes may be launched by other custom
+    means.</p>
     </div>
     <div id="note">
     <h2>Note</h2>
@@ -171,8 +166,10 @@ machine, and the SSH tunnel connects both ends.</p></dd>
 <span class="r-in"><span>  <span class="fu">make_cluster</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="co"># host URL accessible to nodes</span></span></span>
 <span class="r-in"><span>    url <span class="op">=</span> <span class="st">"tcp://10.75.37.40:5555"</span>,</span></span>
+<span class="r-in"><span>    <span class="co"># launch nodes using SSH</span></span></span>
+<span class="r-in"><span>    command <span class="op">=</span> <span class="st">"ssh"</span>,</span></span>
 <span class="r-in"><span>    <span class="co"># node IP / hostnames to connect to with custom port number</span></span></span>
-<span class="r-in"><span>    ssh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>nodes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"10.75.37.90"</span>, <span class="st">"10.75.37.91"</span><span class="op">)</span>, port <span class="op">=</span> <span class="fl">222</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    args <span class="op">=</span> <span class="fu"><a href="ssh_args.html">ssh_args</a></span><span class="op">(</span>names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"10.75.37.90"</span>, <span class="st">"10.75.37.91"</span><span class="op">)</span>, port <span class="op">=</span> <span class="fl">222</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span>, error <span class="op">=</span> <span class="va">identity</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">cl</span>, <span class="st">"cluster"</span><span class="op">)</span><span class="op">)</span> <span class="fu">stop_cluster</span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></span>
