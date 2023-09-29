@@ -78,7 +78,27 @@
 #'     # launch nodes using SSH
 #'     command = "ssh",
 #'     # node IP / hostnames to connect to with custom port number
-#'     args = ssh_args(names = c("10.75.37.90", "10.75.37.91"), port = 222)
+#'     args = ssh_args(
+#'       names = c("10.75.37.90", "10.75.37.91"),
+#'       port = 222,
+#'       timeout = 1
+#'     ),
+#'   )
+#' , error = identity)
+#' if (inherits(cl, "cluster")) stop_cluster(cl)
+#'
+#' cl <- tryCatch(
+#'   make_cluster(
+#'     # use 'localhost' or '127.0.0.1' with a port available on all machines
+#'     url = "tcp://localhost:5555",
+#'     # launch nodes using SSH
+#'     command = "ssh",
+#'     # launch 2 nodes on the remote machine with SSH tunnelling
+#'     args = ssh_args(
+#'       names = c("10.75.37.90", "10.75.37.90"),
+#'       timeout = 1,
+#'       tunnel = TRUE
+#'     )
 #'   )
 #' , error = identity)
 #' if (inherits(cl, "cluster")) stop_cluster(cl)
