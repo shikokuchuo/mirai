@@ -102,7 +102,7 @@ NULL
 .intmax <- .Machine[["integer.max"]]
 .messages <- list2env(
   list(
-    arglen_one = "length of 'args' must be 1 or the same length as 'url'",
+    arglen = "length of 'args' must be 1 or the same length as 'url'",
     cluster_inactive = "cluster is no longer active",
     correct_context = "must be called in the correct context e.g. as a function argument",
     daemons_unset = "a numeric value for 'url' requires daemons to be set",

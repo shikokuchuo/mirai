@@ -17,10 +17,11 @@ machines on which to launch daemons (nodes), e.g.
 
 \item{tunnel}{[default FALSE] logical value whether to use SSH reverse
 tunnelling. If TRUE, a tunnel is created between the same local and
-remote port specified as part of 'url'. 'url' in this case must be either
-'localhost' or '127.0.0.1'. This is as the host listens at 'url' on the
-local machine, whilst the nodes dial into the same 'url' on the remote
-machine, and the SSH tunnel connects both ends.}
+remote port specified as part of 'url' of the function where this is
+being used as an argument. 'url' in this case must be either 'localhost'
+or '127.0.0.1'. This is as the host listens at 'url' on the local machine,
+whilst the nodes dial into the same 'url' on the remote machine, and the
+SSH tunnel connects both ends.}
 }
 \value{
 A list of character vectors the same length as 'names'.
