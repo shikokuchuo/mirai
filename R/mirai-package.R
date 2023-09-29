@@ -102,9 +102,11 @@ NULL
 .intmax <- .Machine[["integer.max"]]
 .messages <- list2env(
   list(
+    arglen_one = "length of 'args' must be 1 or the same length as 'url'",
     cluster_inactive = "cluster is no longer active",
+    correct_context = "must be called in the correct context e.g. as a function argument",
     daemons_unset = "a numeric value for 'url' requires daemons to be set",
-    dot_required = "'.' must be an element of the character vector supplied to 'args'",
+    dot_required = "'.' must be an element of (each of) the character vector(s) supplied to 'args'",
     missing_expression = "missing expression, perhaps wrap in {}?",
     missing_url = "at least one URL must be supplied for 'url' or 'n' must be at least 1",
     n_one = "'n' must be 1 or greater if specified with 'url'",
@@ -112,10 +114,11 @@ NULL
     nodes_failed = "one or more nodes failed... cluster stopped",
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
     requires_list = "'.args' must be specified as a list",
+    requires_local = "SSH tunnelling requires 'url' hostname to be 'localhost' or '127.0.0.1'",
     requires_n = "specifying 'url' without 'ssh' requires 'n'",
+    single_url = "only one 'url' should be specified",
     sync_dispatch = "initial sync with dispatcher timed out after 5s",
     sync_timeout = "sync between host and dispatcher/daemon timed out after 5s",
-    tunnel_requires = "SSH tunnelling requires 'url' hostname to be 'localhost' or '127.0.0.1'",
     url_spec = "numeric value for 'url' is out of bounds",
     wrong_dots = "'...' arguments should only be of integer, numeric or logical type"
   ),

@@ -8,11 +8,10 @@
 make_cluster(
   n,
   url = NULL,
-  ssh_nodes = character(),
-  ssh_port = 22,
-  ssh_timeout = 5,
-  ssh_tunnel = FALSE,
-  ...
+  ...,
+  command = NULL,
+  args = c("", "."),
+  rscript = "Rscript"
 )
 
 stop_cluster(cl)
@@ -26,23 +25,21 @@ remote nodes to dial into, including a port accepting incoming connections,
 e.g. 'tcp://10.75.37.40:5555'. Specify a URL starting 'tls+tcp://' to use
 secure TLS connections.}
 
-\item{ssh_nodes}{(if 'url' is specified, for launching remote nodes via SSH)
-a character vector of hostnames or IP addresses of the remote machines on
-which to launch nodes, e.g. \code{c('10.75.37.90', 'nodename')}.}
-
-\item{ssh_port}{[default 22] numeric port number on which to connect.}
-
-\item{ssh_timeout}{[default 5] maximum time allowed for connection setup in
-seconds.}
-
-\item{ssh_tunnel}{[default FALSE] logical value whether to use SSH reverse
-tunnelling. If TRUE, a tunnel is created between the same local and
-remote port specified as part of 'url'. 'url' in this case must be either
-'localhost' or '127.0.0.1'. This is as the host listens at 'url' on the
-local machine, whilst the nodes dial into the same 'url' on the remote
-machine, and the SSH tunnel connects both ends.}
-
 \item{...}{additional arguments passed onto \code{\link{daemons}}.}
+
+\item{command}{(optional) the command used to effect the daemon launch on the
+remote machine as a character string (e.g. \code{'ssh'}).}
+
+\item{args}{(optional) arguments passed to 'command', as a character vector
+that must include \code{"."} as an element, which will be substituted
+for the daemon launch command. Alternatively, a list of character
+vectors, such as those produced by \code{\link{ssh_args}}, a convenience
+function for constructing valid SSH arguments.}
+
+\item{rscript}{(for remote only) name / path of the Rscript executable on
+the remote machine. The default assumes 'Rscript' is on the executable
+search path. Prepend the full path if necessary. If launching on Windows,
+'Rscript' should be replaced with 'Rscript.exe'.}
 
 \item{cl}{a 'miraiCluster'.}
 }
@@ -67,14 +64,14 @@ The behaviour of clusters created by this function is designed to be
     However, '...' arguments are passed onto \code{\link{daemons}} for
     additional customisation if desired.
 
-    For remote nodes, the 'ssh_' arguments are an optional convenience
-    feature. If used, the number of nodes is inferred from the length of the
-    character vector 'ssh_nodes' and 'n' is disregarded if supplied. For ease
-    of use, SSH tunnelling assumes the same ports are available for forwarding
-    on both host and nodes, whilst this is not strictly necessary.
+    For remote nodes, the arguments 'command', 'args' and 'rscript' map
+    directly to the relevant arguments of \code{\link{launch_remote}}. If
+    launching remote nodes, the number of nodes is inferred from the length
+    of 'args' and 'n' is disregarded if supplied.
 
-    Alternatively, by specifying 'url' and 'n', nodes may also be launched by
-    other more customisable means, for example using \code{\link{launch_remote}}.
+    Alternatively, by specifying only 'url' and 'n', the host connection
+    listening at 'url' is set up, and nodes may be launched by other custom
+    means.
 }
 \note{
 Requires R >= 4.4 (currently R-devel). Clusters created with this
@@ -93,8 +90,10 @@ cl <- tryCatch(
   make_cluster(
     # host URL accessible to nodes
     url = "tcp://10.75.37.40:5555",
+    # launch nodes using SSH
+    command = "ssh",
     # node IP / hostnames to connect to with custom port number
-    ssh = list(nodes = c("10.75.37.90", "10.75.37.91"), port = 222)
+    args = ssh_args(names = c("10.75.37.90", "10.75.37.91"), port = 222)
   )
 , error = identity)
 if (inherits(cl, "cluster")) stop_cluster(cl)

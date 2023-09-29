@@ -12,9 +12,9 @@ launch_remote(
   ...,
   tls = NULL,
   .compute = "default",
-  rscript = "Rscript",
   command = NULL,
-  args = c("", .)
+  args = c("", "."),
+  rscript = "Rscript"
 )
 }
 \arguments{
@@ -40,20 +40,19 @@ empty character ''.}
 \item{.compute}{[default 'default'] character compute profile (each compute
 profile has its own set of daemons for connecting to different resources).}
 
-\item{rscript}{[default 'Rscript'] name / path of the Rscript executable. The
-default assumes 'Rscript' is on the executable search path on the remote
-machine. Prepend the full path if necessary. If launching on Windows,
-'Rscript' should be replaced with 'Rscript.exe'.}
-
 \item{command}{(optional) the command used to effect the daemon launch on the
 remote machine as a character string (e.g. \code{'ssh'}).}
 
 \item{args}{(optional) arguments passed to 'command', as a character vector
-that must include '\code{.}' (quoted or unquoted) as an element,
-which will be substituted for the daemons launch command. As an example,
-for SSH, valid arguments may comprise the port, destination IP, followed
-by the daemons launch command. These could be specified in the manner of:
-\code{c('-p 22 192.168.0.2', .)}.}
+that must include \code{"."} as an element, which will be substituted
+for the daemon launch command. Alternatively, a list of character
+vectors, such as those produced by \code{\link{ssh_args}}, a convenience
+function for constructing valid SSH arguments.}
+
+\item{rscript}{[default 'Rscript'] name / path of the Rscript executable on
+the remote machine. The default assumes 'Rscript' is on the executable
+search path. Prepend the full path if necessary. If launching on Windows,
+'Rscript' should be replaced with 'Rscript.exe'.}
 }
 \value{
 For \strong{launch_local}: Invisible NULL.

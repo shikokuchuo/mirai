@@ -1067,18 +1067,17 @@ launch_local <- function(url, ..., tls = NULL, .compute = "default") {
 #'     character vector. If 'command' is specified, this is executed with the
 #'     arguments in 'args' to effect the daemon launch on the remote machine.
 #'
-#' @param rscript [default 'Rscript'] name / path of the Rscript executable. The
-#'     default assumes 'Rscript' is on the executable search path on the remote
-#'     machine. Prepend the full path if necessary. If launching on Windows,
-#'     'Rscript' should be replaced with 'Rscript.exe'.
 #' @param command (optional) the command used to effect the daemon launch on the
 #'     remote machine as a character string (e.g. \code{'ssh'}).
 #' @param args (optional) arguments passed to 'command', as a character vector
-#'     that must include '\code{.}' (quoted or unquoted) as an element,
-#'     which will be substituted for the daemons launch command. As an example,
-#'     for SSH, valid arguments may comprise the port, destination IP, followed
-#'     by the daemons launch command. These could be specified in the manner of:
-#'     \code{c('-p 22 192.168.0.2', .)}.
+#'     that must include \code{"."} as an element, which will be substituted
+#'     for the daemon launch command. Alternatively, a list of character
+#'     vectors, such as those produced by \code{\link{ssh_args}}, a convenience
+#'     function for constructing valid SSH arguments.
+#' @param rscript [default 'Rscript'] name / path of the Rscript executable on
+#'     the remote machine. The default assumes 'Rscript' is on the executable
+#'     search path. Prepend the full path if necessary. If launching on Windows,
+#'     'Rscript' should be replaced with 'Rscript.exe'.
 #'
 #' @return For \strong{launch_remote}: A character vector of daemon launch
 #'     commands the same length as 'url'. For manual deployment, unescape the
@@ -1088,29 +1087,109 @@ launch_local <- function(url, ..., tls = NULL, .compute = "default") {
 #' @export
 #'
 launch_remote <- function(url, ..., tls = NULL, .compute = "default",
-                          rscript = "Rscript", command = NULL, args = c("", .)) {
+                          command = NULL, args = c("", "."), rscript = "Rscript") {
 
   envir <- ..[[.compute]]
   dots <- parse_dots(...)
   if (is.null(tls)) tls <- envir[["tls"]]
-  cmds <- character(length(url))
+  ulen <- length(url)
   url <- process_url(url, .compute = .compute)
+
+  if (length(command) && is.list(args)) {
+
+    if (length(args) == 1L) {
+      args <- args[[1L]]
+
+    } else if (ulen == 1L || ulen == length(args)) {
+
+      arglen <- length(args)
+      cmds <- character(arglen)
+      for (i in seq_along(args))
+        cmds[i] <- sprintf("%s -e %s", rscript, if (length(envir[["stream"]]))
+          write_args(list(url[min(i, ulen)], dots, next_stream(envir)), tls = tls) else
+            write_args(list(url[min(i, ulen)], dots), tls = tls))
+
+      for (i in seq_along(args))
+        system2(command = command, args = `[<-`(args[[i]], find_dot(args[[i]]), shQuote(cmds[i])), wait = FALSE)
+
+      return(cmds)
+
+    } else {
+      stop(.messages[["arglen_one"]])
+    }
+
+  }
+
+  cmds <- character(ulen)
   for (i in seq_along(url))
     cmds[i] <- sprintf("%s -e %s", rscript, if (length(envir[["stream"]]))
       write_args(list(url[i], dots, next_stream(envir)), tls = tls) else
         write_args(list(url[i], dots), tls = tls))
 
-  if (length(command)) {
-    sa <- substitute(args)
-    if (length(sa) > length(args))
-      sa[[1L]] <- NULL
-    sel <- as.character(sa) == "."
-    any(sel) || stop(.messages[["dot_required"]])
+  if (length(command))
     for (cmd in cmds)
-      system2(command = command, args = `[<-`(args, sel, shQuote(cmd)), wait = FALSE)
-  }
+      system2(command = command, args = `[<-`(args, find_dot(args), shQuote(cmd)), wait = FALSE)
 
   cmds
+
+}
+
+#' SSH Arguments Constructor
+#'
+#' Return value may be supplied directly to the 'args' argument of
+#'     \code{\link{launch_remote}} or \code{\link{make_cluster}}.
+#'
+#' @param names a character vector of hostnames or IP addresses of the remote
+#'     machines on which to launch daemons (nodes), e.g.
+#'     \code{c('10.75.37.90', 'nodename')}.
+#' @param port [default 22] numeric port number on which to connect.
+#' @param timeout [default 5] maximum time allowed for connection setup in seconds.
+#' @param tunnel [default FALSE] logical value whether to use SSH reverse
+#'     tunnelling. If TRUE, a tunnel is created between the same local and
+#'     remote port specified as part of 'url'. 'url' in this case must be either
+#'     'localhost' or '127.0.0.1'. This is as the host listens at 'url' on the
+#'     local machine, whilst the nodes dial into the same 'url' on the remote
+#'     machine, and the SSH tunnel connects both ends.
+#'
+#' @return A list of character vectors the same length as 'names'.
+#'
+#' @details By default, uses the SSH flags -f to background the SSH process and
+#'     -T to not require a tty for efficiency.
+#'
+#'     For simplicity, this SSH tunnelling implementation uses the same port
+#'     on both the side of the host and that of the corresponding node.
+#'
+#' @note This function only returns the relevant SSH arguments; 'command' must
+#'     also be specified as 'ssh' or the path to the SSH application.
+#'
+#' @examples
+#' ssh_args(names = c("10.75.37.90", "nodename"), port = 222, timeout = 10)
+#'
+#' @export
+#'
+ssh_args <- function(names, port = 22, timeout = 5, tunnel = FALSE) {
+
+  if (tunnel) {
+    url <- dynGet("url", ifnotfound = stop(.messages[["correct_context"]]))
+    purl <- lapply(url, parse_check_local_url)
+    plen <- length(purl)
+    arglen <- max(nlen, plen)
+  }
+
+  nlen <- length(names)
+  args <- vector(mode = "list", length = if (tunnel) max(nlen, plen) else nlen)
+
+  for (i in seq_along(args)) {
+    args[[i]] <- c(
+      if (tunnel) sprintf("-R %s:%s", purl[[min(i, plen)]][["port"]], purl[[min(i, plen)]][["host"]]),
+      sprintf("-o ConnectTimeout=%s -fTp", as.character(timeout)),
+      as.character(port),
+      names[[min(i, nlen)]],
+      "."
+    )
+  }
+
+  args
 
 }
 
@@ -1389,156 +1468,4 @@ print.miraiInterrupt <- function(x, ...) {
   cat("'miraiInterrupt' chr \"\"\n", file = stdout())
   invisible(x)
 
-}
-
-# internals --------------------------------------------------------------------
-
-parse_dots <- function(...)
-  if (missing(...)) "" else {
-    dots <- list(...)
-    for (dot in dots)
-      is.numeric(dot) || is.logical(dot) || stop(.messages[["wrong_dots"]])
-    dnames <- names(dots)
-    dots <- strcat(",", paste(dnames, dots, sep = "=", collapse = ","))
-    "output" %in% dnames && return(`class<-`(dots, "output"))
-    dots
-  }
-
-parse_tls <- function(tls)
-  switch(length(tls) + 1L,
-         "",
-         sprintf(",tls='%s'", tls),
-         sprintf(",tls=c('%s','%s')", tls[1L], tls[2L]))
-
-parse_cleanup <- function(cleanup)
-  c(cleanup %% 2L, (clr <- as.raw(cleanup)) & as.raw(2L), clr & as.raw(4L), clr & as.raw(8L))
-
-process_url <- function(url, .compute) {
-  if (is.numeric(url)) {
-    vec <- ..[[.compute]][["urls"]]
-    is.null(vec) && stop(.messages[["daemons_unset"]])
-    all(url >= 1L, url <= length(vec)) || stop(.messages[["url_spec"]])
-    url <- vec[url]
-  } else {
-    lapply(url, parse_url)
-  }
-  url
-}
-
-write_args <- function(dots, rs = NULL, tls = NULL, libpath = NULL)
-  shQuote(switch(length(dots),
-                 sprintf("mirai::.daemon('%s')", dots[[1L]]),
-                 sprintf("mirai::daemon('%s'%s%s)", dots[[1L]], dots[[2L]], parse_tls(tls)),
-                 sprintf("mirai::daemon('%s'%s%s,rs=c(%s))", dots[[1L]], dots[[2L]], parse_tls(tls), paste0(dots[[3L]], collapse = ",")),
-                 sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',n=%d,rs=c(%s),monitor='%s'%s)", libpath, dots[[1L]], dots[[3L]], paste0(rs, collapse= ","), dots[[4L]], dots[[2L]]),
-                 sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',c('%s'),n=%d,monitor='%s'%s)", libpath, dots[[1L]], paste0(dots[[3L]], collapse = "','"), dots[[4L]], dots[[5L]], dots[[2L]])))
-
-launch_daemon <- function(..., rs = NULL, tls = NULL) {
-  dots <- list(...)
-  dlen <- length(dots)
-  output <- dlen > 1L && is.object(dots[[2L]])
-  libpath <- if (dlen > 3L) (lp <- .libPaths())[file.exists(file.path(lp, "mirai"))][1L]
-  system2(command = .command, args = c(if (length(libpath)) "--vanilla", "-e", write_args(dots, rs = rs, tls = tls, libpath = libpath)), stdout = if (output) "", stderr = if (output) "", wait = FALSE)
-}
-
-launch_and_sync_daemon <- function(sock, ..., rs = NULL, tls = NULL, pass = NULL) {
-  cv <- cv()
-  pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-  if (is.character(tls)) {
-    switch(
-      length(tls),
-      {
-        on.exit(Sys.unsetenv("MIRAI_TEMP_FIELD1"))
-        Sys.setenv(MIRAI_TEMP_FIELD1 = tls)
-        Sys.unsetenv("MIRAI_TEMP_FIELD2")
-      },
-      {
-        on.exit(Sys.unsetenv(c("MIRAI_TEMP_FIELD1", "MIRAI_TEMP_FIELD2")))
-        Sys.setenv(MIRAI_TEMP_FIELD1 = tls[1L])
-        Sys.setenv(MIRAI_TEMP_FIELD2 = tls[2L])
-      }
-    )
-    if (is.character(pass)) {
-      on.exit(Sys.unsetenv("MIRAI_TEMP_VAR"), add = TRUE)
-      Sys.setenv(MIRAI_TEMP_VAR = pass)
-    }
-  }
-  launch_daemon(..., rs = rs)
-  until(cv, .timelimit) && stop(if (...length() < 3L) .messages[["sync_timeout"]] else .messages[["sync_dispatch"]])
-}
-
-dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
-  cv <- cv()
-  if (length(tls) && !asyncdial) {
-    pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-    dial(sock, url = url, autostart = TRUE, tls = tls, error = TRUE)
-    until(cv, .timelimit) && stop(.messages[["sync_timeout"]])
-  } else {
-    pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = FALSE)
-    dial(sock, url = url, autostart = length(tls) || asyncdial || NA, tls = tls, error = TRUE)
-    wait(cv)
-  }
-}
-
-sub_real_port <- function(port, url) sub("(?<=:)0(?![^/])", port, url, perl = TRUE)
-
-auto_tokenized_url <- function() strcat(.urlscheme, random(12L))
-
-new_tokenized_url <- function(url) sprintf("%s/%s", url, random(12L))
-
-req_socket <- function(url, tls = NULL, resend = .intmax)
-  `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", resend)
-
-query_dispatcher <- function(sock, command, mode) {
-  send(sock, data = command, mode = 2L, block = .timelimit)
-  recv(sock, mode = mode, block = .timelimit)
-}
-
-query_status <- function(envir) {
-  res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L)
-  is.object(res) && return(res)
-  `attributes<-`(res, list(dim = c(envir[["n"]], 5L),
-                           dimnames = list(envir[["urls"]], c("i", "online", "instance", "assigned", "complete"))))
-}
-
-init_monitor <- function(sockc, envir) {
-  res <- query_dispatcher(sockc, command = 0L, mode = 2L)
-  is.object(res) && stop(.messages[["sync_timeout"]])
-  `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L]))
-}
-
-create_stream <- function(n, seed, envir) {
-  rexp(n = 1L)
-  oseed <- .GlobalEnv[[".Random.seed"]]
-  RNGkind("L'Ecuyer-CMRG")
-  if (length(seed)) set.seed(seed)
-  `[[<-`(envir, "stream", .GlobalEnv[[".Random.seed"]])
-  `[[<-`(.GlobalEnv, ".Random.seed", oseed)
-}
-
-next_stream <- function(envir) {
-  stream <- envir[["stream"]]
-  length(stream) || return()
-  `[[<-`(envir, "stream", nextRNGStream(stream))
-  stream
-}
-
-get_and_reset_env <- function(x) {
-  candidate <- Sys.getenv(x)
-  if (nzchar(candidate)) {
-    Sys.unsetenv(x)
-    candidate
-  }
-}
-
-mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
-
-mk_mirai_error <- function(e) {
-  x <- .subset2(e, "call")
-  call <- if (length(x)) deparse(x, width.cutoff = 500L, backtick = TRUE, control = NULL, nlines = 1L)
-  msg <- if (is.null(call) || call == "eval(expr = ._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = NULL)")
-    sprintf("Error: %s", .subset2(e, "message")) else
-      sprintf("Error in %s: %s", call, .subset2(e, "message"))
-  cat(strcat(msg, "\n"), file = stderr());
-  `class<-`(msg, c("miraiError", "errorValue", "try-error"))
 }
