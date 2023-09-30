@@ -21,7 +21,7 @@ stop_cluster stops a cluster created by make_cluster."><meta property="og:image"
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9017</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9018</span>
       </span>
     </div>
 
@@ -73,7 +73,8 @@ stop_cluster stops a cluster created by make_cluster."><meta property="og:image"
 <span>  <span class="va">...</span>,</span>
 <span>  command <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">"."</span><span class="op">)</span>,</span>
-<span>  rscript <span class="op">=</span> <span class="st">"Rscript"</span></span>
+<span>  rscript <span class="op">=</span> <span class="st">"Rscript"</span>,</span>
+<span>  wait <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">stop_cluster</span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
@@ -115,6 +116,11 @@ function for constructing valid SSH arguments.</p></dd>
 the remote machine. The default assumes 'Rscript' is on the executable
 search path. Prepend the full path if necessary. If launching on Windows,
 'Rscript' should be replaced with 'Rscript.exe'.</p></dd>
+
+
+<dt>wait</dt>
+<dd><p>[default FALSE] logical value whether to wait for 'command' to
+finish, or run it asynchronously.</p></dd>
 
 
 <dt>cl</dt>
