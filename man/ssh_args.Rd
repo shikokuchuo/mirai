@@ -41,6 +41,40 @@ By default, uses the SSH flags -f to background the SSH process and
 This function only returns the relevant SSH arguments; 'command' must
     also be specified as 'ssh' or the path to the SSH application.
 }
+\section{SSH Tunnelling}{
+
+
+    Use of SSH tunnelling provides a convenient way to launch remote nodes
+    without requiring the remote machine to be able to access the host.
+    Often firewall configurations or security policies may prevent opening a
+    port to accept outside connections.
+
+    In these cases SSH tunnelling offers a solution by creating a tunnel once
+    the initial SSH connection is made. The tunnel is created between
+    \code{localhost:port} or equivalently \code{127.0.0.1:port} on each machine.
+    This means that the host should listen to \code{localhost:port} and the
+    nodes should each dial into \code{localhost:port} on their own respective
+    machines.
+
+    The following example shows a valid example using \code{\link{make_cluster}};
+    the relevant arguments work in the same way for \code{\link{launch_remote}}.
+
+    \verb{
+    make_cluster(
+      # use 'localhost' or '127.0.0.1' with a port available on all machines
+      url = "tcp://localhost:5555",
+      # launch nodes using SSH
+      command = "ssh",
+      # launch 2 nodes on the remote machine with SSH tunnelling
+      args = ssh_args(
+        names = c("10.75.37.90", "10.75.37.90"),
+        timeout = 1,
+        tunnel = TRUE
+      )
+    )
+    }
+}
+
 \examples{
 ssh_args(names = c("10.75.37.90", "nodename"), port = 222, timeout = 10)
 
