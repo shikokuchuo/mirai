@@ -59,27 +59,36 @@ For \strong{make_cluster}: An object of class 'miraiCluster' and
 \code{stop_cluster} stops a cluster created by \code{make_cluster}.
 }
 \details{
-The behaviour of clusters created by this function is designed to be
-    as close as possible to clusters created by the \pkg{parallel} package.
-    However, '...' arguments are passed onto \code{\link{daemons}} for
-    additional customisation if desired.
-
-    For remote nodes, the arguments 'command', 'args' and 'rscript' map
-    directly to the relevant arguments of \code{\link{launch_remote}}. If
-    launching remote nodes, the number of nodes is inferred from the length
-    of 'args' and 'n' is disregarded if supplied.
-
-    Alternatively, by specifying only 'url' and 'n', the host connection
-    listening at 'url' is set up, and nodes may be launched by other custom
-    means.
+The default behaviour of clusters created by this function is
+    designed to map as closely as possible to clusters created by the
+    \pkg{parallel} package. However, '...' arguments are passed onto
+    \code{\link{daemons}} for additional customisation if desired.
 
     Call \code{\link{status}} on a 'miraiCluster' to check the number of
     currently active connections as well as the host URL.
 }
 \note{
 Requires R >= 4.4 (currently R-devel). Clusters created with this
-    function will not work with prior R versions.
+    function will not work with prior R versions. The functionality is
+    experimental prior to release of R 4.4 and the interface is consequently
+    subject to change at any time.
 }
+\section{Remote Nodes}{
+
+
+    For remote nodes, the arguments 'command', 'args' and 'rscript' map
+    directly to the relevant arguments of \code{\link{launch_remote}}.
+
+    If launching remote nodes, the number of nodes is inferred from the length
+    of 'args', and 'n' is disregarded if supplied. The auxiliary function
+    \code{\link{ssh_args}} may be used to construct the required arguments to
+    use SSH as a launcher, both with and without tunnelling.
+
+    Alternatively, by specifying only 'url' and 'n', the host connection
+    listening at 'url' is set up, and nodes may be launched by other custom
+    means.
+}
+
 \examples{
 if (interactive()) {
 # Only run examples in interactive R sessions
@@ -87,24 +96,11 @@ if (interactive()) {
 cl <- make_cluster(2)
 cl
 cl[[1L]]
-status(cl)
-stop_cluster(cl)
 
-cl <- tryCatch(
-  make_cluster(
-    # host URL accessible to nodes
-    url = "tcp://10.75.37.40:5555",
-    # launch nodes using SSH
-    command = "ssh",
-    # node IP / hostnames to connect to with custom port number
-    args = ssh_args(
-      names = c("10.75.37.90", "10.75.37.91"),
-      port = 222,
-      timeout = 1
-    ),
-  )
-, error = identity)
-if (inherits(cl, "cluster")) stop_cluster(cl)
+Sys.sleep(0.5)
+status(cl)
+
+stop_cluster(cl)
 
 }
 
