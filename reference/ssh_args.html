@@ -51,7 +51,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>SSH Arguments Constructor</h1>
-    <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/mirai/blob/HEAD/R/mirai.R" class="external-link"><code>R/mirai.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/mirai/blob/HEAD/R/launchers.R" class="external-link"><code>R/launchers.R</code></a></small>
     <div class="hidden name"><code>ssh_args.Rd</code></div>
     </div>
 
@@ -108,6 +108,32 @@ SSH tunnel connects both ends.</p></dd>
     <p>This function only returns the relevant SSH arguments; 'command' must
     also be specified as 'ssh' or the path to the SSH application.</p>
     </div>
+    <div id="ssh-direct-connection">
+    <h2>SSH Direct Connection</h2>
+    
+
+
+<p>The simplest use of SSH is to execute the daemon launch command on a
+    remote machine, for it to dial back to the host / dispatcher URL. The
+    relevant port on the host must be open to inbound connections from the
+    remote machine.</p>
+<p>The following shows an example for <code><a href="make_cluster.html">make_cluster</a></code>, and is
+    equally valid for the same arguments in <code><a href="launch_local.html">launch_remote</a></code>.</p>
+<p><code>
+    make_cluster(
+      # host URL accessible to nodes
+      url = "tcp://10.75.37.40:5555",
+      # launch nodes using SSH
+      command = "ssh",
+      # node IP / hostnames to connect to with custom port number
+      args = ssh_args(
+        names = c("10.75.37.90", "10.75.37.91"),
+        port = 222,
+        timeout = 1
+      )
+    )
+    </code></p>
+    </div>
     <div id="ssh-tunnelling">
     <h2>SSH Tunnelling</h2>
     
@@ -123,8 +149,8 @@ SSH tunnel connects both ends.</p></dd>
     This means that the host should listen to <code>localhost:port</code> and the
     nodes should each dial into <code>localhost:port</code> on their own respective
     machines.</p>
-<p>The following example shows a valid example using <code><a href="make_cluster.html">make_cluster</a></code>;
-    the relevant arguments work in the same way for <code><a href="launch_local.html">launch_remote</a></code>.</p>
+<p>The following is an example for <code><a href="make_cluster.html">make_cluster</a></code>, and is
+    equally valid for the same arguments in <code><a href="launch_local.html">launch_remote</a></code>.</p>
 <p><code>
     make_cluster(
       # use 'localhost' or '127.0.0.1' with a port available on all machines
