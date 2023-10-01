@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9017</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9018</span>
       </span>
     </div>
 
@@ -54,11 +54,13 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.0.9017" id="mirai-01009017-development">mirai 0.10.0.9017 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009017-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.10.0.9018" id="mirai-01009018-development">mirai 0.10.0.9018 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009018-development"></a></h2>
 <ul><li>Implements an alternative communications backend for R, adding methods for the ‘parallel’ base package.
-<ul><li>
+<ul><li>Fulfils a request by R Core at R Project Sprint 2023, and requires R &gt;= 4.4 (currently R-devel).</li>
+<li>
 <code><a href="../reference/make_cluster.html">make_cluster()</a></code> creates a ‘miraiCluster’, compatible with all existing functions taking a ‘cluster’ object, for example in the ‘parallel’ and ‘doParallel’ / ‘foreach’ packages.</li>
-<li>Fulfils a request by R Core at R Project Sprint 2023, and requires R &gt;= 4.4 (currently R-devel).</li>
+<li>
+<code><a href="../reference/status.html">status()</a></code> can now take a ‘miraiCluster’ as the argument to query its connection status.</li>
 </ul></li>
 <li>Implements <code><a href="../reference/ssh_args.html">ssh_args()</a></code> as a convenience function for constructing the correct arguments for <code><a href="../reference/make_cluster.html">make_cluster()</a></code> and <code><a href="../reference/launch_local.html">launch_remote()</a></code> to launch remote daemons via SSH, including using reverse tunnelling.
 <ul><li>Argument signature of ‘args’ for <code><a href="../reference/launch_local.html">launch_remote()</a></code> changed to accommodate.</li>
