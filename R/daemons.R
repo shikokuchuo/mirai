@@ -397,3 +397,76 @@ status <- function(.compute = "default") {
        daemons = if (length(envir[["sockc"]])) query_status(envir) else if (length(envir[["urls"]])) envir[["urls"]] else 0L)
 
 }
+
+# internals --------------------------------------------------------------------
+
+req_socket <- function(url, tls = NULL, resend = .intmax)
+  `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", resend)
+
+parse_dots <- function(...)
+  if (missing(...)) "" else {
+    dots <- list(...)
+    for (dot in dots)
+      is.numeric(dot) || is.logical(dot) || stop(.messages[["wrong_dots"]])
+    dnames <- names(dots)
+    dots <- strcat(",", paste(dnames, dots, sep = "=", collapse = ","))
+    "output" %in% dnames && return(`class<-`(dots, "output"))
+    dots
+  }
+
+parse_tls <- function(tls)
+  switch(length(tls) + 1L,
+         "",
+         sprintf(",tls='%s'", tls),
+         sprintf(",tls=c('%s','%s')", tls[1L], tls[2L]))
+
+write_args <- function(dots, rs = NULL, tls = NULL, libpath = NULL)
+  shQuote(switch(length(dots),
+                 sprintf("mirai::.daemon('%s')", dots[[1L]]),
+                 sprintf("mirai::daemon('%s'%s%s)", dots[[1L]], dots[[2L]], parse_tls(tls)),
+                 sprintf("mirai::daemon('%s'%s%s,rs=c(%s))", dots[[1L]], dots[[2L]], parse_tls(tls), paste0(dots[[3L]], collapse = ",")),
+                 sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',n=%d,rs=c(%s),monitor='%s'%s)", libpath, dots[[1L]], dots[[3L]], paste0(rs, collapse= ","), dots[[4L]], dots[[2L]]),
+                 sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',c('%s'),n=%d,monitor='%s'%s)", libpath, dots[[1L]], paste0(dots[[3L]], collapse = "','"), dots[[4L]], dots[[5L]], dots[[2L]])))
+
+launch_daemon <- function(..., rs = NULL, tls = NULL) {
+  dots <- list(...)
+  dlen <- length(dots)
+  output <- dlen > 1L && is.object(dots[[2L]])
+  libpath <- if (dlen > 3L) (lp <- .libPaths())[file.exists(file.path(lp, "mirai"))][1L]
+  system2(command = .command, args = c(if (length(libpath)) "--vanilla", "-e", write_args(dots, rs = rs, tls = tls, libpath = libpath)), stdout = if (output) "", stderr = if (output) "", wait = FALSE)
+}
+
+launch_and_sync_daemon <- function(sock, ..., rs = NULL, tls = NULL, pass = NULL) {
+  cv <- cv()
+  pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
+  if (is.character(tls)) {
+    switch(
+      length(tls),
+      {
+        on.exit(Sys.unsetenv("MIRAI_TEMP_FIELD1"))
+        Sys.setenv(MIRAI_TEMP_FIELD1 = tls)
+        Sys.unsetenv("MIRAI_TEMP_FIELD2")
+      },
+      {
+        on.exit(Sys.unsetenv(c("MIRAI_TEMP_FIELD1", "MIRAI_TEMP_FIELD2")))
+        Sys.setenv(MIRAI_TEMP_FIELD1 = tls[1L])
+        Sys.setenv(MIRAI_TEMP_FIELD2 = tls[2L])
+      }
+    )
+    if (is.character(pass)) {
+      on.exit(Sys.unsetenv("MIRAI_TEMP_VAR"), add = TRUE)
+      Sys.setenv(MIRAI_TEMP_VAR = pass)
+    }
+  }
+  launch_daemon(..., rs = rs)
+  until(cv, .timelimit) && stop(if (...length() < 3L) .messages[["sync_timeout"]] else .messages[["sync_dispatch"]])
+}
+
+create_stream <- function(n, seed, envir) {
+  rexp(n = 1L)
+  oseed <- .GlobalEnv[[".Random.seed"]]
+  RNGkind("L'Ecuyer-CMRG")
+  if (length(seed)) set.seed(seed)
+  `[[<-`(envir, "stream", .GlobalEnv[[".Random.seed"]])
+  `[[<-`(.GlobalEnv, ".Random.seed", oseed)
+}

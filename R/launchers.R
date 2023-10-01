@@ -290,3 +290,29 @@ ssh_args <- function(names, port = 22, timeout = 5, tunnel = FALSE) {
   args
 
 }
+
+# internals --------------------------------------------------------------------
+
+find_dot <- function(args) {
+  sel <- args == "."
+  any(sel) || stop(.messages[["dot_required"]])
+  sel
+}
+
+process_url <- function(url, .compute) {
+  if (is.numeric(url)) {
+    vec <- ..[[.compute]][["urls"]]
+    is.null(vec) && stop(.messages[["daemons_unset"]])
+    all(url >= 1L, url <= length(vec)) || stop(.messages[["url_spec"]])
+    url <- vec[url]
+  } else {
+    lapply(url, parse_url)
+  }
+  url
+}
+
+parse_check_local_url <- function(url) {
+  purl <- parse_url(url)
+  purl[["hostname"]] %in% c("localhost", "127.0.0.1") || stop(.messages[["requires_local"]])
+  purl
+}

@@ -208,4 +208,8 @@ print.miraiNode <- function(x, ...) {
 
 }
 
+# internals --------------------------------------------------------------------
+
+node_unresolved <- function(node) unresolved(.subset2(node, "mirai"))
+
 # nocov end

@@ -74,3 +74,12 @@ nextstream <- function(.compute = "default") next_stream(..[[.compute]])
 #' @export
 #'
 nextget <- function(x, .compute = "default") ..[[.compute]][[x]]
+
+# internals --------------------------------------------------------------------
+
+next_stream <- function(envir) {
+  stream <- envir[["stream"]]
+  length(stream) || return()
+  `[[<-`(envir, "stream", nextRNGStream(stream))
+  stream
+}
