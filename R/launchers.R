@@ -217,7 +217,7 @@ launch_remote <- function(url, ..., tls = NULL, .compute = "default",
 #'     \verb{
 #'     make_cluster(
 #'       # host URL accessible to nodes
-#'       url = "tcp://10.75.37.40:5555",
+#'       url = "tls+tcp://10.75.37.40:5555",
 #'       # launch nodes using SSH
 #'       command = "ssh",
 #'       # node IP / hostnames to connect to with custom port number
