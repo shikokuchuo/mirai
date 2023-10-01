@@ -1,8 +1,9 @@
-# mirai 0.10.0.9017 (development)
+# mirai 0.10.0.9018 (development)
 
 * Implements an alternative communications backend for R, adding methods for the 'parallel' base package.
-  + `make_cluster()` creates a 'miraiCluster', compatible with all existing functions taking a 'cluster' object, for example in the 'parallel' and 'doParallel' / 'foreach' packages.
   + Fulfils a request by R Core at R Project Sprint 2023, and requires R >= 4.4 (currently R-devel).
+  + `make_cluster()` creates a 'miraiCluster', compatible with all existing functions taking a 'cluster' object, for example in the 'parallel' and 'doParallel' / 'foreach' packages.
+  + `status()` can now take a 'miraiCluster' as the argument to query its connection status.
 * Implements `ssh_args()` as a convenience function for constructing the correct arguments for `make_cluster()` and `launch_remote()` to launch remote daemons via SSH, including using reverse tunnelling.
   + Argument signature of 'args' for `launch_remote()` changed to accommodate.
 * `daemons()` adds argument 'resilience' to control the behaviour, when not using dispatcher, of whether to retry failed tasks on other daemons.

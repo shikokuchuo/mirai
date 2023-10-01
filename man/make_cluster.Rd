@@ -72,6 +72,9 @@ The behaviour of clusters created by this function is designed to be
     Alternatively, by specifying only 'url' and 'n', the host connection
     listening at 'url' is set up, and nodes may be launched by other custom
     means.
+
+    Call \code{\link{status}} on a 'miraiCluster' to check the number of
+    currently active connections as well as the host URL.
 }
 \note{
 Requires R >= 4.4 (currently R-devel). Clusters created with this
@@ -84,6 +87,7 @@ if (interactive()) {
 cl <- make_cluster(2)
 cl
 cl[[1L]]
+status(cl)
 stop_cluster(cl)
 
 cl <- tryCatch(

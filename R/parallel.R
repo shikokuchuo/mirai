@@ -59,6 +59,9 @@
 #'     listening at 'url' is set up, and nodes may be launched by other custom
 #'     means.
 #'
+#'     Call \code{\link{status}} on a 'miraiCluster' to check the number of
+#'     currently active connections as well as the host URL.
+#'
 #' @note Requires R >= 4.4 (currently R-devel). Clusters created with this
 #'     function will not work with prior R versions.
 #'
@@ -69,6 +72,7 @@
 #' cl <- make_cluster(2)
 #' cl
 #' cl[[1L]]
+#' status(cl)
 #' stop_cluster(cl)
 #'
 #' cl <- tryCatch(

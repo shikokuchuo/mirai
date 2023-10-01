@@ -919,7 +919,9 @@ saisei <- function(i, force = FALSE, .compute = "default") {
 #' Retrieve status information for the specified compute profile, comprising
 #'     current connections and daemons status.
 #'
-#' @inheritParams saisei
+#' @param .compute [default 'default'] character compute profile (each compute
+#'     profile has its own set of daemons for connecting to different resources).
+#'     Alternatively specify a 'miraiCluster' to obtain its status.
 #'
 #' @return A named list comprising:
 #'     \itemize{
@@ -968,10 +970,11 @@ saisei <- function(i, force = FALSE, .compute = "default") {
 #'
 status <- function(.compute = "default") {
 
-    envir <- ..[[.compute]]
-    sock <- envir[["sock"]]
-    list(connections = if (is.null(sock)) 0L else as.integer(stat(sock, "pipes")),
-         daemons = if (length(envir[["sockc"]])) query_status(envir) else if (length(envir[["urls"]])) envir[["urls"]] else 0L)
+  is.list(.compute) && return(status(attr(.compute, "id")))
+  envir <- ..[[.compute]]
+  sock <- envir[["sock"]]
+  list(connections = if (is.null(sock)) 0L else as.integer(stat(sock, "pipes")),
+       daemons = if (length(envir[["sockc"]])) query_status(envir) else if (length(envir[["urls"]])) envir[["urls"]] else 0L)
 
 }
 
