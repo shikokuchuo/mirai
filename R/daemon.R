@@ -151,7 +151,7 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
 #' @keywords internal
 #' @export
 #'
-.daemon <- function(url, exitlinger) {
+.daemon <- function(url, exitlinger = 2000L) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = NA)
   on.exit(reap(sock))

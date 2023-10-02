@@ -4,7 +4,7 @@
 \alias{.daemon}
 \title{dot Daemon}
 \usage{
-.daemon(url, exitlinger)
+.daemon(url, exitlinger = 2000L)
 }
 \arguments{
 \item{url}{the character host or dispatcher URL to dial into, including the
