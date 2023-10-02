@@ -4,15 +4,18 @@
 \alias{.daemon}
 \title{dot Daemon}
 \usage{
-.daemon(url)
+.daemon(url, exitlinger)
 }
 \arguments{
 \item{url}{the character host or dispatcher URL to dial into, including the
 port to connect to (and optionally for websockets, a path), e.g.
 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
+
+\item{exitlinger}{[default 2000L] time in milliseconds to linger before
+exiting to allow the socket to complete sends currently in progress.}
 }
 \value{
-Logical TRUE, invisibly.
+Invisible NULL.
 }
 \description{
 Implements an ephemeral executor for the remote process.
