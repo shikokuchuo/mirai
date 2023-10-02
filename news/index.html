@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9019</span>
       </span>
     </div>
 
@@ -25,6 +25,16 @@
       <ul class="nav navbar-nav"><li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/reference.html">mirai - Reference Manual</a>
+    </li>
+  </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -54,7 +64,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.0.9018" id="mirai-01009018-development">mirai 0.10.0.9018 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009018-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.10.0.9019" id="mirai-01009019-development">mirai 0.10.0.9019 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009019-development"></a></h2>
 <ul><li>Implements an alternative communications backend for R, adding methods for the ‘parallel’ base package.
 <ul><li>Fulfils a request by R Core at R Project Sprint 2023, and requires R &gt;= 4.4 (currently R-devel).</li>
 <li>
@@ -78,6 +88,8 @@
 <li>Reverts the trailing line break added to the end of a ‘miraiError’ character string.</li>
 <li>Deprecates the Deferred Evaluation Pipe <code>%&gt;&gt;%</code> in favour of a recommendation to use package <code>mirai.promises</code> for performing side effects upon ‘mirai’ resolution.</li>
 <li>Deprecated use of alias <code>server()</code> for <code><a href="../reference/daemon.html">daemon()</a></code> is retired.</li>
+<li>Document dot parameters for <code><a href="../reference/daemons.html">daemons()</a></code> and <code><a href="../reference/dispatcher.html">dispatcher()</a></code> (thanks <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a> <a href="https://github.com/shikokuchuo/mirai/issues/79" class="external-link">#79</a>).</li>
+<li>Adds a ‘reference’ vignette, moving most of the information from the readme.</li>
 <li>Requires nanonext &gt;= 0.10.1.</li>
 </ul></div>
     <div class="section level2">

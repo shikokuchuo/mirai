@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9019</span>
       </span>
     </div>
 
@@ -26,6 +26,16 @@
       <ul class="nav navbar-nav"><li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/reference.html">mirai - Reference Manual</a>
+    </li>
+  </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -137,8 +147,34 @@ function that returns this value, rather than directly.</p></dd>
 
 
 <dt>...</dt>
-<dd><p>additional arguments passed through to <code><a href="daemon.html">daemon</a></code> if
-launching local daemons i.e. 'url' is not specified.</p></dd>
+<dd><p>Arguments passed on to <code><a href="daemon.html">daemon</a></code></p><dl><dt><code>maxtasks</code></dt>
+<dd><p>[default Inf] the maximum number of tasks to execute (task
+limit) before exiting.</p></dd>
+
+    <dt><code>idletime</code></dt>
+<dd><p>[default Inf] maximum idle time, since completion of the last
+task (in milliseconds) before exiting.</p></dd>
+
+    <dt><code>walltime</code></dt>
+<dd><p>[default Inf] soft walltime, or the minimum amount of real
+time taken (in milliseconds) before exiting.</p></dd>
+
+    <dt><code>timerstart</code></dt>
+<dd><p>[default 0L] number of completed tasks after which to start
+the timer for 'idletime' and 'walltime'. 0L implies timers are started
+upon launch.</p></dd>
+
+    <dt><code>cleanup</code></dt>
+<dd><p>[default 7L] Integer additive bitmask controlling whether to
+perform cleanup of the global environment (1L), reset loaded packages to
+an initial state (2L), reset options to an initial state (4L), and
+perform garbage collection (8L) after each evaluation. This option should
+not normally be modified. Do not set unless you are certain you require
+persistence across evaluations. Note: it may be an error to reset options
+but not loaded packages if packages set options on load.</p></dd>
+
+  
+</dl></dd>
 
 
 <dt>monitor</dt>

@@ -1,8 +1,9 @@
 pandoc: 2.19.2
 pkgdown: 2.0.7
 pkgdown_sha: ~
-articles: {}
-last_built: 2023-10-01T21:04Z
+articles:
+  reference: reference.html
+last_built: 2023-10-02T15:22Z
 urls:
   reference: https://shikokuchuo.net/mirai/reference
   article: https://shikokuchuo.net/mirai/articles
