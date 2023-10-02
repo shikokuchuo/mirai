@@ -90,7 +90,7 @@ result.
 
 ``` r
 m$data |> str()
-#>  num [1:100000000] 1.362 -1.846 0.473 0.666 -3.015 ...
+#>  num [1:100000000] -1.163 -5.3031 -0.8701 2.7348 -0.0317 ...
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -98,12 +98,18 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 1.362 -1.846 0.473 0.666 -3.015 ...
+#>  num [1:100000000] -1.163 -5.3031 -0.8701 2.7348 -0.0317 ...
 ```
 
-Refer to the ‘**reference**’ vignette for the full package
-functionality, which includes launching daemons, which are persistent
-background processes on local or remote machines.
+Refer to the
+[‘reference’](https://shikokuchuo.net/mirai/articles/reference.html)
+vignette for the full package functionality, which includes launching
+daemons - persistent background processes on local or remote machines.
+This may be accessed within R by:
+
+``` r
+vignette("reference", package = "mirai")
+```
 
 ### Use with Parallel
 

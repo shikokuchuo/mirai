@@ -101,7 +101,11 @@ call_mirai(m)$data |> str()
 ```
 
 
-Refer to the '**reference**' vignette for the full package functionality, which includes launching daemons, which are persistent background processes on local or remote machines.
+Refer to the ['reference'](https://shikokuchuo.net/mirai/articles/reference.html) vignette for the full package functionality, which includes launching daemons - persistent background processes on local or remote machines. This may be accessed within R by:
+
+```{r vignette, eval=FALSE}
+vignette("reference", package = "mirai")
+```
 
 ### Use with Parallel
 
