@@ -55,8 +55,37 @@ and [ii] the associated private key.}
 is encrypted with a password) For security, should be provided through a
 function that returns this value, rather than directly.}
 
-\item{...}{additional arguments passed through to \code{\link{dispatcher}} if
-using dispatcher and/or \code{\link{daemon}} if launching local daemons.}
+\item{...}{
+  Arguments passed on to \code{\link[=dispatcher]{dispatcher}}, \code{\link[=daemon]{daemon}}
+  \describe{
+    \item{\code{token}}{[default FALSE] if TRUE, appends a unique 40-character token
+to each URL path the dispatcher listens at (not applicable for TCP URLs
+which do not accept a path).}
+    \item{\code{lock}}{[default FALSE] if TRUE, sockets lock once a connection has been
+accepted, preventing further connection attempts. This provides safety
+against more than one daemon attempting to connect to a unique URL.}
+    \item{\code{output}}{[default FALSE] logical value, to output generated stdout /
+stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'
+argument to \code{\link{daemons}} or \code{\link{launch_local}} to
+provide redirection of output to the host process. Applicable only when
+not using dispatcher.}
+    \item{\code{maxtasks}}{[default Inf] the maximum number of tasks to execute (task
+limit) before exiting.}
+    \item{\code{idletime}}{[default Inf] maximum idle time, since completion of the last
+task (in milliseconds) before exiting.}
+    \item{\code{walltime}}{[default Inf] soft walltime, or the minimum amount of real
+time taken (in milliseconds) before exiting.}
+    \item{\code{timerstart}}{[default 0L] number of completed tasks after which to start
+the timer for 'idletime' and 'walltime'. 0L implies timers are started
+upon launch.}
+    \item{\code{cleanup}}{[default 7L] Integer additive bitmask controlling whether to
+perform cleanup of the global environment (1L), reset loaded packages to
+an initial state (2L), reset options to an initial state (4L), and
+perform garbage collection (8L) after each evaluation. This option should
+not normally be modified. Do not set unless you are certain you require
+persistence across evaluations. Note: it may be an error to reset options
+but not loaded packages if packages set options on load.}
+  }}
 
 \item{.compute}{[default 'default'] character compute profile to use for
 creating the daemons (each compute profile has its own set of daemons for

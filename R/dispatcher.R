@@ -22,6 +22,7 @@
 #'     processing, using a FIFO scheduling rule, queuing tasks as required.
 #'
 #' @inheritParams daemon
+#' @inheritDotParams daemon maxtasks idletime walltime timerstart cleanup
 #' @param host the character host URL to dial (where tasks are sent from),
 #'     including the port to connect to (and optionally for websockets, a path),
 #'     e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
@@ -50,8 +51,6 @@
 #' @param pass [default NULL] (required only if the private key supplied to 'tls'
 #'     is encrypted with a password) For security, should be provided through a
 #'     function that returns this value, rather than directly.
-#' @param ... additional arguments passed through to \code{\link{daemon}} if
-#'     launching local daemons i.e. 'url' is not specified.
 #' @param monitor (for package internal use only) do not set this parameter.
 #'
 #' @return Invisible NULL.

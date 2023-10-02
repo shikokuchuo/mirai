@@ -61,8 +61,26 @@ certificate chain) and [ii] the associated private key.}
 is encrypted with a password) For security, should be provided through a
 function that returns this value, rather than directly.}
 
-\item{...}{additional arguments passed through to \code{\link{daemon}} if
-launching local daemons i.e. 'url' is not specified.}
+\item{...}{
+  Arguments passed on to \code{\link[=daemon]{daemon}}
+  \describe{
+    \item{\code{maxtasks}}{[default Inf] the maximum number of tasks to execute (task
+limit) before exiting.}
+    \item{\code{idletime}}{[default Inf] maximum idle time, since completion of the last
+task (in milliseconds) before exiting.}
+    \item{\code{walltime}}{[default Inf] soft walltime, or the minimum amount of real
+time taken (in milliseconds) before exiting.}
+    \item{\code{timerstart}}{[default 0L] number of completed tasks after which to start
+the timer for 'idletime' and 'walltime'. 0L implies timers are started
+upon launch.}
+    \item{\code{cleanup}}{[default 7L] Integer additive bitmask controlling whether to
+perform cleanup of the global environment (1L), reset loaded packages to
+an initial state (2L), reset options to an initial state (4L), and
+perform garbage collection (8L) after each evaluation. This option should
+not normally be modified. Do not set unless you are certain you require
+persistence across evaluations. Note: it may be an error to reset options
+but not loaded packages if packages set options on load.}
+  }}
 
 \item{monitor}{(for package internal use only) do not set this parameter.}
 

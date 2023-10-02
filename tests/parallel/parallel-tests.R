@@ -1,3 +1,7 @@
+rversion <- .subset2(getRversion(), 1L)
+(rversion[1L] >= 4 && rversion[2L] >= 4 || rversion[1L] >= 5) ||
+  stop("Requirement R >= 4.4 not met, stopped\n")
+
 library(mirai)
 library(parallel)
 

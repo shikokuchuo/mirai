@@ -27,6 +27,8 @@
 #'     else the low-level approach of distributing tasks to daemons equally.
 #'
 #' @inheritParams dispatcher
+#' @inheritDotParams dispatcher token:lock
+#' @inheritDotParams daemon maxtasks:cleanup
 #' @param n integer number of daemons to set.
 #' @param url [default NULL] if specified, the character URL or vector of URLs
 #'     on the host for remote daemons to dial into, including a port accepting
