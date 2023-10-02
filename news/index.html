@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9019</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9020</span>
       </span>
     </div>
 
@@ -64,7 +64,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.0.9019" id="mirai-01009019-development">mirai 0.10.0.9019 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009019-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.10.0.9020" id="mirai-01009020-development">mirai 0.10.0.9020 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009020-development"></a></h2>
 <ul><li>Implements an alternative communications backend for R, adding methods for the ‘parallel’ base package.
 <ul><li>Fulfils a request by R Core at R Project Sprint 2023, and requires R &gt;= 4.4 (currently R-devel).</li>
 <li>
@@ -80,7 +80,7 @@
 <li>
 <code><a href="../reference/mirai.html">mirai()</a></code> adds logical argument ‘.signal’ for whether to signal the condition variable within the compute profile upon resolution of the ‘mirai’.</li>
 <li>
-<code><a href="../reference/daemon.html">daemon()</a></code> argument ‘exitlinger’ retired as daemons now synchronise with the host/dispatcher and exit as soon as possible.</li>
+<code><a href="../reference/daemon.html">daemon()</a></code> argument ‘exitlinger’ retired as daemons now synchronise with the host/dispatcher and exit as soon as possible. Note: a default ‘exitlinger’ period still applies for ephemeral daemons.</li>
 <li>Optimises scheduling at dispatcher: tasks are no longer assigned to a daemon if it is exiting due to specified time/task-outs.</li>
 <li>An ‘errorValue’ 19 ‘Connection reset’ is now returned for a ‘mirai’ if the connection to either dispatcher or an ephemeral daemon drops, for example if they have crashed, rather than remaining unresolved.</li>
 <li>Invalid type of ‘…’ arguments specified to <code><a href="../reference/daemons.html">daemons()</a></code> or <code><a href="../reference/dispatcher.html">dispatcher()</a></code> now raise an error early rather than attempting to launch daemons that fail.</li>
