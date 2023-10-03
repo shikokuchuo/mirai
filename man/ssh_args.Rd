@@ -28,7 +28,8 @@ A list of character vectors the same length as 'names'.
 }
 \description{
 Return value may be supplied directly to the 'args' argument of
-    \code{\link{launch_remote}} or \code{\link{make_cluster}}.
+    \code{\link{daemons}}, \code{\link{launch_remote}} or
+    \code{\link{make_cluster}}.
 }
 \details{
 By default, uses the SSH flags -f to background the SSH process and
@@ -48,24 +49,6 @@ This function only returns the relevant SSH arguments; 'command' must
     remote machine, for it to dial back to the host / dispatcher URL. The
     relevant port on the host must be open to inbound connections from the
     remote machine.
-
-    The following shows an example for \code{\link{make_cluster}}, and is
-    equally valid for the same arguments in \code{\link{launch_remote}}.
-
-    \verb{
-    make_cluster(
-      # host URL accessible to nodes
-      url = "tls+tcp://10.75.37.40:5555",
-      # launch nodes using SSH
-      command = "ssh",
-      # node IP / hostnames to connect to with custom port number
-      args = ssh_args(
-        names = c("10.75.37.90", "10.75.37.91"),
-        port = 222,
-        timeout = 1
-      )
-    )
-    }
 }
 
 \section{SSH Tunnelling}{
@@ -82,27 +65,35 @@ This function only returns the relevant SSH arguments; 'command' must
     This means that the host should listen to \code{localhost:port} and the
     nodes should each dial into \code{localhost:port} on their own respective
     machines.
-
-    The following is an example for \code{\link{make_cluster}}, and is
-    equally valid for the same arguments in \code{\link{launch_remote}}.
-
-    \verb{
-    make_cluster(
-      # use 'localhost' or '127.0.0.1' with a port available on all machines
-      url = "tcp://localhost:5555",
-      # launch nodes using SSH
-      command = "ssh",
-      # launch 2 nodes on the remote machine with SSH tunnelling
-      args = ssh_args(
-        names = c("10.75.37.90", "10.75.37.90"),
-        timeout = 1,
-        tunnel = TRUE
-      )
-    )
-    }
 }
 
 \examples{
 ssh_args(names = c("10.75.37.90", "nodename"), port = 222, timeout = 10)
+
+# launch 2 daemons on the remote machines 10.75.37.90 and 10.75.37.91 using
+# SSH, connecting back directly to the host URL over a TLS connection:
+#
+# daemons(
+#   url = "tls+tcp://10.75.37.40:5555",
+#   command = "ssh",
+#   args = ssh_args(
+#     names = c("10.75.37.90", "10.75.37.91"),
+#     port = 222,
+#     timeout = 1
+#   )
+# )
+
+# launch 2 nodes on the remote machine 10.75.37.90 using SSH tunnelling over
+# port 5555 ('url' hostname must be 'localhost' or '127.0.0.1'):
+#
+# make_cluster(
+#   url = "tcp://localhost:5555",
+#   command = "ssh",
+#   args = ssh_args(
+#     names = c("10.75.37.90", "10.75.37.90"),
+#     timeout = 1,
+#     tunnel = TRUE
+#   )
+# )
 
 }

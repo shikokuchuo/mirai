@@ -48,6 +48,13 @@ stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'
 argument to \code{\link{daemons}} or \code{\link{launch_local}} to
 provide redirection of output to the host process (applicable only for
 local daemons when not using dispatcher).}
+    \item{\code{cleanup}}{[default 7L] Integer additive bitmask controlling whether to
+perform cleanup of the global environment (1L), reset loaded packages to
+an initial state (2L), reset options to an initial state (4L), and
+perform garbage collection (8L) after each evaluation. This option should
+not normally be modified. Do not set unless you are certain you require
+persistence across evaluations. Note: it may be an error to reset options
+but not loaded packages if packages set options on load.}
   }}
 
 \item{tls}{[default NULL] required for secure TLS connections over tls+tcp or
@@ -71,29 +78,31 @@ for the daemon launch command. Alternatively, a list of character
 vectors, such as those produced by \code{\link{ssh_args}}, a convenience
 function for constructing valid SSH arguments.}
 
-\item{rscript}{[default 'Rscript'] name / path of the Rscript executable on
-the remote machine. The default assumes 'Rscript' is on the executable
-search path. Prepend the full path if necessary. If launching on Windows,
-'Rscript' should be replaced with 'Rscript.exe'.}
+\item{rscript}{(for remote launches only) name / path of the Rscript
+executable on the remote machine. The default assumes 'Rscript' is on the
+executable search path. Prepend the full path if necessary. If launching
+on Windows, 'Rscript' should be replaced with 'Rscript.exe'.}
 }
 \value{
 For \strong{launch_local}: Invisible NULL.
 
 For \strong{launch_remote}: A character vector of daemon launch
     commands the same length as 'url'. For manual deployment, unescape the
-    double quotes around the call to \code{"mirai::daemons()"}.
+    double quotes around the call to \code{"mirai::daemon()"}.
 }
 \description{
 \code{launch_local} spawns a new background \code{Rscript} process calling
-    \code{\link{daemon}} with the specified arguments. May be used to
-    re-launch daemons that have timed out on the local machine.
+    \code{\link{daemon}} with the specified arguments.
 
 \code{launch_remote} returns the shell command for launching daemons as a
     character vector. If 'command' is specified, this is executed with the
     arguments in 'args' to effect the daemon launch on the remote machine.
 }
 \details{
-If daemons have been set, the generated command will automatically
+These functions may be used to re-launch daemons that have exited
+    after reaching time or task limits.
+
+    If daemons have been set, the generated command will automatically
     contain the argument 'rs' specifying the length 7 L'Ecuyer-CMRG random
     seed supplied to the daemon. The values will be different each time the
     function is called.

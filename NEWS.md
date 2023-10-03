@@ -1,4 +1,4 @@
-# mirai 0.10.0.9020 (development)
+# mirai 0.10.0.9021 (development)
 
 * Implements an alternative communications backend for R, adding methods for the 'parallel' base package.
   + Fulfils a request by R Core at R Project Sprint 2023, and requires R >= 4.4 (currently R-devel).
@@ -6,7 +6,9 @@
   + `status()` can now take a 'miraiCluster' as the argument to query its connection status.
 * Implements `ssh_args()` as a convenience function for constructing the correct arguments for `make_cluster()` and `launch_remote()` to launch remote daemons via SSH, including using reverse tunnelling.
   + Argument signature of 'args' for `launch_remote()` changed to accommodate.
-* `daemons()` adds argument 'resilience' to control the behaviour, when not using dispatcher, of whether to retry failed tasks on other daemons.
+* `daemons()` gains the following features:
+  + Adds arguments 'command', 'args' and 'rscript' for launching remote daemons automatically rather than needing to call `launch_remote()`.
+  + Adds argument 'resilience' to control the behaviour, when not using dispatcher, of whether to retry failed tasks on other daemons.
 * `mirai()` adds logical argument '.signal' for whether to signal the condition variable within the compute profile upon resolution of the 'mirai'.
 * `daemon()` argument 'exitlinger' retired as daemons now synchronise with the host/dispatcher and exit as soon as possible. Note: a default 'exitlinger' period still applies for ephemeral daemons.
 * Optimises scheduling at dispatcher: tasks are no longer assigned to a daemon if it is exiting due to specified time/task-outs.

@@ -13,6 +13,9 @@ daemons(
   tls = NULL,
   pass = NULL,
   ...,
+  command = NULL,
+  args = c("", "."),
+  rscript = "Rscript",
   .compute = "default"
 )
 }
@@ -27,10 +30,10 @@ starting 'tls+tcp://' or 'wss://' to use secure TLS connections.}
 
 \item{dispatcher}{[default TRUE] logical value whether to use dispatcher.
 Dispatcher is a local background process that connects to daemons on
-behalf of the host and ensures FIFO scheduling, queueing tasks if
-necessary (see Dispatcher section below).}
+behalf of the host and ensures FIFO scheduling (see Dispatcher section
+below).}
 
-\item{resilience}{[default TRUE] (applicable for when not using dispatcher)
+\item{resilience}{[default TRUE] (applicable when not using dispatcher)
 logical value whether to retry failed tasks on other daemons. If FALSE,
 an appropriate 'errorValue' will be returned in such cases.}
 
@@ -55,37 +58,24 @@ and [ii] the associated private key.}
 is encrypted with a password) For security, should be provided through a
 function that returns this value, rather than directly.}
 
-\item{...}{
-  Arguments passed on to \code{\link[=dispatcher]{dispatcher}}, \code{\link[=daemon]{daemon}}
-  \describe{
-    \item{\code{token}}{[default FALSE] if TRUE, appends a unique 40-character token
-to each URL path the dispatcher listens at (not applicable for TCP URLs
-which do not accept a path).}
-    \item{\code{lock}}{[default FALSE] if TRUE, sockets lock once a connection has been
-accepted, preventing further connection attempts. This provides safety
-against more than one daemon attempting to connect to a unique URL.}
-    \item{\code{maxtasks}}{[default Inf] the maximum number of tasks to execute (task
-limit) before exiting.}
-    \item{\code{idletime}}{[default Inf] maximum idle time, since completion of the last
-task (in milliseconds) before exiting.}
-    \item{\code{walltime}}{[default Inf] soft walltime, or the minimum amount of real
-time taken (in milliseconds) before exiting.}
-    \item{\code{timerstart}}{[default 0L] number of completed tasks after which to start
-the timer for 'idletime' and 'walltime'. 0L implies timers are started
-upon launch.}
-    \item{\code{output}}{[default FALSE] logical value, to output generated stdout /
-stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'
-argument to \code{\link{daemons}} or \code{\link{launch_local}} to
-provide redirection of output to the host process (applicable only for
-local daemons when not using dispatcher).}
-    \item{\code{cleanup}}{[default 7L] Integer additive bitmask controlling whether to
-perform cleanup of the global environment (1L), reset loaded packages to
-an initial state (2L), reset options to an initial state (4L), and
-perform garbage collection (8L) after each evaluation. This option should
-not normally be modified. Do not set unless you are certain you require
-persistence across evaluations. Note: it may be an error to reset options
-but not loaded packages if packages set options on load.}
-  }}
+\item{...}{additional arguments passed through to \code{\link{dispatcher}} if
+using dispatcher and/or \code{\link{daemon}} if launching daemons. These
+include 'token' and 'lock' at dispatcher and 'maxtasks', 'idletime',
+'timerstart', 'output' and 'cleanup' at daemon.}
+
+\item{command}{(optional) the command used to effect the daemon launch on the
+remote machine as a character string (e.g. \code{'ssh'}).}
+
+\item{args}{(optional) arguments passed to 'command', as a character vector
+that must include \code{"."} as an element, which will be substituted
+for the daemon launch command. Alternatively, a list of character
+vectors, such as those produced by \code{\link{ssh_args}}, a convenience
+function for constructing valid SSH arguments.}
+
+\item{rscript}{(for remote launches only) name / path of the Rscript
+executable on the remote machine. The default assumes 'Rscript' is on the
+executable search path. Prepend the full path if necessary. If launching
+on Windows, 'Rscript' should be replaced with 'Rscript.exe'.}
 
 \item{.compute}{[default 'default'] character compute profile to use for
 creating the daemons (each compute profile has its own set of daemons for
@@ -102,12 +92,12 @@ Depending on the arguments supplied:
 }
 \description{
 Set 'daemons' or persistent background processes receiving \code{\link{mirai}}
-    requests. These are by default created on the local machine.
-    Alternatively, for distributing tasks across the network, a host URL
-    may be specified to receive connections from remote daemons. These may be
-    started using \code{\link{launch_remote}}. Daemons may use the dispatcher,
-    which ensures optimal FIFO scheduling, or else the low-level approach of
-    distributing tasks in a round-robin fashion.
+    requests. These are automatically created on the local machine, or else
+    by specifying a host URL for receiving connections, tasks may be
+    distributed to remote daemons across the network, optionally launched by
+    providing 'command' and 'args'. Daemons by default use dispatcher, which
+    ensures optimal FIFO scheduling, or alternatively the low-level approach
+    of distributing tasks in a round-robin fashion.
 }
 \details{
 Use \code{daemons(0)} to reset daemon connections:
@@ -171,8 +161,11 @@ Use \code{daemons(0)} to reset daemon connections:
 
     The host URL should be a character string such as: 'tcp://10.75.32.70:5555'
     at which daemon processes started using \code{\link{daemon}} should
-    connect to. The full shell command to deploy on remote machines may be
-    generated by \code{\link{launch_remote}}.
+    connect to.
+
+    Specify 'command' and 'args' to launch daemons on remote machines.
+    Alternatively, the full shell command to deploy manually on remote
+    machines may be generated by \code{\link{launch_remote}}.
 
     IPv6 addresses are also supported and must be enclosed in square brackets
     [ ] to avoid confusion with the final colon separating the port. For
@@ -297,6 +290,12 @@ daemons(url = "tcp://:0", dispatcher = FALSE)
 status()
 # Reset to zero
 daemons(0)
+
+# Launch 4 daemons on a remote machine at 10.75.32.100 using SSH with
+# tunnelling on port 5555:
+#
+# daemons(n = 4, url = 'ws://localhost:5555', command = 'ssh',
+#         args = ssh_args('10.75.32.100', tunnel = TRUE))
 
 }
 

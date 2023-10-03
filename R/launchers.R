@@ -19,11 +19,10 @@
 #' Launch Daemon
 #'
 #' \code{launch_local} spawns a new background \code{Rscript} process calling
-#'     \code{\link{daemon}} with the specified arguments. May be used to
-#'     re-launch daemons that have timed out on the local machine.
+#'     \code{\link{daemon}} with the specified arguments.
 #'
 #' @inheritParams saisei
-#' @inheritDotParams daemon asyncdial:output
+#' @inheritDotParams daemon asyncdial:output cleanup
 #' @param url the character host URL or vector of host URLs, including the port
 #'     to connect to (and optionally for websockets, a path), e.g.
 #'     tcp://10.75.32.70:5555' or 'ws://10.75.32.70:5555/path'
@@ -43,7 +42,10 @@
 #'
 #' @return For \strong{launch_local}: Invisible NULL.
 #'
-#' @details If daemons have been set, the generated command will automatically
+#' @details These functions may be used to re-launch daemons that have exited
+#'     after reaching time or task limits.
+#'
+#'     If daemons have been set, the generated command will automatically
 #'     contain the argument 'rs' specifying the length 7 L'Ecuyer-CMRG random
 #'     seed supplied to the daemon. The values will be different each time the
 #'     function is called.
@@ -98,14 +100,14 @@ launch_local <- function(url, ..., tls = NULL, .compute = "default") {
 #'     for the daemon launch command. Alternatively, a list of character
 #'     vectors, such as those produced by \code{\link{ssh_args}}, a convenience
 #'     function for constructing valid SSH arguments.
-#' @param rscript [default 'Rscript'] name / path of the Rscript executable on
-#'     the remote machine. The default assumes 'Rscript' is on the executable
-#'     search path. Prepend the full path if necessary. If launching on Windows,
-#'     'Rscript' should be replaced with 'Rscript.exe'.
+#' @param rscript (for remote launches only) name / path of the Rscript
+#'     executable on the remote machine. The default assumes 'Rscript' is on the
+#'     executable search path. Prepend the full path if necessary. If launching
+#'     on Windows, 'Rscript' should be replaced with 'Rscript.exe'.
 #'
 #' @return For \strong{launch_remote}: A character vector of daemon launch
 #'     commands the same length as 'url'. For manual deployment, unescape the
-#'     double quotes around the call to \code{"mirai::daemons()"}.
+#'     double quotes around the call to \code{"mirai::daemon()"}.
 #'
 #' @rdname launch_local
 #' @export
@@ -161,7 +163,8 @@ launch_remote <- function(url, ..., tls = NULL, .compute = "default",
 #' SSH Arguments Constructor
 #'
 #' Return value may be supplied directly to the 'args' argument of
-#'     \code{\link{launch_remote}} or \code{\link{make_cluster}}.
+#'     \code{\link{daemons}}, \code{\link{launch_remote}} or
+#'     \code{\link{make_cluster}}.
 #'
 #' @param names a character vector of hostnames or IP addresses of the remote
 #'     machines on which to launch daemons (nodes), e.g.
@@ -194,24 +197,6 @@ launch_remote <- function(url, ..., tls = NULL, .compute = "default",
 #'     relevant port on the host must be open to inbound connections from the
 #'     remote machine.
 #'
-#'     The following shows an example for \code{\link{make_cluster}}, and is
-#'     equally valid for the same arguments in \code{\link{launch_remote}}.
-#'
-#'     \verb{
-#'     make_cluster(
-#'       # host URL accessible to nodes
-#'       url = "tls+tcp://10.75.37.40:5555",
-#'       # launch nodes using SSH
-#'       command = "ssh",
-#'       # node IP / hostnames to connect to with custom port number
-#'       args = ssh_args(
-#'         names = c("10.75.37.90", "10.75.37.91"),
-#'         port = 222,
-#'         timeout = 1
-#'       )
-#'     )
-#'     }
-#'
 #' @section SSH Tunnelling:
 #'
 #'     Use of SSH tunnelling provides a convenient way to launch remote nodes
@@ -226,26 +211,34 @@ launch_remote <- function(url, ..., tls = NULL, .compute = "default",
 #'     nodes should each dial into \code{localhost:port} on their own respective
 #'     machines.
 #'
-#'     The following is an example for \code{\link{make_cluster}}, and is
-#'     equally valid for the same arguments in \code{\link{launch_remote}}.
-#'
-#'     \verb{
-#'     make_cluster(
-#'       # use 'localhost' or '127.0.0.1' with a port available on all machines
-#'       url = "tcp://localhost:5555",
-#'       # launch nodes using SSH
-#'       command = "ssh",
-#'       # launch 2 nodes on the remote machine with SSH tunnelling
-#'       args = ssh_args(
-#'         names = c("10.75.37.90", "10.75.37.90"),
-#'         timeout = 1,
-#'         tunnel = TRUE
-#'       )
-#'     )
-#'     }
-#'
 #' @examples
 #' ssh_args(names = c("10.75.37.90", "nodename"), port = 222, timeout = 10)
+#'
+#' # launch 2 daemons on the remote machines 10.75.37.90 and 10.75.37.91 using
+#' # SSH, connecting back directly to the host URL over a TLS connection:
+#' #
+#' # daemons(
+#' #   url = "tls+tcp://10.75.37.40:5555",
+#' #   command = "ssh",
+#' #   args = ssh_args(
+#' #     names = c("10.75.37.90", "10.75.37.91"),
+#' #     port = 222,
+#' #     timeout = 1
+#' #   )
+#' # )
+#'
+#' # launch 2 nodes on the remote machine 10.75.37.90 using SSH tunnelling over
+#' # port 5555 ('url' hostname must be 'localhost' or '127.0.0.1'):
+#' #
+#' # make_cluster(
+#' #   url = "tcp://localhost:5555",
+#' #   command = "ssh",
+#' #   args = ssh_args(
+#' #     names = c("10.75.37.90", "10.75.37.90"),
+#' #     timeout = 1,
+#' #     tunnel = TRUE
+#' #   )
+#' # )
 #'
 #' @export
 #'
