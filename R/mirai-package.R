@@ -115,7 +115,7 @@ NULL
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
     requires_list = "'.args' must be specified as a list",
     requires_local = "SSH tunnelling requires 'url' hostname to be 'localhost' or '127.0.0.1'",
-    requires_n = "specifying 'url' without 'ssh' requires 'n'",
+    requires_n = "specifying 'url' without a launch command requires 'n'",
     single_url = "only one 'url' should be specified",
     sync_dispatch = "initial sync with dispatcher timed out after 5s",
     sync_timeout = "sync between host and dispatcher/daemon timed out after 5s",

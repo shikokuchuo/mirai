@@ -98,15 +98,14 @@ make_cluster <- function(n, url = NULL, ..., command = NULL, args = c("", "."), 
     length(url) == 1L || stop(.messages[["single_url"]])
 
     if (length(command)) {
-      daemons(url = url, dispatcher = FALSE, resilience = FALSE, cleanup = 0L, ..., .compute = id)
-      launch_remote(url = url, .compute = id, command = command, args = args, rscript = rscript)
       n <- if (is.list(args)) length(args) else 1L
-
     } else {
       missing(n) && stop(.messages[["requires_n"]])
-      daemons(url = url, dispatcher = FALSE, resilience = FALSE, cleanup = 0L, ..., .compute = id)
       message(sprintf("%d nodes connecting to '%s' should be launched manually", n, url))
     }
+
+    daemons(url = url, dispatcher = FALSE, resilience = FALSE, cleanup = 0L, ...,
+            command = command, args = args, rscript = rscript, .compute = id)
 
   } else {
     missing(n) && stop(.messages[["missing_url"]])
