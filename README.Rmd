@@ -59,7 +59,14 @@ A 'mirai' object is returned immediately.
 ```{r exec}
 library(mirai)
 
-m <- mirai(rnorm(x) + y ^ 2, x = 10, y = runif(1))
+m <- mirai(
+  {
+    res <- rnorm(x) + y ^ 2
+    res / rev(res)
+  },
+  x = 12,
+  y = runif(1)
+)
 
 m
 ```
