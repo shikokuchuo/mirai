@@ -3,7 +3,7 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   reference: reference.html
-last_built: 2023-10-03T08:12Z
+last_built: 2023-10-03T08:42Z
 urls:
   reference: https://shikokuchuo.net/mirai/reference
   article: https://shikokuchuo.net/mirai/articles

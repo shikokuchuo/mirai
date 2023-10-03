@@ -121,14 +121,7 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span></span>
-<span>  <span class="op">{</span></span>
-<span>    <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">+</span> <span class="va">m</span></span>
-<span>    <span class="va">res</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
-<span>  <span class="op">}</span>,</span>
-<span>  m <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
-<span>  n <span class="op">=</span> <span class="fl">1e8</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">+</span> <span class="va">y</span> <span class="op">^</span> <span class="fl">2</span>, x <span class="op">=</span> <span class="fl">10</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">m</span></span>
 <span><span class="co">#&gt; &lt; mirai &gt;</span></span>
@@ -144,12 +137,14 @@
 <span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 1.324 -1.279 0.366 1.537 1.423 ...</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
+<span><span class="co">#&gt;  [1]  1.38011716 -0.58981102  1.05108145  0.72702979  2.42044161 -0.24142757</span></span>
+<span><span class="co">#&gt;  [7]  2.18531776 -0.05239655  1.88030549  1.62920961</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 1.324 -1.279 0.366 1.537 1.423 ...</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
+<span><span class="co">#&gt;  [1]  1.38011716 -0.58981102  1.05108145  0.72702979  2.42044161 -0.24142757</span></span>
+<span><span class="co">#&gt;  [7]  2.18531776 -0.05239655  1.88030549  1.62920961</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="reference-vignette">Reference Vignette<a class="anchor" aria-label="anchor" href="#reference-vignette"></a>
@@ -168,7 +163,7 @@
 <div class="section level3">
 <h3 id="use-with-parallel">Use with Parallel<a class="anchor" aria-label="anchor" href="#use-with-parallel"></a>
 </h3>
-<p><code>mirai</code> provides an alternative communications backend for R’s base ‘parallel’ package. The <code><a href="reference/make_cluster.html">make_cluster()</a></code> function creates a ‘miraiCluster’, which leverages the full capabilities of the package, but remains fully compatible with all functions from the parallel pacakge such as <code>clusterApply</code> or <code>parLapply</code>.</p>
+<p><code>mirai</code> provides an alternative communications backend for R’s base ‘parallel’ package. The <code><a href="reference/make_cluster.html">make_cluster()</a></code> function creates a ‘miraiCluster’, which leverages the full capabilities of the package, but remains fully compatible with all <code>parallel</code> functions such as <code>clusterApply</code> or <code>parLapply</code>.</p>
 <p>Created clusters may also be used in all cases which take a ‘cluster’ object. For example, <a href="https://cran.r-project.org/package=doParallel" class="external-link"><code>doParallel</code></a> may be used to register a ‘miraiCluster’ for use with the package <a href="https://cran.r-project.org/package=foreach" class="external-link"><code>foreach</code></a>.</p>
 <p>This functionality, fulfilling a request from R-Core at R Project Sprint 2023, requires R &gt;= 4.4 (currently R-devel).</p>
 </div>
