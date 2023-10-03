@@ -121,7 +121,14 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">+</span> <span class="va">y</span> <span class="op">^</span> <span class="fl">2</span>, x <span class="op">=</span> <span class="fl">10</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span></span>
+<span>  <span class="op">{</span></span>
+<span>    <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">+</span> <span class="va">y</span> <span class="op">^</span> <span class="fl">2</span></span>
+<span>    <span class="va">res</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  x <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">m</span></span>
 <span><span class="co">#&gt; &lt; mirai &gt;</span></span>
@@ -138,13 +145,15 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]  1.38011716 -0.58981102  1.05108145  0.72702979  2.42044161 -0.24142757</span></span>
-<span><span class="co">#&gt;  [7]  2.18531776 -0.05239655  1.88030549  1.62920961</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]   1.06909345 -18.89661245   2.25211172   1.72054641   2.42588021</span></span>
+<span><span class="co">#&gt;  [6] -36.85290549  -0.02713490   0.41222151   0.58121071   0.44402771</span></span>
+<span><span class="co">#&gt; [11]  -0.05291954   0.93537193</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]  1.38011716 -0.58981102  1.05108145  0.72702979  2.42044161 -0.24142757</span></span>
-<span><span class="co">#&gt;  [7]  2.18531776 -0.05239655  1.88030549  1.62920961</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]   1.06909345 -18.89661245   2.25211172   1.72054641   2.42588021</span></span>
+<span><span class="co">#&gt;  [6] -36.85290549  -0.02713490   0.41222151   0.58121071   0.44402771</span></span>
+<span><span class="co">#&gt; [11]  -0.05291954   0.93537193</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="reference-vignette">Reference Vignette<a class="anchor" aria-label="anchor" href="#reference-vignette"></a>
