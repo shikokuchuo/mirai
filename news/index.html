@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9020</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9021</span>
       </span>
     </div>
 
@@ -64,7 +64,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.0.9020" id="mirai-01009020-development">mirai 0.10.0.9020 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009020-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.10.0.9021" id="mirai-01009021-development">mirai 0.10.0.9021 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009021-development"></a></h2>
 <ul><li>Implements an alternative communications backend for R, adding methods for the ‘parallel’ base package.
 <ul><li>Fulfils a request by R Core at R Project Sprint 2023, and requires R &gt;= 4.4 (currently R-devel).</li>
 <li>
@@ -76,7 +76,10 @@
 <ul><li>Argument signature of ‘args’ for <code><a href="../reference/launch_local.html">launch_remote()</a></code> changed to accommodate.</li>
 </ul></li>
 <li>
-<code><a href="../reference/daemons.html">daemons()</a></code> adds argument ‘resilience’ to control the behaviour, when not using dispatcher, of whether to retry failed tasks on other daemons.</li>
+<code><a href="../reference/daemons.html">daemons()</a></code> gains the following features:
+<ul><li>Adds arguments ‘command’, ‘args’ and ‘rscript’ for launching remote daemons automatically rather than needing to call <code><a href="../reference/launch_local.html">launch_remote()</a></code>.</li>
+<li>Adds argument ‘resilience’ to control the behaviour, when not using dispatcher, of whether to retry failed tasks on other daemons.</li>
+</ul></li>
 <li>
 <code><a href="../reference/mirai.html">mirai()</a></code> adds logical argument ‘.signal’ for whether to signal the condition variable within the compute profile upon resolution of the ‘mirai’.</li>
 <li>
