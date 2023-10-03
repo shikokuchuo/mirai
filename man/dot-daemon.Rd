@@ -9,7 +9,7 @@
 \arguments{
 \item{url}{the character host or dispatcher URL to dial into, including the
 port to connect to (and optionally for websockets, a path), e.g.
-'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
+'tcp://10.75.32.70:5555' or 'ws://10.75.32.70:5555/path'.}
 
 \item{exitlinger}{[default 2000L] time in milliseconds to linger before
 exiting to allow the socket to complete sends currently in progress.}

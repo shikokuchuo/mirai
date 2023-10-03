@@ -23,9 +23,10 @@
 #'     re-launch daemons that have timed out on the local machine.
 #'
 #' @inheritParams saisei
+#' @inheritDotParams daemon asyncdial:output
 #' @param url the character host URL or vector of host URLs, including the port
 #'     to connect to (and optionally for websockets, a path), e.g.
-#'     tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'
+#'     tcp://10.75.32.70:5555' or 'ws://10.75.32.70:5555/path'
 #'
 #'     \strong{or} integer index value, or vector of index values, of the
 #'     dispatcher URLs, or 1L for the host URL (when not using dispatcher).
@@ -41,24 +42,6 @@
 #'     empty character ''.
 #'
 #' @return For \strong{launch_local}: Invisible NULL.
-#'
-#' @section Additional arguments:
-#'
-#'     Additional arguments may be specified as part of '\code{...}' to be
-#'     passed on to \code{\link{daemon}}:
-#'
-#'     \itemize{
-#'     \item{\strong{asyncdial}} {[default FALSE] whether to perform dials
-#'     asynchronously. The default FALSE will error if a connection is not
-#'     immediately possible (e.g. \code{\link{daemons}} has yet to be called, or
-#'     the specified port is not open etc.). Specifying TRUE continues retrying
-#'     (indefinitely) if not immediately successful, which is more resilient but
-#'     can mask potential connection issues.}
-#'     \item{\strong{output}} {[default FALSE] Specify as TRUE to provide
-#'     redirection of output (stdout and stderr) from the daemon to the host
-#'     process. This option is only applicable for local daemons when not using
-#'     dispatcher.}
-#'     }
 #'
 #' @details If daemons have been set, the generated command will automatically
 #'     contain the argument 'rs' specifying the length 7 L'Ecuyer-CMRG random

@@ -21,11 +21,11 @@ dispatcher(
 \arguments{
 \item{host}{the character host URL to dial (where tasks are sent from),
 including the port to connect to (and optionally for websockets, a path),
-e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
+e.g. 'tcp://10.75.32.70:5555' or 'ws://10.75.32.70:5555/path'.}
 
 \item{url}{(optional) the character URL or vector of URLs dispatcher should
 listen at, including the port to connect to (and optionally for websockets,
-a path), e.g. 'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
+a path), e.g. 'tcp://10.75.32.70:5555' or 'ws://10.75.32.70:5555/path'.
 Specify 'tls+tcp://' or 'wss://' to use secure TLS connections. Tasks are
 sent to daemons dialled into these URLs. If not supplied, 'n' local
 inter-process URLs will be assigned automatically.}

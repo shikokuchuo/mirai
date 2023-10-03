@@ -24,18 +24,13 @@
 #'
 #' @param url the character host or dispatcher URL to dial into, including the
 #'     port to connect to (and optionally for websockets, a path), e.g.
-#'     'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.
+#'     'tcp://10.75.32.70:5555' or 'ws://10.75.32.70:5555/path'.
 #' @param asyncdial [default FALSE] whether to perform dials asynchronously. The
 #'     default FALSE will error if a connection is not immediately possible
 #'     (e.g. \code{\link{daemons}} has yet to be called on the host, or the
 #'     specified port is not open etc.). Specifying TRUE continues retrying
 #'     (indefinitely) if not immediately successful, which is more resilient but
 #'     can mask potential connection issues.
-#' @param output [default FALSE] logical value, to output generated stdout /
-#'     stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'
-#'     argument to \code{\link{daemons}} or \code{\link{launch_local}} to
-#'     provide redirection of output to the host process. Applicable only when
-#'     not using dispatcher.
 #' @param maxtasks [default Inf] the maximum number of tasks to execute (task
 #'     limit) before exiting.
 #' @param idletime [default Inf] maximum idle time, since completion of the last
@@ -45,6 +40,11 @@
 #' @param timerstart [default 0L] number of completed tasks after which to start
 #'     the timer for 'idletime' and 'walltime'. 0L implies timers are started
 #'     upon launch.
+#' @param output [default FALSE] logical value, to output generated stdout /
+#'     stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'
+#'     argument to \code{\link{daemons}} or \code{\link{launch_local}} to
+#'     provide redirection of output to the host process (applicable only for
+#'     local daemons when not using dispatcher).
 #' @param tls [default NULL] required for secure TLS connections over 'tls+tcp://'
 #'     or 'wss://'. \strong{Either} the character path to a file containing
 #'     X.509 certificate(s) in PEM format, comprising the certificate authority

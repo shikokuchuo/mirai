@@ -100,8 +100,16 @@ Alternatively, explicitly call and wait for the result using `call_mirai()`.
 call_mirai(m)$data |> str()
 ```
 
+### Reference Vignette
 
-Refer to the ['reference'](https://shikokuchuo.net/mirai/articles/reference.html) vignette for the full package functionality, which includes launching daemons - persistent background processes on local or remote machines. This may be accessed within R by:
+See the [reference vignette](https://shikokuchuo.net/mirai/articles/reference.html) for the full package functionality, which includes the following key topics, amongst others:
+
+1. Example use cases
+2. Local daemons - persistent background processes
+3. Distributed computing - remote daemons
+4. Secure TLS connections
+
+This may be accessed within R by:
 
 ```{r vignette, eval=FALSE}
 vignette("reference", package = "mirai")

@@ -21,7 +21,7 @@ daemon(
 \arguments{
 \item{url}{the character host or dispatcher URL to dial into, including the
 port to connect to (and optionally for websockets, a path), e.g.
-'tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'.}
+'tcp://10.75.32.70:5555' or 'ws://10.75.32.70:5555/path'.}
 
 \item{asyncdial}{[default FALSE] whether to perform dials asynchronously. The
 default FALSE will error if a connection is not immediately possible
@@ -46,8 +46,8 @@ upon launch.}
 \item{output}{[default FALSE] logical value, to output generated stdout /
 stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'
 argument to \code{\link{daemons}} or \code{\link{launch_local}} to
-provide redirection of output to the host process. Applicable only when
-not using dispatcher.}
+provide redirection of output to the host process (applicable only for
+local daemons when not using dispatcher).}
 
 \item{tls}{[default NULL] required for secure TLS connections over 'tls+tcp://'
 or 'wss://'. \strong{Either} the character path to a file containing
