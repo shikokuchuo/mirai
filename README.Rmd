@@ -59,14 +59,7 @@ A 'mirai' object is returned immediately.
 ```{r exec}
 library(mirai)
 
-m <- mirai(
-  {
-    res <- rnorm(n) + m
-    res / rev(res)
-  },
-  m = runif(1),
-  n = 1e8
-)
+m <- mirai(rnorm(x) + y ^ 2, x = 10, y = runif(1))
 
 m
 ```
@@ -91,13 +84,13 @@ unresolved(m)
 Upon completion, the 'mirai' resolves automatically to the evaluated result.
 
 ```{r resolv}
-m$data |> str()
+m$data
 ```
 
 Alternatively, explicitly call and wait for the result using `call_mirai()`.
 
 ```{r call}
-call_mirai(m)$data |> str()
+call_mirai(m)$data
 ```
 
 ### Reference Vignette
@@ -117,7 +110,7 @@ vignette("reference", package = "mirai")
 
 ### Use with Parallel
 
-`mirai` provides an alternative communications backend for R's base 'parallel' package. The `make_cluster()` function creates a 'miraiCluster', which leverages the full capabilities of the package, but remains fully compatible with all functions from the parallel pacakge such as `clusterApply` or `parLapply`.
+`mirai` provides an alternative communications backend for R's base 'parallel' package. The `make_cluster()` function creates a 'miraiCluster', which leverages the full capabilities of the package, but remains fully compatible with all `parallel` functions such as `clusterApply` or `parLapply`.
 
 Created clusters may also be used in all cases which take a 'cluster' object. For example, [`doParallel`](https://cran.r-project.org/package=doParallel) may be used to register a 'miraiCluster' for use with the package [`foreach`](https://cran.r-project.org/package=foreach).
 

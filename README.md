@@ -53,14 +53,7 @@ A ‘mirai’ object is returned immediately.
 ``` r
 library(mirai)
 
-m <- mirai(
-  {
-    res <- rnorm(n) + m
-    res / rev(res)
-  },
-  m = runif(1),
-  n = 1e8
-)
+m <- mirai(rnorm(x) + y ^ 2, x = 10, y = runif(1))
 
 m
 #> < mirai >
@@ -89,16 +82,18 @@ Upon completion, the ‘mirai’ resolves automatically to the evaluated
 result.
 
 ``` r
-m$data |> str()
-#>  num [1:100000000] 1.324 -1.279 0.366 1.537 1.423 ...
+m$data
+#>  [1]  1.38011716 -0.58981102  1.05108145  0.72702979  2.42044161 -0.24142757
+#>  [7]  2.18531776 -0.05239655  1.88030549  1.62920961
 ```
 
 Alternatively, explicitly call and wait for the result using
 `call_mirai()`.
 
 ``` r
-call_mirai(m)$data |> str()
-#>  num [1:100000000] 1.324 -1.279 0.366 1.537 1.423 ...
+call_mirai(m)$data
+#>  [1]  1.38011716 -0.58981102  1.05108145  0.72702979  2.42044161 -0.24142757
+#>  [7]  2.18531776 -0.05239655  1.88030549  1.62920961
 ```
 
 ### Reference Vignette
@@ -124,8 +119,8 @@ vignette("reference", package = "mirai")
 `mirai` provides an alternative communications backend for R’s base
 ‘parallel’ package. The `make_cluster()` function creates a
 ‘miraiCluster’, which leverages the full capabilities of the package,
-but remains fully compatible with all functions from the parallel
-pacakge such as `clusterApply` or `parLapply`.
+but remains fully compatible with all `parallel` functions such as
+`clusterApply` or `parLapply`.
 
 Created clusters may also be used in all cases which take a ‘cluster’
 object. For example,
