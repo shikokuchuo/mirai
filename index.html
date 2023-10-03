@@ -145,12 +145,23 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -1.163 -5.3031 -0.8701 2.7348 -0.0317 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 1.324 -1.279 0.366 1.537 1.423 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -1.163 -5.3031 -0.8701 2.7348 -0.0317 ...</span></span></code></pre></div>
-<p>Refer to the <a href="https://shikokuchuo.net/mirai/articles/reference.html">‘reference’</a> vignette for the full package functionality, which includes launching daemons - persistent background processes on local or remote machines. This may be accessed within R by:</p>
+<span><span class="co">#&gt;  num [1:100000000] 1.324 -1.279 0.366 1.537 1.423 ...</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="reference-vignette">Reference Vignette<a class="anchor" aria-label="anchor" href="#reference-vignette"></a>
+</h3>
+<p>See the <a href="https://shikokuchuo.net/mirai/articles/reference.html">reference vignette</a> for the full package functionality, which includes the following key topics, amongst others:</p>
+<ol style="list-style-type: decimal">
+<li>Example use cases</li>
+<li>Local daemons - persistent background processes</li>
+<li>Distributed computing - remote daemons</li>
+<li>Secure TLS connections</li>
+</ol>
+<p>This may be accessed within R by:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"reference"</span>, package <span class="op">=</span> <span class="st">"mirai"</span><span class="op">)</span></span></code></pre></div>
 </div>

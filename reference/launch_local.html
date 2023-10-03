@@ -97,14 +97,46 @@ launch_remote returns the shell command for launching daemons as a
     <dl><dt>url</dt>
 <dd><p>the character host URL or vector of host URLs, including the port
     to connect to (and optionally for websockets, a path), e.g.
-    tcp://192.168.0.2:5555' or 'ws://192.168.0.2:5555/path'</p>
+    tcp://10.75.32.70:5555' or 'ws://10.75.32.70:5555/path'</p>
 <p><strong>or</strong> integer index value, or vector of index values, of the
     dispatcher URLs, or 1L for the host URL (when not using dispatcher).</p></dd>
 
 
 <dt>...</dt>
-<dd><p>(optional) additional arguments passed to <code><a href="daemon.html">daemon</a></code>
-(see 'additional arguments' section below).</p></dd>
+<dd><p>Arguments passed on to <code><a href="daemon.html">daemon</a></code></p><dl><dt><code>asyncdial</code></dt>
+<dd><p>[default FALSE] whether to perform dials asynchronously. The
+default FALSE will error if a connection is not immediately possible
+(e.g. <code><a href="daemons.html">daemons</a></code> has yet to be called on the host, or the
+specified port is not open etc.). Specifying TRUE continues retrying
+(indefinitely) if not immediately successful, which is more resilient but
+can mask potential connection issues.</p></dd>
+
+    <dt><code>maxtasks</code></dt>
+<dd><p>[default Inf] the maximum number of tasks to execute (task
+limit) before exiting.</p></dd>
+
+    <dt><code>idletime</code></dt>
+<dd><p>[default Inf] maximum idle time, since completion of the last
+task (in milliseconds) before exiting.</p></dd>
+
+    <dt><code>walltime</code></dt>
+<dd><p>[default Inf] soft walltime, or the minimum amount of real
+time taken (in milliseconds) before exiting.</p></dd>
+
+    <dt><code>timerstart</code></dt>
+<dd><p>[default 0L] number of completed tasks after which to start
+the timer for 'idletime' and 'walltime'. 0L implies timers are started
+upon launch.</p></dd>
+
+    <dt><code>output</code></dt>
+<dd><p>[default FALSE] logical value, to output generated stdout /
+stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'
+argument to <code><a href="daemons.html">daemons</a></code> or <code>launch_local</code> to
+provide redirection of output to the host process (applicable only for
+local daemons when not using dispatcher).</p></dd>
+
+  
+</dl></dd>
 
 
 <dt>tls</dt>
@@ -161,24 +193,6 @@ search path. Prepend the full path if necessary. If launching on Windows,
     seed supplied to the daemon. The values will be different each time the
     function is called.</p>
     </div>
-    <div id="additional-arguments">
-    <h2>Additional arguments</h2>
-    
-
-
-<p>Additional arguments may be specified as part of '<code>...</code>' to be
-    passed on to <code><a href="daemon.html">daemon</a></code>:</p>
-<p></p><ul><li><p><strong>asyncdial</strong> [default FALSE] whether to perform dials
-    asynchronously. The default FALSE will error if a connection is not
-    immediately possible (e.g. <code><a href="daemons.html">daemons</a></code> has yet to be called, or
-    the specified port is not open etc.). Specifying TRUE continues retrying
-    (indefinitely) if not immediately successful, which is more resilient but
-    can mask potential connection issues.</p></li>
-<li><p><strong>output</strong> [default FALSE] Specify as TRUE to provide
-    redirection of output (stdout and stderr) from the daemon to the host
-    process. This option is only applicable for local daemons when not using
-    dispatcher.</p></li>
-</ul></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
