@@ -189,8 +189,12 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
 #'
 #' @export
 #'
-remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript")
+remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript") {
+
+  if (is.list(args)) lapply(args, find_dot) else find_dot(args)
   list(command = command, args = args, rscript = rscript)
+
+}
 
 #' SSH Remote Launch Configuration
 #'
@@ -272,10 +276,7 @@ ssh_config <- function(remotes, timeout = 5, tunnel = FALSE, command = "ssh", rs
   ports <- lapply(premotes, .subset2, "port")
 
   if (tunnel) {
-    .compute <- dynGet(".compute", ifnotfound = NULL)
-    url <- if (is.null(.compute) || is.null(..[[.compute]][["urls"]]))
-      dynGet("url", ifnotfound = stop(.messages[["correct_context"]])) else
-        ..[[.compute]][["urls"]]
+    url <- dynGet("url", ifnotfound = stop(.messages[["correct_context"]]))
     purl <- lapply(url, parse_check_local_url)
     plen <- length(purl)
   }
@@ -293,7 +294,7 @@ ssh_config <- function(remotes, timeout = 5, tunnel = FALSE, command = "ssh", rs
     )
   }
 
-  remote_config(command = command, args = args, rscript = rscript)
+  list(command = command, args = args, rscript = rscript)
 
 }
 
