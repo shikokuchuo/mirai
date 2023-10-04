@@ -42,9 +42,9 @@
 #'     upon launch.
 #' @param output [default FALSE] logical value, to output generated stdout /
 #'     stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'
-#'     argument to \code{\link{daemons}} or \code{\link{launch_local}} to
-#'     provide redirection of output to the host process (applicable only for
-#'     local daemons when not using dispatcher).
+#'     argument to \code{\link{daemons}} or \code{\link{launch_local}} to provide
+#'     redirection of output to the host process (applicable only for local
+#'     daemons when not using dispatcher).
 #' @param tls [default NULL] required for secure TLS connections over 'tls+tcp://'
 #'     or 'wss://'. \strong{Either} the character path to a file containing
 #'     X.509 certificate(s) in PEM format, comprising the certificate authority

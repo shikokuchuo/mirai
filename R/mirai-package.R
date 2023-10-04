@@ -103,8 +103,8 @@ NULL
 .messages <- list2env(
   list(
     arglen = "length of 'args' must be 1 or the same length as 'url'",
-    cluster_inactive = "cluster is no longer active",
     correct_context = "must be called in the correct context e.g. as a function argument",
+    cluster_inactive = "cluster is no longer active",
     daemons_unset = "a numeric value for 'url' requires daemons to be set",
     dot_required = "'.' must be an element of (each of) the character vector(s) supplied to 'args'",
     missing_expression = "missing expression, perhaps wrap in {}?",

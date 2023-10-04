@@ -38,9 +38,6 @@
 #'     Dispatcher is a local background process that connects to daemons on
 #'     behalf of the host and ensures FIFO scheduling (see Dispatcher section
 #'     below).
-#' @param resilience [default TRUE] (applicable when not using dispatcher)
-#'     logical value whether to retry failed tasks on other daemons. If FALSE,
-#'     an appropriate 'errorValue' will be returned in such cases.
 #' @param seed [default NULL] (optional) supply a random seed (single value,
 #'     interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
 #'     RNG streams sent to each daemon. Note that reproducible results can be
@@ -56,10 +53,13 @@
 #'     chain, with the TLS certificate first), \strong{or} a length 2 character
 #'     vector comprising [i] the TLS certificate (optionally certificate chain)
 #'     and [ii] the associated private key.
-#' @param ... additional arguments passed through to \code{\link{dispatcher}} if
-#'     using dispatcher and/or \code{\link{daemon}} if launching daemons. These
-#'     include 'token' and 'lock' at dispatcher and 'maxtasks', 'idletime',
-#'     'timerstart', 'output' and 'cleanup' at daemon.
+#' @param ... (optional) additional arguments passed through to
+#'     \code{\link{dispatcher}} if using dispatcher and/or \code{\link{daemon}}
+#'     if launching daemons. These include 'token' and 'lock' at dispatcher and
+#'     'maxtasks', 'idletime', 'timerstart', 'output' and 'cleanup' at daemon.
+#' @param resilience [default TRUE] (applicable when not using dispatcher)
+#'     logical value whether to retry failed tasks on other daemons. If FALSE,
+#'     an appropriate 'errorValue' will be returned in such cases.
 #' @param .compute [default 'default'] character compute profile to use for
 #'     creating the daemons (each compute profile has its own set of daemons for
 #'     connecting to different resources).
@@ -256,16 +256,15 @@
 #' # Launch 4 daemons on a remote machine at 10.75.32.100 using SSH with
 #' # tunnelling on port 5555:
 #' #
-#' # daemons(n = 4, url = 'ws://localhost:5555', command = 'ssh',
-#' #         args = ssh_args('10.75.32.100', tunnel = TRUE))
+#' # daemons(n = 4, url = 'ws://localhost:5555',
+#' #         remote = ssh_config('ssh://10.75.32.100', tunnel = TRUE))
 #'
 #' }
 #'
 #' @export
 #'
-daemons <- function(n, url = NULL, dispatcher = TRUE, resilience = TRUE,
-                    seed = NULL, tls = NULL, pass = NULL, ...,  command = NULL,
-                    args = c("", "."), rscript = "Rscript", .compute = "default") {
+daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, seed = NULL,
+                    tls = NULL, pass = NULL, ..., resilience = TRUE, .compute = "default") {
 
   missing(n) && missing(url) && return(status(.compute))
 
@@ -301,8 +300,8 @@ daemons <- function(n, url = NULL, dispatcher = TRUE, resilience = TRUE,
         `[[<-`(envir, "urls", n)
       }
       `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv())
-      if (length(command))
-        launch_remote(url = envir[["urls"]], ..., tls = envir[["tls"]], .compute = .compute, command = command, args = args, rscript = rscript)
+      if (length(remote))
+        launch_remote(url = envir[["urls"]], remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
     }
 
   } else {

@@ -1,16 +1,16 @@
-# mirai 0.10.0.9022 (development)
+# mirai 0.10.0.9023 (development)
 
 * Implements an alternative communications backend for R, adding methods for the 'parallel' base package.
   + Fulfils a request by R Core at R Project Sprint 2023, and requires R >= 4.4 (currently R-devel).
   + `make_cluster()` creates a 'miraiCluster', compatible with all existing functions taking a 'cluster' object, for example in the 'parallel' and 'doParallel' / 'foreach' packages.
   + `status()` can now take a 'miraiCluster' as the argument to query its connection status.
-* Implements `ssh_args()` as a convenience function for constructing the correct arguments to launch remote daemons via SSH, including using reverse tunnelling.
-  + Argument signature of 'args' for `launch_remote()` changed to accommodate.
+* Implements `remote_config()` and `ssh_config()` to generate configurations for launching remote daemons generically, or via SSH, including using reverse tunnelling.
+  + `launch_remote()` simplified with a single 'remote' argument taking a remote configuration.
 * `daemons()` gains the following features:
-  + Adds arguments 'command', 'args' and 'rscript' for launching remote daemons automatically rather than needing to call `launch_remote()`.
+  + Adds argument 'remote' for launching remote daemons directly without recourse to a separate call to `launch_remote()`.
   + Adds argument 'resilience' to control the behaviour, when not using dispatcher, of whether to retry failed tasks on other daemons.
 * `mirai()` adds logical argument '.signal' for whether to signal the condition variable within the compute profile upon resolution of the 'mirai'.
-* `daemon()` argument 'exitlinger' retired as daemons now synchronise with the host/dispatcher and exit as soon as possible. Note: a default 'exitlinger' period still applies for ephemeral daemons.
+* `daemon()` argument 'exitlinger' retired as daemons now synchronise with the host/dispatcher and exit as soon as possible (although a default 'exitlinger' period still applies to ephemeral daemons).
 * Optimises scheduling at dispatcher: tasks are no longer assigned to a daemon if it is exiting due to specified time/task-outs.
 * An 'errorValue' 19 'Connection reset' is now returned for a 'mirai' if the connection to either dispatcher or an ephemeral daemon drops, for example if they have crashed, rather than remaining unresolved.
 * Invalid type of '...' arguments specified to `daemons()` or `dispatcher()` now raise an error early rather than attempting to launch daemons that fail.
@@ -18,7 +18,6 @@
 * Reverts the trailing line break added to the end of a 'miraiError' character string.
 * Deprecates the Deferred Evaluation Pipe `%>>%` in favour of a recommendation to use package `mirai.promises` for performing side effects upon 'mirai' resolution.
 * Deprecated use of alias `server()` for `daemon()` is retired.
-* Improved documentation for pass-through dot parameters (thanks @krlmlr #79).
 * Adds a 'reference' vignette, incorporating most of the information from the readme.
 * Requires nanonext >= 0.10.1.
 
@@ -80,7 +79,7 @@
 
 # mirai 0.8.7
 
-* `server()` and `dispatcher()` argument 'asyncdial' is now FALSE by default, causing these functions to exit if a connection is not immediately available. This means that for distributed computing purposes, `dameons()` should be called before `server()` is launched on remote resources, or else `server(asyncdial = TRUE)` allows servers to wait for a connection.
+* `server()` and `dispatcher()` argument 'asyncdial' is now FALSE by default, causing these functions to exit if a connection is not immediately available. This means that for distributed computing purposes, `daemons()` should be called before `server()` is launched on remote resources, or else `server(asyncdial = TRUE)` allows servers to wait for a connection.
 * `launch_server()` now parses the passed URL for correctness before attempting to launch a server, producing an error if not valid.
 
 # mirai 0.8.4
