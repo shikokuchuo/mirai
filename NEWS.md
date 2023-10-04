@@ -1,10 +1,10 @@
-# mirai 0.10.0.9021 (development)
+# mirai 0.10.0.9022 (development)
 
 * Implements an alternative communications backend for R, adding methods for the 'parallel' base package.
   + Fulfils a request by R Core at R Project Sprint 2023, and requires R >= 4.4 (currently R-devel).
   + `make_cluster()` creates a 'miraiCluster', compatible with all existing functions taking a 'cluster' object, for example in the 'parallel' and 'doParallel' / 'foreach' packages.
   + `status()` can now take a 'miraiCluster' as the argument to query its connection status.
-* Implements `ssh_args()` as a convenience function for constructing the correct arguments for `make_cluster()` and `launch_remote()` to launch remote daemons via SSH, including using reverse tunnelling.
+* Implements `ssh_args()` as a convenience function for constructing the correct arguments to launch remote daemons via SSH, including using reverse tunnelling.
   + Argument signature of 'args' for `launch_remote()` changed to accommodate.
 * `daemons()` gains the following features:
   + Adds arguments 'command', 'args' and 'rscript' for launching remote daemons automatically rather than needing to call `launch_remote()`.
@@ -18,8 +18,8 @@
 * Reverts the trailing line break added to the end of a 'miraiError' character string.
 * Deprecates the Deferred Evaluation Pipe `%>>%` in favour of a recommendation to use package `mirai.promises` for performing side effects upon 'mirai' resolution.
 * Deprecated use of alias `server()` for `daemon()` is retired.
-* Document dot parameters for `daemons()` and `dispatcher()` (thanks @krlmlr #79).
-* Adds a 'reference' vignette, moving most of the information from the readme.
+* Improved documentation for pass-through dot parameters (thanks @krlmlr #79).
+* Adds a 'reference' vignette, incorporating most of the information from the readme.
 * Requires nanonext >= 0.10.1.
 
 # mirai 0.10.0

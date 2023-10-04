@@ -4,14 +4,12 @@
 \alias{ssh_args}
 \title{SSH Arguments Constructor}
 \usage{
-ssh_args(names, port = 22, timeout = 5, tunnel = FALSE)
+ssh_args(remotes, timeout = 5, tunnel = FALSE)
 }
 \arguments{
-\item{names}{a character vector of hostnames or IP addresses of the remote
-machines on which to launch daemons (nodes), e.g.
-\code{c('10.75.37.90', 'nodename')}.}
-
-\item{port}{[default 22] numeric port number on which to connect.}
+\item{remotes}{the character URL or vector of URLs to SSH into, using the
+'ssh://' scheme and including the port open for SSH connections (defaults
+to 22 if not specified), e.g. 'ssh://10.75.32.70:22' or 'ssh://nodename'.}
 
 \item{timeout}{[default 5] maximum time allowed for connection setup in seconds.}
 
@@ -68,7 +66,7 @@ This function only returns the relevant SSH arguments; 'command' must
 }
 
 \examples{
-ssh_args(names = c("10.75.37.90", "nodename"), port = 222, timeout = 10)
+ssh_args(remotes = c("ssh://10.75.37.90:222", "ssh://nodename"), timeout = 10)
 
 # launch 2 daemons on the remote machines 10.75.37.90 and 10.75.37.91 using
 # SSH, connecting back directly to the host URL over a TLS connection:
@@ -77,8 +75,7 @@ ssh_args(names = c("10.75.37.90", "nodename"), port = 222, timeout = 10)
 #   url = "tls+tcp://10.75.37.40:5555",
 #   command = "ssh",
 #   args = ssh_args(
-#     names = c("10.75.37.90", "10.75.37.91"),
-#     port = 222,
+#     remotes = c("ssh://10.75.37.90:222", "ssh://10.75.37.91:222"),
 #     timeout = 1
 #   )
 # )
@@ -90,7 +87,7 @@ ssh_args(names = c("10.75.37.90", "nodename"), port = 222, timeout = 10)
 #   url = "tcp://localhost:5555",
 #   command = "ssh",
 #   args = ssh_args(
-#     names = c("10.75.37.90", "10.75.37.90"),
+#     remotes = c("ssh://10.75.37.90", "ssh://10.75.37.90"),
 #     timeout = 1,
 #     tunnel = TRUE
 #   )

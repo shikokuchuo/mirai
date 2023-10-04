@@ -166,10 +166,9 @@ launch_remote <- function(url, ..., tls = NULL, .compute = "default",
 #'     \code{\link{daemons}}, \code{\link{launch_remote}} or
 #'     \code{\link{make_cluster}}.
 #'
-#' @param names a character vector of hostnames or IP addresses of the remote
-#'     machines on which to launch daemons (nodes), e.g.
-#'     \code{c('10.75.37.90', 'nodename')}.
-#' @param port [default 22] numeric port number on which to connect.
+#' @param remotes the character URL or vector of URLs to SSH into, using the
+#'     'ssh://' scheme and including the port open for SSH connections (defaults
+#'     to 22 if not specified), e.g. 'ssh://10.75.32.70:22' or 'ssh://nodename'.
 #' @param timeout [default 5] maximum time allowed for connection setup in seconds.
 #' @param tunnel [default FALSE] logical value whether to use SSH reverse
 #'     tunnelling. If TRUE, a tunnel is created between the same local and
@@ -212,7 +211,7 @@ launch_remote <- function(url, ..., tls = NULL, .compute = "default",
 #'     machines.
 #'
 #' @examples
-#' ssh_args(names = c("10.75.37.90", "nodename"), port = 222, timeout = 10)
+#' ssh_args(remotes = c("ssh://10.75.37.90:222", "ssh://nodename"), timeout = 10)
 #'
 #' # launch 2 daemons on the remote machines 10.75.37.90 and 10.75.37.91 using
 #' # SSH, connecting back directly to the host URL over a TLS connection:
@@ -221,8 +220,7 @@ launch_remote <- function(url, ..., tls = NULL, .compute = "default",
 #' #   url = "tls+tcp://10.75.37.40:5555",
 #' #   command = "ssh",
 #' #   args = ssh_args(
-#' #     names = c("10.75.37.90", "10.75.37.91"),
-#' #     port = 222,
+#' #     remotes = c("ssh://10.75.37.90:222", "ssh://10.75.37.91:222"),
 #' #     timeout = 1
 #' #   )
 #' # )
@@ -234,7 +232,7 @@ launch_remote <- function(url, ..., tls = NULL, .compute = "default",
 #' #   url = "tcp://localhost:5555",
 #' #   command = "ssh",
 #' #   args = ssh_args(
-#' #     names = c("10.75.37.90", "10.75.37.90"),
+#' #     remotes = c("ssh://10.75.37.90", "ssh://10.75.37.90"),
 #' #     timeout = 1,
 #' #     tunnel = TRUE
 #' #   )
@@ -242,7 +240,11 @@ launch_remote <- function(url, ..., tls = NULL, .compute = "default",
 #'
 #' @export
 #'
-ssh_args <- function(names, port = 22, timeout = 5, tunnel = FALSE) {
+ssh_args <- function(remotes, timeout = 5, tunnel = FALSE) {
+
+  premotes <- lapply(remotes, parse_url)
+  hostnames <- lapply(premotes, .subset2, "hostname")
+  ports <- lapply(premotes, .subset2, "port")
 
   if (tunnel) {
     url <- dynGet("url", ifnotfound = stop(.messages[["correct_context"]]))
@@ -250,15 +252,15 @@ ssh_args <- function(names, port = 22, timeout = 5, tunnel = FALSE) {
     plen <- length(purl)
   }
 
-  nlen <- length(names)
-  args <- vector(mode = "list", length = if (tunnel) max(nlen, plen) else nlen)
+  rlen <- length(remotes)
+  args <- vector(mode = "list", length = if (tunnel) max(rlen, plen) else rlen)
 
   for (i in seq_along(args)) {
     args[[i]] <- c(
       if (tunnel) sprintf("-R %s:%s", purl[[min(i, plen)]][["port"]], purl[[min(i, plen)]][["host"]]),
       sprintf("-o ConnectTimeout=%s -fTp", as.character(timeout)),
-      as.character(port),
-      names[[min(i, nlen)]],
+      ports[[min(i, rlen)]],
+      hostnames[[min(i, rlen)]],
       "."
     )
   }

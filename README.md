@@ -58,7 +58,7 @@ m <- mirai(
     res <- rnorm(x) + y ^ 2
     res / rev(res)
   },
-  x = 12,
+  x = 11,
   y = runif(1)
 )
 
@@ -90,9 +90,8 @@ result.
 
 ``` r
 m$data
-#>  [1]   1.06909345 -18.89661245   2.25211172   1.72054641   2.42588021
-#>  [6] -36.85290549  -0.02713490   0.41222151   0.58121071   0.44402771
-#> [11]  -0.05291954   0.93537193
+#>  [1]  1.0711517 -0.2350287  0.5452594 -3.4220150 -1.5016444  1.0000000
+#>  [7] -0.6659366 -0.2922255  1.8339895 -4.2547997  0.9335746
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -100,9 +99,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]   1.06909345 -18.89661245   2.25211172   1.72054641   2.42588021
-#>  [6] -36.85290549  -0.02713490   0.41222151   0.58121071   0.44402771
-#> [11]  -0.05291954   0.93537193
+#>  [1]  1.0711517 -0.2350287  0.5452594 -3.4220150 -1.5016444  1.0000000
+#>  [7] -0.6659366 -0.2922255  1.8339895 -4.2547997  0.9335746
 ```
 
 ### Reference Vignette
@@ -189,9 +187,9 @@ the high performance computing requirements of
 and incisive insights leading to the interface accepting broader usage
 patterns.
 
-[Luke Tierney](https://github.com/ltierney/), R Core, for pointing out
-the implementation of L’Ecuyer-CMRG streams in R, for ensuring
-statistical independence in parallel processing.
+[Luke Tierney](https://github.com/ltierney/), R Core, for introducing
+R’s implementation of L’Ecuyer-CMRG streams, used to ensure statistical
+independence in parallel processing.
 
 [« Back to ToC](#table-of-contents)
 
