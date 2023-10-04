@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9021</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9022</span>
       </span>
     </div>
 
@@ -64,7 +64,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.0.9021" id="mirai-01009021-development">mirai 0.10.0.9021 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009021-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.10.0.9022" id="mirai-01009022-development">mirai 0.10.0.9022 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009022-development"></a></h2>
 <ul><li>Implements an alternative communications backend for R, adding methods for the ‘parallel’ base package.
 <ul><li>Fulfils a request by R Core at R Project Sprint 2023, and requires R &gt;= 4.4 (currently R-devel).</li>
 <li>
@@ -72,7 +72,7 @@
 <li>
 <code><a href="../reference/status.html">status()</a></code> can now take a ‘miraiCluster’ as the argument to query its connection status.</li>
 </ul></li>
-<li>Implements <code><a href="../reference/ssh_args.html">ssh_args()</a></code> as a convenience function for constructing the correct arguments for <code><a href="../reference/make_cluster.html">make_cluster()</a></code> and <code><a href="../reference/launch_local.html">launch_remote()</a></code> to launch remote daemons via SSH, including using reverse tunnelling.
+<li>Implements <code><a href="../reference/ssh_args.html">ssh_args()</a></code> as a convenience function for constructing the correct arguments to launch remote daemons via SSH, including using reverse tunnelling.
 <ul><li>Argument signature of ‘args’ for <code><a href="../reference/launch_local.html">launch_remote()</a></code> changed to accommodate.</li>
 </ul></li>
 <li>
@@ -91,8 +91,8 @@
 <li>Reverts the trailing line break added to the end of a ‘miraiError’ character string.</li>
 <li>Deprecates the Deferred Evaluation Pipe <code>%&gt;&gt;%</code> in favour of a recommendation to use package <code>mirai.promises</code> for performing side effects upon ‘mirai’ resolution.</li>
 <li>Deprecated use of alias <code>server()</code> for <code><a href="../reference/daemon.html">daemon()</a></code> is retired.</li>
-<li>Document dot parameters for <code><a href="../reference/daemons.html">daemons()</a></code> and <code><a href="../reference/dispatcher.html">dispatcher()</a></code> (thanks <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a> <a href="https://github.com/shikokuchuo/mirai/issues/79" class="external-link">#79</a>).</li>
-<li>Adds a ‘reference’ vignette, moving most of the information from the readme.</li>
+<li>Improved documentation for pass-through dot parameters (thanks <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a> <a href="https://github.com/shikokuchuo/mirai/issues/79" class="external-link">#79</a>).</li>
+<li>Adds a ‘reference’ vignette, incorporating most of the information from the readme.</li>
 <li>Requires nanonext &gt;= 0.10.1.</li>
 </ul></div>
     <div class="section level2">

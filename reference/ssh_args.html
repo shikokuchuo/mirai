@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9021</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9022</span>
       </span>
     </div>
 
@@ -73,19 +73,15 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ssh_args</span><span class="op">(</span><span class="va">names</span>, port <span class="op">=</span> <span class="fl">22</span>, timeout <span class="op">=</span> <span class="fl">5</span>, tunnel <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ssh_args</span><span class="op">(</span><span class="va">remotes</span>, timeout <span class="op">=</span> <span class="fl">5</span>, tunnel <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>names</dt>
-<dd><p>a character vector of hostnames or IP addresses of the remote
-machines on which to launch daemons (nodes), e.g.
-<code>c('10.75.37.90', 'nodename')</code>.</p></dd>
-
-
-<dt>port</dt>
-<dd><p>[default 22] numeric port number on which to connect.</p></dd>
+    <dl><dt>remotes</dt>
+<dd><p>the character URL or vector of URLs to SSH into, using the
+'ssh://' scheme and including the port open for SSH connections (defaults
+to 22 if not specified), e.g. 'ssh://10.75.32.70:22' or 'ssh://nodename'.</p></dd>
 
 
 <dt>timeout</dt>
@@ -149,13 +145,13 @@ SSH tunnel connects both ends.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">ssh_args</span><span class="op">(</span>names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"10.75.37.90"</span>, <span class="st">"nodename"</span><span class="op">)</span>, port <span class="op">=</span> <span class="fl">222</span>, timeout <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">ssh_args</span><span class="op">(</span>remotes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ssh://10.75.37.90:222"</span>, <span class="st">"ssh://nodename"</span><span class="op">)</span>, timeout <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "-o ConnectTimeout=10 -fTp" "222"                      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3] "10.75.37.90"               "."                        </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "-o ConnectTimeout=10 -fTp" "222"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "-o ConnectTimeout=10 -fTp" "22"                       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3] "nodename"                  "."                        </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
@@ -166,8 +162,7 @@ SSH tunnel connects both ends.</p></dd>
 <span class="r-in"><span><span class="co">#   url = "tls+tcp://10.75.37.40:5555",</span></span></span>
 <span class="r-in"><span><span class="co">#   command = "ssh",</span></span></span>
 <span class="r-in"><span><span class="co">#   args = ssh_args(</span></span></span>
-<span class="r-in"><span><span class="co">#     names = c("10.75.37.90", "10.75.37.91"),</span></span></span>
-<span class="r-in"><span><span class="co">#     port = 222,</span></span></span>
+<span class="r-in"><span><span class="co">#     remotes = c("ssh://10.75.37.90:222", "ssh://10.75.37.91:222"),</span></span></span>
 <span class="r-in"><span><span class="co">#     timeout = 1</span></span></span>
 <span class="r-in"><span><span class="co">#   )</span></span></span>
 <span class="r-in"><span><span class="co"># )</span></span></span>
@@ -179,7 +174,7 @@ SSH tunnel connects both ends.</p></dd>
 <span class="r-in"><span><span class="co">#   url = "tcp://localhost:5555",</span></span></span>
 <span class="r-in"><span><span class="co">#   command = "ssh",</span></span></span>
 <span class="r-in"><span><span class="co">#   args = ssh_args(</span></span></span>
-<span class="r-in"><span><span class="co">#     names = c("10.75.37.90", "10.75.37.90"),</span></span></span>
+<span class="r-in"><span><span class="co">#     remotes = c("ssh://10.75.37.90", "ssh://10.75.37.90"),</span></span></span>
 <span class="r-in"><span><span class="co">#     timeout = 1,</span></span></span>
 <span class="r-in"><span><span class="co">#     tunnel = TRUE</span></span></span>
 <span class="r-in"><span><span class="co">#   )</span></span></span>
