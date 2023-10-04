@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9022</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9023</span>
       </span>
     </div>
 
@@ -64,7 +64,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.0.9022" id="mirai-01009022-development">mirai 0.10.0.9022 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009022-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.10.0.9023" id="mirai-01009023-development">mirai 0.10.0.9023 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009023-development"></a></h2>
 <ul><li>Implements an alternative communications backend for R, adding methods for the ‘parallel’ base package.
 <ul><li>Fulfils a request by R Core at R Project Sprint 2023, and requires R &gt;= 4.4 (currently R-devel).</li>
 <li>
@@ -72,18 +72,19 @@
 <li>
 <code><a href="../reference/status.html">status()</a></code> can now take a ‘miraiCluster’ as the argument to query its connection status.</li>
 </ul></li>
-<li>Implements <code><a href="../reference/ssh_args.html">ssh_args()</a></code> as a convenience function for constructing the correct arguments to launch remote daemons via SSH, including using reverse tunnelling.
-<ul><li>Argument signature of ‘args’ for <code><a href="../reference/launch_local.html">launch_remote()</a></code> changed to accommodate.</li>
+<li>Implements <code><a href="../reference/remote_config.html">remote_config()</a></code> and <code><a href="../reference/remote_config.html">ssh_config()</a></code> to generate configurations for launching remote daemons generically, or via SSH, including using reverse tunnelling.
+<ul><li>
+<code><a href="../reference/launch_local.html">launch_remote()</a></code> simplified with a single ‘remote’ argument taking a remote configuration.</li>
 </ul></li>
 <li>
 <code><a href="../reference/daemons.html">daemons()</a></code> gains the following features:
-<ul><li>Adds arguments ‘command’, ‘args’ and ‘rscript’ for launching remote daemons automatically rather than needing to call <code><a href="../reference/launch_local.html">launch_remote()</a></code>.</li>
+<ul><li>Adds argument ‘remote’ for launching remote daemons directly without recourse to a separate call to <code><a href="../reference/launch_local.html">launch_remote()</a></code>.</li>
 <li>Adds argument ‘resilience’ to control the behaviour, when not using dispatcher, of whether to retry failed tasks on other daemons.</li>
 </ul></li>
 <li>
 <code><a href="../reference/mirai.html">mirai()</a></code> adds logical argument ‘.signal’ for whether to signal the condition variable within the compute profile upon resolution of the ‘mirai’.</li>
 <li>
-<code><a href="../reference/daemon.html">daemon()</a></code> argument ‘exitlinger’ retired as daemons now synchronise with the host/dispatcher and exit as soon as possible. Note: a default ‘exitlinger’ period still applies for ephemeral daemons.</li>
+<code><a href="../reference/daemon.html">daemon()</a></code> argument ‘exitlinger’ retired as daemons now synchronise with the host/dispatcher and exit as soon as possible (although a default ‘exitlinger’ period still applies to ephemeral daemons).</li>
 <li>Optimises scheduling at dispatcher: tasks are no longer assigned to a daemon if it is exiting due to specified time/task-outs.</li>
 <li>An ‘errorValue’ 19 ‘Connection reset’ is now returned for a ‘mirai’ if the connection to either dispatcher or an ephemeral daemon drops, for example if they have crashed, rather than remaining unresolved.</li>
 <li>Invalid type of ‘…’ arguments specified to <code><a href="../reference/daemons.html">daemons()</a></code> or <code><a href="../reference/dispatcher.html">dispatcher()</a></code> now raise an error early rather than attempting to launch daemons that fail.</li>
@@ -91,7 +92,6 @@
 <li>Reverts the trailing line break added to the end of a ‘miraiError’ character string.</li>
 <li>Deprecates the Deferred Evaluation Pipe <code>%&gt;&gt;%</code> in favour of a recommendation to use package <code>mirai.promises</code> for performing side effects upon ‘mirai’ resolution.</li>
 <li>Deprecated use of alias <code>server()</code> for <code><a href="../reference/daemon.html">daemon()</a></code> is retired.</li>
-<li>Improved documentation for pass-through dot parameters (thanks <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a> <a href="https://github.com/shikokuchuo/mirai/issues/79" class="external-link">#79</a>).</li>
 <li>Adds a ‘reference’ vignette, incorporating most of the information from the readme.</li>
 <li>Requires nanonext &gt;= 0.10.1.</li>
 </ul></div>
@@ -171,7 +171,7 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.8.7" id="mirai-087">mirai 0.8.7<small>2023-05-11</small><a class="anchor" aria-label="anchor" href="#mirai-087"></a></h2>
 <ul><li>
-<code>server()</code> and <code><a href="../reference/dispatcher.html">dispatcher()</a></code> argument ‘asyncdial’ is now FALSE by default, causing these functions to exit if a connection is not immediately available. This means that for distributed computing purposes, <code>dameons()</code> should be called before <code>server()</code> is launched on remote resources, or else <code>server(asyncdial = TRUE)</code> allows servers to wait for a connection.</li>
+<code>server()</code> and <code><a href="../reference/dispatcher.html">dispatcher()</a></code> argument ‘asyncdial’ is now FALSE by default, causing these functions to exit if a connection is not immediately available. This means that for distributed computing purposes, <code><a href="../reference/daemons.html">daemons()</a></code> should be called before <code>server()</code> is launched on remote resources, or else <code>server(asyncdial = TRUE)</code> allows servers to wait for a connection.</li>
 <li>
 <code>launch_server()</code> now parses the passed URL for correctness before attempting to launch a server, producing an error if not valid.</li>
 </ul></div>
