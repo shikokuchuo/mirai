@@ -152,8 +152,8 @@ Use \code{daemons(0)} to reset daemon connections:
 
     Specify 'remote' with a call to \code{\link{remote_config}} or
     \code{\link{ssh_config}} to launch daemons on remote machines. Otherwise,
-    \code{\link{launch_remote}} may also be used to generate the shell
-    commands to deploy daemons manually on remote resources.
+    \code{\link{launch_remote}} may be used to generate the shell commands to
+    deploy daemons manually on remote resources.
 
     IPv6 addresses are also supported and must be enclosed in square brackets
     [ ] to avoid confusion with the final colon separating the port. For

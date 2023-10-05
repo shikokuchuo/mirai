@@ -24,9 +24,11 @@ knitr::opts_chunk$set(
 3. [Example 3: Resilient Pipelines](#example-3-resilient-pipelines)
 4. [Daemons: Local Persistent Processes](#daemons-local-persistent-processes)
 5. [Distributed Computing: Remote Daemons](#distributed-computing-remote-daemons)
-6. [Distributed Computing: TLS Secure Connections](#distributed-computing-tls-secure-connections)
-7. [Compute Profiles](#compute-profiles)
-8. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
+6. [Distributed Computing: Launching Daemons](#distributed-computing-launching-daemons)
+7. [Distributed Computing: TLS Secure Connections](#distributed-computing-tls-secure-connections)
+8. [Compute Profiles](#compute-profiles)
+9. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
+10. [Parallel Clusters](#parallel-clusters)
 
 
 ### Example 1: Compute-intensive Operations
@@ -223,7 +225,7 @@ Requesting the status now shows 6 connections, along with the host URL at `$daem
 status()
 ```
 
-This implementation sends tasks immediately, and ensures that tasks are evenly-distributed amongst daemons. This means that optimal scheduling is not guaranteed as the duration of tasks cannot be known *a priori*. As an example, tasks could be queued at a daemon behind a long-running task, whilst other daemons remain idle.
+This implementation sends tasks immediately, and ensures that tasks are evenly-distributed amongst daemons. This means that optimal scheduling is not guaranteed as the duration of tasks cannot be known *a priori*. As an example, tasks could be queued at a daemon behind a long-running task, whilst other daemons are idle having already completed their tasks.
 
 The advantage of this approach is that it is low-level and does not require an additional dispatcher process. It is well-suited to working with similar-length tasks, or where the number of concurrent tasks typically does not exceed available daemons.
 
@@ -239,13 +241,11 @@ Set the number of daemons to zero to reset.
 
 The daemons interface may also be used to send tasks for computation to remote daemon processes on the network.
 
-Call `daemons()` specifying 'url' as a character string the host network address and a port that is able to accept incoming connections.
-
-The examples below use an illustrative local network IP address of '10.75.32.74'.
-
-A port on the host machine also needs to be open and available for inbound connections from the local network, illustratively '5555' in the examples below.
+Call `daemons()` specifying 'url' as a character string such as: 'tcp://10.90.127.129:5555' at which daemon processes should connect to.
 
 IPv6 addresses are also supported and must be enclosed in square brackets `[]` to avoid confusion with the final colon separating the port. For example, port 5555 on the IPv6 address `::ffff:a6f:50d` would be specified as `tcp://[::ffff:a6f:50d]:5555`.
+
+For options on actually launching the daemons, please see the next section.
 
 #### Connecting to Remote Daemons Through Dispatcher
 
@@ -253,48 +253,19 @@ The default `dispatcher = TRUE` creates a background `dispatcher()` process on t
 
 It is recommended to use a websocket URL starting `ws://` instead of TCP in this scenario (used interchangeably with `tcp://`). A websocket URL supports a path after the port number, which can be made unique for each daemon. In this way a dispatcher can connect to an arbitrary number of daemons over a single port.
 
-```{r localqueue}
-daemons(n = 4, url = "ws://10.75.32.74:5555")
-```
-
-Above, a single URL was supplied, along with `n = 4` to specify that the dispatcher should listen at 4 URLs. In such a case, an integer sequence is automatically appended to the path `/1` through `/4` to produce these URLs.
-
-Alternatively, supplying a vector of URLs allows the use of arbitrary port numbers / paths, e.g.:
+Supplying a vector of URLs allows the use of arbitrary port numbers / paths. 'n' does not need to be specified if it can be inferred from the length of the 'url' vector, for example:
 
 ```{r vectorqueue, eval=FALSE}
-daemons(url = c("ws://10.75.32.74:5566/cpu", "ws://10.75.32.74:5566/gpu", "ws://10.75.32.74:7788/1"))
+daemons(url = c("ws://10.90.127.129:5566/cpu", "ws://10.90.127.129:5566/gpu", "ws://10.90.127.129:7788/1"))
 ```
 
-Above, 'n' is not specified, in which case its value is inferred from the length of the 'url' vector supplied.
+Alternatively, below a single URL is supplied, along with `n = 4` to specify that the dispatcher should listen at 4 URLs. In such a case, an integer sequence is automatically appended to the path `/1` through `/4` to produce the URLs.
 
---
-
-On the remote resource, `daemon()` may be called from an R session, or directly from a shell using Rscript. Each daemon instance should dial into one of the unique URLs that the dispatcher is listening at:
-
-```
-Rscript -e 'mirai::daemon("ws://10.75.32.74:5555/1")'
-Rscript -e 'mirai::daemon("ws://10.75.32.74:5555/2")'
-Rscript -e 'mirai::daemon("ws://10.75.32.74:5555/3")'
-Rscript -e 'mirai::daemon("ws://10.75.32.74:5555/4")'
-
+```{r localqueue}
+daemons(n = 4, url = "ws://10.90.127.129:5555")
 ```
 
-Note that `daemons()` should be set up on the host machine before launching `daemon()` on remote resources, otherwise the daemon instances will exit if a connection is not immediately available. Alternatively, specifying `daemon(asyncdial = TRUE)` will allow daemons to wait (indefinitely) for a connection to become available.
-
-`launch_remote()` may also be used to launch daemons directly on a remote machine. For example, if the remote machine at 10.75.32.100 accepts SSH connections over port 22:
-
-```{r launchremote, eval=FALSE}
-launch_remote(1:4, command = "ssh", args = c("-p 22 10.75.32.100", .))
-```
-```{r launchremotereal, echo=FALSE}
-launch_remote(1:4)
-```
-
-The returned vector comprises the shell commands executed on the remote machine.
-
---
-
-Requesting status, on the host machine:
+Requesting status on the host machine:
 
 ```{r remotev2}
 status()
@@ -322,39 +293,11 @@ Closing the connection causes the dispatcher to exit automatically, and in turn 
 
 By specifying `dispatcher = FALSE`, remote daemons connect directly to the host process. The host listens at a single URL, and distributes tasks to all connected daemons.
 
-```{r remote, eval=FALSE}
-daemons(url = "tcp://10.75.32.74:0", dispatcher = FALSE)
-```
-
-Alternatively, simply supply a colon followed by the port number to listen on all interfaces on the local host, for example:
-
-```{r remotealt}
-daemons(url = "tcp://:0", dispatcher = FALSE)
+```{r remote}
+daemons(url = "tcp://10.90.127.129:0", dispatcher = FALSE)
 ```
 
 Note that above, the port number is specified as zero. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided in the return value of the call, or it may be queried at any time via `status()`.
-
---
-
-On the network resource, `daemon()` may be called from an R session, or an Rscript invocation from a shell. This sets up a remote daemon process that connects to the host URL and receives tasks:
-
-```
-Rscript -e 'mirai::daemon("tcp://10.75.32.74:0")'
-```
-Note that `daemons()` should be set up on the host machine before launching `daemon()` on remote resources, otherwise the daemon instances will exit if a connection is not immediately available. Alternatively, specifying `daemon(asyncdial = TRUE)` will allow daemons to wait (indefinitely) for a connection to become available.
-
-`launch_remote()` may also be used to launch daemons directly on a remote machine. For example, if the remote machine at 10.75.32.100 accepts SSH connections over port 22:
-
-```{r launchremoteu, eval=FALSE}
-launch_remote("tcp://10.75.32.74:0", command = "ssh", args = c("-p 22 10.75.32.100", .))
-```
-```{r launchremoteureal, echo=FALSE}
-launch_remote("tcp://10.75.32.74:0")
-```
-
-The returned vector comprises the shell commands executed on the remote machine.
-
---
 
 The number of daemons connecting to the host URL is not limited and network resources may be added or removed at any time, with tasks automatically distributed to all connected daemons.
 
@@ -371,6 +314,70 @@ daemons(0)
 ```
 
 This causes all connected daemons to exit automatically.
+
+[&laquo; Back to ToC](#table-of-contents)
+
+### Distributed Computing: Launching Daemons
+
+To launch remote daemons, supply a remote launch configuration to the 'remote' argument of `daemons()` when setting up daemons, or `launch_remote()` at any time afterwards.
+
+`ssh_config()` may be used to generate a remote launch configuration if there is SSH access to the remote machine, or else `remote_config()` provides a flexible method for generating a configuration involving a custom resource manager / application.
+
+#### SSH Direct Connection
+
+The first example below launches 4 daemons on the machine 10.75.32.90 (using the default SSH port of 22 as this was not specified), connecting back to the dispatcher URLs:
+
+```{r ldmn, eval=FALSE}
+daemons(
+  n = 4,
+  url = "ws://10.75.32.74:5555",
+  remote = ssh_config(remotes = "ssh://10.75.32.90")
+)
+```
+The second example below launches one daemon on each of 10.75.32.90 and 10.75.32.91 using the custom SSH port of 222:
+
+```{r ldmnd, eval=FALSE}
+daemons(
+  n = 2,
+  url = "ws://10.75.32.74:5555",
+  remote = ssh_config(c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"))
+)
+```
+In the above examples, as the remote daemons connect back directly, port 5555 on the local machine must be open to incoming connections from the remote addresses.
+
+#### SSH Tunnelling
+
+Use of SSH tunnelling provides a convenient way to launch remote daemons without requiring the remote machine to be able to access the host. Often firewall configurations or security policies may prevent opening a port to accept outside connections.
+
+In these cases SSH tunnelling offers a solution by creating a tunnel once the initial SSH connection is made. For simplicity, this SSH tunnelling implementation uses the same port on both the side of the host and that of the corresponding node. SSH key-based authentication must also already be in place.
+
+Tunnelling requires the hostname for 'url' specified when setting up daemons to be either 'localhost' or '127.0.0.1'. This is as the tunnel is created between localhost:port or equivalently 127.0.0.1:port on each machine. The host listens to its localhost:port and the remotes each dial into localhost:port on their own respective machines.
+
+The below example launches 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling over port 5555 ('url' hostname is specified as 'localhost'):
+
+```{r sshrevtun, eval=FALSE}
+daemons(
+  url = "tcp://localhost:5555",
+  remote = ssh_config(
+    remotes = c("ssh://10.75.32.90", "ssh://10.75.32.90"),
+    tunnel = TRUE
+  )
+)
+```
+
+#### Manual Deployment
+
+As an alternative to automated launches, calling `launch_remote()` without specifying 'remote' may be used to return the shell commands for deploying daemons manually. The printed return values may be copy / pasted directly to a remote machine.
+
+```{r launchremotereal}
+daemons(n = 2, url = "tcp://[::1]:0")
+
+launch_remote(1:2)
+
+daemons(0)
+```
+
+Note that `daemons()` should be set up on the host machine before launching `daemon()` on remote resources, otherwise the daemon instances will exit if a connection is not immediately available. Alternatively, specifying the argument `asyncdial = TRUE` will allow daemons to wait (indefinitely) for a connection to become available.
 
 [&laquo; Back to ToC](#table-of-contents)
 
@@ -394,36 +401,39 @@ The generated self-signed certificate is available via `launch_remote()`. This f
 launch_remote(1)
 ```
 
-The return value may be deployed manually on a remote machine by unescaping the double quotes around the call to `"mirai::daemon()"`, or directly via SSH or a resource manager by additionally specifying 'command' and 'args' to `launch_remote()`.
+The printed value may be deployed directly on a remote machine.
 
 ```{r tlsclose, include=FALSE}
 daemons(0)
 ```
 
+[&laquo; Back to ToC](#table-of-contents)
+
 #### CA Signed Certificates
 
-As an alternative to the zero-configuration option, a certificate may also be generated via a Certificate Signing Request (CSR) to a Certificate Authority (CA), which may be a public CA or a CA internal to your organisation.
+As an alternative to the zero-configuration default, a certificate may also be generated via a Certificate Signing Request (CSR) to a Certificate Authority (CA), which may be a public CA or a CA internal to an organisation.
 
 1. Generate a private key and CSR. The following resources describe how to do so:
 
 - using Mbed TLS: <https://mbed-tls.readthedocs.io/en/latest/kb/how-to/generate-a-certificate-request-csr/>
 - using OpenSSL: <https://www.feistyduck.com/library/openssl-cookbook/online/> (Chapter 1.2 Key and Certificate Management)
 
-2. Send or provide the generated CSR to the CA for it to sign a new TLS certificate.
+2. Provide the generated CSR to the CA for it to sign a new TLS certificate.
 
-- The received certificate should comprise a block of cipher text between the markers `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----`. Make sure to request the certificate in the PEM format. If only available in other formats, your TLS library should usually provide conversion utilities.
-- Check also that your private key is a block of cipher text between the markers `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----`.
+- The common name (CN) of the certificate must be identical to the hostname or IP address actually used for the connection as it is verified, and will fail if not the same.
+- The received certificate should comprise a block of cipher text between the markers `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----`. Make sure to request the certificate in the PEM format. If only available in other formats, the TLS library used should usually provide conversion utilities.
+- Check also that the private key is a block of cipher text between the markers `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----`.
 
 3. When setting daemons, the TLS certificate and private key should be provided to the 'tls' argument of `daemons()`.
 
 - If the certificate and private key have been imported as character strings `cert` and `key` respectively, then the 'tls' argument may be specified as the character vector `c(cert, key)`.
-- Alternatively, the certificate may be copied to a new text file, with the private key appended, in which case the path/filename of this new file may be provided to the 'tls' argument.
+- Alternatively, the certificate may be copied to a new text file, with the private key appended, in which case the path/filename of this file may be provided to the 'tls' argument.
 
 4. When launching daemons, the certificate chain to the CA should be supplied to the 'tls' argument of `daemon()` or `launch_remote()`.
 
 - The certificate chain should comprise multiple certificates, each between `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` markers. The first one should be the newly-generated TLS certificate, the same supplied to `daemons()`, and the final one should be a CA root certificate.
-- These are the only certificates required if your certificate was signed directly by a CA. If not, then the intermediate certificates should be included in a certificate chain that starts with your TLS certificate and ends with the certificate of the CA.
-- If these are concatenated together as a single character string `certchain` (and assuming no certificate revocation list), then the character vector `c(certchain, "")` may be supplied to the relevant 'tls' argument.
+- These are the only certificates required if the certificate was signed directly by a CA. If not, then the intermediate certificates should be included in a certificate chain that starts with the TLS certificate and ends with the certificate of the CA.
+- If these are concatenated together as a single character string `certchain`, then the character vector comprising this and an empty character string `c(certchain, "")` may be supplied to the relevant 'tls' argument.
 - Alternatively, if these are written to a file (and the file replicated on the remote machines), then the 'tls' argument may also be specified as a path/filename (assuming these are the same on each machine).
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -478,3 +488,32 @@ is_error_value(m3$data)
 `is_error_value()` tests for all mirai execution errors, user interrupts and timeouts.
 
 [&laquo; Back to ToC](#table-of-contents)
+
+### Parallel Clusters
+
+This package contains experimental functions and S3 methods using `mirai` as an alternative communications backend for R. These were developed to fulfil a request by R Core at R Project Sprint 2023, and required R >= 4.4 (currently R-devel).
+
+`make_cluster()` creates a cluster of type 'miraiCluster', which may be used as a cluster object for any function in the `parallel` base package such as `parallel::clusterApply()` or `parallel::parLapply()`.
+
+  + Function arguments 'n', 'url' and 'remote' map to `daemons()`, and remote launch configurations generated by `remote_config()` or `ssh_config()` may be used.
+  + Parallel clusters use synchronous load-balancing, hence dispatcher is not offered as an option.
+  + `status()` may be called on a 'miraiCluster` to return its connection status.
+
+```{r parcluster}
+cl <- make_cluster(4)
+cl
+
+parallel::parLapply(cl, 1:5, rnorm)
+
+status(cl)
+
+stop_cluster(cl)
+```
+
+Created clusters are fully compatible with parallel cluster types.
+
+As an example, they may be registered by package [`doParallel`](https://cran.r-project.org/package=doParallel) for use with the [`foreach`](https://cran.r-project.org/package=foreach) package.
+
+
+[&laquo; Back to ToC](#table-of-contents)
+
