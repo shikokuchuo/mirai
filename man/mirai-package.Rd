@@ -21,7 +21,7 @@ Lightweight parallel code execution and distributed computing. Designed for
     Linux, Unix domain sockets on MacOS, Solaris and other POSIX platforms,
     and named pipes on Windows.
 
-    This may be overriden, if required, by specifying 'url' in the
+    This may be overriden, if desired, by specifying 'url' in the
     \code{\link{daemons}} interface and launching daemons using
     \code{\link{launch_local}}.
 }
@@ -29,11 +29,9 @@ Lightweight parallel code execution and distributed computing. Designed for
 \section{Links}{
 
 
-    mirai website: \url{https://shikokuchuo.net/mirai/}\cr
-    mirai on CRAN: \url{https://cran.r-project.org/package=mirai}
+    \CRANpkg{mirai} website: \url{https://shikokuchuo.net/mirai/}
 
-    nanonext website: \url{https://shikokuchuo.net/nanonext/}\cr
-    nanonext on CRAN: \url{https://cran.r-project.org/package=nanonext}
+    \CRANpkg{nanonext} website: \url{https://shikokuchuo.net/nanonext/}
 
     NNG website: \url{https://nng.nanomsg.org/}
 }

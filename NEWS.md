@@ -1,4 +1,4 @@
-# mirai 0.10.0.9024 (development)
+# mirai 0.10.0.9025 (development)
 
 * Implements an alternative communications backend for R, adding methods for the 'parallel' base package.
   + Fulfils a request by R Core at R Project Sprint 2023, and requires R >= 4.4 (currently R-devel).
@@ -19,7 +19,7 @@
 * Deprecates the Deferred Evaluation Pipe `%>>%` in favour of a recommendation to use package `mirai.promises` for performing side effects upon 'mirai' resolution.
 * Deprecated use of alias `server()` for `daemon()` is retired.
 * Adds a 'reference' vignette, incorporating most of the information from the readme.
-* Requires nanonext >= 0.10.1.
+* Requires nanonext >= 0.10.2.
 
 # mirai 0.10.0
 
