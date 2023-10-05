@@ -93,8 +93,8 @@ ssh_config generates a remote configuration for launching daemons over
 machine as a character string (e.g. <code>'ssh'</code>). Defaults to 'ssh' for
 <code>ssh_config</code>, although may be substituted for the full path to a
 specific SSH application. The default NULL for <code>remote_config</code> does
-not effect any launches, but causes <a href="launch_local.html">launch_remote</a> to return the
-shell commands for manual deployment on remote machines.</p></dd>
+not effect any launches, but causes <code><a href="launch_local.html">launch_remote</a></code> to return
+the shell commands for manual deployment on remote machines.</p></dd>
 
 
 <dt>args</dt>
@@ -125,7 +125,7 @@ to 22 if not specified), e.g. 'ssh://10.75.32.70:22' or 'ssh://nodename'.</p></d
 <dd><p>[default FALSE] logical value whether to use SSH reverse
 tunnelling. If TRUE, a tunnel is created between the same ports (as
 specified in 'url') on the local and remote machines. Setting to TRUE
-requires access to 'url' in the correct context and will error if not
+requires access to 'url' in the evaluation context and will error if not
 called from a relevant function.</p></dd>
 
 </dl></div>
@@ -165,8 +165,8 @@ called from a relevant function.</p></dd>
     <code><a href="daemons.html">daemons</a></code> to be either 'localhost' or '127.0.0.1'. This is as
     the tunnel is created between <code>localhost:port</code> or equivalently
     <code>127.0.0.1:port</code> on each machine. The host listens to <code>localhost:port</code>
-    on its own machine and the nodes each dial into <code>localhost:port</code> on
-    their own respective machines.</p>
+    and the nodes each dial into <code>localhost:port</code> on their own respective
+    machines.</p>
     </div>
 
     <div id="ref-examples">
