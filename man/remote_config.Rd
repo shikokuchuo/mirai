@@ -20,8 +20,8 @@ ssh_config(
 machine as a character string (e.g. \code{'ssh'}). Defaults to 'ssh' for
 \code{ssh_config}, although may be substituted for the full path to a
 specific SSH application. The default NULL for \code{remote_config} does
-not effect any launches, but causes \link{launch_remote} to return the
-shell commands for manual deployment on remote machines.}
+not effect any launches, but causes \code{\link{launch_remote}} to return
+the shell commands for manual deployment on remote machines.}
 
 \item{args}{(optional) arguments passed to 'command', as a character vector
 that must include \code{"."} as an element, which will be substituted
@@ -42,7 +42,7 @@ to 22 if not specified), e.g. 'ssh://10.75.32.70:22' or 'ssh://nodename'.}
 \item{tunnel}{[default FALSE] logical value whether to use SSH reverse
 tunnelling. If TRUE, a tunnel is created between the same ports (as
 specified in 'url') on the local and remote machines. Setting to TRUE
-requires access to 'url' in the correct context and will error if not
+requires access to 'url' in the evaluation context and will error if not
 called from a relevant function.}
 }
 \value{
@@ -85,8 +85,8 @@ A list in the required format to be supplied to the 'remote' argument
     \code{\link{daemons}} to be either 'localhost' or '127.0.0.1'. This is as
     the tunnel is created between \code{localhost:port} or equivalently
     \code{127.0.0.1:port} on each machine. The host listens to \code{localhost:port}
-    on its own machine and the nodes each dial into \code{localhost:port} on
-    their own respective machines.
+    and the nodes each dial into \code{localhost:port} on their own respective
+    machines.
 }
 
 \examples{
