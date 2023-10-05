@@ -72,15 +72,20 @@
 <li>
 <code><a href="../reference/status.html">status()</a></code> can now take a ‘miraiCluster’ as the argument to query its connection status.</li>
 </ul></li>
-<li>Implements <code><a href="../reference/remote_config.html">remote_config()</a></code> and <code><a href="../reference/remote_config.html">ssh_config()</a></code> to generate configurations for launching remote daemons generically, or via SSH, including using reverse tunnelling.
-<ul><li>
-<code><a href="../reference/launch_local.html">launch_remote()</a></code> simplified with a single ‘remote’ argument taking a remote configuration.</li>
+<li>
+<code><a href="../reference/launch_local.html">launch_remote()</a></code> improvements:
+<ul><li>Simplified interface with a single ‘remote’ argument taking a remote configuration to launch daemons.</li>
+<li>Returned shell commands now have a custom print method which means they may be directly copy/pasted to a remote machine.</li>
 </ul></li>
 <li>
 <code><a href="../reference/daemons.html">daemons()</a></code> gains the following features:
 <ul><li>Adds argument ‘remote’ for launching remote daemons directly without recourse to a separate call to <code><a href="../reference/launch_local.html">launch_remote()</a></code>.</li>
 <li>Adds argument ‘resilience’ to control the behaviour, when not using dispatcher, of whether to retry failed tasks on other daemons.</li>
 </ul></li>
+<li>
+<code><a href="../reference/remote_config.html">remote_config()</a></code> added to generate configurations for directly launching remote daemons, and can be supplied directly to a ‘remote’ argument.</li>
+<li>
+<code><a href="../reference/remote_config.html">ssh_config()</a></code> added as a convenience method to generate launch configurations using SSH, including SSH tunnelling.</li>
 <li>
 <code><a href="../reference/mirai.html">mirai()</a></code> adds logical argument ‘.signal’ for whether to signal the condition variable within the compute profile upon resolution of the ‘mirai’.</li>
 <li>
