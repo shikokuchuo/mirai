@@ -4,11 +4,14 @@
   + Fulfils a request by R Core at R Project Sprint 2023, and requires R >= 4.4 (currently R-devel).
   + `make_cluster()` creates a 'miraiCluster', compatible with all existing functions taking a 'cluster' object, for example in the 'parallel' and 'doParallel' / 'foreach' packages.
   + `status()` can now take a 'miraiCluster' as the argument to query its connection status.
-* Implements `remote_config()` and `ssh_config()` to generate configurations for launching remote daemons generically, or via SSH, including using reverse tunnelling.
-  + `launch_remote()` simplified with a single 'remote' argument taking a remote configuration.
+* `launch_remote()` improvements:
+  + Simplified interface with a single 'remote' argument taking a remote configuration to launch daemons.
+  + Returned shell commands now have a custom print method which means they may be directly copy/pasted to a remote machine.
 * `daemons()` gains the following features:
   + Adds argument 'remote' for launching remote daemons directly without recourse to a separate call to `launch_remote()`.
   + Adds argument 'resilience' to control the behaviour, when not using dispatcher, of whether to retry failed tasks on other daemons.
+* `remote_config()` added to generate configurations for directly launching remote daemons, and can be supplied directly to a 'remote' argument.
+* `ssh_config()` added as a convenience method to generate launch configurations using SSH, including SSH tunnelling.
 * `mirai()` adds logical argument '.signal' for whether to signal the condition variable within the compute profile upon resolution of the 'mirai'.
 * `daemon()` argument 'exitlinger' retired as daemons now synchronise with the host/dispatcher and exit as soon as possible (although a default 'exitlinger' period still applies to ephemeral daemons).
 * Optimises scheduling at dispatcher: tasks are no longer assigned to a daemon if it is exiting due to specified time/task-outs.
