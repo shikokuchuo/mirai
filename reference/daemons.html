@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9025</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9026</span>
       </span>
     </div>
 
@@ -86,10 +86,10 @@
 <span>  url <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  remote <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dispatcher <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pass <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">...</span>,</span>
 <span>  resilience <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  .compute <span class="op">=</span> <span class="st">"default"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -122,6 +122,13 @@ behalf of the host and ensures FIFO scheduling (see Dispatcher section
 below).</p></dd>
 
 
+<dt>...</dt>
+<dd><p>(optional) additional arguments passed through to
+<code><a href="dispatcher.html">dispatcher</a></code> if using dispatcher and/or <code><a href="daemon.html">daemon</a></code>
+if launching daemons. These include 'token' and 'lock' at dispatcher and
+'maxtasks', 'idletime', 'timerstart', 'output' and 'cleanup' at daemon.</p></dd>
+
+
 <dt>seed</dt>
 <dd><p>[default NULL] (optional) supply a random seed (single value,
 interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
@@ -147,13 +154,6 @@ and [ii] the associated private key.</p></dd>
 <dd><p>[default NULL] (required only if the private key supplied to 'tls'
 is encrypted with a password) For security, should be provided through a
 function that returns this value, rather than directly.</p></dd>
-
-
-<dt>...</dt>
-<dd><p>(optional) additional arguments passed through to
-<code><a href="dispatcher.html">dispatcher</a></code> if using dispatcher and/or <code><a href="daemon.html">daemon</a></code>
-if launching daemons. These include 'token' and 'lock' at dispatcher and
-'maxtasks', 'idletime', 'timerstart', 'output' and 'cleanup' at daemon.</p></dd>
 
 
 <dt>resilience</dt>

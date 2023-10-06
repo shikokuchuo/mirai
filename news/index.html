@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9025</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9026</span>
       </span>
     </div>
 
@@ -64,7 +64,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.10.0.9025" id="mirai-01009025-development">mirai 0.10.0.9025 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009025-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.10.0.9026" id="mirai-01009026-development">mirai 0.10.0.9026 (development)<a class="anchor" aria-label="anchor" href="#mirai-01009026-development"></a></h2>
 <ul><li>Implements an alternative communications backend for R, adding methods for the ‘parallel’ base package.
 <ul><li>Fulfils a request by R Core at R Project Sprint 2023, and requires R &gt;= 4.4 (currently R-devel).</li>
 <li>
@@ -95,6 +95,7 @@
 <li>Invalid type of ‘…’ arguments specified to <code><a href="../reference/daemons.html">daemons()</a></code> or <code><a href="../reference/dispatcher.html">dispatcher()</a></code> now raise an error early rather than attempting to launch daemons that fail.</li>
 <li>Eliminates a potential crash in the host process after querying <code><a href="../reference/status.html">status()</a></code> if there is no longer a connection to dispatcher.</li>
 <li>Reverts the trailing line break added to the end of a ‘miraiError’ character string.</li>
+<li>Moves the ‘…’ argument to <code><a href="../reference/daemons.html">daemons()</a></code>, <code><a href="../reference/dispatcher.html">dispatcher()</a></code> and <code><a href="../reference/daemon.html">daemon()</a></code> to clearly delineate core vs peripheral options.</li>
 <li>Deprecates the Deferred Evaluation Pipe <code>%&gt;&gt;%</code> in favour of a recommendation to use package <code>mirai.promises</code> for performing side effects upon ‘mirai’ resolution.</li>
 <li>Deprecated use of alias <code>server()</code> for <code><a href="../reference/daemon.html">daemon()</a></code> is retired.</li>
 <li>Adds a ‘reference’ vignette, incorporating most of the information from the readme.</li>

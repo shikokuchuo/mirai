@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9025</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.10.0.9026</span>
       </span>
     </div>
 
@@ -81,9 +81,9 @@
 <span>  walltime <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  timerstart <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  output <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  cleanup <span class="op">=</span> <span class="fl">7L</span>,</span>
+<span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rs <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -134,16 +134,6 @@ redirection of output to the host process (applicable only for local
 daemons when not using dispatcher).</p></dd>
 
 
-<dt>tls</dt>
-<dd><p>[default NULL] required for secure TLS connections over 'tls+tcp://'
-or 'wss://'. <strong>Either</strong> the character path to a file containing
-X.509 certificate(s) in PEM format, comprising the certificate authority
-certificate chain starting with the TLS certificate and ending with the
-CA certificate, <strong>or</strong> a length 2 character vector comprising [i]
-the certificate authority certificate chain and [ii] the empty character
-<code>''</code>.</p></dd>
-
-
 <dt>...</dt>
 <dd><p>reserved but not currently used.</p></dd>
 
@@ -156,6 +146,16 @@ perform garbage collection (8L) after each evaluation. This option should
 not normally be modified. Do not set unless you are certain you require
 persistence across evaluations. Note: it may be an error to reset options
 but not loaded packages if packages set options on load.</p></dd>
+
+
+<dt>tls</dt>
+<dd><p>[default NULL] required for secure TLS connections over 'tls+tcp://'
+or 'wss://'. <strong>Either</strong> the character path to a file containing
+X.509 certificate(s) in PEM format, comprising the certificate authority
+certificate chain starting with the TLS certificate and ending with the
+CA certificate, <strong>or</strong> a length 2 character vector comprising [i]
+the certificate authority certificate chain and [ii] the empty character
+<code>''</code>.</p></dd>
 
 
 <dt>rs</dt>
