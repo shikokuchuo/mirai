@@ -21,7 +21,9 @@ launch_remote(
     tcp://10.75.32.70:5555' or 'ws://10.75.32.70:5555/path'
 
     \strong{or} integer index value, or vector of index values, of the
-    dispatcher URLs, or 1L for the host URL (when not using dispatcher).}
+    dispatcher URLs, or 1L for the host URL (when not using dispatcher).
+
+    \strong{or} for \code{launch_remote} only, a 'miraiCluster'.}
 
 \item{...}{(optional) additional arguments passed through to
 \code{\link{daemon}}. These include 'asyncdial', 'maxtasks', 'idletime',

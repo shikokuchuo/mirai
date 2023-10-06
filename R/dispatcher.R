@@ -35,6 +35,9 @@
 #'     Otherwise 'n' will be inferred from the number of URLs supplied in 'url'.
 #'     Where a single URL is supplied and 'n' > 1, 'n' unique URLs will be
 #'     automatically assigned for daemons to dial into.
+#' @param ... (optional) additional arguments passed through to \code{\link{daemon}}.
+#'     These include 'maxtasks', 'idletime', 'walltime', 'timerstart', and
+#'     'cleanup'.
 #' @param token [default FALSE] if TRUE, appends a unique 40-character token
 #'     to each URL path the dispatcher listens at (not applicable for TCP URLs
 #'     which do not accept a path).
@@ -50,9 +53,6 @@
 #' @param pass [default NULL] (required only if the private key supplied to 'tls'
 #'     is encrypted with a password) For security, should be provided through a
 #'     function that returns this value, rather than directly.
-#' @param ... (optional) additional arguments passed through to \code{\link{daemon}}.
-#'     These include 'maxtasks', 'idletime', 'walltime', 'timerstart', and
-#'     'cleanup'.
 #' @param monitor (for package internal use only) do not set this parameter.
 #'
 #' @return Invisible NULL.
@@ -65,9 +65,9 @@
 #'
 #' @export
 #'
-dispatcher <- function(host, url = NULL, n = NULL, asyncdial = FALSE,
-                       token = FALSE, lock = FALSE, tls = NULL, pass = NULL, ...,
-                       monitor = NULL, rs = NULL) {
+dispatcher <- function(host, url = NULL, n = NULL, ...,
+                       asyncdial = FALSE, token = FALSE, lock = FALSE,
+                       tls = NULL, pass = NULL, rs = NULL, monitor = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(.messages[["missing_url"]])

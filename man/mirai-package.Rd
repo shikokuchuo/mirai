@@ -26,6 +26,12 @@ Lightweight parallel code execution and distributed computing. Designed for
     \code{\link{launch_local}}.
 }
 
+\section{Reference Manual}{
+
+
+\code{vignette("reference", package = "mirai")}
+}
+
 \section{Links}{
 
 

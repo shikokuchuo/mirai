@@ -41,6 +41,10 @@
 #'     Dispatcher is a local background process that connects to daemons on
 #'     behalf of the host and ensures FIFO scheduling (see Dispatcher section
 #'     below).
+#' @param ... (optional) additional arguments passed through to
+#'     \code{\link{dispatcher}} if using dispatcher and/or \code{\link{daemon}}
+#'     if launching daemons. These include 'token' and 'lock' at dispatcher and
+#'     'maxtasks', 'idletime', 'timerstart', 'output' and 'cleanup' at daemon.
 #' @param seed [default NULL] (optional) supply a random seed (single value,
 #'     interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
 #'     RNG streams sent to each daemon. Note that reproducible results can be
@@ -56,10 +60,6 @@
 #'     chain, with the TLS certificate first), \strong{or} a length 2 character
 #'     vector comprising [i] the TLS certificate (optionally certificate chain)
 #'     and [ii] the associated private key.
-#' @param ... (optional) additional arguments passed through to
-#'     \code{\link{dispatcher}} if using dispatcher and/or \code{\link{daemon}}
-#'     if launching daemons. These include 'token' and 'lock' at dispatcher and
-#'     'maxtasks', 'idletime', 'timerstart', 'output' and 'cleanup' at daemon.
 #' @param resilience [default TRUE] (applicable when not using dispatcher)
 #'     logical value whether to retry failed tasks on other daemons. If FALSE,
 #'     an appropriate 'errorValue' will be returned in such cases.
@@ -270,8 +270,8 @@
 #'
 #' @export
 #'
-daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, seed = NULL,
-                    tls = NULL, pass = NULL, ..., resilience = TRUE, .compute = "default") {
+daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
+                    seed = NULL, tls = NULL, pass = NULL, resilience = TRUE, .compute = "default") {
 
   missing(n) && missing(url) && return(status(.compute))
 
@@ -363,7 +363,8 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, seed = NULL
 #'
 #' @param .compute [default 'default'] character compute profile (each compute
 #'     profile has its own set of daemons for connecting to different resources).
-#'     Alternatively specify a 'miraiCluster' to obtain its status.
+#'
+#'     \strong{or} a 'miraiCluster' to obtain its status.
 #'
 #' @return A named list comprising:
 #'     \itemize{

@@ -9,10 +9,10 @@ daemons(
   url = NULL,
   remote = NULL,
   dispatcher = TRUE,
+  ...,
   seed = NULL,
   tls = NULL,
   pass = NULL,
-  ...,
   resilience = TRUE,
   .compute = "default"
 )
@@ -35,6 +35,11 @@ Dispatcher is a local background process that connects to daemons on
 behalf of the host and ensures FIFO scheduling (see Dispatcher section
 below).}
 
+\item{...}{(optional) additional arguments passed through to
+\code{\link{dispatcher}} if using dispatcher and/or \code{\link{daemon}}
+if launching daemons. These include 'token' and 'lock' at dispatcher and
+'maxtasks', 'idletime', 'timerstart', 'output' and 'cleanup' at daemon.}
+
 \item{seed}{[default NULL] (optional) supply a random seed (single value,
 interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
 RNG streams sent to each daemon. Note that reproducible results can be
@@ -55,11 +60,6 @@ and [ii] the associated private key.}
 \item{pass}{[default NULL] (required only if the private key supplied to 'tls'
 is encrypted with a password) For security, should be provided through a
 function that returns this value, rather than directly.}
-
-\item{...}{(optional) additional arguments passed through to
-\code{\link{dispatcher}} if using dispatcher and/or \code{\link{daemon}}
-if launching daemons. These include 'token' and 'lock' at dispatcher and
-'maxtasks', 'idletime', 'timerstart', 'output' and 'cleanup' at daemon.}
 
 \item{resilience}{[default TRUE] (applicable when not using dispatcher)
 logical value whether to retry failed tasks on other daemons. If FALSE,

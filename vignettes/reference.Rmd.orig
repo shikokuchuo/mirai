@@ -241,7 +241,7 @@ Set the number of daemons to zero to reset.
 
 The daemons interface may also be used to send tasks for computation to remote daemon processes on the network.
 
-Call `daemons()` specifying 'url' as a character string such as: 'tcp://10.90.127.129:5555' at which daemon processes should connect to.
+Call `daemons()` specifying 'url' as a character string such as: 'tcp://10.75.32.70:5555' at which daemon processes should connect to.
 
 IPv6 addresses are also supported and must be enclosed in square brackets `[]` to avoid confusion with the final colon separating the port. For example, port 5555 on the IPv6 address `::ffff:a6f:50d` would be specified as `tcp://[::ffff:a6f:50d]:5555`.
 
@@ -256,13 +256,13 @@ It is recommended to use a websocket URL starting `ws://` instead of TCP in this
 Supplying a vector of URLs allows the use of arbitrary port numbers / paths. 'n' does not need to be specified if it can be inferred from the length of the 'url' vector, for example:
 
 ```{r vectorqueue, eval=FALSE}
-daemons(url = c("ws://10.90.127.129:5566/cpu", "ws://10.90.127.129:5566/gpu", "ws://10.90.127.129:7788/1"))
+daemons(url = c("ws://10.75.32.70:5566/cpu", "ws://10.75.32.70:5566/gpu", "ws://10.75.32.70:7788/1"))
 ```
 
 Alternatively, below a single URL is supplied, along with `n = 4` to specify that the dispatcher should listen at 4 URLs. In such a case, an integer sequence is automatically appended to the path `/1` through `/4` to produce the URLs.
 
 ```{r localqueue}
-daemons(n = 4, url = "ws://10.90.127.129:5555")
+daemons(n = 4, url = "ws://10.75.32.70:5555")
 ```
 
 Requesting status on the host machine:
@@ -294,7 +294,7 @@ Closing the connection causes the dispatcher to exit automatically, and in turn 
 By specifying `dispatcher = FALSE`, remote daemons connect directly to the host process. The host listens at a single URL, and distributes tasks to all connected daemons.
 
 ```{r remote}
-daemons(url = "tcp://10.90.127.129:0", dispatcher = FALSE)
+daemons(url = "tcp://10.75.32.70:0", dispatcher = FALSE)
 ```
 
 Note that above, the port number is specified as zero. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided in the return value of the call, or it may be queried at any time via `status()`.
@@ -330,7 +330,7 @@ The first example below launches 4 daemons on the machine 10.75.32.90 (using the
 ```{r ldmn, eval=FALSE}
 daemons(
   n = 4,
-  url = "ws://10.75.32.74:5555",
+  url = "ws://10.75.32.70:5555",
   remote = ssh_config(remotes = "ssh://10.75.32.90")
 )
 ```
@@ -339,7 +339,7 @@ The second example below launches one daemon on each of 10.75.32.90 and 10.75.32
 ```{r ldmnd, eval=FALSE}
 daemons(
   n = 2,
-  url = "ws://10.75.32.74:5555",
+  url = "ws://10.75.32.70:5555",
   remote = ssh_config(c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"))
 )
 ```
@@ -491,7 +491,7 @@ is_error_value(m3$data)
 
 ### Parallel Clusters
 
-This package contains experimental functions and S3 methods using `mirai` as an alternative communications backend for R. These were developed to fulfil a request by R Core at R Project Sprint 2023, and required R >= 4.4 (currently R-devel).
+This package contains experimental functions and S3 methods using `mirai` as an alternative communications backend for R. These were developed to fulfil a request by R Core at R Project Sprint 2023, and requires R >= 4.4 (currently R-devel).
 
 `make_cluster()` creates a cluster of type 'miraiCluster', which may be used as a cluster object for any function in the `parallel` base package such as `parallel::clusterApply()` or `parallel::parLapply()`.
 

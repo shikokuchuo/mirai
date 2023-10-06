@@ -28,6 +28,8 @@
 #'
 #'     \strong{or} integer index value, or vector of index values, of the
 #'     dispatcher URLs, or 1L for the host URL (when not using dispatcher).
+#'
+#'     \strong{or} for \code{launch_remote} only, a 'miraiCluster'.
 #' @param ... (optional) additional arguments passed through to
 #'     \code{\link{daemon}}. These include 'asyncdial', 'maxtasks', 'idletime',
 #'     'walltime', 'timerstart', 'output' and 'cleanup'.
@@ -108,6 +110,10 @@ launch_local <- function(url, ..., tls = NULL, .compute = "default") {
 #'
 launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compute = "default") {
 
+  if (is.list(url) && inherits(url, "miraiCluster")) {
+    .compute <- attr(url, "id")
+    url <- 1L
+  }
   envir <- ..[[.compute]]
   dots <- parse_dots(...)
   if (is.null(tls)) tls <- envir[["tls"]]

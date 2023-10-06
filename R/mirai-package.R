@@ -34,6 +34,10 @@
 #'     \code{\link{daemons}} interface and launching daemons using
 #'     \code{\link{launch_local}}.
 #'
+#' @section Reference Manual:
+#'
+#' \code{vignette("reference", package = "mirai")}
+#'
 #' @section Links:
 #'
 #'     \CRANpkg{mirai} website: \url{https://shikokuchuo.net/mirai/}

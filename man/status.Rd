@@ -8,8 +8,9 @@ status(.compute = "default")
 }
 \arguments{
 \item{.compute}{[default 'default'] character compute profile (each compute
-profile has its own set of daemons for connecting to different resources).
-Alternatively specify a 'miraiCluster' to obtain its status.}
+    profile has its own set of daemons for connecting to different resources).
+
+    \strong{or} a 'miraiCluster' to obtain its status.}
 }
 \value{
 A named list comprising:

@@ -1,4 +1,4 @@
-# mirai 0.10.0.9025 (development)
+# mirai 0.10.0.9026 (development)
 
 * Implements an alternative communications backend for R, adding methods for the 'parallel' base package.
   + Fulfils a request by R Core at R Project Sprint 2023, and requires R >= 4.4 (currently R-devel).
@@ -19,6 +19,7 @@
 * Invalid type of '...' arguments specified to `daemons()` or `dispatcher()` now raise an error early rather than attempting to launch daemons that fail.
 * Eliminates a potential crash in the host process after querying `status()` if there is no longer a connection to dispatcher.
 * Reverts the trailing line break added to the end of a 'miraiError' character string.
+* Moves the '...' argument to `daemons()`, `dispatcher()` and `daemon()` to clearly delineate core vs peripheral options.
 * Deprecates the Deferred Evaluation Pipe `%>>%` in favour of a recommendation to use package `mirai.promises` for performing side effects upon 'mirai' resolution.
 * Deprecated use of alias `server()` for `daemon()` is retired.
 * Adds a 'reference' vignette, incorporating most of the information from the readme.
