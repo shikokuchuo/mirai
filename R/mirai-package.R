@@ -36,7 +36,7 @@
 #'
 #' @section Reference Manual:
 #'
-#' \code{vignette("reference", package = "mirai")}
+#' \code{vignette("mirai", package = "mirai")}
 #'
 #' @section Links:
 #'

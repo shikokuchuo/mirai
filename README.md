@@ -90,8 +90,8 @@ result.
 
 ``` r
 m$data
-#>  [1] -0.31834109 -0.63736917  0.84783942  0.01343468  0.46308687  1.00000000
-#>  [7]  2.15942205 74.43423993  1.17946863 -1.56894945 -3.14128469
+#>  [1]  0.9901540  0.1228613  9.7809957  3.5338016 -4.0851872  1.0000000
+#>  [7] -0.2447868  0.2829814  0.1022391  8.1392612  1.0099439
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -99,16 +99,17 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] -0.31834109 -0.63736917  0.84783942  0.01343468  0.46308687  1.00000000
-#>  [7]  2.15942205 74.43423993  1.17946863 -1.56894945 -3.14128469
+#>  [1]  0.9901540  0.1228613  9.7809957  3.5338016 -4.0851872  1.0000000
+#>  [7] -0.2447868  0.2829814  0.1022391  8.1392612  1.0099439
 ```
 
-### Reference Vignette
+### Vignette
 
-See the [reference
-vignette](https://shikokuchuo.net/mirai/articles/reference.html) for the
-full package functionality, which includes the following key topics,
-amongst others:
+See the [mirai
+vignette](https://shikokuchuo.net/mirai/articles/mirai.html) for full
+package functionality.
+
+Key topics include:
 
 1.  Example use cases
 2.  Local daemons - persistent background processes
@@ -118,7 +119,7 @@ amongst others:
 This may be accessed within R by:
 
 ``` r
-vignette("reference", package = "mirai")
+vignette("mirai", package = "mirai")
 ```
 
 ### Use with Parallel

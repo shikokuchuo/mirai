@@ -29,7 +29,7 @@ Lightweight parallel code execution and distributed computing. Designed for
 \section{Reference Manual}{
 
 
-\code{vignette("reference", package = "mirai")}
+\code{vignette("mirai", package = "mirai")}
 }
 
 \section{Links}{
