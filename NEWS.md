@@ -1,4 +1,4 @@
-# mirai 0.10.0.9026 (development)
+# mirai 0.11.0
 
 * Implements an alternative communications backend for R, adding methods for the 'parallel' base package.
   + Fulfils a request by R Core at R Project Sprint 2023, and requires R >= 4.4 (currently R-devel).
