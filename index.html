@@ -46,26 +46,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="articles/mirai.html">Get started</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/reference.html">mirai - Reference Manual</a>
-    </li>
-  </ul>
+  <a href="reference/index.html">Reference</a>
 </li>
 <li>
   <a href="news/index.html">Changelog</a>
@@ -145,18 +136,19 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -0.31834109 -0.63736917  0.84783942  0.01343468  0.46308687  1.00000000</span></span>
-<span><span class="co">#&gt;  [7]  2.15942205 74.43423993  1.17946863 -1.56894945 -3.14128469</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  0.9901540  0.1228613  9.7809957  3.5338016 -4.0851872  1.0000000</span></span>
+<span><span class="co">#&gt;  [7] -0.2447868  0.2829814  0.1022391  8.1392612  1.0099439</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -0.31834109 -0.63736917  0.84783942  0.01343468  0.46308687  1.00000000</span></span>
-<span><span class="co">#&gt;  [7]  2.15942205 74.43423993  1.17946863 -1.56894945 -3.14128469</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  0.9901540  0.1228613  9.7809957  3.5338016 -4.0851872  1.0000000</span></span>
+<span><span class="co">#&gt;  [7] -0.2447868  0.2829814  0.1022391  8.1392612  1.0099439</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="reference-vignette">Reference Vignette<a class="anchor" aria-label="anchor" href="#reference-vignette"></a>
+<h3 id="vignette">Vignette<a class="anchor" aria-label="anchor" href="#vignette"></a>
 </h3>
-<p>See the <a href="https://shikokuchuo.net/mirai/articles/reference.html">reference vignette</a> for the full package functionality, which includes the following key topics, amongst others:</p>
+<p>See the <a href="https://shikokuchuo.net/mirai/articles/mirai.html">mirai vignette</a> for full package functionality.</p>
+<p>Key topics include:</p>
 <ol style="list-style-type: decimal">
 <li>Example use cases</li>
 <li>Local daemons - persistent background processes</li>
@@ -165,7 +157,7 @@
 </ol>
 <p>This may be accessed within R by:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"reference"</span>, package <span class="op">=</span> <span class="st">"mirai"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"mirai"</span>, package <span class="op">=</span> <span class="st">"mirai"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="use-with-parallel">Use with Parallel<a class="anchor" aria-label="anchor" href="#use-with-parallel"></a>
