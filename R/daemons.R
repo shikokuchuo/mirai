@@ -19,12 +19,11 @@
 #' Daemons (Configure Persistent Processes)
 #'
 #' Set 'daemons' or persistent background processes receiving \code{\link{mirai}}
-#'     requests. These are automatically created on the local machine, or else
-#'     by specifying a host URL for receiving connections, tasks may be
-#'     distributed to remote daemons across the network, optionally launched by
-#'     providing a remote launch configuration. Daemons by default use dispatcher,
-#'     which ensures optimal FIFO scheduling, or alternatively the low-level
-#'     approach of distributing tasks in a round-robin fashion.
+#'     requests. Specify 'n' to create daemons on the local machine. Specify
+#'     'url' for receiving connections from remote daemons (for distributed
+#'     computing across the network). Specify 'remote' to optionally launch
+#'     remote daemons via a remote configuration. By default, dispatcher ensures
+#'     optimal scheduling.
 #'
 #' @inheritParams dispatcher
 #' @inheritParams launch_remote
@@ -88,7 +87,7 @@
 #'
 #'     If the host session ends, for whatever reason, all connected dispatcher
 #'     and daemon processes automatically exit as soon as their connections are
-#'     dropped. If a daemon is processing a task, it will exit as soon as the
+#'     dropped. If a daemon is procesing a task, it will exit as soon as the
 #'     task is complete.
 #'
 #'     For historical reasons, \code{daemons()} with no arguments returns the
