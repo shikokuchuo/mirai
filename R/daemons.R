@@ -87,7 +87,7 @@
 #'
 #'     If the host session ends, for whatever reason, all connected dispatcher
 #'     and daemon processes automatically exit as soon as their connections are
-#'     dropped. If a daemon is procesing a task, it will exit as soon as the
+#'     dropped. If a daemon is processing a task, it will exit as soon as the
 #'     task is complete.
 #'
 #'     For historical reasons, \code{daemons()} with no arguments returns the

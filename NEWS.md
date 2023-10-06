@@ -7,6 +7,7 @@
 * `launch_remote()` improvements:
   + Simplified interface with a single 'remote' argument taking a remote configuration to launch daemons.
   + Returned shell commands now have a custom print method which means they may be directly copy/pasted to a remote machine.
+  + Can now take a 'miraiCluster' or 'miraiNode' to return the shell commands for deployment of remote nodes.
 * `daemons()` gains the following features:
   + Adds argument 'remote' for launching remote daemons directly without recourse to a separate call to `launch_remote()`.
   + Adds argument 'resilience' to control the behaviour, when not using dispatcher, of whether to retry failed tasks on other daemons.

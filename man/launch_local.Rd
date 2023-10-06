@@ -23,7 +23,7 @@ launch_remote(
     \strong{or} integer index value, or vector of index values, of the
     dispatcher URLs, or 1L for the host URL (when not using dispatcher).
 
-    \strong{or} for \code{launch_remote} only, a 'miraiCluster'.}
+    \strong{or} for \code{launch_remote} only, a 'miraiCluster' or 'miraiNode'.}
 
 \item{...}{(optional) additional arguments passed through to
 \code{\link{daemon}}. These include 'asyncdial', 'maxtasks', 'idletime',

@@ -90,8 +90,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  1.0711517 -0.2350287  0.5452594 -3.4220150 -1.5016444  1.0000000
-#>  [7] -0.6659366 -0.2922255  1.8339895 -4.2547997  0.9335746
+#>  [1] -0.31834109 -0.63736917  0.84783942  0.01343468  0.46308687  1.00000000
+#>  [7]  2.15942205 74.43423993  1.17946863 -1.56894945 -3.14128469
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -99,8 +99,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  1.0711517 -0.2350287  0.5452594 -3.4220150 -1.5016444  1.0000000
-#>  [7] -0.6659366 -0.2922255  1.8339895 -4.2547997  0.9335746
+#>  [1] -0.31834109 -0.63736917  0.84783942  0.01343468  0.46308687  1.00000000
+#>  [7]  2.15942205 74.43423993  1.17946863 -1.56894945 -3.14128469
 ```
 
 ### Reference Vignette
@@ -127,7 +127,8 @@ vignette("reference", package = "mirai")
 ‘parallel’ package. The `make_cluster()` function creates a
 ‘miraiCluster’, which leverages the full capabilities of the package,
 but remains fully compatible with all `parallel` functions such as
-`clusterApply` or `parLapply`.
+`parallel::clusterApply()`, `parallel::parLapply()` or
+`parallel::parLapplyLB()`.
 
 Created clusters may also be used in all cases which take a ‘cluster’
 object. For example,
