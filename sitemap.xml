@@ -25,6 +25,9 @@
     <loc>https://shikokuchuo.net/mirai/news/index.html</loc>
   </url>
   <url>
+    <loc>https://shikokuchuo.net/mirai/reference/as.promise.mirai.html</loc>
+  </url>
+  <url>
     <loc>https://shikokuchuo.net/mirai/reference/call_mirai.html</loc>
   </url>
   <url>
@@ -32,9 +35,6 @@
   </url>
   <url>
     <loc>https://shikokuchuo.net/mirai/reference/daemons.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/deferred-execution-pipe.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/mirai/reference/dispatcher.html</loc>
