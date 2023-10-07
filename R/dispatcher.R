@@ -229,7 +229,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ...,
         for (q in free)
           for (i in seq_n) {
             if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
-              queue[[i]][["res"]] <- request_signal(.context(servers[[q]]), data = queue[[i]][["req"]], cv = cv, send_mode = 2L, recv_mode = 8L)
+              queue[[i]][["res"]] <- request_signal(.context(servers[[q]]), data = .subset2(queue[[i]][["req"]], "value"), cv = cv, send_mode = 2L, recv_mode = 8L)
               queue[[i]][["daemon"]] <- q
               serverfree[q] <- FALSE
               assigned[q] <- assigned[q] + 1L
