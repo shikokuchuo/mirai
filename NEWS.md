@@ -1,5 +1,8 @@
 # mirai 0.11.0.9000 (development)
 
+* Eliminates the 'exitlinger' period that still applied to ephemeral daemons. These now synchronise with host and exit as soon as permissible.
+* Requires nanonext >= 0.10.2.9000.
+
 # mirai 0.11.0
 
 * Implements an alternative communications backend for R, adding methods for the 'parallel' base package.

@@ -143,23 +143,24 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
 #' Implements an ephemeral executor for the remote process.
 #'
 #' @inheritParams daemon
-#' @param exitlinger [default 2000L] time in milliseconds to linger before
-#'     exiting to allow the socket to complete sends currently in progress.
 #'
 #' @return Invisible NULL.
 #'
 #' @keywords internal
 #' @export
 #'
-.daemon <- function(url, exitlinger = 2000L) {
+.daemon <- function(url) {
 
-  sock <- socket(protocol = "rep", dial = url, autostart = NA)
+  sock <- socket(protocol = "rep")
   on.exit(reap(sock))
+  cv <- cv()
+  pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = FALSE)
+  dial(sock, url = url, autostart = NA, error = TRUE)
   ._mirai_. <- recv(sock, mode = 1L, block = TRUE)
   data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)
   send(sock, data = data, mode = 1L, block = TRUE)
-  msleep(exitlinger)
+  wait(cv)
 
 }
 

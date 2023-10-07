@@ -161,7 +161,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .signal = FALSE, 
     url <- auto_tokenized_url()
     sock <- req_socket(url, resend = 0L)
     if (length(.timeout)) launch_and_sync_daemon(sock = sock, url) else launch_daemon(url)
-    aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout, autoclose = TRUE)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
   }
