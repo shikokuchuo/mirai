@@ -1,6 +1,8 @@
 # mirai 0.11.0.9000 (development)
 
+* Adds 'mirai' method for 'as.promise()' from the `promises` package (if both packages `promises` and `later` are available). This functionality is merged from the package `mirai.promises` for convenience, and allows use of the promise pipe `%...>%` with a 'mirai'.
 * Eliminates the 'exitlinger' period that still applied to ephemeral daemons. These now synchronise with host and exit as soon as permissible.
+* Removes the deprecated deferred evaluation pipe `%>>%`.
 * Requires nanonext >= 0.10.2.9000.
 
 # mirai 0.11.0

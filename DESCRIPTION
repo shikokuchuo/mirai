@@ -25,7 +25,10 @@ Depends:
 Imports: 
     nanonext (>= 0.10.2.9000),
     parallel
-Suggests:
+Enhances: 
+    promises
+Suggests: 
+    later,
     knitr,
     rmarkdown
 VignetteBuilder: knitr

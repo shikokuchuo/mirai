@@ -93,6 +93,9 @@ NULL
     registerS3method("recvOneData", "miraiCluster", recvOneData.miraiCluster, ns)
   }
 
+  if (requireNamespace("promises", quietly = TRUE) && requireNamespace("later", quietly = TRUE))
+    registerS3method("as.promise", "mirai", as.promise.mirai, getNamespace("promises"))
+
 }
 
 # nocov end
@@ -133,3 +136,6 @@ NULL
 recvData <- NULL
 recvOneData <- NULL
 sendData <- NULL
+
+as.promise <- NULL
+
