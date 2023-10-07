@@ -90,8 +90,9 @@ result.
 
 ``` r
 m$data
-#>  [1]  0.9901540  0.1228613  9.7809957  3.5338016 -4.0851872  1.0000000
-#>  [7] -0.2447868  0.2829814  0.1022391  8.1392612  1.0099439
+#>  [1]   3.10654162  -0.63227381  -6.06113466 -69.78861654   0.88790445
+#>  [6]   1.00000000   1.12624731  -0.01432898  -0.16498561  -1.58159326
+#> [11]   0.32190137
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -99,8 +100,9 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  0.9901540  0.1228613  9.7809957  3.5338016 -4.0851872  1.0000000
-#>  [7] -0.2447868  0.2829814  0.1022391  8.1392612  1.0099439
+#>  [1]   3.10654162  -0.63227381  -6.06113466 -69.78861654   0.88790445
+#>  [6]   1.00000000   1.12624731  -0.01432898  -0.16498561  -1.58159326
+#> [11]   0.32190137
 ```
 
 ### Vignette
@@ -159,16 +161,16 @@ high-performance computing backend.
 
 ### Use with Shiny
 
-`mirai` can also serve as the backend for enterprise asynchronous
-[`shiny`](https://cran.r-project.org/package=shiny) applications through
-either:
+`mirai` serves as a backend for enterprise asynchronous
+[`shiny`](https://cran.r-project.org/package=shiny) applications:
 
-[`mirai.promises`](https://shikokuchuo.net/mirai.promises/), which
-enables a ‘mirai’ to be used interchangeably with a ‘promise’, allowing
-side-effects to be performed upon resolution of a ‘mirai’; or
+A ‘mirai’ may be used interchangeably with a ‘promise’ by using the the
+promise pipe `%...>%`, or explictly by `promises::as.promise()`,
+allowing side-effects to be performed upon asynchronous resolution of a
+‘mirai’.
 
-[`crew`](https://wlandau.github.io/crew/) provides an interface that
-makes it easy to deploy `mirai` for
+[`crew`](https://wlandau.github.io/crew/) also provides an interface
+that facilitates deploying `mirai` for
 [`shiny`](https://cran.r-project.org/package=shiny). The package
 provides a [Shiny
 vignette](https://wlandau.github.io/crew/articles/shiny.html) with
