@@ -117,6 +117,7 @@ NULL
     n_one = "'n' must be 1 or greater if specified with 'url'",
     n_zero = "the number of daemons must be zero or greater",
     nodes_failed = "one or more nodes failed... cluster stopped",
+    not_implemented = "subsetting a 'miraiCluster' using `[` is not implemented",
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
     requires_list = "'.args' must be specified as a list",
     requires_local = "SSH tunnelling requires 'url' hostname to be 'localhost' or '127.0.0.1'",

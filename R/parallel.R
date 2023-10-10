@@ -222,6 +222,10 @@ print.miraiNode <- function(x, ...) {
 
 }
 
+#' @export
+#'
+`[.miraiCluster` <- function(x, ...) stop(.messages[["not_implemented"]], call. = FALSE)
+
 # internals --------------------------------------------------------------------
 
 node_unresolved <- function(node) unresolved(.subset2(node, "mirai"))
