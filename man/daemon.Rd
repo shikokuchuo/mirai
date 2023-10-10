@@ -13,7 +13,7 @@ daemon(
   timerstart = 0L,
   output = FALSE,
   ...,
-  cleanup = 7L,
+  cleanup = c(TRUE, TRUE, TRUE, FALSE),
   tls = NULL,
   rs = NULL
 )
@@ -51,13 +51,13 @@ daemons when not using dispatcher).}
 
 \item{...}{reserved but not currently used.}
 
-\item{cleanup}{[default 7L] Integer additive bitmask controlling whether to
-perform cleanup of the global environment (1L), reset loaded packages to
-an initial state (2L), reset options to an initial state (4L), and
-perform garbage collection (8L) after each evaluation. This option should
-not normally be modified. Do not set unless you are certain you require
-persistence across evaluations. Note: it may be an error to reset options
-but not loaded packages if packages set options on load.}
+\item{cleanup}{[default c(TRUE, TRUE, TRUE, FALSE)] logical vector of length
+4, specifying whether to perform the following operations after each
+evaluation: (1) cleanup the global environment, (2) reset loaded packages,
+(3) reset options to an initial state, and (4) perform garbage collection.
+This option should not normally be modified - do not set unless you are
+certain you require persistence across evaluations. Caution: do not reset
+options but not loaded packages if packages set options on load.}
 
 \item{tls}{[default NULL] required for secure TLS connections over 'tls+tcp://'
 or 'wss://'. \strong{Either} the character path to a file containing

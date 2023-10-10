@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/mirai?color=112d4e)](https://CRAN.R-project.org/package=mirai)
-[![mirai status badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e)](https://shikokuchuo.r-universe.dev) 
+[![mirai status badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e)](https://shikokuchuo.r-universe.dev/) 
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
 [![codecov](https://codecov.io/gh/shikokuchuo/mirai/branch/main/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/mirai)
 [![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)
@@ -127,11 +127,11 @@ This functionality, fulfilling a request from R-Core at R Project Sprint 2023, r
 
 ### Use with Crew and Targets
 
-The [`crew`](https://wlandau.github.io/crew/) package is a distributed worker-launcher that provides an R6-based interface extending `mirai` to different distributed computing platforms, from traditional clusters to cloud services.
+The [`crew`](https://cran.r-project.org/package=crew) package is a distributed worker-launcher that provides an R6-based interface extending `mirai` to different distributed computing platforms, from traditional clusters to cloud services.
 
-The [`crew.cluster`](https://wlandau.github.io/crew.cluster/) package is a plug-in that enables mirai-based workflows on traditional high-performance computing clusters using LFS, PBS/TORQUE, SGE and SLURM.
+The [`crew.cluster`](https://cran.r-project.org/package=crew.cluster) package is a plug-in that enables mirai-based workflows on traditional high-performance computing clusters using LFS, PBS/TORQUE, SGE and SLURM.
 
-[`targets`](https://docs.ropensci.org/targets/), a Make-like pipeline tool for statistics and data science, has integrated and adopted [`crew`](https://wlandau.github.io/crew/) as its predominant high-performance computing backend.
+[`targets`](https://cran.r-project.org/package=targets), a Make-like pipeline tool for statistics and data science, has integrated and adopted [`crew`](https://cran.r-project.org/package=crew) as its predominant high-performance computing backend.
 
 ### Use with Shiny
 
@@ -139,13 +139,13 @@ The [`crew.cluster`](https://wlandau.github.io/crew.cluster/) package is a plug-
 
 A 'mirai' may be used interchangeably with a 'promise' by using the the promise pipe `%...>%`, or explictly by `promises::as.promise()`, allowing side-effects to be performed upon asynchronous resolution of a 'mirai'.
 
-[`crew`](https://wlandau.github.io/crew/) also provides an interface that facilitates deploying `mirai` for [`shiny`](https://cran.r-project.org/package=shiny). The package provides a [Shiny vignette](https://wlandau.github.io/crew/articles/shiny.html) with tutorial and sample code for this purpose.
+[`crew`](https://cran.r-project.org/package=crew) also provides an interface that facilitates deploying `mirai` for [`shiny`](https://cran.r-project.org/package=shiny). The package provides a [Shiny vignette](https://wlandau.github.io/crew/articles/shiny.html) with tutorial and sample code for this purpose.
 
 ### Thanks
 
 We would like to thank in particular:
 
-[William Landau](https://github.com/wlandau/), for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of [`crew`](https://wlandau.github.io/crew/) and [`targets`](https://docs.ropensci.org/targets/).
+[William Landau](https://github.com/wlandau/), for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of [`crew`](https://cran.r-project.org/package=crew) and [`targets`](https://cran.r-project.org/package=targets).
 
 [Henrik Bengtsson](https://github.com/HenrikBengtsson/), for valuable and incisive insights leading to the interface accepting broader usage patterns.
 

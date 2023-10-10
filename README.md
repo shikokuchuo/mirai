@@ -8,7 +8,7 @@
 [![CRAN
 status](https://www.r-pkg.org/badges/version/mirai?color=112d4e)](https://CRAN.R-project.org/package=mirai)
 [![mirai status
-badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e)](https://shikokuchuo.r-universe.dev)
+badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e)](https://shikokuchuo.r-universe.dev/)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
 [![codecov](https://codecov.io/gh/shikokuchuo/mirai/branch/main/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/mirai)
 [![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)
@@ -90,9 +90,9 @@ result.
 
 ``` r
 m$data
-#>  [1]   3.10654162  -0.63227381  -6.06113466 -69.78861654   0.88790445
-#>  [6]   1.00000000   1.12624731  -0.01432898  -0.16498561  -1.58159326
-#> [11]   0.32190137
+#>  [1]   3.13793074   0.90508259  -0.01180767  -0.24487893   2.31528028
+#>  [6]   1.00000000   0.43191315  -4.08365070 -84.69073785   1.10487154
+#> [11]   0.31868135
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -100,9 +100,9 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]   3.10654162  -0.63227381  -6.06113466 -69.78861654   0.88790445
-#>  [6]   1.00000000   1.12624731  -0.01432898  -0.16498561  -1.58159326
-#> [11]   0.32190137
+#>  [1]   3.13793074   0.90508259  -0.01180767  -0.24487893   2.31528028
+#>  [6]   1.00000000   0.43191315  -4.08365070 -84.69073785   1.10487154
+#> [11]   0.31868135
 ```
 
 ### Vignette
@@ -144,20 +144,20 @@ This functionality, fulfilling a request from R-Core at R Project Sprint
 
 ### Use with Crew and Targets
 
-The [`crew`](https://wlandau.github.io/crew/) package is a distributed
-worker-launcher that provides an R6-based interface extending `mirai` to
-different distributed computing platforms, from traditional clusters to
-cloud services.
+The [`crew`](https://cran.r-project.org/package=crew) package is a
+distributed worker-launcher that provides an R6-based interface
+extending `mirai` to different distributed computing platforms, from
+traditional clusters to cloud services.
 
-The [`crew.cluster`](https://wlandau.github.io/crew.cluster/) package is
-a plug-in that enables mirai-based workflows on traditional
+The [`crew.cluster`](https://cran.r-project.org/package=crew.cluster)
+package is a plug-in that enables mirai-based workflows on traditional
 high-performance computing clusters using LFS, PBS/TORQUE, SGE and
 SLURM.
 
-[`targets`](https://docs.ropensci.org/targets/), a Make-like pipeline
-tool for statistics and data science, has integrated and adopted
-[`crew`](https://wlandau.github.io/crew/) as its predominant
-high-performance computing backend.
+[`targets`](https://cran.r-project.org/package=targets), a Make-like
+pipeline tool for statistics and data science, has integrated and
+adopted [`crew`](https://cran.r-project.org/package=crew) as its
+predominant high-performance computing backend.
 
 ### Use with Shiny
 
@@ -169,8 +169,8 @@ promise pipe `%...>%`, or explictly by `promises::as.promise()`,
 allowing side-effects to be performed upon asynchronous resolution of a
 ‘mirai’.
 
-[`crew`](https://wlandau.github.io/crew/) also provides an interface
-that facilitates deploying `mirai` for
+[`crew`](https://cran.r-project.org/package=crew) also provides an
+interface that facilitates deploying `mirai` for
 [`shiny`](https://cran.r-project.org/package=shiny). The package
 provides a [Shiny
 vignette](https://wlandau.github.io/crew/articles/shiny.html) with
@@ -184,8 +184,8 @@ We would like to thank in particular:
 shaping development of the package, from initiating the original request
 for persistent daemons, through to orchestrating robustness testing for
 the high performance computing requirements of
-[`crew`](https://wlandau.github.io/crew/) and
-[`targets`](https://docs.ropensci.org/targets/).
+[`crew`](https://cran.r-project.org/package=crew) and
+[`targets`](https://cran.r-project.org/package=targets).
 
 [Henrik Bengtsson](https://github.com/HenrikBengtsson/), for valuable
 and incisive insights leading to the interface accepting broader usage
