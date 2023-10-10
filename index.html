@@ -136,15 +136,15 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]   3.10654162  -0.63227381  -6.06113466 -69.78861654   0.88790445</span></span>
-<span><span class="co">#&gt;  [6]   1.00000000   1.12624731  -0.01432898  -0.16498561  -1.58159326</span></span>
-<span><span class="co">#&gt; [11]   0.32190137</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]   3.13793074   0.90508259  -0.01180767  -0.24487893   2.31528028</span></span>
+<span><span class="co">#&gt;  [6]   1.00000000   0.43191315  -4.08365070 -84.69073785   1.10487154</span></span>
+<span><span class="co">#&gt; [11]   0.31868135</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]   3.10654162  -0.63227381  -6.06113466 -69.78861654   0.88790445</span></span>
-<span><span class="co">#&gt;  [6]   1.00000000   1.12624731  -0.01432898  -0.16498561  -1.58159326</span></span>
-<span><span class="co">#&gt; [11]   0.32190137</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]   3.13793074   0.90508259  -0.01180767  -0.24487893   2.31528028</span></span>
+<span><span class="co">#&gt;  [6]   1.00000000   0.43191315  -4.08365070 -84.69073785   1.10487154</span></span>
+<span><span class="co">#&gt; [11]   0.31868135</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="vignette">Vignette<a class="anchor" aria-label="anchor" href="#vignette"></a>
@@ -171,22 +171,22 @@
 <div class="section level3">
 <h3 id="use-with-crew-and-targets">Use with Crew and Targets<a class="anchor" aria-label="anchor" href="#use-with-crew-and-targets"></a>
 </h3>
-<p>The <a href="https://wlandau.github.io/crew/" class="external-link"><code>crew</code></a> package is a distributed worker-launcher that provides an R6-based interface extending <code>mirai</code> to different distributed computing platforms, from traditional clusters to cloud services.</p>
-<p>The <a href="https://wlandau.github.io/crew.cluster/" class="external-link"><code>crew.cluster</code></a> package is a plug-in that enables mirai-based workflows on traditional high-performance computing clusters using LFS, PBS/TORQUE, SGE and SLURM.</p>
-<p><a href="https://docs.ropensci.org/targets/" class="external-link"><code>targets</code></a>, a Make-like pipeline tool for statistics and data science, has integrated and adopted <a href="https://wlandau.github.io/crew/" class="external-link"><code>crew</code></a> as its predominant high-performance computing backend.</p>
+<p>The <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> package is a distributed worker-launcher that provides an R6-based interface extending <code>mirai</code> to different distributed computing platforms, from traditional clusters to cloud services.</p>
+<p>The <a href="https://cran.r-project.org/package=crew.cluster" class="external-link"><code>crew.cluster</code></a> package is a plug-in that enables mirai-based workflows on traditional high-performance computing clusters using LFS, PBS/TORQUE, SGE and SLURM.</p>
+<p><a href="https://cran.r-project.org/package=targets" class="external-link"><code>targets</code></a>, a Make-like pipeline tool for statistics and data science, has integrated and adopted <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> as its predominant high-performance computing backend.</p>
 </div>
 <div class="section level3">
 <h3 id="use-with-shiny">Use with Shiny<a class="anchor" aria-label="anchor" href="#use-with-shiny"></a>
 </h3>
 <p><code>mirai</code> serves as a backend for enterprise asynchronous <a href="https://cran.r-project.org/package=shiny" class="external-link"><code>shiny</code></a> applications:</p>
 <p>A ‘mirai’ may be used interchangeably with a ‘promise’ by using the the promise pipe <code>%...&gt;%</code>, or explictly by <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">promises::as.promise()</a></code>, allowing side-effects to be performed upon asynchronous resolution of a ‘mirai’.</p>
-<p><a href="https://wlandau.github.io/crew/" class="external-link"><code>crew</code></a> also provides an interface that facilitates deploying <code>mirai</code> for <a href="https://cran.r-project.org/package=shiny" class="external-link"><code>shiny</code></a>. The package provides a <a href="https://wlandau.github.io/crew/articles/shiny.html" class="external-link">Shiny vignette</a> with tutorial and sample code for this purpose.</p>
+<p><a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> also provides an interface that facilitates deploying <code>mirai</code> for <a href="https://cran.r-project.org/package=shiny" class="external-link"><code>shiny</code></a>. The package provides a <a href="https://wlandau.github.io/crew/articles/shiny.html" class="external-link">Shiny vignette</a> with tutorial and sample code for this purpose.</p>
 </div>
 <div class="section level3">
 <h3 id="thanks">Thanks<a class="anchor" aria-label="anchor" href="#thanks"></a>
 </h3>
 <p>We would like to thank in particular:</p>
-<p><a href="https://github.com/wlandau/" class="external-link">William Landau</a>, for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of <a href="https://wlandau.github.io/crew/" class="external-link"><code>crew</code></a> and <a href="https://docs.ropensci.org/targets/" class="external-link"><code>targets</code></a>.</p>
+<p><a href="https://github.com/wlandau/" class="external-link">William Landau</a>, for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> and <a href="https://cran.r-project.org/package=targets" class="external-link"><code>targets</code></a>.</p>
 <p><a href="https://github.com/HenrikBengtsson/" class="external-link">Henrik Bengtsson</a>, for valuable and incisive insights leading to the interface accepting broader usage patterns.</p>
 <p><a href="https://github.com/ltierney/" class="external-link">Luke Tierney</a>, R Core, for introducing R’s implementation of L’Ecuyer-CMRG streams, used to ensure statistical independence in parallel processing.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
@@ -249,7 +249,7 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://CRAN.R-project.org/package=mirai" class="external-link"><img src="https://www.r-pkg.org/badges/version/mirai?color=112d4e" alt="CRAN status"></a></li>
-<li><a href="https://shikokuchuo.r-universe.dev" class="external-link"><img src="https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e" alt="mirai status badge"></a></li>
+<li><a href="https://shikokuchuo.r-universe.dev/" class="external-link"><img src="https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e" alt="mirai status badge"></a></li>
 <li><a href="https://github.com/shikokuchuo/mirai/actions" class="external-link"><img src="https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://app.codecov.io/gh/shikokuchuo/mirai" class="external-link"><img src="https://codecov.io/gh/shikokuchuo/mirai/branch/main/graph/badge.svg" alt="codecov"></a></li>
 <li><a href="https://zenodo.org/badge/latestdoi/459341940" class="external-link"><img src="https://zenodo.org/badge/459341940.svg" alt="DOI"></a></li>
