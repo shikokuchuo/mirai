@@ -87,14 +87,14 @@ NULL
 
   rversion <- .subset2(getRversion(), 1L)
   if (rversion[1L] >= 4 && rversion[2L] >= 4 || rversion[1L] >= 5) {
-    ns <- getNamespace("parallel")
+    ns <- .getNamespace("parallel")
     registerS3method("recvData", "miraiNode", recvData.miraiNode, ns)
     registerS3method("sendData", "miraiNode", sendData.miraiNode, ns)
     registerS3method("recvOneData", "miraiCluster", recvOneData.miraiCluster, ns)
   }
 
   if (requireNamespace("promises", quietly = TRUE) && requireNamespace("later", quietly = TRUE))
-    registerS3method("as.promise", "mirai", as.promise.mirai, getNamespace("promises"))
+    registerS3method("as.promise", "mirai", as.promise.mirai, .getNamespace("promises"))
 
 }
 

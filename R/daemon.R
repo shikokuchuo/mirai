@@ -168,15 +168,9 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
 
 dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
   cv <- cv()
-  if (length(tls) && !asyncdial) {
-    pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
-    dial(sock, url = url, autostart = TRUE, tls = tls, error = TRUE)
-    until(cv, .timelimit) && stop(.messages[["sync_timeout"]])
-  } else {
-    pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = FALSE)
-    dial(sock, url = url, autostart = length(tls) || asyncdial || NA, tls = tls, error = TRUE)
-    wait(cv)
-  }
+  pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = FALSE)
+  dial(sock, url = url, autostart = asyncdial || NA, tls = tls, error = TRUE)
+  wait(cv)
 }
 
 parse_cleanup <- function(cleanup)

@@ -206,8 +206,9 @@ recvOneData.miraiCluster <- function(cl) {
 #'
 print.miraiCluster <- function(x, ...) {
 
+  id <- attr(x, "id")
   cat(sprintf("< miraiCluster >\n - cluster ID: %s\n - nodes: %d\n - active: %s\n",
-              attr(x, "id"), length(x), as.logical(length(..[[attr(x, "id")]]))), file = stdout())
+              id, length(x), as.logical(length(..[[id]]))), file = stdout())
   invisible(x)
 
 }
