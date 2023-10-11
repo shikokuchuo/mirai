@@ -62,7 +62,7 @@
 <li>Eliminates the ‘exitlinger’ period that still applied to ephemeral daemons. These now synchronise with host and exit as soon as permissible.</li>
 <li>Daemons connecting over TLS now follow the specified ‘asyncdial’.</li>
 <li>
-<code><a href="../reference/daemons.html">daemons()</a></code> argument ‘cleanup’ now takes a logical vector specifying the cleanup actions to take, rather than an integer bitmask (thanks <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a> <a href="https://github.com/shikokuchuo/mirai/issues/79" class="external-link">#79</a>).</li>
+<code><a href="../reference/daemon.html">daemon()</a></code> argument ‘cleanup’ simplified to a logical argument, with more granular control offered by the existing integer bitmask (thanks <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a> <a href="https://github.com/shikokuchuo/mirai/issues/79" class="external-link">#79</a>).</li>
 <li>Adds a ‘not implemented’ <code>[</code> method for ‘miraiCluster’ (thanks <a href="https://github.com/HenrikBengtsson" class="external-link">@HenrikBengtsson</a> <a href="https://github.com/shikokuchuo/mirai/issues/83" class="external-link">#83</a>).</li>
 <li>Removes the deprecated deferred evaluation pipe <code>%&gt;&gt;%</code>.</li>
 <li>Requires nanonext &gt;= [0.10.2.9001].</li>

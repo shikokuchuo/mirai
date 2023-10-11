@@ -74,8 +74,8 @@
 <span>  walltime <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  timerstart <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  output <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  cleanup <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  cleanup <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rs <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -127,18 +127,15 @@ redirection of output to the host process (applicable only for local
 daemons when not using dispatcher).</p></dd>
 
 
+<dt>cleanup</dt>
+<dd><p>[default TRUE] logical value, whether to perform cleanup of
+the global environment and restore loaded packages and options to an
+initial state after each evaluation. For more granular control, also
+accepts an integer value (see 'Cleanup Options' section below).</p></dd>
+
+
 <dt>...</dt>
 <dd><p>reserved but not currently used.</p></dd>
-
-
-<dt>cleanup</dt>
-<dd><p>[default c(TRUE, TRUE, TRUE, FALSE)] logical vector of length
-4, specifying whether to perform the following operations after each
-evaluation: (1) cleanup the global environment, (2) reset loaded packages,
-(3) reset options to an initial state, and (4) perform garbage collection.
-This option should not normally be modified - do not set unless you are
-certain you require persistence across evaluations. Caution: do not reset
-options but not loaded packages if packages set options on load.</p></dd>
 
 
 <dt>tls</dt>
@@ -169,6 +166,22 @@ process and should not be independently supplied.</p></dd>
     dispatcher, which listens at the 'url' address. In this way, network
     resources may be added or removed dynamically and the host or
     dispatcher automatically distributes tasks to all available daemons.</p>
+    </div>
+    <div id="cleanup-options">
+    <h2>Cleanup Options</h2>
+    
+
+
+<p>The 'cleanup' argument also accepts an integer value, which operates an
+    additive bitmask: perform cleanup of the global environment (1L), reset
+    loaded packages to an initial state (2L), restore options to an initial
+    state (4L), and perform garbage collection (8L).</p>
+<p>As an example, to perform cleanup of the global environment and garbage
+    collection, specify 9L (1L + 8L). The default argument value of TRUE
+    performs all actions apart from garbage collection and is equivalent to a
+    value of 7L.</p>
+<p>Caution: do not reset options but not loaded packages if packages set
+    options on load.</p>
     </div>
 
   </div>
