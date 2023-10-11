@@ -290,7 +290,7 @@ saisei <- function(i, force = FALSE, .compute = "default") {
   envir <- ..[[.compute]]
   i <- as.integer(`length<-`(i, 1L))
   length(envir[["sockc"]]) && i > 0L && i <= envir[["n"]] && substr(envir[["urls"]][i], 1L, 1L) != "t" || return()
-  r <- query_dispatcher(sock = envir[["sockc"]], command = if (force) -i else i, mode = 9L)
+  r <- query_dispatcher(sock = .context(envir[["sockc"]]), command = if (force) -i else i, mode = 9L)
   is.character(r) && nzchar(r) || return()
   envir[["urls"]][i] <- r
   r
