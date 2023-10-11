@@ -187,9 +187,7 @@ recvData.miraiNode <- function(node) call_mirai(.subset2(node, "mirai"))
 #'
 recvOneData.miraiCluster <- function(cl) {
 
-  envir <- ..[[attr(cl, "id")]]
-
-  wait(envir[["cv"]]) || {
+  wait(..[[attr(cl, "id")]][["cv"]]) || {
     stop_cluster(cl)
     stop(.messages[["nodes_failed"]])
   }
@@ -206,7 +204,7 @@ recvOneData.miraiCluster <- function(cl) {
 #'
 print.miraiCluster <- function(x, ...) {
 
-  id <- attr(x, "id")
+  id <- attr(.subset2(x, 1L), "id")
   cat(sprintf("< miraiCluster >\n - cluster ID: %s\n - nodes: %d\n - active: %s\n",
               id, length(x), as.logical(length(..[[id]]))), file = stdout())
   invisible(x)
@@ -221,10 +219,6 @@ print.miraiNode <- function(x, ...) {
   invisible(x)
 
 }
-
-#' @export
-#'
-`[.miraiCluster` <- function(x, ...) stop(.messages[["not_implemented"]])
 
 # internals --------------------------------------------------------------------
 

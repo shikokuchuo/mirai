@@ -1,10 +1,10 @@
-# mirai 0.11.0.9001 (development)
+# mirai 0.11.0.9002 (development)
 
 * Adds 'mirai' method for 'as.promise()' from the `promises` package (if both packages `promises` and `later` are available). This functionality is merged from the package `mirai.promises` for convenience, and allows use of the promise pipe `%...>%` with a 'mirai'.
 * Eliminates the 'exitlinger' period that still applied to ephemeral daemons. These now synchronise with host and exit as soon as permissible.
 * Daemons connecting over TLS now follow the specified 'asyncdial'.
 * `daemon()` argument 'cleanup' simplified to a logical argument, with more granular control offered by the existing integer bitmask (thanks @krlmlr #79).
-* Adds a 'not implemented' `[` method for 'miraiCluster' (thanks @HenrikBengtsson #83).
+* Fixes the print method for a subset 'miraiCluster' (thanks @HenrikBengtsson #83).
 * Removes the deprecated deferred evaluation pipe `%>>%`.
 * Requires nanonext >= [0.10.2.9001].
 
