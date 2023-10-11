@@ -38,7 +38,8 @@ below).}
 \item{...}{(optional) additional arguments passed through to
 \code{\link{dispatcher}} if using dispatcher and/or \code{\link{daemon}}
 if launching daemons. These include 'token' and 'lock' at dispatcher and
-'maxtasks', 'idletime', 'timerstart', 'output' and 'cleanup' at daemon.}
+'maxtasks', 'idletime', 'walltime', 'timerstart', 'output' and 'cleanup'
+at daemon.}
 
 \item{seed}{[default NULL] (optional) supply a random seed (single value,
 interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG

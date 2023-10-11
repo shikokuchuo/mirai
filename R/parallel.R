@@ -224,7 +224,7 @@ print.miraiNode <- function(x, ...) {
 
 #' @export
 #'
-`[.miraiCluster` <- function(x, ...) stop(.messages[["not_implemented"]], call. = FALSE)
+`[.miraiCluster` <- function(x, ...) stop(.messages[["not_implemented"]])
 
 # internals --------------------------------------------------------------------
 

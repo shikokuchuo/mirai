@@ -66,7 +66,7 @@ nanotest(daemons(url = value <- mirai:::auto_tokenized_url(), dispatcher = FALSE
 nanotest(grepl("://", launch_remote(status()$daemons), fixed = TRUE))
 nanotestz(daemons(0L))
 Sys.sleep(1L)
-nanotesto(daemons(1L, dispatcher = FALSE, idletime = 500L, timerstart = 1L, cleanup = c(FALSE, FALSE, FALSE, FALSE), seed = 1546, .compute = "new"))
+nanotesto(daemons(1L, dispatcher = FALSE, idletime = 500L, timerstart = 1L, cleanup = FALSE, seed = 1546, .compute = "new"))
 nanotest(is.character(nextget("urls", .compute = "new")))
 nanotest(is.integer(nextstream(.compute = "new")))
 Sys.sleep(1.5)

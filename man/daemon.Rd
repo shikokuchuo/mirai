@@ -12,8 +12,8 @@ daemon(
   walltime = Inf,
   timerstart = 0L,
   output = FALSE,
+  cleanup = TRUE,
   ...,
-  cleanup = c(TRUE, TRUE, TRUE, FALSE),
   tls = NULL,
   rs = NULL
 )
@@ -49,15 +49,12 @@ argument to \code{\link{daemons}} or \code{\link{launch_local}} to provide
 redirection of output to the host process (applicable only for local
 daemons when not using dispatcher).}
 
-\item{...}{reserved but not currently used.}
+\item{cleanup}{[default TRUE] logical value, whether to perform cleanup of
+the global environment and restore loaded packages and options to an
+initial state after each evaluation. For more granular control, also
+accepts an integer value (see 'Cleanup Options' section below).}
 
-\item{cleanup}{[default c(TRUE, TRUE, TRUE, FALSE)] logical vector of length
-4, specifying whether to perform the following operations after each
-evaluation: (1) cleanup the global environment, (2) reset loaded packages,
-(3) reset options to an initial state, and (4) perform garbage collection.
-This option should not normally be modified - do not set unless you are
-certain you require persistence across evaluations. Caution: do not reset
-options but not loaded packages if packages set options on load.}
+\item{...}{reserved but not currently used.}
 
 \item{tls}{[default NULL] required for secure TLS connections over 'tls+tcp://'
 or 'wss://'. \strong{Either} the character path to a file containing
@@ -85,3 +82,20 @@ The network topology is such that daemons dial into the host or
     resources may be added or removed dynamically and the host or
     dispatcher automatically distributes tasks to all available daemons.
 }
+\section{Cleanup Options}{
+
+
+    The 'cleanup' argument also accepts an integer value, which operates an
+    additive bitmask: perform cleanup of the global environment (1L), reset
+    loaded packages to an initial state (2L), restore options to an initial
+    state (4L), and perform garbage collection (8L).
+
+    As an example, to perform cleanup of the global environment and garbage
+    collection, specify 9L (1L + 8L). The default argument value of TRUE
+    performs all actions apart from garbage collection and is equivalent to a
+    value of 7L.
+
+    Caution: do not reset options but not loaded packages if packages set
+    options on load.
+}
+

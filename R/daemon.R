@@ -45,14 +45,11 @@
 #'     argument to \code{\link{daemons}} or \code{\link{launch_local}} to provide
 #'     redirection of output to the host process (applicable only for local
 #'     daemons when not using dispatcher).
+#' @param cleanup [default TRUE] logical value, whether to perform cleanup of
+#'     the global environment and restore loaded packages and options to an
+#'     initial state after each evaluation. For more granular control, also
+#'     accepts an integer value (see 'Cleanup Options' section below).
 #' @param ... reserved but not currently used.
-#' @param cleanup [default c(TRUE, TRUE, TRUE, FALSE)] logical vector of length
-#'     4, specifying whether to perform the following operations after each
-#'     evaluation: (1) cleanup the global environment, (2) reset loaded packages,
-#'     (3) reset options to an initial state, and (4) perform garbage collection.
-#'     This option should not normally be modified - do not set unless you are
-#'     certain you require persistence across evaluations. Caution: do not reset
-#'     options but not loaded packages if packages set options on load.
 #' @param tls [default NULL] required for secure TLS connections over 'tls+tcp://'
 #'     or 'wss://'. \strong{Either} the character path to a file containing
 #'     X.509 certificate(s) in PEM format, comprising the certificate authority
@@ -71,11 +68,26 @@
 #'     resources may be added or removed dynamically and the host or
 #'     dispatcher automatically distributes tasks to all available daemons.
 #'
+#' @section Cleanup Options:
+#'
+#'     The 'cleanup' argument also accepts an integer value, which operates an
+#'     additive bitmask: perform cleanup of the global environment (1L), reset
+#'     loaded packages to an initial state (2L), restore options to an initial
+#'     state (4L), and perform garbage collection (8L).
+#'
+#'     As an example, to perform cleanup of the global environment and garbage
+#'     collection, specify 9L (1L + 8L). The default argument value of TRUE
+#'     performs all actions apart from garbage collection and is equivalent to a
+#'     value of 7L.
+#'
+#'     Caution: do not reset options but not loaded packages if packages set
+#'     options on load.
+#'
 #' @export
 #'
 daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
-                   walltime = Inf, timerstart = 0L, output = FALSE, ...,
-                   cleanup = c(TRUE, TRUE, TRUE, FALSE), tls = NULL, rs = NULL) {
+                   walltime = Inf, timerstart = 0L, output = FALSE,
+                   cleanup = TRUE, ..., tls = NULL, rs = NULL) {
 
   sock <- socket(protocol = "rep")
   on.exit(reap(sock))
@@ -86,8 +98,7 @@ daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
 
   if (is.numeric(rs)) `[[<-`(.GlobalEnv, ".Random.seed", as.integer(rs))
   if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
-  if (length(cleanup) != 4L)
-    cleanup <- c(cleanup %% 2L, (clr <- as.raw(cleanup)) & as.raw(2L), clr & as.raw(4L), clr & as.raw(8L))
+  cleanup <- parse_cleanup(cleanup)
   if (!output) {
     devnull <- file(nullfile(), open = "w", blocking = FALSE)
     sink(file = devnull)
@@ -172,4 +183,10 @@ dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
   pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = FALSE)
   dial(sock, url = url, autostart = asyncdial || NA, tls = tls, error = TRUE)
   wait(cv)
+}
+
+parse_cleanup <- function(cleanup) {
+  is.logical(cleanup) ||
+    return(c(as.integer(cleanup) %% 2L, (clr <- as.raw(cleanup)) & as.raw(2L), clr & as.raw(4L), clr & as.raw(8L)))
+  c(cleanup, cleanup, cleanup, FALSE)
 }
