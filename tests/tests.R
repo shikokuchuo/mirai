@@ -92,14 +92,13 @@ nanotest(is.list(status(cl)))
 nanotestn(stop_cluster(cl))
 Sys.sleep(1L)
 
-if (requireNamespace("promises", quietly = TRUE) && requireNamespace("later", quietly = TRUE)) {
-  nanotest(promises::is.promise(p1 <- promises::as.promise(mirai("completed"))))
-  Sys.sleep(1L)
-  nanotest(promises::is.promise(p2 <- promises::`%...>%`(mirai("completed"), identity())))
-  Sys.sleep(1L)
-}
-
 if (.Platform[["OS.type"]] != "windows") {
+  if (requireNamespace("promises", quietly = TRUE)) {
+    nanotest(promises::is.promise(p1 <- promises::as.promise(mirai("completed"))))
+    Sys.sleep(1L)
+    nanotest(promises::is.promise(p2 <- promises::`%...>%`(mirai("completed"), identity())))
+    Sys.sleep(1L)
+  }
   mlc <- launch_remote("ws://[::1]:5555")
   nanotest(is.character(mlc))
   nanotest(inherits(mlc, "miraiLaunchCmd"))

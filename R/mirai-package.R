@@ -93,7 +93,7 @@ NULL
     registerS3method("recvOneData", "miraiCluster", recvOneData.miraiCluster, ns)
   }
 
-  if (requireNamespace("promises", quietly = TRUE) && requireNamespace("later", quietly = TRUE))
+  if (requireNamespace("promises", quietly = TRUE))
     registerS3method("as.promise", "mirai", as.promise.mirai, .getNamespace("promises"))
 
 }
