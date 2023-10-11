@@ -35,7 +35,7 @@ nanotest(length(cluster) == 2L)
 
 clusterSetRNGStream(cluster, 123)
 j <- clusterEvalQ(cluster, expr = .GlobalEnv[[".Random.seed"]])
-a <- parSapply(cluster, 1:4, rnorm)
+a <- parSapply(cluster, 1:4, runif)
 
 setDefaultCluster(cluster)
 res <- parLapply(X = 1:10, fun = rnorm)
@@ -62,7 +62,7 @@ nanotest(attr(cl, "id") != attr(cluster, "id"))
 
 clusterSetRNGStream(cl, 123)
 k <- clusterEvalQ(cl, expr = .GlobalEnv[[".Random.seed"]])
-b <- parSapply(cl, 1:4, rnorm)
+b <- parSapply(cl, 1:4, runif)
 nanotesti(j, k)
 nanotesti(a, b)
 

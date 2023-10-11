@@ -85,16 +85,33 @@ NULL
     }
   )
 
+  registerConditionalMethods()
+
+}
+
+registerConditionalMethods <- function() {
+
   rversion <- .subset2(getRversion(), 1L)
   if (rversion[1L] >= 4 && rversion[2L] >= 4 || rversion[1L] >= 5) {
     ns <- .getNamespace("parallel")
-    registerS3method("recvData", "miraiNode", recvData.miraiNode, ns)
-    registerS3method("sendData", "miraiNode", sendData.miraiNode, ns)
-    registerS3method("recvOneData", "miraiCluster", recvOneData.miraiCluster, ns)
+    table <- ns[[".__S3MethodsTable__."]]
+    `[[<-`(table, "recvData.miraiNode", recvData.miraiNode)
+    `[[<-`(table, "sendData.miraiNode", sendData.miraiNode)
+    `[[<-`(table, "recvOneData.miraiCluster", recvOneData.miraiCluster)
+    regs <- rbind(.getNamespaceInfo(ns, "S3methods"),
+                  c("recvData", "miraiNode", "recvData.miraiNode", NA_character_),
+                  c("sendData", "miraiNode", "sendData.miraiNode", NA_character_),
+                  c("recvOneData", "miraiCluster", "recvOneData.miraiCluster", NA_character_))
+    setNamespaceInfo(ns, "S3methods", regs)
   }
 
-  if (requireNamespace("promises", quietly = TRUE))
-    registerS3method("as.promise", "mirai", as.promise.mirai, .getNamespace("promises"))
+  if (requireNamespace("promises", quietly = TRUE)) {
+    ns <- .getNamespace("promises")
+    `[[<-`(ns[[".__S3MethodsTable__."]], "as.promise.mirai", as.promise.mirai)
+    regs <- rbind(.getNamespaceInfo(ns, "S3methods"),
+                  c("as.promise", "mirai", "as.promise.mirai", NA_character_))
+    setNamespaceInfo(ns, "S3methods", regs)
+  }
 
 }
 
@@ -139,4 +156,3 @@ recvOneData <- NULL
 sendData <- NULL
 
 as.promise <- NULL
-

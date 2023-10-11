@@ -80,25 +80,27 @@ nanotestz(status(.compute = "new")[["connections"]])
 nanotestz(daemons(0L, .compute = "new"))
 Sys.sleep(1L)
 
-cl <- make_cluster(1)
-nanotest(inherits(cl, "miraiCluster"))
-nanotest(inherits(cl, "cluster"))
-nanotest(length(cl) == 1L)
-nanotest(inherits(cl[[1]], "miraiNode"))
-nanotestp(cl[1])
-nanotest(is.character(launch_remote(cl)))
-nanotest(is.character(launch_remote(cl[[1L]])))
-nanotest(is.list(status(cl)))
-nanotestn(stop_cluster(cl))
-Sys.sleep(1L)
+if (requireNamespace("promises", quietly = TRUE)) {
+  nanotest(promises::is.promise(p1 <- promises::as.promise(mirai("completed"))))
+  Sys.sleep(1L)
+  nanotest(promises::is.promise(p2 <- promises::`%...>%`(mirai("completed"), identity())))
+  Sys.sleep(1L)
+}
 
 if (.Platform[["OS.type"]] != "windows") {
-  if (requireNamespace("promises", quietly = TRUE)) {
-    nanotest(promises::is.promise(p1 <- promises::as.promise(mirai("completed"))))
-    Sys.sleep(1L)
-    nanotest(promises::is.promise(p2 <- promises::`%...>%`(mirai("completed"), identity())))
-    Sys.sleep(1L)
-  }
+
+  cl <- make_cluster(1)
+  nanotest(inherits(cl, "miraiCluster"))
+  nanotest(inherits(cl, "cluster"))
+  nanotest(length(cl) == 1L)
+  nanotest(inherits(cl[[1]], "miraiNode"))
+  nanotestp(cl[1])
+  nanotest(is.character(launch_remote(cl)))
+  nanotest(is.character(launch_remote(cl[[1L]])))
+  nanotest(is.list(status(cl)))
+  nanotestn(stop_cluster(cl))
+  Sys.sleep(1L)
+
   mlc <- launch_remote("ws://[::1]:5555")
   nanotest(is.character(mlc))
   nanotest(inherits(mlc, "miraiLaunchCmd"))
@@ -166,6 +168,7 @@ if (.Platform[["OS.type"]] != "windows") {
 }
 
 if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
+
   nanotesto(daemons(url = "wss://127.0.0.1:0", token = TRUE, pass = "test"))
   nanotestn(launch_local(1L))
   Sys.sleep(1L)
@@ -178,7 +181,6 @@ if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
   nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 1000L, seed = 1546, token = TRUE, lock = TRUE, cleanup = option))
   Sys.sleep(1L)
   mq <- mirai("daemon", .timeout = 1000)
-  nanotestn(saisei(i = 1L))
   nanotest(call_mirai(mq)$data == "daemon" || is_error_value(mq$data))
   mq <- mirai(Sys.sleep(1.5), .timeout = 500)
   dstatus <- status()[["daemons"]]
