@@ -174,7 +174,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ...,
       }
 
       ctrchannel && !unresolved(cmessage) && {
-        i <- .subset2(cmessage, "data")
+        i <- .subset2(cmessage, "value")
         if (i) {
           if (i > 0L && !activevec[[i]]) {
             reap(attr(servers[[i]], "listener")[[1L]])
