@@ -45,6 +45,9 @@
 #'     if launching daemons. These include 'token' and 'lock' at dispatcher and
 #'     'autoexit, 'maxtasks', 'idletime', 'walltime', 'timerstart', 'output'
 #'     and 'cleanup' at daemon.
+#' @param resilience [default TRUE] (applicable when not using dispatcher)
+#'     logical value whether to retry failed tasks on other daemons. If FALSE,
+#'     an appropriate 'errorValue' will be returned in such cases.
 #' @param seed [default NULL] (optional) supply a random seed (single value,
 #'     interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
 #'     RNG streams sent to each daemon. Note that reproducible results can be
@@ -60,9 +63,6 @@
 #'     chain, with the TLS certificate first), \strong{or} a length 2 character
 #'     vector comprising [i] the TLS certificate (optionally certificate chain)
 #'     and [ii] the associated private key.
-#' @param resilience [default TRUE] (applicable when not using dispatcher)
-#'     logical value whether to retry failed tasks on other daemons. If FALSE,
-#'     an appropriate 'errorValue' will be returned in such cases.
 #' @param .compute [default 'default'] character compute profile to use for
 #'     creating the daemons (each compute profile has its own set of daemons for
 #'     connecting to different resources).
@@ -276,7 +276,8 @@
 #' @export
 #'
 daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
-                    seed = NULL, tls = NULL, pass = NULL, resilience = TRUE, .compute = "default") {
+                    resilience = TRUE, seed = NULL, tls = NULL, pass = NULL,
+                    .compute = "default") {
 
   missing(n) && missing(url) && return(status(.compute))
 

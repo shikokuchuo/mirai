@@ -377,7 +377,7 @@ launch_remote(1:2)
 daemons(0)
 ```
 
-Note that `daemons()` should be set up on the host machine before launching `daemon()` on remote resources, otherwise the daemon instances will exit if a connection is not immediately available. Alternatively, specifying the argument `asyncdial = TRUE` will allow daemons to wait (indefinitely) for a connection to become available.
+Note that `daemons()` should be set up on the host machine before launching `daemon()` on remote resources, otherwise the daemon instances will exit if a connection is not immediately available. Alternatively, specifying the argument `autoexit = FALSE` will allow daemons to wait (indefinitely) for a connection to become available.
 
 [&laquo; Back to ToC](#table-of-contents)
 

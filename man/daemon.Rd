@@ -7,12 +7,12 @@
 daemon(
   url,
   autoexit = TRUE,
+  cleanup = TRUE,
+  output = FALSE,
   maxtasks = Inf,
   idletime = Inf,
   walltime = Inf,
   timerstart = 0L,
-  output = FALSE,
-  cleanup = TRUE,
   ...,
   tls = NULL,
   rs = NULL
@@ -27,6 +27,17 @@ port to connect to (and optionally for websockets, a path), e.g.
 exit automatically when its socket connection ends (see 'Persistence'
 section below).}
 
+\item{cleanup}{[default TRUE] logical value, whether to perform cleanup of
+the global environment and restore loaded packages and options to an
+initial state after each evaluation. For more granular control, also
+accepts an integer value (see 'Cleanup Options' section below).}
+
+\item{output}{[default FALSE] logical value, to output generated stdout /
+stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'
+argument to \code{\link{daemons}} or \code{\link{launch_local}} to provide
+redirection of output to the host process (applicable only for local
+daemons when not using dispatcher).}
+
 \item{maxtasks}{[default Inf] the maximum number of tasks to execute (task
 limit) before exiting.}
 
@@ -39,17 +50,6 @@ time taken (in milliseconds) before exiting.}
 \item{timerstart}{[default 0L] number of completed tasks after which to start
 the timer for 'idletime' and 'walltime'. 0L implies timers are started
 upon launch.}
-
-\item{output}{[default FALSE] logical value, to output generated stdout /
-stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'
-argument to \code{\link{daemons}} or \code{\link{launch_local}} to provide
-redirection of output to the host process (applicable only for local
-daemons when not using dispatcher).}
-
-\item{cleanup}{[default TRUE] logical value, whether to perform cleanup of
-the global environment and restore loaded packages and options to an
-initial state after each evaluation. For more granular control, also
-accepts an integer value (see 'Cleanup Options' section below).}
 
 \item{...}{reserved but not currently used.}
 

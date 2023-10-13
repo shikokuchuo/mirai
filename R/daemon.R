@@ -28,6 +28,15 @@
 #' @param autoexit [default TRUE] logical value, whether the daemon should
 #'     exit automatically when its socket connection ends (see 'Persistence'
 #'     section below).
+#' @param cleanup [default TRUE] logical value, whether to perform cleanup of
+#'     the global environment and restore loaded packages and options to an
+#'     initial state after each evaluation. For more granular control, also
+#'     accepts an integer value (see 'Cleanup Options' section below).
+#' @param output [default FALSE] logical value, to output generated stdout /
+#'     stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'
+#'     argument to \code{\link{daemons}} or \code{\link{launch_local}} to provide
+#'     redirection of output to the host process (applicable only for local
+#'     daemons when not using dispatcher).
 #' @param maxtasks [default Inf] the maximum number of tasks to execute (task
 #'     limit) before exiting.
 #' @param idletime [default Inf] maximum idle time, since completion of the last
@@ -37,15 +46,6 @@
 #' @param timerstart [default 0L] number of completed tasks after which to start
 #'     the timer for 'idletime' and 'walltime'. 0L implies timers are started
 #'     upon launch.
-#' @param output [default FALSE] logical value, to output generated stdout /
-#'     stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'
-#'     argument to \code{\link{daemons}} or \code{\link{launch_local}} to provide
-#'     redirection of output to the host process (applicable only for local
-#'     daemons when not using dispatcher).
-#' @param cleanup [default TRUE] logical value, whether to perform cleanup of
-#'     the global environment and restore loaded packages and options to an
-#'     initial state after each evaluation. For more granular control, also
-#'     accepts an integer value (see 'Cleanup Options' section below).
 #' @param ... reserved but not currently used.
 #' @param tls [default NULL] required for secure TLS connections over 'tls+tcp://'
 #'     or 'wss://'. \strong{Either} the character path to a file containing
@@ -98,9 +98,9 @@
 #'
 #' @export
 #'
-daemon <- function(url, autoexit = TRUE, maxtasks = Inf, idletime = Inf,
-                   walltime = Inf, timerstart = 0L, output = FALSE,
-                   cleanup = TRUE, ..., tls = NULL, rs = NULL) {
+daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
+                   maxtasks = Inf, idletime = Inf, walltime = Inf, timerstart = 0L,
+                   ..., tls = NULL, rs = NULL) {
 
   sock <- socket(protocol = "rep")
   on.exit(reap(sock))

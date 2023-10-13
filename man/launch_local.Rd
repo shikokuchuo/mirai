@@ -26,7 +26,7 @@ launch_remote(
     \strong{or} for \code{launch_remote} only, a 'miraiCluster' or 'miraiNode'.}
 
 \item{...}{(optional) additional arguments passed through to
-\code{\link{daemon}}. These include 'asyncdial', 'maxtasks', 'idletime',
+\code{\link{daemon}}. These include 'autoexit', 'maxtasks', 'idletime',
 'walltime', 'timerstart', 'output' and 'cleanup'.}
 
 \item{tls}{[default NULL] required for secure TLS connections over tls+tcp or
