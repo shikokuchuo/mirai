@@ -69,12 +69,12 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">daemon</span><span class="op">(</span></span>
 <span>  <span class="va">url</span>,</span>
 <span>  autoexit <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  cleanup <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  output <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  maxtasks <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  idletime <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  walltime <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  timerstart <span class="op">=</span> <span class="fl">0L</span>,</span>
-<span>  output <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  cleanup <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rs <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -93,6 +93,21 @@ port to connect to (and optionally for websockets, a path), e.g.
 <dd><p>[default TRUE] logical value, whether the daemon should
 exit automatically when its socket connection ends (see 'Persistence'
 section below).</p></dd>
+
+
+<dt>cleanup</dt>
+<dd><p>[default TRUE] logical value, whether to perform cleanup of
+the global environment and restore loaded packages and options to an
+initial state after each evaluation. For more granular control, also
+accepts an integer value (see 'Cleanup Options' section below).</p></dd>
+
+
+<dt>output</dt>
+<dd><p>[default FALSE] logical value, to output generated stdout /
+stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'
+argument to <code><a href="daemons.html">daemons</a></code> or <code><a href="launch_local.html">launch_local</a></code> to provide
+redirection of output to the host process (applicable only for local
+daemons when not using dispatcher).</p></dd>
 
 
 <dt>maxtasks</dt>
@@ -114,21 +129,6 @@ time taken (in milliseconds) before exiting.</p></dd>
 <dd><p>[default 0L] number of completed tasks after which to start
 the timer for 'idletime' and 'walltime'. 0L implies timers are started
 upon launch.</p></dd>
-
-
-<dt>output</dt>
-<dd><p>[default FALSE] logical value, to output generated stdout /
-stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'
-argument to <code><a href="daemons.html">daemons</a></code> or <code><a href="launch_local.html">launch_local</a></code> to provide
-redirection of output to the host process (applicable only for local
-daemons when not using dispatcher).</p></dd>
-
-
-<dt>cleanup</dt>
-<dd><p>[default TRUE] logical value, whether to perform cleanup of
-the global environment and restore loaded packages and options to an
-initial state after each evaluation. For more granular control, also
-accepts an integer value (see 'Cleanup Options' section below).</p></dd>
 
 
 <dt>...</dt>
