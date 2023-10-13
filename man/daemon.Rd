@@ -6,7 +6,7 @@
 \usage{
 daemon(
   url,
-  asyncdial = FALSE,
+  autoexit = TRUE,
   maxtasks = Inf,
   idletime = Inf,
   walltime = Inf,
@@ -23,12 +23,9 @@ daemon(
 port to connect to (and optionally for websockets, a path), e.g.
 'tcp://10.75.32.70:5555' or 'ws://10.75.32.70:5555/path'.}
 
-\item{asyncdial}{[default FALSE] whether to perform dials asynchronously. The
-default FALSE will error if a connection is not immediately possible
-(e.g. \code{\link{daemons}} has yet to be called on the host, or the
-specified port is not open etc.). Specifying TRUE continues retrying
-(indefinitely) if not immediately successful, which is more resilient but
-can mask potential connection issues.}
+\item{autoexit}{[default TRUE] logical value, whether the daemon should
+exit automatically when its socket connection ends (see 'Persistence'
+section below).}
 
 \item{maxtasks}{[default Inf] the maximum number of tasks to execute (task
 limit) before exiting.}
@@ -82,6 +79,24 @@ The network topology is such that daemons dial into the host or
     resources may be added or removed dynamically and the host or
     dispatcher automatically distributes tasks to all available daemons.
 }
+\section{Persistence}{
+
+
+    The 'autoexit' argument governs persistence settings for the daemon. The
+    default TRUE ensures that it will exit cleanly under all circumstances
+    once its socket connection has ended.
+
+    Setting to FALSE allows the daemon to persist indefinitely even when
+    there is no longer a socket connection. This allows a host session to end
+    and a new session to connect at the URL where the daemon is dialled in.
+    Daemons must be terminated with \code{daemons(NULL)} in this case, which
+    sends an exit signal to all connected daemons.
+
+    Persistence also implies that dials are performed asynchronously, which
+    means retries are attempted (indefinitely) if not immediately successful.
+    This is resilient behaviour but can mask potential connection issues.
+}
+
 \section{Cleanup Options}{
 
 

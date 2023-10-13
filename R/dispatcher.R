@@ -36,8 +36,14 @@
 #'     Where a single URL is supplied and 'n' > 1, 'n' unique URLs will be
 #'     automatically assigned for daemons to dial into.
 #' @param ... (optional) additional arguments passed through to \code{\link{daemon}}.
-#'     These include 'maxtasks', 'idletime', 'walltime', 'timerstart', and
-#'     'cleanup'.
+#'     These include 'autoexit', 'maxtasks', 'idletime', 'walltime',
+#'     'timerstart', and 'cleanup'.
+#' @param asyncdial [default FALSE] whether to perform dials asynchronously. The
+#'     default FALSE will error if a connection is not immediately possible
+#'     (e.g. \code{\link{daemons}} has yet to be called on the host, or the
+#'     specified port is not open etc.). Specifying TRUE continues retrying
+#'     (indefinitely) if not immediately successful, which is more resilient but
+#'     can mask potential connection issues.
 #' @param token [default FALSE] if TRUE, appends a unique 40-character token
 #'     to each URL path the dispatcher listens at (not applicable for TCP URLs
 #'     which do not accept a path).

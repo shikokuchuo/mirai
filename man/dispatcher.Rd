@@ -36,8 +36,8 @@ Where a single URL is supplied and 'n' > 1, 'n' unique URLs will be
 automatically assigned for daemons to dial into.}
 
 \item{...}{(optional) additional arguments passed through to \code{\link{daemon}}.
-These include 'maxtasks', 'idletime', 'walltime', 'timerstart', and
-'cleanup'.}
+These include 'autoexit', 'maxtasks', 'idletime', 'walltime',
+'timerstart', and 'cleanup'.}
 
 \item{asyncdial}{[default FALSE] whether to perform dials asynchronously. The
 default FALSE will error if a connection is not immediately possible

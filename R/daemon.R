@@ -25,12 +25,9 @@
 #' @param url the character host or dispatcher URL to dial into, including the
 #'     port to connect to (and optionally for websockets, a path), e.g.
 #'     'tcp://10.75.32.70:5555' or 'ws://10.75.32.70:5555/path'.
-#' @param asyncdial [default FALSE] whether to perform dials asynchronously. The
-#'     default FALSE will error if a connection is not immediately possible
-#'     (e.g. \code{\link{daemons}} has yet to be called on the host, or the
-#'     specified port is not open etc.). Specifying TRUE continues retrying
-#'     (indefinitely) if not immediately successful, which is more resilient but
-#'     can mask potential connection issues.
+#' @param autoexit [default TRUE] logical value, whether the daemon should
+#'     exit automatically when its socket connection ends (see 'Persistence'
+#'     section below).
 #' @param maxtasks [default Inf] the maximum number of tasks to execute (task
 #'     limit) before exiting.
 #' @param idletime [default Inf] maximum idle time, since completion of the last
@@ -68,6 +65,22 @@
 #'     resources may be added or removed dynamically and the host or
 #'     dispatcher automatically distributes tasks to all available daemons.
 #'
+#' @section Persistence:
+#'
+#'     The 'autoexit' argument governs persistence settings for the daemon. The
+#'     default TRUE ensures that it will exit cleanly under all circumstances
+#'     once its socket connection has ended.
+#'
+#'     Setting to FALSE allows the daemon to persist indefinitely even when
+#'     there is no longer a socket connection. This allows a host session to end
+#'     and a new session to connect at the URL where the daemon is dialled in.
+#'     Daemons must be terminated with \code{daemons(NULL)} in this case, which
+#'     sends an exit signal to all connected daemons.
+#'
+#'     Persistence also implies that dials are performed asynchronously, which
+#'     means retries are attempted (indefinitely) if not immediately successful.
+#'     This is resilient behaviour but can mask potential connection issues.
+#'
 #' @section Cleanup Options:
 #'
 #'     The 'cleanup' argument also accepts an integer value, which operates an
@@ -85,16 +98,16 @@
 #'
 #' @export
 #'
-daemon <- function(url, asyncdial = FALSE, maxtasks = Inf, idletime = Inf,
+daemon <- function(url, autoexit = TRUE, maxtasks = Inf, idletime = Inf,
                    walltime = Inf, timerstart = 0L, output = FALSE,
                    cleanup = TRUE, ..., tls = NULL, rs = NULL) {
 
   sock <- socket(protocol = "rep")
   on.exit(reap(sock))
   cv <- cv()
-  pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
+  autoexit && pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
   if (length(tls)) tls <- tls_config(client = tls)
-  dial_and_sync_socket(sock = sock, url = url, asyncdial = asyncdial, tls = tls)
+  dial_and_sync_socket(sock = sock, url = url, asyncdial = !autoexit, tls = tls)
 
   if (is.numeric(rs)) `[[<-`(.GlobalEnv, ".Random.seed", as.integer(rs))
   if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL

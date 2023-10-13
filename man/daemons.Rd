@@ -38,8 +38,8 @@ below).}
 \item{...}{(optional) additional arguments passed through to
 \code{\link{dispatcher}} if using dispatcher and/or \code{\link{daemon}}
 if launching daemons. These include 'token' and 'lock' at dispatcher and
-'maxtasks', 'idletime', 'walltime', 'timerstart', 'output' and 'cleanup'
-at daemon.}
+'autoexit, 'maxtasks', 'idletime', 'walltime', 'timerstart', 'output'
+and 'cleanup' at daemon.}
 
 \item{seed}{[default NULL] (optional) supply a random seed (single value,
 interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
@@ -99,10 +99,15 @@ Use \code{daemons(0)} to reset daemon connections:
     closed) after a reset.}
     }
 
+    To reset persistent daemons started with \code{autoexit = FALSE}, use
+    \code{daemons(NULL)} instead, which also sends exit signals to all
+    connected daemons prior to resetting.
+
     If the host session ends, for whatever reason, all connected dispatcher
     and daemon processes automatically exit as soon as their connections are
     dropped. If a daemon is processing a task, it will exit as soon as the
-    task is complete.
+    task is complete. This is not applicable to daemons where
+    \code{autoexit = FALSE} is specified.
 
     For historical reasons, \code{daemons()} with no arguments returns the
     value of \code{\link{status}}.

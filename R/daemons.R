@@ -43,8 +43,8 @@
 #' @param ... (optional) additional arguments passed through to
 #'     \code{\link{dispatcher}} if using dispatcher and/or \code{\link{daemon}}
 #'     if launching daemons. These include 'token' and 'lock' at dispatcher and
-#'     'maxtasks', 'idletime', 'walltime', 'timerstart', 'output' and 'cleanup'
-#'     at daemon.
+#'     'autoexit, 'maxtasks', 'idletime', 'walltime', 'timerstart', 'output'
+#'     and 'cleanup' at daemon.
 #' @param seed [default NULL] (optional) supply a random seed (single value,
 #'     interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
 #'     RNG streams sent to each daemon. Note that reproducible results can be
@@ -86,10 +86,15 @@
 #'     closed) after a reset.}
 #'     }
 #'
+#'     To reset persistent daemons started with \code{autoexit = FALSE}, use
+#'     \code{daemons(NULL)} instead, which also sends exit signals to all
+#'     connected daemons prior to resetting.
+#'
 #'     If the host session ends, for whatever reason, all connected dispatcher
 #'     and daemon processes automatically exit as soon as their connections are
 #'     dropped. If a daemon is processing a task, it will exit as soon as the
-#'     task is complete.
+#'     task is complete. This is not applicable to daemons where
+#'     \code{autoexit = FALSE} is specified.
 #'
 #'     For historical reasons, \code{daemons()} with no arguments returns the
 #'     value of \code{\link{status}}.
@@ -313,11 +318,21 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
 
   } else {
 
+    send_signal <- is.null(n)
+    if (send_signal) n <- 0L
     is.numeric(n) || stop(.messages[["numeric_n"]])
     n <- as.integer(n)
 
     if (n == 0L) {
       length(envir[["n"]]) || return(0L)
+
+      if (send_signal) {
+        n <- max(length(envir[["urls"]]), stat(envir[["sock"]], "pipes"))
+        for (i in seq_len(n)) {
+          send(envir[["sock"]], data = ._scm_., mode = 2L)
+          msleep(10L)
+        }
+      }
 
       reap(envir[["sock"]])
       length(envir[["sockc"]]) && reap(envir[["sockc"]])
