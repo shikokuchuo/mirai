@@ -22,7 +22,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0.9003</span>
       </span>
     </div>
 
@@ -117,8 +117,8 @@ below).</p></dd>
 <dd><p>(optional) additional arguments passed through to
 <code><a href="dispatcher.html">dispatcher</a></code> if using dispatcher and/or <code><a href="daemon.html">daemon</a></code>
 if launching daemons. These include 'token' and 'lock' at dispatcher and
-'maxtasks', 'idletime', 'walltime', 'timerstart', 'output' and 'cleanup'
-at daemon.</p></dd>
+'autoexit, 'maxtasks', 'idletime', 'walltime', 'timerstart', 'output'
+and 'cleanup' at daemon.</p></dd>
 
 
 <dt>seed</dt>
@@ -179,10 +179,14 @@ connecting to different resources).</p></dd>
     background process for each request.</p></li>
 <li><p>Any unresolved 'mirai' will return an 'errorValue' 7 (Object
     closed) after a reset.</p></li>
-</ul><p>If the host session ends, for whatever reason, all connected dispatcher
+</ul><p>To reset persistent daemons started with <code>autoexit = FALSE</code>, use
+    <code>daemons(NULL)</code> instead, which also sends exit signals to all
+    connected daemons prior to resetting.</p>
+<p>If the host session ends, for whatever reason, all connected dispatcher
     and daemon processes automatically exit as soon as their connections are
     dropped. If a daemon is processing a task, it will exit as soon as the
-    task is complete.</p>
+    task is complete. This is not applicable to daemons where
+    <code>autoexit = FALSE</code> is specified.</p>
 <p>For historical reasons, <code>daemons()</code> with no arguments returns the
     value of <code><a href="status.html">status</a></code>.</p>
     </div>

@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0.9003</span>
       </span>
     </div>
 
@@ -68,7 +68,7 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">daemon</span><span class="op">(</span></span>
 <span>  <span class="va">url</span>,</span>
-<span>  asyncdial <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  autoexit <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  maxtasks <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  idletime <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  walltime <span class="op">=</span> <span class="cn">Inf</span>,</span>
@@ -89,13 +89,10 @@ port to connect to (and optionally for websockets, a path), e.g.
 'tcp://10.75.32.70:5555' or 'ws://10.75.32.70:5555/path'.</p></dd>
 
 
-<dt>asyncdial</dt>
-<dd><p>[default FALSE] whether to perform dials asynchronously. The
-default FALSE will error if a connection is not immediately possible
-(e.g. <code><a href="daemons.html">daemons</a></code> has yet to be called on the host, or the
-specified port is not open etc.). Specifying TRUE continues retrying
-(indefinitely) if not immediately successful, which is more resilient but
-can mask potential connection issues.</p></dd>
+<dt>autoexit</dt>
+<dd><p>[default TRUE] logical value, whether the daemon should
+exit automatically when its socket connection ends (see 'Persistence'
+section below).</p></dd>
 
 
 <dt>maxtasks</dt>
@@ -166,6 +163,23 @@ process and should not be independently supplied.</p></dd>
     dispatcher, which listens at the 'url' address. In this way, network
     resources may be added or removed dynamically and the host or
     dispatcher automatically distributes tasks to all available daemons.</p>
+    </div>
+    <div id="persistence">
+    <h2>Persistence</h2>
+    
+
+
+<p>The 'autoexit' argument governs persistence settings for the daemon. The
+    default TRUE ensures that it will exit cleanly under all circumstances
+    once its socket connection has ended.</p>
+<p>Setting to FALSE allows the daemon to persist indefinitely even when
+    there is no longer a socket connection. This allows a host session to end
+    and a new session to connect at the URL where the daemon is dialled in.
+    Daemons must be terminated with <code>daemons(NULL)</code> in this case, which
+    sends an exit signal to all connected daemons.</p>
+<p>Persistence also implies that dials are performed asynchronously, which
+    means retries are attempted (indefinitely) if not immediately successful.
+    This is resilient behaviour but can mask potential connection issues.</p>
     </div>
     <div id="cleanup-options">
     <h2>Cleanup Options</h2>

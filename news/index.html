@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0.9003</span>
       </span>
     </div>
 
@@ -57,15 +57,19 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.11.0.9002" id="mirai-01109002-development">mirai 0.11.0.9002 (development)<a class="anchor" aria-label="anchor" href="#mirai-01109002-development"></a></h2>
-<ul><li>Adds ‘mirai’ method for ‘as.promise()’ from the <code>promises</code> package (if both packages <code>promises</code> and <code>later</code> are available). This functionality is merged from the package <code>mirai.promises</code> for convenience, and allows use of the promise pipe <code>%...&gt;%</code> with a ‘mirai’.</li>
+<h2 class="page-header" data-toc-text="0.11.0.9003" id="mirai-01109003-development">mirai 0.11.0.9003 (development)<a class="anchor" aria-label="anchor" href="#mirai-01109003-development"></a></h2>
+<ul><li>Adds ‘mirai’ method for ‘as.promise()’ from the <code>promises</code> package (if packages <code>promises</code> and <code>later</code> are available). This functionality is merged from the package <code>mirai.promises</code> for convenience, and allows use of the promise pipe <code>%...&gt;%</code> with a ‘mirai’.</li>
+<li>
+<code><a href="../reference/daemon.html">daemon()</a></code> adds argument ‘autoexit’, which replaces ‘asyncdial’, to govern persistence settings for a daemon. A daemon can now survive a host session and re-connect to another one (thanks <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a> <a href="https://github.com/shikokuchuo/mirai/issues/81" class="external-link">#81</a>).</li>
+<li>
+<code>daemons(NULL)</code> implemented as a variant of <code>daemons(0)</code> which also sends exit signals to connected persistent daemons.</li>
 <li>Eliminates the ‘exitlinger’ period that still applied to ephemeral daemons. These now synchronise with host and exit as soon as permissible.</li>
 <li>Daemons connecting over TLS now follow the specified ‘asyncdial’.</li>
 <li>
 <code><a href="../reference/daemon.html">daemon()</a></code> argument ‘cleanup’ simplified to a logical argument, with more granular control offered by the existing integer bitmask (thanks <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a> <a href="https://github.com/shikokuchuo/mirai/issues/79" class="external-link">#79</a>).</li>
 <li>Fixes the print method for a subset ‘miraiCluster’ (thanks <a href="https://github.com/HenrikBengtsson" class="external-link">@HenrikBengtsson</a> <a href="https://github.com/shikokuchuo/mirai/issues/83" class="external-link">#83</a>).</li>
 <li>Removes the deprecated deferred evaluation pipe <code>%&gt;&gt;%</code>.</li>
-<li>Requires nanonext &gt;= [0.10.2.9001].</li>
+<li>Requires nanonext &gt;= [0.10.2.9002].</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.11.0" id="mirai-0110">mirai 0.11.0<small>2023-10-06</small><a class="anchor" aria-label="anchor" href="#mirai-0110"></a></h2>
