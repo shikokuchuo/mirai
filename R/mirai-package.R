@@ -150,14 +150,10 @@ registerConditionalMethods <- function(rversion, promises) {
   ),
   hash = TRUE
 )
-.next_format_identifier <- as.raw(7L)
 .timelimit <- 5000L
+._scm_. <- base64dec("BwAAAEIKAwAAAAEDBAAABQMABQAAAFVURi04/AAAAA==", convert = FALSE)
 
-.unresolved_marker <- `class<-`(new.env(parent = emptyenv()), "unresolvedValue")
 recvData <- NULL
 recvOneData <- NULL
 sendData <- NULL
-
 as.promise <- NULL
-
-._scm_. <- base64dec("BwAAAEIKAwAAAAEDBAAABQMABQAAAFVURi04/AAAAA==", convert = FALSE)

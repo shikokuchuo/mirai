@@ -188,7 +188,7 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
   envir <- ..[[.compute]]
   expr <- substitute(.expr)
   if (length(envir[["sockc"]])) {
-    expr <- c(as.expression(expr), snapshot_expr)
+    expr <- c(as.expression(expr), .snapshot)
     for (i in seq_len(envir[["n"]]))
       mirai(.expr = expr, ..., .args = .args, .compute = .compute)
   } else {
@@ -434,4 +434,4 @@ snapshot <- function() {
   msleep(500L)
 }
 
-snapshot_expr <- as.expression(quote(mirai:::snapshot()))
+.snapshot <- as.expression(quote(mirai:::snapshot()))

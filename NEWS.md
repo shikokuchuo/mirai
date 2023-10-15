@@ -1,4 +1,4 @@
-# mirai 0.11.0.9005 (development)
+# mirai 0.11.0.9006 (development)
 
 * Adds 'mirai' method for 'as.promise()' from the `promises` package (if packages `promises` and `later` are available). This functionality is merged from the package `mirai.promises` for convenience, and allows use of the promise pipe `%...>%` with a 'mirai'.
 * `everywhere()` evaluates an expression 'everywhere' on all connected daemons for a compute profile. Any resulting changes to the global environment, loaded pacakges or options are persisted regardless of the daemon's 'cleanup' setting (request by @krlmlr #80).
@@ -8,7 +8,7 @@
 * `daemon()` argument 'cleanup' simplified to a logical argument, with more granular control offered by the existing integer bitmask (thanks @krlmlr #79).
 * Fixes the print method for a subset 'miraiCluster' (thanks @HenrikBengtsson #83).
 * Removes the deprecated deferred evaluation pipe `%>>%`.
-* Requires nanonext >= [0.10.2.9002].
+* Requires nanonext >= [0.10.2.9003].
 
 # mirai 0.11.0
 
