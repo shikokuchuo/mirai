@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0.9005</span>
       </span>
     </div>
 
@@ -57,7 +57,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.11.0.9004" id="mirai-01109004-development">mirai 0.11.0.9004 (development)<a class="anchor" aria-label="anchor" href="#mirai-01109004-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.11.0.9005" id="mirai-01109005-development">mirai 0.11.0.9005 (development)<a class="anchor" aria-label="anchor" href="#mirai-01109005-development"></a></h2>
 <ul><li>Adds ‘mirai’ method for ‘as.promise()’ from the <code>promises</code> package (if packages <code>promises</code> and <code>later</code> are available). This functionality is merged from the package <code>mirai.promises</code> for convenience, and allows use of the promise pipe <code>%...&gt;%</code> with a ‘mirai’.</li>
 <li>
 <code><a href="../reference/everywhere.html">everywhere()</a></code> evaluates an expression ‘everywhere’ on all connected daemons for a compute profile. Any resulting changes to the global environment, loaded pacakges or options are persisted regardless of the daemon’s ‘cleanup’ setting (request by <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a> <a href="https://github.com/shikokuchuo/mirai/issues/80" class="external-link">#80</a>).</li>
@@ -65,7 +65,6 @@
 <code><a href="../reference/daemon.html">daemon()</a></code> adds argument ‘autoexit’, which replaces ‘asyncdial’, to govern persistence settings for a daemon. A daemon can now survive a host session and re-connect to another one (request by <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a> <a href="https://github.com/shikokuchuo/mirai/issues/81" class="external-link">#81</a>).</li>
 <li>
 <code>daemons(NULL)</code> implemented as a variant of <code>daemons(0)</code> which also sends exit signals to connected persistent daemons.</li>
-<li>Eliminates the ‘exitlinger’ period that still applied to ephemeral daemons. These now synchronise with host and exit as soon as permissible.</li>
 <li>Daemons connecting over TLS now follow the specified ‘asyncdial’.</li>
 <li>
 <code><a href="../reference/daemon.html">daemon()</a></code> argument ‘cleanup’ simplified to a logical argument, with more granular control offered by the existing integer bitmask (thanks <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a> <a href="https://github.com/shikokuchuo/mirai/issues/79" class="external-link">#79</a>).</li>
