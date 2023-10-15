@@ -67,7 +67,9 @@ NULL
 
 .onLoad <- function(libname, pkgname) {
 
-  .. <<- new.env(hash = FALSE, parent = environment(daemons))
+  ns <- environment(daemons)
+  . <<- new.env(hash = FALSE, parent = ns)
+  .. <<- new.env(hash = FALSE, parent = ns)
   `[[<-`(.., "default", new.env(hash = FALSE, parent = ..))
   switch(
     Sys.info()[["sysname"]],
@@ -85,13 +87,13 @@ NULL
     }
   )
 
-  registerConditionalMethods()
+  registerConditionalMethods(.subset2(getRversion(), 1L),
+                             requireNamespace("promises", quietly = TRUE))
 
 }
 
-registerConditionalMethods <- function() {
+registerConditionalMethods <- function(rversion, promises) {
 
-  rversion <- .subset2(getRversion(), 1L)
   if (rversion[1L] >= 4 && rversion[2L] >= 4 || rversion[1L] >= 5) {
     ns <- .getNamespace("parallel")
     table <- ns[[".__S3MethodsTable__."]]
@@ -105,7 +107,7 @@ registerConditionalMethods <- function() {
     setNamespaceInfo(ns, "S3methods", regs)
   }
 
-  if (requireNamespace("promises", quietly = TRUE)) {
+  if (promises) {
     ns <- .getNamespace("promises")
     `[[<-`(ns[[".__S3MethodsTable__."]], "as.promise.mirai", as.promise.mirai)
     regs <- rbind(.getNamespaceInfo(ns, "S3methods"),
@@ -117,6 +119,7 @@ registerConditionalMethods <- function() {
 
 # nocov end
 
+. <- NULL
 .. <- NULL
 .command <- NULL
 .urlscheme <- NULL

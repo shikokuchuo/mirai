@@ -170,6 +170,33 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .signal = FALSE, 
 
 }
 
+#' Evaluate Everywhere
+#'
+#' Evaluate an expression 'everywhere' on all connected daemons for the
+#'     specified compute profile. Designed for performing setup operations
+#'     across daemons, resultant changes to the global environment, loaded
+#'     pacakges or options are persisted regardless of the daemon's 'cleanup'
+#'     setting.
+#'
+#' @inheritParams mirai
+#'
+#' @return Invisible NULL.
+#'
+#' @export
+#'
+everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
+  envir <- ..[[.compute]]
+  expr <- substitute(.expr)
+  if (length(envir[["sockc"]])) {
+    expr <- c(as.expression(expr), snapshot_expr)
+    for (i in seq_len(envir[["n"]]))
+      mirai(.expr = expr, ..., .args = .args, .compute = .compute)
+  } else {
+    for (i in seq_len(stat(envir[["sock"]], "pipes")))
+      mirai(.expr = expr, ..., .args = .args, .compute = .compute)
+  }
+}
+
 #' mirai (Call Value)
 #'
 #' Call the value of a mirai, waiting for the the asynchronous operation to
@@ -401,3 +428,10 @@ mk_mirai_error <- function(e) {
   cat(strcat(msg, "\n"), file = stderr());
   `class<-`(msg, c("miraiError", "errorValue", "try-error"))
 }
+
+snapshot <- function() {
+  `[[<-`(`[[<-`(`[[<-`(., 'vars', names(.GlobalEnv)), 'se', search()), 'op', .Options)
+  msleep(500L)
+}
+
+snapshot_expr <- as.expression(quote(mirai:::snapshot()))

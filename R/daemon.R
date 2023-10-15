@@ -122,8 +122,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
       close(devnull)
     }, add = TRUE)
   }
-  op <- .Options
-  se <- search()
+  `[[<-`(`[[<-`(`[[<-`(., "op", .Options), "se", search()), "vars", ".Random.seed")
   count <- 0L
   start <- mclock()
 
@@ -131,7 +130,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
 
     ctx <- .context(sock)
     aio <- recv_aio_signal(ctx, cv = cv, mode = 1L, timeout = idletime)
-    wait(cv) || return(invisible())
+    wait(cv) || break
     ._mirai_. <- .subset2(aio, "data")
     is.environment(._mirai_.) || {
       count < timerstart && {
@@ -152,11 +151,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
     }
 
     send(ctx, data = data, mode = 1L)
-
-    if (cleanup[1L]) rm(list = (vars <- names(.GlobalEnv))[vars != ".Random.seed"], envir = .GlobalEnv)
-    if (cleanup[2L]) lapply((new <- search())[!new %in% se], detach, unload = TRUE, character.only = TRUE)
-    if (cleanup[3L]) options(op)
-    if (cleanup[4L]) gc(verbose = FALSE)
+    perform_cleanup(cleanup)
     if (count <= timerstart) start <- mclock()
 
   }
@@ -202,4 +197,11 @@ parse_cleanup <- function(cleanup) {
   is.logical(cleanup) ||
     return(c(as.integer(cleanup) %% 2L, (clr <- as.raw(cleanup)) & as.raw(2L), clr & as.raw(4L), clr & as.raw(8L)))
   c(cleanup, cleanup, cleanup, FALSE)
+}
+
+perform_cleanup <- function(cleanup) {
+  if (cleanup[1L]) rm(list = (vars <- names(.GlobalEnv))[!vars %in% .[["vars"]]], envir = .GlobalEnv)
+  if (cleanup[2L]) lapply((new <- search())[!new %in% .[["se"]]], detach, unload = TRUE, character.only = TRUE)
+  if (cleanup[3L]) options(.[["op"]])
+  if (cleanup[4L]) gc(verbose = FALSE)
 }

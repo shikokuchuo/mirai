@@ -173,9 +173,12 @@ if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
   nanotestn(launch_local(1L))
   Sys.sleep(1L)
   nanotest(grepl("CERTIFICATE", launch_remote(1L), fixed = TRUE))
+  nanotestn(everywhere(list2env(list(b = 2), envir = .GlobalEnv)))
+  m <- mirai(b, .timeout = 1000)
+  nanotest(call_mirai(m)$data == 2L || is_error_value(m$data))
   nanotesterr(launch_local(0:1), "out of bounds")
   nanotesterr(launch_remote(1:2), "out of bounds")
-  nanotestz(daemons(0L))
+  nanotestz(daemons(NULL))
   Sys.sleep(1L)
   option <- 15L
   nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 1000L, seed = 1546, token = TRUE, lock = TRUE, cleanup = option))
