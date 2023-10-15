@@ -116,12 +116,11 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
       }
     }
 
-    daemons(url = url, remote = remote, dispatcher = FALSE, resilience = FALSE,
-            cleanup = 0L, ..., .compute = id)
+    daemons(url = url, remote = remote, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
 
   } else {
     is.numeric(n) || stop(.messages[["numeric_n"]])
-    daemons(n = n, dispatcher = FALSE, resilience = FALSE, cleanup = 0L, ..., .compute = id)
+    daemons(n = n, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
   }
 
   pipe_notify(..[[id]][["sock"]], cv = ..[[id]][["cv"]], add = FALSE, remove = TRUE, flag = TRUE)

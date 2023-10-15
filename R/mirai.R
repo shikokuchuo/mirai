@@ -417,7 +417,7 @@ print.miraiInterrupt <- function(x, ...) {
 
 # internals --------------------------------------------------------------------
 
-mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue"))
+mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))
 
 mk_mirai_error <- function(e) {
   x <- .subset2(e, "call")
