@@ -93,7 +93,7 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>Minimalist async evaluation framework for R. <br><br> Lightweight parallel code execution and distributed computing. <br><br> Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion. <br><br> Features efficient task scheduling, fast inter-process communications, and Transport Layer Security over TCP/IP for remote connections, courtesy of ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen). <br><br><code><a href="reference/mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately. ‘mirai’ (未来 みらい) is Japanese for ‘future’. <br><br><a href="https://doi.org/10.5281/zenodo.7912722" class="external-link"><code>mirai</code></a> has a tiny pure R code base, relying solely on <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link"><code>nanonext</code></a>, a high-performance binding for the ‘NNG’ (Nanomsg Next Gen) C library with zero package dependencies. <br><br></p>
+<p>Minimalist async evaluation framework for R. <br><br> Lightweight parallel code execution and distributed computing. <br><br> Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion. <br><br><code><a href="reference/mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately. ‘mirai’ (未来 みらい) is Japanese for ‘future’. <br><br> Features efficient task scheduling, fast inter-process communications, and TLS over TCP/IP for remote connections. <br><br> {mirai} has a tiny pure R code base, relying solely on <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link"><code>nanonext</code></a>, a high-performance binding for the ‘NNG’ (Nanomsg Next Gen) C library with zero package dependencies. <br><br></p>
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
@@ -136,51 +136,61 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]   3.13793074   0.90508259  -0.01180767  -0.24487893   2.31528028</span></span>
-<span><span class="co">#&gt;  [6]   1.00000000   0.43191315  -4.08365070 -84.69073785   1.10487154</span></span>
-<span><span class="co">#&gt; [11]   0.31868135</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  5.4553254 -0.4160196 -2.2048729  1.0541057 -3.0753898  1.0000000</span></span>
+<span><span class="co">#&gt;  [7] -0.3251620  0.9486715 -0.4535409 -2.4037327  0.1833071</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]   3.13793074   0.90508259  -0.01180767  -0.24487893   2.31528028</span></span>
-<span><span class="co">#&gt;  [6]   1.00000000   0.43191315  -4.08365070 -84.69073785   1.10487154</span></span>
-<span><span class="co">#&gt; [11]   0.31868135</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  5.4553254 -0.4160196 -2.2048729  1.0541057 -3.0753898  1.0000000</span></span>
+<span><span class="co">#&gt;  [7] -0.3251620  0.9486715 -0.4535409 -2.4037327  0.1833071</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="vignette">Vignette<a class="anchor" aria-label="anchor" href="#vignette"></a>
 </h3>
 <p>See the <a href="https://shikokuchuo.net/mirai/articles/mirai.html">mirai vignette</a> for full package functionality.</p>
 <p>Key topics include:</p>
-<ol style="list-style-type: decimal">
-<li>Example use cases</li>
-<li>Local daemons - persistent background processes</li>
-<li>Distributed computing - remote daemons</li>
-<li>Secure TLS connections</li>
-</ol>
+<ul>
+<li><p>Example use cases</p></li>
+<li><p>Local daemons - persistent background processes</p></li>
+<li><p>Distributed computing - remote daemons</p></li>
+<li><p>Secure TLS connections</p></li>
+</ul>
 <p>This may be accessed within R by:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"mirai"</span>, package <span class="op">=</span> <span class="st">"mirai"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="use-with-parallel">Use with Parallel<a class="anchor" aria-label="anchor" href="#use-with-parallel"></a>
+<h3 id="use-with-parallel-and-foreach">Use with Parallel and Foreach<a class="anchor" aria-label="anchor" href="#use-with-parallel-and-foreach"></a>
 </h3>
-<p><code>mirai</code> provides an alternative communications backend for R’s base ‘parallel’ package. The <code><a href="reference/make_cluster.html">make_cluster()</a></code> function creates a ‘miraiCluster’, which leverages the full capabilities of the package, but remains fully compatible with all <code>parallel</code> functions such as <code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parallel::clusterApply()</a></code>, <code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parallel::parLapply()</a></code> or <code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parallel::parLapplyLB()</a></code>.</p>
-<p>Created clusters may also be used in all cases which take a ‘cluster’ object. For example, <a href="https://cran.r-project.org/package=doParallel" class="external-link"><code>doParallel</code></a> may be used to register a ‘miraiCluster’ for use with the package <a href="https://cran.r-project.org/package=foreach" class="external-link"><code>foreach</code></a>.</p>
+<p>{mirai} provides an alternative communications backend for R’s base ‘parallel’ package.</p>
+<p><code><a href="reference/make_cluster.html">make_cluster()</a></code> creates a ‘miraiCluster’, a cluster fully compatible with all ‘parallel’ functions such as:</p>
+<ul>
+<li><code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parallel::clusterApply()</a></code></li>
+<li><code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parallel::parLapply()</a></code></li>
+<li><code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parallel::parLapplyLB()</a></code></li>
+</ul>
+<p><a href="https://cran.r-project.org/package=doParallel" class="external-link"><code>doParallel</code></a> can also register a ‘miraiCluster’ for use with the <a href="https://cran.r-project.org/package=foreach" class="external-link"><code>foreach</code></a> package.</p>
 <p>This functionality, fulfilling a request from R-Core at R Project Sprint 2023, requires R &gt;= 4.4 (currently R-devel).</p>
 </div>
 <div class="section level3">
 <h3 id="use-with-crew-and-targets">Use with Crew and Targets<a class="anchor" aria-label="anchor" href="#use-with-crew-and-targets"></a>
 </h3>
-<p>The <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> package is a distributed worker-launcher that provides an R6-based interface extending <code>mirai</code> to different distributed computing platforms, from traditional clusters to cloud services.</p>
-<p>The <a href="https://cran.r-project.org/package=crew.cluster" class="external-link"><code>crew.cluster</code></a> package is a plug-in that enables mirai-based workflows on traditional high-performance computing clusters using LFS, PBS/TORQUE, SGE and SLURM.</p>
-<p><a href="https://cran.r-project.org/package=targets" class="external-link"><code>targets</code></a>, a Make-like pipeline tool for statistics and data science, has integrated and adopted <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> as its predominant high-performance computing backend.</p>
+<p>The <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> package is a distributed worker-launcher extending {mirai} to different distributed computing platforms, from traditional clusters to cloud services.</p>
+<p><a href="https://cran.r-project.org/package=crew.cluster" class="external-link"><code>crew.cluster</code></a> is a plug-in that enables mirai-based workflows on traditional high-performance computing clusters using:</p>
+<ul>
+<li>LFS</li>
+<li>PBS/TORQUE</li>
+<li>SGE</li>
+<li>SLURM</li>
+</ul>
+<p><a href="https://cran.r-project.org/package=targets" class="external-link"><code>targets</code></a>, a Make-like pipeline tool for statistics and data science, has integrated and adopted <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> as its default recommended high-performance computing backend.</p>
 </div>
 <div class="section level3">
-<h3 id="use-with-shiny">Use with Shiny<a class="anchor" aria-label="anchor" href="#use-with-shiny"></a>
+<h3 id="use-with-shiny-and-plumber">Use with Shiny and Plumber<a class="anchor" aria-label="anchor" href="#use-with-shiny-and-plumber"></a>
 </h3>
-<p><code>mirai</code> serves as a backend for enterprise asynchronous <a href="https://cran.r-project.org/package=shiny" class="external-link"><code>shiny</code></a> applications:</p>
+<p>{mirai} serves as a backend for enterprise asynchronous <a href="https://cran.r-project.org/package=shiny" class="external-link"><code>shiny</code></a> or <a href="https://cran.r-project.org/package=plumber" class="external-link"><code>plumber</code></a> applications.</p>
 <p>A ‘mirai’ may be used interchangeably with a ‘promise’ by using the the promise pipe <code>%...&gt;%</code>, or explictly by <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">promises::as.promise()</a></code>, allowing side-effects to be performed upon asynchronous resolution of a ‘mirai’.</p>
-<p><a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> also provides an interface that facilitates deploying <code>mirai</code> for <a href="https://cran.r-project.org/package=shiny" class="external-link"><code>shiny</code></a>. The package provides a <a href="https://wlandau.github.io/crew/articles/shiny.html" class="external-link">Shiny vignette</a> with tutorial and sample code for this purpose.</p>
+<p>Alternatively, <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> also provides an interface that facilitates deploying {mirai} for <a href="https://cran.r-project.org/package=shiny" class="external-link"><code>shiny</code></a>, and provides a <a href="https://wlandau.github.io/crew/articles/shiny.html" class="external-link">Shiny vignette</a> with tutorial and sample code for this purpose.</p>
 </div>
 <div class="section level3">
 <h3 id="thanks">Thanks<a class="anchor" aria-label="anchor" href="#thanks"></a>
