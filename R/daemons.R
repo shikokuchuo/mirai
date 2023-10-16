@@ -307,10 +307,11 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass), resend = resilience * .intmax)
         listener <- attr(sock, "listener")[[1L]]
-        n <- opt(listener, "url")
-        if (parse_url(n)[["port"]] == "0")
-          n <- sub_real_port(port = opt(listener, "tcp-bound-port"), url = n)
-        `[[<-`(envir, "urls", n)
+        urls <- opt(listener, "url")
+        if (parse_url(urls)[["port"]] == "0")
+          urls <- sub_real_port(port = opt(listener, "tcp-bound-port"), url = urls)
+        `[[<-`(envir, "urls", urls)
+        n <- 0L
       }
       `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv())
       if (length(remote))
@@ -328,8 +329,8 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       length(envir[["n"]]) || return(0L)
 
       if (send_signal) {
-        n <- max(length(envir[["urls"]]), stat(envir[["sock"]], "pipes"))
-        for (i in seq_len(n)) {
+        signals <- max(length(envir[["urls"]]), stat(envir[["sock"]], "pipes"))
+        for (i in seq_len(signals)) {
           send(envir[["sock"]], data = ._scm_., mode = 2L)
           msleep(10L)
         }
@@ -368,7 +369,8 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
 
   }
 
-  if (length(envir[["n"]])) envir[["n"]] else 0L
+  n <- envir[["n"]]
+  if (is.null(n)) 0L else if (!n) urls else n
 
 }
 
