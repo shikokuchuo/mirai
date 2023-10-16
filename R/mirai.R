@@ -204,6 +204,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .signal = FALSE, 
 #'
 everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
   envir <- ..[[.compute]]
+  length(envir) || stop(.messages[["daemons_required"]])
   expr <- c(as.expression(substitute(.expr)), .snapshot)
   if (length(envir[["sockc"]])) {
     expr <- c(expr, .timedelay)

@@ -205,7 +205,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ...,
         } else {
           data <- as.integer(c(seq_n, activevec, instance, assigned, complete))
         }
-        ctrsaio <- send_aio(ctrctx, data = data, mode = 2L)
+        send_aio(ctrctx, data = data, mode = 2L)
         ctrctx <- .context(sockc)
         cmessage <- recv_aio_signal(ctrctx, cv = cv, mode = 5L)
         next
@@ -295,7 +295,7 @@ saisei <- function(i, force = FALSE, .compute = "default") {
   envir <- ..[[.compute]]
   i <- as.integer(`length<-`(i, 1L))
   length(envir[["sockc"]]) && i > 0L && i <= envir[["n"]] && substr(envir[["urls"]][i], 1L, 1L) != "t" || return()
-  r <- query_dispatcher(sock = .context(envir[["sockc"]]), command = if (force) -i else i, mode = 9L)
+  r <- query_dispatcher(sock = envir[["sockc"]], command = if (force) -i else i, mode = 9L)
   is.character(r) && nzchar(r) || return()
   envir[["urls"]][i] <- r
   r
@@ -316,7 +316,7 @@ query_dispatcher <- function(sock, command, mode) {
 }
 
 query_status <- function(envir) {
-  res <- query_dispatcher(sock = .context(envir[["sockc"]]), command = 0L, mode = 5L)
+  res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L)
   is.object(res) && return(res)
   `attributes<-`(res, list(dim = c(envir[["n"]], 5L),
                            dimnames = list(envir[["urls"]], c("i", "online", "instance", "assigned", "complete"))))
