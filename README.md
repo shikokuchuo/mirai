@@ -18,12 +18,10 @@ Minimalist async evaluation framework for R. <br /><br /> Lightweight
 parallel code execution and distributed computing. <br /><br /> Designed
 for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on
 local or network resources, resolving automatically upon completion.
-<br /><br /> Features efficient task scheduling, fast inter-process
-communications, and Transport Layer Security over TCP/IP for remote
-connections, courtesy of ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen).
 <br /><br /> `mirai()` returns a ‘mirai’ object immediately. ‘mirai’
-(未来 みらい) is Japanese for ‘future’. <br /><br />
-[`mirai`](https://doi.org/10.5281/zenodo.7912722) has a tiny pure R code
+(未来 みらい) is Japanese for ‘future’. <br /><br /> Features efficient
+task scheduling, fast inter-process communications, and TLS over TCP/IP
+for remote connections. <br /><br /> {mirai} has a tiny pure R code
 base, relying solely on
 [`nanonext`](https://doi.org/10.5281/zenodo.7903429), a high-performance
 binding for the ‘NNG’ (Nanomsg Next Gen) C library with zero package
@@ -90,9 +88,8 @@ result.
 
 ``` r
 m$data
-#>  [1]   3.13793074   0.90508259  -0.01180767  -0.24487893   2.31528028
-#>  [6]   1.00000000   0.43191315  -4.08365070 -84.69073785   1.10487154
-#> [11]   0.31868135
+#>  [1]  5.4553254 -0.4160196 -2.2048729  1.0541057 -3.0753898  1.0000000
+#>  [7] -0.3251620  0.9486715 -0.4535409 -2.4037327  0.1833071
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -100,9 +97,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]   3.13793074   0.90508259  -0.01180767  -0.24487893   2.31528028
-#>  [6]   1.00000000   0.43191315  -4.08365070 -84.69073785   1.10487154
-#> [11]   0.31868135
+#>  [1]  5.4553254 -0.4160196 -2.2048729  1.0541057 -3.0753898  1.0000000
+#>  [7] -0.3251620  0.9486715 -0.4535409 -2.4037327  0.1833071
 ```
 
 ### Vignette
@@ -113,10 +109,13 @@ package functionality.
 
 Key topics include:
 
-1.  Example use cases
-2.  Local daemons - persistent background processes
-3.  Distributed computing - remote daemons
-4.  Secure TLS connections
+- Example use cases
+
+- Local daemons - persistent background processes
+
+- Distributed computing - remote daemons
+
+- Secure TLS connections
 
 This may be accessed within R by:
 
@@ -124,20 +123,21 @@ This may be accessed within R by:
 vignette("mirai", package = "mirai")
 ```
 
-### Use with Parallel
+### Use with Parallel and Foreach
 
-`mirai` provides an alternative communications backend for R’s base
-‘parallel’ package. The `make_cluster()` function creates a
-‘miraiCluster’, which leverages the full capabilities of the package,
-but remains fully compatible with all `parallel` functions such as
-`parallel::clusterApply()`, `parallel::parLapply()` or
-`parallel::parLapplyLB()`.
+{mirai} provides an alternative communications backend for R’s base
+‘parallel’ package.
 
-Created clusters may also be used in all cases which take a ‘cluster’
-object. For example,
-[`doParallel`](https://cran.r-project.org/package=doParallel) may be
-used to register a ‘miraiCluster’ for use with the package
-[`foreach`](https://cran.r-project.org/package=foreach).
+`make_cluster()` creates a ‘miraiCluster’, a cluster fully compatible
+with all ‘parallel’ functions such as:
+
+- `parallel::clusterApply()`
+- `parallel::parLapply()`
+- `parallel::parLapplyLB()`
+
+[`doParallel`](https://cran.r-project.org/package=doParallel) can also
+register a ‘miraiCluster’ for use with the
+[`foreach`](https://cran.r-project.org/package=foreach) package.
 
 This functionality, fulfilling a request from R-Core at R Project Sprint
 2023, requires R \>= 4.4 (currently R-devel).
@@ -145,36 +145,39 @@ This functionality, fulfilling a request from R-Core at R Project Sprint
 ### Use with Crew and Targets
 
 The [`crew`](https://cran.r-project.org/package=crew) package is a
-distributed worker-launcher that provides an R6-based interface
-extending `mirai` to different distributed computing platforms, from
-traditional clusters to cloud services.
+distributed worker-launcher extending {mirai} to different distributed
+computing platforms, from traditional clusters to cloud services.
 
-The [`crew.cluster`](https://cran.r-project.org/package=crew.cluster)
-package is a plug-in that enables mirai-based workflows on traditional
-high-performance computing clusters using LFS, PBS/TORQUE, SGE and
-SLURM.
+[`crew.cluster`](https://cran.r-project.org/package=crew.cluster) is a
+plug-in that enables mirai-based workflows on traditional
+high-performance computing clusters using:
+
+- LFS
+- PBS/TORQUE
+- SGE
+- SLURM
 
 [`targets`](https://cran.r-project.org/package=targets), a Make-like
 pipeline tool for statistics and data science, has integrated and
-adopted [`crew`](https://cran.r-project.org/package=crew) as its
-predominant high-performance computing backend.
+adopted [`crew`](https://cran.r-project.org/package=crew) as its default
+recommended high-performance computing backend.
 
-### Use with Shiny
+### Use with Shiny and Plumber
 
-`mirai` serves as a backend for enterprise asynchronous
-[`shiny`](https://cran.r-project.org/package=shiny) applications:
+{mirai} serves as a backend for enterprise asynchronous
+[`shiny`](https://cran.r-project.org/package=shiny) or
+[`plumber`](https://cran.r-project.org/package=plumber) applications.
 
 A ‘mirai’ may be used interchangeably with a ‘promise’ by using the the
 promise pipe `%...>%`, or explictly by `promises::as.promise()`,
 allowing side-effects to be performed upon asynchronous resolution of a
 ‘mirai’.
 
-[`crew`](https://cran.r-project.org/package=crew) also provides an
-interface that facilitates deploying `mirai` for
-[`shiny`](https://cran.r-project.org/package=shiny). The package
-provides a [Shiny
-vignette](https://wlandau.github.io/crew/articles/shiny.html) with
-tutorial and sample code for this purpose.
+Alternatively, [`crew`](https://cran.r-project.org/package=crew) also
+provides an interface that facilitates deploying {mirai} for
+[`shiny`](https://cran.r-project.org/package=shiny), and provides a
+[Shiny vignette](https://wlandau.github.io/crew/articles/shiny.html)
+with tutorial and sample code for this purpose.
 
 ### Thanks
 
