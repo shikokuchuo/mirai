@@ -160,8 +160,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ...,
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
     recv(sockc, mode = 6L, block = .timelimit) && stop(.messages[["sync_timeout"]])
     send_aio(sockc, c(Sys.getpid(), servernames), mode = 2L)
-    ctrctx <- .context(sockc)
-    cmessage <- recv_aio_signal(ctrctx, cv = cv, mode = 5L)
+    cmessage <- recv_aio_signal(sockc, cv = cv, mode = 5L)
   }
 
   suspendInterrupts(
@@ -205,9 +204,8 @@ dispatcher <- function(host, url = NULL, n = NULL, ...,
         } else {
           data <- as.integer(c(seq_n, activevec, instance, assigned, complete))
         }
-        send_aio(ctrctx, data = data, mode = 2L)
-        ctrctx <- .context(sockc)
-        cmessage <- recv_aio_signal(ctrctx, cv = cv, mode = 5L)
+        send_aio(sockc, data = data, mode = 2L)
+        cmessage <- recv_aio_signal(sockc, cv = cv, mode = 5L)
         next
       }
 
