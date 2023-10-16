@@ -32,6 +32,13 @@ Evaluate an expression 'everywhere' on all connected daemons for the
     packages or options are persisted regardless of the daemon's 'cleanup'
     setting.
 }
+\note{
+When not using dispatcher: daemons are launched asynchronously, and
+    require a short time delay between launch and calling this function.
+    Alternatively, supply an integer value for 'seed' as part of the '...'
+    argument to \code{\link{daemons}}, which effects a synchronous launch,
+    making it safe to call this function immediately afterwards.
+}
 \examples{
 if (interactive()) {
 # Only run examples in interactive R sessions
@@ -40,7 +47,12 @@ daemons(1)
 everywhere(list2env(x, envir = .GlobalEnv), x = list(a = 1, b = 2))
 m <- mirai(a + b)
 call_mirai(m)$data
+daemons(0)
 
+daemons(1, dispatcher = FALSE, seed = 123)
+everywhere(library(parallel))
+m <- mirai(setDefaultCluster())
+call_mirai(m)$data
 daemons(0)
 
 }

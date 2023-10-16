@@ -182,6 +182,12 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .signal = FALSE, 
 #'
 #' @return Invisible NULL.
 #'
+#' @note When not using dispatcher: daemons are launched asynchronously, and
+#'     require a short time delay between launch and calling this function.
+#'     Alternatively, supply an integer value for 'seed' as part of the '...'
+#'     argument to \code{\link{daemons}}, which effects a synchronous launch,
+#'     making it safe to call this function immediately afterwards.
+#'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
@@ -190,7 +196,12 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .signal = FALSE, 
 #' everywhere(list2env(x, envir = .GlobalEnv), x = list(a = 1, b = 2))
 #' m <- mirai(a + b)
 #' call_mirai(m)$data
+#' daemons(0)
 #'
+#' daemons(1, dispatcher = FALSE, seed = 123)
+#' everywhere(library(parallel))
+#' m <- mirai(setDefaultCluster())
+#' call_mirai(m)$data
 #' daemons(0)
 #'
 #' }
