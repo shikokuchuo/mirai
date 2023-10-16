@@ -29,6 +29,20 @@ Invisible NULL.
 Evaluate an expression 'everywhere' on all connected daemons for the
     specified compute profile. Designed for performing setup operations
     across daemons, resultant changes to the global environment, loaded
-    pacakges or options are persisted regardless of the daemon's 'cleanup'
+    packages or options are persisted regardless of the daemon's 'cleanup'
     setting.
+}
+\examples{
+if (interactive()) {
+# Only run examples in interactive R sessions
+
+daemons(1)
+everywhere(list2env(x, envir = .GlobalEnv), x = list(a = 1, b = 2))
+m <- mirai(a + b)
+call_mirai(m)$data
+
+daemons(0)
+
+}
+
 }

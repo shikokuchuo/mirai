@@ -175,20 +175,33 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .signal = FALSE, 
 #' Evaluate an expression 'everywhere' on all connected daemons for the
 #'     specified compute profile. Designed for performing setup operations
 #'     across daemons, resultant changes to the global environment, loaded
-#'     pacakges or options are persisted regardless of the daemon's 'cleanup'
+#'     packages or options are persisted regardless of the daemon's 'cleanup'
 #'     setting.
 #'
 #' @inheritParams mirai
 #'
 #' @return Invisible NULL.
 #'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' daemons(1)
+#' everywhere(list2env(x, envir = .GlobalEnv), x = list(a = 1, b = 2))
+#' m <- mirai(a + b)
+#' call_mirai(m)$data
+#'
+#' daemons(0)
+#'
+#' }
+#'
 #' @export
 #'
 everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
   envir <- ..[[.compute]]
-  expr <- substitute(.expr)
+  expr <- c(as.expression(substitute(.expr)), .snapshot)
   if (length(envir[["sockc"]])) {
-    expr <- c(as.expression(expr), .snapshot)
+    expr <- c(expr, .timedelay)
     for (i in seq_len(envir[["n"]]))
       mirai(.expr = expr, ..., .args = .args, .compute = .compute)
   } else {
@@ -429,9 +442,7 @@ mk_mirai_error <- function(e) {
   `class<-`(msg, c("miraiError", "errorValue", "try-error"))
 }
 
-snapshot <- function() {
-  `[[<-`(`[[<-`(`[[<-`(., 'vars', names(.GlobalEnv)), 'se', search()), 'op', .Options)
-  msleep(500L)
-}
+snapshot <- function() `[[<-`(`[[<-`(`[[<-`(., 'vars', names(.GlobalEnv)), 'se', search()), 'op', .Options)
 
 .snapshot <- as.expression(quote(mirai:::snapshot()))
+.timedelay <- as.expression(quote(nanonext::msleep(500L)))
