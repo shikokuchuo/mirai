@@ -145,7 +145,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
 
     (count >= maxtasks || count > timerstart && mclock() - start >= walltime) && {
       send(ctx, data = data, mode = 3L)
-      data <- recv_aio_signal(sock, cv = cv, mode = 8L)
+      data <- recv_aio_signal(sock, cv = cv, mode = 8L, timeout = .timelimit)
       wait(cv)
       break
     }
@@ -163,15 +163,13 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
 #' Implements an ephemeral executor for the remote process.
 #'
 #' @inheritParams daemon
-#' @param exitlinger [default 2000L] time in milliseconds to linger before
-#'     exiting to allow the socket to complete sends currently in progress.
 #'
 #' @return Invisible NULL.
 #'
 #' @keywords internal
 #' @export
 #'
-.daemon <- function(url, exitlinger = 2000L) {
+.daemon <- function(url) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = NA)
   on.exit(reap(sock))
@@ -179,7 +177,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
   data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)
   send(sock, data = data, mode = 1L, block = TRUE)
-  msleep(exitlinger)
+  msleep(.exitlinger)
 
 }
 

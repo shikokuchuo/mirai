@@ -153,6 +153,7 @@ registerConditionalMethods <- function(rversion, promises) {
   ),
   hash = TRUE
 )
+.exitlinger <- 2000L
 .timelimit <- 5000L
 ._scm_. <- base64dec("BwAAAEIKAwAAAAEDBAAABQMABQAAAFVURi04/AAAAA==", convert = FALSE)
 
