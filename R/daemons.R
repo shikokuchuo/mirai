@@ -42,9 +42,9 @@
 #'     below).
 #' @param ... (optional) additional arguments passed through to
 #'     \code{\link{dispatcher}} if using dispatcher and/or \code{\link{daemon}}
-#'     if launching daemons. These include 'token' and 'lock' at dispatcher and
-#'     'autoexit, 'maxtasks', 'idletime', 'walltime', 'timerstart', 'output'
-#'     and 'cleanup' at daemon.
+#'     if launching daemons. These include 'token' at dispatcher and 'autoexit,
+#'     'cleanup', 'output', 'maxtasks', 'idletime', 'walltime' and 'timerstart'
+#'     at daemon.
 #' @param resilience [default TRUE] (applicable when not using dispatcher)
 #'     logical value whether to retry failed tasks on other daemons. If FALSE,
 #'     an appropriate 'errorValue' will be returned in such cases.
