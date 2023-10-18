@@ -75,7 +75,7 @@ These functions may be used to re-launch daemons that have exited
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-daemons(url = "ws://[::1]:0", dispatcher = FALSE)
+daemons(url = host_url(ws = TRUE), dispatcher = FALSE)
 status()
 launch_local(status()$daemons, maxtasks = 10L)
 launch_remote(1L, maxtasks = 10L)
@@ -83,7 +83,7 @@ Sys.sleep(1)
 status()
 daemons(0)
 
-daemons(n = 2L, url = "tls+tcp://[::1]:0")
+daemons(n = 2L, url = host_url(tls = TRUE))
 status()
 launch_local(1:2, idletime = 60000L, timerstart = 1L)
 launch_remote(1:2, idletime = 60000L, timerstart = 1L)
