@@ -1,14 +1,15 @@
-# mirai 0.11.0.9009 (development)
+# mirai 0.11.0.9010 (development)
 
 * Adds 'mirai' method for 'as.promise()' from the {promises} package (if available). This functionality is merged from the package {mirai.promises}, allowing use of the promise pipe `%...>%` with a 'mirai'.
 * `everywhere()` evaluates an expression 'everywhere' on all connected daemons for a compute profile. Resulting changes to the global environment, loaded pacakges or options are persisted regardless of the 'cleanup' setting (request by @krlmlr #80).
 * `daemon()` adds argument 'autoexit', which replaces 'asyncdial', to govern persistence settings for a daemon. A daemon can now survive a host session and re-connect to another one (request by @krlmlr #81).
 * `daemons(NULL)` implemented as a variant of `daemons(0)` which also sends exit signals to connected persistent daemons.
+* `dispatcher()` argument 'lock' removed as this is now implemented in all cases to prevent more than one daemon dialling into a dispatcher URL at any one time.
 * Daemons connecting over TLS now follow the specified 'asyncdial'.
 * `daemon()` argument 'cleanup' simplified to a logical argument, with more granular control offered by the existing integer bitmask (thanks @krlmlr #79).
 * Fixes the print method for a subset 'miraiCluster' (thanks @HenrikBengtsson #83).
 * Removes the deprecated deferred evaluation pipe `%>>%`.
-* Requires nanonext >= [0.10.2.9003].
+* Requires nanonext >= [0.10.2.9005].
 
 # mirai 0.11.0
 

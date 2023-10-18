@@ -47,9 +47,6 @@
 #' @param token [default FALSE] if TRUE, appends a unique 40-character token
 #'     to each URL path the dispatcher listens at (not applicable for TCP URLs
 #'     which do not accept a path).
-#' @param lock [default FALSE] if TRUE, sockets lock once a connection has been
-#'     accepted, preventing further connection attempts. This provides safety
-#'     against more than one daemon attempting to connect to a unique URL.
 #' @param tls [default NULL] (required for secure TLS connections) \strong{either}
 #'     the character path to a file containing the PEM-encoded TLS certificate
 #'     and associated private key (may contain additional certificates leading
@@ -71,9 +68,9 @@
 #'
 #' @export
 #'
-dispatcher <- function(host, url = NULL, n = NULL, ...,
-                       asyncdial = FALSE, token = FALSE, lock = FALSE,
-                       tls = NULL, pass = NULL, rs = NULL, monitor = NULL) {
+dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
+                       token = FALSE, tls = NULL, pass = NULL, rs = NULL,
+                       monitor = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(.messages[["missing_url"]])
@@ -129,7 +126,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ...,
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, flag = FALSE)
     listen(nsock, url = nurl, tls = tls, error = TRUE)
-    lock && lock(nsock, cv = ncv)
+    lock(nsock, cv = ncv)
     listener <- attr(nsock, "listener")[[1L]]
     if (i == 1L && !auto && parse_url(opt(listener, "url"))[["port"]] == "0") {
       realport <- opt(listener, "tcp-bound-port")
@@ -195,7 +192,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ...,
             data <- servernames[i] <- if (auto) auto_tokenized_url() else new_tokenized_url(basenames[i])
             instance[i] <- -abs(instance[i])
             listen(nsock, url = data, tls = tls, error = TRUE)
-            lock && lock(nsock, cv = active[[i]])
+            lock(nsock, cv = active[[i]])
 
           } else {
             data <- ""
@@ -213,7 +210,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ...,
         if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
           req <- .subset2(queue[[i]][["res"]], "value")
           if (is.object(req)) req <- serialize(req, NULL)
-          send(queue[[i]][["ctx"]], data = req, mode = 2L)
+          send_aio(queue[[i]][["ctx"]], data = req, mode = 2L)
           q <- queue[[i]][["daemon"]]
           if (req[1L] == .nextformat) {
             ctx <- .context(servers[[q]])
