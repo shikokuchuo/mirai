@@ -62,6 +62,8 @@
 <li>
 <code><a href="../reference/everywhere.html">everywhere()</a></code> evaluates an expression ‘everywhere’ on all connected daemons for a compute profile. Resulting changes to the global environment, loaded pacakges or options are persisted regardless of the ‘cleanup’ setting (request by <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a> <a href="https://github.com/shikokuchuo/mirai/issues/80" class="external-link">#80</a>).</li>
 <li>
+<code><a href="../reference/host_url.html">host_url()</a></code> implemented as a helper function to automatically construct the host URL using the computer’s hostname.</li>
+<li>
 <code><a href="../reference/daemon.html">daemon()</a></code> adds argument ‘autoexit’, which replaces ‘asyncdial’, to govern persistence settings for a daemon. A daemon can now survive a host session and re-connect to another one (request by <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a> <a href="https://github.com/shikokuchuo/mirai/issues/81" class="external-link">#81</a>).</li>
 <li>
 <code>daemons(NULL)</code> implemented as a variant of <code>daemons(0)</code> which also sends exit signals to connected persistent daemons.</li>
