@@ -155,12 +155,12 @@ operation is ongoing.</p>
 result.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.0767 -10.1658 0.1303 -1.0483 0.9817 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 6.09 4.26 4.79 -2.27 -1.66 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using
 <code><a href="../reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.0767 -10.1658 0.1303 -1.0483 0.9817 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 6.09 4.26 4.79 -2.27 -1.66 ...</span></span></code></pre></div>
 <p>For easy programmatic use of <code><a href="../reference/mirai.html">mirai()</a></code>, ‘.expr’ accepts a
 pre-constructed language object, and also a list of named arguments
 passed via ‘.args’. So, the following would be equivalent to the
@@ -176,7 +176,7 @@ above:</p>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span>.expr <span class="op">=</span> <span class="va">expr</span>, .args <span class="op">=</span> <span class="va">args</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -3.533 -50.1 -0.308 1.243 -0.113 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.794 0.466 -2.023 -1.432 1.419 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -257,7 +257,6 @@ bring down the entire pipeline.</p>
 <span><span class="co">#&gt; iteration 2 successful</span></span>
 <span><span class="co">#&gt; iteration 3 successful</span></span>
 <span><span class="co">#&gt; iteration 4 successful</span></span>
-<span><span class="co">#&gt; Error: random error</span></span>
 <span><span class="co">#&gt; iteration 5 successful</span></span>
 <span><span class="co">#&gt; iteration 6 successful</span></span>
 <span><span class="co">#&gt; iteration 7 successful</span></span>
@@ -297,12 +296,12 @@ daemon.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt;                                     i online instance assigned complete</span></span>
-<span><span class="co">#&gt; abstract://829ffcaef913c4f3e3bd195b 1      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://4ebdd327b94fe258e6fa1f66 2      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://f1a857acef853c9bcec34354 3      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://4383e704dc79879c9a7220d2 4      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://a29cf15b1b321cf1cfe0e954 5      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://0e4c61cbb204b19fbd5c9360 6      1        1        0        0</span></span></code></pre></div>
+<span><span class="co">#&gt; abstract://d7ed73e628c513282dff2e80 1      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://fa9e6ce38dffd793fc862b9d 2      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://bf7ef65469ddd47de36997ac 3      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://3eb4eea3567f438378b70b1b 4      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://adabe42ef46f995cb8e5d2e2 5      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://b75c19ca731a66232f408c62 6      1        1        0        0</span></span></code></pre></div>
 <p>The default <code>dispatcher = TRUE</code> creates a
 <code><a href="../reference/dispatcher.html">dispatcher()</a></code> background process that connects to individual
 daemon processes on the local machine. This ensures that tasks are
@@ -336,7 +335,7 @@ URL at <code>$daemons</code>.</p>
 <span><span class="co">#&gt; [1] 6</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "abstract://fdfa94ac4fb3f9c76dff767f"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "abstract://525746761a227cc77c569ff6"</span></span></code></pre></div>
 <p>This implementation sends tasks immediately, and ensures that tasks
 are evenly-distributed amongst daemons. This means that optimal
 scheduling is not guaranteed as the duration of tasks cannot be known
@@ -361,7 +360,8 @@ typically does not exceed available daemons.</p>
 to remote daemon processes on the network.</p>
 <p>Call <code><a href="../reference/daemons.html">daemons()</a></code> specifying ‘url’ as a character string
 such as: ‘tcp://10.75.32.70:5555’ at which daemon processes should
-connect to.</p>
+connect to. Alternatively, use <code><a href="../reference/host_url.html">host_url()</a></code> to automatically
+construct a valid URL.</p>
 <p>IPv6 addresses are also supported and must be enclosed in square
 brackets <code>[]</code> to avoid confusion with the final colon
 separating the port. For example, port 5555 on the IPv6 address
@@ -393,7 +393,7 @@ URLs. In such a case, an integer sequence is automatically appended to
 the path <code>/1</code> through <code>/4</code> to produce the
 URLs.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, url <span class="op">=</span> <span class="st">"ws://10.75.32.70:5555"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, url <span class="op">=</span> <span class="fu"><a href="../reference/host_url.html">host_url</a></span><span class="op">(</span>port <span class="op">=</span> <span class="fl">5555</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
 <p>Requesting status on the host machine:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -402,11 +402,11 @@ URLs.</p>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt;                         i online instance assigned complete</span></span>
-<span><span class="co">#&gt; ws://10.75.32.70:5555/1 1      0        0        0        0</span></span>
-<span><span class="co">#&gt; ws://10.75.32.70:5555/2 2      0        0        0        0</span></span>
-<span><span class="co">#&gt; ws://10.75.32.70:5555/3 3      0        0        0        0</span></span>
-<span><span class="co">#&gt; ws://10.75.32.70:5555/4 4      0        0        0        0</span></span></code></pre></div>
+<span><span class="co">#&gt;                     i online instance assigned complete</span></span>
+<span><span class="co">#&gt; tcp://hostname:5555 1      0        0        0        0</span></span>
+<span><span class="co">#&gt; tcp://hostname:5556 2      0        0        0        0</span></span>
+<span><span class="co">#&gt; tcp://hostname:5557 3      0        0        0        0</span></span>
+<span><span class="co">#&gt; tcp://hostname:5558 4      0        0        0        0</span></span></code></pre></div>
 <p>As per the local case, <code>$connections</code> shows the single
 connection to dispatcher, however <code>$daemons</code> now provides a
 matrix of statistics for the remote daemons.</p>
@@ -449,13 +449,13 @@ the dispatcher are terminated.</p>
 directly to the host process. The host listens at a single URL, and
 distributes tasks to all connected daemons.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"tcp://10.75.32.70:0"</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tcp://10.75.32.70:37041"</span></span></code></pre></div>
-<p>Note that above, the port number is specified as zero. This is a
-wildcard value that will automatically cause a free ephemeral port to be
-assigned. The actual assigned port is provided in the return value of
-the call, or it may be queried at any time via
-<code><a href="../reference/status.html">status()</a></code>.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="fu"><a href="../reference/host_url.html">host_url</a></span><span class="op">(</span><span class="op">)</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "tcp://hostname:38133"</span></span></code></pre></div>
+<p>Note that above, calling <code><a href="../reference/host_url.html">host_url()</a></code> without a port value
+uses the default of ‘0’. This is a wildcard value that will
+automatically cause a free ephemeral port to be assigned. The actual
+assigned port is provided in the return value of the call, or it may be
+queried at any time via <code><a href="../reference/status.html">status()</a></code>.</p>
 <p>The number of daemons connecting to the host URL is not limited and
 network resources may be added or removed at any time, with tasks
 automatically distributed to all connected daemons.</p>
@@ -467,7 +467,7 @@ daemons.</p>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "tcp://10.75.32.70:37041"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://hostname:38133"</span></span></code></pre></div>
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
@@ -552,10 +552,10 @@ return values may be copy / pasted directly to a remote machine.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/launch_local.html">launch_remote</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1]</span></span>
-<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://[::1]:32885',rs=c(10407,463691378,-871339189,-1444693488,1440665297,-490915234,1742504775))"</span></span>
+<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://[::1]:46719',rs=c(10407,-563885221,-224889120,2030080353,2117556142,963841111,-451392340))"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [2]</span></span>
-<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://[::1]:37287',rs=c(10407,-1817456937,284372062,99668012,-706842477,-1606223376,-99887162))"</span></span>
+<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://[::1]:38745',rs=c(10407,-1014469919,-1562435391,-1904939407,153006146,-545844219,483234149))"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
@@ -578,10 +578,10 @@ machine to remote daemons.</p>
 </h4>
 <p>An automatic zero-configuration default is implemented. Simply
 specify a secure URL of the form <code>wss://</code> or
-<code>tls+tcp://</code> when setting daemons. For example, on the IPv6
-loopback address:</p>
+<code>tls+tcp://</code> when setting daemons, or use
+<code>host_url(tls = TRUE)</code>, for example:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, url <span class="op">=</span> <span class="st">"wss://[::1]:5555"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, url <span class="op">=</span> <span class="fu"><a href="../reference/host_url.html">host_url</a></span><span class="op">(</span>ws <span class="op">=</span> <span class="cn">TRUE</span>, tls <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
 <p>Single-use keys and certificates are automatically generated and
 configured, without requiring any further intervention. The private key
@@ -593,37 +593,37 @@ full shell command to launch a daemon, including the correctly specified
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/launch_local.html">launch_remote</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1]</span></span>
-<span><span class="co">#&gt; Rscript -e "mirai::daemon('wss://[::1]:5555/1',tls=c('-----BEGIN CERTIFICATE-----</span></span>
-<span><span class="co">#&gt; MIIFLTCCAxWgAwIBAgIBATANBgkqhkiG9w0BAQsFADAuMQwwCgYDVQQDDAM6OjEx</span></span>
-<span><span class="co">#&gt; ETAPBgNVBAoMCE5hbm9uZXh0MQswCQYDVQQGEwJKUDAeFw0wMTAxMDEwMDAwMDBa</span></span>
-<span><span class="co">#&gt; Fw0zMDEyMzEyMzU5NTlaMC4xDDAKBgNVBAMMAzo6MTERMA8GA1UECgwITmFub25l</span></span>
-<span><span class="co">#&gt; eHQxCzAJBgNVBAYTAkpQMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA</span></span>
-<span><span class="co">#&gt; tqGmor5msFviJVNkgpc1/ZZWu8gXK7L6ZVi6U8YoFkwf/RsbffUtarJsEFTD15Dl</span></span>
-<span><span class="co">#&gt; KgHhcCM2paI0lcTkfQct0Njvgg1VNTINeezaQ5biJMLUAvAZka7yfeKDO9ETQ7DH</span></span>
-<span><span class="co">#&gt; hNdr0Q4yr0fSlpqcwpC8OqZuJ4mwvz6EDLD7u72LNoKKSxwzJRuh7Q85BeQjJCbD</span></span>
-<span><span class="co">#&gt; JYm4YLJYgwcGqeb7EwxKGWUM/boSE6FtL2Sp7sXPoQxrlSdXwNLQJl8Yvwl55ymX</span></span>
-<span><span class="co">#&gt; KilM7aRY7X4RHKBIXu7SFa6v7KuAFmyzPx0l/FTTUcYcJSpHBKQIrlq+Ia4eSXA6</span></span>
-<span><span class="co">#&gt; CHNNh51p+cO7jm3WqMIpxpCGR/NKkwJWvuTFbqfFAZgz2lmrRexnEsz/nn3mQa2F</span></span>
-<span><span class="co">#&gt; HlzpLyHnzYdOpvHZxP9m+coUrTaH5jpotsmrCkm8DjcB1gntfiwDAb644JkiROaY</span></span>
-<span><span class="co">#&gt; eqiFIgOYsXtJKqKzki1VGVXIto4Eeqh3m2cZ/0ldONZp+wrw5bvvP+ssk1gd8ngz</span></span>
-<span><span class="co">#&gt; X4AbYmenAYJhywEo/1kKtCF81/Atm3BfWfplElhJlLhimbA+twv8tb03EV7+PKz4</span></span>
-<span><span class="co">#&gt; UAOgMdluqojvYeMWejmwuOHu2gdiZBswDBQGvwuTUiDrKN/PA1aDNGNvWu3W/BOZ</span></span>
-<span><span class="co">#&gt; FJ+2YGT9p/R7lC+wUBRmRvMIbIEMoJaXY+fjmMefDpcCAwEAAaNWMFQwEgYDVR0T</span></span>
-<span><span class="co">#&gt; AQH/BAgwBgEB/wIBADAdBgNVHQ4EFgQUAAEtsLr4u7rNFB7jq6H1KRPtDVYwHwYD</span></span>
-<span><span class="co">#&gt; VR0jBBgwFoAUAAEtsLr4u7rNFB7jq6H1KRPtDVYwDQYJKoZIhvcNAQELBQADggIB</span></span>
-<span><span class="co">#&gt; AKgSYYJ+3OQw86UZVRfKU3FVLzD/LhPAQeNYDJoO1CeRXJJr06YGtiCngWiY/NgJ</span></span>
-<span><span class="co">#&gt; qS/wtR7KmFUuJhJNzh6HZiuo1dCSnLw7nr+MXwLpZK02/wPL2BJS9uuFnXvZydVE</span></span>
-<span><span class="co">#&gt; DRc983s+dLIjqvVgRKwUfM/w8dRhxUIeJqOffEInE1kXw9lQQK/RkjB9JJ86mvYE</span></span>
-<span><span class="co">#&gt; HCUhAtkLtjO98xUoKgCQ+ZdxzDJ5kz1hBHc45QXY/K/eLtxCRshelLSFDcHoWrJ1</span></span>
-<span><span class="co">#&gt; 8fWtuSMalynQVzSBbXQzAoWFzrZXC7vu7AANfZ7dDFcMfNaI7d8zwx9U1YG7hy6e</span></span>
-<span><span class="co">#&gt; kNmILGvbzFd6inrickS2EPL4uzUPYq0pX+8MUOxsqDrpiy8PTf8is3R73vwHjsU0</span></span>
-<span><span class="co">#&gt; pnhlpREBdskpjWd90J1RRXcaTXOjPXL3P0pAHAWEN2Dq8xb1aYR4krjPsc7ABJk/</span></span>
-<span><span class="co">#&gt; OT20mzgDWtIKksOOAOB0tQUAFPmPZ41pP06siK12TEENVfu1rrJOpcOibyihdEEL</span></span>
-<span><span class="co">#&gt; Y2zGJwXp314Ni/cqzr6kykG+3ZqgiwBdyRsfSnd3t0vUvRShmv4l+nzg+uLJYjoT</span></span>
-<span><span class="co">#&gt; Y1ETxs7u+IpIy+CSNT/l+jn+7oSkYOUHZONYSLKnulJrVXrZRS97m9LT4q7DCIw5</span></span>
-<span><span class="co">#&gt; iKfXgoBRu9A3xPDeOgeKARFEGFeWgCqu7Ve9tMycLGfI</span></span>
+<span><span class="co">#&gt; Rscript -e "mirai::daemon('wss://hostname:46409/1',tls=c('-----BEGIN CERTIFICATE-----</span></span>
+<span><span class="co">#&gt; MIIFNzCCAx+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAzMREwDwYDVQQDDAhrdW1h</span></span>
+<span><span class="co">#&gt; bW90bzERMA8GA1UECgwITmFub25leHQxCzAJBgNVBAYTAkpQMB4XDTAxMDEwMTAw</span></span>
+<span><span class="co">#&gt; MDAwMFoXDTMwMTIzMTIzNTk1OVowMzERMA8GA1UEAwwIa3VtYW1vdG8xETAPBgNV</span></span>
+<span><span class="co">#&gt; BAoMCE5hbm9uZXh0MQswCQYDVQQGEwJKUDCCAiIwDQYJKoZIhvcNAQEBBQADggIP</span></span>
+<span><span class="co">#&gt; ADCCAgoCggIBAL4g7GSftSvv5Vl+GBjDArDDeE0tK1vIP0VxjpLPXCm1s7/EqpzR</span></span>
+<span><span class="co">#&gt; azLg/sTe9ysYtaq5elDiL6sUW9Qf6FMBsT0oJwUT2KB3h3AWXBYgvn6jIUbqpICd</span></span>
+<span><span class="co">#&gt; ANzDXk3W0XOBJobF1COCRosYvdjImPih6Dp9RmOrLyvRGDwTbAH4yvWTenkBfMYD</span></span>
+<span><span class="co">#&gt; gv9bBU+Ik10JD1Q2vAl0YduBnXf9FDSvwOgFke8XNAApUCPhY6A0b2zMsNKQVnDI</span></span>
+<span><span class="co">#&gt; sq1oiSw0a9Ewqa3RIn+AjkdGI7i58CEKLDDVzoEwZpu1Yt6oslefu/hEfnkGay7y</span></span>
+<span><span class="co">#&gt; y8FV7k/W1jBbgv1sENcLeSXNtPR0Eppr+mgL9UcOtxHK7xJLWcGzxISqgtdb7K+w</span></span>
+<span><span class="co">#&gt; MzE9K6YC5rZw6CKMy8zgg5W/iiFl1GPhjvOmgvaKUTRxYkcCLVGdzlnji02BNqtG</span></span>
+<span><span class="co">#&gt; 8NvmjcJx+jfWEByGe9BjdqatjOKq2XtXPY4SaIN9+xlID+ZLnD+K+6Cd6HHjK9Uy</span></span>
+<span><span class="co">#&gt; jgeVG5to84wY5QccL6H3RM6DV2NAAsQdBW2tpKxabGQ1swRgnrVpLtR3QVhP2u8F</span></span>
+<span><span class="co">#&gt; lSUp9RpPph4nzLcYYCgR3AOZAw/qa9me0ThYDA44pFTMzNcYezlW689xk6+h7DAH</span></span>
+<span><span class="co">#&gt; 5G3BepI6YKyquh6+BT9L0R6xGI9q+2Xr4/1HrKNw9aZR7O+qMhRB1duzAgMBAAGj</span></span>
+<span><span class="co">#&gt; VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFI31LoKIiW1lDur7pDk0</span></span>
+<span><span class="co">#&gt; 9DJCC2U3MB8GA1UdIwQYMBaAFI31LoKIiW1lDur7pDk09DJCC2U3MA0GCSqGSIb3</span></span>
+<span><span class="co">#&gt; DQEBCwUAA4ICAQAfNz2vzURQnmHq9yxG9ChgyUyauWIWcUa5dGQifjLxVvbsWkSO</span></span>
+<span><span class="co">#&gt; Mnb2wzYNd3UrrpWMli55L02dCbjJu5vqqT4DwKFBIc3DhfRl0rfX8gKvkfgDltHT</span></span>
+<span><span class="co">#&gt; zwO8w06rZy4dLzvfFwsU2SMuRVdOSCYo/SG3nVGex20s2DvoKZzr0EgsQz9vwOTL</span></span>
+<span><span class="co">#&gt; sTTd98U4fiYO3nyVePSiX6StQwz+vzhxZkD1exH3+WIzWVCo24eI7go3jJzTy9rW</span></span>
+<span><span class="co">#&gt; hBoDKmRDE1ldO0ASsWXxjs7qX3Ld5+mDgh8xar3RUO21DY3mTNdYag9SaQPX8rAI</span></span>
+<span><span class="co">#&gt; +w2mUSfQp4T81PGZlC8g8LfxCC8T4J0R8Orxbpi2on7dQSk1zWljMfTm/aRih/GK</span></span>
+<span><span class="co">#&gt; ajUX33Ssbjzz1pcwyF8MnD8A1Dn6il3ZfCSWrCGRp2hGWOwAlvisa1+lDNS8uLBd</span></span>
+<span><span class="co">#&gt; DgLIlEWLVyssRCsMyrbDUts/4mP9VG7Bv8EjkjFgZZ2ljrUU+M1iqLwPKE7TwlQs</span></span>
+<span><span class="co">#&gt; BKmloMRMH82xsm2u7yfN6eHXP5LwGVHtxO6GdB8AyMNlxwPTSKjBg8r8SNCQN62n</span></span>
+<span><span class="co">#&gt; JE0daFYmpBBGBLIwl0nJomeUFjo2OKe0QRws3XcMULMCPEYlAFr1HxADOxQljlxP</span></span>
+<span><span class="co">#&gt; UWuvvZbXho1DEoxtM3Qg9tsvw+5HZo8GO+bi+lokeuRlRP12EtGTvYKF5g==</span></span>
 <span><span class="co">#&gt; -----END CERTIFICATE-----</span></span>
-<span><span class="co">#&gt; ',''),rs=c(10407,365651391,768224500,472015717,-1443186462,-1844738309,269538816))"</span></span></code></pre></div>
+<span><span class="co">#&gt; ',''),rs=c(10407,-770219130,-800161713,1269809732,1256195189,1511162546,-1809337717))"</span></span></code></pre></div>
 <p>The printed value may be deployed directly on a remote machine.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
@@ -810,36 +810,36 @@ number of connected nodes at any time.</li>
 <span></span>
 <span><span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parLapply</a></span><span class="op">(</span><span class="va">cl</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="va">rnorm</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [1] 1.005357</span></span>
+<span><span class="co">#&gt; [1] 2.207874</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [1] -1.4013851  0.2849182</span></span>
+<span><span class="co">#&gt; [1]  2.53161611 -0.06227691</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]</span></span>
-<span><span class="co">#&gt; [1]  1.681674 -1.146284  1.811561</span></span>
+<span><span class="co">#&gt; [1]  0.5195079  1.2031813 -0.7344067</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[4]]</span></span>
-<span><span class="co">#&gt; [1] -0.7500179 -0.5612604  1.4572750 -0.8256328</span></span>
+<span><span class="co">#&gt; [1] -1.6092451 -0.8493915  0.6429945  2.3526165</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[5]]</span></span>
-<span><span class="co">#&gt; [1] -0.7283564 -0.1453562  2.0803289  0.2901198  0.2029786</span></span>
+<span><span class="co">#&gt; [1] -1.6987580  0.1466959  1.8268763 -0.7961872  0.1861142</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/status.html">status</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $connections</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
+<span><span class="co">#&gt; [1] 2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "abstract://0121f273b000c9d1b4a1a241"</span></span>
+<span><span class="co">#&gt; [1] "abstract://53c1fb59f9182e29fb9f8f45"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/make_cluster.html">stop_cluster</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_cluster.html">make_cluster</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">2</span>, url <span class="op">=</span> <span class="st">"tcp://10.75.32.70:0"</span><span class="op">)</span></span>
+<span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_cluster.html">make_cluster</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">2</span>, url <span class="op">=</span> <span class="fu"><a href="../reference/host_url.html">host_url</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Shell commands for deployment on nodes:</span></span>
 <span><span class="co">#&gt; [1]</span></span>
-<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://10.75.32.70:40699',rs=c(10407,-159174822,1070497043,298262328,2017581017,2089344454,-1969052273))"</span></span>
+<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:40741',rs=c(10407,256955411,848415288,-1338259751,-271564602,-573313905,1380364676))"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [2]</span></span>
-<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://10.75.32.70:40699',rs=c(10407,1280681714,-1760960841,142726492,2105995757,226788949,-662080668))"</span></span>
+<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:40741',rs=c(10407,-1887117752,-411149752,-1914451116,-471450958,307344638,2032680824))"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/make_cluster.html">stop_cluster</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
 <p>Created clusters are fully compatible with parallel cluster
