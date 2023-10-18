@@ -16,7 +16,7 @@
 
 # mirai ------------------------------------------------------------------------
 
-#' Next >> Developer Functions
+#' Next >> Developer Interface
 #'
 #' \code{nextstream} retrieves the currently stored L'Ecuyer-CMRG RNG stream
 #'     for the specified compute profile and advances it to the next stream.
@@ -28,8 +28,9 @@
 #'     argument of \code{\link{daemon}}), or else NULL if a stream has not yet
 #'     been created.
 #'
-#' @details These functions are exported for use by packages extending \pkg{mirai}
-#'     with alternative launchers of \code{\link{daemon}} processes.
+#' @details These functions are exported for use by packages extending
+#'     \CRANpkg{mirai} with alternative launchers of \code{\link{daemon}}
+#'     processes.
 #'
 #'     For \code{nextstream}: This function should be called for its return value
 #'     when required. The function also has the side effect of automatically
@@ -41,15 +42,11 @@
 #' # Only run examples in interactive R sessions
 #'
 #' daemons(1L)
-#' r <- nextstream()
-#' print(r)
-#' r <- nextstream()
-#' print(r)
+#' nextstream()
+#' nextstream()
 #'
-#' r <- nextget("pid")
-#' print(r)
-#' r <- nextget("urls")
-#' print(r)
+#' nextget("pid")
+#' nextget("urls")
 #'
 #' daemons(0)
 #'
@@ -59,7 +56,7 @@
 #'
 nextstream <- function(.compute = "default") next_stream(..[[.compute]])
 
-#' Next >> Developer Functions
+#' Next >> Developer Interface
 #'
 #' \code{nextget} retrieves the specified item from the specified compute
 #'     profile.

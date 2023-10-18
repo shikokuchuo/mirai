@@ -3,7 +3,7 @@
 \name{nextstream}
 \alias{nextstream}
 \alias{nextget}
-\title{Next >> Developer Functions}
+\title{Next >> Developer Interface}
 \usage{
 nextstream(.compute = "default")
 
@@ -33,8 +33,9 @@ For \code{nextget}: the requested item, or else NULL if not present.
     profile.
 }
 \details{
-These functions are exported for use by packages extending \pkg{mirai}
-    with alternative launchers of \code{\link{daemon}} processes.
+These functions are exported for use by packages extending
+    \CRANpkg{mirai} with alternative launchers of \code{\link{daemon}}
+    processes.
 
     For \code{nextstream}: This function should be called for its return value
     when required. The function also has the side effect of automatically
@@ -46,15 +47,11 @@ if (interactive()) {
 # Only run examples in interactive R sessions
 
 daemons(1L)
-r <- nextstream()
-print(r)
-r <- nextstream()
-print(r)
+nextstream()
+nextstream()
 
-r <- nextget("pid")
-print(r)
-r <- nextget("urls")
-print(r)
+nextget("pid")
+nextget("urls")
 
 daemons(0)
 
