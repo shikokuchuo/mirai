@@ -30,6 +30,6 @@ Enhances:
 Suggests: 
     later,
     knitr,
-    rmarkdown
+    markdown
 VignetteBuilder: knitr
 RoxygenNote: 7.2.3
