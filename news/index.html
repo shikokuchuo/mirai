@@ -72,6 +72,7 @@
 <li>Daemons connecting over TLS now follow the specified ‘asyncdial’.</li>
 <li>
 <code><a href="../reference/daemon.html">daemon()</a></code> argument ‘cleanup’ simplified to a logical argument, with more granular control offered by the existing integer bitmask (thanks <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a> <a href="https://github.com/shikokuchuo/mirai/issues/79" class="external-link">#79</a>).</li>
+<li>Fixes supplying an <code><a href="../reference/remote_config.html">ssh_config()</a></code> specifying tunnelling to the ‘remote’ argument of <code><a href="../reference/daemons.html">daemons()</a></code>.</li>
 <li>Fixes the print method for a subset ‘miraiCluster’ (thanks <a href="https://github.com/HenrikBengtsson" class="external-link">@HenrikBengtsson</a> <a href="https://github.com/shikokuchuo/mirai/issues/83" class="external-link">#83</a>).</li>
 <li>Removes the deprecated deferred evaluation pipe <code>%&gt;&gt;%</code>.</li>
 <li>Requires nanonext &gt;= [0.10.2.9005].</li>
