@@ -318,6 +318,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         n <- 0L
       }
       `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv())
+      remote <- substitute(remote)
       if (length(remote))
         launch_remote(url = envir[["urls"]], remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
     }

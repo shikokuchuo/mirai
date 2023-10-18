@@ -8,6 +8,7 @@
 * `dispatcher()` argument 'lock' removed as this is now implemented in all cases to prevent more than one daemon dialling into a dispatcher URL at any one time.
 * Daemons connecting over TLS now follow the specified 'asyncdial'.
 * `daemon()` argument 'cleanup' simplified to a logical argument, with more granular control offered by the existing integer bitmask (thanks @krlmlr #79).
+* Fixes supplying an `ssh_config()` specifying tunnelling to the 'remote' argument of `daemons()`.
 * Fixes the print method for a subset 'miraiCluster' (thanks @HenrikBengtsson #83).
 * Removes the deprecated deferred evaluation pipe `%>>%`.
 * Requires nanonext >= [0.10.2.9005].

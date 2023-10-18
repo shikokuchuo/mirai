@@ -120,6 +120,7 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
   url <- process_url(url, .compute = .compute)
 
   ulen <- length(url)
+  if (is.language(remote)) remote <- eval(remote)
   command <- remote[["command"]]
   rscript <- remote[["rscript"]]
 
@@ -144,7 +145,7 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
         for (i in seq_along(args))
           system2(command = command, args = `[<-`(args[[i]], find_dot(args[[i]]), shQuote(cmds[i])), wait = FALSE)
 
-        return(cmds)
+        return(`class<-`(cmds, "miraiLaunchCmd"))
 
       } else {
         stop(.messages[["arglen"]])
