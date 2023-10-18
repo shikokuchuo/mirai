@@ -18,7 +18,7 @@ launch_remote(
 \arguments{
 \item{url}{the character host URL or vector of host URLs, including the port
     to connect to (and optionally for websockets, a path), e.g.
-    tcp://10.75.32.70:5555' or 'ws://10.75.32.70:5555/path'
+    tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'
 
     \strong{or} integer index value, or vector of index values, of the
     dispatcher URLs, or 1L for the host URL (when not using dispatcher).

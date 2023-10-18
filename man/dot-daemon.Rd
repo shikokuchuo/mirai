@@ -9,7 +9,7 @@
 \arguments{
 \item{url}{the character host or dispatcher URL to dial into, including the
 port to connect to (and optionally for websockets, a path), e.g.
-'tcp://10.75.32.70:5555' or 'ws://10.75.32.70:5555/path'.}
+'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.}
 }
 \value{
 Invisible NULL.

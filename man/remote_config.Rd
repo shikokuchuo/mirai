@@ -98,7 +98,7 @@ ssh_config(remotes = c("ssh://10.75.32.90:222", "ssh://nodename"), timeout = 10)
 # SSH, connecting back directly to the host URL over a TLS connection:
 #
 # daemons(
-#   url = "tls+tcp://10.75.32.70:5555",
+#   url = host_url(tls = TRUE),
 #   remote = ssh_config(
 #     remotes = c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"),
 #     timeout = 1

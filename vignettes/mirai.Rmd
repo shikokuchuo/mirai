@@ -69,7 +69,7 @@ Upon completion, the 'mirai' resolves automatically to the evaluated result.
 
 ```r
 m$data |> str()
-#>  num [1:100000000] 0.0767 -10.1658 0.1303 -1.0483 0.9817 ...
+#>  num [1:100000000] 6.09 4.26 4.79 -2.27 -1.66 ...
 ```
 
 Alternatively, explicitly call and wait for the result using `call_mirai()`.
@@ -77,7 +77,7 @@ Alternatively, explicitly call and wait for the result using `call_mirai()`.
 
 ```r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.0767 -10.1658 0.1303 -1.0483 0.9817 ...
+#>  num [1:100000000] 6.09 4.26 4.79 -2.27 -1.66 ...
 ```
 
 For easy programmatic use of `mirai()`, '.expr' accepts a pre-constructed language object, and also a list of named arguments passed via '.args'. So, the following would be equivalent to the above:
@@ -94,7 +94,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -3.533 -50.1 -0.308 1.243 -0.113 ...
+#>  num [1:100000000] -0.794 0.466 -2.023 -1.432 1.419 ...
 ```
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -178,7 +178,6 @@ for (i in 1:10) {
 #> iteration 2 successful
 #> iteration 3 successful
 #> iteration 4 successful
-#> Error: random error
 #> iteration 5 successful
 #> iteration 6 successful
 #> iteration 7 successful
@@ -221,12 +220,12 @@ status()
 #> 
 #> $daemons
 #>                                     i online instance assigned complete
-#> abstract://829ffcaef913c4f3e3bd195b 1      1        1        0        0
-#> abstract://4ebdd327b94fe258e6fa1f66 2      1        1        0        0
-#> abstract://f1a857acef853c9bcec34354 3      1        1        0        0
-#> abstract://4383e704dc79879c9a7220d2 4      1        1        0        0
-#> abstract://a29cf15b1b321cf1cfe0e954 5      1        1        0        0
-#> abstract://0e4c61cbb204b19fbd5c9360 6      1        1        0        0
+#> abstract://d7ed73e628c513282dff2e80 1      1        1        0        0
+#> abstract://fa9e6ce38dffd793fc862b9d 2      1        1        0        0
+#> abstract://bf7ef65469ddd47de36997ac 3      1        1        0        0
+#> abstract://3eb4eea3567f438378b70b1b 4      1        1        0        0
+#> abstract://adabe42ef46f995cb8e5d2e2 5      1        1        0        0
+#> abstract://b75c19ca731a66232f408c62 6      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background process that connects to individual daemon processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to daemons for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.
@@ -261,7 +260,7 @@ status()
 #> [1] 6
 #> 
 #> $daemons
-#> [1] "abstract://fdfa94ac4fb3f9c76dff767f"
+#> [1] "abstract://525746761a227cc77c569ff6"
 ```
 
 This implementation sends tasks immediately, and ensures that tasks are evenly-distributed amongst daemons. This means that optimal scheduling is not guaranteed as the duration of tasks cannot be known *a priori*. As an example, tasks could be queued at a daemon behind a long-running task, whilst other daemons are idle having already completed their tasks.
@@ -282,7 +281,7 @@ Set the number of daemons to zero to reset.
 
 The daemons interface may also be used to send tasks for computation to remote daemon processes on the network.
 
-Call `daemons()` specifying 'url' as a character string such as: 'tcp://10.75.32.70:5555' at which daemon processes should connect to.
+Call `daemons()` specifying 'url' as a character string such as: 'tcp://10.75.32.70:5555' at which daemon processes should connect to. Alternatively, use `host_url()` to automatically construct a valid URL.
 
 IPv6 addresses are also supported and must be enclosed in square brackets `[]` to avoid confusion with the final colon separating the port. For example, port 5555 on the IPv6 address `::ffff:a6f:50d` would be specified as `tcp://[::ffff:a6f:50d]:5555`.
 
@@ -305,7 +304,7 @@ Alternatively, below a single URL is supplied, along with `n = 4` to specify tha
 
 
 ```r
-daemons(n = 4, url = "ws://10.75.32.70:5555")
+daemons(n = 4, url = host_url(port = 5555))
 #> [1] 4
 ```
 
@@ -318,11 +317,11 @@ status()
 #> [1] 1
 #> 
 #> $daemons
-#>                         i online instance assigned complete
-#> ws://10.75.32.70:5555/1 1      0        0        0        0
-#> ws://10.75.32.70:5555/2 2      0        0        0        0
-#> ws://10.75.32.70:5555/3 3      0        0        0        0
-#> ws://10.75.32.70:5555/4 4      0        0        0        0
+#>                     i online instance assigned complete
+#> tcp://hostname:5555 1      0        0        0        0
+#> tcp://hostname:5556 2      0        0        0        0
+#> tcp://hostname:5557 3      0        0        0        0
+#> tcp://hostname:5558 4      0        0        0        0
 ```
 
 As per the local case, `$connections` shows the single connection to dispatcher, however `$daemons` now provides a matrix of statistics for the remote daemons.
@@ -351,11 +350,11 @@ By specifying `dispatcher = FALSE`, remote daemons connect directly to the host 
 
 
 ```r
-daemons(url = "tcp://10.75.32.70:0", dispatcher = FALSE)
-#> [1] "tcp://10.75.32.70:37041"
+daemons(url = host_url(), dispatcher = FALSE)
+#> [1] "tcp://hostname:38133"
 ```
 
-Note that above, the port number is specified as zero. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided in the return value of the call, or it may be queried at any time via `status()`.
+Note that above, calling `host_url()` without a port value uses the default of '0'. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided in the return value of the call, or it may be queried at any time via `status()`.
 
 The number of daemons connecting to the host URL is not limited and network resources may be added or removed at any time, with tasks automatically distributed to all connected daemons.
 
@@ -368,7 +367,7 @@ status()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://10.75.32.70:37041"
+#> [1] "tcp://hostname:38133"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -445,10 +444,10 @@ daemons(n = 2, url = "tcp://[::1]:0")
 
 launch_remote(1:2)
 #> [1]
-#> Rscript -e "mirai::daemon('tcp://[::1]:32885',rs=c(10407,463691378,-871339189,-1444693488,1440665297,-490915234,1742504775))"
+#> Rscript -e "mirai::daemon('tcp://[::1]:46719',rs=c(10407,-563885221,-224889120,2030080353,2117556142,963841111,-451392340))"
 #> 
 #> [2]
-#> Rscript -e "mirai::daemon('tcp://[::1]:37287',rs=c(10407,-1817456937,284372062,99668012,-706842477,-1606223376,-99887162))"
+#> Rscript -e "mirai::daemon('tcp://[::1]:38745',rs=c(10407,-1014469919,-1562435391,-1904939407,153006146,-545844219,483234149))"
 
 daemons(0)
 #> [1] 0
@@ -464,11 +463,11 @@ TLS is available as an option to secure communications from the local machine to
 
 #### Zero-configuration
 
-An automatic zero-configuration default is implemented. Simply specify a secure URL of the form `wss://` or `tls+tcp://` when setting daemons. For example, on the IPv6 loopback address:
+An automatic zero-configuration default is implemented. Simply specify a secure URL of the form `wss://` or `tls+tcp://` when setting daemons, or use `host_url(tls = TRUE)`, for example:
 
 
 ```r
-daemons(n = 4, url = "wss://[::1]:5555")
+daemons(n = 4, url = host_url(ws = TRUE, tls = TRUE))
 #> [1] 4
 ```
 
@@ -480,37 +479,37 @@ The generated self-signed certificate is available via `launch_remote()`. This f
 ```r
 launch_remote(1)
 #> [1]
-#> Rscript -e "mirai::daemon('wss://[::1]:5555/1',tls=c('-----BEGIN CERTIFICATE-----
-#> MIIFLTCCAxWgAwIBAgIBATANBgkqhkiG9w0BAQsFADAuMQwwCgYDVQQDDAM6OjEx
-#> ETAPBgNVBAoMCE5hbm9uZXh0MQswCQYDVQQGEwJKUDAeFw0wMTAxMDEwMDAwMDBa
-#> Fw0zMDEyMzEyMzU5NTlaMC4xDDAKBgNVBAMMAzo6MTERMA8GA1UECgwITmFub25l
-#> eHQxCzAJBgNVBAYTAkpQMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA
-#> tqGmor5msFviJVNkgpc1/ZZWu8gXK7L6ZVi6U8YoFkwf/RsbffUtarJsEFTD15Dl
-#> KgHhcCM2paI0lcTkfQct0Njvgg1VNTINeezaQ5biJMLUAvAZka7yfeKDO9ETQ7DH
-#> hNdr0Q4yr0fSlpqcwpC8OqZuJ4mwvz6EDLD7u72LNoKKSxwzJRuh7Q85BeQjJCbD
-#> JYm4YLJYgwcGqeb7EwxKGWUM/boSE6FtL2Sp7sXPoQxrlSdXwNLQJl8Yvwl55ymX
-#> KilM7aRY7X4RHKBIXu7SFa6v7KuAFmyzPx0l/FTTUcYcJSpHBKQIrlq+Ia4eSXA6
-#> CHNNh51p+cO7jm3WqMIpxpCGR/NKkwJWvuTFbqfFAZgz2lmrRexnEsz/nn3mQa2F
-#> HlzpLyHnzYdOpvHZxP9m+coUrTaH5jpotsmrCkm8DjcB1gntfiwDAb644JkiROaY
-#> eqiFIgOYsXtJKqKzki1VGVXIto4Eeqh3m2cZ/0ldONZp+wrw5bvvP+ssk1gd8ngz
-#> X4AbYmenAYJhywEo/1kKtCF81/Atm3BfWfplElhJlLhimbA+twv8tb03EV7+PKz4
-#> UAOgMdluqojvYeMWejmwuOHu2gdiZBswDBQGvwuTUiDrKN/PA1aDNGNvWu3W/BOZ
-#> FJ+2YGT9p/R7lC+wUBRmRvMIbIEMoJaXY+fjmMefDpcCAwEAAaNWMFQwEgYDVR0T
-#> AQH/BAgwBgEB/wIBADAdBgNVHQ4EFgQUAAEtsLr4u7rNFB7jq6H1KRPtDVYwHwYD
-#> VR0jBBgwFoAUAAEtsLr4u7rNFB7jq6H1KRPtDVYwDQYJKoZIhvcNAQELBQADggIB
-#> AKgSYYJ+3OQw86UZVRfKU3FVLzD/LhPAQeNYDJoO1CeRXJJr06YGtiCngWiY/NgJ
-#> qS/wtR7KmFUuJhJNzh6HZiuo1dCSnLw7nr+MXwLpZK02/wPL2BJS9uuFnXvZydVE
-#> DRc983s+dLIjqvVgRKwUfM/w8dRhxUIeJqOffEInE1kXw9lQQK/RkjB9JJ86mvYE
-#> HCUhAtkLtjO98xUoKgCQ+ZdxzDJ5kz1hBHc45QXY/K/eLtxCRshelLSFDcHoWrJ1
-#> 8fWtuSMalynQVzSBbXQzAoWFzrZXC7vu7AANfZ7dDFcMfNaI7d8zwx9U1YG7hy6e
-#> kNmILGvbzFd6inrickS2EPL4uzUPYq0pX+8MUOxsqDrpiy8PTf8is3R73vwHjsU0
-#> pnhlpREBdskpjWd90J1RRXcaTXOjPXL3P0pAHAWEN2Dq8xb1aYR4krjPsc7ABJk/
-#> OT20mzgDWtIKksOOAOB0tQUAFPmPZ41pP06siK12TEENVfu1rrJOpcOibyihdEEL
-#> Y2zGJwXp314Ni/cqzr6kykG+3ZqgiwBdyRsfSnd3t0vUvRShmv4l+nzg+uLJYjoT
-#> Y1ETxs7u+IpIy+CSNT/l+jn+7oSkYOUHZONYSLKnulJrVXrZRS97m9LT4q7DCIw5
-#> iKfXgoBRu9A3xPDeOgeKARFEGFeWgCqu7Ve9tMycLGfI
+#> Rscript -e "mirai::daemon('wss://hostname:46409/1',tls=c('-----BEGIN CERTIFICATE-----
+#> MIIFNzCCAx+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAzMREwDwYDVQQDDAhrdW1h
+#> bW90bzERMA8GA1UECgwITmFub25leHQxCzAJBgNVBAYTAkpQMB4XDTAxMDEwMTAw
+#> MDAwMFoXDTMwMTIzMTIzNTk1OVowMzERMA8GA1UEAwwIa3VtYW1vdG8xETAPBgNV
+#> BAoMCE5hbm9uZXh0MQswCQYDVQQGEwJKUDCCAiIwDQYJKoZIhvcNAQEBBQADggIP
+#> ADCCAgoCggIBAL4g7GSftSvv5Vl+GBjDArDDeE0tK1vIP0VxjpLPXCm1s7/EqpzR
+#> azLg/sTe9ysYtaq5elDiL6sUW9Qf6FMBsT0oJwUT2KB3h3AWXBYgvn6jIUbqpICd
+#> ANzDXk3W0XOBJobF1COCRosYvdjImPih6Dp9RmOrLyvRGDwTbAH4yvWTenkBfMYD
+#> gv9bBU+Ik10JD1Q2vAl0YduBnXf9FDSvwOgFke8XNAApUCPhY6A0b2zMsNKQVnDI
+#> sq1oiSw0a9Ewqa3RIn+AjkdGI7i58CEKLDDVzoEwZpu1Yt6oslefu/hEfnkGay7y
+#> y8FV7k/W1jBbgv1sENcLeSXNtPR0Eppr+mgL9UcOtxHK7xJLWcGzxISqgtdb7K+w
+#> MzE9K6YC5rZw6CKMy8zgg5W/iiFl1GPhjvOmgvaKUTRxYkcCLVGdzlnji02BNqtG
+#> 8NvmjcJx+jfWEByGe9BjdqatjOKq2XtXPY4SaIN9+xlID+ZLnD+K+6Cd6HHjK9Uy
+#> jgeVG5to84wY5QccL6H3RM6DV2NAAsQdBW2tpKxabGQ1swRgnrVpLtR3QVhP2u8F
+#> lSUp9RpPph4nzLcYYCgR3AOZAw/qa9me0ThYDA44pFTMzNcYezlW689xk6+h7DAH
+#> 5G3BepI6YKyquh6+BT9L0R6xGI9q+2Xr4/1HrKNw9aZR7O+qMhRB1duzAgMBAAGj
+#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFI31LoKIiW1lDur7pDk0
+#> 9DJCC2U3MB8GA1UdIwQYMBaAFI31LoKIiW1lDur7pDk09DJCC2U3MA0GCSqGSIb3
+#> DQEBCwUAA4ICAQAfNz2vzURQnmHq9yxG9ChgyUyauWIWcUa5dGQifjLxVvbsWkSO
+#> Mnb2wzYNd3UrrpWMli55L02dCbjJu5vqqT4DwKFBIc3DhfRl0rfX8gKvkfgDltHT
+#> zwO8w06rZy4dLzvfFwsU2SMuRVdOSCYo/SG3nVGex20s2DvoKZzr0EgsQz9vwOTL
+#> sTTd98U4fiYO3nyVePSiX6StQwz+vzhxZkD1exH3+WIzWVCo24eI7go3jJzTy9rW
+#> hBoDKmRDE1ldO0ASsWXxjs7qX3Ld5+mDgh8xar3RUO21DY3mTNdYag9SaQPX8rAI
+#> +w2mUSfQp4T81PGZlC8g8LfxCC8T4J0R8Orxbpi2on7dQSk1zWljMfTm/aRih/GK
+#> ajUX33Ssbjzz1pcwyF8MnD8A1Dn6il3ZfCSWrCGRp2hGWOwAlvisa1+lDNS8uLBd
+#> DgLIlEWLVyssRCsMyrbDUts/4mP9VG7Bv8EjkjFgZZ2ljrUU+M1iqLwPKE7TwlQs
+#> BKmloMRMH82xsm2u7yfN6eHXP5LwGVHtxO6GdB8AyMNlxwPTSKjBg8r8SNCQN62n
+#> JE0daFYmpBBGBLIwl0nJomeUFjo2OKe0QRws3XcMULMCPEYlAFr1HxADOxQljlxP
+#> UWuvvZbXho1DEoxtM3Qg9tsvw+5HZo8GO+bi+lokeuRlRP12EtGTvYKF5g==
 #> -----END CERTIFICATE-----
-#> ',''),rs=c(10407,365651391,768224500,472015717,-1443186462,-1844738309,269538816))"
+#> ',''),rs=c(10407,-770219130,-800161713,1269809732,1256195189,1511162546,-1809337717))"
 ```
 
 The printed value may be deployed directly on a remote machine.
@@ -634,36 +633,36 @@ cl
 
 parallel::parLapply(cl, 1:5, rnorm)
 #> [[1]]
-#> [1] 1.005357
+#> [1] 2.207874
 #> 
 #> [[2]]
-#> [1] -1.4013851  0.2849182
+#> [1]  2.53161611 -0.06227691
 #> 
 #> [[3]]
-#> [1]  1.681674 -1.146284  1.811561
+#> [1]  0.5195079  1.2031813 -0.7344067
 #> 
 #> [[4]]
-#> [1] -0.7500179 -0.5612604  1.4572750 -0.8256328
+#> [1] -1.6092451 -0.8493915  0.6429945  2.3526165
 #> 
 #> [[5]]
-#> [1] -0.7283564 -0.1453562  2.0803289  0.2901198  0.2029786
+#> [1] -1.6987580  0.1466959  1.8268763 -0.7961872  0.1861142
 
 status(cl)
 #> $connections
-#> [1] 1
+#> [1] 2
 #> 
 #> $daemons
-#> [1] "abstract://0121f273b000c9d1b4a1a241"
+#> [1] "abstract://53c1fb59f9182e29fb9f8f45"
 
 stop_cluster(cl)
 
-cl <- make_cluster(n = 2, url = "tcp://10.75.32.70:0")
+cl <- make_cluster(n = 2, url = host_url())
 #> Shell commands for deployment on nodes:
 #> [1]
-#> Rscript -e "mirai::daemon('tcp://10.75.32.70:40699',rs=c(10407,-159174822,1070497043,298262328,2017581017,2089344454,-1969052273))"
+#> Rscript -e "mirai::daemon('tcp://hostname:40741',rs=c(10407,256955411,848415288,-1338259751,-271564602,-573313905,1380364676))"
 #> 
 #> [2]
-#> Rscript -e "mirai::daemon('tcp://10.75.32.70:40699',rs=c(10407,1280681714,-1760960841,142726492,2105995757,226788949,-662080668))"
+#> Rscript -e "mirai::daemon('tcp://hostname:40741',rs=c(10407,-1887117752,-411149752,-1914451116,-471450958,307344638,2032680824))"
 
 stop_cluster(cl)
 ```

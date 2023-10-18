@@ -24,7 +24,7 @@
 #' @inheritParams saisei
 #' @param url the character host URL or vector of host URLs, including the port
 #'     to connect to (and optionally for websockets, a path), e.g.
-#'     tcp://10.75.32.70:5555' or 'ws://10.75.32.70:5555/path'
+#'     tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'
 #'
 #'     \strong{or} integer index value, or vector of index values, of the
 #'     dispatcher URLs, or 1L for the host URL (when not using dispatcher).
@@ -253,7 +253,7 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #' # SSH, connecting back directly to the host URL over a TLS connection:
 #' #
 #' # daemons(
-#' #   url = "tls+tcp://10.75.32.70:5555",
+#' #   url = host_url(tls = TRUE),
 #' #   remote = ssh_config(
 #' #     remotes = c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"),
 #' #     timeout = 1
