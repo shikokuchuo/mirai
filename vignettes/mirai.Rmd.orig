@@ -330,7 +330,7 @@ The first example below launches 4 daemons on the machine 10.75.32.90 (using the
 ```{r ldmn, eval=FALSE}
 daemons(
   n = 4,
-  url = "ws://10.75.32.70:5555",
+  url = host_url(ws = TRUE, port = 5555),
   remote = ssh_config(remotes = "ssh://10.75.32.90")
 )
 ```
@@ -339,7 +339,7 @@ The second example below launches one daemon on each of 10.75.32.90 and 10.75.32
 ```{r ldmnd, eval=FALSE}
 daemons(
   n = 2,
-  url = "ws://10.75.32.70:5555",
+  url = host_url(ws = TRUE, port = 5555),
   remote = ssh_config(c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"))
 )
 ```
@@ -370,7 +370,7 @@ daemons(
 As an alternative to automated launches, calling `launch_remote()` without specifying 'remote' may be used to return the shell commands for deploying daemons manually. The printed return values may be copy / pasted directly to a remote machine.
 
 ```{r launchremotereal}
-daemons(n = 2, url = "tcp://[::1]:0")
+daemons(n = 2, url = host_url())
 
 launch_remote(1:2)
 

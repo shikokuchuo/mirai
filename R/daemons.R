@@ -318,7 +318,8 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         n <- 0L
       }
       `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv())
-      remote <- substitute(remote)
+      remotes <- substitute(remote)
+      if (!is.symbol(remotes)) remote <- remotes
       if (length(remote))
         launch_remote(url = envir[["urls"]], remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
     }
@@ -453,7 +454,7 @@ status <- function(.compute = "default") {
 #' @param ws [default FALSE] logical value whether to use a WebSockets 'ws://'
 #'     or else TCP 'tcp://' scheme.
 #' @param tls [default FALSE] logical value whether to use TLS in which case the
-#'     scheme used will be either 'wss://' or'tls+tcp://' accordingly.
+#'     scheme used will be either 'wss://' or 'tls+tcp://' accordingly.
 #' @param port [default 0] numeric port to use. This should be open to
 #'     connections from the network addresses the daemons are connecting from.
 #'     '0' is a wildcard value that automatically assigns a free ephemeral port.

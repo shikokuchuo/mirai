@@ -11,7 +11,7 @@ host_url(ws = FALSE, tls = FALSE, port = 0)
 or else TCP 'tcp://' scheme.}
 
 \item{tls}{[default FALSE] logical value whether to use TLS in which case the
-scheme used will be either 'wss://' or'tls+tcp://' accordingly.}
+scheme used will be either 'wss://' or 'tls+tcp://' accordingly.}
 
 \item{port}{[default 0] numeric port to use. This should be open to
 connections from the network addresses the daemons are connecting from.
