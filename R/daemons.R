@@ -522,7 +522,7 @@ launch_daemon <- function(..., rs = NULL, tls = NULL) {
 
 launch_and_sync_daemon <- function(sock, ..., rs = NULL, tls = NULL, pass = NULL) {
   cv <- cv()
-  pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = TRUE)
+  pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = FALSE)
   if (is.character(tls)) {
     switch(
       length(tls),
@@ -543,7 +543,7 @@ launch_and_sync_daemon <- function(sock, ..., rs = NULL, tls = NULL, pass = NULL
     }
   }
   launch_daemon(..., rs = rs)
-  until(cv, .timelimit) && stop(if (...length() < 3L) .messages[["sync_timeout"]] else .messages[["sync_dispatch"]])
+  .until(cv, .timelimit) || stop(if (...length() < 3L) .messages[["sync_timeout"]] else .messages[["sync_dispatch"]])
 }
 
 create_stream <- function(n, seed, envir) {
