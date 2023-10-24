@@ -491,7 +491,7 @@ is_error_value(m3$data)
 
 ### Parallel Clusters
 
-This package contains experimental functions and S3 methods using `mirai` as an alternative communications backend for R. These were developed to fulfil a request by R Core at R Project Sprint 2023, and requires R >= 4.4 (currently R-devel).
+This package contains experimental functions and S3 methods using `mirai` as an alternative communications backend for R. These were developed to fulfil a request by R Core at R Project Sprint 2023.
 
 `make_cluster()` creates a cluster of type 'miraiCluster', which may be used as a cluster object for any function in the `parallel` base package such as `parallel::clusterApply()`, `parallel::parLapply()` or the load-balanced version `parallel::parLapplyLB()`.
 

@@ -16,9 +16,6 @@
 
 # mirai x parallel -------------------------------------------------------------
 
-# nocov start
-# tested manually in tests/parallel/parallel-tests.R
-
 #' Make Mirai Cluster
 #'
 #' \code{make_cluster} creates a cluster of type 'miraiCluster', which may be
@@ -224,5 +221,3 @@ print.miraiNode <- function(x, ...) {
 node_unresolved <- function(node) unresolved(.subset2(node, "mirai"))
 
 .unresolvedsym <- as.symbol(" unresolved ")
-
-# nocov end

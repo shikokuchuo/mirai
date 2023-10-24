@@ -88,8 +88,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  5.4553254 -0.4160196 -2.2048729  1.0541057 -3.0753898  1.0000000
-#>  [7] -0.3251620  0.9486715 -0.4535409 -2.4037327  0.1833071
+#>  [1] -0.17710697  0.46078641  0.88270074  0.06083251  0.05059646  1.00000000
+#>  [7] 19.76422946 16.43857757  1.13288678  2.17020290 -5.64630529
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -97,8 +97,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  5.4553254 -0.4160196 -2.2048729  1.0541057 -3.0753898  1.0000000
-#>  [7] -0.3251620  0.9486715 -0.4535409 -2.4037327  0.1833071
+#>  [1] -0.17710697  0.46078641  0.88270074  0.06083251  0.05059646  1.00000000
+#>  [7] 19.76422946 16.43857757  1.13288678  2.17020290 -5.64630529
 ```
 
 ### Vignette
@@ -139,8 +139,8 @@ with all ‘parallel’ functions such as:
 register a ‘miraiCluster’ for use with the
 [`foreach`](https://cran.r-project.org/package=foreach) package.
 
-This functionality, fulfilling a request from R-Core at R Project Sprint
-2023, requires R \>= 4.4 (currently R-devel).
+This functionality fulfils a request from R-Core at R Project Sprint
+2023.
 
 ### Use with Crew and Targets
 

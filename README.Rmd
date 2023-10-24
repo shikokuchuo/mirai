@@ -132,7 +132,7 @@ vignette("mirai", package = "mirai")
 
 [`doParallel`](https://cran.r-project.org/package=doParallel) can also register a 'miraiCluster' for use with the [`foreach`](https://cran.r-project.org/package=foreach) package.
 
-This functionality, fulfilling a request from R-Core at R Project Sprint 2023, requires R >= 4.4 (currently R-devel).
+This functionality fulfils a request from R-Core at R Project Sprint 2023.
 
 ### Use with Crew and Targets
 

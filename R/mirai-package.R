@@ -87,36 +87,37 @@ NULL
     }
   )
 
-  registerConditionalMethods(.subset2(getRversion(), 1L),
-                             requireNamespace("promises", quietly = TRUE))
+  registerParallelMethods()
+  if (requireNamespace("promises", quietly = TRUE)) registerPromisesMethods()
 
 }
 
-registerConditionalMethods <- function(rversion, promises) {
+registerParallelMethods <- function() {
 
-  if (rversion[1L] >= 4 && rversion[2L] >= 4 || rversion[1L] >= 5) {
-    ns <- .getNamespace("parallel")
+  ns <- .getNamespace("parallel")
+  `[[<-`(
     `[[<-`(
       `[[<-`(
-        `[[<-`(
-          ns[[".__S3MethodsTable__."]], "recvData.miraiNode", recvData.miraiNode
-        ), "sendData.miraiNode", sendData.miraiNode
-      ), "recvOneData.miraiCluster", recvOneData.miraiCluster
-    )
-    regs <- rbind(ns[[".__NAMESPACE__."]][["S3methods"]],
-                  c("recvData", "miraiNode", "recvData.miraiNode", NA_character_),
-                  c("sendData", "miraiNode", "sendData.miraiNode", NA_character_),
-                  c("recvOneData", "miraiCluster", "recvOneData.miraiCluster", NA_character_))
-    `[[<-`(ns[[".__NAMESPACE__."]], "S3methods", regs)
-  }
+        ns[[".__S3MethodsTable__."]],
+        "recvData.miraiNode", recvData.miraiNode
+      ), "sendData.miraiNode", sendData.miraiNode
+    ), "recvOneData.miraiCluster", recvOneData.miraiCluster
+  )
+  regs <- rbind(ns[[".__NAMESPACE__."]][["S3methods"]],
+                c("recvData", "miraiNode", "recvData.miraiNode", NA_character_),
+                c("sendData", "miraiNode", "sendData.miraiNode", NA_character_),
+                c("recvOneData", "miraiCluster", "recvOneData.miraiCluster", NA_character_))
+  `[[<-`(ns[[".__NAMESPACE__."]], "S3methods", regs)
 
-  if (promises) {
-    ns <- .getNamespace("promises")
-    `[[<-`(ns[[".__S3MethodsTable__."]], "as.promise.mirai", as.promise.mirai)
-    regs <- rbind(ns[[".__NAMESPACE__."]][["S3methods"]],
-                  c("as.promise", "mirai", "as.promise.mirai", NA_character_))
-    `[[<-`(ns[[".__NAMESPACE__."]], "S3methods", regs)
-  }
+}
+
+registerPromisesMethods <- function() {
+
+  ns <- .getNamespace("promises")
+  `[[<-`(ns[[".__S3MethodsTable__."]], "as.promise.mirai", as.promise.mirai)
+  regs <- rbind(ns[[".__NAMESPACE__."]][["S3methods"]],
+                c("as.promise", "mirai", "as.promise.mirai", NA_character_))
+  `[[<-`(ns[[".__NAMESPACE__."]], "S3methods", regs)
 
 }
 
@@ -155,9 +156,8 @@ registerConditionalMethods <- function(rversion, promises) {
 )
 .exitlinger <- 2000L
 .timelimit <- 5000L
-._scm_. <- base64dec("BwAAAEIKAwAAAAEDBAAABQMABQAAAFVURi04/AAAAA==", convert = FALSE)
 
+as.promise <- NULL
 recvData <- NULL
 recvOneData <- NULL
 sendData <- NULL
-as.promise <- NULL
