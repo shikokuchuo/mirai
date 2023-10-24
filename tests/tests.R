@@ -148,7 +148,7 @@ if (.Platform[["OS.type"]] != "windows") {
   nanotesterr(parLapply(cluster, 1:10, runif), "cluster is no longer active")
   Sys.sleep(1L)
 
-  nanotestp(cl <- make_cluster(n = 1, url = host_url()))
+  nanotestp(cl <- make_cluster(n = 1, url = "tcp://[::1]:0"))
   nanotestn(stopCluster(cl))
   Sys.sleep(1L)
   # parallel tests end
