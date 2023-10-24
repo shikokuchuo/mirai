@@ -15,14 +15,14 @@ status(.compute = "default")
 \value{
 A named list comprising:
     \itemize{
-    \item{\strong{connections}} {- integer number of active connections.
+    \item \strong{connections} - integer number of active connections.
     \cr Using dispatcher: Always 1L as there is a single connection to
-    dispatcher, which connects to the daemons in turn.}
-    \item{\strong{daemons}} {- of variable type.
+    dispatcher, which connects to the daemons in turn.
+    \item \strong{daemons} - of variable type.
     \cr Using dispatcher: a status matrix (see Status Matrix section below),
     or else an integer 'errorValue' if communication with dispatcher failed.
     \cr Not using dispatcher: the character host URL.
-    \cr Not set: 0L.}
+    \cr Not set: 0L.
     }
 }
 \description{
@@ -35,18 +35,18 @@ Retrieve status information for the specified compute profile, comprising
     When using dispatcher, \code{$daemons} comprises an integer matrix with
     the following columns:
     \itemize{
-    \item{\strong{i}} {- integer index number.}
-    \item{\strong{online}} {- shows as 1 when there is an active connection,
-    or else 0 if a daemon has yet to connect or has disconnected.}
-    \item{\strong{instance}} {- increments by 1 every time there is a new
+    \item \strong{i} - integer index number.
+    \item \strong{online} - shows as 1 when there is an active connection,
+    or else 0 if a daemon has yet to connect or has disconnected.
+    \item \strong{instance} - increments by 1 every time there is a new
     connection at a URL. This counter is designed to track new daemon
     instances connecting after previous ones have ended (due to time-outs
     etc.). The count becomes negative immediately after a URL is regenerated
-    by \code{\link{saisei}}, but increments again once a new daemon connects.}
-    \item{\strong{assigned}} {- shows the cumulative number of tasks assigned
-    to the daemon.}
-    \item{\strong{complete}} {- shows the cumulative number of tasks
-    completed by the daemon.}
+    by \code{\link{saisei}}, but increments again once a new daemon connects.
+    \item \strong{assigned} - shows the cumulative number of tasks assigned
+    to the daemon.
+    \item \strong{complete} - shows the cumulative number of tasks
+    completed by the daemon.
     }
     The dispatcher URLs are stored as row names to the matrix.
 }

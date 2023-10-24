@@ -76,9 +76,9 @@ connecting to different resources).}
 Depending on the arguments supplied:
 
     \itemize{
-    \item{using dispatcher: integer number of daemons set.}
-    \item{or else launching local daemons: integer number of daemons launched.}
-    \item{otherwise: the character host URL.}
+    \item using dispatcher: integer number of daemons set.
+    \item or else launching local daemons: integer number of daemons launched.
+    \item otherwise: the character host URL.
     }
 }
 \description{
@@ -92,13 +92,13 @@ Set 'daemons' or persistent background processes receiving \code{\link{mirai}}
 \details{
 Use \code{daemons(0)} to reset daemon connections:
     \itemize{
-    \item{A reset is required before revising settings for the same compute
-    profile, otherwise changes are not registered.}
-    \item{All connected daemons and/or dispatchers exit automatically.}
-    \item{\pkg{mirai} reverts to the default behaviour of creating a new
-    background process for each request.}
-    \item{Any unresolved 'mirai' will return an 'errorValue' 7 (Object
-    closed) after a reset.}
+    \item A reset is required before revising settings for the same compute
+    profile, otherwise changes are not registered.
+    \item All connected daemons and/or dispatchers exit automatically.
+    \item \pkg{mirai} reverts to the default behaviour of creating a new
+    background process for each request.
+    \item Any unresolved 'mirai' will return an 'errorValue' 7 (Object
+    closed) after a reset.
     }
 
     To reset persistent daemons started with \code{autoexit = FALSE}, use
