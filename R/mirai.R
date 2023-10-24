@@ -444,7 +444,7 @@ mk_mirai_error <- function(e) {
   msg <- if (is.null(call) || call == "eval(expr = ._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = NULL)")
     sprintf("Error: %s", .subset2(e, "message")) else
       sprintf("Error in %s: %s", call, .subset2(e, "message"))
-  cat(strcat(msg, "\n"), file = stderr());
+  cat(sprintf("%s\n", msg), file = stderr());
   `class<-`(msg, c("miraiError", "errorValue", "try-error"))
 }
 

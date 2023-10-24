@@ -303,7 +303,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(.messages[["n_one"]])
         if (length(tls)) tls_config(server = tls, pass = pass)
         urld <- auto_tokenized_url()
-        urlc <- strcat(urld, "c")
+        urlc <- sprintf("%sc", urld)
         sock <- req_socket(urld, resend = 0L)
         sockc <- req_socket(urlc, resend = 0L)
         launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls, pass = pass)
@@ -354,7 +354,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       create_stream(n = n, seed = seed, envir = envir)
       if (dispatcher) {
         sock <- req_socket(urld, resend = 0L)
-        urlc <- strcat(urld, "c")
+        urlc <- sprintf("%sc", urld)
         sockc <- req_socket(urlc, resend = 0L)
         launch_and_sync_daemon(sock = sock, urld, parse_dots(...), n, urlc, rs = envir[["stream"]])
         for (i in seq_len(n)) next_stream(envir)
@@ -493,7 +493,7 @@ parse_dots <- function(...)
     for (dot in dots)
       is.numeric(dot) || is.logical(dot) || stop(.messages[["wrong_dots"]])
     dnames <- names(dots)
-    dots <- strcat(",", paste(dnames, dots, sep = "=", collapse = ","))
+    dots <- sprintf(",%s", paste(dnames, dots, sep = "=", collapse = ","))
     "output" %in% dnames && return(`class<-`(dots, "output"))
     dots
   }
