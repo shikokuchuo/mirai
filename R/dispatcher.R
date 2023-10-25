@@ -299,7 +299,7 @@ saisei <- function(i, force = FALSE, .compute = "default") {
 
 # internals --------------------------------------------------------------------
 
-auto_tokenized_url <- function() sprintf("%s%s", .urlscheme, random(12L))
+auto_tokenized_url <- function() strcat(.urlscheme, random(12L))
 
 new_tokenized_url <- function(url) sprintf("%s/%s", url, random(12L))
 

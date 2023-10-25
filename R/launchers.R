@@ -294,8 +294,7 @@ ssh_config <- function(remotes, timeout = 5, tunnel = FALSE, command = "ssh", rs
   for (i in seq_along(args)) {
     args[[i]] <- c(
       if (tunnel) sprintf("-R %s:%s", purl[[min(i, plen)]][["port"]], purl[[min(i, plen)]][["host"]]),
-      sprintf("-o ConnectTimeout=%s -fTp", as.character(timeout)),
-      ports[[min(i, rlen)]],
+      sprintf("-o ConnectTimeout=%s -fTp %s", as.character(timeout), ports[[min(i, rlen)]]),
       hostnames[[min(i, rlen)]],
       "."
     )

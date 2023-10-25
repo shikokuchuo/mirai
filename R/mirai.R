@@ -442,9 +442,9 @@ mk_mirai_error <- function(e) {
   x <- .subset2(e, "call")
   call <- if (length(x)) deparse(x, width.cutoff = 500L, backtick = TRUE, control = NULL, nlines = 1L)
   msg <- if (is.null(call) || call == "eval(expr = ._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = NULL)")
-    sprintf("Error: %s", .subset2(e, "message")) else
+    strcat("Error: ", .subset2(e, "message")) else
       sprintf("Error in %s: %s", call, .subset2(e, "message"))
-  cat(sprintf("%s\n", msg), file = stderr());
+  cat(strcat(msg, "\n"), file = stderr());
   `class<-`(msg, c("miraiError", "errorValue", "try-error"))
 }
 
