@@ -1,4 +1,4 @@
-# mirai 0.11.0.9013 (development)
+# mirai 0.11.0.9014 (development)
 
 * Adds 'mirai' method for 'as.promise()' from the {promises} package (if available). This functionality is merged from the package {mirai.promises}, allowing use of the promise pipe `%...>%` with a 'mirai'.
 * Parallel clusters (the alternative communications backend for R) now work with existing R versions, no longer requiring R >= 4.4.

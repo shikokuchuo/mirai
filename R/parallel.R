@@ -125,7 +125,7 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
   cl <- vector(mode = "list", length = n)
   for (i in seq_along(cl))
     cl[[i]] <- `attributes<-`(new.env(), list(class = "miraiNode", node = i, id = id))
-  reg.finalizer(..[[id]][["sock"]], reap, TRUE)
+  reg.finalizer(cl[[1L]], stop_cluster, TRUE)
 
   if (printLaunchCmd)
     print(launch_remote(rep(..[[id]][["urls"]], n), .compute = id))
