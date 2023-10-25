@@ -120,12 +120,12 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
     daemons(n = n, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
   }
 
-  pipe_notify(..[[id]][["sock"]], cv = ..[[id]][["cv"]], add = FALSE, remove = TRUE, flag = TRUE)
+  pipe_notify(..[[id]][["sock"]], cv = ..[[id]][["cv"]], remove = TRUE, flag = TRUE)
 
   cl <- vector(mode = "list", length = n)
   for (i in seq_along(cl))
     cl[[i]] <- `attributes<-`(new.env(), list(class = "miraiNode", node = i, id = id))
-  reg.finalizer(cl[[1L]], stop_cluster, TRUE)
+  reg.finalizer(..[[id]][["sock"]], reap, TRUE)
 
   if (printLaunchCmd)
     print(launch_remote(rep(..[[id]][["urls"]], n), .compute = id))

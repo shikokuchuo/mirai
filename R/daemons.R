@@ -522,7 +522,7 @@ launch_daemon <- function(..., rs = NULL, tls = NULL) {
 
 launch_and_sync_daemon <- function(sock, ..., rs = NULL, tls = NULL, pass = NULL) {
   cv <- cv()
-  pipe_notify(sock, cv = cv, add = TRUE, remove = FALSE, flag = FALSE)
+  pipe_notify(sock, cv = cv, add = TRUE)
   if (is.character(tls)) {
     switch(
       length(tls),
