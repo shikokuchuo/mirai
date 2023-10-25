@@ -41,6 +41,7 @@ nanotesterr(dispatcher(client = "URL"), "at least one")
 nanotesterr(daemons(n = 1, maxtasks = "100"), "'...' arguments")
 nanotest(is.character(host_url()))
 nanotest(substr(host_url(ws = TRUE, tls = TRUE), 1L, 3L) == "wss")
+nanotest(substr(host_url(tls = TRUE), 1L, 3L) == "tls")
 nanotest(grepl("5555", host_url(port = 5555), fixed = TRUE))
 nanotest(is.list(ssh_config("ssh://remotehost")))
 nanotesterr(ssh_config("ssh://remotehost", tunnel = TRUE), "must be called in the correct context")
@@ -149,6 +150,9 @@ if (.Platform[["OS.type"]] != "windows") {
   Sys.sleep(1L)
 
   nanotestp(cl <- make_cluster(n = 1, url = "tcp://[::1]:0"))
+  nanotestn(stopCluster(cl))
+  Sys.sleep(1L)
+  nanotestp(cl <- make_cluster(n = 1, url = "tcp://127.0.0.1:0", remote = remote_config()))
   nanotestn(stopCluster(cl))
   Sys.sleep(1L)
   # parallel tests end

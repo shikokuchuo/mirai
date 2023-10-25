@@ -474,13 +474,13 @@ status <- function(.compute = "default") {
 #'
 #' @export
 #'
-host_url <- function(ws = FALSE, tls = FALSE, port = 0) {
-
-  scheme <- if (ws) { if (tls) "wss" else "ws" } else { if (tls) "tls+tcp" else "tcp" }
-  hostname <- Sys.info()[["nodename"]]
-  sprintf("%s://%s:%s", scheme, hostname, as.character(port))
-
-}
+host_url <- function(ws = FALSE, tls = FALSE, port = 0)
+  sprintf(
+    "%s://%s:%s",
+    if (ws) { if (tls) "wss" else "ws" } else { if (tls) "tls+tcp" else "tcp" },
+    Sys.info()[["nodename"]],
+    as.character(port)
+  )
 
 # internals --------------------------------------------------------------------
 
