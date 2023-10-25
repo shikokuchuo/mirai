@@ -190,9 +190,8 @@ recvOneData.miraiCluster <- function(cl) {
 
   node <- which.min(lapply(cl, node_unresolved))
   m <- .subset2(.subset2(cl, node), "mirai")
-  out <- list(node = node, value = list(value = .subset2(m, "value"), tag = .subset2(m, "tag")))
-  assign("value", .unresolvedsym, m)
-  out
+  `class<-`(m, NULL)
+  list(node = node, value = m)
 
 }
 
@@ -218,6 +217,7 @@ print.miraiNode <- function(x, ...) {
 
 # internals --------------------------------------------------------------------
 
-node_unresolved <- function(node) unresolved(.subset2(node, "mirai"))
-
-.unresolvedsym <- as.symbol(" unresolved ")
+node_unresolved <- function(node) {
+  m <- .subset2(node, "mirai")
+  unresolved(m) || !is.object(m)
+}
