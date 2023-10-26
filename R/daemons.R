@@ -298,6 +298,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         envir[["tls"]] <- tls[["client"]]
         tls <- tls[["server"]]
       }
+      cv <- cv()
       create_stream(n = n, seed = seed, envir = envir)
       if (dispatcher) {
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(.messages[["n_one"]])
@@ -317,7 +318,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         `[[<-`(envir, "urls", urls)
         n <- 0L
       }
-      `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv())
+      `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv)
       remotes <- substitute(remote)
       if (!is.symbol(remotes)) remote <- remotes
       if (length(remote))
@@ -351,6 +352,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
 
       n > 0L || stop(.messages[["n_zero"]])
       urld <- auto_tokenized_url()
+      cv <- cv()
       create_stream(n = n, seed = seed, envir = envir)
       if (dispatcher) {
         sock <- req_socket(urld, resend = 0L)
@@ -370,7 +372,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         }
         `[[<-`(envir, "urls", urld)
       }
-      `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv())
+      `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv)
     }
 
   }
