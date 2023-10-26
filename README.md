@@ -8,7 +8,7 @@
 [![CRAN
 status](https://www.r-pkg.org/badges/version/mirai?color=112d4e)](https://CRAN.R-project.org/package=mirai)
 [![mirai status
-badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e)](https://shikokuchuo.r-universe.dev/)
+badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e)](https://shikokuchuo.r-universe.dev/builds)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
 [![codecov](https://codecov.io/gh/shikokuchuo/mirai/branch/main/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/mirai)
 [![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)
@@ -88,8 +88,8 @@ result.
 
 ``` r
 m$data
-#>  [1] -0.17710697  0.46078641  0.88270074  0.06083251  0.05059646  1.00000000
-#>  [7] 19.76422946 16.43857757  1.13288678  2.17020290 -5.64630529
+#>  [1] 2.2561892 1.1985734 1.4094865 0.8684176 0.8238311 1.0000000 1.2138410
+#>  [8] 1.1515197 0.7094783 0.8343252 0.4432252
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -97,8 +97,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] -0.17710697  0.46078641  0.88270074  0.06083251  0.05059646  1.00000000
-#>  [7] 19.76422946 16.43857757  1.13288678  2.17020290 -5.64630529
+#>  [1] 2.2561892 1.1985734 1.4094865 0.8684176 0.8238311 1.0000000 1.2138410
+#>  [8] 1.1515197 0.7094783 0.8343252 0.4432252
 ```
 
 ### Vignette
