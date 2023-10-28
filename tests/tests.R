@@ -70,7 +70,14 @@ nanotest(call_mirai(m)$data == 8L || is_error_value(m$data))
 Sys.sleep(2.5)
 nanotest(daemons(url = value <- mirai:::auto_tokenized_url(), dispatcher = FALSE) == value)
 nanotest(grepl("://", launch_remote(status()$daemons), fixed = TRUE))
-nanotestz(daemons(0L))
+nanotestn(launch_local(nextget("urls")))
+if (requireNamespace("promises", quietly = TRUE)) {
+  nanotest(promises::is.promise(p1 <- promises::as.promise(mirai("completed"))))
+  Sys.sleep(1L)
+  nanotest(promises::is.promise(p2 <- promises::`%...>%`(mirai("completed"), identity())))
+  Sys.sleep(1L)
+}
+nanotestz(daemons(NULL))
 Sys.sleep(1L)
 nanotesto(daemons(1L, dispatcher = FALSE, idletime = 500L, timerstart = 1L, cleanup = FALSE, seed = 1546, .compute = "new"))
 nanotest(is.character(nextget("urls", .compute = "new")))
@@ -86,13 +93,6 @@ Sys.sleep(1L)
 nanotestz(status(.compute = "new")[["connections"]])
 nanotestz(daemons(0L, .compute = "new"))
 Sys.sleep(1L)
-
-if (requireNamespace("promises", quietly = TRUE)) {
-  nanotest(promises::is.promise(p1 <- promises::as.promise(mirai("completed"))))
-  Sys.sleep(1L)
-  nanotest(promises::is.promise(p2 <- promises::`%...>%`(mirai("completed"), identity())))
-  Sys.sleep(1L)
-}
 
 if (.Platform[["OS.type"]] != "windows") {
 
@@ -234,7 +234,7 @@ if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
   nanotest(call_mirai(m)$data == 2L || is_error_value(m$data))
   nanotesterr(launch_local(0:1), "out of bounds")
   nanotesterr(launch_remote(1:2), "out of bounds")
-  nanotestz(daemons(NULL))
+  nanotestz(daemons(0L))
   Sys.sleep(1L)
   option <- 15L
   nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 1000L, seed = 1546, token = TRUE, lock = TRUE, cleanup = option))
