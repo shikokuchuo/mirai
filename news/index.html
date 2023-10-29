@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0.9011</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0.9017</span>
       </span>
     </div>
 
@@ -57,8 +57,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.11.0.9011" id="mirai-01109011-development">mirai 0.11.0.9011 (development)<a class="anchor" aria-label="anchor" href="#mirai-01109011-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.11.0.9017" id="mirai-01109017-development">mirai 0.11.0.9017 (development)<a class="anchor" aria-label="anchor" href="#mirai-01109017-development"></a></h2>
 <ul><li>Adds ‘mirai’ method for ‘as.promise()’ from the {promises} package (if available). This functionality is merged from the package {mirai.promises}, allowing use of the promise pipe <code>%...&gt;%</code> with a ‘mirai’.</li>
+<li>Parallel clusters (the alternative communications backend for R) now work with existing R versions, no longer requiring R &gt;= 4.4.</li>
 <li>
 <code><a href="../reference/everywhere.html">everywhere()</a></code> evaluates an expression ‘everywhere’ on all connected daemons for a compute profile. Resulting changes to the global environment, loaded pacakges or options are persisted regardless of the ‘cleanup’ setting (request by <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a> <a href="https://github.com/shikokuchuo/mirai/issues/80" class="external-link">#80</a>).</li>
 <li>
@@ -68,14 +69,14 @@
 <li>
 <code>daemons(NULL)</code> implemented as a variant of <code>daemons(0)</code> which also sends exit signals to connected persistent daemons.</li>
 <li>
-<code><a href="../reference/dispatcher.html">dispatcher()</a></code> argument ‘lock’ removed as this is now implemented in all cases to prevent more than one daemon dialling into a dispatcher URL at any one time.</li>
+<code><a href="../reference/dispatcher.html">dispatcher()</a></code> argument ‘lock’ removed as this is now applied in all cases to prevent more than one daemon dialling into a dispatcher URL at any one time.</li>
 <li>
 <code><a href="../reference/daemon.html">daemon()</a></code> argument ‘cleanup’ simplified to a logical argument, with more granular control offered by the existing integer bitmask (thanks <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a> <a href="https://github.com/shikokuchuo/mirai/issues/79" class="external-link">#79</a>).</li>
 <li>Daemons connecting over TLS now perform synchronous dials by default (as documented).</li>
 <li>Fixes supplying an <code><a href="../reference/remote_config.html">ssh_config()</a></code> specifying tunnelling to the ‘remote’ argument of <code><a href="../reference/daemons.html">daemons()</a></code>.</li>
 <li>Fixes the print method for a subset ‘miraiCluster’ (thanks <a href="https://github.com/HenrikBengtsson" class="external-link">@HenrikBengtsson</a> <a href="https://github.com/shikokuchuo/mirai/issues/83" class="external-link">#83</a>).</li>
 <li>Removes the deprecated deferred evaluation pipe <code>%&gt;&gt;%</code>.</li>
-<li>Requires nanonext &gt;= [0.10.2.9005].</li>
+<li>Requires nanonext &gt;= [0.10.2.9012].</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.11.0" id="mirai-0110">mirai 0.11.0<small>2023-10-06</small><a class="anchor" aria-label="anchor" href="#mirai-0110"></a></h2>
