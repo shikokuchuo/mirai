@@ -73,10 +73,9 @@ nanotest(grepl("://", launch_remote(status()$daemons), fixed = TRUE))
 nanotestn(launch_local(nextget("urls")))
 if (requireNamespace("promises", quietly = TRUE)) {
   nanotest(promises::is.promise(p1 <- promises::as.promise(mirai("completed"))))
-  Sys.sleep(1L)
   nanotest(promises::is.promise(p2 <- promises::`%...>%`(mirai("completed"), identity())))
-  Sys.sleep(1L)
 }
+Sys.sleep(1L)
 nanotestz(daemons(NULL))
 Sys.sleep(1L)
 nanotesto(daemons(1L, dispatcher = FALSE, idletime = 500L, timerstart = 1L, cleanup = FALSE, seed = 1546, .compute = "new"))
@@ -149,10 +148,10 @@ if (.Platform[["OS.type"]] != "windows") {
   nanotesterr(parLapply(cluster, 1:10, runif), "cluster is no longer active")
   Sys.sleep(1L)
 
-  nanotestp(cl <- make_cluster(n = 1, url = "tcp://[::1]:0"))
+  nanotestp(cl <- make_cluster(n = 1, url = mirai:::auto_tokenized_url()))
   nanotestn(stopCluster(cl))
   Sys.sleep(1L)
-  nanotestp(cl <- make_cluster(n = 1, url = "tcp://127.0.0.1:0", remote = remote_config()))
+  nanotestp(cl <- make_cluster(n = 1, url = mirai:::auto_tokenized_url(), remote = remote_config()))
   nanotestn(stopCluster(cl))
   Sys.sleep(1L)
   # parallel tests end
