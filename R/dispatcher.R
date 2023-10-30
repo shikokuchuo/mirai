@@ -75,9 +75,9 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(.messages[["missing_url"]])
 
+  cv <- cv()
   sock <- socket(protocol = "rep")
   on.exit(reap(sock))
-  cv <- cv()
   pipe_notify(sock, cv = cv, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock = sock, url = host, asyncdial = asyncdial)
 

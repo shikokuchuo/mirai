@@ -63,6 +63,8 @@ nanotest(identical(call_mirai(m), m))
 nanotest(is_mirai(m))
 Sys.sleep(2.5)
 nanotestp(m)
+
+if (.Platform[["OS.type"]] != "windows") {
 `lang obj` <- quote(m + n + 2L)
 args <- list(m = 2L, n = 4L)
 m <- mirai(.expr = `lang obj`, .args = args, .timeout = 2000L)
@@ -92,8 +94,6 @@ Sys.sleep(1L)
 nanotestz(status(.compute = "new")[["connections"]])
 nanotestz(daemons(0L, .compute = "new"))
 Sys.sleep(1L)
-
-if (.Platform[["OS.type"]] != "windows") {
 
   # parallel tests start
   cluster <- make_cluster(1)
