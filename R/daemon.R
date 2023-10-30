@@ -164,7 +164,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
 #'
 #' @inheritParams daemon
 #'
-#' @return Invisible NULL.
+#' @return NULL or an 'errorValue'.
 #'
 #' @keywords internal
 #' @export
@@ -177,7 +177,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
   data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)
   send(sock, data = data, mode = 1L, block = TRUE)
-  msleep(.exitlinger)
+  recv(sock, mode = 8L, block = .timelimit)
 
 }
 
