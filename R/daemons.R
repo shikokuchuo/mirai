@@ -557,4 +557,4 @@ create_stream <- function(n, seed, envir) {
   `[[<-`(.GlobalEnv, ".Random.seed", oseed)
 }
 
-._scm_. <- base64dec("BwAAAAAAAABCCgMAAAABAwQAAAUDAAUAAABVVEYtOPwAAAA=", convert = FALSE)
+._scm_. <- base64dec("BwABAAAAAABCCgMAAAABAwQAAAUDAAUAAABVVEYtOPwAAAA=", convert = FALSE)

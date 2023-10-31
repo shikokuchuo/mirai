@@ -61,15 +61,15 @@ nanotest(inherits(call_mirai(m), "mirai"))
 nanotest(m$data == 3L || is_error_value(m$data))
 nanotest(identical(call_mirai(m), m))
 nanotest(is_mirai(m))
-Sys.sleep(2L)
 nanotestp(m)
+Sys.sleep(1L)
 
 if (.Platform[["OS.type"]] != "windows") {
 `lang obj` <- quote(m + n + 2L)
 args <- list(m = 2L, n = 4L)
 m <- mirai(.expr = `lang obj`, .args = args, .timeout = 2000L)
 nanotest(call_mirai(m)$data == 8L || is_error_value(m$data))
-Sys.sleep(2L)
+Sys.sleep(1L)
 nanotest(daemons(url = value <- mirai:::auto_tokenized_url(), dispatcher = FALSE) == value)
 nanotest(grepl("://", launch_remote(status()$daemons), fixed = TRUE))
 nanotestn(launch_local(nextget("urls")))
@@ -163,7 +163,7 @@ Sys.sleep(1L)
   nanotest(is_mirai(m <- mirai(TRUE)))
   nanotest(is.character(launch_remote("ws://[::1]:5555", remote = remote_config(command = "echo", args = list(c("Test out:", ".", ">/dev/null")), rscript = "/usr/lib/R/bin/Rscript"))))
   nanotest(is.character(launch_remote("tcp://localhost:5555", remote = ssh_config(remotes = c("ssh://remotehost", "ssh://remotenode"), tunnel = TRUE, command = "echo"))))
-  Sys.sleep(2L)
+  Sys.sleep(1L)
   nanotestn(launch_local(mirai:::auto_tokenized_url(), .compute = "test"))
   Sys.sleep(1L)
   nanotest(daemons(n = 2L, url = value <- "ws://:0", dispatcher = FALSE, remote = remote_config()) != value)
@@ -220,6 +220,8 @@ Sys.sleep(1L)
   }
   nanotestz(daemons(0))
   Sys.sleep(1L)
+} else {
+  Sys.sleep(4L)
 }
 
 if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
