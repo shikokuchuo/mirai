@@ -13,7 +13,7 @@
 * Fixes supplying an `ssh_config()` specifying tunnelling to the 'remote' argument of `daemons()`.
 * Fixes the print method for a subset 'miraiCluster' (thanks @HenrikBengtsson #83).
 * Removes the deprecated deferred evaluation pipe `%>>%`.
-* Requires nanonext >= [0.10.2.9012].
+* Requires nanonext >= [0.10.2.9019].
 
 # mirai 0.11.0
 
