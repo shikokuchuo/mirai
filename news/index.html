@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0.9020</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.0.9021</span>
       </span>
     </div>
 
@@ -57,7 +57,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.11.0.9020" id="mirai-01109020-development">mirai 0.11.0.9020 (development)<a class="anchor" aria-label="anchor" href="#mirai-01109020-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.11.0.9021" id="mirai-01109021-development">mirai 0.11.0.9021 (development)<a class="anchor" aria-label="anchor" href="#mirai-01109021-development"></a></h2>
 <ul><li>Adds ‘mirai’ method for ‘as.promise()’ from the {promises} package (if available). This functionality is merged from the package {mirai.promises}, allowing use of the promise pipe <code>%...&gt;%</code> with a ‘mirai’.</li>
 <li>Parallel clusters (the alternative communications backend for R) now work with existing R versions, no longer requiring R &gt;= 4.4.</li>
 <li>
@@ -73,7 +73,6 @@
 <li>
 <code><a href="../reference/daemon.html">daemon()</a></code> argument ‘cleanup’ simplified to a logical argument, with more granular control offered by the existing integer bitmask (thanks <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a> <a href="https://github.com/shikokuchuo/mirai/issues/79" class="external-link">#79</a>).</li>
 <li>Daemons connecting over TLS now perform synchronous dials by default (as documented).</li>
-<li>The ‘exitlinger’ period no longer applies to ephemeral daemons and these exit as soon as permissible.</li>
 <li>Fixes supplying an <code><a href="../reference/remote_config.html">ssh_config()</a></code> specifying tunnelling to the ‘remote’ argument of <code><a href="../reference/daemons.html">daemons()</a></code>.</li>
 <li>Fixes the print method for a subset ‘miraiCluster’ (thanks <a href="https://github.com/HenrikBengtsson" class="external-link">@HenrikBengtsson</a> <a href="https://github.com/shikokuchuo/mirai/issues/83" class="external-link">#83</a>).</li>
 <li>Removes the deprecated deferred evaluation pipe <code>%&gt;&gt;%</code>.</li>
