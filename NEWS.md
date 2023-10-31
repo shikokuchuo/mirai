@@ -1,4 +1,4 @@
-# mirai 0.11.0.9020 (development)
+# mirai 0.11.0.9021 (development)
 
 * Adds 'mirai' method for 'as.promise()' from the {promises} package (if available). This functionality is merged from the package {mirai.promises}, allowing use of the promise pipe `%...>%` with a 'mirai'.
 * Parallel clusters (the alternative communications backend for R) now work with existing R versions, no longer requiring R >= 4.4.
@@ -9,7 +9,6 @@
 * `dispatcher()` argument 'lock' removed as this is now applied in all cases to prevent more than one daemon dialling into a dispatcher URL at any one time.
 * `daemon()` argument 'cleanup' simplified to a logical argument, with more granular control offered by the existing integer bitmask (thanks @krlmlr #79).
 * Daemons connecting over TLS now perform synchronous dials by default (as documented).
-* The 'exitlinger' period no longer applies to ephemeral daemons and these exit as soon as permissible.
 * Fixes supplying an `ssh_config()` specifying tunnelling to the 'remote' argument of `daemons()`.
 * Fixes the print method for a subset 'miraiCluster' (thanks @HenrikBengtsson #83).
 * Removes the deprecated deferred evaluation pipe `%>>%`.

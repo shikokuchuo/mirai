@@ -154,6 +154,7 @@ registerPromisesMethods <- function() {
   ),
   hash = TRUE
 )
+.exitlinger <- 2000L
 .timelimit <- 5000L
 
 as.promise <- NULL
