@@ -163,11 +163,13 @@ sendData.miraiNode <- function(node, data) {
   value <- data[["data"]]
   has_tag <- !is.null(value[["tag"]])
 
-  node[["mirai"]] <- mirai(do.call(node, data, quote = TRUE), node = value[["fun"]], data = value[["args"]],
-                           .signal = has_tag, .compute = attr(node, "id"))
+  m <- mirai(do.call(node, data, quote = TRUE), node = value[["fun"]], data = value[["args"]],
+             .signal = has_tag, .compute = attr(node, "id"))
 
   if (has_tag)
-    assign("tag", value[["tag"]], .subset2(node, "mirai"))
+    assign("tag", value[["tag"]], m)
+
+  `[[<-`(node, "mirai", m)
 
 }
 
