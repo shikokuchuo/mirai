@@ -345,8 +345,8 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
 
       reap(envir[["sock"]])
       length(envir[["sockc"]]) && reap(envir[["sockc"]])
+      `[[<-`(.., .compute, NULL)
       envir <- NULL
-      `[[<-`(.., .compute, new.env(hash = FALSE, parent = ..))
 
     } else if (is.null(envir[["sock"]])) {
 

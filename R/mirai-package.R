@@ -67,10 +67,6 @@ NULL
 
 .onLoad <- function(libname, pkgname) {
 
-  ns <- environment(daemons)
-  . <<- new.env(hash = FALSE, parent = ns)
-  .. <<- new.env(hash = FALSE, parent = ns)
-  `[[<-`(.., "default", new.env(hash = FALSE, parent = ..))
   switch(
     Sys.info()[["sysname"]],
     Linux = {
@@ -123,8 +119,8 @@ registerPromisesMethods <- function() {
 
 # nocov end
 
-. <- NULL
-.. <- NULL
+. <- new.env(hash = FALSE)
+.. <- new.env(hash = FALSE)
 .command <- NULL
 .urlscheme <- NULL
 
