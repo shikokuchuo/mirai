@@ -1,4 +1,4 @@
-# mirai 0.11.0.9021 (development)
+# mirai 0.11.0.9022 (development)
 
 * Adds 'mirai' method for 'as.promise()' from the {promises} package (if available). This functionality is merged from the package {mirai.promises}, allowing use of the promise pipe `%...>%` with a 'mirai'.
 * Parallel clusters (the alternative communications backend for R) now work with existing R versions, no longer requiring R >= 4.4.
@@ -12,7 +12,7 @@
 * Fixes supplying an `ssh_config()` specifying tunnelling to the 'remote' argument of `daemons()`.
 * Fixes the print method for a subset 'miraiCluster' (thanks @HenrikBengtsson #83).
 * Removes the deprecated deferred evaluation pipe `%>>%`.
-* Requires nanonext >= [0.10.2.9019].
+* Requires nanonext >= [0.10.2.9024].
 
 # mirai 0.11.0
 
