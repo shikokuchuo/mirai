@@ -107,10 +107,7 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
       n <- if (is.list(args)) length(args) else 1L
     } else {
       missing(n) && stop(.messages[["requires_n"]])
-      if (interactive()) {
-        message("Shell commands for deployment on nodes:")
-        printLaunchCmd <- TRUE
-      }
+      if (interactive()) printLaunchCmd <- TRUE
     }
 
     daemons(url = url, remote = remote, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
@@ -126,8 +123,10 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
   for (i in seq_along(cl))
     cl[[i]] <- `attributes<-`(new.env(), list(class = "miraiNode", node = i, id = id))
 
-  if (printLaunchCmd)
+  if (printLaunchCmd) {
+    message("Shell commands for deployment on nodes:")
     print(launch_remote(rep(..[[id]][["urls"]], n), .compute = id))
+  }
 
   `attributes<-`(cl, list(class = c("miraiCluster", "cluster"), id = id))
 
@@ -168,7 +167,7 @@ sendData.miraiNode <- function(node, data) {
                            .signal = has_tag, .compute = attr(node, "id"))
 
   if (has_tag)
-    assign("tag", value[["tag"]], node[["mirai"]])
+    assign("tag", value[["tag"]], .subset2(node, "mirai"))
 
 }
 

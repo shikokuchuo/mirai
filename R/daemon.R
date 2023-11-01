@@ -177,7 +177,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
   data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)
   send(sock, data = data, mode = 1L, block = TRUE)
-  msleep(.exitlinger)
+  msleep(2000L)
 
 }
 

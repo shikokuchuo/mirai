@@ -212,9 +212,9 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           if (is.object(req)) req <- serialize(req, NULL)
           send_aio(queue[[i]][["ctx"]], data = req, mode = 2L)
           q <- queue[[i]][["daemon"]]
-          if (req[1L] == .nextformat) {
+          if (req[1L] == .nextmode) {
             ctx <- .context(servers[[q]])
-            send_aio(ctx, data = .nextformat, mode = 2L)
+            send_aio(ctx, data = .nextmode, mode = 2L)
             reap(ctx)
           } else {
             serverfree[q] <- TRUE
@@ -331,4 +331,4 @@ get_and_reset_env <- function(x) {
   }
 }
 
-.nextformat <- as.raw(7L)
+.nextmode <- as.raw(7L)
