@@ -152,7 +152,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .signal = FALSE, 
 
   envir <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
-  if (length(..[[.compute]][["sock"]])) {
+  if (length(..[[.compute]]) > 1L) {
     aio <- if (.signal)
       request_signal(.context(..[[.compute]][["sock"]]), data = envir, cv = ..[[.compute]][["cv"]], send_mode = 1L, recv_mode = 1L, timeout = .timeout) else
         request(.context(..[[.compute]][["sock"]]), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
@@ -160,7 +160,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .signal = FALSE, 
   } else {
     url <- auto_tokenized_url()
     sock <- req_socket(url, resend = 0L)
-    if (length(.timeout)) launch_and_sync_daemon(sock = sock, url) else launch_daemon(url)
+    length(.timeout) && launch_and_sync_daemon(sock = sock, url) || launch_daemon(url)
     aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
@@ -203,9 +203,12 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .signal = FALSE, 
 #' @export
 #'
 everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
+
   envir <- ..[[.compute]]
   length(envir) || stop(.messages[["daemons_required"]])
+
   expr <- c(as.expression(substitute(.expr)), .snapshot)
+
   if (length(envir[["sockc"]])) {
     expr <- c(expr, .timedelay)
     for (i in seq_len(envir[["n"]]))
@@ -214,6 +217,7 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
     for (i in seq_len(max(stat(envir[["sock"]], "pipes"), envir[["n"]])))
       mirai(.expr = expr, ..., .args = .args, .compute = .compute)
   }
+
 }
 
 #' mirai (Call Value)
