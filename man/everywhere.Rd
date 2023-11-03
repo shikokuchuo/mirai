@@ -29,7 +29,7 @@ Invisible NULL.
 Evaluate an expression 'everywhere' on all connected daemons for the
     specified compute profile. Designed for performing setup operations
     across daemons, resultant changes to the global environment, loaded
-    packages or options are persisted regardless of the daemon's 'cleanup'
+    packages or options are persisted regardless of a daemon's 'cleanup'
     setting.
 }
 \examples{

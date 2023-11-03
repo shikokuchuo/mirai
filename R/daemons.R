@@ -88,15 +88,14 @@
 #'     closed) after a reset.
 #'     }
 #'
+#'     If the host session ends, all connected dispatcher and daemon processes
+#'     automatically exit as soon as their connections are dropped (unless
+#'     the daemons were started with \code{autoexit = FALSE}). If a daemon is
+#'     processing a task, it will exit as soon as the task is complete.
+#'
 #'     To reset persistent daemons started with \code{autoexit = FALSE}, use
 #'     \code{daemons(NULL)} instead, which also sends exit signals to all
 #'     connected daemons prior to resetting.
-#'
-#'     If the host session ends, for whatever reason, all connected dispatcher
-#'     and daemon processes automatically exit as soon as their connections are
-#'     dropped. If a daemon is processing a task, it will exit as soon as the
-#'     task is complete. This is not applicable to daemons where
-#'     \code{autoexit = FALSE} is specified.
 #'
 #'     For historical reasons, \code{daemons()} with no arguments returns the
 #'     value of \code{\link{status}}.
@@ -130,7 +129,8 @@
 #'     known \emph{a priori}, such that tasks can be queued at a daemon behind
 #'     a long-running task while other daemons remain idle. Nevertheless, this
 #'     provides a resource-light approach suited to working with similar-length
-#'     tasks, or where concurrent tasks typically do not exceed available daemons.
+#'     tasks, or where concurrent tasks typically do not exceed available
+#'     daemons.
 #'
 #' @section Distributed Computing:
 #'
@@ -138,8 +138,8 @@
 #'     should be a character string such as: 'tcp://10.75.32.70:5555' at which
 #'     daemon processes should connect to. Switching the URL scheme to
 #'     'tls+tcp://' or 'wss://' automatically upgrades the connection to use TLS.
-#'     The auxiliary function \code{\link{host_url}} may be used to automatically
-#'     construct a valid host URL based on the computer's hostname.
+#'     The auxiliary function \code{\link{host_url}} may be used to
+#'     automatically construct a valid host URL based on the computer's hostname.
 #'
 #'     Specify 'remote' with a call to \code{\link{remote_config}} or
 #'     \code{\link{ssh_config}} to launch daemons on remote machines. Otherwise,
@@ -194,8 +194,8 @@
 #'
 #'     'n' is not required in this case, and disregarded if supplied, as network
 #'     resources may be added or removed at any time. The host automatically
-#'     distributes tasks to all connected daemons and dispatchers in a round-robin
-#'     fashion.
+#'     distributes tasks to all connected daemons and dispatchers in a
+#'     round-robin fashion.
 #'
 #' @section Compute Profiles:
 #'
@@ -220,10 +220,17 @@
 #'     Note: further actions such as resetting daemons via \code{daemons(0)}
 #'     should be carried out with the desired '.compute' argument specified.
 #'
+#' @section Everywhere:
+#'
+#'     \code{\link{everywhere}} evaluates an expression on all connected daemons
+#'     and persists the resultant state. This is designed for setting up the
+#'     evaluation environment, with particular packages loaded, or common
+#'     resources made available, etc.
+#'
 #' @section Timeouts:
 #'
-#'     Specifying the \code{.timeout} argument in \code{\link{mirai}} will ensure
-#'     that the 'mirai' always resolves.
+#'     Specifying the \code{.timeout} argument in \code{\link{mirai}} will
+#'     ensure that the 'mirai' always resolves.
 #'
 #'     However, the task may not have completed and still be ongoing in the
 #'     daemon process. In such situations, dispatcher ensures that queued tasks

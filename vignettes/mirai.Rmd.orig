@@ -235,6 +235,10 @@ daemons(0)
 
 Set the number of daemons to zero to reset.
 
+#### Everywhere
+
+`everywhere()` may be used to evaluate an expression on all connected daemons and persist the resultant state, regardless of a daemon's 'cleanup' setting. This may be used for performing setup of the evaluation environment, with particular packages loaded, or common resources made available, etc.
+
 [&laquo; Back to ToC](#table-of-contents)
 
 ### Distributed Computing: Remote Daemons
