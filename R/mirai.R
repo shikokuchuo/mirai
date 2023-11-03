@@ -454,5 +454,5 @@ mk_mirai_error <- function(e) {
 
 snapshot <- function() `[[<-`(`[[<-`(`[[<-`(., 'vars', names(.GlobalEnv)), 'se', search()), 'op', .Options)
 
-.snapshot <- as.expression(quote(mirai:::snapshot()))
-.timedelay <- as.expression(quote(nanonext::msleep(500L)))
+.snapshot <- expression(mirai:::snapshot())
+.timedelay <- expression(nanonext::msleep(500L))

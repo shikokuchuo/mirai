@@ -117,7 +117,7 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
     daemons(n = n, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
   }
 
-  pipe_notify(..[[id]][["sock"]], cv = ..[[id]][["cv"]], remove = TRUE, flag = TRUE)
+  pipe_notify(..[[id]][["sock"]], cv = ..[[id]][["cv"]], add = FALSE, remove = TRUE, flag = TRUE)
 
   cl <- vector(mode = "list", length = n)
   for (i in seq_along(cl))

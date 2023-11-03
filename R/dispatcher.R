@@ -78,7 +78,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
   cv <- cv()
   sock <- socket(protocol = "rep")
   on.exit(reap(sock))
-  pipe_notify(sock, cv = cv, remove = TRUE, flag = TRUE)
+  pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock = sock, url = host, asyncdial = asyncdial)
 
   auto <- is.null(url)
@@ -124,7 +124,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
     nurl <- if (auto) auto_tokenized_url() else if (token) new_tokenized_url(burl) else burl
     nsock <- req_socket(NULL)
     ncv <- cv()
-    pipe_notify(nsock, cv = ncv, cv2 = cv, add = TRUE, remove = TRUE)
+    pipe_notify(nsock, cv = ncv, cv2 = cv, add = TRUE, remove = TRUE, flag = FALSE)
     listen(nsock, url = nurl, tls = tls, error = TRUE)
     lock(nsock, cv = ncv)
     listener <- attr(nsock, "listener")[[1L]]
@@ -188,7 +188,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
             i <- -i
             reap(servers[[i]])
             servers[[i]] <- nsock <- req_socket(NULL)
-            pipe_notify(nsock, cv = active[[i]], cv2 = cv, add = TRUE, remove = TRUE)
+            pipe_notify(nsock, cv = active[[i]], cv2 = cv, add = TRUE, remove = TRUE, flag = FALSE)
             data <- servernames[i] <- if (auto) auto_tokenized_url() else new_tokenized_url(basenames[i])
             instance[i] <- -abs(instance[i])
             listen(nsock, url = data, tls = tls, error = TRUE)
