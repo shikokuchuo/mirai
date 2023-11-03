@@ -181,14 +181,13 @@ connecting to different resources).</p></dd>
     background process for each request.</p></li>
 <li><p>Any unresolved 'mirai' will return an 'errorValue' 7 (Object
     closed) after a reset.</p></li>
-</ul><p>To reset persistent daemons started with <code>autoexit = FALSE</code>, use
+</ul><p>If the host session ends, all connected dispatcher and daemon processes
+    automatically exit as soon as their connections are dropped (unless
+    the daemons were started with <code>autoexit = FALSE</code>). If a daemon is
+    processing a task, it will exit as soon as the task is complete.</p>
+<p>To reset persistent daemons started with <code>autoexit = FALSE</code>, use
     <code>daemons(NULL)</code> instead, which also sends exit signals to all
     connected daemons prior to resetting.</p>
-<p>If the host session ends, for whatever reason, all connected dispatcher
-    and daemon processes automatically exit as soon as their connections are
-    dropped. If a daemon is processing a task, it will exit as soon as the
-    task is complete. This is not applicable to daemons where
-    <code>autoexit = FALSE</code> is specified.</p>
 <p>For historical reasons, <code>daemons()</code> with no arguments returns the
     value of <code><a href="status.html">status</a></code>.</p>
     </div>
@@ -225,7 +224,8 @@ connecting to different resources).</p></dd>
     known <em>a priori</em>, such that tasks can be queued at a daemon behind
     a long-running task while other daemons remain idle. Nevertheless, this
     provides a resource-light approach suited to working with similar-length
-    tasks, or where concurrent tasks typically do not exceed available daemons.</p>
+    tasks, or where concurrent tasks typically do not exceed available
+    daemons.</p>
     </div>
     <div id="distributed-computing">
     <h2>Distributed Computing</h2>
@@ -236,8 +236,8 @@ connecting to different resources).</p></dd>
     should be a character string such as: 'tcp://10.75.32.70:5555' at which
     daemon processes should connect to. Switching the URL scheme to
     'tls+tcp://' or 'wss://' automatically upgrades the connection to use TLS.
-    The auxiliary function <code><a href="host_url.html">host_url</a></code> may be used to automatically
-    construct a valid host URL based on the computer's hostname.</p>
+    The auxiliary function <code><a href="host_url.html">host_url</a></code> may be used to
+    automatically construct a valid host URL based on the computer's hostname.</p>
 <p>Specify 'remote' with a call to <code><a href="remote_config.html">remote_config</a></code> or
     <code><a href="remote_config.html">ssh_config</a></code> to launch daemons on remote machines. Otherwise,
     <code><a href="launch_local.html">launch_remote</a></code> may be used to generate the shell commands to
@@ -278,8 +278,8 @@ connecting to different resources).</p></dd>
     the same host URL.</p>
 <p>'n' is not required in this case, and disregarded if supplied, as network
     resources may be added or removed at any time. The host automatically
-    distributes tasks to all connected daemons and dispatchers in a round-robin
-    fashion.</p>
+    distributes tasks to all connected daemons and dispatchers in a
+    round-robin fashion.</p>
     </div>
     <div id="compute-profiles">
     <h2>Compute Profiles</h2>
@@ -304,13 +304,23 @@ connecting to different resources).</p></dd>
 <p>Note: further actions such as resetting daemons via <code>daemons(0)</code>
     should be carried out with the desired '.compute' argument specified.</p>
     </div>
+    <div id="everywhere">
+    <h2>Everywhere</h2>
+    
+
+
+<p><code><a href="everywhere.html">everywhere</a></code> evaluates an expression on all connected daemons
+    and persists the resultant state. This is designed for setting up the
+    evaluation environment, with particular packages loaded, or common
+    resources made available, etc.</p>
+    </div>
     <div id="timeouts">
     <h2>Timeouts</h2>
     
 
 
-<p>Specifying the <code>.timeout</code> argument in <code><a href="mirai.html">mirai</a></code> will ensure
-    that the 'mirai' always resolves.</p>
+<p>Specifying the <code>.timeout</code> argument in <code><a href="mirai.html">mirai</a></code> will
+    ensure that the 'mirai' always resolves.</p>
 <p>However, the task may not have completed and still be ongoing in the
     daemon process. In such situations, dispatcher ensures that queued tasks
     are not assigned to the busy process, however overall performance may
