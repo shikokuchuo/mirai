@@ -229,6 +229,14 @@ This implementation sends tasks immediately, and ensures that tasks are evenly-d
 
 The advantage of this approach is that it is low-level and does not require an additional dispatcher process. It is well-suited to working with similar-length tasks, or where the number of concurrent tasks typically does not exceed available daemons.
 
+`everywhere()` may be used to evaluate an expression on all connected daemons and persist the resultant state, regardless of a daemon's 'cleanup' setting.
+
+```{r everywhere}
+everywhere(library(parallel))
+```
+
+The above keeps the `parallel` package loaded for all evaluations. Other types of setup task may also be performed such as making a common resource available, etc.
+
 ```{r daemons5}
 daemons(0)
 ```

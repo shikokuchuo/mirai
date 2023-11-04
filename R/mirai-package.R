@@ -124,7 +124,8 @@ registerPromisesMethods <- function() {
 .command <- NULL
 .urlscheme <- NULL
 
-.intmax <- .Machine[["integer.max"]]
+.intmax <- 2147483647L
+.timelimit <- 5000L
 .messages <- list2env(
   list(
     arglen = "'args' and/or 'url' must be of length 1 or the same length",
@@ -150,7 +151,6 @@ registerPromisesMethods <- function() {
   ),
   hash = TRUE
 )
-.timelimit <- 5000L
 
 as.promise <- NULL
 recvData <- NULL
