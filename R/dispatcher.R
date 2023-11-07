@@ -125,8 +125,8 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
     nsock <- req_socket(NULL)
     ncv <- cv()
     pipe_notify(nsock, cv = ncv, cv2 = cv, add = TRUE, remove = TRUE, flag = FALSE)
-    listen(nsock, url = nurl, tls = tls, error = TRUE)
     lock(nsock, cv = ncv)
+    listen(nsock, url = nurl, tls = tls, error = TRUE)
     listener <- attr(nsock, "listener")[[1L]]
     if (i == 1L && !auto && parse_url(opt(listener, "url"))[["port"]] == "0") {
       realport <- opt(listener, "tcp-bound-port")
@@ -189,10 +189,10 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
             reap(servers[[i]])
             servers[[i]] <- nsock <- req_socket(NULL)
             pipe_notify(nsock, cv = active[[i]], cv2 = cv, add = TRUE, remove = TRUE, flag = FALSE)
+            lock(nsock, cv = active[[i]])
             data <- servernames[i] <- if (auto) auto_tokenized_url() else new_tokenized_url(basenames[i])
             instance[i] <- -abs(instance[i])
             listen(nsock, url = data, tls = tls, error = TRUE)
-            lock(nsock, cv = active[[i]])
 
           } else {
             data <- ""
