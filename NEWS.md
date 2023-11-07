@@ -1,3 +1,5 @@
+# mirai 0.11.1.9000 (development)
+
 # mirai 0.11.1
 
 * Adds 'mirai' method for 'as.promise()' from the {promises} package (if available). This functionality is merged from the package {mirai.promises}, allowing use of the promise pipe `%...>%` with a 'mirai'.
