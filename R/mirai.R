@@ -411,6 +411,34 @@ is_mirai_interrupt <- function(x) inherits(x, "miraiInterrupt")
 #'
 is_error_value <- is_error_value
 
+#' Register Serialization and Unserialisation Functions
+#'
+#' For sending and receiving reference objects, such as those accessed via an
+#'     external pointer.
+#'
+#' @param inhook a function (for custom serialization). The signature for this
+#'     function must accept a list and return a raw vector, e.g.
+#'     safetensors::safe_serialize, or else NULL to reset.
+#' @param outhook a function (for custom unserialization). The signature for
+#'     this function must accept a raw vector and return a list, e.g.
+#'     safetensors::safe_load_file, or else NULL to reset.
+#'
+#' @return Invisibly, a pairlist comprising the currently-registered 'inhook'
+#'     and 'outhook' functions.
+#'
+#' @details Calling this function without any arguments returns (invisibly) the
+#'     currently-registered functions.
+#'
+#' @export
+#'
+register <- function(inhook, outhook) {
+
+  for (name in names(..))
+    everywhere(mirai::register(inhook, outhook), inhook = inhook, outhook = outhook, .profile = name)
+  nextmode(inhook, outhook)
+
+}
+
 #' @export
 #'
 print.mirai <- function(x, ...) {
