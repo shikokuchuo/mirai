@@ -447,9 +447,9 @@ status <- function(.compute = "default") {
 
   is.list(.compute) && return(status(attr(.compute, "id")))
   envir <- ..[[.compute]]
-  sock <- envir[["sock"]]
-  list(connections = if (is.null(sock)) 0L else as.integer(stat(sock, "pipes")),
-       daemons = if (length(envir[["sockc"]])) query_status(envir) else if (length(envir[["urls"]])) envir[["urls"]] else 0L)
+  length(envir) || return(list(connections = 0L, daemons = 0L))
+  list(connections = as.integer(stat(envir[["sock"]], "pipes")),
+       daemons = if (length(envir[["sockc"]])) query_status(envir) else envir[["urls"]])
 
 }
 
