@@ -294,15 +294,15 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
 
   envir <- ..[[.compute]]
   if (is.null(envir))
-    envir <- `[[<-`(.., .compute, new.env(hash = FALSE, parent = ..))[[.compute]]
+    envir <- new.env(hash = FALSE, parent = ..)
 
   if (is.character(url)) {
 
-    if (is.null(envir[["sock"]])) {
+    if (!length(envir)) {
       purl <- parse_url(url)
       if (substr(purl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
         tls <- write_cert(cn = purl[["hostname"]])
-        envir[["tls"]] <- tls[["client"]]
+        `[[<-`(envir, "tls", tls[["client"]])
         tls <- tls[["server"]]
       }
       cv <- cv()
@@ -325,7 +325,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         `[[<-`(envir, "urls", urls)
         n <- 0L
       }
-      `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv)
+      `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv))
       remotes <- substitute(remote)
       if (!is.symbol(remotes)) remote <- remotes
       if (length(remote))
@@ -340,7 +340,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
     n <- as.integer(n)
 
     if (n == 0L) {
-      length(envir[["n"]]) || return(0L)
+      length(envir) || return(0L)
 
       if (send_signal) {
         signals <- max(length(envir[["urls"]]), stat(envir[["sock"]], "pipes"))
@@ -354,7 +354,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       length(envir[["sockc"]]) && reap(envir[["sockc"]])
       ..[[.compute]] <- NULL -> envir
 
-    } else if (is.null(envir[["sock"]])) {
+    } else if (!length(envir)) {
 
       n > 0L || stop(.messages[["n_zero"]])
       urld <- auto_tokenized_url()
@@ -378,7 +378,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         }
         `[[<-`(envir, "urls", urld)
       }
-      `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv)
+      `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv))
     }
 
   }

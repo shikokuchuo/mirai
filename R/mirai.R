@@ -152,7 +152,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .signal = FALSE, 
 
   envir <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
-  if (length(..[[.compute]][["sock"]])) {
+  if (length(..[[.compute]])) {
     aio <- if (.signal)
       request_signal(.context(..[[.compute]][["sock"]]), data = envir, cv = ..[[.compute]][["cv"]], send_mode = 1L, recv_mode = 1L, timeout = .timeout) else
         request(.context(..[[.compute]][["sock"]]), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
