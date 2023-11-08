@@ -147,21 +147,22 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .signal = FALSE, 
   if (length(.args)) {
     is.list(.args) || stop(.messages[["requires_list"]])
     arglist <- if (length(names(.args))) c(.args, arglist) else
-      c(`names<-`(.args, `storage.mode<-`(substitute(.args)[-1L], "character")), arglist)
+      c(`names<-`(.args, as.character(substitute(.args)[-1L])), arglist)
   }
 
-  envir <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
+  data <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
-  if (length(..[[.compute]])) {
+  envir <- ..[[.compute]]
+  if (length(envir)) {
     aio <- if (.signal)
-      request_signal(.context(..[[.compute]][["sock"]]), data = envir, cv = ..[[.compute]][["cv"]], send_mode = 1L, recv_mode = 1L, timeout = .timeout) else
-        request(.context(..[[.compute]][["sock"]]), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+      request_signal(.context(envir[["sock"]]), data = data, cv = envir[["cv"]], send_mode = 1L, recv_mode = 1L, timeout = .timeout) else
+        request(.context(envir[["sock"]]), data = data, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
 
   } else {
     url <- auto_tokenized_url()
     sock <- req_socket(url, resend = 0L)
     length(.timeout) && launch_and_sync_daemon(sock = sock, url) || launch_daemon(url)
-    aio <- request(.context(sock), data = envir, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    aio <- request(.context(sock), data = data, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
   }
