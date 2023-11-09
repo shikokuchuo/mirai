@@ -1,5 +1,6 @@
 # mirai 0.11.1.9000 (development)
 
+* Fixes regression in 0.11.1 which prevented the correct random seed being set when using dispatcher.
 * Internal performance enhancements.
 
 # mirai 0.11.1

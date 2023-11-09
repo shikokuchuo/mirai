@@ -293,12 +293,11 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
   missing(n) && missing(url) && return(status(.compute))
 
   envir <- ..[[.compute]]
-  if (is.null(envir))
-    envir <- new.env(hash = FALSE, parent = ..)
 
   if (is.character(url)) {
 
-    if (!length(envir)) {
+    if (is.null(envir)) {
+      envir <- new.env(hash = FALSE, parent = ..)
       purl <- parse_url(url)
       if (substr(purl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
         tls <- write_cert(cn = purl[["hostname"]])
@@ -354,9 +353,10 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       length(envir[["sockc"]]) && reap(envir[["sockc"]])
       ..[[.compute]] <- NULL -> envir
 
-    } else if (!length(envir)) {
+    } else if (is.null(envir)) {
 
       n > 0L || stop(.messages[["n_zero"]])
+      envir <- new.env(hash = FALSE, parent = ..)
       urld <- auto_tokenized_url()
       cv <- cv()
       create_stream(n = n, seed = seed, envir = envir)
@@ -383,8 +383,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
 
   }
 
-  n <- envir[["n"]]
-  if (is.null(n)) 0L else if (!n) urls else n
+  if (is.null(envir)) 0L else if (envir[["n"]]) envir[["n"]] else envir[["urls"]]
 
 }
 
