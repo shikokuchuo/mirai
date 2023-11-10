@@ -142,7 +142,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .signal = FALSE, 
   missing(.expr) && stop(.messages[["missing_expression"]])
 
   expr <- substitute(.expr)
-  arglist <- list(..., .expr = if (is.symbol(expr) && is.language(get0(expr, envir = sys.frame(-1L)))) .expr else expr)
+  arglist <- list(..., .expr = if (is.symbol(expr) && is.language(get0(as.character(expr), envir = sys.frame(-1L)))) .expr else expr)
 
   if (length(.args)) {
     is.list(.args) || stop(.messages[["requires_list"]])
