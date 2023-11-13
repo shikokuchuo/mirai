@@ -44,8 +44,8 @@
 #'
 #' @section Remote Nodes:
 #'
-#'     Specify 'n' and 'url' to set up a host connection for remote nodes to
-#'     dial into.
+#'     Specify 'url' and 'n' to set up a host connection for remote nodes to
+#'     dial into. 'n' defaults to one if not specified.
 #'
 #'     Also specify 'remote' to launch the nodes using a configuration generated
 #'     by \code{\link{remote_config}} or \code{\link{ssh_config}}. In this case,
@@ -101,16 +101,20 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
   if (is.character(url)) {
 
     length(url) == 1L || stop(.messages[["single_url"]])
+    daemons(url = url, remote = remote, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
 
     if (length(remote)) {
       args <- remote[["args"]]
       n <- if (is.list(args)) length(args) else 1L
     } else {
-      missing(n) && stop(.messages[["requires_n"]])
-      if (interactive()) printLaunchCmd <- TRUE
+      if (missing(n)) n <- 1L
+      is.numeric(n) || stop(.messages[["numeric_n"]])
     }
 
-    daemons(url = url, remote = remote, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
+    if (interactive()) {
+      cat("Shell commands for deployment on nodes:\n\n", file = stdout())
+      print(launch_remote(rep(..[[id]][["urls"]], n), .compute = id))
+    }
 
   } else {
     is.numeric(n) || stop(.messages[["numeric_n"]])
@@ -122,11 +126,6 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
   cl <- vector(mode = "list", length = n)
   for (i in seq_along(cl))
     cl[[i]] <- `attributes<-`(new.env(), list(class = "miraiNode", node = i, id = id))
-
-  if (printLaunchCmd) {
-    message("Shell commands for deployment on nodes:")
-    print(launch_remote(rep(..[[id]][["urls"]], n), .compute = id))
-  }
 
   `attributes<-`(cl, list(class = c("miraiCluster", "cluster"), id = id))
 

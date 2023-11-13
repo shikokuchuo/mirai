@@ -16,9 +16,9 @@
 
 # mirai ------------------------------------------------------------------------
 
-#' Daemons (Configure Persistent Processes)
+#' Daemons (Set Persistent Processes)
 #'
-#' Set 'daemons' or persistent background processes receiving \code{\link{mirai}}
+#' Set 'daemons' or persistent background processes to receive \code{\link{mirai}}
 #'     requests. Specify 'n' to create daemons on the local machine. Specify
 #'     'url' for receiving connections from remote daemons (for distributed
 #'     computing across the network). Specify 'remote' to optionally launch
@@ -562,4 +562,4 @@ create_stream <- function(n, seed, envir) {
   `[[<-`(.GlobalEnv, ".Random.seed", oseed)
 }
 
-._scm_. <- base64dec("BwABAAAAAABCCgMAAAABAwQAAAUDAAUAAABVVEYtOPwAAAA=", convert = FALSE)
+._scm_. <- base64dec("QgoDAAAAAQMEAAAFAwAFAAAAVVRGLTj8AAAA", convert = FALSE)

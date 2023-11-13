@@ -70,8 +70,10 @@ process and should not be independently supplied.}
 Invisible NULL.
 }
 \description{
-Implements a dispatcher for tasks from a host to multiple daemons for
-    processing, using a FIFO scheduling rule, queuing tasks as required.
+Dispatches tasks from a host to multiple daemons for processing, using a FIFO
+    scheduling rule, queuing tasks as required. Daemon / dispatcher settings
+    may be controlled by \code{\link{daemons}} and this function should not
+    need to be invoked directly.
 }
 \details{
 The network topology is such that a dispatcher acts as a gateway

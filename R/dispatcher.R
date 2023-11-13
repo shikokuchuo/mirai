@@ -18,8 +18,10 @@
 
 #' Dispatcher
 #'
-#' Implements a dispatcher for tasks from a host to multiple daemons for
-#'     processing, using a FIFO scheduling rule, queuing tasks as required.
+#' Dispatches tasks from a host to multiple daemons for processing, using a FIFO
+#'     scheduling rule, queuing tasks as required. Daemon / dispatcher settings
+#'     may be controlled by \code{\link{daemons}} and this function should not
+#'     need to be invoked directly.
 #'
 #' @inheritParams daemon
 #' @param host the character host URL to dial (where tasks are sent from),
@@ -215,7 +217,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           q <- queue[[i]][["daemon"]]
           if (req[1L] == .nextmode) {
             ctx <- .context(servers[[q]])
-            send_aio(ctx, data = .nextmode, mode = 2L)
+            send_aio(ctx, data = NULL, mode = 2L)
             reap(ctx)
           } else {
             serverfree[q] <- TRUE

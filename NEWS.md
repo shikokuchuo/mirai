@@ -1,5 +1,6 @@
 # mirai 0.11.1.9000 (development)
 
+* 'mirai' cluster creation specifying only 'url' now succeeds with implied 'n' of one.
 * Fixes `mirai()` specifying the name of a language object for '.expr' in R versions 4.0 and earlier. 
 * Fixes regression in 0.11.1 which prevented the correct random seed being set when using dispatcher.
 * Internal performance enhancements.
