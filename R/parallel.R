@@ -109,11 +109,10 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
     } else {
       if (missing(n)) n <- 1L
       is.numeric(n) || stop(.messages[["numeric_n"]])
-    }
-
-    if (interactive()) {
-      cat("Shell commands for deployment on nodes:\n\n", file = stdout())
-      print(launch_remote(rep(..[[id]][["urls"]], n), .compute = id))
+      if (interactive()) {
+        cat("Shell commands for deployment on nodes:\n\n", file = stdout())
+        print(launch_remote(rep(..[[id]][["urls"]], n), .compute = id))
+      }
     }
 
   } else {
