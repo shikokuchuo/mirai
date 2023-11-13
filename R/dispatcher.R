@@ -216,9 +216,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           send_aio(queue[[i]][["ctx"]], data = req, mode = 2L)
           q <- queue[[i]][["daemon"]]
           if (req[1L] == .nextmode) {
-            ctx <- .context(servers[[q]])
-            send_aio(ctx, data = NULL, mode = 2L)
-            reap(ctx)
+            send_aio(.context(servers[[q]]), data = NULL, mode = 2L)
           } else {
             serverfree[q] <- TRUE
           }
