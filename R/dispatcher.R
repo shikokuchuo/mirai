@@ -181,7 +181,8 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
         i <- .subset2(cmessage, "value")
         if (i) {
           if (i > 0L && !activevec[[i]]) {
-            reap(attr(servers[[i]], "listener")[[1L]])
+            data <- attr(servers[[i]], "listener")[[1L]]
+            attr(data, "state") != "closed" && reap(data)
             attr(servers[[i]], "listener") <- NULL
             data <- servernames[i] <- if (auto) auto_tokenized_url() else new_tokenized_url(basenames[i])
             instance[i] <- -abs(instance[i])
@@ -215,13 +216,9 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           if (is.object(req)) req <- serialize(req, NULL)
           send_aio(queue[[i]][["ctx"]], data = req, mode = 2L)
           q <- queue[[i]][["daemon"]]
-          if (req[1L] == .nextmode) {
-            ctx <- .context(servers[[q]])
-            send(ctx, data = NULL, mode = 2L, block = FALSE)
-            reap(ctx)
-          } else {
-            serverfree[q] <- TRUE
-          }
+          if (req[1L] == .nextmode)
+            close(attr(servers[[q]], "listener")[[1L]]) else
+              serverfree[q] <- TRUE
           complete[q] <- complete[q] + 1L
           ctx <- .context(sock)
           req <- recv_aio_signal(ctx, cv = cv, mode = 8L)
