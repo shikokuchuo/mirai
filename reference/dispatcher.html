@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.1.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.1.9004</span>
       </span>
     </div>
 
@@ -122,9 +122,11 @@ can mask potential connection issues.</p></dd>
 
 
 <dt>token</dt>
-<dd><p>[default FALSE] if TRUE, appends a unique 40-character token
+<dd><p>[default FALSE] if TRUE, appends a unique 24-character token
 to each URL path the dispatcher listens at (not applicable for TCP URLs
-which do not accept a path).</p></dd>
+which do not accept a path). If using tokens, <code><a href="saisei.html">saisei</a></code> must
+be called to re-generate the URL for new daemons to connect at after
+daemons have disconnected after task or time outs.</p></dd>
 
 
 <dt>tls</dt>
