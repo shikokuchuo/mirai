@@ -46,9 +46,11 @@
 #'     specified port is not open etc.). Specifying TRUE continues retrying
 #'     (indefinitely) if not immediately successful, which is more resilient but
 #'     can mask potential connection issues.
-#' @param token [default FALSE] if TRUE, appends a unique 40-character token
+#' @param token [default FALSE] if TRUE, appends a unique 24-character token
 #'     to each URL path the dispatcher listens at (not applicable for TCP URLs
-#'     which do not accept a path).
+#'     which do not accept a path). If using tokens, \code{\link{saisei}} must
+#'     be called to re-generate the URL for new daemons to connect at after
+#'     daemons have disconnected after task or time outs.
 #' @param tls [default NULL] (required for secure TLS connections) \strong{either}
 #'     the character path to a file containing the PEM-encoded TLS certificate
 #'     and associated private key (may contain additional certificates leading
@@ -216,9 +218,17 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           if (is.object(req)) req <- serialize(req, NULL)
           send_aio(queue[[i]][["ctx"]], data = req, mode = 2L)
           q <- queue[[i]][["daemon"]]
-          if (req[1L] == .nextmode)
-            close(attr(servers[[q]], "listener")[[1L]]) else
-              serverfree[q] <- TRUE
+          if (req[1L] == .nextmode) {
+            if (token) {
+              close(attr(servers[[q]], "listener")[[1L]])
+            } else {
+              ctx <- .context(servers[[q]])
+              send(ctx, data = NULL, mode = 2L, block = FALSE)
+              reap(ctx)
+            }
+          } else {
+            serverfree[q] <- TRUE
+          }
           complete[q] <- complete[q] + 1L
           ctx <- .context(sock)
           req <- recv_aio_signal(ctx, cv = cv, mode = 8L)
