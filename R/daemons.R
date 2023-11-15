@@ -16,9 +16,9 @@
 
 # mirai ------------------------------------------------------------------------
 
-#' Daemons (Configure Persistent Processes)
+#' Daemons (Set Persistent Processes)
 #'
-#' Set 'daemons' or persistent background processes receiving \code{\link{mirai}}
+#' Set 'daemons' or persistent background processes to receive \code{\link{mirai}}
 #'     requests. Specify 'n' to create daemons on the local machine. Specify
 #'     'url' for receiving connections from remote daemons (for distributed
 #'     computing across the network). Specify 'remote' to optionally launch
@@ -293,16 +293,15 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
   missing(n) && missing(url) && return(status(.compute))
 
   envir <- ..[[.compute]]
-  if (is.null(envir))
-    envir <- `[[<-`(.., .compute, new.env(hash = FALSE, parent = ..))[[.compute]]
 
   if (is.character(url)) {
 
-    if (is.null(envir[["sock"]])) {
+    if (is.null(envir)) {
+      envir <- new.env(hash = FALSE, parent = ..)
       purl <- parse_url(url)
       if (substr(purl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
         tls <- write_cert(cn = purl[["hostname"]])
-        envir[["tls"]] <- tls[["client"]]
+        `[[<-`(envir, "tls", tls[["client"]])
         tls <- tls[["server"]]
       }
       cv <- cv()
@@ -325,7 +324,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         `[[<-`(envir, "urls", urls)
         n <- 0L
       }
-      `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv)
+      `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv))
       remotes <- substitute(remote)
       if (!is.symbol(remotes)) remote <- remotes
       if (length(remote))
@@ -340,7 +339,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
     n <- as.integer(n)
 
     if (n == 0L) {
-      length(envir[["n"]]) || return(0L)
+      length(envir) || return(0L)
 
       if (send_signal) {
         signals <- max(length(envir[["urls"]]), stat(envir[["sock"]], "pipes"))
@@ -354,9 +353,10 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       length(envir[["sockc"]]) && reap(envir[["sockc"]])
       ..[[.compute]] <- NULL -> envir
 
-    } else if (is.null(envir[["sock"]])) {
+    } else if (is.null(envir)) {
 
       n > 0L || stop(.messages[["n_zero"]])
+      envir <- new.env(hash = FALSE, parent = ..)
       urld <- auto_tokenized_url()
       cv <- cv()
       create_stream(n = n, seed = seed, envir = envir)
@@ -378,13 +378,12 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         }
         `[[<-`(envir, "urls", urld)
       }
-      `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv)
+      `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv))
     }
 
   }
 
-  n <- envir[["n"]]
-  if (is.null(n)) 0L else if (!n) urls else n
+  if (is.null(envir)) 0L else if (envir[["n"]]) envir[["n"]] else envir[["urls"]]
 
 }
 
@@ -447,9 +446,9 @@ status <- function(.compute = "default") {
 
   is.list(.compute) && return(status(attr(.compute, "id")))
   envir <- ..[[.compute]]
-  sock <- envir[["sock"]]
-  list(connections = if (is.null(sock)) 0L else as.integer(stat(sock, "pipes")),
-       daemons = if (length(envir[["sockc"]])) query_status(envir) else if (length(envir[["urls"]])) envir[["urls"]] else 0L)
+  length(envir) || return(list(connections = 0L, daemons = 0L))
+  list(connections = as.integer(stat(envir[["sock"]], "pipes")),
+       daemons = if (length(envir[["sockc"]])) query_status(envir) else envir[["urls"]])
 
 }
 
@@ -563,4 +562,4 @@ create_stream <- function(n, seed, envir) {
   `[[<-`(.GlobalEnv, ".Random.seed", oseed)
 }
 
-._scm_. <- base64dec("BwABAAAAAABCCgMAAAABAwQAAAUDAAUAAABVVEYtOPwAAAA=", convert = FALSE)
+._scm_. <- base64dec("QgoDAAAAAQMEAAAFAwAFAAAAVVRGLTj8AAAA", convert = FALSE)

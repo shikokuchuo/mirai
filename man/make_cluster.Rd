@@ -58,8 +58,8 @@ Requires R >= 4.4 (currently R-devel). Clusters created with this
 \section{Remote Nodes}{
 
 
-    Specify 'n' and 'url' to set up a host connection for remote nodes to
-    dial into.
+    Specify 'url' and 'n' to set up a host connection for remote nodes to
+    dial into. 'n' defaults to one if not specified.
 
     Also specify 'remote' to launch the nodes using a configuration generated
     by \code{\link{remote_config}} or \code{\link{ssh_config}}. In this case,

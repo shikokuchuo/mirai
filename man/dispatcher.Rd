@@ -45,7 +45,7 @@ specified port is not open etc.). Specifying TRUE continues retrying
 (indefinitely) if not immediately successful, which is more resilient but
 can mask potential connection issues.}
 
-\item{token}{[default FALSE] if TRUE, appends a unique 40-character token
+\item{token}{[default FALSE] if TRUE, appends a unique 24-character token
 to each URL path the dispatcher listens at (not applicable for TCP URLs
 which do not accept a path).}
 
@@ -70,8 +70,10 @@ process and should not be independently supplied.}
 Invisible NULL.
 }
 \description{
-Implements a dispatcher for tasks from a host to multiple daemons for
-    processing, using a FIFO scheduling rule, queuing tasks as required.
+Dispatches tasks from a host to multiple daemons for processing, using a FIFO
+    scheduling rule, queuing tasks as required. Daemon / dispatcher settings
+    may be controlled by \code{\link{daemons}} and this function should not
+    need to be invoked directly.
 }
 \details{
 The network topology is such that a dispatcher acts as a gateway

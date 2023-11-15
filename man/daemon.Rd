@@ -2,7 +2,7 @@
 % Please edit documentation in R/daemon.R
 \name{daemon}
 \alias{daemon}
-\title{Daemon}
+\title{Daemon Instance}
 \usage{
 daemon(
   url,
@@ -69,9 +69,11 @@ process and should not be independently supplied.}
 Invisible NULL.
 }
 \description{
-Implements a persistent executor for the remote process. Awaits data,
-    evaluates an expression in an environment containing the supplied data,
-    and returns the result to the host caller.
+Starts up an execution daemon to receive \code{\link{mirai}} requests. Awaits
+    data, evaluates an expression in an environment containing the supplied
+    data, and returns the value to the host caller. Daemon settings may be
+    controlled by \code{\link{daemons}} and this function should not need to
+    be invoked directly, unless deploying manually on remote resources.
 }
 \details{
 The network topology is such that daemons dial into the host or

@@ -16,11 +16,13 @@
 
 # mirai ------------------------------------------------------------------------
 
-#' Daemon
+#' Daemon Instance
 #'
-#' Implements a persistent executor for the remote process. Awaits data,
-#'     evaluates an expression in an environment containing the supplied data,
-#'     and returns the result to the host caller.
+#' Starts up an execution daemon to receive \code{\link{mirai}} requests. Awaits
+#'     data, evaluates an expression in an environment containing the supplied
+#'     data, and returns the value to the host caller. Daemon settings may be
+#'     controlled by \code{\link{daemons}} and this function should not need to
+#'     be invoked directly, unless deploying manually on remote resources.
 #'
 #' @param url the character host or dispatcher URL to dial into, including the
 #'     port to connect to (and optionally for websockets, a path), e.g.

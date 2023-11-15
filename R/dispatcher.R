@@ -18,8 +18,10 @@
 
 #' Dispatcher
 #'
-#' Implements a dispatcher for tasks from a host to multiple daemons for
-#'     processing, using a FIFO scheduling rule, queuing tasks as required.
+#' Dispatches tasks from a host to multiple daemons for processing, using a FIFO
+#'     scheduling rule, queuing tasks as required. Daemon / dispatcher settings
+#'     may be controlled by \code{\link{daemons}} and this function should not
+#'     need to be invoked directly.
 #'
 #' @inheritParams daemon
 #' @param host the character host URL to dial (where tasks are sent from),
@@ -44,7 +46,7 @@
 #'     specified port is not open etc.). Specifying TRUE continues retrying
 #'     (indefinitely) if not immediately successful, which is more resilient but
 #'     can mask potential connection issues.
-#' @param token [default FALSE] if TRUE, appends a unique 40-character token
+#' @param token [default FALSE] if TRUE, appends a unique 24-character token
 #'     to each URL path the dispatcher listens at (not applicable for TCP URLs
 #'     which do not accept a path).
 #' @param tls [default NULL] (required for secure TLS connections) \strong{either}
@@ -112,8 +114,9 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
     }
   }
 
-  envir <- ..[["default"]]
-  if (length(rs)) `[[<-`(envir, "stream", as.integer(rs))
+  envir <- new.env(hash = FALSE)
+  if (length(rs))
+    `[[<-`(envir, "stream", as.integer(rs))
 
   for (i in seq_n) {
     burl <- if (auto) .urlscheme else
@@ -214,7 +217,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           q <- queue[[i]][["daemon"]]
           if (req[3L]) {
             ctx <- .context(servers[[q]])
-            send_aio(ctx, data = 0L, mode = 2L)
+            send(ctx, data = NULL, mode = 2L, block = FALSE)
             reap(ctx)
           } else {
             serverfree[q] <- TRUE

@@ -16,7 +16,7 @@
 
 # mirai.promises ---------------------------------------------------------------
 
-#' Make 'Mirai' 'Promise'
+#' Make Mirai Promise
 #'
 #' Creates a 'promise' from a 'mirai'.
 #'

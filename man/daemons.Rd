@@ -2,7 +2,7 @@
 % Please edit documentation in R/daemons.R
 \name{daemons}
 \alias{daemons}
-\title{Daemons (Configure Persistent Processes)}
+\title{Daemons (Set Persistent Processes)}
 \usage{
 daemons(
   n,
@@ -82,7 +82,7 @@ Depending on the arguments supplied:
     }
 }
 \description{
-Set 'daemons' or persistent background processes receiving \code{\link{mirai}}
+Set 'daemons' or persistent background processes to receive \code{\link{mirai}}
     requests. Specify 'n' to create daemons on the local machine. Specify
     'url' for receiving connections from remote daemons (for distributed
     computing across the network). Specify 'remote' to optionally launch
