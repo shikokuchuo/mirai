@@ -23,6 +23,7 @@ Invisibly, a pairlist comprising the currently-registered 'inhook'
 For sending and receiving reference objects accessed via an external pointer.
 }
 \details{
-Calling this function without any arguments returns (invisibly) the
+For the functions to be registered, both 'inhook' and 'outhook' need
+    to be specified. Calling without any arguments returns (invisibly) the
     currently-registered functions.
 }

@@ -31,7 +31,8 @@
 #'     over, any arguments specified via '.args'.
 #' @param .args (optional) \strong{either} a list of objects to be passed by
 #'     \link{name} (found in the current scope), \strong{or else} a list of
-#'     name = value pairs, as in '...'.
+#'     name = value pairs, as in '...'. If an object other than a list is
+#'     supplied, it will be coerced to a list.
 #' @param .timeout [default NULL] for no timeout, or an integer value in
 #'     milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
@@ -145,7 +146,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .signal = FALSE, 
   arglist <- list(..., .expr = if (is.symbol(expr) && is.language(get0(as.character(expr), envir = sys.frame(-1L)))) .expr else expr)
 
   if (length(.args)) {
-    is.list(.args) || stop(.messages[["requires_list"]])
+    if (!is.list(.args)) .args <- as.list(.args)
     arglist <- if (length(names(.args))) c(.args, arglist) else
       c(`names<-`(.args, as.character(substitute(.args)[-1L])), arglist)
   }
@@ -206,7 +207,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .signal = FALSE, 
 everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 
   envir <- ..[[.compute]]
-  length(envir) || stop(.messages[["daemons_required"]])
+  length(envir) || return(invisible())
 
   expr <- c(as.expression(substitute(.expr)), .snapshot)
 
@@ -426,19 +427,18 @@ is_error_value <- is_error_value
 #' @return Invisibly, a pairlist comprising the currently-registered 'inhook'
 #'     and 'outhook' functions.
 #'
-#' @details Calling this function without any arguments returns (invisibly) the
+#' @details For the functions to be registered, both 'inhook' and 'outhook' need
+#'     to be specified. Calling without any arguments returns (invisibly) the
 #'     currently-registered functions.
 #'
 #' @export
 #'
 register <- function(inhook, outhook) {
 
-  if (!missing(inhook) && !missing(outhook)) {
-    subin <- substitute(inhook)
-    subout <- substitute(outhook)
-    for (name in names(..))
-      everywhere(mirai::register(eval(inhook), eval(outhook)), inhook = subin, outhook = subout, .compute = name)
-  }
+  if (!missing(inhook) && !missing(outhook))
+    for (.compute in names(..))
+      everywhere(mirai::register(inhook, outhook), inhook = inhook, outhook = outhook, .compute = .compute)
+
   nextmode(inhook, outhook)
 
 }
