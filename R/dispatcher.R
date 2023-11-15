@@ -48,9 +48,7 @@
 #'     can mask potential connection issues.
 #' @param token [default FALSE] if TRUE, appends a unique 24-character token
 #'     to each URL path the dispatcher listens at (not applicable for TCP URLs
-#'     which do not accept a path). If using tokens, \code{\link{saisei}} must
-#'     be called to re-generate the URL for new daemons to connect at after
-#'     daemons have disconnected after task or time outs.
+#'     which do not accept a path).
 #' @param tls [default NULL] (required for secure TLS connections) \strong{either}
 #'     the character path to a file containing the PEM-encoded TLS certificate
 #'     and associated private key (may contain additional certificates leading
@@ -183,8 +181,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
         i <- .subset2(cmessage, "value")
         if (i) {
           if (i > 0L && !activevec[[i]]) {
-            data <- attr(servers[[i]], "listener")[[1L]]
-            attr(data, "state") != "closed" && reap(data)
+            reap(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
             data <- servernames[i] <- if (auto) auto_tokenized_url() else new_tokenized_url(basenames[i])
             instance[i] <- -abs(instance[i])
@@ -219,13 +216,9 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           send_aio(queue[[i]][["ctx"]], data = req, mode = 2L)
           q <- queue[[i]][["daemon"]]
           if (req[1L] == .nextmode) {
-            if (token) {
-              close(attr(servers[[q]], "listener")[[1L]])
-            } else {
-              ctx <- .context(servers[[q]])
-              send(ctx, data = NULL, mode = 2L, block = FALSE)
-              reap(ctx)
-            }
+            ctx <- .context(servers[[q]])
+            send(ctx, data = NULL, mode = 2L, block = FALSE)
+            reap(ctx)
           } else {
             serverfree[q] <- TRUE
           }

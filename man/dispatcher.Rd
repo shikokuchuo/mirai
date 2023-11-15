@@ -47,9 +47,7 @@ can mask potential connection issues.}
 
 \item{token}{[default FALSE] if TRUE, appends a unique 24-character token
 to each URL path the dispatcher listens at (not applicable for TCP URLs
-which do not accept a path). If using tokens, \code{\link{saisei}} must
-be called to re-generate the URL for new daemons to connect at after
-daemons have disconnected after task or time outs.}
+which do not accept a path).}
 
 \item{tls}{[default NULL] (required for secure TLS connections) \strong{either}
 the character path to a file containing the PEM-encoded TLS certificate
