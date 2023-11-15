@@ -2,26 +2,25 @@
 % Please edit documentation in R/mirai.R
 \name{register}
 \alias{register}
-\title{Register Serialization and Unserialisation Functions}
+\title{Register Custom Serialization Functions}
 \usage{
 register(inhook, outhook)
 }
 \arguments{
 \item{inhook}{a function (for custom serialization). The signature for this
 function must accept a list and return a raw vector, e.g.
-safetensors::safe_serialize, or else NULL to reset.}
+\code{torch::torch_serialize}, or else NULL to reset.}
 
 \item{outhook}{a function (for custom unserialization). The signature for
 this function must accept a raw vector and return a list, e.g.
-safetensors::safe_load_file, or else NULL to reset.}
+\code{torch::torch_load}, or else NULL to reset.}
 }
 \value{
 Invisibly, a pairlist comprising the currently-registered 'inhook'
     and 'outhook' functions.
 }
 \description{
-For sending and receiving reference objects, such as those accessed via an
-    external pointer.
+For sending and receiving reference objects accessed via an external pointer.
 }
 \details{
 Calling this function without any arguments returns (invisibly) the

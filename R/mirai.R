@@ -155,8 +155,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .signal = FALSE, 
   envir <- ..[[.compute]]
   if (length(envir)) {
     aio <- if (.signal)
-      request_signal(.context(envir[["sock"]]), data = data, cv = envir[["cv"]], send_mode = 1L, recv_mode = 1L, timeout = .timeout) else
-        request(.context(envir[["sock"]]), data = data, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+      request_signal(.context(envir[["sock"]]), data = data, cv = envir[["cv"]], send_mode = 3L, recv_mode = 1L, timeout = .timeout) else
+        request(.context(envir[["sock"]]), data = data, send_mode = 3L, recv_mode = 1L, timeout = .timeout)
 
   } else {
     url <- auto_tokenized_url()
@@ -412,17 +412,16 @@ is_mirai_interrupt <- function(x) inherits(x, "miraiInterrupt")
 #'
 is_error_value <- is_error_value
 
-#' Register Serialization and Unserialisation Functions
+#' Register Custom Serialization Functions
 #'
-#' For sending and receiving reference objects, such as those accessed via an
-#'     external pointer.
+#' For sending and receiving reference objects accessed via an external pointer.
 #'
 #' @param inhook a function (for custom serialization). The signature for this
 #'     function must accept a list and return a raw vector, e.g.
-#'     safetensors::safe_serialize, or else NULL to reset.
+#'     \code{torch::torch_serialize}, or else NULL to reset.
 #' @param outhook a function (for custom unserialization). The signature for
 #'     this function must accept a raw vector and return a list, e.g.
-#'     safetensors::safe_load_file, or else NULL to reset.
+#'     \code{torch::torch_load}, or else NULL to reset.
 #'
 #' @return Invisibly, a pairlist comprising the currently-registered 'inhook'
 #'     and 'outhook' functions.
@@ -434,8 +433,12 @@ is_error_value <- is_error_value
 #'
 register <- function(inhook, outhook) {
 
-  for (name in names(..))
-    everywhere(mirai::register(inhook, outhook), inhook = inhook, outhook = outhook, .profile = name)
+  if (!missing(inhook) && !missing(outhook)) {
+    subin <- substitute(inhook)
+    subout <- substitute(outhook)
+    for (name in names(..))
+      everywhere(mirai::register(eval(inhook), eval(outhook)), inhook = subin, outhook = subout, .compute = name)
+  }
   nextmode(inhook, outhook)
 
 }

@@ -1,11 +1,13 @@
+# mirai 0.11.2.9000
+
+* Adds `register()` for registering custom serialization and unserialization functions when using daemons.
+
 # mirai 0.11.2
 
 * `make_cluster()` specifying only 'url' now succeeds with implied 'n' of one.
 * Fixes `mirai()` specifying a language object by name for '.expr' in R versions 4.0 and earlier. 
 * Fixes regression in 0.11.1 which prevented the correct random seed being set when using dispatcher.
 * Internal performance enhancements.
-
-* Experimental support for registering custom serialization and unserialization functions via `nanonext::nextmode()` when using daemons.
 
 # mirai 0.11.1
 

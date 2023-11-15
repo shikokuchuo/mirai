@@ -11,6 +11,7 @@ nanotesterr <- function(x, e = "")
   invisible(grepl(e, tryCatch(x, error = identity)[["message"]], fixed = TRUE) || stop("expected error message '", e, "' not generated"))
 
 nanotest(is.list(status()))
+nanotest(is.pairlist(register()))
 nanotestn(nextstream())
 nanotestn(nextget("pid"))
 nanotestz(status()[["connections"]])
