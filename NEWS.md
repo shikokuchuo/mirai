@@ -1,3 +1,7 @@
+# mirai 0.11.2.9000
+
+* Adds `register()` for registering custom serialization and unserialization functions when using daemons.
+
 # mirai 0.11.2
 
 * `make_cluster()` specifying only 'url' now succeeds with implied 'n' of one.

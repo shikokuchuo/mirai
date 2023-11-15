@@ -215,7 +215,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           if (is.object(req)) req <- serialize(req, NULL)
           send_aio(queue[[i]][["ctx"]], data = req, mode = 2L)
           q <- queue[[i]][["daemon"]]
-          if (req[1L] == .nextmode) {
+          if (req[3L]) {
             ctx <- .context(servers[[q]])
             send(ctx, data = NULL, mode = 2L, block = FALSE)
             reap(ctx)
@@ -333,5 +333,3 @@ get_and_reset_env <- function(x) {
     candidate
   }
 }
-
-.nextmode <- as.raw(7L)
