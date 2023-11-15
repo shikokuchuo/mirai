@@ -1,6 +1,7 @@
 # mirai 0.11.2.9000
 
 * Adds `register()` for registering custom serialization and unserialization functions when using daemons.
+* Requires nanonext >= [0.10.4.9001].
 
 # mirai 0.11.2
 
