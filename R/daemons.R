@@ -329,6 +329,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       if (!is.symbol(remotes)) remote <- remotes
       if (length(remote))
         launch_remote(url = envir[["urls"]], remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
+      register_refhooks()
     }
 
   } else {
@@ -379,6 +380,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         `[[<-`(envir, "urls", urld)
       }
       `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv))
+      register_refhooks()
     }
 
   }
@@ -560,6 +562,16 @@ create_stream <- function(n, seed, envir) {
   if (length(seed)) set.seed(seed)
   `[[<-`(envir, "stream", .GlobalEnv[[".Random.seed"]])
   `[[<-`(.GlobalEnv, ".Random.seed", oseed)
+}
+
+register_refhooks <- function() {
+  nm <- nextmode()
+  inhook <- nm[[1L]]
+  if (length(inhook)) {
+    outhook <- nm[[2L]]
+    for (.compute in names(..))
+      everywhere(mirai::register(inhook, outhook), inhook = inhook, outhook = outhook, .compute = .compute)
+  }
 }
 
 ._scm_. <- base64dec("QgoDAAAAAQMEAAAFAwAFAAAAVVRGLTj8AAAA", convert = FALSE)

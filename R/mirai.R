@@ -413,8 +413,8 @@ is_error_value <- is_error_value
 #' For sending and receiving reference objects accessed via an external pointer.
 #'
 #' @param inhook a function (for custom serialization). The signature for this
-#'     function must accept a list and return a raw vector, e.g.
-#'     \code{torch::torch_serialize}, or else NULL to reset.
+#'     function must accept a list (of external pointer type objects) and return
+#'     a raw vector, e.g. \code{torch::torch_serialize}, or else NULL to reset.
 #' @param outhook a function (for custom unserialization). The signature for
 #'     this function must accept a raw vector and return a list, e.g.
 #'     \code{torch::torch_load}, or else NULL to reset.
@@ -425,6 +425,16 @@ is_error_value <- is_error_value
 #' @details For the functions to be registered, both 'inhook' and 'outhook' need
 #'     to be specified. Calling without any arguments returns (invisibly) the
 #'     currently-registered functions.
+#'
+#'     May be called prior to or after setting daemons. The same registered
+#'     functions apply to all compute profiles.
+#'
+#' @examples
+#' register(function(x) serialize(x, NULL), unserialize)
+#' print(register())
+#'
+#' register(NULL, NULL)
+#' print(register())
 #'
 #' @export
 #'

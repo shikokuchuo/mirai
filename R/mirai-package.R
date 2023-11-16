@@ -68,8 +68,8 @@ NULL
 
 .onLoad <- function(libname, pkgname) {
 
-  . <<- new.env(hash = FALSE, parent = environment(daemons))
-  .. <<- new.env(hash = FALSE, parent = environment(daemons))
+  . <<- new.env(hash = FALSE, parent = environment(mirai))
+  .. <<- new.env(hash = FALSE, parent = environment(mirai))
 
   switch(
     Sys.info()[["sysname"]],
@@ -88,7 +88,7 @@ NULL
   )
 
   registerParallelMethods()
-  if (requireNamespace("promises", quietly = TRUE)) registerPromisesMethods()
+  registerPromisesMethods()
 
 }
 
@@ -114,6 +114,10 @@ registerParallelMethods <- function() {
 registerPromisesMethods <- function() {
 
   ns <- .getNamespace("promises")
+  if (is.null(ns)) {
+    ns <- tryCatch(loadNamespace("promises"), error = function(e) NULL)
+    is.environment(ns) || return(invisible())
+  }
   `[[<-`(ns[[".__S3MethodsTable__."]], "as.promise.mirai", as.promise.mirai)
   regs <- rbind(ns[[".__NAMESPACE__."]][["S3methods"]],
                 c("as.promise", "mirai", "as.promise.mirai", NA_character_))
