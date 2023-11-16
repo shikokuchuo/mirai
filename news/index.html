@@ -59,10 +59,12 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.11.2.9000" id="mirai-01129000">mirai 0.11.2.9000<a class="anchor" aria-label="anchor" href="#mirai-01129000"></a></h2>
 <ul><li>Adds <code><a href="../reference/register.html">register()</a></code> for registering custom serialization and unserialization functions when using daemons.</li>
+<li>Simplification of <code><a href="../reference/mirai.html">mirai()</a></code> interface:
+<ul><li>‘.args’ will now coerece to a list if an object other than a list is supplied, rather than error.</li>
+<li>‘.signal’ argument removed - now all ‘mirai’ signal if daemons are set up.</li>
+</ul></li>
 <li>
-<code><a href="../reference/everywhere.html">everywhere()</a></code> now returns invisible NULL (having taken no action) in the case the specified compute profile is not set up, rather than error.</li>
-<li>
-<code><a href="../reference/mirai.html">mirai()</a></code> argument ‘.args’ will now coerece to a list if an object other than a list is supplied, rather than error.</li>
+<code><a href="../reference/everywhere.html">everywhere()</a></code> now returns invisible NULL in the case the specified compute profile is not set up, rather than error.</li>
 <li>Requires nanonext &gt;= [0.10.4.9001].</li>
 </ul></div>
     <div class="section level2">
