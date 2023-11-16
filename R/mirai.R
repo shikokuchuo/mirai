@@ -467,7 +467,7 @@ print.miraiInterrupt <- function(x, ...) {
 
 # internals --------------------------------------------------------------------
 
-mk_interrupt_error <- function(e) `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))
+mk_interrupt_error <- function(e) .interrupt_error
 
 mk_mirai_error <- function(e) {
   x <- .subset2(e, "call")
@@ -479,9 +479,9 @@ mk_mirai_error <- function(e) {
   `class<-`(msg, c("miraiError", "errorValue", "try-error"))
 }
 
-.connection_error <- list(data = `class<-`(6L, c("errorValue", "try-error")))
-
 snapshot <- function() `[[<-`(`[[<-`(`[[<-`(., 'vars', names(.GlobalEnv)), 'se', search()), 'op', .Options)
 
+.connection_error <- list(data = `class<-`(6L, c("errorValue", "try-error")))
+.interrupt_error <- `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))
 .snapshot <- expression(mirai:::snapshot())
 .timedelay <- expression(nanonext::msleep(500L))

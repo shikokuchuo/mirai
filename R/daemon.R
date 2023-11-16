@@ -193,11 +193,10 @@ dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
   wait(cv)
 }
 
-parse_cleanup <- function(cleanup) {
-  is.logical(cleanup) ||
-    return(c(as.integer(cleanup) %% 2L, (clr <- as.raw(cleanup)) & as.raw(2L), clr & as.raw(4L), clr & as.raw(8L)))
-  c(cleanup, cleanup, cleanup, FALSE)
-}
+parse_cleanup <- function(cleanup)
+  if (is.logical(cleanup))
+    c(cleanup, cleanup, cleanup, FALSE) else
+      c(as.integer(cleanup) %% 2L, (clr <- as.raw(cleanup)) & as.raw(2L), clr & as.raw(4L), clr & as.raw(8L))
 
 perform_cleanup <- function(cleanup) {
   if (cleanup[1L]) rm(list = (vars <- names(.GlobalEnv))[!vars %in% .[["vars"]]], envir = .GlobalEnv)
