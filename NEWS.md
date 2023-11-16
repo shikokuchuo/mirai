@@ -1,4 +1,4 @@
-# mirai 0.11.2.9000
+# mirai 0.11.2.9001 (development)
 
 * Adds `register()` for registering custom serialization and unserialization functions when using daemons.
 * Simplification of `mirai()` interface:
