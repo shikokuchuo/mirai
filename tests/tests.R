@@ -165,13 +165,16 @@ if (.Platform[["OS.type"]] != "windows") {
   nanotest(daemons(n = 2L, url = value <- "ws://:0", dispatcher = FALSE, remote = remote_config()) != value)
   nanotestz(daemons(0L))
   Sys.sleep(1L)
+}
+
+if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
   nanotesto(daemons(url = "ws://:0", token = TRUE))
   nanotestz(daemons(0L))
   Sys.sleep(1L)
   nanotesto(daemons(url = "tcp://:0", token = TRUE))
   nanotestz(daemons(0L))
   Sys.sleep(1L)
-  nanotest(daemons(n = 2, "ws://:0", lock = TRUE) == 2L)
+  nanotest(daemons(n = 2, "ws://:0") == 2L)
   nanotest(is.integer(nextget("pid")))
   nanotest(length(nextget("urls")) == 2L)
   Sys.sleep(1L)
@@ -216,10 +219,6 @@ if (.Platform[["OS.type"]] != "windows") {
   }
   nanotestz(daemons(0))
   Sys.sleep(1L)
-}
-
-if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
-
   nanotesto(daemons(url = "wss://127.0.0.1:0", token = TRUE, pass = "test"))
   nanotestn(launch_local(1L))
   Sys.sleep(1L)
@@ -232,7 +231,7 @@ if (Sys.getenv("NOT_CRAN") == "true" && .Platform[["OS.type"]] != "windows") {
   nanotestz(daemons(0L))
   Sys.sleep(1L)
   option <- 15L
-  nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 1000L, seed = 1546, token = TRUE, lock = TRUE, cleanup = option))
+  nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 1000L, seed = 1546, token = TRUE, cleanup = option))
   Sys.sleep(1L)
   mq <- mirai("daemon", .timeout = 1000)
   nanotest(call_mirai(mq)$data == "daemon" || is_error_value(mq$data))
