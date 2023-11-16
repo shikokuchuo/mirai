@@ -4,14 +4,7 @@
 \alias{mirai}
 \title{mirai (Evaluate Async)}
 \usage{
-mirai(
-  .expr,
-  ...,
-  .args = list(),
-  .timeout = NULL,
-  .signal = FALSE,
-  .compute = "default"
-)
+mirai(.expr, ..., .args = list(), .timeout = NULL, .compute = "default")
 }
 \arguments{
 \item{.expr}{an expression to evaluate asynchronously (of arbitrary length,
@@ -30,11 +23,6 @@ supplied, it will be coerced to a list.}
 \item{.timeout}{[default NULL] for no timeout, or an integer value in
 milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
 evaluation exceeds this limit.}
-
-\item{.signal}{[default FALSE] logical value, whether to signal the condition
-variable within the compute profile (only applicable when daemons have
-been set). See \code{\link[nanonext]{cv}} for further information on
-condition variables.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use when sending the mirai.}

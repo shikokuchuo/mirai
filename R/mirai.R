@@ -36,10 +36,6 @@
 #' @param .timeout [default NULL] for no timeout, or an integer value in
 #'     milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
-#' @param .signal [default FALSE] logical value, whether to signal the condition
-#'     variable within the compute profile (only applicable when daemons have
-#'     been set). See \code{\link[nanonext]{cv}} for further information on
-#'     condition variables.
 #' @param .compute [default 'default'] character value for the compute profile
 #'     to use when sending the mirai.
 #'
@@ -138,7 +134,7 @@
 #'
 #' @export
 #'
-mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .signal = FALSE, .compute = "default") {
+mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "default") {
 
   missing(.expr) && stop(.messages[["missing_expression"]])
 
@@ -155,9 +151,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .signal = FALSE, 
 
   envir <- ..[[.compute]]
   if (length(envir)) {
-    aio <- if (.signal)
-      request_signal(.context(envir[["sock"]]), data = data, cv = envir[["cv"]], send_mode = 3L, recv_mode = 1L, timeout = .timeout) else
-        request(.context(envir[["sock"]]), data = data, send_mode = 3L, recv_mode = 1L, timeout = .timeout)
+    aio <- if (is.raw(.timeout)) request(.context(envir[["sock"]]), data = data, send_mode = 3L, recv_mode = 1L) else
+      request_signal(.context(envir[["sock"]]), data = data, cv = envir[["cv"]], send_mode = 3L, recv_mode = 1L, timeout = .timeout)
 
   } else {
     url <- auto_tokenized_url()

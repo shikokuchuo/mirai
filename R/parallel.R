@@ -159,12 +159,12 @@ sendData.miraiNode <- function(node, data) {
   length(..[[attr(node, "id")]]) || stop(.messages[["cluster_inactive"]])
 
   value <- data[["data"]]
-  has_tag <- !is.null(value[["tag"]])
+  tagless <- is.null(value[["tag"]])
 
   m <- mirai(do.call(node, data, quote = TRUE), node = value[["fun"]], data = value[["args"]],
-             .signal = has_tag, .compute = attr(node, "id"))
+             .timeout = if (tagless) ._scm_., .compute = attr(node, "id"))
 
-  if (has_tag)
+  if (!tagless)
     assign("tag", value[["tag"]], m)
 
   `[[<-`(node, "mirai", m)
