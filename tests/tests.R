@@ -123,8 +123,8 @@ Sys.sleep(1L)
 nanotest(inherits(cl <- make_cluster(1), "miraiCluster"))
 nanotest(attr(cl, "id") != attr(cluster, "id"))
 Sys.sleep(1L)
-stat <- status(cl)
-if (stat$connections) {
+stat2 <- status(cl)
+if (stat$connections && stat2$connections) {
   clusterSetRNGStream(cl, 123)
   k <- clusterEvalQ(cl, expr = .GlobalEnv[[".Random.seed"]])
   b <- parSapply(cl, 1:4, runif)
