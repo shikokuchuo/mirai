@@ -143,7 +143,7 @@ registerPromisesMethods <- function() {
     requires_local = "SSH tunnelling requires 'url' hostname to be 'localhost' or '127.0.0.1'",
     single_url = "only one 'url' should be specified",
     sync_dispatch = "initial sync with dispatcher timed out after 5s",
-    sync_timeout = "sync between host and dispatcher/daemon timed out after 5s",
+    sync_daemon = "initial sync with daemon timed out after 5s",
     url_spec = "numeric value for 'url' is out of bounds",
     wrong_dots = "'...' arguments should only be of integer, numeric or logical type"
   ),

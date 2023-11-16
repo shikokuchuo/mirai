@@ -158,7 +158,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
     sockc <- socket(protocol = "rep")
     on.exit(reap(sockc), add = TRUE, after = FALSE)
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
-    recv(sockc, mode = 6L, block = .timelimit) && stop(.messages[["sync_timeout"]])
+    recv(sockc, mode = 6L, block = .timelimit) && stop(.messages[["sync_dispatch"]])
     send_aio(sockc, c(Sys.getpid(), servernames), mode = 2L)
     cmessage <- recv_aio_signal(sockc, cv = cv, mode = 5L)
   }
@@ -322,8 +322,9 @@ query_status <- function(envir) {
 
 init_monitor <- function(sockc, envir) {
   res <- query_dispatcher(sockc, command = FALSE, mode = 2L)
-  is.object(res) && stop(.messages[["sync_timeout"]])
+  is.object(res) && return(FALSE)
   `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L]))
+  TRUE
 }
 
 get_and_reset_env <- function(x) {

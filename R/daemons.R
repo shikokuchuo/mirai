@@ -313,8 +313,8 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld, resend = 0L)
         sockc <- req_socket(urlc, resend = 0L)
-        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls, pass = pass)
-        init_monitor(sockc = sockc, envir = envir)
+        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls, pass = pass) || stop(.messages[["sync_dispatch"]])
+        init_monitor(sockc = sockc, envir = envir) || stop(.messages[["sync_dispatch"]])
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass), resend = resilience * .intmax)
         listener <- attr(sock, "listener")[[1L]]
@@ -364,9 +364,9 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         sock <- req_socket(urld, resend = 0L)
         urlc <- strcat(urld, "c")
         sockc <- req_socket(urlc, resend = 0L)
-        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), n, urlc, rs = envir[["stream"]])
+        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), n, urlc, rs = envir[["stream"]]) || stop(.messages[["sync_dispatch"]])
         for (i in seq_len(n)) next_stream(envir)
-        init_monitor(sockc = sockc, envir = envir)
+        init_monitor(sockc = sockc, envir = envir) || stop(.messages[["sync_dispatch"]])
       } else {
         sock <- req_socket(urld, resend = resilience * .intmax)
         if (is.null(seed)) {
@@ -374,7 +374,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
             launch_daemon(urld, parse_dots(...), next_stream(envir))
         } else {
           for (i in seq_len(n))
-            launch_and_sync_daemon(sock = sock, urld, parse_dots(...), next_stream(envir))
+            launch_and_sync_daemon(sock = sock, urld, parse_dots(...), next_stream(envir)) || stop(.messages[["sync_daemon"]])
         }
         `[[<-`(envir, "urls", urld)
       }
@@ -550,7 +550,7 @@ launch_and_sync_daemon <- function(sock, ..., rs = NULL, tls = NULL, pass = NULL
     }
   }
   launch_daemon(..., rs = rs)
-  .until(cv, .timelimit) || stop(if (...length() < 3L) .messages[["sync_timeout"]] else .messages[["sync_dispatch"]])
+  .until(cv, .timelimit)
 }
 
 create_stream <- function(n, seed, envir) {
