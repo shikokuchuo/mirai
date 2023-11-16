@@ -68,6 +68,9 @@ NULL
 
 .onLoad <- function(libname, pkgname) {
 
+  . <<- new.env(hash = FALSE, parent = environment(daemons))
+  .. <<- new.env(hash = FALSE, parent = environment(daemons))
+
   switch(
     Sys.info()[["sysname"]],
     Linux = {
@@ -120,12 +123,12 @@ registerPromisesMethods <- function() {
 
 # nocov end
 
-. <- new.env(hash = FALSE)
-.. <- new.env(hash = FALSE)
+. <- NULL
+.. <- NULL
 .command <- NULL
 .urlscheme <- NULL
 
-.intmax <- 2147483647L
+.intmax <- .Machine[["integer.max"]]
 .timelimit <- 5000L
 .messages <- list2env(
   list(
