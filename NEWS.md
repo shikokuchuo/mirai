@@ -1,6 +1,7 @@
 # mirai 0.11.2.9002 (development)
 
 * Implements `register()` for registering custom serialization and unserialization functions when using daemons.
+* Implements `wait_mirai()` for a user-interruptible version of `call_mirai()`.
 * Simplification of `mirai()` interface:
   + '.args' will now coerece to a list if an object other than a list is supplied, rather than error.
   + '.signal' argument removed - now all 'mirai' signal if daemons are set up.
