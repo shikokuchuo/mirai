@@ -552,7 +552,7 @@ launch_and_sync_daemon <- function(sock, ..., rs = NULL, tls = NULL, pass = NULL
     }
   }
   launch_daemon(..., rs = rs)
-  .until(cv, .timelimit)
+  until(cv, .timelimit)
 }
 
 create_stream <- function(n, seed, envir) {
@@ -564,14 +564,10 @@ create_stream <- function(n, seed, envir) {
   `[[<-`(.GlobalEnv, ".Random.seed", oseed)
 }
 
-register_refhooks <- function() {
-  nm <- nextmode()
-  inhook <- nm[[1L]]
-  if (length(inhook)) {
-    outhook <- nm[[2L]]
-    for (.compute in names(..))
-      everywhere(mirai::register(inhook, outhook), inhook = inhook, outhook = outhook, .compute = .compute)
-  }
+register_refhooks <- function(refhook = nextmode()) {
+  is.null(refhook[[1L]]) && return()
+  for (.compute in names(..))
+    everywhere(mirai::register(refhook), refhook = refhook, .compute = .compute)
 }
 
 ._scm_. <- base64dec("QgoDAAAAAQMEAAAFAwAFAAAAVVRGLTj8AAAA", convert = FALSE)

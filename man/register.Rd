@@ -4,37 +4,35 @@
 \alias{register}
 \title{Register Custom Serialization Functions}
 \usage{
-register(inhook, outhook)
+register(refhook = list())
 }
 \arguments{
-\item{inhook}{a function (for custom serialization). The signature for this
-function must accept a list (of external pointer type objects) and return
-a raw vector, e.g. \code{torch::torch_serialize}, or else NULL to reset.}
-
-\item{outhook}{a function (for custom unserialization). The signature for
-this function must accept a raw vector and return a list, e.g.
+\item{refhook}{a list of two functions (for custom serialization /
+unserialization). The signature for the first function must accept a list
+of external pointer type objects and return a raw vector, e.g.
+\code{torch::torch_serialize}, and the second function must accept a raw
+vector and return a list of external pointer type objects, e.g.
 \code{torch::torch_load}, or else NULL to reset.}
 }
 \value{
-Invisibly, a pairlist comprising the currently-registered 'inhook'
-    and 'outhook' functions.
+Invisibly, a list comprising the currently-registered 'refhook'
+    functions.
 }
 \description{
 For sending and receiving reference objects accessed via an external pointer.
 }
 \details{
-For the functions to be registered, both 'inhook' and 'outhook' need
-    to be specified. Calling without any arguments returns (invisibly) the
-    currently-registered functions.
+Calling without any arguments returns (invisibly) the
+    currently-registered 'refhook' functions.
 
-    May be called prior to or after setting daemons. The same registered
-    functions apply to all compute profiles.
+    This function may be called prior to or after setting daemons, with the
+    same registered functions applying to all compute profiles.
 }
 \examples{
-register(function(x) serialize(x, NULL), unserialize)
+register(list(function(x) serialize(x, NULL), unserialize))
 print(register())
 
-register(NULL, NULL)
+register(NULL)
 print(register())
 
 }

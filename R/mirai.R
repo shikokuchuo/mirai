@@ -219,8 +219,8 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 
 #' mirai (Call Value)
 #'
-#' Call the value of a mirai, waiting for the the asynchronous operation to
-#'     resolve if it is still in progress.
+#' \code{call_mirai} retrieves the value of a mirai, waiting for the the
+#'     asynchronous operation to resolve if it is still in progress.
 #'
 #' @param aio a 'mirai' object.
 #'
@@ -275,6 +275,23 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #' @export
 #'
 call_mirai <- call_aio
+
+#' mirai (Wait Value)
+#'
+#' \code{wait_mirai} is identical to \code{call_mirai} but allows user
+#'     interrupts.
+#'
+#' @section Wait:
+#'
+#'     \code{wait_mirai} is identical to \code{call_mirai} except that it is
+#'     user-interruptible. If interrupted, the 'mirai' is stopped upon the next
+#'     garbage collection event, and hence may return an 'errorValue' 20
+#'     'Operation canceled' if it remains unresolved by that time.
+#'
+#' @rdname call_mirai
+#' @export
+#'
+wait_mirai <- wait_aio
 
 #' mirai (Stop Evaluation)
 #'
@@ -412,39 +429,38 @@ is_error_value <- is_error_value
 #'
 #' For sending and receiving reference objects accessed via an external pointer.
 #'
-#' @param inhook a function (for custom serialization). The signature for this
-#'     function must accept a list (of external pointer type objects) and return
-#'     a raw vector, e.g. \code{torch::torch_serialize}, or else NULL to reset.
-#' @param outhook a function (for custom unserialization). The signature for
-#'     this function must accept a raw vector and return a list, e.g.
+#' @param refhook a list of two functions (for custom serialization /
+#'     unserialization). The signature for the first function must accept a list
+#'     of external pointer type objects and return a raw vector, e.g.
+#'     \code{torch::torch_serialize}, and the second function must accept a raw
+#'     vector and return a list of external pointer type objects, e.g.
 #'     \code{torch::torch_load}, or else NULL to reset.
 #'
-#' @return Invisibly, a pairlist comprising the currently-registered 'inhook'
-#'     and 'outhook' functions.
+#' @return Invisibly, a list comprising the currently-registered 'refhook'
+#'     functions.
 #'
-#' @details For the functions to be registered, both 'inhook' and 'outhook' need
-#'     to be specified. Calling without any arguments returns (invisibly) the
-#'     currently-registered functions.
+#' @details Calling without any arguments returns (invisibly) the
+#'     currently-registered 'refhook' functions.
 #'
-#'     May be called prior to or after setting daemons. The same registered
-#'     functions apply to all compute profiles.
+#'     This function may be called prior to or after setting daemons, with the
+#'     same registered functions applying to all compute profiles.
 #'
 #' @examples
-#' register(function(x) serialize(x, NULL), unserialize)
+#' register(list(function(x) serialize(x, NULL), unserialize))
 #' print(register())
 #'
-#' register(NULL, NULL)
+#' register(NULL)
 #' print(register())
 #'
 #' @export
 #'
-register <- function(inhook, outhook) {
+register <- function(refhook = list()) {
 
-  if (!missing(inhook) && !missing(outhook))
+  if (!missing(refhook))
     for (.compute in names(..))
-      everywhere(mirai::register(inhook, outhook), inhook = inhook, outhook = outhook, .compute = .compute)
+      everywhere(mirai::register(refhook), refhook = refhook, .compute = .compute)
 
-  nextmode(inhook, outhook)
+  nextmode(refhook = refhook)
 
 }
 

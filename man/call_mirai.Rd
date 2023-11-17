@@ -2,9 +2,12 @@
 % Please edit documentation in R/mirai.R
 \name{call_mirai}
 \alias{call_mirai}
+\alias{wait_mirai}
 \title{mirai (Call Value)}
 \usage{
 call_mirai(aio)
+
+wait_mirai(aio)
 }
 \arguments{
 \item{aio}{a 'mirai' object.}
@@ -13,8 +16,11 @@ call_mirai(aio)
 The passed mirai (invisibly). The retrieved value is stored at \code{$data}.
 }
 \description{
-Call the value of a mirai, waiting for the the asynchronous operation to
-    resolve if it is still in progress.
+\code{call_mirai} retrieves the value of a mirai, waiting for the the
+    asynchronous operation to resolve if it is still in progress.
+
+\code{wait_mirai} is identical to \code{call_mirai} but allows user
+    interrupts.
 }
 \details{
 This function will wait for the async operation to complete if still
@@ -39,6 +45,15 @@ This function will wait for the async operation to complete if still
     Using \code{\link{unresolved}} on a mirai returns TRUE only if a mirai
     has yet to resolve and FALSE otherwise. This is suitable for use in
     control flow statements such as \code{while} or \code{if}.
+}
+
+\section{Wait}{
+
+
+    \code{wait_mirai} is identical to \code{call_mirai} except that it is
+    user-interruptible. If interrupted, the 'mirai' is stopped upon the next
+    garbage collection event, and hence may return an 'errorValue' 20
+    'Operation canceled' if it remains unresolved by that time.
 }
 
 \examples{
