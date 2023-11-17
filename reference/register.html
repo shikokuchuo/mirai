@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.2.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.2.9002</span>
       </span>
     </div>
 
@@ -62,20 +62,17 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">register</span><span class="op">(</span><span class="va">inhook</span>, <span class="va">outhook</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">register</span><span class="op">(</span>refhook <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>inhook</dt>
-<dd><p>a function (for custom serialization). The signature for this
-function must accept a list (of external pointer type objects) and return
-a raw vector, e.g. <code>torch::torch_serialize</code>, or else NULL to reset.</p></dd>
-
-
-<dt>outhook</dt>
-<dd><p>a function (for custom unserialization). The signature for
-this function must accept a raw vector and return a list, e.g.
+    <dl><dt>refhook</dt>
+<dd><p>a list of two functions (for custom serialization /
+unserialization). The signature for the first function must accept a list
+of external pointer type objects and return a raw vector, e.g.
+<code>torch::torch_serialize</code>, and the second function must accept a raw
+vector and return a list of external pointer type objects, e.g.
 <code>torch::torch_load</code>, or else NULL to reset.</p></dd>
 
 </dl></div>
@@ -83,25 +80,24 @@ this function must accept a raw vector and return a list, e.g.
     <h2>Value</h2>
     
 
-<p>Invisibly, a pairlist comprising the currently-registered 'inhook'
-    and 'outhook' functions.</p>
+<p>Invisibly, a list comprising the currently-registered 'refhook'
+    functions.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>For the functions to be registered, both 'inhook' and 'outhook' need
-    to be specified. Calling without any arguments returns (invisibly) the
-    currently-registered functions.</p>
-<p>May be called prior to or after setting daemons. The same registered
-    functions apply to all compute profiles.</p>
+    <p>Calling without any arguments returns (invisibly) the
+    currently-registered 'refhook' functions.</p>
+<p>This function may be called prior to or after setting daemons, with the
+    same registered functions applying to all compute profiles.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">register</span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/serialize.html" class="external-link">serialize</a></span><span class="op">(</span><span class="va">x</span>, <span class="cn">NULL</span><span class="op">)</span>, <span class="va">unserialize</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">register</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/serialize.html" class="external-link">serialize</a></span><span class="op">(</span><span class="va">x</span>, <span class="cn">NULL</span><span class="op">)</span>, <span class="va">unserialize</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">register</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function(x) serialize(x, NULL)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x563eb5ee3110&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5643f1d40b38&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (connection, refhook = NULL) </span>
@@ -111,11 +107,11 @@ this function must accept a raw vector and return a list, e.g.
 <span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'connection' must be a connection")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     .Internal(unserialize(connection, refhook))</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x563eb5d2b268&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5643f1d6d718&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:base&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">register</span><span class="op">(</span><span class="cn">NULL</span>, <span class="cn">NULL</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">register</span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">register</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
