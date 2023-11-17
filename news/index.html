@@ -59,6 +59,7 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.11.2.9002" id="mirai-01129002-development">mirai 0.11.2.9002 (development)<a class="anchor" aria-label="anchor" href="#mirai-01129002-development"></a></h2>
 <ul><li>Implements <code><a href="../reference/register.html">register()</a></code> for registering custom serialization and unserialization functions when using daemons.</li>
+<li>Implements <code><a href="../reference/call_mirai.html">wait_mirai()</a></code> for a user-interruptible version of <code><a href="../reference/call_mirai.html">call_mirai()</a></code>.</li>
 <li>Simplification of <code><a href="../reference/mirai.html">mirai()</a></code> interface:
 <ul><li>‘.args’ will now coerece to a list if an object other than a list is supplied, rather than error.</li>
 <li>‘.signal’ argument removed - now all ‘mirai’ signal if daemons are set up.</li>
