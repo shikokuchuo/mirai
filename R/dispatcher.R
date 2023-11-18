@@ -321,10 +321,10 @@ get_and_reset_env <- function(x) {
   }
 }
 
-get_ports <- function(baseurl, n) {
-  substr(baseurl[["scheme"]], 1L, 1L) == "t" || return()
-  if (baseurl[["port"]] == "0") integer(n) else seq.int(baseurl[["port"]], length.out = n)
-}
+get_ports <- function(baseurl, n)
+  if (substr(baseurl[["scheme"]], 1L, 1L) == "t") {
+    if (baseurl[["port"]] == "0") integer(n) else seq.int(baseurl[["port"]], length.out = n)
+  }
 
 get_tls <- function(baseurl, tls, pass) {
   if (substr(baseurl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {

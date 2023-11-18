@@ -312,11 +312,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         init_monitor(sockc = sockc, envir = envir) || stop(.messages[["sync_timeout"]])
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass), resend = resilience * .intmax)
-        listener <- attr(sock, "listener")[[1L]]
-        urls <- opt(listener, "url")
-        if (parse_url(urls)[["port"]] == "0")
-          urls <- sub_real_port(port = opt(listener, "tcp-bound-port"), url = urls)
-        `[[<-`(envir, "urls", urls)
+        store_urls(sock = sock, envir = envir)
         n <- 0L
       }
       `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv))
@@ -569,6 +565,14 @@ check_create_tls <- function(url, tls, envir) {
     tls <- cert[["server"]]
   }
   tls
+}
+
+store_urls <- function(sock, envir) {
+  listener <- attr(sock, "listener")[[1L]]
+  urls <- opt(listener, "url")
+  if (parse_url(urls)[["port"]] == "0")
+    urls <- sub_real_port(port = opt(listener, "tcp-bound-port"), url = urls)
+  `[[<-`(envir, "urls", urls)
 }
 
 register_refhook <- function(refhook = nextmode())
