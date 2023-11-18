@@ -324,8 +324,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       if (!is.symbol(remotes)) remote <- remotes
       if (length(remote))
         launch_remote(url = envir[["urls"]], remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
-      hooks <- nextmode()
-      if (length(hooks[[1L]])) register(refhook = hooks)
+      register_refhook()
     }
 
   } else {
@@ -369,8 +368,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         `[[<-`(envir, "urls", urld)
       }
       `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv))
-      hooks <- nextmode()
-      if (length(hooks[[1L]])) register(refhook = hooks)
+      register_refhook()
     }
 
   }
@@ -572,3 +570,6 @@ check_create_tls <- function(url, tls, envir) {
   }
   tls
 }
+
+register_refhook <- function(refhook = nextmode())
+  if (length(refhook[[1L]])) register(refhook = refhook)

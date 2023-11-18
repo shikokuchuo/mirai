@@ -94,24 +94,10 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
     dots <- parse_dots(...)
   } else {
     baseurl <- parse_url(url)
-    if (substr(baseurl[["scheme"]], 1L, 1L) == "t") {
-      ports <- if (baseurl[["port"]] == "0") integer(n) else seq.int(baseurl[["port"]], length.out = n)
-      token <- FALSE
-    } else {
-      ports <- NULL
-    }
-
-    if (substr(baseurl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
-      tls <- get_and_reset_env("MIRAI_TEMP_FIELD1")
-      if (length(tls))
-        tls <- c(tls, get_and_reset_env("MIRAI_TEMP_FIELD2"))
-    }
-    if (length(tls)) {
-      if (is.null(pass))
-        pass <- get_and_reset_env("MIRAI_TEMP_VAR")
-      tls <- tls_config(server = tls, pass = pass)
-      pass <- NULL
-    }
+    ports <- get_ports(baseurl = baseurl, n = n)
+    if (!is.null(ports)) token <- FALSE
+    tls <- get_tls(baseurl = baseurl, tls = tls, pass = pass)
+    pass <- NULL
   }
 
   envir <- new.env(hash = FALSE)
@@ -332,5 +318,23 @@ get_and_reset_env <- function(x) {
   if (nzchar(candidate)) {
     Sys.unsetenv(x)
     candidate
+  }
+}
+
+get_ports <- function(baseurl, n) {
+  substr(baseurl[["scheme"]], 1L, 1L) == "t" || return()
+  if (baseurl[["port"]] == "0") integer(n) else seq.int(baseurl[["port"]], length.out = n)
+}
+
+get_tls <- function(baseurl, tls, pass) {
+  if (substr(baseurl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
+    tls <- get_and_reset_env("MIRAI_TEMP_FIELD1")
+    if (length(tls))
+      tls <- c(tls, get_and_reset_env("MIRAI_TEMP_FIELD2"))
+  }
+  if (length(tls)) {
+    if (is.null(pass))
+      pass <- get_and_reset_env("MIRAI_TEMP_VAR")
+    tls_config(server = tls, pass = pass)
   }
 }
