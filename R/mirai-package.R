@@ -132,8 +132,8 @@ registerPromisesMethods <- function() {
 .command <- NULL
 .urlscheme <- NULL
 
-.intmax <- .Machine[["integer.max"]]
 .timelimit <- 5000L
+.intmax <- .Machine[["integer.max"]]
 .messages <- list2env(
   list(
     arglen = "'args' and/or 'url' must be of length 1 or the same length",

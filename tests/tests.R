@@ -8,9 +8,9 @@ nanotesto <- function(x) invisible(x == 1L || stop("does not equal 1L as expecte
 nanotesti <- function(a, b) invisible(identical(a, b) || stop("the arguments are not identical as expected"))
 nanotestp <- function(x) invisible(is.character(capture.output(print(x))) || stop("print output of expression cannot be captured as a character value"))
 nanotesterr <- function(x, e = "") invisible(grepl(e, tryCatch(x, error = identity)[["message"]], fixed = TRUE) || stop("expected error message '", e, "' not generated"))
-
 connection <- !is_error_value(call_mirai(mirai(TRUE, .timeout = 2000L))[["data"]])
 
+# core tests
 nanotest(is.list(status()))
 nanotestz(status()[["connections"]])
 nanotestz(status()[["daemons"]])
@@ -41,6 +41,24 @@ nanotestp(r)
 nanotestn(nextstream())
 nanotestn(nextget("pid"))
 Sys.sleep(2.5)
+# mirai tests
+if (connection) {
+  n <- 3L
+  m <- mirai({
+    Sys.sleep(0.1)
+    q <- m + n + 1L
+    q / m
+  }, m = 2L, .args = list(n), .timeout = 2000L)
+  nanotest(identical(call_mirai(m), m))
+  nanotest(is_error_value(m$data) || m$data == 3L)
+  Sys.sleep(2.5)
+  `lang obj` <- quote(m + n + 2L)
+  args <- c(m = 2L, n = 4L)
+  m <- mirai(.expr = `lang obj`, .args = args, .timeout = 2000L)
+  nanotest(is_error_value(wait_mirai(m)$data) || m$data == 8L)
+  Sys.sleep(2.5)
+}
+# daemons tests
 if (connection) {
   nanotesto(daemons(1L, dispatcher = FALSE))
   me <- mirai(mirai::mirai(), .timeout = 2000L)
@@ -58,20 +76,6 @@ if (connection) {
   nanotest(is.character(status()[["daemons"]]))
   nanotestz(daemons(0L))
   Sys.sleep(1L)
-  n <- 3L
-  m <- mirai({
-    Sys.sleep(0.1)
-    q <- m + n + 1L
-    q / m
-  }, m = 2L, .args = list(n), .timeout = 2000L)
-  nanotest(identical(call_mirai(m), m))
-  nanotest(is_error_value(m$data) || m$data == 3L)
-  Sys.sleep(2.5)
-  `lang obj` <- quote(m + n + 2L)
-  args <- c(m = 2L, n = 4L)
-  m <- mirai(.expr = `lang obj`, .args = args, .timeout = 2000L)
-  nanotest(is_error_value(wait_mirai(m)$data) || m$data == 8L)
-  Sys.sleep(2.5)
   nanotesto(daemons(1L, dispatcher = FALSE, idletime = 500L, timerstart = 1L, cleanup = FALSE, seed = 1546, .compute = "new"))
   nanotest(is.character(nextget("urls", .compute = "new")))
   nanotest(is.integer(nextstream(.compute = "new")))
@@ -87,6 +91,7 @@ if (connection) {
   nanotestz(daemons(0L, .compute = "new"))
   Sys.sleep(1L)
 }
+# additional daemons tests
 if (connection && .Platform[["OS.type"]] != "windows") {
   nanotest(is.character(launch_remote("ws://[::1]:5555", remote = remote_config(command = "echo", args = list(c("Test out:", ".", ">/dev/null")), rscript = "/usr/lib/R/bin/Rscript"))))
   nanotest(is.character(launch_remote("tcp://localhost:5555", remote = ssh_config(remotes = c("ssh://remotehost", "ssh://remotenode"), tunnel = TRUE, command = "echo"))))
@@ -106,6 +111,7 @@ if (connection && .Platform[["OS.type"]] != "windows") {
   nanotestz(daemons(0L))
   Sys.sleep(1L)
 }
+# parallel cluster tests
 if (connection) {
   cluster <- make_cluster(1)
   nanotest(inherits(cluster, "miraiCluster"))
@@ -158,6 +164,7 @@ if (connection) {
   nanotesterr(parLapply(cluster, 1:10, runif), "cluster is no longer active")
   Sys.sleep(1L)
 }
+# additional parallel cluster tests
 if (connection && .Platform[["OS.type"]] != "windows") {
   nanotestp(cl <- make_cluster(url = mirai:::auto_tokenized_url()))
   nanotestn(stopCluster(cl))
@@ -166,6 +173,7 @@ if (connection && .Platform[["OS.type"]] != "windows") {
   nanotestn(stopCluster(cl))
   Sys.sleep(1L)
 }
+# advanced daemons and dispatcher tests
 if (connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "true") {
   nanotesto(daemons(url = "ws://:0", token = TRUE))
   nanotestz(daemons(0L))

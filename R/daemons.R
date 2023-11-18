@@ -298,12 +298,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
 
     if (is.null(envir)) {
       envir <- new.env(hash = FALSE, parent = ..)
-      purl <- parse_url(url)
-      if (substr(purl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
-        tls <- write_cert(cn = purl[["hostname"]])
-        `[[<-`(envir, "tls", tls[["client"]])
-        tls <- tls[["server"]]
-      }
+      tls <- check_create_tls(url = url, tls = tls, envir = envir)
       cv <- cv()
       create_stream(n = n, seed = seed, envir = envir)
       if (dispatcher) {
@@ -329,27 +324,21 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       if (!is.symbol(remotes)) remote <- remotes
       if (length(remote))
         launch_remote(url = envir[["urls"]], remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
-      register_refhooks()
+      hooks <- nextmode()
+      if (length(hooks[[1L]])) register(refhook = hooks)
     }
 
   } else {
 
-    send_signal <- is.null(n)
-    if (send_signal) n <- 0L
+    signal <- is.null(n)
+    if (signal) n <- 0L
     is.numeric(n) || stop(.messages[["numeric_n"]])
     n <- as.integer(n)
 
     if (n == 0L) {
       length(envir) || return(0L)
 
-      if (send_signal) {
-        signals <- max(length(envir[["urls"]]), stat(envir[["sock"]], "pipes"))
-        for (i in seq_len(signals)) {
-          send(envir[["sock"]], data = ._scm_., mode = 2L)
-          msleep(10L)
-        }
-      }
-
+      if (signal) send_signal(envir = envir)
       reap(envir[["sock"]])
       length(envir[["sockc"]]) && reap(envir[["sockc"]])
       ..[[.compute]] <- NULL -> envir
@@ -380,7 +369,8 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         `[[<-`(envir, "urls", urld)
       }
       `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv))
-      register_refhooks()
+      hooks <- nextmode()
+      if (length(hooks[[1L]])) register(refhook = hooks)
     }
 
   }
@@ -564,10 +554,22 @@ create_stream <- function(n, seed, envir) {
   `[[<-`(.GlobalEnv, ".Random.seed", oseed)
 }
 
-register_refhooks <- function(refhook = nextmode()) {
-  is.null(refhook[[1L]]) && return()
-  for (.compute in names(..))
-    everywhere(mirai::register(refhook), refhook = refhook, .compute = .compute)
+send_signal <- function(envir) {
+  signals <- max(length(envir[["urls"]]), stat(envir[["sock"]], "pipes"))
+  for (i in seq_len(signals)) {
+    send(envir[["sock"]], data = ._scm_., mode = 2L)
+    msleep(10L)
+  }
+}
+
+check_create_tls <- function(url, tls, envir) {
+  purl <- parse_url(url)
+  if (substr(purl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
+    cert <- write_cert(cn = purl[["hostname"]])
+    `[[<-`(envir, "tls", cert[["client"]])
+    tls <- cert[["server"]]
+  }
+  tls
 }
 
 ._scm_. <- base64dec("QgoDAAAAAQMEAAAFAwAFAAAAVVRGLTj8AAAA", convert = FALSE)
