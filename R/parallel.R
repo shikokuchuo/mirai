@@ -162,7 +162,7 @@ sendData.miraiNode <- function(node, data) {
   tagless <- is.null(value[["tag"]])
 
   m <- mirai(do.call(node, data, quote = TRUE), node = value[["fun"]], data = value[["args"]],
-             .timeout = if (tagless) ._scm_., .compute = attr(node, "id"))
+             .timeout = if (tagless) NA, .compute = attr(node, "id"))
 
   if (!tagless)
     assign("tag", value[["tag"]], m)

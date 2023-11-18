@@ -556,6 +556,7 @@ create_stream <- function(n, seed, envir) {
 
 send_signal <- function(envir) {
   signals <- max(length(envir[["urls"]]), stat(envir[["sock"]], "pipes"))
+  ._scm_. <- base64dec("QgoDAAAAAQMEAAAFAwAFAAAAVVRGLTj8AAAA", convert = FALSE)
   for (i in seq_len(signals)) {
     send(envir[["sock"]], data = ._scm_., mode = 2L)
     msleep(10L)
@@ -571,5 +572,3 @@ check_create_tls <- function(url, tls, envir) {
   }
   tls
 }
-
-._scm_. <- base64dec("QgoDAAAAAQMEAAAFAwAFAAAAVVRGLTj8AAAA", convert = FALSE)
