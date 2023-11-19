@@ -117,16 +117,16 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
     lock(nsock, cv = ncv)
     listen(nsock, url = nurl, tls = tls, error = TRUE)
     listener <- attr(nsock, "listener")[[1L]]
-    if (i == 1L && !auto && parse_url(opt(listener, "url"))[["port"]] == "0") {
+    listurl <- opt(listener, "url")
+    if (i == 1L && !auto && parse_url(listurl)[["port"]] == "0") {
       realport <- opt(listener, "tcp-bound-port")
-      servernames[i] <- sub_real_port(port = realport, url = nurl)
+      listurl <- sub_real_port(port = realport, url = nurl)
       if (!vectorised || n == 1L) {
         url <- sub_real_port(port = realport, url = url)
         basenames[1L] <- sub_real_port(port = realport, url = burl)
       }
-    } else {
-      servernames[i] <- opt(listener, "url")
     }
+    servernames[i] <- listurl
 
     auto && launch_daemon(nurl, dots, next_stream(envir))
 
