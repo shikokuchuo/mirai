@@ -425,45 +425,6 @@ is_mirai_interrupt <- function(x) inherits(x, "miraiInterrupt")
 #'
 is_error_value <- is_error_value
 
-#' Register Custom Serialization Functions
-#'
-#' For sending and receiving reference objects accessed via an external pointer.
-#'
-#' @param refhook a list of two functions (for custom serialization /
-#'     unserialization). The signature for the first function must accept a list
-#'     of external pointer type objects and return a raw vector, e.g.
-#'     \code{torch::torch_serialize}, and the second function must accept a raw
-#'     vector and return a list of external pointer type objects, e.g.
-#'     \code{torch::torch_load}, or else NULL to reset.
-#'
-#' @return Invisibly, a list comprising the currently-registered 'refhook'
-#'     functions.
-#'
-#' @details Calling without any arguments returns (invisibly) the
-#'     currently-registered 'refhook' functions.
-#'
-#'     This function may be called prior to or after setting daemons, with the
-#'     same registered functions applying to all compute profiles.
-#'
-#' @examples
-#' register(list(function(x) serialize(x, NULL), unserialize))
-#' print(register())
-#'
-#' register(NULL)
-#' print(register())
-#'
-#' @export
-#'
-register <- function(refhook = list()) {
-
-  if (!missing(refhook))
-    for (.compute in names(..))
-      everywhere(mirai::register(refhook), refhook = refhook, .compute = .compute)
-
-  nextmode(refhook = refhook)
-
-}
-
 #' @export
 #'
 print.mirai <- function(x, ...) {

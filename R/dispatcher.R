@@ -288,30 +288,10 @@ saisei <- function(i, force = FALSE, .compute = "default") {
 
 # internals --------------------------------------------------------------------
 
-auto_tokenized_url <- function() strcat(.urlscheme, random(12L))
-
-new_tokenized_url <- function(url) sprintf("%s/%s", url, random(12L))
-
-sub_real_port <- function(port, url) sub("(?<=:)0(?![^/])", port, url, perl = TRUE)
-
-query_dispatcher <- function(sock, command, mode) {
-  send(sock, data = command, mode = 2L, block = .timelimit)
-  recv(sock, mode = mode, block = .timelimit)
-}
-
-query_status <- function(envir) {
-  res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L)
-  is.object(res) && return(res)
-  `attributes<-`(res, list(dim = c(envir[["n"]], 5L),
-                           dimnames = list(envir[["urls"]], c("i", "online", "instance", "assigned", "complete"))))
-}
-
-init_monitor <- function(sockc, envir) {
-  res <- query_dispatcher(sockc, command = FALSE, mode = 2L)
-  is.object(res) && return(FALSE)
-  `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L]))
-  TRUE
-}
+get_ports <- function(baseurl, n)
+  if (substr(baseurl[["scheme"]], 1L, 1L) == "t") {
+    if (baseurl[["port"]] == "0") integer(n) else seq.int(baseurl[["port"]], length.out = n)
+  }
 
 get_and_reset_env <- function(x) {
   candidate <- Sys.getenv(x)
@@ -320,11 +300,6 @@ get_and_reset_env <- function(x) {
     candidate
   }
 }
-
-get_ports <- function(baseurl, n)
-  if (substr(baseurl[["scheme"]], 1L, 1L) == "t") {
-    if (baseurl[["port"]] == "0") integer(n) else seq.int(baseurl[["port"]], length.out = n)
-  }
 
 get_tls <- function(baseurl, tls, pass) {
   if (substr(baseurl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
@@ -337,4 +312,11 @@ get_tls <- function(baseurl, tls, pass) {
       pass <- get_and_reset_env("MIRAI_TEMP_VAR")
     tls_config(server = tls, pass = pass)
   }
+}
+
+sub_real_port <- function(port, url) sub("(?<=:)0(?![^/])", port, url, perl = TRUE)
+
+query_dispatcher <- function(sock, command, mode) {
+  send(sock, data = command, mode = 2L, block = .timelimit)
+  recv(sock, mode = mode, block = .timelimit)
 }

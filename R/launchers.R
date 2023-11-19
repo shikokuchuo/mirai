@@ -304,6 +304,43 @@ ssh_config <- function(remotes, timeout = 5, tunnel = FALSE, command = "ssh", rs
 
 }
 
+#' Host URL Constructor
+#'
+#' Automatically constructs a valid host URL (at which daemons may connect)
+#'     based on the computer's hostname. This may be supplied directly to the
+#'     'url' argument of \code{\link{daemons}}.
+#'
+#' @param ws [default FALSE] logical value whether to use a WebSockets 'ws://'
+#'     or else TCP 'tcp://' scheme.
+#' @param tls [default FALSE] logical value whether to use TLS in which case the
+#'     scheme used will be either 'wss://' or 'tls+tcp://' accordingly.
+#' @param port [default 0] numeric port to use. This should be open to
+#'     connections from the network addresses the daemons are connecting from.
+#'     '0' is a wildcard value that automatically assigns a free ephemeral port.
+#'
+#' @return A character string comprising a valid host URL.
+#'
+#' @details This implementation relies on using the host name of the computer
+#'     rather than an IP address and typically works on local networks, although
+#'     this is not always guaranteed. If unsuccessful, substitute an IPv4 or
+#'     IPv6 address in place of the hostname.
+#'
+#' @examples
+#' host_url()
+#' host_url(ws = TRUE)
+#' host_url(tls = TRUE)
+#' host_url(ws = TRUE, tls = TRUE, port = 5555)
+#'
+#' @export
+#'
+host_url <- function(ws = FALSE, tls = FALSE, port = 0)
+  sprintf(
+    "%s://%s:%s",
+    if (ws) { if (tls) "wss" else "ws" } else { if (tls) "tls+tcp" else "tcp" },
+    Sys.info()[["nodename"]],
+    as.character(port)
+  )
+
 #' @export
 #'
 print.miraiLaunchCmd <- function(x, ...) {

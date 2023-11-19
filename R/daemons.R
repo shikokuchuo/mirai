@@ -438,44 +438,69 @@ status <- function(.compute = "default") {
 
 }
 
-#' Host URL Constructor
+#' Register Custom Serialization Functions
 #'
-#' Automatically constructs a valid host URL (at which daemons may connect)
-#'     based on the computer's hostname. This may be supplied directly to the
-#'     'url' argument of \code{\link{daemons}}.
+#' For sending and receiving reference objects accessed via an external pointer.
 #'
-#' @param ws [default FALSE] logical value whether to use a WebSockets 'ws://'
-#'     or else TCP 'tcp://' scheme.
-#' @param tls [default FALSE] logical value whether to use TLS in which case the
-#'     scheme used will be either 'wss://' or 'tls+tcp://' accordingly.
-#' @param port [default 0] numeric port to use. This should be open to
-#'     connections from the network addresses the daemons are connecting from.
-#'     '0' is a wildcard value that automatically assigns a free ephemeral port.
+#' @param refhook a list of two functions (for custom serialization /
+#'     unserialization). The signature for the first function must accept a list
+#'     of external pointer type objects and return a raw vector, e.g.
+#'     \code{torch::torch_serialize}, and the second function must accept a raw
+#'     vector and return a list of external pointer type objects, e.g.
+#'     \code{torch::torch_load}, or else NULL to reset.
 #'
-#' @return A character string comprising a valid host URL.
+#' @return Invisibly, a list comprising the currently-registered 'refhook'
+#'     functions.
 #'
-#' @details This implementation relies on using the host name of the computer
-#'     rather than an IP address and typically works on local networks, although
-#'     this is not always guaranteed. If unsuccessful, substitute an IPv4 or
-#'     IPv6 address in place of the hostname.
+#' @details Calling without any arguments returns (invisibly) the
+#'     currently-registered 'refhook' functions.
+#'
+#'     This function may be called prior to or after setting daemons, with the
+#'     same registered functions applying to all compute profiles.
 #'
 #' @examples
-#' host_url()
-#' host_url(ws = TRUE)
-#' host_url(tls = TRUE)
-#' host_url(ws = TRUE, tls = TRUE, port = 5555)
+#' register(list(function(x) serialize(x, NULL), unserialize))
+#' print(register())
+#'
+#' register(NULL)
+#' print(register())
 #'
 #' @export
 #'
-host_url <- function(ws = FALSE, tls = FALSE, port = 0)
-  sprintf(
-    "%s://%s:%s",
-    if (ws) { if (tls) "wss" else "ws" } else { if (tls) "tls+tcp" else "tcp" },
-    Sys.info()[["nodename"]],
-    as.character(port)
-  )
+register <- function(refhook = list()) {
+
+  if (!missing(refhook))
+    for (.compute in names(..))
+      everywhere(mirai::register(refhook), refhook = refhook, .compute = .compute)
+
+  nextmode(refhook = refhook)
+
+}
 
 # internals --------------------------------------------------------------------
+
+check_create_tls <- function(url, tls, envir) {
+  purl <- parse_url(url)
+  if (substr(purl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
+    cert <- write_cert(cn = purl[["hostname"]])
+    `[[<-`(envir, "tls", cert[["client"]])
+    tls <- cert[["server"]]
+  }
+  tls
+}
+
+create_stream <- function(n, seed, envir) {
+  rexp(n = 1L)
+  oseed <- .GlobalEnv[[".Random.seed"]]
+  RNGkind("L'Ecuyer-CMRG")
+  if (length(seed)) set.seed(seed)
+  `[[<-`(envir, "stream", .GlobalEnv[[".Random.seed"]])
+  `[[<-`(.GlobalEnv, ".Random.seed", oseed)
+}
+
+auto_tokenized_url <- function() strcat(.urlscheme, random(12L))
+
+new_tokenized_url <- function(url) sprintf("%s/%s", url, random(12L))
 
 req_socket <- function(url, tls = NULL, resend = .intmax)
   `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", resend)
@@ -539,13 +564,19 @@ launch_and_sync_daemon <- function(sock, ..., rs = NULL, tls = NULL, pass = NULL
   until(cv, .timelimit)
 }
 
-create_stream <- function(n, seed, envir) {
-  rexp(n = 1L)
-  oseed <- .GlobalEnv[[".Random.seed"]]
-  RNGkind("L'Ecuyer-CMRG")
-  if (length(seed)) set.seed(seed)
-  `[[<-`(envir, "stream", .GlobalEnv[[".Random.seed"]])
-  `[[<-`(.GlobalEnv, ".Random.seed", oseed)
+init_monitor <- function(sockc, envir) {
+  res <- query_dispatcher(sockc, command = FALSE, mode = 2L)
+  is.object(res) && return(FALSE)
+  `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L]))
+  TRUE
+}
+
+store_urls <- function(sock, envir) {
+  listener <- attr(sock, "listener")[[1L]]
+  urls <- opt(listener, "url")
+  if (parse_url(urls)[["port"]] == "0")
+    urls <- sub_real_port(port = opt(listener, "tcp-bound-port"), url = urls)
+  `[[<-`(envir, "urls", urls)
 }
 
 send_signal <- function(envir) {
@@ -557,23 +588,12 @@ send_signal <- function(envir) {
   }
 }
 
-check_create_tls <- function(url, tls, envir) {
-  purl <- parse_url(url)
-  if (substr(purl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
-    cert <- write_cert(cn = purl[["hostname"]])
-    `[[<-`(envir, "tls", cert[["client"]])
-    tls <- cert[["server"]]
-  }
-  tls
-}
-
-store_urls <- function(sock, envir) {
-  listener <- attr(sock, "listener")[[1L]]
-  urls <- opt(listener, "url")
-  if (parse_url(urls)[["port"]] == "0")
-    urls <- sub_real_port(port = opt(listener, "tcp-bound-port"), url = urls)
-  `[[<-`(envir, "urls", urls)
-}
-
 register_refhook <- function(refhook = nextmode())
   if (length(refhook[[1L]])) register(refhook = refhook)
+
+query_status <- function(envir) {
+  res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L)
+  is.object(res) && return(res)
+  `attributes<-`(res, list(dim = c(envir[["n"]], 5L),
+                           dimnames = list(envir[["urls"]], c("i", "online", "instance", "assigned", "complete"))))
+}
