@@ -281,13 +281,6 @@ call_mirai <- call_aio
 #' \code{wait_mirai} is identical to \code{call_mirai} but allows user
 #'     interrupts.
 #'
-#' @section Wait:
-#'
-#'     \code{wait_mirai} is identical to \code{call_mirai} except that it is
-#'     user-interruptible. If interrupted, the 'mirai' is stopped upon the next
-#'     garbage collection event, and hence may return an 'errorValue' 20
-#'     'Operation canceled' if it remains unresolved by that time.
-#'
 #' @rdname call_mirai
 #' @export
 #'

@@ -47,15 +47,6 @@ This function will wait for the async operation to complete if still
     control flow statements such as \code{while} or \code{if}.
 }
 
-\section{Wait}{
-
-
-    \code{wait_mirai} is identical to \code{call_mirai} except that it is
-    user-interruptible. If interrupted, the 'mirai' is stopped upon the next
-    garbage collection event, and hence may return an 'errorValue' 20
-    'Operation canceled' if it remains unresolved by that time.
-}
-
 \examples{
 if (interactive()) {
 # Only run examples in interactive R sessions
