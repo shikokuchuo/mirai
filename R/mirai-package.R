@@ -50,11 +50,11 @@
 #' @author Charlie Gao \email{charlie.gao@@shikokuchuo.net}
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
-#' @importFrom nanonext base64dec call_aio .context cv cv_value dial
+#' @importFrom nanonext base64dec call_aio call_safe .context cv cv_value dial
 #'     is_error_value listen lock mclock msleep nextmode opt opt<- parse_url
 #'     pipe_notify random reap recv recv_aio_signal request request_signal send
 #'     send_aio socket stat stop_aio strcat tls_config unresolved until wait
-#'     wait_aio write_cert
+#'     write_cert
 #' @importFrom parallel nextRNGStream stopCluster
 #' @importFrom stats rexp
 #'

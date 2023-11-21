@@ -276,15 +276,15 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #'
 call_mirai <- call_aio
 
-#' mirai (Wait Value)
+#' mirai (Call Value)
 #'
-#' \code{wait_mirai} is identical to \code{call_mirai} but allows user
-#'     interrupts.
+#' \code{call_safe} is identical to \code{call_mirai} but allows user
+#'     interrupts, thus being safe for interactive use.
 #'
 #' @rdname call_mirai
 #' @export
 #'
-wait_mirai <- wait_aio
+call_safe <- call_safe
 
 #' mirai (Stop Evaluation)
 #'
