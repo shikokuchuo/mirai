@@ -2,12 +2,12 @@
 % Please edit documentation in R/mirai.R
 \name{call_mirai}
 \alias{call_mirai}
-\alias{call_safe}
+\alias{call_mirai_}
 \title{mirai (Call Value)}
 \usage{
 call_mirai(aio)
 
-call_safe(aio)
+call_mirai_(aio)
 }
 \arguments{
 \item{aio}{a 'mirai' object.}
@@ -19,7 +19,7 @@ The passed mirai (invisibly). The retrieved value is stored at \code{$data}.
 \code{call_mirai} retrieves the value of a mirai, waiting for the the
     asynchronous operation to resolve if it is still in progress.
 
-\code{call_safe} is identical to \code{call_mirai} but allows user
+\code{call_mirai_} is identical to \code{call_mirai} but allows user
     interrupts, thus being safe for interactive use.
 }
 \details{

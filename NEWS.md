@@ -1,13 +1,13 @@
-# mirai 0.11.2.9005 (development)
+# mirai 0.11.2.9006 (development)
 
 * Implements `register()` for registering custom serialization and unserialization functions when using daemons.
-* Introduces `call_safe()`, a user-interruptible version of `call_mirai()` suitable for interactive use.
+* Introduces `call_mirai_()`, a user-interruptible version of `call_mirai()` suitable for interactive use.
 * Simplification of `mirai()` interface:
   + '.args' will now coerece to a list if an object other than a list is supplied, rather than error.
   + '.signal' argument removed - now all 'mirai' signal if daemons are set up.
 * `everywhere()` now returns invisible NULL in the case the specified compute profile is not set up, rather than error.
 * Improved error messages and handling for daemon/dispatcher connection errors.
-* Requires nanonext >= [0.10.4.9007].
+* Requires nanonext >= [0.10.4.9008].
 
 # mirai 0.11.2
 
