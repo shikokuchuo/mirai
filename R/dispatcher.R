@@ -202,7 +202,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           send_aio(queue[[i]][["ctx"]], data = req, mode = 2L)
           q <- queue[[i]][["daemon"]]
           if (req[3L])
-            send_ack(.context(servers[[q]])) else
+            re_connect(sock = servers[[q]], url = servernames[q], tls = tls) else
               serverfree[q] <- TRUE
           complete[q] <- complete[q] + 1L
           ctx <- .context(sock)
@@ -317,7 +317,9 @@ query_dispatcher <- function(sock, command, mode) {
   recv(sock, mode = mode, block = .timelimit)
 }
 
-send_ack <- function(ctx) {
-  send(ctx, data = NULL, mode = 2L, block = FALSE)
-  reap(ctx)
+re_connect <- function(sock, url, tls) {
+  reap(attr(sock, "listener")[[1L]])
+  attr(sock, "listener") <- NULL
+  gc(verbose = FALSE)
+  listen(sock, url = url, tls = tls, error = FALSE)
 }
