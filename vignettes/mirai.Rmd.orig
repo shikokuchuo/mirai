@@ -1,6 +1,5 @@
 ---
 title: "mirai - Minimalist Async Evaluation Framework for R"
-output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{mirai - Minimalist Async Evaluation Framework for R}
   %\VignetteEngine{knitr::knitr}

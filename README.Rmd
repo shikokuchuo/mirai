@@ -31,7 +31,7 @@ Designed for simplicity, a 'mirai' evaluates an R expression asynchronously, on 
 <br /><br />
 `mirai()` returns a 'mirai' object immediately. 'mirai' (未来 みらい) is Japanese for 'future'.
 <br /><br />
-Features efficient task scheduling, fast inter-process communications, and TLS over TCP/IP for remote connections.
+Efficient scheduling over fast inter-process communications or secure TLS connections over TCP/IP, built on 'nanonext' and 'NNG' (Nanomsg Next Gen).
 <br /><br />
 {mirai} has a tiny pure R code base, relying solely on [`nanonext`](https://doi.org/10.5281/zenodo.7903429), a high-performance binding for the 'NNG' (Nanomsg Next Gen) C library with zero package dependencies.
 <br /><br />

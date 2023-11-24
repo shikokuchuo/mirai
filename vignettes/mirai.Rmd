@@ -1,6 +1,5 @@
 ---
 title: "mirai - Minimalist Async Evaluation Framework for R"
-output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{mirai - Minimalist Async Evaluation Framework for R}
   %\VignetteEngine{knitr::knitr}
@@ -69,7 +68,7 @@ Upon completion, the 'mirai' resolves automatically to the evaluated result.
 
 ```r
 m$data |> str()
-#>  num [1:100000000] 0.856 1.019 0.116 12.391 3.287 ...
+#>  num [1:100000000] -2.817 1.276 -0.916 1.605 0.699 ...
 ```
 
 Alternatively, explicitly call and wait for the result using `call_mirai()`.
@@ -77,7 +76,7 @@ Alternatively, explicitly call and wait for the result using `call_mirai()`.
 
 ```r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.856 1.019 0.116 12.391 3.287 ...
+#>  num [1:100000000] -2.817 1.276 -0.916 1.605 0.699 ...
 ```
 
 For easy programmatic use of `mirai()`, '.expr' accepts a pre-constructed language object, and also a list of named arguments passed via '.args'. So, the following would be equivalent to the above:
@@ -94,7 +93,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 1.022 0.305 0.339 0.646 -2.781 ...
+#>  num [1:100000000] -2.148 -0.188 0.149 -0.27 -1.044 ...
 ```
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -177,11 +176,11 @@ for (i in 1:10) {
 #> iteration 2 successful
 #> iteration 3 successful
 #> iteration 4 successful
-#> Error: random error
 #> iteration 5 successful
 #> iteration 6 successful
 #> iteration 7 successful
 #> iteration 8 successful
+#> Error: random error
 #> iteration 9 successful
 #> iteration 10 successful
 ```
@@ -220,12 +219,12 @@ status()
 #> 
 #> $daemons
 #>                                     i online instance assigned complete
-#> abstract://c3902f530ba9d40fd57fe3a9 1      1        1        0        0
-#> abstract://41ddc95837ac045daf584c0a 2      1        1        0        0
-#> abstract://4109819f426d564beaae4ae0 3      1        1        0        0
-#> abstract://2d2cef540bb1a11b9cfa94e8 4      1        1        0        0
-#> abstract://290ddb636505a91b41d8ffa6 5      1        1        0        0
-#> abstract://c05127085b3488591b0e4030 6      1        1        0        0
+#> abstract://8d840b9f0a03e4f9e9abc974 1      1        1        0        0
+#> abstract://229ef86b70e22ec64bcca529 2      1        1        0        0
+#> abstract://028ca9b8edeebacdd17e6e7b 3      1        1        0        0
+#> abstract://9bd980b03d5cde974c36dde4 4      1        1        0        0
+#> abstract://4192b4b4f9c7b8ece9c5bb3f 5      1        1        0        0
+#> abstract://91cdba4dd5ad1adaa4adb595 6      1        1        0        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background process that connects to individual daemon processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to daemons for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.
@@ -260,7 +259,7 @@ status()
 #> [1] 6
 #> 
 #> $daemons
-#> [1] "abstract://1d6da601d411861d967e5309"
+#> [1] "abstract://a2bff00a1ee2e0de1d8de6af"
 ```
 
 This implementation sends tasks immediately, and ensures that tasks are evenly-distributed amongst daemons. This means that optimal scheduling is not guaranteed as the duration of tasks cannot be known *a priori*. As an example, tasks could be queued at a daemon behind a long-running task, whilst other daemons are idle having already completed their tasks.
@@ -364,7 +363,7 @@ By specifying `dispatcher = FALSE`, remote daemons connect directly to the host 
 
 ```r
 daemons(url = host_url(), dispatcher = FALSE)
-#> [1] "tcp://hostname:40851"
+#> [1] "tcp://hostname:36749"
 ```
 
 Note that above, calling `host_url()` without a port value uses the default of '0'. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided in the return value of the call, or it may be queried at any time via `status()`.
@@ -380,7 +379,7 @@ status()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://hostname:40851"
+#> [1] "tcp://hostname:36749"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -457,10 +456,10 @@ daemons(n = 2, url = host_url())
 
 launch_remote(1:2)
 #> [1]
-#> Rscript -e "mirai::daemon('tcp://hostname:40647',rs=c(10407,-308662237,1225609992,2146100585,1109985814,443953567,1657392980))"
+#> Rscript -e "mirai::daemon('tcp://hostname:41263',rs=c(10407,745742642,-1844240629,284060368,354949265,317458718,748147463))"
 #> 
 #> [2]
-#> Rscript -e "mirai::daemon('tcp://hostname:43105',rs=c(10407,1546065962,2088510471,-1724175465,-470421002,1589228829,1728099268))"
+#> Rscript -e "mirai::daemon('tcp://hostname:46813',rs=c(10407,1835197890,-1725441154,1670574338,-502048544,715992074,867456323))"
 
 daemons(0)
 #> [1] 0
@@ -492,37 +491,37 @@ The generated self-signed certificate is available via `launch_remote()`. This f
 ```r
 launch_remote(1)
 #> [1]
-#> Rscript -e "mirai::daemon('wss://hostname:45653/1',tls=c('-----BEGIN CERTIFICATE-----
+#> Rscript -e "mirai::daemon('wss://hostname:46245/1',tls=c('-----BEGIN CERTIFICATE-----
 #> MIIFNzCCAx+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAzMREwDwYDVQQDDAhrdW1h
 #> bW90bzERMA8GA1UECgwITmFub25leHQxCzAJBgNVBAYTAkpQMB4XDTAxMDEwMTAw
 #> MDAwMFoXDTMwMTIzMTIzNTk1OVowMzERMA8GA1UEAwwIa3VtYW1vdG8xETAPBgNV
 #> BAoMCE5hbm9uZXh0MQswCQYDVQQGEwJKUDCCAiIwDQYJKoZIhvcNAQEBBQADggIP
-#> ADCCAgoCggIBAJyowQtHJmqfg9phWY71zbrQqkWzW8+mGTe+ZyQBtIEeYmJURKO/
-#> 1nO5xeO8lz+cUbroD/t7Hrq7bt5EzroIUhywJlv4FNcCjhM+l5vd8Dwy5j1Hjivn
-#> hqohsXutjNwV+cjqNlw31lH3EbIa60KP0YtVWQ34QjIgb5n1YMt1f2VyHokbxlu1
-#> /vyKx4XTTu0JFiJNQ7aR4uVl3XOEDF2KlzuiDf/9Px5tNliqC1Cl3NucLVrSNLqO
-#> cxl682pXrUpflIUdkndpGjBLsunHkeAu5oR0HcpTo1V0lwAAXY9kEkEdOKTdBeqP
-#> 6qhCqG7LjjxESg3I8OyvDm+pGxHUWZ6iscYc9iEuap5MgTjxBzCWywJlivsc3jqs
-#> q01AF0lQAETqJrfqU79YTP+oN0gUtdsZRLx4fTc4ve/GlxEf1SX7SXCMgseIjkJM
-#> YKBZZfwe9Lken4TKN5Relw9shxOuMNy5Eg31sY+qBntDuUjxIH1npvlJJKYD42HG
-#> tB6qPH4QEErfx6UKw8rmvdKoTZLtN6ynpaZ/DSMU3mfaFFuVzcjWxmwr+Fv+H+N+
-#> 7YAJ8KrZW0xd7sP2eq5EkPP/smu9IFkgu5C8Z3fAORH2wSEp8kIPuA2OEdps0WCV
-#> xcEZZrFHepaANsclj9THmPj4oUqV8ysc9GnPH55l5lBtxspQXlL/pXoXAgMBAAGj
-#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFJpy9U+93UKCynhpr9gl
-#> SXr4GOY0MB8GA1UdIwQYMBaAFJpy9U+93UKCynhpr9glSXr4GOY0MA0GCSqGSIb3
-#> DQEBCwUAA4ICAQBr0za0rqMI2eGczkIBn+y4uk7u/2e+ItHz9pzi2c1T6NyWpAaZ
-#> NjpbGFkYGliJcy3uci/f5uBCxmWL9tcF/82gPl/q78B6v84r0X1SDa2Ma3QhS/E/
-#> z45PTUWBQRYD0qQInhvy20E3SlUNJgc9udKdYfeMbOWPQjNsLfjqg6Y/g86Rb8zL
-#> lW26uYi3CKpOMqVi1uoXU0FIvkbDVig47vijpdA8yzsQDL6XL+Ho3c+XfR1d58dX
-#> b9DdVJBfzYQ2/ks+FVkRFEMcU+5tbdQTbBxMDw96jZm2UWamDiHPcAfJtQUqfa2t
-#> +VvTHQsLdrrN0uhfSZs6mFYT8VlkxVqJXKeNWGKnVzV/bBD6ik2J84cjo+g3uy7/
-#> hS+vFs+R0D3cQ0GtRxnd6iA/LKWnkaGe2UN3XxEX52TJyxdt0S7bAzlrJuBtngMd
-#> xMhryyDPJ02vfMDe7GWX22Nwwwr3J8NFo33qS0tqROGRhzHsAAZot+jcHHLEVbke
-#> Rt/+460CJababhawv0Zz8tTVDCRxa3UvkNMY3hpDOGgQafYDep6fE5X1cIBUSaK6
-#> f2NXpVs3UW8De4KdD+8/w7UA2jn27rsyX6mNZH3+eKORiBPWjbmed7HcLDc3cqZF
-#> mWlEoGar00i5qI7eiAqA51Ic0ajv4hdbfQtxxUvi9l/meHThnLF8QrxnqQ==
+#> ADCCAgoCggIBALD8rvE3XXNC9pUhf/ePcju48jgHh/RDk33e2OLpfBsknsXgPERr
+#> u+D+dULf0/GIVd0sIpNlH0fXboKYulCJdmtQ8L5QlGhGDXQu6yq9AR7iFu6JTKtJ
+#> wmQEkMQn2o9Wf4uRGlPGJz3HaIONGthMF7qMz7o52WEGUJLFNJVCX09TBEz6HPOr
+#> vmCLyhV2G5QrHa/lTlB0sBuUDkcgE1T4SpaENqGNUnZDJ7vxN5R/RsZ3xvlHKwhL
+#> DlEjfEJhSSECJ6SuWdhkEDhiR7biZCloUASYHgEx/ZtMnRcPBxtCpGbq2PRvspRk
+#> NYtDLlS5yl4xsRonO+6ER0g85ibPr6z0sC3eVe2Opg8R7ZN9fdOfHhN1TylzMeAt
+#> uJNEfOpk24M8cr9JgZBegoZhPczK3UZ7/4VcC6oQnYm9loLuH4sKu3YgzQqzdCro
+#> eWag7KBnE4LDVOUnHrR0378SxTOoMpTwm7yjvuo1ymZJBnjHa1JcZa9Aju3ZsD35
+#> +ITEleluvH+hDfSBEiZAitIPXzAiAa2wVf2abRJCyh+Onb1mZjndKQIE67VJOQ5E
+#> +PMCTy5w6MfaOuF/Y+2M75+C+eBsW3WV6VU+G+Z9uuRAX2b42H6dI5yt0As2pOyq
+#> LZ5eHFxxqoaQLiOLmN3G5VoVG0mKiX8g2oN7UUvajjOCfb/KGnQkoQMLAgMBAAGj
+#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFFg9KifWm314SgJcoKlN
+#> kAdXyDppMB8GA1UdIwQYMBaAFFg9KifWm314SgJcoKlNkAdXyDppMA0GCSqGSIb3
+#> DQEBCwUAA4ICAQBQnyzQ7BPyYaRM1DBVsl3brP77I7MHg6LarsfFQTwva0EVNPc7
+#> GygYBRf7TgBwN0bnJG7zNmdPeUiMwrpe4lDephs8UysINnKfcoasbouRTwTFroqL
+#> Dj3EMtsEUD0UYf/aauKUnLmdmTsAjWx4PVdJ5ZuDzGsV40XAgCxNPN0+s0pycpGw
+#> K9h1GZ7/GaDRFezeOLo7pzovjDQKiWuUv7h6WzSsSM46p8o+rdTBZsWwy1oGhiwJ
+#> zI/w31VDHpeHvDZc7zj02I1W37BV+OsLQ67ihXmLzuSzlIVPJE6JIDHjuhktAiwp
+#> HmT1BcDJx3bbFT5uDmS9lYgcjB83AXu3WkyKD3xA6TW+S+idyMavLO2yaHKVMC+4
+#> j0GjQ8tAbyPFBwx9rrWmWODBWHnoPEBpliiLONMHnPdhSucGWeuGcrmr5xY4iegj
+#> I08mtp54aegwo0jrCXNYGLP79KX7vNIhIUiJM2N3gN2Nh47y/Zf7JXs1ODFODtT9
+#> OAJqVt+iiq58Pl8fySeM/PHbnqVzJWWeLfBlsaf7pLOe+p5fJGu+h+IprLQJ4aml
+#> RyZwYduxvwszEXR1C9pxjlDoIZAhteH415r06O6+TJrC/jbgUt9Jp15kXILDlHsB
+#> dAmAstPpCNlPwH/ST3b6FN5Pa5ed0QV321EfeA9s4uxg3Dnm3xxWirwN0Q==
 #> -----END CERTIFICATE-----
-#> ',''),rs=c(10407,-2045402832,431063921,440663678,2061316327,-813505540,-1251975987))"
+#> ',''),rs=c(10407,-1062586668,602581957,1500089794,-2089066917,-336581152,1334385761))"
 ```
 
 The printed value may be deployed directly on a remote machine.
@@ -646,26 +645,26 @@ cl
 
 parallel::parLapply(cl, 1:5, rnorm)
 #> [[1]]
-#> [1] -0.02142639
+#> [1] 1.371112
 #> 
 #> [[2]]
-#> [1] -1.9796600 -0.8155671
+#> [1] -0.3116484  1.7059236
 #> 
 #> [[3]]
-#> [1]  0.01730934  0.49217098 -1.29723732
+#> [1] -0.1470203  0.1141612  1.1875923
 #> 
 #> [[4]]
-#> [1] -0.3186709  0.1106953  1.9158393 -1.2389280
+#> [1]  0.1656554 -0.6252259 -1.5226887 -3.1530445
 #> 
 #> [[5]]
-#> [1] -0.3536396 -0.1615191  0.1008519 -1.0460699  1.8911874
+#> [1]  0.4616547  0.5608038  0.8413763 -0.9255386  1.1057131
 
 status(cl)
 #> $connections
 #> [1] 4
 #> 
 #> $daemons
-#> [1] "abstract://b1cb41c7113d2da0182c6762"
+#> [1] "abstract://81bc0ed6448232ed9553e2ec"
 
 stop_cluster(cl)
 
@@ -673,10 +672,10 @@ cl <- make_cluster(n = 2, url = host_url())
 #> Shell commands for deployment on nodes:
 #> 
 #> [1]
-#> Rscript -e "mirai::daemon('tcp://hostname:45883',rs=c(10407,1100910646,696400191,326044276,1038566117,-1820642718,-1919397253))"
+#> Rscript -e "mirai::daemon('tcp://hostname:41555',rs=c(10407,-161788137,960069740,1056789117,-1601673446,-510598701,-565211912))"
 #> 
 #> [2]
-#> Rscript -e "mirai::daemon('tcp://hostname:45883',rs=c(10407,1716881044,260012549,787366423,-1062898078,2072256082,-1371078082))"
+#> Rscript -e "mirai::daemon('tcp://hostname:41555',rs=c(10407,1736850507,929955057,2063053644,989199638,-460189847,1606479745))"
 
 stop_cluster(cl)
 ```
