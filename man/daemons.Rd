@@ -68,9 +68,9 @@ and [ii] the associated private key.}
 is encrypted with a password) For security, should be provided through a
 function that returns this value, rather than directly.}
 
-\item{.compute}{[default 'default'] character compute profile to use for
-creating the daemons (each compute profile has its own set of daemons for
-connecting to different resources).}
+\item{.compute}{[default 'default'] character value for the compute profile
+to use (each compute profile has its own set of daemons for connecting to
+different resources).}
 }
 \value{
 Depending on the arguments supplied:

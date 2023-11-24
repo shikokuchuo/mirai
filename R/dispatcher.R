@@ -48,7 +48,9 @@
 #'     can mask potential connection issues.
 #' @param token [default FALSE] if TRUE, appends a unique 24-character token
 #'     to each URL path the dispatcher listens at (not applicable for TCP URLs
-#'     which do not accept a path).
+#'     which do not accept a path). In such cases, re-connection of daemon
+#'     instances at the same URL is not permitted, and \code{\link{saisei}} must
+#'     first be called to regenerate the token.
 #' @param tls [default NULL] (required for secure TLS connections) \strong{either}
 #'     the character path to a file containing the PEM-encoded TLS certificate
 #'     and associated private key (may contain additional certificates leading
@@ -199,9 +201,16 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           if (is.object(req)) req <- serialize(req, NULL)
           send_aio(queue[[i]][["ctx"]], data = req, mode = 2L)
           q <- queue[[i]][["daemon"]]
-          if (req[3L])
-            re_connect(sock = servers[[q]], url = servernames[q], tls = tls) else
-              serverfree[q] <- TRUE
+          if (req[3L]) {
+            reap(attr(servers[[q]], "listener")[[1L]])
+            if (!token) {
+              attr(servers[[q]], "listener") <- NULL
+              gc(verbose = FALSE)
+              listen(servers[[q]], url = servernames[q], tls = tls, error = FALSE)
+            }
+          } else {
+            serverfree[q] <- TRUE
+          }
           complete[q] <- complete[q] + 1L
           queue[[i]] <- create_req(ctx = .context(sock), cv = cv) -> req
         }
@@ -231,11 +240,10 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
 #' When using daemons with dispatcher, regenerates the token for the URL a
 #'     dispatcher socket listens at.
 #'
+#' @inheritParams mirai
 #' @param i integer index number URL to regenerate at dispatcher.
 #' @param force [default FALSE] logical value whether to regenerate the URL even
 #'     when there is an existing active connection.
-#' @param .compute [default 'default'] character compute profile (each compute
-#'     profile has its own set of daemons for connecting to different resources).
 #'
 #' @return The regenerated character URL upon success, or else NULL.
 #'
@@ -311,13 +319,6 @@ sub_real_port <- function(port, url) sub("(?<=:)0(?![^/])", port, url, perl = TR
 query_dispatcher <- function(sock, command, mode) {
   send(sock, data = command, mode = 2L, block = .timelimit)
   recv(sock, mode = mode, block = .timelimit)
-}
-
-re_connect <- function(sock, url, tls) {
-  reap(attr(sock, "listener")[[1L]])
-  attr(sock, "listener") <- NULL
-  gc(verbose = FALSE)
-  listen(sock, url = url, tls = tls, error = FALSE)
 }
 
 create_req <- function(ctx, cv)

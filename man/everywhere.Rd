@@ -21,7 +21,8 @@ name = value pairs, as in '...'. If an object other than a list is
 supplied, it will be coerced to a list.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
-to use when sending the mirai.}
+to use (each compute profile has its own set of daemons for connecting to
+different resources).}
 }
 \value{
 Invisible NULL.

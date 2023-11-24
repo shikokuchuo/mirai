@@ -21,7 +21,7 @@
 #' \code{launch_local} spawns a new background \code{Rscript} process calling
 #'     \code{\link{daemon}} with the specified arguments.
 #'
-#' @inheritParams saisei
+#' @inheritParams mirai
 #' @param url the character host URL or vector of host URLs, including the port
 #'     to connect to (and optionally for websockets, a path), e.g.
 #'     tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'

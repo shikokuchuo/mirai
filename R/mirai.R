@@ -37,7 +37,8 @@
 #'     milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
 #' @param .compute [default 'default'] character value for the compute profile
-#'     to use when sending the mirai.
+#'     to use (each compute profile has its own set of daemons for connecting to
+#'     different resources).
 #'
 #' @return A 'mirai' object.
 #'

@@ -10,8 +10,9 @@ nextstream(.compute = "default")
 nextget(x, .compute = "default")
 }
 \arguments{
-\item{.compute}{[default 'default'] character compute profile (each compute
-profile has its own set of daemons for connecting to different resources).}
+\item{.compute}{[default 'default'] character value for the compute profile
+to use (each compute profile has its own set of daemons for connecting to
+different resources).}
 
 \item{x}{character value of item to retrieve. One of 'pid' (dispatcher process
 ID), 'urls' (URLs dispatcher is listening at) or 'tls' (the stored client

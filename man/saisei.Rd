@@ -12,8 +12,9 @@ saisei(i, force = FALSE, .compute = "default")
 \item{force}{[default FALSE] logical value whether to regenerate the URL even
 when there is an existing active connection.}
 
-\item{.compute}{[default 'default'] character compute profile (each compute
-profile has its own set of daemons for connecting to different resources).}
+\item{.compute}{[default 'default'] character value for the compute profile
+to use (each compute profile has its own set of daemons for connecting to
+different resources).}
 }
 \value{
 The regenerated character URL upon success, or else NULL.

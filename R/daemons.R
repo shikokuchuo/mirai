@@ -25,8 +25,8 @@
 #'     remote daemons via a remote configuration. By default, dispatcher ensures
 #'     optimal scheduling.
 #'
+#' @inheritParams mirai
 #' @inheritParams dispatcher
-#' @inheritParams launch_remote
 #' @param n integer number of daemons to set.
 #' @param url [default NULL] if specified, the character URL or vector of URLs
 #'     on the host for remote daemons to dial into, including a port accepting
@@ -65,9 +65,6 @@
 #'     chain, with the TLS certificate first), \strong{or} a length 2 character
 #'     vector comprising [i] the TLS certificate (optionally certificate chain)
 #'     and [ii] the associated private key.
-#' @param .compute [default 'default'] character compute profile to use for
-#'     creating the daemons (each compute profile has its own set of daemons for
-#'     connecting to different resources).
 #'
 #' @return Depending on the arguments supplied:
 #'

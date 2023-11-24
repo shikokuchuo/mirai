@@ -21,7 +21,7 @@
 #' \code{nextstream} retrieves the currently stored L'Ecuyer-CMRG RNG stream
 #'     for the specified compute profile and advances it to the next stream.
 #'
-#' @inheritParams saisei
+#' @inheritParams mirai
 #'
 #' @return For \code{nextstream}: a length 7 integer vector, as given by \code{.Random.seed}
 #'     when the L'Ecuyer-CMRG RNG is in use (may be passed directly to the 'rs'
