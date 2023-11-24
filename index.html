@@ -22,9 +22,8 @@
 <meta property="og:description" content="Lightweight parallel code execution and distributed computing.
     Designed for simplicity, a mirai evaluates an R expression asynchronously,
     on local or network resources, resolving automatically upon completion.
-    Features efficient task scheduling, fast inter-process communications, and
-    Transport Layer Security over TCP/IP for remote connections, courtesy of
-    nanonext and NNG (Nanomsg Next Gen).">
+    Efficient scheduling over fast inter-process communications or secure TLS
+    connections over TCP/IP, built on nanonext and NNG (Nanomsg Next Gen).">
 <meta property="og:image" content="https://shikokuchuo.net/mirai/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -93,7 +92,7 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>Minimalist async evaluation framework for R. <br><br> Lightweight parallel code execution and distributed computing. <br><br> Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion. <br><br><code><a href="reference/mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately. ‘mirai’ (未来 みらい) is Japanese for ‘future’. <br><br> Features efficient task scheduling, fast inter-process communications, and TLS over TCP/IP for remote connections. <br><br> {mirai} has a tiny pure R code base, relying solely on <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link"><code>nanonext</code></a>, a high-performance binding for the ‘NNG’ (Nanomsg Next Gen) C library with zero package dependencies. <br><br></p>
+<p>Minimalist async evaluation framework for R. <br><br> Lightweight parallel code execution and distributed computing. <br><br> Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion. <br><br><code><a href="reference/mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately. ‘mirai’ (未来 みらい) is Japanese for ‘future’. <br><br> Efficient scheduling over fast inter-process communications or secure TLS connections over TCP/IP, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen). <br><br> {mirai} has a tiny pure R code base, relying solely on <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link"><code>nanonext</code></a>, a high-performance binding for the ‘NNG’ (Nanomsg Next Gen) C library with zero package dependencies. <br><br></p>
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
@@ -136,13 +135,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -0.4189294  0.4175360 -7.1428468 -0.3830076  1.6176787  1.0000000</span></span>
-<span><span class="co">#&gt;  [7]  0.6181697 -2.6109140 -0.1400002  2.3950031 -2.3870373</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] -0.60527256  0.32143126  0.51678072 37.61513360  9.01445897  1.00000000</span></span>
+<span><span class="co">#&gt;  [7]  0.11093289  0.02658504  1.93505672  3.11108511 -1.65214826</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -0.4189294  0.4175360 -7.1428468 -0.3830076  1.6176787  1.0000000</span></span>
-<span><span class="co">#&gt;  [7]  0.6181697 -2.6109140 -0.1400002  2.3950031 -2.3870373</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] -0.60527256  0.32143126  0.51678072 37.61513360  9.01445897  1.00000000</span></span>
+<span><span class="co">#&gt;  [7]  0.11093289  0.02658504  1.93505672  3.11108511 -1.65214826</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="vignette">Vignette<a class="anchor" aria-label="anchor" href="#vignette"></a>
