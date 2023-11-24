@@ -109,10 +109,9 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
       if (vectorised) url[i] else
         if (is.null(ports)) sprintf("%s/%d", url, i) else
           sub(ports[1L], ports[i], url, fixed = TRUE)
-    basenames[i] <- burl
     nurl <- if (auto) auto_tokenized_url() else if (token) new_tokenized_url(burl) else burl
-    nsock <- req_socket(NULL)
     ncv <- cv()
+    nsock <- req_socket(NULL)
     pipe_notify(nsock, cv = ncv, cv2 = cv, add = TRUE, remove = TRUE, flag = FALSE)
     lock(nsock, cv = ncv)
     listen(nsock, url = nurl, tls = tls, error = TRUE)
@@ -123,18 +122,17 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
       listurl <- sub_real_port(port = realport, url = nurl)
       if (!vectorised || n == 1L) {
         url <- sub_real_port(port = realport, url = url)
-        basenames[1L] <- sub_real_port(port = realport, url = burl)
+        burl <- sub_real_port(port = realport, url = burl)
       }
     }
-    servernames[i] <- listurl
 
     auto && launch_daemon(nurl, dots, next_stream(envir))
 
+    basenames[i] <- burl
+    servernames[i] <- listurl
     servers[[i]] <- nsock
     active[[i]] <- ncv
-    ctx <- .context(sock)
-    req <- recv_aio_signal(ctx, cv = cv, mode = 8L)
-    queue[[i]] <- list(ctx = ctx, req = req)
+    queue[[i]] <- create_req(ctx = .context(sock), cv = cv)
   }
 
   on.exit(lapply(servers, reap), add = TRUE, after = TRUE)
@@ -205,9 +203,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
             re_connect(sock = servers[[q]], url = servernames[q], tls = tls) else
               serverfree[q] <- TRUE
           complete[q] <- complete[q] + 1L
-          ctx <- .context(sock)
-          req <- recv_aio_signal(ctx, cv = cv, mode = 8L)
-          queue[[i]] <- list(ctx = ctx, req = req)
+          queue[[i]] <- create_req(ctx = .context(sock), cv = cv) -> req
         }
 
       free <- which(serverfree & activevec)
@@ -323,3 +319,6 @@ re_connect <- function(sock, url, tls) {
   gc(verbose = FALSE)
   listen(sock, url = url, tls = tls, error = FALSE)
 }
+
+create_req <- function(ctx, cv)
+  list(ctx = ctx, req = recv_aio_signal(ctx, cv = cv, mode = 8L))
