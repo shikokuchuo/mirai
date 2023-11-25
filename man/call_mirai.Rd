@@ -19,8 +19,8 @@ The passed mirai (invisibly). The retrieved value is stored at \code{$data}.
 \code{call_mirai} retrieves the value of a mirai, waiting for the the
     asynchronous operation to resolve if it is still in progress.
 
-\code{call_mirai_} is identical to \code{call_mirai} but allows user
-    interrupts, thus being safe for interactive use.
+\code{call_mirai_} is a variant that allows user interrupts, suitable for
+    interactive use.
 }
 \details{
 This function will wait for the async operation to complete if still

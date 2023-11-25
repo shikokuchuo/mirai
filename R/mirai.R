@@ -279,8 +279,8 @@ call_mirai <- call_aio
 
 #' mirai (Call Value)
 #'
-#' \code{call_mirai_} is identical to \code{call_mirai} but allows user
-#'     interrupts, thus being safe for interactive use.
+#' \code{call_mirai_} is a variant that allows user interrupts, suitable for
+#'     interactive use.
 #'
 #' @rdname call_mirai
 #' @export
