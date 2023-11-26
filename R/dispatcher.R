@@ -48,9 +48,7 @@
 #'     can mask potential connection issues.
 #' @param token [default FALSE] if TRUE, appends a unique 24-character token
 #'     to each URL path the dispatcher listens at (not applicable for TCP URLs
-#'     which do not accept a path). In such cases, re-connection of daemon
-#'     instances at the same URL is not permitted, and \code{\link{saisei}} must
-#'     first be called to regenerate the token.
+#'     which do not accept a path).
 #' @param tls [default NULL] (required for secure TLS connections) \strong{either}
 #'     the character path to a file containing the PEM-encoded TLS certificate
 #'     and associated private key (may contain additional certificates leading
@@ -203,11 +201,9 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           q <- queue[[i]][["daemon"]]
           if (req[3L]) {
             reap(attr(servers[[q]], "listener")[[1L]])
-            if (!token) {
-              attr(servers[[q]], "listener") <- NULL
-              gc(verbose = FALSE)
-              listen(servers[[q]], url = servernames[q], tls = tls, error = FALSE)
-            }
+            attr(servers[[q]], "listener") <- NULL
+            gc(verbose = FALSE)
+            listen(servers[[q]], url = servernames[q], tls = tls, error = FALSE)
           } else {
             serverfree[q] <- TRUE
           }
