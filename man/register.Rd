@@ -7,18 +7,18 @@
 register(refhook = list())
 }
 \arguments{
-\item{refhook}{a list of two functions (for custom serialization /
-unserialization). The signature for the first function must accept a list
-of external pointer type objects and return a raw vector, e.g.
-\code{torch::torch_serialize}, and the second function must accept a raw
-vector and return a list of external pointer type objects, e.g.
-\code{torch::torch_load}, or else NULL to reset.}
+\item{refhook}{\strong{either} a list of two functions: the signature for the
+first must accept a list of external pointer type objects and return a
+raw vector, e.g. \code{torch::torch_serialize}, and the second must
+accept a raw vector and return a list of external pointer type objects,
+e.g. \code{torch::torch_load},\cr \strong{or else} NULL to reset.}
 }
 \value{
 A list comprising the currently-registered 'refhook' functions.
 }
 \description{
-For sending and receiving reference objects accessed via an external pointer.
+Registers custom serialization and unserialization functions for sending and
+    receiving reference objects accessed via an external pointer.
 }
 \details{
 Calling without any arguments returns a list of the
