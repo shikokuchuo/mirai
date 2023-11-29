@@ -15,24 +15,23 @@ vector and return a list of external pointer type objects, e.g.
 \code{torch::torch_load}, or else NULL to reset.}
 }
 \value{
-Invisibly, a list comprising the currently-registered 'refhook'
-    functions.
+A list comprising the currently-registered 'refhook' functions.
 }
 \description{
 For sending and receiving reference objects accessed via an external pointer.
 }
 \details{
-Calling without any arguments returns (invisibly) the
+Calling without any arguments returns a list of the
     currently-registered 'refhook' functions.
 
     This function may be called prior to or after setting daemons, with the
-    same registered functions applying to all compute profiles.
+    registered functions applying across all compute profiles.
 }
 \examples{
 register(list(function(x) serialize(x, NULL), unserialize))
-print(register())
+register()
 
 register(NULL)
-print(register())
+register()
 
 }
