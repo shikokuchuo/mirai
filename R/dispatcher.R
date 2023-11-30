@@ -79,7 +79,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
 
   cv <- cv()
   sock <- socket(protocol = "rep")
-  on.exit(reap(sock))
+  on.exit(close(sock))
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock = sock, url = host, asyncdial = asyncdial)
 
@@ -135,12 +135,12 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
     queue[[i]] <- create_req(ctx = .context(sock), cv = cv)
   }
 
-  on.exit(lapply(servers, reap), add = TRUE, after = TRUE)
+  on.exit(lapply(servers, close), add = TRUE, after = TRUE)
 
   ctrchannel <- is.character(monitor)
   if (ctrchannel) {
     sockc <- socket(protocol = "rep")
-    on.exit(reap(sockc), add = TRUE, after = FALSE)
+    on.exit(close(sockc), add = TRUE, after = FALSE)
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
     recv(sockc, mode = 6L, block = .timelimit) && stop(.messages[["sync_timeout"]])
     send_aio(sockc, c(Sys.getpid(), servernames), mode = 2L)
@@ -165,7 +165,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
         i <- .subset2(cmessage, "value")
         if (i) {
           if (i > 0L && !activevec[[i]]) {
-            reap(attr(servers[[i]], "listener")[[1L]])
+            close(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
             data <- servernames[i] <- if (auto) auto_tokenized_url() else new_tokenized_url(basenames[i])
             instance[i] <- -abs(instance[i])
@@ -173,7 +173,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
 
           } else if (i < 0L) {
             i <- -i
-            reap(servers[[i]])
+            close(servers[[i]])
             servers[[i]] <- nsock <- req_socket(NULL)
             pipe_notify(nsock, cv = active[[i]], cv2 = cv, add = TRUE, remove = TRUE, flag = FALSE)
             lock(nsock, cv = active[[i]])
@@ -200,15 +200,15 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           send_aio(queue[[i]][["ctx"]], data = req, mode = 2L)
           q <- queue[[i]][["daemon"]]
           if (req[3L]) {
-            reap(attr(servers[[q]], "listener")[[1L]])
+            close(attr(servers[[q]], "listener")[[1L]])
             attr(servers[[q]], "listener") <- NULL
             gc(verbose = FALSE)
-            listen(servers[[q]], url = servernames[q], tls = tls, error = FALSE)
+            listen(servers[[q]], url = servernames[q], tls = tls, error = TRUE)
           } else {
             serverfree[q] <- TRUE
           }
           complete[q] <- complete[q] + 1L
-          queue[[i]] <- create_req(ctx = .context(sock), cv = cv) -> req
+          queue[[i]] <- create_req(ctx = .context(sock), cv = cv)
         }
 
       free <- which(serverfree & activevec)

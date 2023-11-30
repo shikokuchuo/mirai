@@ -106,7 +106,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
 
   cv <- cv()
   sock <- socket(protocol = "rep")
-  on.exit(reap(sock))
+  on.exit(close(sock))
   autoexit && pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
   if (length(tls)) tls <- tls_config(client = tls)
   dial_and_sync_socket(sock = sock, url = url, asyncdial = !autoexit, tls = tls)
@@ -174,7 +174,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
 .daemon <- function(url) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = NA)
-  on.exit(reap(sock))
+  on.exit(close(sock))
   ._mirai_. <- recv(sock, mode = 1L, block = TRUE)
   data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)

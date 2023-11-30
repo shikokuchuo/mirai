@@ -52,7 +52,7 @@
 #'
 #' @importFrom nanonext base64dec call_aio call_aio_ .context cv cv_value dial
 #'     is_error_value listen lock mclock msleep nextmode opt opt<- parse_url
-#'     pipe_notify random reap recv recv_aio_signal request request_signal send
+#'     pipe_notify random recv recv_aio_signal request request_signal send
 #'     send_aio socket stat stop_aio strcat tls_config unresolved until wait
 #'     write_cert
 #' @importFrom parallel nextRNGStream stopCluster
