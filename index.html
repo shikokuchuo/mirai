@@ -135,13 +135,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -0.60527256  0.32143126  0.51678072 37.61513360  9.01445897  1.00000000</span></span>
-<span><span class="co">#&gt;  [7]  0.11093289  0.02658504  1.93505672  3.11108511 -1.65214826</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] -0.9333163  0.1438507 -0.7303892 -0.9532539  0.2629771  1.0000000</span></span>
+<span><span class="co">#&gt;  [7]  3.8026132 -1.0490384 -1.3691331  6.9516538 -1.0714481</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -0.60527256  0.32143126  0.51678072 37.61513360  9.01445897  1.00000000</span></span>
-<span><span class="co">#&gt;  [7]  0.11093289  0.02658504  1.93505672  3.11108511 -1.65214826</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] -0.9333163  0.1438507 -0.7303892 -0.9532539  0.2629771  1.0000000</span></span>
+<span><span class="co">#&gt;  [7]  3.8026132 -1.0490384 -1.3691331  6.9516538 -1.0714481</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="vignette">Vignette<a class="anchor" aria-label="anchor" href="#vignette"></a>
@@ -189,7 +189,7 @@
 </h3>
 <p>{mirai} serves as a backend for enterprise asynchronous <a href="https://cran.r-project.org/package=shiny" class="external-link"><code>shiny</code></a> or <a href="https://cran.r-project.org/package=plumber" class="external-link"><code>plumber</code></a> applications.</p>
 <p>A ‘mirai’ may be used interchangeably with a ‘promise’ by using the the promise pipe <code>%...&gt;%</code>, or explictly by <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">promises::as.promise()</a></code>, allowing side-effects to be performed upon asynchronous resolution of a ‘mirai’.</p>
-<p>Alternatively, <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> also provides an interface that facilitates deploying {mirai} for <a href="https://cran.r-project.org/package=shiny" class="external-link"><code>shiny</code></a>, and provides a <a href="https://wlandau.github.io/crew/articles/shiny.html" class="external-link">Shiny vignette</a> with tutorial and sample code for this purpose.</p>
+<p>Alternatively, <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> also provides an interface that facilitates deploying {mirai} for <a href="https://cran.r-project.org/package=shiny" class="external-link"><code>shiny</code></a>, and provides an ‘Asynchronous Shiny apps’ vignette with tutorial and sample code.</p>
 </div>
 <div class="section level3">
 <h3 id="thanks">Thanks<a class="anchor" aria-label="anchor" href="#thanks"></a>
