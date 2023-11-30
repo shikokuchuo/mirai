@@ -88,8 +88,8 @@ result.
 
 ``` r
 m$data
-#>  [1] -0.60527256  0.32143126  0.51678072 37.61513360  9.01445897  1.00000000
-#>  [7]  0.11093289  0.02658504  1.93505672  3.11108511 -1.65214826
+#>  [1] -0.9333163  0.1438507 -0.7303892 -0.9532539  0.2629771  1.0000000
+#>  [7]  3.8026132 -1.0490384 -1.3691331  6.9516538 -1.0714481
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -97,8 +97,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] -0.60527256  0.32143126  0.51678072 37.61513360  9.01445897  1.00000000
-#>  [7]  0.11093289  0.02658504  1.93505672  3.11108511 -1.65214826
+#>  [1] -0.9333163  0.1438507 -0.7303892 -0.9532539  0.2629771  1.0000000
+#>  [7]  3.8026132 -1.0490384 -1.3691331  6.9516538 -1.0714481
 ```
 
 ### Vignette
@@ -175,9 +175,8 @@ allowing side-effects to be performed upon asynchronous resolution of a
 
 Alternatively, [`crew`](https://cran.r-project.org/package=crew) also
 provides an interface that facilitates deploying {mirai} for
-[`shiny`](https://cran.r-project.org/package=shiny), and provides a
-[Shiny vignette](https://wlandau.github.io/crew/articles/shiny.html)
-with tutorial and sample code for this purpose.
+[`shiny`](https://cran.r-project.org/package=shiny), and provides an
+‘Asynchronous Shiny apps’ vignette with tutorial and sample code.
 
 ### Thanks
 

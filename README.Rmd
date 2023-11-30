@@ -153,7 +153,7 @@ The [`crew`](https://cran.r-project.org/package=crew) package is a distributed w
 
 A 'mirai' may be used interchangeably with a 'promise' by using the the promise pipe `%...>%`, or explictly by `promises::as.promise()`, allowing side-effects to be performed upon asynchronous resolution of a 'mirai'.
 
-Alternatively, [`crew`](https://cran.r-project.org/package=crew) also provides an interface that facilitates deploying {mirai} for [`shiny`](https://cran.r-project.org/package=shiny), and provides a [Shiny vignette](https://wlandau.github.io/crew/articles/shiny.html) with tutorial and sample code for this purpose.
+Alternatively, [`crew`](https://cran.r-project.org/package=crew) also provides an interface that facilitates deploying {mirai} for [`shiny`](https://cran.r-project.org/package=shiny), and provides an 'Asynchronous Shiny apps' vignette with tutorial and sample code.
 
 ### Thanks
 
