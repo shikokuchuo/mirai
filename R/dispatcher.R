@@ -143,7 +143,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
     on.exit(reap(sockc), add = TRUE, after = FALSE)
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
     recv(sockc, mode = 6L, block = .timelimit) && stop(.messages[["sync_timeout"]])
-    send_aio(sockc, c(Sys.getpid(), servernames), mode = 2L)
+    saio <- send_aio(sockc, c(Sys.getpid(), servernames), mode = 2L)
     cmessage <- recv_aio_signal(sockc, cv = cv, mode = 5L)
   }
 
@@ -188,7 +188,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
         } else {
           data <- as.integer(c(seq_n, activevec, instance, assigned, complete))
         }
-        send_aio(sockc, data = data, mode = 2L)
+        saio <- send_aio(sockc, data = data, mode = 2L)
         cmessage <- recv_aio_signal(sockc, cv = cv, mode = 5L)
         next
       }
@@ -197,9 +197,10 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
         if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["res"]])) {
           req <- .subset2(queue[[i]][["res"]], "value")
           if (is.object(req)) req <- serialize(req, NULL)
-          send_aio(queue[[i]][["ctx"]], data = req, mode = 2L)
+          exiting <- req[3L]
+          req <- send_aio(queue[[i]][["ctx"]], data = req, mode = 2L)
           q <- queue[[i]][["daemon"]]
-          if (req[3L]) {
+          if (exiting) {
             reap(attr(servers[[q]], "listener")[[1L]])
             attr(servers[[q]], "listener") <- NULL
             listen(servers[[q]], url = servernames[q], tls = tls, error = TRUE)
