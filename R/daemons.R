@@ -331,8 +331,8 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       length(envir) || return(0L)
 
       if (signal) send_signal(envir = envir)
-      reap(envir[["sock"]])
-      length(envir[["sockc"]]) && reap(envir[["sockc"]])
+      close(envir[["sock"]])
+      length(envir[["sockc"]]) && close(envir[["sockc"]])
       ..[[.compute]] <- NULL -> envir
 
     } else if (is.null(envir)) {

@@ -79,7 +79,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
 
   cv <- cv()
   sock <- socket(protocol = "rep")
-  on.exit(reap(sock))
+  on.exit(close(sock))
   pipe_notify(sock, cv = cv, add = FALSE, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock = sock, url = host, asyncdial = asyncdial)
 
@@ -135,12 +135,12 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
     queue[[i]] <- create_req(ctx = .context(sock), cv = cv)
   }
 
-  on.exit(lapply(servers, reap), add = TRUE, after = TRUE)
+  on.exit(lapply(servers, close), add = TRUE, after = TRUE)
 
   ctrchannel <- is.character(monitor)
   if (ctrchannel) {
     sockc <- socket(protocol = "rep")
-    on.exit(reap(sockc), add = TRUE, after = FALSE)
+    on.exit(close(sockc), add = TRUE, after = FALSE)
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
     recv(sockc, mode = 6L, block = .timelimit) && stop(.messages[["sync_timeout"]])
     saio <- send_aio(sockc, c(Sys.getpid(), servernames), mode = 2L)
@@ -173,7 +173,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
 
           } else if (i < 0L) {
             i <- -i
-            reap(servers[[i]])
+            close(servers[[i]])
             servers[[i]] <- nsock <- req_socket(NULL)
             pipe_notify(nsock, cv = active[[i]], cv2 = cv, add = TRUE, remove = TRUE, flag = FALSE)
             lock(nsock, cv = active[[i]])
@@ -197,13 +197,11 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
         if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["req"]])) {
           req <- .subset2(queue[[i]][["req"]], "value")
           if (is.object(req)) req <- serialize(req, NULL)
-          exiting <- req[3L]
-          req <- send_aio(queue[[i]][["ctx"]], data = req, mode = 2L)
+          send(queue[[i]][["ctx"]], data = req, mode = 2L)
           q <- queue[[i]][["daemon"]]
-          if (exiting) {
-            reap(attr(servers[[q]], "listener")[[1L]])
-            attr(servers[[q]], "listener") <- NULL
-            listen(servers[[q]], url = servernames[q], tls = tls, error = TRUE)
+          if (req[3L]) {
+            send(queue[[i]][["rctx"]], NULL, mode = 2L)
+            reap(queue[[i]][["rctx"]])
           } else {
             serverfree[q] <- TRUE
           }
@@ -217,7 +215,8 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
         for (q in free)
           for (i in seq_n) {
             if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
-              queue[[i]][["req"]] <- request_signal(.context(servers[[q]]), data = .subset2(queue[[i]][["req"]], "value"), cv = cv, send_mode = 2L, recv_mode = 8L)
+              queue[[i]][["rctx"]] <- .context(servers[[q]])
+              queue[[i]][["req"]] <- request_signal(queue[[i]][["rctx"]], data = .subset2(queue[[i]][["req"]], "value"), cv = cv, send_mode = 2L, recv_mode = 8L)
               queue[[i]][["daemon"]] <- q
               serverfree[q] <- FALSE
               assigned[q] <- assigned[q] + 1L
