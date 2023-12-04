@@ -438,7 +438,7 @@ status <- function(.compute = "default") {
 #' Register Custom Serialization Functions
 #'
 #' Registers custom serialization and unserialization functions for sending and
-#'     receiving reference objects accessed via an external pointer.
+#'     receiving external pointer reference objects.
 #'
 #' @param refhook \strong{either} a list of two functions: the signature for the
 #'     first must accept a list of external pointer type objects and return a

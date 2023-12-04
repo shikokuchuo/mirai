@@ -87,12 +87,11 @@ NULL
     }
   )
 
-  registerParallelMethods()
-  registerPromisesMethods()
+  registerExternalMethods()
 
 }
 
-registerParallelMethods <- function() {
+registerExternalMethods <- function() {
 
   ns <- .getNamespace("parallel")
   `[[<-`(
@@ -109,19 +108,15 @@ registerParallelMethods <- function() {
                 c("recvOneData", "miraiCluster", "recvOneData.miraiCluster", NA_character_))
   `[[<-`(ns[[".__NAMESPACE__."]], "S3methods", regs)
 
-}
-
-registerPromisesMethods <- function() {
-
   ns <- .getNamespace("promises")
-  if (is.null(ns)) {
+  if (is.null(ns))
     ns <- tryCatch(loadNamespace("promises"), error = function(e) NULL)
-    is.environment(ns) || return(invisible())
+  if (is.environment(ns)) {
+    `[[<-`(ns[[".__S3MethodsTable__."]], "as.promise.mirai", as.promise.mirai)
+    regs <- rbind(ns[[".__NAMESPACE__."]][["S3methods"]],
+                  c("as.promise", "mirai", "as.promise.mirai", NA_character_))
+    `[[<-`(ns[[".__NAMESPACE__."]], "S3methods", regs)
   }
-  `[[<-`(ns[[".__S3MethodsTable__."]], "as.promise.mirai", as.promise.mirai)
-  regs <- rbind(ns[[".__NAMESPACE__."]][["S3methods"]],
-                c("as.promise", "mirai", "as.promise.mirai", NA_character_))
-  `[[<-`(ns[[".__NAMESPACE__."]], "S3methods", regs)
 
 }
 
@@ -147,7 +142,7 @@ registerPromisesMethods <- function() {
     n_zero = "the number of daemons must be zero or greater",
     nodes_failed = "one or more nodes failed... cluster stopped",
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
-    requires_local = "SSH tunnelling requires 'url' hostname to be 'localhost' or '127.0.0.1'",
+    requires_local = "SSH tunnelling requires 'url' hostname to be '127.0.0.1' or 'localhost'",
     single_url = "only one 'url' should be specified",
     sync_timeout = "initial sync with dispatcher timed out after 5s",
     url_spec = "numeric value for 'url' is out of bounds",

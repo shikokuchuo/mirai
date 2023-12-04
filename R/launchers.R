@@ -241,11 +241,11 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #'     be in place.
 #'
 #'     Tunnelling requires the hostname for 'url' specified when setting up
-#'     \code{\link{daemons}} to be either 'localhost' or '127.0.0.1'. This is as
-#'     the tunnel is created between \code{localhost:port} or equivalently
-#'     \code{127.0.0.1:port} on each machine. The host listens to its
-#'     \code{localhost:port} and the remotes each dial into \code{localhost:port}
-#'     on their own respective machines.
+#'     \code{\link{daemons}} to be either '127.0.0.1' or 'localhost'. This is as
+#'     the tunnel is created between \code{127.0.0.1:port} or equivalently
+#'     \code{localhost:port} on each machine. The host listens to \code{port} on
+#'     its machine and the remotes each dial into \code{port} on their own
+#'     respective machines.
 #'
 #' @examples
 #' ssh_config(remotes = c("ssh://10.75.32.90:222", "ssh://nodename"), timeout = 10)

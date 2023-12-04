@@ -18,7 +18,7 @@ A list comprising the currently-registered 'refhook' functions.
 }
 \description{
 Registers custom serialization and unserialization functions for sending and
-    receiving reference objects accessed via an external pointer.
+    receiving external pointer reference objects.
 }
 \details{
 Calling without any arguments returns a list of the
