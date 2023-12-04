@@ -23,19 +23,20 @@
 #'
 #' @inheritParams mirai
 #'
-#' @return For \code{nextstream}: a length 7 integer vector, as given by \code{.Random.seed}
-#'     when the L'Ecuyer-CMRG RNG is in use (may be passed directly to the 'rs'
-#'     argument of \code{\link{daemon}}), or else NULL if a stream has not yet
-#'     been created.
+#' @return For \code{nextstream}: a length 7 integer vector, as given by
+#'     \code{.Random.seed} when the L'Ecuyer-CMRG RNG is in use (may be passed
+#'     directly to the 'rs' argument of \code{\link{daemon}}), or else NULL if a
+#'     stream has not yet been created.
 #'
 #' @details These functions are exported for use by packages extending
 #'     \CRANpkg{mirai} with alternative launchers of \code{\link{daemon}}
 #'     processes.
 #'
-#'     For \code{nextstream}: This function should be called for its return value
-#'     when required. The function also has the side effect of automatically
-#'     advancing the stream stored within the compute profile. This ensures that
-#'     next time the function is called the correct value will be returned.
+#'     For \code{nextstream}: This function should be called for its return
+#'     value when required. The function also has the side effect of
+#'     automatically advancing the stream stored within the compute profile.
+#'     This ensures that next time the function is called the correct value will
+#'     be returned.
 #'
 #' @examples
 #' if (interactive()) {
@@ -76,7 +77,6 @@ nextget <- function(x, .compute = "default") ..[[.compute]][[x]]
 
 next_stream <- function(envir) {
   stream <- envir[["stream"]]
-  length(stream) || return()
-  `[[<-`(envir, "stream", nextRNGStream(stream))
+  if (length(stream)) `[[<-`(envir, "stream", nextRNGStream(stream))
   stream
 }

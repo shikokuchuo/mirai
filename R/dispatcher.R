@@ -101,8 +101,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
   }
 
   envir <- new.env(hash = FALSE)
-  if (length(rs))
-    `[[<-`(envir, "stream", as.integer(rs))
+  if (length(rs)) `[[<-`(envir, "stream", as.integer(rs))
 
   for (i in seq_n) {
     burl <- if (auto) .urlscheme else
@@ -299,12 +298,10 @@ get_and_reset_env <- function(x) {
 get_tls <- function(baseurl, tls, pass) {
   if (substr(baseurl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
     tls <- get_and_reset_env("MIRAI_TEMP_FIELD1")
-    if (length(tls))
-      tls <- c(tls, get_and_reset_env("MIRAI_TEMP_FIELD2"))
+    if (length(tls)) tls <- c(tls, get_and_reset_env("MIRAI_TEMP_FIELD2"))
   }
   if (length(tls)) {
-    if (is.null(pass))
-      pass <- get_and_reset_env("MIRAI_TEMP_VAR")
+    if (is.null(pass)) pass <- get_and_reset_env("MIRAI_TEMP_VAR")
     tls_config(server = tls, pass = pass)
   }
 }

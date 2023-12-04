@@ -144,8 +144,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 
   if (length(.args)) {
     if (!is.list(.args)) .args <- as.list(.args)
-    arglist <- if (length(names(.args))) c(.args, arglist) else
-      c(`names<-`(.args, as.character(substitute(.args)[-1L])), arglist)
+    arglist <- if (length(names(.args))) c(.args, arglist) else c(`names<-`(.args, as.character(substitute(.args)[-1L])), arglist)
   }
 
   data <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
@@ -205,9 +204,7 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
   envir <- ..[[.compute]]
 
   if (length(envir)) {
-
     expr <- c(as.expression(substitute(.expr)), .snapshot)
-
     if (length(envir[["sockc"]])) {
       expr <- c(expr, .timedelay)
       for (i in seq_len(envir[["n"]]))
