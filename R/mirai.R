@@ -203,17 +203,19 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 
   envir <- ..[[.compute]]
-  length(envir) || return(invisible())
 
-  expr <- c(as.expression(substitute(.expr)), .snapshot)
+  if (length(envir)) {
 
-  if (length(envir[["sockc"]])) {
-    expr <- c(expr, .timedelay)
-    for (i in seq_len(envir[["n"]]))
-      mirai(.expr = expr, ..., .args = .args, .compute = .compute)
-  } else {
-    for (i in seq_len(max(stat(envir[["sock"]], "pipes"), envir[["n"]])))
-      mirai(.expr = expr, ..., .args = .args, .compute = .compute)
+    expr <- c(as.expression(substitute(.expr)), .snapshot)
+
+    if (length(envir[["sockc"]])) {
+      expr <- c(expr, .timedelay)
+      for (i in seq_len(envir[["n"]]))
+        mirai(.expr = expr, ..., .args = .args, .compute = .compute)
+    } else {
+      for (i in seq_len(max(stat(envir[["sock"]], "pipes"), envir[["n"]])))
+        mirai(.expr = expr, ..., .args = .args, .compute = .compute)
+    }
   }
 
 }
