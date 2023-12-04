@@ -155,11 +155,11 @@ called from a relevant function.</p></dd>
     of the corresponding node. SSH key-based authentication must also already
     be in place.</p>
 <p>Tunnelling requires the hostname for 'url' specified when setting up
-    <code><a href="daemons.html">daemons</a></code> to be either 'localhost' or '127.0.0.1'. This is as
-    the tunnel is created between <code>localhost:port</code> or equivalently
-    <code>127.0.0.1:port</code> on each machine. The host listens to its
-    <code>localhost:port</code> and the remotes each dial into <code>localhost:port</code>
-    on their own respective machines.</p>
+    <code><a href="daemons.html">daemons</a></code> to be either '127.0.0.1' or 'localhost'. This is as
+    the tunnel is created between <code>127.0.0.1:port</code> or equivalently
+    <code>localhost:port</code> on each machine. The host listens to <code>port</code> on
+    its machine and the remotes each dial into <code>port</code> on their own
+    respective machines.</p>
     </div>
 
     <div id="ref-examples">
