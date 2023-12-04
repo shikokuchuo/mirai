@@ -455,8 +455,9 @@ status <- function(.compute = "default") {
 #'     registered functions applying across all compute profiles.
 #'
 #' @examples
-#' register(list(function(x) serialize(x, NULL), unserialize))
+#' r <- register(list(function(x) serialize(x, NULL), unserialize))
 #' register()
+#' register(r)
 #'
 #' register(NULL)
 #' register()
@@ -469,7 +470,7 @@ register <- function(refhook = list()) {
     for (.compute in names(..))
       everywhere(mirai::register(refhook), refhook = refhook, .compute = .compute)
 
-  nextmode(refhook = refhook)
+  next_config(refhook = refhook)
 
 }
 
@@ -584,7 +585,7 @@ send_signal <- function(envir) {
   }
 }
 
-register_refhook <- function(refhook = nextmode())
+register_refhook <- function(refhook = next_config())
   if (length(refhook[[1L]])) register(refhook = refhook)
 
 query_status <- function(envir) {

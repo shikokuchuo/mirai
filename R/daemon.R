@@ -146,7 +146,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
     count <- count + 1L
 
     (count >= maxtasks || count > timerstart && mclock() - start >= walltime) && {
-      nextmode(mark = TRUE)
+      next_config(mark = TRUE)
       send(ctx, data = data, mode = 3L)
       aio <- recv_aio_signal(ctx, cv = cv, mode = 8L)
       wait(cv)

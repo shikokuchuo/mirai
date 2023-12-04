@@ -28,8 +28,9 @@ Calling without any arguments returns a list of the
     registered functions applying across all compute profiles.
 }
 \examples{
-register(list(function(x) serialize(x, NULL), unserialize))
+r <- register(list(function(x) serialize(x, NULL), unserialize))
 register()
+register(r)
 
 register(NULL)
 register()
