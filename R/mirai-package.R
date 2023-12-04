@@ -117,11 +117,12 @@ registerPromisesMethods <- function(pkgname, pkgpath) {
   if (is.null(ns)) {
     hfun <- c(registerPromisesMethods, .userHooksEnv[["UserHook::promises::onLoad"]])
     `[[<-`(.userHooksEnv, "UserHook::promises::onLoad", hfun)
+  } else {
+    `[[<-`(ns[[".__S3MethodsTable__."]], "as.promise.mirai", as.promise.mirai)
+    regs <- rbind(ns[[".__NAMESPACE__."]][["S3methods"]],
+                  c("as.promise", "mirai", "as.promise.mirai", NA_character_))
+    `[[<-`(ns[[".__NAMESPACE__."]], "S3methods", regs)
   }
-  `[[<-`(ns[[".__S3MethodsTable__."]], "as.promise.mirai", as.promise.mirai)
-  regs <- rbind(ns[[".__NAMESPACE__."]][["S3methods"]],
-                c("as.promise", "mirai", "as.promise.mirai", NA_character_))
-  `[[<-`(ns[[".__NAMESPACE__."]], "S3methods", regs)
 
 }
 
