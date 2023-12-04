@@ -1,4 +1,4 @@
-# mirai 0.11.2.9022 (development)
+# mirai 0.11.2.9023 (development)
 
 * Implements `register()` for registering custom serialization and unserialization functions when using daemons.
 * Introduces `call_mirai_()`, a user-interruptible version of `call_mirai()` suitable for interactive use.
@@ -8,6 +8,7 @@
 * `everywhere()` now returns invisible NULL in the case the specified compute profile is not set up, rather than error.
 * Improved memory efficiency and stability at dispatcher.
 * Improved error messages and handling for daemon/dispatcher connection errors.
+* No longer loads the 'promises' package if not already loaded (but makes the 'mirai' method available via a hook function for when it is loaded). 
 * Requires nanonext >= 0.11.0.
 
 # mirai 0.11.2

@@ -87,11 +87,12 @@ NULL
     }
   )
 
-  registerExternalMethods()
+  registerParallelMethods()
+  registerPromisesMethods(pkgname = "promises")
 
 }
 
-registerExternalMethods <- function() {
+registerParallelMethods <- function() {
 
   ns <- .getNamespace("parallel")
   `[[<-`(
@@ -108,13 +109,19 @@ registerExternalMethods <- function() {
                 c("recvOneData", "miraiCluster", "recvOneData.miraiCluster", NA_character_))
   `[[<-`(ns[[".__NAMESPACE__."]], "S3methods", regs)
 
-  ns <- tryCatch(getNamespace("promises"), error = function(e) NULL)
-  if (is.environment(ns)) {
-    `[[<-`(ns[[".__S3MethodsTable__."]], "as.promise.mirai", as.promise.mirai)
-    regs <- rbind(ns[[".__NAMESPACE__."]][["S3methods"]],
-                  c("as.promise", "mirai", "as.promise.mirai", NA_character_))
-    `[[<-`(ns[[".__NAMESPACE__."]], "S3methods", regs)
+}
+
+registerPromisesMethods <- function(pkgname, pkgpath) {
+
+  ns <- .getNamespace(pkgname)
+  if (is.null(ns)) {
+    hfun <- c(registerPromisesMethods, .userHooksEnv[["UserHook::promises::onLoad"]])
+    `[[<-`(.userHooksEnv, "UserHook::promises::onLoad", hfun)
   }
+  `[[<-`(ns[[".__S3MethodsTable__."]], "as.promise.mirai", as.promise.mirai)
+  regs <- rbind(ns[[".__NAMESPACE__."]][["S3methods"]],
+                c("as.promise", "mirai", "as.promise.mirai", NA_character_))
+  `[[<-`(ns[[".__NAMESPACE__."]], "S3methods", regs)
 
 }
 
