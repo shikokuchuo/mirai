@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.2.9022</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.2.9023</span>
       </span>
     </div>
 
@@ -57,7 +57,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.11.2.9022" id="mirai-01129022-development">mirai 0.11.2.9022 (development)<a class="anchor" aria-label="anchor" href="#mirai-01129022-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.11.2.9023" id="mirai-01129023-development">mirai 0.11.2.9023 (development)<a class="anchor" aria-label="anchor" href="#mirai-01129023-development"></a></h2>
 <ul><li>Implements <code><a href="../reference/register.html">register()</a></code> for registering custom serialization and unserialization functions when using daemons.</li>
 <li>Introduces <code><a href="../reference/call_mirai.html">call_mirai_()</a></code>, a user-interruptible version of <code><a href="../reference/call_mirai.html">call_mirai()</a></code> suitable for interactive use.</li>
 <li>Simplification of <code><a href="../reference/mirai.html">mirai()</a></code> interface:
@@ -68,6 +68,7 @@
 <code><a href="../reference/everywhere.html">everywhere()</a></code> now returns invisible NULL in the case the specified compute profile is not set up, rather than error.</li>
 <li>Improved memory efficiency and stability at dispatcher.</li>
 <li>Improved error messages and handling for daemon/dispatcher connection errors.</li>
+<li>No longer loads the ‘promises’ package if not already loaded (but makes the ‘mirai’ method available via a hook function for when it is loaded).</li>
 <li>Requires nanonext &gt;= 0.11.0.</li>
 </ul></div>
     <div class="section level2">
