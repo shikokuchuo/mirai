@@ -25,9 +25,7 @@ This function is an S3 method for the generic \code{as.promise} for
     schedules a function to run upon resolution of the 'mirai'.
 }
 \examples{
-if (interactive() &&
-  requireNamespace("promises", quietly = TRUE) &&
-  requireNamespace("later", quietly = TRUE)) {
+if (interactive() && requireNamespace("promises", quietly = TRUE)) {
 
 library(promises)
 

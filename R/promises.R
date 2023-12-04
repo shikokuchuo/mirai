@@ -33,9 +33,7 @@
 #'     schedules a function to run upon resolution of the 'mirai'.
 #'
 #' @examples
-#' if (interactive() &&
-#'   requireNamespace("promises", quietly = TRUE) &&
-#'   requireNamespace("later", quietly = TRUE)) {
+#' if (interactive() && requireNamespace("promises", quietly = TRUE)) {
 #'
 #' library(promises)
 #'
@@ -55,9 +53,10 @@
 as.promise.mirai <- function(x)
   promises::promise(
     function(resolve, reject) {
+      later <- .getNamespace("later")[["later"]]
       query <- function()
         if (unresolved(x))
-          later::later(query, delay = 0.1) else
+          later(query, delay = 0.1) else
             if (is_error_value(value <- .subset2(x, "value")))
               reject(value) else
                 resolve(value)

@@ -108,9 +108,7 @@ registerExternalMethods <- function() {
                 c("recvOneData", "miraiCluster", "recvOneData.miraiCluster", NA_character_))
   `[[<-`(ns[[".__NAMESPACE__."]], "S3methods", regs)
 
-  ns <- .getNamespace("promises")
-  if (is.null(ns))
-    ns <- tryCatch(loadNamespace("promises"), error = function(e) NULL)
+  ns <- tryCatch(getNamespace("promises"), error = function(e) NULL)
   if (is.environment(ns)) {
     `[[<-`(ns[[".__S3MethodsTable__."]], "as.promise.mirai", as.promise.mirai)
     regs <- rbind(ns[[".__NAMESPACE__."]][["S3methods"]],
