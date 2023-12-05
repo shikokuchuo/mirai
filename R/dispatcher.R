@@ -95,7 +95,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
   } else {
     baseurl <- parse_url(url)
     ports <- get_ports(baseurl = baseurl, n = n)
-    if (!is.null(ports)) token <- FALSE
+    if (length(ports)) token <- FALSE
     tls <- get_tls(baseurl = baseurl, tls = tls, pass = pass)
     pass <- NULL
   }
