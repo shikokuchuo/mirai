@@ -114,6 +114,8 @@ Key topics include:
 
 - Secure TLS connections
 
+- Serialization - registering custom functions
+
 This may be accessed within R by:
 
 ```{r vignette, eval=FALSE}
@@ -164,6 +166,8 @@ We would like to thank in particular:
 [Henrik Bengtsson](https://github.com/HenrikBengtsson/), for valuable and incisive insights leading to the interface accepting broader usage patterns.
 
 [Luke Tierney](https://github.com/ltierney/), R Core, for introducing R's implementation of L'Ecuyer-CMRG streams, used to ensure statistical independence in parallel processing.
+
+[Daniel Falbel](https://github.com/dfalbel/), for discussion around an efficient solution to serialization and transmission of 'torch' tensors.
 
 [&laquo; Back to ToC](#table-of-contents)
 

@@ -88,8 +88,8 @@ result.
 
 ``` r
 m$data
-#>  [1] -0.9333163  0.1438507 -0.7303892 -0.9532539  0.2629771  1.0000000
-#>  [7]  3.8026132 -1.0490384 -1.3691331  6.9516538 -1.0714481
+#>  [1] -4.5570990  2.4532932  6.0578452  0.2018006  2.1813078  1.0000000
+#>  [7]  0.4584406  4.9553876  0.1650752  0.4076154 -0.2194378
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -97,8 +97,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] -0.9333163  0.1438507 -0.7303892 -0.9532539  0.2629771  1.0000000
-#>  [7]  3.8026132 -1.0490384 -1.3691331  6.9516538 -1.0714481
+#>  [1] -4.5570990  2.4532932  6.0578452  0.2018006  2.1813078  1.0000000
+#>  [7]  0.4584406  4.9553876  0.1650752  0.4076154 -0.2194378
 ```
 
 ### Vignette
@@ -116,6 +116,8 @@ Key topics include:
 - Distributed computing - remote daemons
 
 - Secure TLS connections
+
+- Serialization - registering custom functions
 
 This may be accessed within R by:
 
@@ -196,6 +198,9 @@ patterns.
 [Luke Tierney](https://github.com/ltierney/), R Core, for introducing
 R’s implementation of L’Ecuyer-CMRG streams, used to ensure statistical
 independence in parallel processing.
+
+[Daniel Falbel](https://github.com/dfalbel/), for discussion around an
+efficient solution to serialization and transmission of ‘torch’ tensors.
 
 [« Back to ToC](#table-of-contents)
 
