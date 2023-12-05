@@ -8,7 +8,7 @@
 * `everywhere()` now returns invisible NULL in the case the specified compute profile is not set up, rather than error.
 * Improved memory efficiency and stability at dispatcher.
 * Improved error messages and handling for daemon/dispatcher connection errors.
-* No longer loads the 'promises' package if not already loaded (but makes the 'mirai' method available via a hook function for when it is loaded). 
+* No longer loads the 'promises' package if not already loaded (but makes the 'mirai' method available via a hook function). 
 * Requires nanonext >= 0.11.0.
 
 # mirai 0.11.2
