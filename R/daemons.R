@@ -446,7 +446,8 @@ status <- function(.compute = "default") {
 #'     accept a raw vector and return a list of external pointer type objects,
 #'     e.g. \code{torch::torch_load},\cr \strong{or else} NULL to reset.
 #'
-#' @return A list comprising the currently-registered 'refhook' functions.
+#' @return Invisibly, a list comprising the currently-registered 'refhook'
+#'     functions.
 #'
 #' @details Calling without any arguments returns a list of the
 #'     currently-registered 'refhook' functions.
@@ -456,21 +457,29 @@ status <- function(.compute = "default") {
 #'
 #' @examples
 #' r <- serialization(list(function(x) serialize(x, NULL), unserialize))
-#' serialization()
+#' print(serialization())
 #' serialization(r)
 #'
 #' serialization(NULL)
-#' serialization()
+#' print(serialization())
 #'
 #' @export
 #'
 serialization <- function(refhook = list()) {
 
-  if (!missing(refhook))
-    for (.compute in names(..))
-      everywhere(mirai::serialization(refhook), refhook = refhook, .compute = .compute)
+  register <- !missing(refhook)
+  cfg <- next_config(refhook = refhook)
 
-  next_config(refhook = refhook)
+  if (register) {
+    if (is.list(refhook) && length(refhook) == 2L && is.function(refhook[[1L]]) && is.function(refhook[[2L]]))
+      cat("[ mirai ] serialization functions registered\n", file = stdout()) else
+        if (is.null(refhook))
+          cat("[ mirai ] serialization functions cancelled\n", file = stdout()) else
+            stop(.messages[["refhook_invalid"]])
+    register_everywhere(refhook)
+  }
+
+  invisible(cfg)
 
 }
 
@@ -585,12 +594,16 @@ send_signal <- function(envir) {
   }
 }
 
-serialization_refhook <- function(refhook = next_config())
-  if (length(refhook[[1L]])) serialization(refhook = refhook)
-
 query_status <- function(envir) {
   res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L)
   is.object(res) && return(res)
   `attributes<-`(res, list(dim = c(envir[["n"]], 5L),
                            dimnames = list(envir[["urls"]], c("i", "online", "instance", "assigned", "complete"))))
 }
+
+register_everywhere <- function(refhook)
+  for (.compute in names(..))
+    everywhere(mirai::serialization(refhook), refhook = refhook, .compute = .compute)
+
+serialization_refhook <- function(refhook = next_config())
+  if (length(refhook[[1L]])) register_everywhere(refhook)

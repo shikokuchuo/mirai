@@ -149,6 +149,7 @@ registerPromisesMethods <- function(pkgname, pkgpath) {
     nodes_failed = "one or more nodes failed... cluster stopped",
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
     requires_local = "SSH tunnelling requires 'url' hostname to be '127.0.0.1' or 'localhost'",
+    refhook_invalid = "'refhook' must be a list of 2 functions or NULL",
     single_url = "only one 'url' should be specified",
     sync_timeout = "initial sync with dispatcher timed out after 5s",
     url_spec = "numeric value for 'url' is out of bounds",

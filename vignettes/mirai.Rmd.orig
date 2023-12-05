@@ -27,7 +27,8 @@ knitr::opts_chunk$set(
 7. [Distributed Computing: TLS Secure Connections](#distributed-computing-tls-secure-connections)
 8. [Compute Profiles](#compute-profiles)
 9. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
-10. [Parallel Clusters](#parallel-clusters)
+10. [Serialization Custom Functions](#serialization-custom-functions)
+11. [Parallel Clusters](#parallel-clusters)
 
 
 ### Example 1: Compute-intensive Operations
@@ -497,6 +498,42 @@ is_error_value(m3$data)
 ```
 
 `is_error_value()` tests for all mirai execution errors, user interrupts and timeouts.
+
+[&laquo; Back to ToC](#table-of-contents)
+
+### Serialization Custom Functions
+
+Custom serialization functions may be registered to handle external pointer type reference objects.
+
+An example may be tensors created by the [`torch`](https://cran.r-project.org/package=torch) package.
+
+```{r tensors}
+serialization(refhook = list(torch:::torch_serialize, torch::torch_load))
+daemons(1)
+```
+Register the serialization and unserialization functions as a list supplied to the 'refhook' argument of `serialization()`. Also set up dameons - this may be done before or after setting `serialization()`.
+
+Below we create an object containing tensors in the current session, and send it to the daemon for computation, receiving back an object containing tensors.
+
+```{r tensors2}
+tensors <- list(torch::torch_rand(4), torch::torch_rand(4))
+tensors
+
+m <- mirai(
+  {
+    ten <- torch::torch_rand(4)
+    list(ten + tensors[[1]], ten + tensors[[2]])
+  },
+  tensors = tensors
+)
+
+call_mirai(m)$data
+
+daemons(0)
+
+```
+
+The implementation is designed to be relatively efficient, minimising data copies where possible.
 
 [&laquo; Back to ToC](#table-of-contents)
 

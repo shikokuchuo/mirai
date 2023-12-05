@@ -14,7 +14,8 @@ accept a raw vector and return a list of external pointer type objects,
 e.g. \code{torch::torch_load},\cr \strong{or else} NULL to reset.}
 }
 \value{
-A list comprising the currently-registered 'refhook' functions.
+Invisibly, a list comprising the currently-registered 'refhook'
+    functions.
 }
 \description{
 Registers custom serialization and unserialization functions for sending and
@@ -29,10 +30,10 @@ Calling without any arguments returns a list of the
 }
 \examples{
 r <- serialization(list(function(x) serialize(x, NULL), unserialize))
-serialization()
+print(serialization())
 serialization(r)
 
 serialization(NULL)
-serialization()
+print(serialization())
 
 }
