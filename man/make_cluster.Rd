@@ -30,8 +30,8 @@ If not supplied, nodes may be deployed manually on remote resources.}
 For \strong{make_cluster}: An object of class 'miraiCluster' and
     'cluster'. Each 'miraiCluster' has an automatically assigned ID and 'n'
     nodes of class 'miraiNode'. If 'url' is supplied but not 'remote', the
-    shell commands for deployment of nodes on remote resources is printed in
-    interactive sessions.
+    shell commands for deployment of nodes on remote resources are printed to
+    the console.
 
     For \strong{stop_cluster}: invisible NULL.
 }
@@ -67,8 +67,7 @@ Requires R >= 4.4 (currently R-devel). Clusters created with this
     is disregarded.
 
     If 'remote' is not supplied, the shell commands for deploying nodes
-    manually on remote resources are automatically printed in interactive
-    sessions.
+    manually on remote resources are automatically printed to the console.
 
     \code{\link{launch_remote}} may be called at any time on a 'miraiCluster'
     to return the shell commands for deployment of all nodes, or on a

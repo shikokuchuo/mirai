@@ -37,8 +37,8 @@
 #' @return For \strong{make_cluster}: An object of class 'miraiCluster' and
 #'     'cluster'. Each 'miraiCluster' has an automatically assigned ID and 'n'
 #'     nodes of class 'miraiNode'. If 'url' is supplied but not 'remote', the
-#'     shell commands for deployment of nodes on remote resources is printed in
-#'     interactive sessions.
+#'     shell commands for deployment of nodes on remote resources are printed to
+#'     the console.
 #'
 #'     For \strong{stop_cluster}: invisible NULL.
 #'
@@ -53,8 +53,7 @@
 #'     is disregarded.
 #'
 #'     If 'remote' is not supplied, the shell commands for deploying nodes
-#'     manually on remote resources are automatically printed in interactive
-#'     sessions.
+#'     manually on remote resources are automatically printed to the console.
 #'
 #'     \code{\link{launch_remote}} may be called at any time on a 'miraiCluster'
 #'     to return the shell commands for deployment of all nodes, or on a
@@ -96,7 +95,6 @@
 make_cluster <- function(n, url = NULL, remote = NULL, ...) {
 
   id <- sprintf("`%d`", length(..))
-  printLaunchCmd <- FALSE
 
   if (is.character(url)) {
 
@@ -109,10 +107,8 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
     } else {
       if (missing(n)) n <- 1L
       is.numeric(n) || stop(.messages[["numeric_n"]])
-      if (interactive()) {
-        cat("Shell commands for deployment on nodes:\n\n", file = stdout())
-        print(launch_remote(rep(..[[id]][["urls"]], n), .compute = id))
-      }
+      cat("Shell commands for deployment on nodes:\n\n", file = stdout())
+      print(launch_remote(rep(..[[id]][["urls"]], n), .compute = id))
     }
 
   } else {

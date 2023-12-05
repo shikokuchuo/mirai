@@ -15,7 +15,8 @@ e.g. \code{torch::torch_load},\cr \strong{or else} NULL to reset.}
 }
 \value{
 Invisibly, a list comprising the currently-registered 'refhook'
-    functions.
+    functions. If functions are successfully registered or reset, a message
+    is printed to the console.
 }
 \description{
 Registers custom serialization and unserialization functions for sending and

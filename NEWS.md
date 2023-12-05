@@ -6,6 +6,7 @@
   + '.args' will now coerece to a list if an object other than a list is supplied, rather than error.
   + '.signal' argument removed - now all 'mirai' signal if daemons are set up.
 * `everywhere()` now returns invisible NULL in the case the specified compute profile is not set up, rather than error.
+* `make_cluster()` now always prints daemon launch commands where 'url' is specified without 'remote', not only in interactive sessions.
 * Improved memory efficiency and stability at dispatcher.
 * Improved error messages and handling for daemon/dispatcher connection errors.
 * No longer loads the 'promises' package if not already loaded (but makes the 'mirai' method available via a hook function). 

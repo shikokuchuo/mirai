@@ -447,7 +447,8 @@ status <- function(.compute = "default") {
 #'     e.g. \code{torch::torch_load},\cr \strong{or else} NULL to reset.
 #'
 #' @return Invisibly, a list comprising the currently-registered 'refhook'
-#'     functions.
+#'     functions. If functions are successfully registered or reset, a message
+#'     is printed to the console.
 #'
 #' @details Calling without any arguments returns a list of the
 #'     currently-registered 'refhook' functions.
