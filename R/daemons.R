@@ -317,7 +317,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       if (!is.symbol(remotes)) remote <- remotes
       if (length(remote))
         launch_remote(url = envir[["urls"]], remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
-      register_refhook()
+      serialization_refhook()
     }
 
   } else {
@@ -361,7 +361,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         `[[<-`(envir, "urls", urld)
       }
       `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv))
-      register_refhook()
+      serialization_refhook()
     }
 
   }
@@ -435,7 +435,7 @@ status <- function(.compute = "default") {
 
 }
 
-#' Register Custom Serialization Functions
+#' Custom Serialization Functions
 #'
 #' Registers custom serialization and unserialization functions for sending and
 #'     receiving external pointer reference objects.
@@ -455,20 +455,20 @@ status <- function(.compute = "default") {
 #'     registered functions applying across all compute profiles.
 #'
 #' @examples
-#' r <- register(list(function(x) serialize(x, NULL), unserialize))
-#' register()
-#' register(r)
+#' r <- serialization(list(function(x) serialize(x, NULL), unserialize))
+#' serialization()
+#' serialization(r)
 #'
-#' register(NULL)
-#' register()
+#' serialization(NULL)
+#' serialization()
 #'
 #' @export
 #'
-register <- function(refhook = list()) {
+serialization <- function(refhook = list()) {
 
   if (!missing(refhook))
     for (.compute in names(..))
-      everywhere(mirai::register(refhook), refhook = refhook, .compute = .compute)
+      everywhere(mirai::serialization(refhook), refhook = refhook, .compute = .compute)
 
   next_config(refhook = refhook)
 
@@ -585,8 +585,8 @@ send_signal <- function(envir) {
   }
 }
 
-register_refhook <- function(refhook = next_config())
-  if (length(refhook[[1L]])) register(refhook = refhook)
+serialization_refhook <- function(refhook = next_config())
+  if (length(refhook[[1L]])) serialization(refhook = refhook)
 
 query_status <- function(envir) {
   res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L)
