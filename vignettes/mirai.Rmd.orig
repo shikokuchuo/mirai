@@ -505,15 +505,18 @@ is_error_value(m3$data)
 
 Custom serialization functions may be registered to handle external pointer type reference objects.
 
-An example may be tensors created by the [`torch`](https://cran.r-project.org/package=torch) package.
+The below example uses tensors from the [`torch`](https://cran.r-project.org/package=torch) package.
+
+1. Register the serialization and unserialization functions as a list supplied to the 'refhook' argument of `serialization()`.
+
+2. Set up dameons - this may be done before or after setting `serialization()`.
 
 ```{r tensors}
 serialization(refhook = list(torch:::torch_serialize, torch::torch_load))
 daemons(1)
 ```
-Register the serialization and unserialization functions as a list supplied to the 'refhook' argument of `serialization()`. Also set up dameons - this may be done before or after setting `serialization()`.
 
-Below we create an object containing tensors in the current session, and send it to the daemon for computation, receiving back an object containing tensors.
+Next we create an object containing tensors in the current session, and send it to the daemon for computation, receiving back an object containing tensors.
 
 ```{r tensors2}
 tensors <- list(torch::torch_rand(4), torch::torch_rand(4))
@@ -533,7 +536,7 @@ daemons(0)
 
 ```
 
-The implementation is designed to be relatively efficient, minimising data copies where possible.
+The implementation has been designed for efficiency, minimising data copies where possible.
 
 [&laquo; Back to ToC](#table-of-contents)
 

@@ -30,6 +30,7 @@ nanotesterr(launch_remote(c("tcp://localhost:5555", "tcp://localhost:6666", "tcp
 nanotesterr(launch_local(1L), "requires daemons to be set")
 nanotestn(everywhere(mirai::serialization()))
 nanotest(is.list(serialization()))
+nanotesterr(serialization(list(NULL)), "must be a list of 2 functions or NULL")
 nanotest(is.character(host_url()))
 nanotest(substr(host_url(ws = TRUE, tls = TRUE), 1L, 3L) == "wss")
 nanotest(substr(host_url(tls = TRUE), 1L, 3L) == "tls")
