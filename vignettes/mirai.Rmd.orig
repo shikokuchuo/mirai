@@ -505,38 +505,66 @@ is_error_value(m3$data)
 
 Custom serialization functions may be registered to handle external pointer type reference objects.
 
-The below example uses tensors from the [`torch`](https://cran.r-project.org/package=torch) package.
+This is demonstrated below through an example using tensors from the [`torch`](https://cran.r-project.org/package=torch) package.
 
 1. Register the serialization and unserialization functions as a list supplied to the 'refhook' argument of `serialization()`.
 
 2. Set up dameons - this may be done before or after setting `serialization()`.
 
+3. Use `everywhere()` to make the 'torch' package available on all dameons.
+
 ```{r tensors}
+library(torch)
 serialization(refhook = list(torch:::torch_serialize, torch::torch_load))
 daemons(1)
+everywhere(library(torch))
+
 ```
 
-Next we create an object containing tensors in the current session, and send it to the daemon for computation, receiving back an object containing tensors.
+Next, a convolutional neural network is created, using an example from the 'torch' `nn_module()` function.
+
+This model is then initialized in a 'mirai', passing it a set of parameters.
+
+The returned model contains many tensor elements. The initial weights of the first convolutional layer are shown below as an example.
 
 ```{r tensors2}
-tensors <- list(torch::torch_rand(4), torch::torch_rand(4))
-tensors
-
-m <- mirai(
-  {
-    ten <- torch::torch_rand(4)
-    list(ten + tensors[[1]], ten + tensors[[2]])
+model <- nn_module(
+  initialize = function(in_size, out_size) {
+    self$conv1 <- nn_conv2d(in_size, out_size, 5)
+    self$conv2 <- nn_conv2d(in_size, out_size, 5)
   },
-  tensors = tensors
+  forward = function(x) {
+    x <- self$conv1(x)
+    x <- nnf_relu(x)
+    x <- self$conv2(x)
+    x <- nnf_relu(x)
+    x
+  }
 )
 
+params <- list(in_size = 1, out_size = 20)
+
+m <- mirai(do.call(model, params), .args = list(model, params))
 call_mirai(m)$data
+
+m$data$parameters$conv1.weight
+
+```
+
+The model parameters can then be passed to an optimiser, with that also initialized within a 'mirai' process.
+
+```{r tensors3}
+
+optim <- mirai(optim_rmsprop(params = params), params = m$data$parameters)
+call_mirai(optim)$data
 
 daemons(0)
 
 ```
 
-The implementation has been designed for efficiency, minimising data copies where possible.
+It can be seen that tensors and objects containing tensors can be passed seamlessly between host and daemon processes in the same way as other R objects. Indeed, the idea is that they should not have to be treated any differently.
+
+This implementation uses the serialization methods from the 'torch' package directly, and has been conceived to be fast and efficient, minimising data copies where possible.
 
 [&laquo; Back to ToC](#table-of-contents)
 
