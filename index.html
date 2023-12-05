@@ -135,13 +135,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -0.9333163  0.1438507 -0.7303892 -0.9532539  0.2629771  1.0000000</span></span>
-<span><span class="co">#&gt;  [7]  3.8026132 -1.0490384 -1.3691331  6.9516538 -1.0714481</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] -4.5570990  2.4532932  6.0578452  0.2018006  2.1813078  1.0000000</span></span>
+<span><span class="co">#&gt;  [7]  0.4584406  4.9553876  0.1650752  0.4076154 -0.2194378</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -0.9333163  0.1438507 -0.7303892 -0.9532539  0.2629771  1.0000000</span></span>
-<span><span class="co">#&gt;  [7]  3.8026132 -1.0490384 -1.3691331  6.9516538 -1.0714481</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] -4.5570990  2.4532932  6.0578452  0.2018006  2.1813078  1.0000000</span></span>
+<span><span class="co">#&gt;  [7]  0.4584406  4.9553876  0.1650752  0.4076154 -0.2194378</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="vignette">Vignette<a class="anchor" aria-label="anchor" href="#vignette"></a>
@@ -153,6 +153,7 @@
 <li><p>Local daemons - persistent background processes</p></li>
 <li><p>Distributed computing - remote daemons</p></li>
 <li><p>Secure TLS connections</p></li>
+<li><p>Serialization - registering custom functions</p></li>
 </ul>
 <p>This may be accessed within R by:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -198,6 +199,7 @@
 <p><a href="https://github.com/wlandau/" class="external-link">William Landau</a>, for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> and <a href="https://cran.r-project.org/package=targets" class="external-link"><code>targets</code></a>.</p>
 <p><a href="https://github.com/HenrikBengtsson/" class="external-link">Henrik Bengtsson</a>, for valuable and incisive insights leading to the interface accepting broader usage patterns.</p>
 <p><a href="https://github.com/ltierney/" class="external-link">Luke Tierney</a>, R Core, for introducing R’s implementation of L’Ecuyer-CMRG streams, used to ensure statistical independence in parallel processing.</p>
+<p><a href="https://github.com/dfalbel/" class="external-link">Daniel Falbel</a>, for discussion around an efficient solution to serialization and transmission of ‘torch’ tensors.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
