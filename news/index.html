@@ -66,6 +66,8 @@
 </ul></li>
 <li>
 <code><a href="../reference/everywhere.html">everywhere()</a></code> now returns invisible NULL in the case the specified compute profile is not set up, rather than error.</li>
+<li>
+<code><a href="../reference/make_cluster.html">make_cluster()</a></code> now always prints daemon launch commands where ‘url’ is specified without ‘remote’, not only in interactive sessions.</li>
 <li>Improved memory efficiency and stability at dispatcher.</li>
 <li>Improved error messages and handling for daemon/dispatcher connection errors.</li>
 <li>No longer loads the ‘promises’ package if not already loaded (but makes the ‘mirai’ method available via a hook function).</li>
