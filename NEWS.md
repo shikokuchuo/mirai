@@ -1,4 +1,4 @@
-# mirai 0.11.2.9023 (development)
+# mirai 0.11.2.9024 (development)
 
 * Implements `register()` for registering custom serialization and unserialization functions when using daemons.
 * Introduces `call_mirai_()`, a user-interruptible version of `call_mirai()` suitable for interactive use.

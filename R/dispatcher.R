@@ -309,8 +309,7 @@ get_tls <- function(baseurl, tls, pass) {
 sub_real_port <- function(port, url) sub("(?<=:)0(?![^/])", port, url, perl = TRUE)
 
 query_dispatcher <- function(sock, command, mode) {
-  res <- send(sock, data = command, mode = 2L, block = .timelimit)
-  res && return(res)
+  send(sock, data = command, mode = 2L, block = .timelimit)
   recv(sock, mode = mode, block = .timelimit + .timelimit)
 }
 

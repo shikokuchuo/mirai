@@ -563,9 +563,9 @@ launch_and_sync_daemon <- function(sock, ..., rs = NULL, tls = NULL, pass = NULL
 
 init_monitor <- function(sockc, envir) {
   res <- query_dispatcher(sockc, command = FALSE, mode = 2L)
-  is.object(res) && return(FALSE)
-  `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L]))
-  TRUE
+  valid <- !is.object(res)
+  if (valid) `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L]))
+  valid
 }
 
 store_urls <- function(sock, envir) {
