@@ -13,7 +13,6 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 ```
-
 ### Table of Contents
 
 <a href="https://shikokuchuo.net/mirai/" alt="mirai"><img src="../man/figures/logo.png" alt="mirai logo" align="right" width="120"/></a>

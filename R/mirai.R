@@ -151,8 +151,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 
   envir <- ..[[.compute]]
   if (length(envir)) {
-    aio <- if (is.logical(.timeout)) request(.context(envir[["sock"]]), data = data, send_mode = 3L, recv_mode = 1L) else
-      request_signal(.context(envir[["sock"]]), data = data, cv = envir[["cv"]], send_mode = 3L, recv_mode = 1L, timeout = .timeout)
+    aio <- request_signal(.context(envir[["sock"]]), data = data, cv = envir[["cv"]], send_mode = 3L, recv_mode = 1L, timeout = .timeout)
 
   } else {
     url <- auto_tokenized_url()

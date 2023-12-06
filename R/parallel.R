@@ -99,6 +99,7 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
   if (is.character(url)) {
 
     length(url) == 1L || stop(.messages[["single_url"]])
+    cv2 <- cv()
     daemons(url = url, remote = remote, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
 
     if (length(remote)) {
@@ -113,9 +114,12 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
 
   } else {
     is.numeric(n) || stop(.messages[["numeric_n"]])
+    cv2 <- cv()
     daemons(n = n, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
   }
 
+  ..[[id]][["cv2"]] <- cv2
+  ..[[id]][["swapped"]] <- FALSE
   pipe_notify(..[[id]][["sock"]], cv = ..[[id]][["cv"]], remove = TRUE, flag = TRUE)
 
   cl <- vector(mode = "list", length = n)
@@ -152,16 +156,30 @@ stopCluster.miraiCluster <- stop_cluster
 #'
 sendData.miraiNode <- function(node, data) {
 
-  length(..[[attr(node, "id")]]) || stop(.messages[["cluster_inactive"]])
+  cp <- ..[[attr(node, "id")]]
+  length(cp) || stop(.messages[["cluster_inactive"]])
 
   value <- data[["data"]]
-  tagless <- is.null(value[["tag"]])
+  tagged <- !is.null(value[["tag"]])
+  if (tagged) {
+    cp[["swapped"]] || {
+      cv <- cp[["cv"]]
+      cp[["cv"]] <- cp[["cv2"]]
+      cp[["cv2"]] <- cv
+      cp[["swapped"]] <- TRUE
+    }
+  } else {
+    cp[["swapped"]] && {
+      cv <- cp[["cv"]]
+      cp[["cv"]] <- cp[["cv2"]]
+      cp[["cv2"]] <- cv
+      cp[["swapped"]] <- FALSE
+    }
+  }
 
-  m <- mirai(do.call(node, data, quote = TRUE), node = value[["fun"]], data = value[["args"]],
-             .timeout = if (tagless) NA, .compute = attr(node, "id"))
+  m <- mirai(do.call(node, data, quote = TRUE), node = value[["fun"]], data = value[["args"]], .compute = attr(node, "id"))
 
-  if (!tagless)
-    assign("tag", value[["tag"]], m)
+  if (tagged) assign("tag", value[["tag"]], m)
 
   `[[<-`(node, "mirai", m)
 
