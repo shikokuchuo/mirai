@@ -101,6 +101,7 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
     length(url) == 1L || stop(.messages[["single_url"]])
     cv2 <- cv()
     daemons(url = url, remote = remote, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
+    envir <- ..[[id]]
 
     if (length(remote)) {
       args <- remote[["args"]]
@@ -109,18 +110,19 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
       if (missing(n)) n <- 1L
       is.numeric(n) || stop(.messages[["numeric_n"]])
       cat("Shell commands for deployment on nodes:\n\n", file = stdout())
-      print(launch_remote(rep(..[[id]][["urls"]], n), .compute = id))
+      print(launch_remote(rep(envir[["urls"]], n), .compute = id))
     }
 
   } else {
     is.numeric(n) || stop(.messages[["numeric_n"]])
     cv2 <- cv()
     daemons(n = n, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
+    envir <- ..[[id]]
   }
 
-  ..[[id]][["cv2"]] <- cv2
-  ..[[id]][["swapped"]] <- FALSE
-  pipe_notify(..[[id]][["sock"]], cv = ..[[id]][["cv"]], remove = TRUE, flag = TRUE)
+  envir[["cv2"]] <- cv2
+  envir[["swapped"]] <- FALSE
+  pipe_notify(envir[["sock"]], cv = envir[["cv"]], remove = TRUE, flag = TRUE)
 
   cl <- vector(mode = "list", length = n)
   for (i in seq_along(cl))
@@ -156,28 +158,15 @@ stopCluster.miraiCluster <- stop_cluster
 #'
 sendData.miraiNode <- function(node, data) {
 
-  cp <- ..[[attr(node, "id")]]
-  length(cp) || stop(.messages[["cluster_inactive"]])
+  id <- attr(node, "id")
+  envir <- ..[[id]]
+  length(envir) || stop(.messages[["cluster_inactive"]])
 
   value <- data[["data"]]
   tagged <- !is.null(value[["tag"]])
-  if (tagged) {
-    cp[["swapped"]] || {
-      cv <- cp[["cv"]]
-      cp[["cv"]] <- cp[["cv2"]]
-      cp[["cv2"]] <- cv
-      cp[["swapped"]] <- TRUE
-    }
-  } else {
-    cp[["swapped"]] && {
-      cv <- cp[["cv"]]
-      cp[["cv"]] <- cp[["cv2"]]
-      cp[["cv2"]] <- cv
-      cp[["swapped"]] <- FALSE
-    }
-  }
+  tagged && { envir[["swapped"]] || cv_swap(envir, TRUE) } || { envir[["swapped"]] && cv_swap(envir, FALSE) }
 
-  m <- mirai(do.call(node, data, quote = TRUE), node = value[["fun"]], data = value[["args"]], .compute = attr(node, "id"))
+  m <- mirai(do.call(node, data, quote = TRUE), node = value[["fun"]], data = value[["args"]], .compute = id)
 
   if (tagged) assign("tag", value[["tag"]], m)
 
@@ -228,6 +217,13 @@ print.miraiNode <- function(x, ...) {
 }
 
 # internals --------------------------------------------------------------------
+
+cv_swap <- function(envir, state) {
+  cv <- envir[["cv"]]
+  envir[["cv"]] <- envir[["cv2"]]
+  envir[["cv2"]] <- cv
+  envir[["swapped"]] <- state
+}
 
 node_unresolved <- function(node) {
   m <- .subset2(node, "mirai")
