@@ -101,7 +101,6 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
     length(url) == 1L || stop(.messages[["single_url"]])
     cv2 <- cv()
     daemons(url = url, remote = remote, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
-    envir <- ..[[id]]
 
     if (length(remote)) {
       args <- remote[["args"]]
@@ -110,23 +109,23 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
       if (missing(n)) n <- 1L
       is.numeric(n) || stop(.messages[["numeric_n"]])
       cat("Shell commands for deployment on nodes:\n\n", file = stdout())
-      print(launch_remote(rep(envir[["urls"]], n), .compute = id))
+      print(launch_remote(rep(..[[id]][["urls"]], n), .compute = id))
     }
 
   } else {
     is.numeric(n) || stop(.messages[["numeric_n"]])
     cv2 <- cv()
     daemons(n = n, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
-    envir <- ..[[id]]
   }
 
+  envir <- ..[[id]]
   envir[["cv2"]] <- cv2
   envir[["swapped"]] <- FALSE
   pipe_notify(envir[["sock"]], cv = envir[["cv"]], remove = TRUE, flag = TRUE)
 
   cl <- vector(mode = "list", length = n)
   for (i in seq_along(cl))
-    cl[[i]] <- `attributes<-`(new.env(), list(class = "miraiNode", node = i, id = id))
+    cl[[i]] <- `attributes<-`(new.env(hash = FALSE, parent = emptyenv()), list(class = "miraiNode", node = i, id = id))
 
   `attributes<-`(cl, list(class = c("miraiCluster", "cluster"), id = id))
 
@@ -201,8 +200,7 @@ recvOneData.miraiCluster <- function(cl) {
 print.miraiCluster <- function(x, ...) {
 
   id <- attr(.subset2(x, 1L), "id")
-  cat(sprintf("< miraiCluster >\n - cluster ID: %s\n - nodes: %d\n - active: %s\n",
-              id, length(x), as.logical(length(..[[id]]))), file = stdout())
+  cat(sprintf("< miraiCluster >\n - cluster ID: %s\n - nodes: %d\n - active: %s\n", id, length(x), as.logical(length(..[[id]]))), file = stdout())
   invisible(x)
 
 }
