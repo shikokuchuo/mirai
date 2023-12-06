@@ -248,12 +248,13 @@ if (connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") 
   Sys.sleep(2L)
   nanotestz(daemons(0))
   Sys.sleep(1L)
-  cert <- nanonext::write_cert(cn = "127.0.0.1")
-  file <- tempfile()
-  on.exit(unlink(file))
-  cat(cert[["server"]], file = file)
-  nanotesto(daemons(url = "tls+tcp://127.0.0.1:0", tls = file))
-  nanotestz(daemons(0L))
+  test_tls <- function(cert) {
+    file <- tempfile()
+    on.exit(unlink(file))
+    cat(cert[["server"]], file = file)
+    daemons(url = "tls+tcp://127.0.0.1:0", tls = file) == 1L && daemons(0L) == 0L
+  }
+  nanotest(test_tls(nanonext::write_cert(cn = "127.0.0.1")))
   Sys.sleep(1L)
 }
 Sys.sleep(1L)
