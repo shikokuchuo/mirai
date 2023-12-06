@@ -157,7 +157,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   } else {
     url <- auto_tokenized_url()
     sock <- req_socket(url, resend = 0L)
-    length(.timeout) && { launch_and_sync_daemon(sock = sock, url) || return(.connection_error) } || launch_daemon(url)
+    launch_daemon(url)
     aio <- request(.context(sock), data = data, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
 
@@ -461,8 +461,6 @@ mk_mirai_error <- function(e) {
 
 snapshot <- function() `[[<-`(`[[<-`(`[[<-`(., 'vars', names(.GlobalEnv)), 'se', search()), 'op', .Options)
 
-.connection_error <- list(data = `class<-`(6L, c("errorValue", "try-error")),
-                          value = `class<-`(6L, c("errorValue", "try-error")))
 .interrupt_error <- `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))
 .snapshot <- expression(mirai:::snapshot())
 .timedelay <- expression(nanonext::msleep(500L))
