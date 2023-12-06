@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.2.9028</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.2.9029</span>
       </span>
     </div>
 
@@ -57,7 +57,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.11.2.9028" id="mirai-01129028-development">mirai 0.11.2.9028 (development)<a class="anchor" aria-label="anchor" href="#mirai-01129028-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.11.2.9029" id="mirai-01129029-development">mirai 0.11.2.9029 (development)<a class="anchor" aria-label="anchor" href="#mirai-01129029-development"></a></h2>
 <ul><li>Implements <code><a href="../reference/serialization.html">serialization()</a></code> for registering custom serialization and unserialization functions when using daemons.</li>
 <li>Introduces <code><a href="../reference/call_mirai.html">call_mirai_()</a></code>, a user-interruptible version of <code><a href="../reference/call_mirai.html">call_mirai()</a></code> suitable for interactive use.</li>
 <li>Simplification of <code><a href="../reference/mirai.html">mirai()</a></code> interface:
@@ -71,6 +71,7 @@
 <li>
 <code><a href="../reference/make_cluster.html">make_cluster()</a></code> now prints daemon launch commands where ‘url’ is specified without ‘remote’ whether or not interactive.</li>
 <li>Cluster node failures during load balanced operations now rely on the ‘parallel’ mechanism to error and no longer fail early or automatically stop the cluster.</li>
+<li>Fixes regression since 0.11.0 which prevented dispatcher exiting in a timely manner when tasks are backlogged (thanks <a href="https://github.com/wlandau" class="external-link">@wlandau</a> <a href="https://github.com/shikokuchuo/mirai/issues/86" class="external-link">#86</a>).</li>
 <li>Improved memory efficiency and stability at dispatcher.</li>
 <li>No longer loads the ‘promises’ package if not already loaded (but makes the ‘mirai’ method available via a hook function).</li>
 <li>Requires nanonext &gt;= 0.11.0.</li>
