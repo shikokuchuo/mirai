@@ -44,16 +44,11 @@ For \strong{make_cluster}: An object of class 'miraiCluster' and
 \code{stop_cluster} stops a cluster created by \code{make_cluster}.
 }
 \note{
-Requires R >= 4.4 (currently R-devel). Clusters created with this
-    function will not work with prior R versions. The functionality is
-    experimental prior to release of R 4.4 and the interface is consequently
-    subject to change at any time.
-
-    The default behaviour of clusters created by this function is
-    designed to map as closely as possible to clusters created by the
-    \pkg{parallel} package. However, '...' arguments are passed onto
-    \code{\link{daemons}} for additional customisation if desired, although
-    resultant behaviour may not be supported.
+The default behaviour of clusters created by this function is designed
+    to map as closely as possible to clusters created by the \pkg{parallel}
+    package. However, '...' arguments are passed onto \code{\link{daemons}}
+    for additional customisation if desired, although resultant behaviour may
+    not be supported.
 }
 \section{Remote Nodes}{
 
@@ -79,6 +74,15 @@ Requires R >= 4.4 (currently R-devel). Clusters created with this
 
     Call \code{\link{status}} on a 'miraiCluster' to check the number of
     currently active connections as well as the host URL.
+}
+
+\section{Errors}{
+
+
+    Errors are thrown by the 'parallel' mechanism if one or more nodes failed
+    (quit unexpectedly). The resulting 'errorValue' returned is 19
+    (Connection reset). Other types of error, e.g. in evaluation, should
+    result in the usual 'miraiError' being returned.
 }
 
 \examples{

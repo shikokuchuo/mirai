@@ -68,9 +68,6 @@ NULL
 
 .onLoad <- function(libname, pkgname) {
 
-  . <<- new.env(hash = FALSE, parent = environment(mirai))
-  .. <<- new.env(hash = FALSE, parent = environment(mirai))
-
   switch(
     Sys.info()[["sysname"]],
     Linux = {
@@ -128,8 +125,8 @@ registerPromisesMethods <- function(pkgname, pkgpath) {
 
 # nocov end
 
-. <- NULL
-.. <- NULL
+. <- new.env()
+.. <- new.env()
 .command <- NULL
 .urlscheme <- NULL
 
@@ -144,9 +141,8 @@ registerPromisesMethods <- function(pkgname, pkgpath) {
     dot_required = "'.' must be an element of the character vector(s) supplied to 'args'",
     missing_expression = "missing expression, perhaps wrap in {}?",
     missing_url = "at least one URL must be supplied for 'url' or 'n' must be at least 1",
-    n_one = "'n' must be 1 or greater if specified with 'url'",
+    n_one = "'n' must be 1 or greater",
     n_zero = "the number of daemons must be zero or greater",
-    nodes_failed = "one or more nodes failed... cluster stopped",
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
     requires_local = "SSH tunnelling requires 'url' hostname to be '127.0.0.1' or 'localhost'",
     refhook_invalid = "'refhook' must be a list of 2 functions or NULL",
