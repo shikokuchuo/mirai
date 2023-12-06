@@ -588,7 +588,6 @@ store_urls <- function(sock, envir) {
 
 send_signal <- function(envir) {
   signals <- max(length(envir[["urls"]]), stat(envir[["sock"]], "pipes"))
-  ._scm_. <- base64dec("QgoDAAAAAQMEAAAFAwAFAAAAVVRGLTj8AAAA", convert = FALSE)
   for (i in seq_len(signals)) {
     send(envir[["sock"]], data = ._scm_., mode = 2L)
     msleep(10L)
@@ -608,3 +607,5 @@ register_everywhere <- function(refhook)
 
 serialization_refhook <- function(refhook = next_config())
   if (length(refhook[[1L]])) register_everywhere(refhook)
+
+._scm_. <- base64dec("BwAAAEIKAwAAAAIDBAAABQMABQAAAFVURi04/AAAAA==", convert = FALSE)
