@@ -155,7 +155,34 @@ The [`crew`](https://cran.r-project.org/package=crew) package is a distributed w
 
 A 'mirai' may be used interchangeably with a 'promise' by using the the promise pipe `%...>%`, or explictly by `promises::as.promise()`, allowing side-effects to be performed upon asynchronous resolution of a 'mirai'.
 
-Alternatively, [`crew`](https://cran.r-project.org/package=crew) also provides an interface that facilitates deploying {mirai} for [`shiny`](https://cran.r-project.org/package=shiny), and provides an 'Asynchronous Shiny apps' vignette with tutorial and sample code.
+The following example outputs "hello" to the console after one second when the 'mirai' resolves.
+
+```{r shiny}
+library(promises)
+
+p <- mirai({Sys.sleep(1); "hello"}) %...>% cat()
+p
+```
+
+Alternatively, [`crew`](https://cran.r-project.org/package=crew) provides an interface that facilitates deploying {mirai} for [`shiny`](https://cran.r-project.org/package=shiny).
+
+Please refer to its [Asynchronous Shiny Apps](https://wlandau.github.io/crew/articles/shiny.html) vignette, which features a tutorial and sample code.
+
+### Use with Torch
+
+The custom serialization interface in {mirai} is accessed via the `serialization()` function.
+
+In the case of Torch, this would involve making the following call once at the start of your session:
+
+```{r torch, eval=FALSE}
+serialization(refhook = list(torch:::torch_serialize, torch::torch_load))
+```
+
+* Note that `torch_serialize()` is available via `:::` since torch v0.9.0, and will be exported in v0.12.0.
+
+This allows tensors, including models, optimizers etc. to be used seamlessly across local and remote processes like any other R object.
+
+For more details, please refer to the relevant [vignette chapter](https://shikokuchuo.net/mirai/articles/mirai.html#serialization-custom-functions).
 
 ### Thanks
 

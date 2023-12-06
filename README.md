@@ -88,8 +88,8 @@ result.
 
 ``` r
 m$data
-#>  [1] -4.5570990  2.4532932  6.0578452  0.2018006  2.1813078  1.0000000
-#>  [7]  0.4584406  4.9553876  0.1650752  0.4076154 -0.2194378
+#>  [1] -2.2923546  4.2253176  2.5303852 -0.8855757 -0.9075769  1.0000000
+#>  [7] -1.1018350 -1.1292089  0.3951967  0.2366686 -0.4362327
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -97,8 +97,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] -4.5570990  2.4532932  6.0578452  0.2018006  2.1813078  1.0000000
-#>  [7]  0.4584406  4.9553876  0.1650752  0.4076154 -0.2194378
+#>  [1] -2.2923546  4.2253176  2.5303852 -0.8855757 -0.9075769  1.0000000
+#>  [7] -1.1018350 -1.1292089  0.3951967  0.2366686 -0.4362327
 ```
 
 ### Vignette
@@ -175,10 +175,45 @@ promise pipe `%...>%`, or explictly by `promises::as.promise()`,
 allowing side-effects to be performed upon asynchronous resolution of a
 ‘mirai’.
 
-Alternatively, [`crew`](https://cran.r-project.org/package=crew) also
+The following example outputs “hello” to the console after one second
+when the ‘mirai’ resolves.
+
+``` r
+library(promises)
+
+p <- mirai({Sys.sleep(1); "hello"}) %...>% cat()
+p
+#> <Promise [pending]>
+```
+
+Alternatively, [`crew`](https://cran.r-project.org/package=crew)
 provides an interface that facilitates deploying {mirai} for
-[`shiny`](https://cran.r-project.org/package=shiny), and provides an
-‘Asynchronous Shiny apps’ vignette with tutorial and sample code.
+[`shiny`](https://cran.r-project.org/package=shiny).
+
+Please refer to its [Asynchronous Shiny
+Apps](https://wlandau.github.io/crew/articles/shiny.html) vignette,
+which features a tutorial and sample code.
+
+### Use with Torch
+
+The custom serialization interface in {mirai} is accessed via the
+`serialization()` function.
+
+In the case of Torch, this would involve making the following call once
+at the start of your session:
+
+``` r
+serialization(refhook = list(torch:::torch_serialize, torch::torch_load))
+```
+
+- Note that `torch_serialize()` is available via `:::` since torch
+  v0.9.0, and will be exported in v0.12.0.
+
+This allows tensors, including models, optimizers etc. to be used
+seamlessly across local and remote processes like any other R object.
+
+For more details, please refer to the relevant [vignette
+chapter](https://shikokuchuo.net/mirai/articles/mirai.html#serialization-custom-functions).
 
 ### Thanks
 
