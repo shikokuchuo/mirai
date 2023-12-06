@@ -1,4 +1,4 @@
-# mirai 0.11.2.9028 (development)
+# mirai 0.11.2.9029 (development)
 
 * Implements `serialization()` for registering custom serialization and unserialization functions when using daemons.
 * Introduces `call_mirai_()`, a user-interruptible version of `call_mirai()` suitable for interactive use.
@@ -8,7 +8,8 @@
 * `everywhere()` now returns invisible NULL in the case the specified compute profile is not set up, rather than error.
 * `mirai()` specifying a timeout when `daemons()` has not been set - the timeout begins immediately rather than after the ephemeral daemon has connected - please factor in a small amount of time for the daemon to launch.
 * `make_cluster()` now prints daemon launch commands where 'url' is specified without 'remote' whether or not interactive.
-* Cluster node failures during load balanced operations now rely on the 'parallel' mechanism to error and no longer fail early or automatically stop the cluster. 
+* Cluster node failures during load balanced operations now rely on the 'parallel' mechanism to error and no longer fail early or automatically stop the cluster.
+* Fixes regression since 0.11.0 which prevented dispatcher exiting in a timely manner when tasks are backlogged (thanks @wlandau #86).
 * Improved memory efficiency and stability at dispatcher.
 * No longer loads the 'promises' package if not already loaded (but makes the 'mirai' method available via a hook function). 
 * Requires nanonext >= 0.11.0.
