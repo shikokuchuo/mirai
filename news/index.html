@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.2.9027</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.2.9028</span>
       </span>
     </div>
 
@@ -57,7 +57,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.11.2.9027" id="mirai-01129027-development">mirai 0.11.2.9027 (development)<a class="anchor" aria-label="anchor" href="#mirai-01129027-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.11.2.9028" id="mirai-01129028-development">mirai 0.11.2.9028 (development)<a class="anchor" aria-label="anchor" href="#mirai-01129028-development"></a></h2>
 <ul><li>Implements <code><a href="../reference/serialization.html">serialization()</a></code> for registering custom serialization and unserialization functions when using daemons.</li>
 <li>Introduces <code><a href="../reference/call_mirai.html">call_mirai_()</a></code>, a user-interruptible version of <code><a href="../reference/call_mirai.html">call_mirai()</a></code> suitable for interactive use.</li>
 <li>Simplification of <code><a href="../reference/mirai.html">mirai()</a></code> interface:
@@ -67,9 +67,10 @@
 <li>
 <code><a href="../reference/everywhere.html">everywhere()</a></code> now returns invisible NULL in the case the specified compute profile is not set up, rather than error.</li>
 <li>
-<code><a href="../reference/make_cluster.html">make_cluster()</a></code> now prints daemon launch commands where ‘url’ is specified without ‘remote’ whether or not interactive.</li>
-<li>
 <code><a href="../reference/mirai.html">mirai()</a></code> specifying a timeout when <code><a href="../reference/daemons.html">daemons()</a></code> has not been set - the timeout begins immediately rather than after the ephemeral daemon has connected - please factor in a small amount of time for the daemon to launch.</li>
+<li>
+<code><a href="../reference/make_cluster.html">make_cluster()</a></code> now prints daemon launch commands where ‘url’ is specified without ‘remote’ whether or not interactive.</li>
+<li>Cluster node failures during load balanced operations now rely on the ‘parallel’ mechanism to error and no longer fail early or automatically stop the cluster.</li>
 <li>Improved memory efficiency and stability at dispatcher.</li>
 <li>No longer loads the ‘promises’ package if not already loaded (but makes the ‘mirai’ method available via a hook function).</li>
 <li>Requires nanonext &gt;= 0.11.0.</li>
