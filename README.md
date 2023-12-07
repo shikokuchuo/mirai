@@ -88,8 +88,9 @@ result.
 
 ``` r
 m$data
-#>  [1] -2.2923546  4.2253176  2.5303852 -0.8855757 -0.9075769  1.0000000
-#>  [7] -1.1018350 -1.1292089  0.3951967  0.2366686 -0.4362327
+#>  [1]  -0.04026068  -1.92115491   0.17933997   0.69404292   0.01749486
+#>  [6]   1.00000000  57.15965086   1.44083309   5.57600189  -0.52052023
+#> [11] -24.83812992
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -97,8 +98,9 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] -2.2923546  4.2253176  2.5303852 -0.8855757 -0.9075769  1.0000000
-#>  [7] -1.1018350 -1.1292089  0.3951967  0.2366686 -0.4362327
+#>  [1]  -0.04026068  -1.92115491   0.17933997   0.69404292   0.01749486
+#>  [6]   1.00000000  57.15965086   1.44083309   5.57600189  -0.52052023
+#> [11] -24.83812992
 ```
 
 ### Vignette
@@ -130,6 +132,15 @@ vignette("mirai", package = "mirai")
 {mirai} provides an alternative communications backend for R’s base
 ‘parallel’ package.
 
+``` r
+cl <- make_cluster(4)
+cl
+#> < miraiCluster >
+#>  - cluster ID: `0`
+#>  - nodes: 4
+#>  - active: TRUE
+```
+
 `make_cluster()` creates a ‘miraiCluster’, a cluster fully compatible
 with all ‘parallel’ functions such as:
 
@@ -137,9 +148,9 @@ with all ‘parallel’ functions such as:
 - `parallel::parLapply()`
 - `parallel::parLapplyLB()`
 
-[`doParallel`](https://cran.r-project.org/package=doParallel) can also
-register a ‘miraiCluster’ for use with the
-[`foreach`](https://cran.r-project.org/package=foreach) package.
+A ‘miraiCluster’ may also be registered for use with the
+[`foreach`](https://cran.r-project.org/package=foreach) package by
+[`doParallel`](https://cran.r-project.org/package=doParallel).
 
 This functionality fulfils a request from R-Core at R Project Sprint
 2023.
@@ -190,24 +201,27 @@ Alternatively, [`crew`](https://cran.r-project.org/package=crew)
 provides an interface that facilitates deploying {mirai} for
 [`shiny`](https://cran.r-project.org/package=shiny).
 
-Please refer to its [Asynchronous Shiny
-Apps](https://wlandau.github.io/crew/articles/shiny.html) vignette,
-which features a tutorial and sample code.
+- Please refer to its [Asynchronous Shiny
+  Apps](https://wlandau.github.io/crew/articles/shiny.html) vignette,
+  which features a tutorial and sample code.
 
 ### Use with Torch
 
 The custom serialization interface in {mirai} is accessed via the
 `serialization()` function.
 
-In the case of Torch, this would involve making the following call once
-at the start of your session:
+In the case of [`torch`](https://cran.r-project.org/package=torch), this
+would involve making the following call once at the start of your
+session:
 
 ``` r
 serialization(refhook = list(torch:::torch_serialize, torch::torch_load))
+#> [ mirai ] serialization functions registered
 ```
 
-- Note that `torch_serialize()` is available via `:::` since torch
-  v0.9.0, and will be exported in v0.12.0.
+- Note that `torch_serialize()` is available via `:::` since
+  [`torch`](https://cran.r-project.org/package=torch) v0.9.0, and will
+  be exported in v0.12.0.
 
 This allows tensors, including models, optimizers etc. to be used
 seamlessly across local and remote processes like any other R object.
