@@ -45,7 +45,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.2.9029</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.3</span>
       </span>
     </div>
 
@@ -135,13 +135,15 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -2.2923546  4.2253176  2.5303852 -0.8855757 -0.9075769  1.0000000</span></span>
-<span><span class="co">#&gt;  [7] -1.1018350 -1.1292089  0.3951967  0.2366686 -0.4362327</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  -0.04026068  -1.92115491   0.17933997   0.69404292   0.01749486</span></span>
+<span><span class="co">#&gt;  [6]   1.00000000  57.15965086   1.44083309   5.57600189  -0.52052023</span></span>
+<span><span class="co">#&gt; [11] -24.83812992</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -2.2923546  4.2253176  2.5303852 -0.8855757 -0.9075769  1.0000000</span></span>
-<span><span class="co">#&gt;  [7] -1.1018350 -1.1292089  0.3951967  0.2366686 -0.4362327</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  -0.04026068  -1.92115491   0.17933997   0.69404292   0.01749486</span></span>
+<span><span class="co">#&gt;  [6]   1.00000000  57.15965086   1.44083309   5.57600189  -0.52052023</span></span>
+<span><span class="co">#&gt; [11] -24.83812992</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="vignette">Vignette<a class="anchor" aria-label="anchor" href="#vignette"></a>
@@ -163,13 +165,20 @@
 <h3 id="use-with-parallel-and-foreach">Use with Parallel and Foreach<a class="anchor" aria-label="anchor" href="#use-with-parallel-and-foreach"></a>
 </h3>
 <p>{mirai} provides an alternative communications backend for R’s base ‘parallel’ package.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_cluster.html">make_cluster</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
+<span><span class="va">cl</span></span>
+<span><span class="co">#&gt; &lt; miraiCluster &gt;</span></span>
+<span><span class="co">#&gt;  - cluster ID: `0`</span></span>
+<span><span class="co">#&gt;  - nodes: 4</span></span>
+<span><span class="co">#&gt;  - active: TRUE</span></span></code></pre></div>
 <p><code><a href="reference/make_cluster.html">make_cluster()</a></code> creates a ‘miraiCluster’, a cluster fully compatible with all ‘parallel’ functions such as:</p>
 <ul>
 <li><code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parallel::clusterApply()</a></code></li>
 <li><code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parallel::parLapply()</a></code></li>
 <li><code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parallel::parLapplyLB()</a></code></li>
 </ul>
-<p><a href="https://cran.r-project.org/package=doParallel" class="external-link"><code>doParallel</code></a> can also register a ‘miraiCluster’ for use with the <a href="https://cran.r-project.org/package=foreach" class="external-link"><code>foreach</code></a> package.</p>
+<p>A ‘miraiCluster’ may also be registered for use with the <a href="https://cran.r-project.org/package=foreach" class="external-link"><code>foreach</code></a> package by <a href="https://cran.r-project.org/package=doParallel" class="external-link"><code>doParallel</code></a>.</p>
 <p>This functionality fulfils a request from R-Core at R Project Sprint 2023.</p>
 </div>
 <div class="section level3">
@@ -191,24 +200,27 @@
 <p>{mirai} serves as a backend for enterprise asynchronous <a href="https://cran.r-project.org/package=shiny" class="external-link"><code>shiny</code></a> or <a href="https://cran.r-project.org/package=plumber" class="external-link"><code>plumber</code></a> applications.</p>
 <p>A ‘mirai’ may be used interchangeably with a ‘promise’ by using the the promise pipe <code>%...&gt;%</code>, or explictly by <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">promises::as.promise()</a></code>, allowing side-effects to be performed upon asynchronous resolution of a ‘mirai’.</p>
 <p>The following example outputs “hello” to the console after one second when the ‘mirai’ resolves.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/promises/" class="external-link">promises</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>; <span class="st">"hello"</span><span class="op">}</span><span class="op">)</span> <span class="op"><a href="https://rstudio.github.io/promises/reference/pipes.html" class="external-link">%...&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">p</span></span>
 <span><span class="co">#&gt; &lt;Promise [pending]&gt;</span></span></code></pre></div>
 <p>Alternatively, <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> provides an interface that facilitates deploying {mirai} for <a href="https://cran.r-project.org/package=shiny" class="external-link"><code>shiny</code></a>.</p>
-<p>Please refer to its <a href="https://wlandau.github.io/crew/articles/shiny.html" class="external-link">Asynchronous Shiny Apps</a> vignette, which features a tutorial and sample code.</p>
+<ul>
+<li>Please refer to its <a href="https://wlandau.github.io/crew/articles/shiny.html" class="external-link">Asynchronous Shiny Apps</a> vignette, which features a tutorial and sample code.</li>
+</ul>
 </div>
 <div class="section level3">
 <h3 id="use-with-torch">Use with Torch<a class="anchor" aria-label="anchor" href="#use-with-torch"></a>
 </h3>
 <p>The custom serialization interface in {mirai} is accessed via the <code><a href="reference/serialization.html">serialization()</a></code> function.</p>
-<p>In the case of Torch, this would involve making the following call once at the start of your session:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/serialization.html">serialization</a></span><span class="op">(</span>refhook <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">torch</span><span class="fu">:::</span><span class="va">torch_serialize</span>, <span class="fu">torch</span><span class="fu">::</span><span class="va">torch_load</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>In the case of <a href="https://cran.r-project.org/package=torch" class="external-link"><code>torch</code></a>, this would involve making the following call once at the start of your session:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/serialization.html">serialization</a></span><span class="op">(</span>refhook <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">torch</span><span class="fu">:::</span><span class="va">torch_serialize</span>, <span class="fu">torch</span><span class="fu">::</span><span class="va">torch_load</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [ mirai ] serialization functions registered</span></span></code></pre></div>
 <ul>
-<li>Note that <code>torch_serialize()</code> is available via <code>:::</code> since torch v0.9.0, and will be exported in v0.12.0.</li>
+<li>Note that <code>torch_serialize()</code> is available via <code>:::</code> since <a href="https://cran.r-project.org/package=torch" class="external-link"><code>torch</code></a> v0.9.0, and will be exported in v0.12.0.</li>
 </ul>
 <p>This allows tensors, including models, optimizers etc. to be used seamlessly across local and remote processes like any other R object.</p>
 <p>For more details, please refer to the relevant <a href="https://shikokuchuo.net/mirai/articles/mirai.html#serialization-custom-functions">vignette chapter</a>.</p>
