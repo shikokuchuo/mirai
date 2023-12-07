@@ -1,9 +1,11 @@
+# mirai 0.11.3.9000 (development)
+
 # mirai 0.11.3
 
 * Implements `serialization()` for registering custom serialization and unserialization functions when using daemons.
 * Introduces `call_mirai_()`, a user-interruptible version of `call_mirai()` suitable for interactive use.
 * Simplification of `mirai()` interface:
-  + '.args' will now coerece to a list if an object other than a list is supplied, rather than error.
+  + '.args' will now coerce to a list if an object other than a list is supplied, rather than error.
   + '.signal' argument removed - now all 'mirai' signal if daemons are set up.
 * `everywhere()` now returns invisible NULL in the case the specified compute profile is not set up, rather than error.
 * `mirai()` specifying a timeout when `daemons()` has not been set - the timeout begins immediately rather than after the ephemeral daemon has connected - please factor in a small amount of time for the daemon to launch.
