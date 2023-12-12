@@ -95,8 +95,9 @@ port to connect to (and optionally for websockets, a path), e.g.
 
 <dt>autoexit</dt>
 <dd><p>[default TRUE] logical value, whether the daemon should
-exit automatically when its socket connection ends, or else an integer
-signal value to additionally raise this upon exit (see 'Persistence'
+exit automatically when its socket connection ends. If a signal from the
+<span class="pkg">tools</span> package, e.g. <code><a href="https://rdrr.io/r/tools/pskill.html" class="external-link">tools::SIGINT</a></code>, or an equivalent integer
+value is supplied, this signal is additionally raised (see 'Persistence'
 section below).</p></dd>
 
 
