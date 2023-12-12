@@ -24,8 +24,9 @@ port to connect to (and optionally for websockets, a path), e.g.
 'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.}
 
 \item{autoexit}{[default TRUE] logical value, whether the daemon should
-exit automatically when its socket connection ends (see 'Persistence'
-section below).}
+exit automatically when its socket connection ends, or else an integer
+value to additionally raise a signal upon exit (see 'Persistence' section
+below).}
 
 \item{cleanup}{[default TRUE] logical value, whether to perform cleanup of
 the global environment and restore loaded packages and options to an
@@ -85,14 +86,20 @@ The network topology is such that daemons dial into the host or
 
 
     The 'autoexit' argument governs persistence settings for the daemon. The
-    default TRUE ensures that it will exit cleanly under all circumstances
-    once its socket connection has ended.
+    default TRUE ensures that it will exit cleanly once its socket connection
+    has ended.
 
     Setting to FALSE allows the daemon to persist indefinitely even when
     there is no longer a socket connection. This allows a host session to end
     and a new session to connect at the URL where the daemon is dialled in.
     Daemons must be terminated with \code{daemons(NULL)} in this case, which
     sends an exit signal to all connected daemons.
+
+    Supplying an integer value, or equivalently a signal from the \pkg{tools}
+    package e.g. \code{tools::SIGINT}), sets this signal to be raised when
+    the socket connection ends. As an example, supplying 2L (SIGINT)
+    allows a potentially more immediate exit by interrupting any ongoing
+    evaluation rather than letting it complete.
 
     Persistence also implies that dials are performed asynchronously, which
     means retries are attempted (indefinitely) if not immediately successful.

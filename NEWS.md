@@ -1,5 +1,8 @@
 # mirai 0.11.3.9000 (development)
 
+* Allows supplying a signal value for the 'autoexit' argument of daemon() to raise it upon exit.
+* Requires nanonext >= [0.11.0.9000].
+
 # mirai 0.11.3
 
 * Implements `serialization()` for registering custom serialization and unserialization functions when using daemons.
