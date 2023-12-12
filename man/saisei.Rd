@@ -35,6 +35,21 @@ When a URL is regenerated, the listener at the specified socket is
     task that consistently hangs or crashes to prevent it from failing
     repeatedly when new daemons connect.
 }
+\section{Timeouts}{
+
+
+    Specifying the '.timeout' argument to \code{\link{mirai}} ensures that
+    the 'mirai' always resolves. However, the task may not have completed and
+    still be ongoing in the daemon process. In such situations, dispatcher
+    ensures that queued tasks are not assigned to the busy process, however
+    overall performance may still be degraded if they remain in use.
+
+    If a process hangs and cannot be restarted otherwise, \code{saisei}
+    specifying \code{force = TRUE} may be used to cancel the task and
+    regenerate any particular URL for a new \code{\link{daemon}} to connect
+    to.
+}
+
 \examples{
 if (interactive()) {
 # Only run examples in interactive R sessions

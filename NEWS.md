@@ -1,5 +1,8 @@
 # mirai 0.11.3.9000 (development)
 
+* Allows supplying a signal value for the 'autoexit' argument of daemon() to raise it upon exit.
+* Requires nanonext >= [0.11.0.9000].
+
 # mirai 0.11.3
 
 * Implements `serialization()` for registering custom serialization and unserialization functions when using daemons.
@@ -13,7 +16,7 @@
 * Cluster node failures during load balanced operations now rely on the 'parallel' mechanism to error and no longer fail early or automatically stop the cluster.
 * Fixes regression since 0.11.0 which prevented dispatcher exiting in a timely manner when tasks are backlogged (thanks @wlandau #86).
 * Improved memory efficiency and stability at dispatcher.
-* No longer loads the 'promises' package if not already loaded (but makes the 'mirai' method available via a hook function). 
+* No longer loads the 'promises' package if not already loaded (but makes the 'mirai' method available via a hook function).
 * Requires nanonext >= 0.11.0.
 
 # mirai 0.11.2

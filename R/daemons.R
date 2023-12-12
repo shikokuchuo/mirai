@@ -112,22 +112,19 @@
 #'
 #'     By default \code{dispatcher = TRUE}. This launches a background process
 #'     running \code{\link{dispatcher}}. Dispatcher connects to daemons on
-#'     behalf of the host and queues tasks until a daemon is able to begin
-#'     immediate execution of that task, ensuring FIFO scheduling. Dispatcher
-#'     uses synchronisation primitives from \code{nanonext}, waiting rather than
-#'     polling for tasks, which is efficient both in terms of consuming no
-#'     resources while waiting, and also being fully synchronised with events
-#'     (having no latency).
+#'     behalf of the host and ensures FIFO scheduling of tasks. Dispatcher uses
+#'     synchronisation primitives from \pkg{nanonext}, waiting rather than
+#'     polling for tasks, which is both efficient (no resource usage) and fully
+#'     event-driven (having no latency).
 #'
 #'     By specifying \code{dispatcher = FALSE}, daemons connect to the host
 #'     directly rather than through dispatcher. The host sends tasks to
 #'     connected daemons immediately in an evenly-distributed fashion. However,
 #'     optimal scheduling is not guaranteed as the duration of tasks cannot be
-#'     known \emph{a priori}, such that tasks can be queued at a daemon behind
-#'     a long-running task while other daemons remain idle. Nevertheless, this
-#'     provides a resource-light approach suited to working with similar-length
-#'     tasks, or where concurrent tasks typically do not exceed available
-#'     daemons.
+#'     known \emph{a priori}, such that tasks can be queued at one daemon while
+#'     other daemons remain idle. Nevertheless, this provides a resource-light
+#'     approach suited to working with similar-length tasks, or where concurrent
+#'     tasks typically do not exceed available daemons.
 #'
 #' @section Distributed Computing:
 #'
@@ -167,8 +164,8 @@
 #'     numbers / paths. In this case it is optional to supply 'n' as this can
 #'     be inferred by the length of vector supplied.
 #'
-#'     Individual daemons then dial in to each of these host URLs, and at most
-#'     one daemon should be dialled into each URL at any given time.
+#'     Individual daemons then dial in to each of these host URLs. At most one
+#'     daemon can be dialled into each URL at any given time.
 #'
 #'     Dispatcher automatically adjusts to the number of daemons actually
 #'     connected. Hence it is possible to dynamically scale up or down the
@@ -203,9 +200,9 @@
 #'
 #'     \strong{local / remote} daemons may be set with a host URL and specifying
 #'     '.compute' as 'remote', which creates a new compute profile. Subsequent
-#'     mirai calls may then be sent for local computation by not specifying its
+#'     mirai calls may then be sent for local computation by not specifying the
 #'     '.compute' argument, or for remote computation to connected daemons by
-#'     specifying its '.compute' argument as 'remote'.
+#'     specifying the '.compute' argument as 'remote'.
 #'
 #'     \strong{cpu / gpu} some tasks may require access to different types of
 #'     daemon, such as those with GPUs. In this case, \code{daemons()} may be
@@ -216,26 +213,6 @@
 #'
 #'     Note: further actions such as resetting daemons via \code{daemons(0)}
 #'     should be carried out with the desired '.compute' argument specified.
-#'
-#' @section Everywhere:
-#'
-#'     \code{\link{everywhere}} evaluates an expression on all connected daemons
-#'     and persists the resultant state. This is designed for setting up the
-#'     evaluation environment, with particular packages loaded, or common
-#'     resources made available, etc.
-#'
-#' @section Timeouts:
-#'
-#'     Specifying the \code{.timeout} argument in \code{\link{mirai}} will
-#'     ensure that the 'mirai' always resolves.
-#'
-#'     However, the task may not have completed and still be ongoing in the
-#'     daemon process. In such situations, dispatcher ensures that queued tasks
-#'     are not assigned to the busy process, however overall performance may
-#'     still be degraded if they remain in use. If a process hangs and cannot be
-#'     restarted manually, \code{\link{saisei}} specifying \code{force = TRUE}
-#'     may be used to cancel the task and regenerate any particular URL for a
-#'     new \code{\link{daemon}} to connect to.
 #'
 #' @examples
 #' if (interactive()) {
