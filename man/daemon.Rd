@@ -24,8 +24,9 @@ port to connect to (and optionally for websockets, a path), e.g.
 'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.}
 
 \item{autoexit}{[default TRUE] logical value, whether the daemon should
-exit automatically when its socket connection ends, or else an integer
-signal value to additionally raise this upon exit (see 'Persistence'
+exit automatically when its socket connection ends. If a signal from the
+\pkg{tools} package, e.g. \code{tools::SIGINT}, or an equivalent integer
+value is supplied, this signal is additionally raised (see 'Persistence'
 section below).}
 
 \item{cleanup}{[default TRUE] logical value, whether to perform cleanup of
