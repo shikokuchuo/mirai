@@ -102,6 +102,21 @@ different resources).</p></dd>
     task that consistently hangs or crashes to prevent it from failing
     repeatedly when new daemons connect.</p>
     </div>
+    <div id="timeouts">
+    <h2>Timeouts</h2>
+    
+
+
+<p>Specifying the '.timeout' argument to <code><a href="mirai.html">mirai</a></code> ensures that
+    the 'mirai' always resolves. However, the task may not have completed and
+    still be ongoing in the daemon process. In such situations, dispatcher
+    ensures that queued tasks are not assigned to the busy process, however
+    overall performance may still be degraded if they remain in use.</p>
+<p>If a process hangs and cannot be restarted otherwise, <code>saisei</code>
+    specifying <code>force = TRUE</code> may be used to cancel the task and
+    regenerate any particular URL for a new <code><a href="daemon.html">daemon</a></code> to connect
+    to.</p>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>

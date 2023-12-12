@@ -95,7 +95,8 @@ port to connect to (and optionally for websockets, a path), e.g.
 
 <dt>autoexit</dt>
 <dd><p>[default TRUE] logical value, whether the daemon should
-exit automatically when its socket connection ends (see 'Persistence'
+exit automatically when its socket connection ends, or else an integer
+signal value to additionally raise this upon exit (see 'Persistence'
 section below).</p></dd>
 
 
@@ -174,13 +175,18 @@ process and should not be independently supplied.</p></dd>
 
 
 <p>The 'autoexit' argument governs persistence settings for the daemon. The
-    default TRUE ensures that it will exit cleanly under all circumstances
-    once its socket connection has ended.</p>
+    default TRUE ensures that it will exit cleanly once its socket connection
+    has ended.</p>
 <p>Setting to FALSE allows the daemon to persist indefinitely even when
     there is no longer a socket connection. This allows a host session to end
     and a new session to connect at the URL where the daemon is dialled in.
     Daemons must be terminated with <code>daemons(NULL)</code> in this case, which
     sends an exit signal to all connected daemons.</p>
+<p>Supplying a signal from the <span class="pkg">tools</span> package, e.g. <code><a href="https://rdrr.io/r/tools/pskill.html" class="external-link">tools::SIGINT</a></code>,
+    or an equivalent integer value, sets this signal to be raised when the
+    socket connection ends. As an example, supplying SIGINT allows a
+    potentially more immediate exit by interrupting any ongoing evaluation
+    rather than letting it complete.</p>
 <p>Persistence also implies that dials are performed asynchronously, which
     means retries are attempted (indefinitely) if not immediately successful.
     This is resilient behaviour but can mask potential connection issues.</p>

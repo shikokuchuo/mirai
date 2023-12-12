@@ -211,21 +211,18 @@ different resources).</p></dd>
 
 <p>By default <code>dispatcher = TRUE</code>. This launches a background process
     running <code><a href="dispatcher.html">dispatcher</a></code>. Dispatcher connects to daemons on
-    behalf of the host and queues tasks until a daemon is able to begin
-    immediate execution of that task, ensuring FIFO scheduling. Dispatcher
-    uses synchronisation primitives from <code>nanonext</code>, waiting rather than
-    polling for tasks, which is efficient both in terms of consuming no
-    resources while waiting, and also being fully synchronised with events
-    (having no latency).</p>
+    behalf of the host and ensures FIFO scheduling of tasks. Dispatcher uses
+    synchronisation primitives from <span class="pkg">nanonext</span>, waiting rather than
+    polling for tasks, which is both efficient (no resource usage) and fully
+    event-driven (having no latency).</p>
 <p>By specifying <code>dispatcher = FALSE</code>, daemons connect to the host
     directly rather than through dispatcher. The host sends tasks to
     connected daemons immediately in an evenly-distributed fashion. However,
     optimal scheduling is not guaranteed as the duration of tasks cannot be
-    known <em>a priori</em>, such that tasks can be queued at a daemon behind
-    a long-running task while other daemons remain idle. Nevertheless, this
-    provides a resource-light approach suited to working with similar-length
-    tasks, or where concurrent tasks typically do not exceed available
-    daemons.</p>
+    known <em>a priori</em>, such that tasks can be queued at one daemon while
+    other daemons remain idle. Nevertheless, this provides a resource-light
+    approach suited to working with similar-length tasks, or where concurrent
+    tasks typically do not exceed available daemons.</p>
     </div>
     <div id="distributed-computing">
     <h2>Distributed Computing</h2>
@@ -260,8 +257,8 @@ different resources).</p></dd>
 <p>Alternatively, specify a vector of URLs to listen to arbitrary port
     numbers / paths. In this case it is optional to supply 'n' as this can
     be inferred by the length of vector supplied.</p>
-<p>Individual daemons then dial in to each of these host URLs, and at most
-    one daemon should be dialled into each URL at any given time.</p>
+<p>Individual daemons then dial in to each of these host URLs. At most one
+    daemon can be dialled into each URL at any given time.</p>
 <p>Dispatcher automatically adjusts to the number of daemons actually
     connected. Hence it is possible to dynamically scale up or down the
     number of daemons as required, subject to the maximum number initially
@@ -292,9 +289,9 @@ different resources).</p></dd>
     be operated independently of each other. Some usage examples follow:</p>
 <p><strong>local / remote</strong> daemons may be set with a host URL and specifying
     '.compute' as 'remote', which creates a new compute profile. Subsequent
-    mirai calls may then be sent for local computation by not specifying its
+    mirai calls may then be sent for local computation by not specifying the
     '.compute' argument, or for remote computation to connected daemons by
-    specifying its '.compute' argument as 'remote'.</p>
+    specifying the '.compute' argument as 'remote'.</p>
 <p><strong>cpu / gpu</strong> some tasks may require access to different types of
     daemon, such as those with GPUs. In this case, <code>daemons()</code> may be
     called twice to set up host URLs for CPU-only daemons and for those
@@ -303,31 +300,6 @@ different resources).</p></dd>
     calls, tasks may be sent to either 'cpu' or 'gpu' daemons as appropriate.</p>
 <p>Note: further actions such as resetting daemons via <code>daemons(0)</code>
     should be carried out with the desired '.compute' argument specified.</p>
-    </div>
-    <div id="everywhere">
-    <h2>Everywhere</h2>
-    
-
-
-<p><code><a href="everywhere.html">everywhere</a></code> evaluates an expression on all connected daemons
-    and persists the resultant state. This is designed for setting up the
-    evaluation environment, with particular packages loaded, or common
-    resources made available, etc.</p>
-    </div>
-    <div id="timeouts">
-    <h2>Timeouts</h2>
-    
-
-
-<p>Specifying the <code>.timeout</code> argument in <code><a href="mirai.html">mirai</a></code> will
-    ensure that the 'mirai' always resolves.</p>
-<p>However, the task may not have completed and still be ongoing in the
-    daemon process. In such situations, dispatcher ensures that queued tasks
-    are not assigned to the busy process, however overall performance may
-    still be degraded if they remain in use. If a process hangs and cannot be
-    restarted manually, <code><a href="saisei.html">saisei</a></code> specifying <code>force = TRUE</code>
-    may be used to cancel the task and regenerate any particular URL for a
-    new <code><a href="daemon.html">daemon</a></code> to connect to.</p>
     </div>
 
     <div id="ref-examples">
