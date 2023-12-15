@@ -135,15 +135,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]  -0.04026068  -1.92115491   0.17933997   0.69404292   0.01749486</span></span>
-<span><span class="co">#&gt;  [6]   1.00000000  57.15965086   1.44083309   5.57600189  -0.52052023</span></span>
-<span><span class="co">#&gt; [11] -24.83812992</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  0.1648432 -0.2060049 -0.2295727  0.7670092  0.4985895  1.0000000</span></span>
+<span><span class="co">#&gt;  [7]  2.0056579  1.3037654 -4.3559180 -4.8542543  6.0663725</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]  -0.04026068  -1.92115491   0.17933997   0.69404292   0.01749486</span></span>
-<span><span class="co">#&gt;  [6]   1.00000000  57.15965086   1.44083309   5.57600189  -0.52052023</span></span>
-<span><span class="co">#&gt; [11] -24.83812992</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  0.1648432 -0.2060049 -0.2295727  0.7670092  0.4985895  1.0000000</span></span>
+<span><span class="co">#&gt;  [7]  2.0056579  1.3037654 -4.3559180 -4.8542543  6.0663725</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="vignette">Vignette<a class="anchor" aria-label="anchor" href="#vignette"></a>
@@ -217,12 +215,9 @@
 <p>The custom serialization interface in {mirai} is accessed via the <code><a href="reference/serialization.html">serialization()</a></code> function.</p>
 <p>In the case of <a href="https://cran.r-project.org/package=torch" class="external-link"><code>torch</code></a>, this would involve making the following call once at the start of your session:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/serialization.html">serialization</a></span><span class="op">(</span>refhook <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">torch</span><span class="fu">:::</span><span class="va">torch_serialize</span>, <span class="fu">torch</span><span class="fu">::</span><span class="va">torch_load</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/serialization.html">serialization</a></span><span class="op">(</span>refhook <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">torch</span><span class="fu">::</span><span class="va">torch_serialize</span>, <span class="fu">torch</span><span class="fu">::</span><span class="va">torch_load</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [ mirai ] serialization functions registered</span></span></code></pre></div>
-<ul>
-<li>Note that <code>torch_serialize()</code> is available via <code>:::</code> since <a href="https://cran.r-project.org/package=torch" class="external-link"><code>torch</code></a> v0.9.0, and will be exported in v0.12.0.</li>
-</ul>
-<p>This allows tensors, including models, optimizers etc. to be used seamlessly across local and remote processes like any other R object.</p>
+<p>This allows tensors, including objects such as models, optimizers etc. to be used seamlessly across local and remote processes, the same as other R objects.</p>
 <p>For more details, please refer to the relevant <a href="https://shikokuchuo.net/mirai/articles/mirai.html#serialization-custom-functions">vignette chapter</a>.</p>
 </div>
 <div class="section level3">
@@ -231,8 +226,8 @@
 <p>We would like to thank in particular:</p>
 <p><a href="https://github.com/wlandau/" class="external-link">William Landau</a>, for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> and <a href="https://cran.r-project.org/package=targets" class="external-link"><code>targets</code></a>.</p>
 <p><a href="https://github.com/HenrikBengtsson/" class="external-link">Henrik Bengtsson</a>, for valuable and incisive insights leading to the interface accepting broader usage patterns.</p>
-<p><a href="https://github.com/ltierney/" class="external-link">Luke Tierney</a>, R Core, for introducing R’s implementation of L’Ecuyer-CMRG streams, used to ensure statistical independence in parallel processing.</p>
-<p><a href="https://github.com/dfalbel/" class="external-link">Daniel Falbel</a>, for discussion around an efficient solution to serialization and transmission of ‘torch’ tensors.</p>
+<p><a href="https://github.com/ltierney/" class="external-link">Luke Tierney</a>, R Core, for discussing (at <a href="https://contributor.r-project.org/r-project-sprint-2023/" class="external-link">R Project Sprint 2023</a>) R’s implementation of L’Ecuyer-CMRG streams, used to ensure statistical independence in parallel processing.</p>
+<p><a href="https://github.com/dfalbel/" class="external-link">Daniel Falbel</a>, for discussion around an efficient solution to serialization and transmission of <a href="https://cran.r-project.org/package=torch" class="external-link"><code>torch</code></a> tensors.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
