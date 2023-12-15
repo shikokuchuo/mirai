@@ -88,9 +88,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  -0.04026068  -1.92115491   0.17933997   0.69404292   0.01749486
-#>  [6]   1.00000000  57.15965086   1.44083309   5.57600189  -0.52052023
-#> [11] -24.83812992
+#>  [1]  0.1648432 -0.2060049 -0.2295727  0.7670092  0.4985895  1.0000000
+#>  [7]  2.0056579  1.3037654 -4.3559180 -4.8542543  6.0663725
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -98,9 +97,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  -0.04026068  -1.92115491   0.17933997   0.69404292   0.01749486
-#>  [6]   1.00000000  57.15965086   1.44083309   5.57600189  -0.52052023
-#> [11] -24.83812992
+#>  [1]  0.1648432 -0.2060049 -0.2295727  0.7670092  0.4985895  1.0000000
+#>  [7]  2.0056579  1.3037654 -4.3559180 -4.8542543  6.0663725
 ```
 
 ### Vignette
@@ -215,16 +213,13 @@ would involve making the following call once at the start of your
 session:
 
 ``` r
-serialization(refhook = list(torch:::torch_serialize, torch::torch_load))
+serialization(refhook = list(torch::torch_serialize, torch::torch_load))
 #> [ mirai ] serialization functions registered
 ```
 
-- Note that `torch_serialize()` is available via `:::` since
-  [`torch`](https://cran.r-project.org/package=torch) v0.9.0, and will
-  be exported in v0.12.0.
-
-This allows tensors, including models, optimizers etc. to be used
-seamlessly across local and remote processes like any other R object.
+This allows tensors, including objects such as models, optimizers etc.
+to be used seamlessly across local and remote processes, the same as
+other R objects.
 
 For more details, please refer to the relevant [vignette
 chapter](https://shikokuchuo.net/mirai/articles/mirai.html#serialization-custom-functions).
@@ -244,12 +239,15 @@ the high performance computing requirements of
 and incisive insights leading to the interface accepting broader usage
 patterns.
 
-[Luke Tierney](https://github.com/ltierney/), R Core, for introducing
-R’s implementation of L’Ecuyer-CMRG streams, used to ensure statistical
+[Luke Tierney](https://github.com/ltierney/), R Core, for discussing (at
+[R Project Sprint
+2023](https://contributor.r-project.org/r-project-sprint-2023/)) R’s
+implementation of L’Ecuyer-CMRG streams, used to ensure statistical
 independence in parallel processing.
 
 [Daniel Falbel](https://github.com/dfalbel/), for discussion around an
-efficient solution to serialization and transmission of ‘torch’ tensors.
+efficient solution to serialization and transmission of
+[`torch`](https://cran.r-project.org/package=torch) tensors.
 
 [« Back to ToC](#table-of-contents)
 

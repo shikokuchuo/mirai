@@ -1,6 +1,6 @@
 # mirai 0.11.3.9000 (development)
 
-* Allows supplying a signal value for the 'autoexit' argument of daemon() to raise it upon exit.
+* `daemon()` argument 'autoexit' now accepts a signal value such as `tools::SIGINT` in order to raise it upon exit.
 * Requires nanonext >= [0.11.0.9000].
 
 # mirai 0.11.3

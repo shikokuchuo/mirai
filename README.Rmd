@@ -180,12 +180,10 @@ The custom serialization interface in {mirai} is accessed via the `serialization
 In the case of [`torch`](https://cran.r-project.org/package=torch), this would involve making the following call once at the start of your session:
 
 ```{r torch}
-serialization(refhook = list(torch:::torch_serialize, torch::torch_load))
+serialization(refhook = list(torch::torch_serialize, torch::torch_load))
 ```
 
-- Note that `torch_serialize()` is available via `:::` since [`torch`](https://cran.r-project.org/package=torch) v0.9.0, and will be exported in v0.12.0.
-
-This allows tensors, including models, optimizers etc. to be used seamlessly across local and remote processes like any other R object.
+This allows tensors, including objects such as models, optimizers etc. to be used seamlessly across local and remote processes, the same as other R objects.
 
 For more details, please refer to the relevant [vignette chapter](https://shikokuchuo.net/mirai/articles/mirai.html#serialization-custom-functions).
 
@@ -201,9 +199,9 @@ We would like to thank in particular:
 
 [Henrik Bengtsson](https://github.com/HenrikBengtsson/), for valuable and incisive insights leading to the interface accepting broader usage patterns.
 
-[Luke Tierney](https://github.com/ltierney/), R Core, for introducing R's implementation of L'Ecuyer-CMRG streams, used to ensure statistical independence in parallel processing.
+[Luke Tierney](https://github.com/ltierney/), R Core, for discussing (at [R Project Sprint 2023](https://contributor.r-project.org/r-project-sprint-2023/)) R's implementation of L'Ecuyer-CMRG streams, used to ensure statistical independence in parallel processing.
 
-[Daniel Falbel](https://github.com/dfalbel/), for discussion around an efficient solution to serialization and transmission of 'torch' tensors.
+[Daniel Falbel](https://github.com/dfalbel/), for discussion around an efficient solution to serialization and transmission of [`torch`](https://cran.r-project.org/package=torch) tensors.
 
 [&laquo; Back to ToC](#table-of-contents)
 
