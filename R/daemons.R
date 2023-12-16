@@ -276,14 +276,14 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       cv <- cv()
       create_stream(n = n, seed = seed, envir = envir)
       if (dispatcher) {
-        n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(.err[["n_one"]])
+        n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
         if (length(tls)) tls_config(server = tls, pass = pass)
         urld <- auto_tokenized_url()
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld, resend = 0L)
         sockc <- req_socket(urlc, resend = 0L)
-        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls, pass = pass) || stop(.err[["sync_timeout"]])
-        init_monitor(sockc = sockc, envir = envir) || stop(.err[["sync_timeout"]])
+        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls, pass = pass) || stop(._[["sync_timeout"]])
+        init_monitor(sockc = sockc, envir = envir) || stop(._[["sync_timeout"]])
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass), resend = resilience * .intmax)
         store_urls(sock = sock, envir = envir)
@@ -301,7 +301,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
 
     signal <- is.null(n)
     if (signal) n <- 0L
-    is.numeric(n) || stop(.err[["numeric_n"]])
+    is.numeric(n) || stop(._[["numeric_n"]])
     n <- as.integer(n)
 
     if (n == 0L) {
@@ -314,7 +314,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
 
     } else if (is.null(envir)) {
 
-      n > 0L || stop(.err[["n_zero"]])
+      n > 0L || stop(._[["n_zero"]])
       envir <- new.env(hash = FALSE, parent = ..)
       urld <- auto_tokenized_url()
       cv <- cv()
@@ -323,9 +323,9 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         sock <- req_socket(urld, resend = 0L)
         urlc <- strcat(urld, "c")
         sockc <- req_socket(urlc, resend = 0L)
-        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), n, urlc, rs = envir[["stream"]]) || stop(.err[["sync_timeout"]])
+        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), n, urlc, rs = envir[["stream"]]) || stop(._[["sync_timeout"]])
         for (i in seq_len(n)) next_stream(envir)
-        init_monitor(sockc = sockc, envir = envir) || stop(.err[["sync_timeout"]])
+        init_monitor(sockc = sockc, envir = envir) || stop(._[["sync_timeout"]])
       } else {
         sock <- req_socket(urld, resend = resilience * .intmax)
         if (is.null(seed)) {
@@ -453,7 +453,7 @@ serialization <- function(refhook = list()) {
       cat("[ mirai ] serialization functions registered\n", file = stdout()) else
         if (is.null(refhook))
           cat("[ mirai ] serialization functions cancelled\n", file = stdout()) else
-            stop(.err[["refhook_invalid"]])
+            stop(._[["refhook_invalid"]])
     register_everywhere(refhook)
   }
 
@@ -493,7 +493,7 @@ parse_dots <- function(...)
   if (missing(...)) "" else {
     dots <- list(...)
     for (dot in dots)
-      is.numeric(dot) || is.logical(dot) || stop(.err[["wrong_dots"]])
+      is.numeric(dot) || is.logical(dot) || stop(._[["wrong_dots"]])
     dnames <- names(dots)
     dots <- strcat(",", paste(dnames, dots, sep = "=", collapse = ","))
     "output" %in% dnames && return(`class<-`(dots, "output"))

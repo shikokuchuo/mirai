@@ -148,7 +148,7 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
         return(`class<-`(cmds, "miraiLaunchCmd"))
 
       } else {
-        stop(.err[["arglen"]])
+        stop(._[["arglen"]])
       }
 
     }
@@ -283,7 +283,7 @@ ssh_config <- function(remotes, timeout = 5, tunnel = FALSE, command = "ssh", rs
   ports <- lapply(premotes, .subset2, "port")
 
   if (tunnel) {
-    url <- dynGet("url", ifnotfound = stop(.err[["correct_context"]]))
+    url <- dynGet("url", ifnotfound = stop(._[["correct_context"]]))
     purl <- lapply(url, parse_check_local_url)
     plen <- length(purl)
   }
@@ -355,15 +355,15 @@ print.miraiLaunchCmd <- function(x, ...) {
 
 find_dot <- function(args) {
   sel <- args == "."
-  any(sel) || stop(.err[["dot_required"]])
+  any(sel) || stop(._[["dot_required"]])
   sel
 }
 
 process_url <- function(url, .compute) {
   if (is.numeric(url)) {
     vec <- ..[[.compute]][["urls"]]
-    is.null(vec) && stop(.err[["daemons_unset"]])
-    all(url >= 1L, url <= length(vec)) || stop(.err[["url_spec"]])
+    is.null(vec) && stop(._[["daemons_unset"]])
+    all(url >= 1L, url <= length(vec)) || stop(._[["url_spec"]])
     url <- vec[url]
   } else {
     lapply(url, parse_url)
@@ -373,6 +373,6 @@ process_url <- function(url, .compute) {
 
 parse_check_local_url <- function(url) {
   purl <- parse_url(url)
-  purl[["hostname"]] %in% c("localhost", "127.0.0.1") || stop(.err[["requires_local"]])
+  purl[["hostname"]] %in% c("localhost", "127.0.0.1") || stop(._[["requires_local"]])
   purl
 }

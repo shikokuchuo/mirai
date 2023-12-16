@@ -100,7 +100,7 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
 
   if (is.character(url)) {
 
-    length(url) == 1L || stop(.err[["single_url"]])
+    length(url) == 1L || stop(._[["single_url"]])
     cv2 <- cv()
     daemons(url = url, remote = remote, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
 
@@ -109,14 +109,14 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
       n <- if (is.list(args)) length(args) else 1L
     } else {
       if (missing(n)) n <- 1L
-      is.numeric(n) || stop(.err[["numeric_n"]])
+      is.numeric(n) || stop(._[["numeric_n"]])
       cat("Shell commands for deployment on nodes:\n\n", file = stdout())
       print(launch_remote(rep(..[[id]][["urls"]], n), .compute = id))
     }
 
   } else {
-    is.numeric(n) || stop(.err[["numeric_n"]])
-    n >= 1L || stop(.err[["n_one"]])
+    is.numeric(n) || stop(._[["numeric_n"]])
+    n >= 1L || stop(._[["n_one"]])
     cv2 <- cv()
     daemons(n = n, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
   }
@@ -155,7 +155,7 @@ sendData.miraiNode <- function(node, data) {
 
   id <- attr(node, "id")
   envir <- ..[[id]]
-  length(envir) || stop(.err[["cluster_inactive"]])
+  length(envir) || stop(._[["cluster_inactive"]])
 
   value <- data[["data"]]
   tagged <- !is.null(value[["tag"]])

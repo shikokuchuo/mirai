@@ -137,7 +137,7 @@
 #'
 mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "default") {
 
-  missing(.expr) && stop(.err[["missing_expression"]])
+  missing(.expr) && stop(._[["missing_expression"]])
 
   expr <- substitute(.expr)
   arglist <- list(..., .expr = if (is.symbol(expr) && is.language(get0(as.character(expr), envir = sys.frame(-1L)))) .expr else expr)

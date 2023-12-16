@@ -129,7 +129,7 @@ registerPromisesMethods <- function(pkgname, pkgpath) {
 .command <- NULL
 .urlscheme <- NULL
 
-.err <- list2env(
+._ <- list2env(
   list(
     arglen = "'args' and/or 'url' must be of length 1 or the same length",
     cluster_inactive = "cluster is no longer active",
