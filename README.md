@@ -88,9 +88,9 @@ result.
 
 ``` r
 m$data
-#>  [1]  -0.27149840  -0.99118719   0.13327599  -0.01418035   1.14534917
-#>  [6]   1.00000000   0.87309619 -70.52013145   7.50322678  -1.00889117
-#> [11]  -3.68326289
+#>  [1]   0.81230653   0.98402949   0.33299644 -28.54786243   1.21680284
+#>  [6]   1.00000000   0.82182582  -0.03502889   3.00303510   1.01622971
+#> [11]   1.23106237
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -98,9 +98,9 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  -0.27149840  -0.99118719   0.13327599  -0.01418035   1.14534917
-#>  [6]   1.00000000   0.87309619 -70.52013145   7.50322678  -1.00889117
-#> [11]  -3.68326289
+#>  [1]   0.81230653   0.98402949   0.33299644 -28.54786243   1.21680284
+#>  [6]   1.00000000   0.82182582  -0.03502889   3.00303510   1.01622971
+#> [11]   1.23106237
 ```
 
 ### Vignette
@@ -161,19 +161,22 @@ The [`crew`](https://cran.r-project.org/package=crew) package is a
 distributed worker-launcher extending {mirai} to different distributed
 computing platforms, from traditional clusters to cloud services.
 
-[`crew.cluster`](https://cran.r-project.org/package=crew.cluster) is a
-plug-in that enables mirai-based workflows on traditional
-high-performance computing clusters using:
+[`crew.cluster`](https://cran.r-project.org/package=crew.cluster)
+enables mirai-based workflows on traditional high-performance computing
+clusters using:
 
 - LFS
 - PBS/TORQUE
 - SGE
 - SLURM
 
+[`crew.aws.batch`](https://cran.r-project.org/package=crew.aws.batch)
+extends {mirai} to cloud computing using AWS Batch.
+
 [`targets`](https://cran.r-project.org/package=targets), a Make-like
 pipeline tool for statistics and data science, has integrated and
 adopted [`crew`](https://cran.r-project.org/package=crew) as its default
-recommended high-performance computing backend.
+high-performance computing backend.
 
 ### Use with Shiny and Plumber
 
@@ -207,21 +210,20 @@ provides an interface that facilitates deploying {mirai} for
 
 ### Use with Torch
 
-The custom serialization interface in {mirai} is accessed via the
-`serialization()` function.
+The custom serialization interface in {mirai} is accessed via
+`serialization()`.
 
-In the case of [`torch`](https://cran.r-project.org/package=torch), this
-would involve making the following call once at the start of your
-session:
+In the case of [`torch`](https://cran.r-project.org/package=torch),
+simply make the following call once at the start of your session:
 
 ``` r
 serialization(refhook = list(torch::torch_serialize, torch::torch_load))
 #> [ mirai ] serialization functions registered
 ```
 
-This allows tensors, including objects such as models, optimizers etc.
-to be used seamlessly across local and remote processes, the same as
-other R objects.
+This allows tensors, including more complex objects such as models,
+optimizers etc. to be used seamlessly across local and remote processes
+in the same way as other R objects.
 
 For more details, please refer to the relevant [vignette
 chapter](https://shikokuchuo.net/mirai/articles/mirai.html#serialization-custom-functions).

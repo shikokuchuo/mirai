@@ -145,14 +145,16 @@ This functionality fulfils a request from R-Core at R Project Sprint 2023.
 
 The [`crew`](https://cran.r-project.org/package=crew) package is a distributed worker-launcher extending {mirai} to different distributed computing platforms, from traditional clusters to cloud services.
 
-[`crew.cluster`](https://cran.r-project.org/package=crew.cluster) is a plug-in that enables mirai-based workflows on traditional high-performance computing clusters using:
+[`crew.cluster`](https://cran.r-project.org/package=crew.cluster) enables mirai-based workflows on traditional high-performance computing clusters using:
 
 - LFS
 - PBS/TORQUE
 - SGE
 - SLURM
 
-[`targets`](https://cran.r-project.org/package=targets), a Make-like pipeline tool for statistics and data science, has integrated and adopted [`crew`](https://cran.r-project.org/package=crew) as its default recommended high-performance computing backend.
+[`crew.aws.batch`](https://cran.r-project.org/package=crew.aws.batch) extends {mirai} to cloud computing using AWS Batch.
+
+[`targets`](https://cran.r-project.org/package=targets), a Make-like pipeline tool for statistics and data science, has integrated and adopted [`crew`](https://cran.r-project.org/package=crew) as its default high-performance computing backend.
 
 ### Use with Shiny and Plumber
 
@@ -175,15 +177,15 @@ Alternatively, [`crew`](https://cran.r-project.org/package=crew) provides an int
 
 ### Use with Torch
 
-The custom serialization interface in {mirai} is accessed via the `serialization()` function.
+The custom serialization interface in {mirai} is accessed via `serialization()`.
 
-In the case of [`torch`](https://cran.r-project.org/package=torch), this would involve making the following call once at the start of your session:
+In the case of [`torch`](https://cran.r-project.org/package=torch), simply make the following call once at the start of your session:
 
 ```{r torch}
 serialization(refhook = list(torch::torch_serialize, torch::torch_load))
 ```
 
-This allows tensors, including objects such as models, optimizers etc. to be used seamlessly across local and remote processes, the same as other R objects.
+This allows tensors, including more complex objects such as models, optimizers etc. to be used seamlessly across local and remote processes in the same way as other R objects.
 
 For more details, please refer to the relevant [vignette chapter](https://shikokuchuo.net/mirai/articles/mirai.html#serialization-custom-functions).
 
