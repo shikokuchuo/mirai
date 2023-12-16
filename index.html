@@ -135,15 +135,15 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]  -0.27149840  -0.99118719   0.13327599  -0.01418035   1.14534917</span></span>
-<span><span class="co">#&gt;  [6]   1.00000000   0.87309619 -70.52013145   7.50322678  -1.00889117</span></span>
-<span><span class="co">#&gt; [11]  -3.68326289</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]   0.81230653   0.98402949   0.33299644 -28.54786243   1.21680284</span></span>
+<span><span class="co">#&gt;  [6]   1.00000000   0.82182582  -0.03502889   3.00303510   1.01622971</span></span>
+<span><span class="co">#&gt; [11]   1.23106237</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]  -0.27149840  -0.99118719   0.13327599  -0.01418035   1.14534917</span></span>
-<span><span class="co">#&gt;  [6]   1.00000000   0.87309619 -70.52013145   7.50322678  -1.00889117</span></span>
-<span><span class="co">#&gt; [11]  -3.68326289</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]   0.81230653   0.98402949   0.33299644 -28.54786243   1.21680284</span></span>
+<span><span class="co">#&gt;  [6]   1.00000000   0.82182582  -0.03502889   3.00303510   1.01622971</span></span>
+<span><span class="co">#&gt; [11]   1.23106237</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="vignette">Vignette<a class="anchor" aria-label="anchor" href="#vignette"></a>
@@ -185,14 +185,15 @@
 <h3 id="use-with-crew-and-targets">Use with Crew and Targets<a class="anchor" aria-label="anchor" href="#use-with-crew-and-targets"></a>
 </h3>
 <p>The <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> package is a distributed worker-launcher extending {mirai} to different distributed computing platforms, from traditional clusters to cloud services.</p>
-<p><a href="https://cran.r-project.org/package=crew.cluster" class="external-link"><code>crew.cluster</code></a> is a plug-in that enables mirai-based workflows on traditional high-performance computing clusters using:</p>
+<p><a href="https://cran.r-project.org/package=crew.cluster" class="external-link"><code>crew.cluster</code></a> enables mirai-based workflows on traditional high-performance computing clusters using:</p>
 <ul>
 <li>LFS</li>
 <li>PBS/TORQUE</li>
 <li>SGE</li>
 <li>SLURM</li>
 </ul>
-<p><a href="https://cran.r-project.org/package=targets" class="external-link"><code>targets</code></a>, a Make-like pipeline tool for statistics and data science, has integrated and adopted <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> as its default recommended high-performance computing backend.</p>
+<p><a href="https://cran.r-project.org/package=crew.aws.batch" class="external-link"><code>crew.aws.batch</code></a> extends {mirai} to cloud computing using AWS Batch.</p>
+<p><a href="https://cran.r-project.org/package=targets" class="external-link"><code>targets</code></a>, a Make-like pipeline tool for statistics and data science, has integrated and adopted <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> as its default high-performance computing backend.</p>
 </div>
 <div class="section level3">
 <h3 id="use-with-shiny-and-plumber">Use with Shiny and Plumber<a class="anchor" aria-label="anchor" href="#use-with-shiny-and-plumber"></a>
@@ -214,12 +215,12 @@
 <div class="section level3">
 <h3 id="use-with-torch">Use with Torch<a class="anchor" aria-label="anchor" href="#use-with-torch"></a>
 </h3>
-<p>The custom serialization interface in {mirai} is accessed via the <code><a href="reference/serialization.html">serialization()</a></code> function.</p>
-<p>In the case of <a href="https://cran.r-project.org/package=torch" class="external-link"><code>torch</code></a>, this would involve making the following call once at the start of your session:</p>
+<p>The custom serialization interface in {mirai} is accessed via <code><a href="reference/serialization.html">serialization()</a></code>.</p>
+<p>In the case of <a href="https://cran.r-project.org/package=torch" class="external-link"><code>torch</code></a>, simply make the following call once at the start of your session:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/serialization.html">serialization</a></span><span class="op">(</span>refhook <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">torch</span><span class="fu">::</span><span class="va">torch_serialize</span>, <span class="fu">torch</span><span class="fu">::</span><span class="va">torch_load</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [ mirai ] serialization functions registered</span></span></code></pre></div>
-<p>This allows tensors, including objects such as models, optimizers etc. to be used seamlessly across local and remote processes, the same as other R objects.</p>
+<p>This allows tensors, including more complex objects such as models, optimizers etc. to be used seamlessly across local and remote processes in the same way as other R objects.</p>
 <p>For more details, please refer to the relevant <a href="https://shikokuchuo.net/mirai/articles/mirai.html#serialization-custom-functions">vignette chapter</a>.</p>
 </div>
 <div class="section level3">
