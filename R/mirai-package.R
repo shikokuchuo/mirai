@@ -129,9 +129,7 @@ registerPromisesMethods <- function(pkgname, pkgpath) {
 .command <- NULL
 .urlscheme <- NULL
 
-.timelimit <- 5000L
-.intmax <- .Machine[["integer.max"]]
-.messages <- list2env(
+.err <- list2env(
   list(
     arglen = "'args' and/or 'url' must be of length 1 or the same length",
     cluster_inactive = "cluster is no longer active",
@@ -152,6 +150,9 @@ registerPromisesMethods <- function(pkgname, pkgpath) {
   ),
   hash = TRUE
 )
+
+.intmax <- .Machine[["integer.max"]]
+.timelimit <- 5000L
 
 as.promise <- NULL
 recvData <- NULL
