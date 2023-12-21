@@ -135,15 +135,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]   0.81230653   0.98402949   0.33299644 -28.54786243   1.21680284</span></span>
-<span><span class="co">#&gt;  [6]   1.00000000   0.82182582  -0.03502889   3.00303510   1.01622971</span></span>
-<span><span class="co">#&gt; [11]   1.23106237</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  1.4630666  0.4320796  0.0724722  0.6822396  1.7682408  1.0000000</span></span>
+<span><span class="co">#&gt;  [7]  0.5655338  1.4657608 13.7983949  2.3143884  0.6834959</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]   0.81230653   0.98402949   0.33299644 -28.54786243   1.21680284</span></span>
-<span><span class="co">#&gt;  [6]   1.00000000   0.82182582  -0.03502889   3.00303510   1.01622971</span></span>
-<span><span class="co">#&gt; [11]   1.23106237</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  1.4630666  0.4320796  0.0724722  0.6822396  1.7682408  1.0000000</span></span>
+<span><span class="co">#&gt;  [7]  0.5655338  1.4657608 13.7983949  2.3143884  0.6834959</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="vignette">Vignette<a class="anchor" aria-label="anchor" href="#vignette"></a>
@@ -164,7 +162,7 @@
 <div class="section level3">
 <h3 id="use-with-parallel-and-foreach">Use with Parallel and Foreach<a class="anchor" aria-label="anchor" href="#use-with-parallel-and-foreach"></a>
 </h3>
-<p>{mirai} provides an alternative communications backend for R’s base ‘parallel’ package.</p>
+<p>{mirai} provides an alternative communications backend for R’s base ‘parallel’ package. This fulfils a request from R-Core at R Project Sprint 2023.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_cluster.html">make_cluster</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">cl</span></span>
@@ -179,7 +177,6 @@
 <li><code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parallel::parLapplyLB()</a></code></li>
 </ul>
 <p>A ‘miraiCluster’ may also be registered for use with the <a href="https://cran.r-project.org/package=foreach" class="external-link"><code>foreach</code></a> package by <a href="https://cran.r-project.org/package=doParallel" class="external-link"><code>doParallel</code></a>.</p>
-<p>This functionality fulfils a request from R-Core at R Project Sprint 2023.</p>
 </div>
 <div class="section level3">
 <h3 id="use-with-crew-and-targets">Use with Crew and Targets<a class="anchor" aria-label="anchor" href="#use-with-crew-and-targets"></a>

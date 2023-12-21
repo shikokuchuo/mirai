@@ -75,8 +75,8 @@
     <h2>Arguments</h2>
     <dl><dt>.expr</dt>
 <dd><p>an expression to evaluate asynchronously (of arbitrary length,
-wrapped in {} if necessary), <strong>or</strong> a language object passed by
-<a href="https://rdrr.io/r/base/name.html" class="external-link">name</a>.</p></dd>
+wrapped in { } where necessary), <strong>or</strong> a language object passed
+by <a href="https://rdrr.io/r/base/name.html" class="external-link">name</a>.</p></dd>
 
 
 <dt>...</dt>
@@ -119,8 +119,7 @@ different resources).</p></dd>
     'mirai' has yet to resolve and FALSE otherwise. This is suitable for use
     in control flow statements such as <code>while</code> or <code>if</code>.</p>
 <p>Alternatively, to call (and wait for) the result, use <code><a href="call_mirai.html">call_mirai</a></code>
-    on the returned mirai. This will block until the result is returned
-    (although interruptible with e.g. ctrl+c).</p>
+    on the returned mirai. This will block until the result is returned.</p>
 <p>The expression '.expr' will be evaluated in a separate R process in a
     clean environment, which is not the global environment, consisting only
     of the named objects passed as '...' and/or the list supplied to '.args'.</p>
