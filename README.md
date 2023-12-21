@@ -88,9 +88,8 @@ result.
 
 ``` r
 m$data
-#>  [1]   0.81230653   0.98402949   0.33299644 -28.54786243   1.21680284
-#>  [6]   1.00000000   0.82182582  -0.03502889   3.00303510   1.01622971
-#> [11]   1.23106237
+#>  [1]  1.4630666  0.4320796  0.0724722  0.6822396  1.7682408  1.0000000
+#>  [7]  0.5655338  1.4657608 13.7983949  2.3143884  0.6834959
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -98,9 +97,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]   0.81230653   0.98402949   0.33299644 -28.54786243   1.21680284
-#>  [6]   1.00000000   0.82182582  -0.03502889   3.00303510   1.01622971
-#> [11]   1.23106237
+#>  [1]  1.4630666  0.4320796  0.0724722  0.6822396  1.7682408  1.0000000
+#>  [7]  0.5655338  1.4657608 13.7983949  2.3143884  0.6834959
 ```
 
 ### Vignette
@@ -130,7 +128,8 @@ vignette("mirai", package = "mirai")
 ### Use with Parallel and Foreach
 
 {mirai} provides an alternative communications backend for R’s base
-‘parallel’ package.
+‘parallel’ package. This fulfils a request from R-Core at R Project
+Sprint 2023.
 
 ``` r
 cl <- make_cluster(4)
@@ -151,9 +150,6 @@ with all ‘parallel’ functions such as:
 A ‘miraiCluster’ may also be registered for use with the
 [`foreach`](https://cran.r-project.org/package=foreach) package by
 [`doParallel`](https://cran.r-project.org/package=doParallel).
-
-This functionality fulfils a request from R-Core at R Project Sprint
-2023.
 
 ### Use with Crew and Targets
 

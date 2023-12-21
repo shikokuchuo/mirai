@@ -124,7 +124,7 @@ vignette("mirai", package = "mirai")
 
 ### Use with Parallel and Foreach
 
-{mirai} provides an alternative communications backend for R's base 'parallel' package.
+{mirai} provides an alternative communications backend for R's base 'parallel' package. This fulfils a request from R-Core at R Project Sprint 2023.
 
 ```{r cluster}
 cl <- make_cluster(4)
@@ -138,8 +138,6 @@ cl
 - `parallel::parLapplyLB()`
 
 A 'miraiCluster' may also be registered for use with the [`foreach`](https://cran.r-project.org/package=foreach) package by [`doParallel`](https://cran.r-project.org/package=doParallel).
-
-This functionality fulfils a request from R-Core at R Project Sprint 2023.
 
 ### Use with Crew and Targets
 
@@ -188,10 +186,6 @@ serialization(refhook = list(torch::torch_serialize, torch::torch_load))
 This allows tensors, including more complex objects such as models, optimizers etc. to be used seamlessly across local and remote processes in the same way as other R objects.
 
 For more details, please refer to the relevant [vignette chapter](https://shikokuchuo.net/mirai/articles/mirai.html#serialization-custom-functions).
-
-```{r, include = FALSE}
-daemons(0L)
-```
 
 ### Thanks
 

@@ -24,8 +24,8 @@
 #'     once complete.
 #'
 #' @param .expr an expression to evaluate asynchronously (of arbitrary length,
-#'     wrapped in \{\} if necessary), \strong{or} a language object passed by
-#'     \link{name}.
+#'     wrapped in \{ \} where necessary), \strong{or} a language object passed
+#'     by \link{name}.
 #' @param ... (optional) named arguments (name = value pairs) specifying
 #'     objects referenced in '.expr'. Used in addition to, and taking precedence
 #'     over, any arguments specified via '.args'.
@@ -52,8 +52,7 @@
 #'     in control flow statements such as \code{while} or \code{if}.
 #'
 #'     Alternatively, to call (and wait for) the result, use \code{\link{call_mirai}}
-#'     on the returned mirai. This will block until the result is returned
-#'     (although interruptible with e.g. ctrl+c).
+#'     on the returned mirai. This will block until the result is returned.
 #'
 #'     The expression '.expr' will be evaluated in a separate R process in a
 #'     clean environment, which is not the global environment, consisting only

@@ -8,8 +8,8 @@ everywhere(.expr, ..., .args = list(), .compute = "default")
 }
 \arguments{
 \item{.expr}{an expression to evaluate asynchronously (of arbitrary length,
-wrapped in \{\} if necessary), \strong{or} a language object passed by
-\link{name}.}
+wrapped in \{ \} where necessary), \strong{or} a language object passed
+by \link{name}.}
 
 \item{...}{(optional) named arguments (name = value pairs) specifying
 objects referenced in '.expr'. Used in addition to, and taking precedence
