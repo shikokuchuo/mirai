@@ -88,8 +88,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  1.4630666  0.4320796  0.0724722  0.6822396  1.7682408  1.0000000
-#>  [7]  0.5655338  1.4657608 13.7983949  2.3143884  0.6834959
+#>  [1] 0.2390802 1.0470625 2.8110633 0.1733852 1.6094568 1.0000000 0.6213276
+#>  [8] 5.7675056 0.3557373 0.9550528 4.1826971
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -97,8 +97,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  1.4630666  0.4320796  0.0724722  0.6822396  1.7682408  1.0000000
-#>  [7]  0.5655338  1.4657608 13.7983949  2.3143884  0.6834959
+#>  [1] 0.2390802 1.0470625 2.8110633 0.1733852 1.6094568 1.0000000 0.6213276
+#>  [8] 5.7675056 0.3557373 0.9550528 4.1826971
 ```
 
 ### Vignette
@@ -127,9 +127,10 @@ vignette("mirai", package = "mirai")
 
 ### Use with Parallel and Foreach
 
-{mirai} provides an alternative communications backend for R’s base
-‘parallel’ package. This fulfils a request from R-Core at R Project
-Sprint 2023.
+Implementing a low-level feature request by R-Core at [R Project Sprint
+2023](https://contributor.r-project.org/r-project-sprint-2023/), {mirai}
+provides an alternative communications backend for R’s ‘parallel’ base
+package.
 
 ``` r
 cl <- make_cluster(4)
@@ -239,10 +240,8 @@ the high performance computing requirements of
 and incisive insights leading to the interface accepting broader usage
 patterns.
 
-[Luke Tierney](https://github.com/ltierney/), R Core, for discussing (at
-[R Project Sprint
-2023](https://contributor.r-project.org/r-project-sprint-2023/)) R’s
-implementation of L’Ecuyer-CMRG streams, used to ensure statistical
+[Luke Tierney](https://github.com/ltierney/), R Core, for discussion on
+R’s implementation of L’Ecuyer-CMRG streams, used to ensure statistical
 independence in parallel processing.
 
 [Daniel Falbel](https://github.com/dfalbel/), for discussion around an

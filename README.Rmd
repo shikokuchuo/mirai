@@ -124,7 +124,7 @@ vignette("mirai", package = "mirai")
 
 ### Use with Parallel and Foreach
 
-{mirai} provides an alternative communications backend for R's base 'parallel' package. This fulfils a request from R-Core at R Project Sprint 2023.
+Implementing a low-level feature request by R-Core at [R Project Sprint 2023](https://contributor.r-project.org/r-project-sprint-2023/), {mirai} provides an alternative communications backend for R's 'parallel' base package.
 
 ```{r cluster}
 cl <- make_cluster(4)
@@ -195,7 +195,7 @@ We would like to thank in particular:
 
 [Henrik Bengtsson](https://github.com/HenrikBengtsson/), for valuable and incisive insights leading to the interface accepting broader usage patterns.
 
-[Luke Tierney](https://github.com/ltierney/), R Core, for discussing (at [R Project Sprint 2023](https://contributor.r-project.org/r-project-sprint-2023/)) R's implementation of L'Ecuyer-CMRG streams, used to ensure statistical independence in parallel processing.
+[Luke Tierney](https://github.com/ltierney/), R Core, for discussion on R's implementation of L'Ecuyer-CMRG streams, used to ensure statistical independence in parallel processing.
 
 [Daniel Falbel](https://github.com/dfalbel/), for discussion around an efficient solution to serialization and transmission of [`torch`](https://cran.r-project.org/package=torch) tensors.
 
