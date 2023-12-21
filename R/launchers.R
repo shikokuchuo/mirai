@@ -250,28 +250,31 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #' @examples
 #' ssh_config(remotes = c("ssh://10.75.32.90:222", "ssh://nodename"), timeout = 10)
 #'
+#' \dontrun{
+#'
 #' # launch 2 daemons on the remote machines 10.75.32.90 and 10.75.32.91 using
 #' # SSH, connecting back directly to the host URL over a TLS connection:
-#' #
-#' # daemons(
-#' #   url = host_url(tls = TRUE),
-#' #   remote = ssh_config(
-#' #     remotes = c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"),
-#' #     timeout = 1
-#' #   )
-#' # )
+#'
+#' daemons(
+#'   url = host_url(tls = TRUE),
+#'   remote = ssh_config(
+#'     remotes = c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"),
+#'     timeout = 1
+#'   )
+#' )
 #'
 #' # launch 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling over
 #' # port 5555 ('url' hostname must be 'localhost' or '127.0.0.1'):
-#' #
-#' # make_cluster(
-#' #   url = "tcp://localhost:5555",
-#' #   remote = ssh_config(
-#' #     remotes = c("ssh://10.75.32.90", "ssh://10.75.32.90"),
-#' #     timeout = 1,
-#' #     tunnel = TRUE
-#' #   )
-#' # )
+#'
+#' cl <- make_cluster(
+#'   url = "tcp://localhost:5555",
+#'   remote = ssh_config(
+#'     remotes = c("ssh://10.75.32.90", "ssh://10.75.32.90"),
+#'     timeout = 1,
+#'     tunnel = TRUE
+#'   )
+#' )
+#' }
 #'
 #' @rdname remote_config
 #' @export
