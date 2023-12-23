@@ -20,12 +20,12 @@ for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on
 local or network resources, resolving automatically upon completion.
 <br /><br /> `mirai()` returns a ‘mirai’ object immediately. ‘mirai’
 (未来 みらい) is Japanese for ‘future’. <br /><br /> Efficient
-scheduling over fast inter-process communications or secure TLS over
-TCP/IP connections, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen).
-<br /><br /> {mirai} has a tiny pure R code base, relying solely on
-[`nanonext`](https://doi.org/10.5281/zenodo.7903429), a high-performance
-binding for the ‘NNG’ (Nanomsg Next Gen) C library with zero package
-dependencies. <br /><br />
+scheduling over fast inter-process communications or secure TLS
+connections over TCP/IP, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next
+Gen). <br /><br /> {mirai} has a tiny pure R code base, relying solely
+on [`nanonext`](https://doi.org/10.5281/zenodo.7903429), a
+high-performance binding for the ‘NNG’ (Nanomsg Next Gen) C library with
+zero package dependencies. <br /><br />
 
 ### Installation
 
@@ -56,7 +56,7 @@ m <- mirai(
     res <- rnorm(x) + y ^ 2
     res / rev(res)
   },
-  x = 11,
+  x = 10,
   y = runif(1)
 )
 
@@ -88,8 +88,8 @@ result.
 
 ``` r
 m$data
-#>  [1] 0.2390802 1.0470625 2.8110633 0.1733852 1.6094568 1.0000000 0.6213276
-#>  [8] 5.7675056 0.3557373 0.9550528 4.1826971
+#>  [1] -0.67343605 -0.20497828 50.37872905  1.48134108  0.37001452  2.70259664
+#>  [7]  0.67506398  0.01984965 -4.87856556 -1.48492199
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -97,8 +97,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] 0.2390802 1.0470625 2.8110633 0.1733852 1.6094568 1.0000000 0.6213276
-#>  [8] 5.7675056 0.3557373 0.9550528 4.1826971
+#>  [1] -0.67343605 -0.20497828 50.37872905  1.48134108  0.37001452  2.70259664
+#>  [7]  0.67506398  0.01984965 -4.87856556 -1.48492199
 ```
 
 ### Vignette

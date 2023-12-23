@@ -19,8 +19,9 @@
 #' Lightweight parallel code execution and distributed computing. Designed for
 #'     simplicity, a 'mirai' evaluates an R expression asynchronously, on local
 #'     or network resources, resolving automatically upon completion. Efficient
-#'     scheduling over fast inter-process communications or secure TLS over
-#'     TCP/IP connections, built on 'nanonext' and 'NNG' (Nanomsg Next Gen).
+#'     scheduling over fast inter-process communications or secure TLS
+#'     connections over TCP/IP, built on 'nanonext' and 'NNG' (Nanomsg Next
+#'     Gen).
 #'
 #' @section Notes:
 #'
