@@ -56,7 +56,7 @@
 #'     send_aio socket stat stop_aio strcat tls_config unresolved until wait
 #'     write_cert
 #' @importFrom parallel nextRNGStream stopCluster
-#' @importFrom stats rexp
+#' @importFrom stats rsignrank
 #'
 #' @docType package
 #' @name mirai-package

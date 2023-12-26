@@ -153,7 +153,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
                      error = mk_mirai_error, interrupt = mk_interrupt_error)
     count <- count + 1L
 
-    { count >= maxtasks || count > timerstart && mclock() - start >= walltime } && {
+    (count >= maxtasks || count > timerstart && mclock() - start >= walltime) && {
       next_config(mark = TRUE)
       send(ctx, data = data, mode = 3L)
       aio <- recv_aio_signal(ctx, cv = cv, mode = 8L)
