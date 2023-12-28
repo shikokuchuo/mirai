@@ -132,7 +132,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
       close(devnull)
     }, add = TRUE)
   }
-  `[[<-`(`[[<-`(`[[<-`(., "op", .Options), "se", search()), "vars", ".Random.seed")
+  `[[<-`(`[[<-`(`[[<-`(., "op", .Options), "se", search()), "vars", names(.GlobalEnv))
   count <- 0L
   start <- mclock()
 
