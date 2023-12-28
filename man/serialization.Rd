@@ -7,23 +7,24 @@
 serialization(refhook = list())
 }
 \arguments{
-\item{refhook}{\strong{either} a list of two functions: the signature for the
-first must accept a list of external pointer type objects and return a
-raw vector, e.g. \code{torch::torch_serialize}, and the second must
-accept a raw vector and return a list of external pointer type objects,
-e.g. \code{torch::torch_load},\cr \strong{or else} NULL to reset.}
+\item{refhook}{\strong{either} a list or pairlist of two functions: the
+signature for the first must accept a list of external pointer type
+objects and return a raw vector, e.g. \code{torch::torch_serialize}, and
+the second must accept a raw vector and return a list of external pointer
+type objects, e.g. \code{torch::torch_load},\cr \strong{or else} NULL to
+reset.}
 }
 \value{
-Invisibly, a list comprising the currently-registered 'refhook'
-    functions. If functions are successfully registered or reset, a message
-    is printed to the console.
+Invisibly, the pairlist of currently-registered 'refhook' functions.
+    A message is printed to the console when functions are successfully
+    registered or reset.
 }
 \description{
 Registers custom serialization and unserialization functions for sending and
     receiving external pointer reference objects.
 }
 \details{
-Calling without any arguments returns a list of the
+Calling without any arguments returns the pairlist of
     currently-registered 'refhook' functions.
 
     This function may be called prior to or after setting daemons, with the

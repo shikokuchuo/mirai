@@ -1,7 +1,8 @@
-# mirai 0.11.3.9000 (development)
+# mirai 0.11.3.9001 (development)
 
 * `daemon()` argument 'autoexit' now accepts a signal value such as `tools::SIGINT` in order to raise it upon exit.
-* Requires nanonext >= [0.11.0.9000].
+* Eliminates potential memory leaks along certain error paths.
+* Requires nanonext >= [0.11.0.9001].
 
 # mirai 0.11.3
 
