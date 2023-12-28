@@ -1,6 +1,6 @@
 # mirai 0.11.3.9002 (development)
 
-* Adds `local_url()` helper function to construct a random URL for inter-process communications on the local machine.
+* Adds `local_url()` helper to construct a random inter-process communications URL for local daemons (thanks @noamross #90).
 * `daemon()` argument 'autoexit' now accepts a signal value such as `tools::SIGINT` in order to raise it upon exit.
 * Eliminates potential memory leaks along certain error paths.
 * Requires nanonext >= [0.11.0.9001].
