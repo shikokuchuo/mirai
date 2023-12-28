@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.3.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.3.9001</span>
       </span>
     </div>
 
@@ -70,24 +70,25 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>refhook</dt>
-<dd><p><strong>either</strong> a list of two functions: the signature for the
-first must accept a list of external pointer type objects and return a
-raw vector, e.g. <code>torch::torch_serialize</code>, and the second must
-accept a raw vector and return a list of external pointer type objects,
-e.g. <code>torch::torch_load</code>,<br><strong>or else</strong> NULL to reset.</p></dd>
+<dd><p><strong>either</strong> a list or pairlist of two functions: the
+signature for the first must accept a list of external pointer type
+objects and return a raw vector, e.g. <code>torch::torch_serialize</code>, and
+the second must accept a raw vector and return a list of external pointer
+type objects, e.g. <code>torch::torch_load</code>,<br><strong>or else</strong> NULL to
+reset.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     
 
-<p>Invisibly, a list comprising the currently-registered 'refhook'
-    functions. If functions are successfully registered or reset, a message
-    is printed to the console.</p>
+<p>Invisibly, the pairlist of currently-registered 'refhook' functions.
+    A message is printed to the console when functions are successfully
+    registered or reset.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Calling without any arguments returns a list of the
+    <p>Calling without any arguments returns the pairlist of
     currently-registered 'refhook' functions.</p>
 <p>This function may be called prior to or after setting daemons, with the
     registered functions applying across all compute profiles.</p>
@@ -100,7 +101,7 @@ e.g. <code>torch::torch_load</code>,<br><strong>or else</strong> NULL to reset.<
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">serialization</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function(x) serialize(x, NULL)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55baf2dc44a0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x56253c243448&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (connection, refhook = NULL) </span>
@@ -110,7 +111,7 @@ e.g. <code>torch::torch_load</code>,<br><strong>or else</strong> NULL to reset.<
 <span class="r-out co"><span class="r-pr">#&gt;</span>         stop("'connection' must be a connection")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     .Internal(unserialize(connection, refhook))</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55baf2df8c20&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x56253c2751f0&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:base&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">serialization</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
