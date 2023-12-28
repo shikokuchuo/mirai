@@ -307,9 +307,9 @@ ssh_config <- function(remotes, timeout = 5, tunnel = FALSE, command = "ssh", rs
 
 }
 
-#' Host URL Constructor
+#' URL Constructors
 #'
-#' Automatically constructs a valid host URL (at which daemons may connect)
+#' \code{host_url} constructs a valid host URL (at which daemons may connect)
 #'     based on the computer's hostname. This may be supplied directly to the
 #'     'url' argument of \code{\link{daemons}}.
 #'
@@ -321,12 +321,17 @@ ssh_config <- function(remotes, timeout = 5, tunnel = FALSE, command = "ssh", rs
 #'     connections from the network addresses the daemons are connecting from.
 #'     '0' is a wildcard value that automatically assigns a free ephemeral port.
 #'
-#' @return A character string comprising a valid host URL.
+#' @return A character string comprising a valid URL.
 #'
-#' @details This implementation relies on using the host name of the computer
+#' @details \code{host_url} relies on using the host name of the computer
 #'     rather than an IP address and typically works on local networks, although
 #'     this is not always guaranteed. If unsuccessful, substitute an IPv4 or
 #'     IPv6 address in place of the hostname.
+#'
+#'     \code{local_url} generates a random URL for the platform's default
+#'     inter-process communications transport: abstract Unix domain sockets on
+#'     Linux, Unix domain sockets on MacOS, Solaris and other POSIX platforms,
+#'     and named pipes on Windows.
 #'
 #' @examples
 #' host_url()
@@ -343,6 +348,18 @@ host_url <- function(ws = FALSE, tls = FALSE, port = 0)
     Sys.info()[["nodename"]],
     as.character(port)
   )
+
+#' URL Constructors
+#'
+#' \code{local_url} constructs a random URL suitable for local daemons.
+#'
+#' @examples
+#' local_url()
+#'
+#' @rdname host_url
+#' @export
+#'
+local_url <- function() strcat(.urlscheme, random(12L))
 
 #' @export
 #'

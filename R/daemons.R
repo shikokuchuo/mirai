@@ -281,7 +281,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       if (dispatcher) {
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
         if (length(tls)) tls_config(server = tls, pass = pass)
-        urld <- auto_tokenized_url()
+        urld <- local_url()
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld, resend = 0L)
         sockc <- req_socket(urlc, resend = 0L)
@@ -319,7 +319,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
 
       n > 0L || stop(._[["n_zero"]])
       envir <- new.env(hash = FALSE, parent = ..)
-      urld <- auto_tokenized_url()
+      urld <- local_url()
       cv <- cv()
       create_stream(n = n, seed = seed, envir = envir)
       if (dispatcher) {
@@ -486,9 +486,7 @@ create_stream <- function(n, seed, envir) {
   `[[<-`(.GlobalEnv, ".Random.seed", oseed)
 }
 
-auto_tokenized_url <- function() strcat(.urlscheme, random(12L))
-
-new_tokenized_url <- function(url) sprintf("%s/%s", url, random(12L))
+tokenized_url <- function(url) sprintf("%s/%s", url, random(12L))
 
 req_socket <- function(url, tls = NULL, resend = .intmax)
   `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", resend)

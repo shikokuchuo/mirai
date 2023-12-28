@@ -2,9 +2,12 @@
 % Please edit documentation in R/launchers.R
 \name{host_url}
 \alias{host_url}
-\title{Host URL Constructor}
+\alias{local_url}
+\title{URL Constructors}
 \usage{
 host_url(ws = FALSE, tls = FALSE, port = 0)
+
+local_url()
 }
 \arguments{
 \item{ws}{[default FALSE] logical value whether to use a WebSockets 'ws://'
@@ -18,23 +21,32 @@ connections from the network addresses the daemons are connecting from.
 '0' is a wildcard value that automatically assigns a free ephemeral port.}
 }
 \value{
-A character string comprising a valid host URL.
+A character string comprising a valid URL.
 }
 \description{
-Automatically constructs a valid host URL (at which daemons may connect)
+\code{host_url} constructs a valid host URL (at which daemons may connect)
     based on the computer's hostname. This may be supplied directly to the
     'url' argument of \code{\link{daemons}}.
+
+\code{local_url} constructs a random URL suitable for local daemons.
 }
 \details{
-This implementation relies on using the host name of the computer
+\code{host_url} relies on using the host name of the computer
     rather than an IP address and typically works on local networks, although
     this is not always guaranteed. If unsuccessful, substitute an IPv4 or
     IPv6 address in place of the hostname.
+
+    \code{local_url} generates a random URL for the platform's default
+    inter-process communications transport: abstract Unix domain sockets on
+    Linux, Unix domain sockets on MacOS, Solaris and other POSIX platforms,
+    and named pipes on Windows.
 }
 \examples{
 host_url()
 host_url(ws = TRUE)
 host_url(tls = TRUE)
 host_url(ws = TRUE, tls = TRUE, port = 5555)
+
+local_url()
 
 }

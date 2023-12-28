@@ -96,7 +96,7 @@ if (connection) {
 if (connection && .Platform[["OS.type"]] != "windows") {
   nanotest(is.character(launch_remote("ws://[::1]:5555", remote = remote_config(command = "echo", args = list(c("Test out:", ".", ">/dev/null")), rscript = "/usr/lib/R/bin/Rscript"))))
   nanotest(is.character(launch_remote("tcp://localhost:5555", remote = ssh_config(remotes = c("ssh://remotehost", "ssh://remotenode"), tunnel = TRUE, command = "echo"))))
-  nanotest(daemons(url = value <- mirai:::auto_tokenized_url(), dispatcher = FALSE) == value)
+  nanotest(daemons(url = value <- local_url(), dispatcher = FALSE) == value)
   nanotest(grepl("://", launch_remote(status()$daemons), fixed = TRUE))
   nanotestn(launch_local(nextget("urls")))
   if (requireNamespace("promises", quietly = TRUE)) {
@@ -106,7 +106,7 @@ if (connection && .Platform[["OS.type"]] != "windows") {
   Sys.sleep(1L)
   nanotestz(daemons(NULL))
   Sys.sleep(1L)
-  nanotestn(launch_local(mirai:::auto_tokenized_url(), .compute = "test"))
+  nanotestn(launch_local(local_url(), .compute = "test"))
   Sys.sleep(1L)
   nanotest(daemons(n = 2L, url = value <- "ws://:0", dispatcher = FALSE, remote = remote_config()) != value)
   nanotestz(daemons(0L))
@@ -167,10 +167,10 @@ if (connection) {
 }
 # additional parallel cluster tests
 if (connection && .Platform[["OS.type"]] != "windows") {
-  nanotestp(cl <- make_cluster(url = mirai:::auto_tokenized_url()))
+  nanotestp(cl <- make_cluster(url = local_url()))
   nanotestn(stopCluster(cl))
   Sys.sleep(1L)
-  nanotestp(cl <- make_cluster(n = 1, url = mirai:::auto_tokenized_url(), remote = remote_config()))
+  nanotestp(cl <- make_cluster(n = 1, url = local_url(), remote = remote_config()))
   nanotestn(stopCluster(cl))
   Sys.sleep(1L)
 }

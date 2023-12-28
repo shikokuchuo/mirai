@@ -108,7 +108,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
       if (vectorised) url[i] else
         if (is.null(ports)) sprintf("%s/%d", url, i) else
           sub(ports[1L], ports[i], url, fixed = TRUE)
-    nurl <- if (auto) auto_tokenized_url() else if (token) new_tokenized_url(burl) else burl
+    nurl <- if (auto) local_url() else if (token) tokenized_url(burl) else burl
     ncv <- cv()
     nsock <- req_socket(NULL)
     pipe_notify(nsock, cv = ncv, cv2 = cv, add = TRUE, remove = TRUE)
@@ -167,7 +167,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           if (i > 0L && !activevec[[i]]) {
             reap(attr(servers[[i]], "listener")[[1L]])
             attr(servers[[i]], "listener") <- NULL
-            data <- servernames[i] <- if (auto) auto_tokenized_url() else new_tokenized_url(basenames[i])
+            data <- servernames[i] <- if (auto) local_url() else tokenized_url(basenames[i])
             instance[i] <- -abs(instance[i])
             listen(servers[[i]], url = data, tls = tls, error = TRUE)
 
@@ -177,7 +177,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
             servers[[i]] <- nsock <- req_socket(NULL)
             pipe_notify(nsock, cv = active[[i]], cv2 = cv, add = TRUE, remove = TRUE)
             lock(nsock, cv = active[[i]])
-            data <- servernames[i] <- if (auto) auto_tokenized_url() else new_tokenized_url(basenames[i])
+            data <- servernames[i] <- if (auto) local_url() else tokenized_url(basenames[i])
             instance[i] <- -abs(instance[i])
             listen(nsock, url = data, tls = tls, error = TRUE)
 
