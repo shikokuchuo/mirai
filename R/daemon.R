@@ -132,7 +132,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
       close(devnull)
     }, add = TRUE)
   }
-  `[[<-`(`[[<-`(`[[<-`(., "op", .Options), "se", search()), "vars", ".Random.seed")
+  snapshot()
   count <- 0L
   start <- mclock()
 
@@ -212,3 +212,6 @@ perform_cleanup <- function(cleanup) {
   if (cleanup[3L]) options(.[["op"]])
   if (cleanup[4L]) gc(verbose = FALSE)
 }
+
+snapshot <- function() `[[<-`(`[[<-`(`[[<-`(., "op", .Options), "se", search()), "vars", names(.GlobalEnv))
+
