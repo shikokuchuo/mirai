@@ -460,8 +460,6 @@ mk_mirai_error <- function(e) {
   `class<-`(msg, c("miraiError", "errorValue", "try-error"))
 }
 
-snapshot <- function() `[[<-`(`[[<-`(`[[<-`(., 'vars', names(.GlobalEnv)), 'se', search()), 'op', .Options)
-
 .interrupt_error <- `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))
 .snapshot <- expression(mirai:::snapshot())
 .timedelay <- expression(nanonext::msleep(500L))
