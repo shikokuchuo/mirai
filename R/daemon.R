@@ -214,4 +214,3 @@ perform_cleanup <- function(cleanup) {
 }
 
 snapshot <- function() `[[<-`(`[[<-`(`[[<-`(., "op", .Options), "se", search()), "vars", names(.GlobalEnv))
-

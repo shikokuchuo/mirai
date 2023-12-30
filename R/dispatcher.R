@@ -101,7 +101,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
   }
 
   envir <- new.env(hash = FALSE)
-  if (length(rs)) `[[<-`(envir, "stream", as.integer(rs))
+  if (is.numeric(rs)) `[[<-`(envir, "stream", as.integer(rs))
 
   for (i in seq_n) {
     burl <- if (auto) .urlscheme else

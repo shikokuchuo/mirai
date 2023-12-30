@@ -97,11 +97,11 @@
 make_cluster <- function(n, url = NULL, remote = NULL, ...) {
 
   id <- sprintf("`%d`", length(..))
+  cv2 <- cv()
 
   if (is.character(url)) {
 
     length(url) == 1L || stop(._[["single_url"]])
-    cv2 <- cv()
     daemons(url = url, remote = remote, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
 
     if (length(remote)) {
@@ -117,7 +117,6 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
   } else {
     is.numeric(n) || stop(._[["numeric_n"]])
     n >= 1L || stop(._[["n_one"]])
-    cv2 <- cv()
     daemons(n = n, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
   }
 
@@ -159,12 +158,10 @@ sendData.miraiNode <- function(node, data) {
 
   value <- data[["data"]]
   tagged <- !is.null(value[["tag"]])
-  tagged && { envir[["swapped"]] || cv_swap(envir, TRUE) } || { envir[["swapped"]] && cv_swap(envir, FALSE) }
+  tagged && (envir[["swapped"]] || cv_swap(envir, TRUE)) || (envir[["swapped"]] && cv_swap(envir, FALSE))
 
   m <- mirai(do.call(node, data, quote = TRUE), node = value[["fun"]], data = value[["args"]], .compute = id)
-
   if (tagged) assign("tag", value[["tag"]], m)
-
   `[[<-`(node, "mirai", m)
 
 }
