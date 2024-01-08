@@ -45,7 +45,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.3.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.3.9004</span>
       </span>
     </div>
 
@@ -121,8 +121,7 @@
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">m</span></span>
-<span><span class="co">#&gt; &lt; mirai &gt;</span></span>
-<span><span class="co">#&gt;  - $data for evaluated result</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt; mirai | $data &gt;</span></span></code></pre></div>
 <p>Above, all specified <code>name = value</code> pairs are passed through to the ‘mirai’.</p>
 <p>The ‘mirai’ yields an ‘unresolved’ logical NA whilst the async operation is ongoing.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -135,13 +134,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -0.67343605 -0.20497828 50.37872905  1.48134108  0.37001452  2.70259664</span></span>
-<span><span class="co">#&gt;  [7]  0.67506398  0.01984965 -4.87856556 -1.48492199</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] -0.4556118  1.3715484 -8.0198664  1.5971891 -2.0078760 -0.4980387</span></span>
+<span><span class="co">#&gt;  [7]  0.6260999 -0.1246904  0.7291030 -2.1948512</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -0.67343605 -0.20497828 50.37872905  1.48134108  0.37001452  2.70259664</span></span>
-<span><span class="co">#&gt;  [7]  0.67506398  0.01984965 -4.87856556 -1.48492199</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] -0.4556118  1.3715484 -8.0198664  1.5971891 -2.0078760 -0.4980387</span></span>
+<span><span class="co">#&gt;  [7]  0.6260999 -0.1246904  0.7291030 -2.1948512</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="vignette">Vignette<a class="anchor" aria-label="anchor" href="#vignette"></a>
@@ -166,10 +165,7 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_cluster.html">make_cluster</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">cl</span></span>
-<span><span class="co">#&gt; &lt; miraiCluster &gt;</span></span>
-<span><span class="co">#&gt;  - cluster ID: `0`</span></span>
-<span><span class="co">#&gt;  - nodes: 4</span></span>
-<span><span class="co">#&gt;  - active: TRUE</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt; miraiCluster | ID: `0` nodes: 4 active: TRUE &gt;</span></span></code></pre></div>
 <p><code><a href="reference/make_cluster.html">make_cluster()</a></code> creates a ‘miraiCluster’, a cluster fully compatible with all ‘parallel’ functions such as:</p>
 <ul>
 <li><code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parallel::clusterApply()</a></code></li>
@@ -216,7 +212,7 @@
 <p>In the case of <a href="https://cran.r-project.org/package=torch" class="external-link"><code>torch</code></a>, simply make the following call once at the start of your session:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/serialization.html">serialization</a></span><span class="op">(</span>refhook <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">torch</span><span class="fu">::</span><span class="va">torch_serialize</span>, <span class="fu">torch</span><span class="fu">::</span><span class="va">torch_load</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [ mirai ] serialization functions registered</span></span></code></pre></div>
+<span><span class="co">#&gt; mirai serialization functions registered</span></span></code></pre></div>
 <p>This allows tensors, including more complex objects such as models, optimizers etc. to be used seamlessly across local and remote processes in the same way as other R objects.</p>
 <p>For more details, please refer to the relevant <a href="https://shikokuchuo.net/mirai/articles/mirai.html#serialization-custom-functions">vignette chapter</a>.</p>
 </div>
