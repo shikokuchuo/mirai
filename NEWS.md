@@ -1,10 +1,11 @@
-# mirai 0.11.3.9003 (development)
+# mirai 0.11.3.9004 (development)
 
+* More minimal print methods for 'mirai' and 'miraiCluster'.
 * Adds `local_url()` helper to construct a random inter-process communications URL for local daemons (thanks @noamross #90).
 * `daemon()` argument 'autoexit' now accepts a signal value such as `tools::SIGINT` in order to raise it upon exit.
 * `daemon()` now records the state of initial global environment objects (e.g. those created in .Rprofile) for cleanup purposes (thanks @noamross #91).
 * Eliminates potential memory leaks along certain error paths.
-* Requires nanonext >= [0.11.0.9001].
+* Requires nanonext >= [0.11.0.9010].
 
 # mirai 0.11.3
 

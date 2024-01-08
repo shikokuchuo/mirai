@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of mirai.
 #
@@ -454,9 +454,9 @@ serialization <- function(refhook = list()) {
 
   if (register) {
     if (is.list(refhook) && length(refhook) == 2L && is.function(refhook[[1L]]) && is.function(refhook[[2L]]))
-      cat("[ mirai ] serialization functions registered\n", file = stdout()) else
+      cat("mirai serialization functions registered\n", file = stdout()) else
         if (is.null(refhook))
-          cat("[ mirai ] serialization functions cancelled\n", file = stdout()) else
+          cat("mirai serialization functions cancelled\n", file = stdout()) else
             stop(._[["refhook_invalid"]])
     register_everywhere(refhook)
   }

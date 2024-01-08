@@ -61,8 +61,7 @@ m <- mirai(
 )
 
 m
-#> < mirai >
-#>  - $data for evaluated result
+#> < mirai | $data >
 ```
 
 Above, all specified `name = value` pairs are passed through to the
@@ -88,8 +87,8 @@ result.
 
 ``` r
 m$data
-#>  [1] -0.67343605 -0.20497828 50.37872905  1.48134108  0.37001452  2.70259664
-#>  [7]  0.67506398  0.01984965 -4.87856556 -1.48492199
+#>  [1] -0.4556118  1.3715484 -8.0198664  1.5971891 -2.0078760 -0.4980387
+#>  [7]  0.6260999 -0.1246904  0.7291030 -2.1948512
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -97,8 +96,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] -0.67343605 -0.20497828 50.37872905  1.48134108  0.37001452  2.70259664
-#>  [7]  0.67506398  0.01984965 -4.87856556 -1.48492199
+#>  [1] -0.4556118  1.3715484 -8.0198664  1.5971891 -2.0078760 -0.4980387
+#>  [7]  0.6260999 -0.1246904  0.7291030 -2.1948512
 ```
 
 ### Vignette
@@ -135,10 +134,7 @@ package.
 ``` r
 cl <- make_cluster(4)
 cl
-#> < miraiCluster >
-#>  - cluster ID: `0`
-#>  - nodes: 4
-#>  - active: TRUE
+#> < miraiCluster | ID: `0` nodes: 4 active: TRUE >
 ```
 
 `make_cluster()` creates a ‘miraiCluster’, a cluster fully compatible
@@ -215,7 +211,7 @@ simply make the following call once at the start of your session:
 
 ``` r
 serialization(refhook = list(torch::torch_serialize, torch::torch_load))
-#> [ mirai ] serialization functions registered
+#> mirai serialization functions registered
 ```
 
 This allows tensors, including more complex objects such as models,

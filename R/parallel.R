@@ -1,4 +1,4 @@
-# Copyright (C) 2023 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2023-2024 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of mirai.
 #
@@ -188,7 +188,7 @@ recvOneData.miraiCluster <- function(cl) {
 print.miraiCluster <- function(x, ...) {
 
   id <- attr(.subset2(x, 1L), "id")
-  cat(sprintf("< miraiCluster >\n - cluster ID: %s\n - nodes: %d\n - active: %s\n", id, length(x), as.logical(length(..[[id]]))), file = stdout())
+  cat(sprintf("< miraiCluster | ID: %s nodes: %d active: %s >\n", id, length(x), as.logical(length(..[[id]]))), file = stdout())
   invisible(x)
 
 }
@@ -197,7 +197,7 @@ print.miraiCluster <- function(x, ...) {
 #'
 print.miraiNode <- function(x, ...) {
 
-  cat(sprintf("< miraiNode >\n - node: %d\n - cluster ID: %s\n", attr(x, "node"), attr(x, "id")), file = stdout())
+  cat(sprintf("< miraiNode | node: %d cluster ID: %s >\n", attr(x, "node"), attr(x, "id")), file = stdout())
   invisible(x)
 
 }

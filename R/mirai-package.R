@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of mirai.
 #
@@ -119,6 +119,7 @@ registerPromisesMethods <- function(pkgname, pkgpath) {
     regs <- rbind(ns[[".__NAMESPACE__."]][["S3methods"]],
                   c("as.promise", "mirai", "as.promise.mirai", NA_character_))
     `[[<-`(ns[[".__NAMESPACE__."]], "S3methods", regs)
+    `[[<-`(., "later", .getNamespace("later")[["later"]])
   }
 
 }
