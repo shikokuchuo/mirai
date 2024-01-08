@@ -454,9 +454,9 @@ serialization <- function(refhook = list()) {
 
   if (register) {
     if (is.list(refhook) && length(refhook) == 2L && is.function(refhook[[1L]]) && is.function(refhook[[2L]]))
-      cat("mirai serialization functions registered\n", file = stdout()) else
+      cat("mirai serialization functions registered\n", file = stderr()) else
         if (is.null(refhook))
-          cat("mirai serialization functions cancelled\n", file = stdout()) else
+          cat("mirai serialization functions cancelled\n", file = stderr()) else
             stop(._[["refhook_invalid"]])
     register_everywhere(refhook)
   }
