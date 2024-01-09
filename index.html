@@ -134,13 +134,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] 0.2680443 1.9424505 0.9222975 0.6944308 3.2387027 0.3087656 1.4400283</span></span>
-<span><span class="co">#&gt;  [8] 1.0842488 0.5148136 3.7307269</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  0.26549241 15.18477235 -0.57375666 -0.90265239  0.57895303  1.72725582</span></span>
+<span><span class="co">#&gt;  [7] -1.10784618 -1.74289915  0.06585545  3.76658605</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] 0.2680443 1.9424505 0.9222975 0.6944308 3.2387027 0.3087656 1.4400283</span></span>
-<span><span class="co">#&gt;  [8] 1.0842488 0.5148136 3.7307269</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  0.26549241 15.18477235 -0.57375666 -0.90265239  0.57895303  1.72725582</span></span>
+<span><span class="co">#&gt;  [7] -1.10784618 -1.74289915  0.06585545  3.76658605</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
@@ -173,13 +173,12 @@
 <code class="sourceCode R"><span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_cluster.html">make_cluster</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">cl</span></span>
 <span><span class="co">#&gt; &lt; miraiCluster | ID: `0` nodes: 4 active: TRUE &gt;</span></span></code></pre></div>
-<p>A ‘miraiCluster’ is fully compatible with all ‘parallel’ functions such as <code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parallel::clusterApply()</a></code> (<a href="https://shikokuchuo.net/mirai/articles/mirai.html#parallel-clusters">further details</a>).</p>
-<p>A ‘miraiCluster’ may also be registered for use with the <a href="https://cran.r-project.org/package=foreach" class="external-link"><code>foreach</code></a> package by <a href="https://cran.r-project.org/package=doParallel" class="external-link"><code>doParallel</code></a>.</p>
+<p>A ‘miraiCluster’ is fully compatible with all ‘parallel’ functions such as <code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parallel::clusterApply()</a></code> [<a href="https://shikokuchuo.net/mirai/articles/mirai.html#parallel-clusters">further details</a>].</p>
 </div>
 <div class="section level3">
-<h3 id="asynchronous-shiny-and-plumber-backend">Asynchronous Shiny and Plumber Backend<a class="anchor" aria-label="anchor" href="#asynchronous-shiny-and-plumber-backend"></a>
+<h3 id="asynchronous-shiny-and-plumber-applications">Asynchronous Shiny and Plumber Applications<a class="anchor" aria-label="anchor" href="#asynchronous-shiny-and-plumber-applications"></a>
 </h3>
-<p>{mirai} serves as a backend for enterprise asynchronous <a href="https://cran.r-project.org/package=shiny" class="external-link"><code>shiny</code></a> or <a href="https://cran.r-project.org/package=plumber" class="external-link"><code>plumber</code></a> applications.</p>
+<p>{mirai} serves as a backend for scaling enterprise asynchronous {shiny} or {plumber} applications.</p>
 <p>A ‘mirai’ may be used interchangeably with a ‘promise’ by using the the promise pipe <code>%...&gt;%</code>, or explictly by <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">promises::as.promise()</a></code>, allowing side-effects to be performed upon asynchronous resolution of a ‘mirai’.</p>
 <p>The following example outputs “hello” to the console after one second when the ‘mirai’ resolves.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -187,16 +186,16 @@
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>; <span class="st">"hello"</span><span class="op">}</span><span class="op">)</span> <span class="op"><a href="https://rstudio.github.io/promises/reference/pipes.html" class="external-link">%...&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">p</span></span>
 <span><span class="co">#&gt; &lt;Promise [pending]&gt;</span></span></code></pre></div>
-<p>Usage examples: <a href="https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-plumber-backend">for plumber</a>.</p>
+<p>Example usage is provided for <a href="https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-shiny-applications">shiny</a> and for <a href="https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-plumber-applications">plumber</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="torch-parallelization">Torch Parallelization<a class="anchor" aria-label="anchor" href="#torch-parallelization"></a>
 </h3>
 <p>The custom serialization interface in {mirai} is accessed via <code><a href="reference/serialization.html">serialization()</a></code>.</p>
-<p>In the case of <a href="https://cran.r-project.org/package=torch" class="external-link"><code>torch</code></a>, this requires just the following call at the head of your session:</p>
+<p>In the case of {torch}, this requires just the following call at the head of your session:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/serialization.html">serialization</a></span><span class="op">(</span>refhook <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">torch</span><span class="fu">::</span><span class="va">torch_serialize</span>, <span class="fu">torch</span><span class="fu">::</span><span class="va">torch_load</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>This allows tensors, including complex objects such as models, optimizers etc. to be used seamlessly across local and remote processes in the same way as other R objects (<a href="https://shikokuchuo.net/mirai/articles/mirai.html#custom-serialization-torch-parallelization">further details</a>).</p>
+<p>This allows tensors, including complex objects such as models, optimizers etc. to be used seamlessly across local and remote processes in the same way as other R objects [<a href="https://shikokuchuo.net/mirai/articles/mirai.html#custom-serialization-torch-parallelization">further details</a>].</p>
 </div>
 <div class="section level3">
 <h3 id="thanks">Thanks<a class="anchor" aria-label="anchor" href="#thanks"></a>
