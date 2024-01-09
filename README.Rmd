@@ -136,13 +136,11 @@ cl <- make_cluster(4)
 cl
 ```
 
-A 'miraiCluster' is fully compatible with all 'parallel' functions such as `parallel::clusterApply()` ([further details](https://shikokuchuo.net/mirai/articles/mirai.html#parallel-clusters)).
-
-A 'miraiCluster' may also be registered for use with the [`foreach`](https://cran.r-project.org/package=foreach) package by [`doParallel`](https://cran.r-project.org/package=doParallel).
+A 'miraiCluster' is fully compatible with all 'parallel' functions such as `parallel::clusterApply()` [[further details](https://shikokuchuo.net/mirai/articles/mirai.html#parallel-clusters)].
 
 ### Asynchronous Shiny and Plumber Applications
 
-{mirai} serves as a backend for enterprise asynchronous [`shiny`](https://cran.r-project.org/package=shiny) or [`plumber`](https://cran.r-project.org/package=plumber) applications.
+{mirai} serves as a backend for scaling enterprise asynchronous {shiny} or {plumber} applications.
 
 A 'mirai' may be used interchangeably with a 'promise' by using the the promise pipe `%...>%`, or explictly by `promises::as.promise()`, allowing side-effects to be performed upon asynchronous resolution of a 'mirai'.
 
@@ -154,19 +152,19 @@ p <- mirai({Sys.sleep(1); "hello"}) %...>% cat()
 p
 ```
 
-Usage examples: [for plumber](https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-plumber-applications).
+Example usage is provided for [shiny](https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-shiny-applications) and for [plumber](https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-plumber-applications).
 
 ### Torch Parallelization
 
 The custom serialization interface in {mirai} is accessed via `serialization()`.
 
-In the case of [`torch`](https://cran.r-project.org/package=torch), this requires just the following call at the head of your session:
+In the case of {torch}, this requires just the following call at the head of your session:
 
 ```{r torch}
 serialization(refhook = list(torch::torch_serialize, torch::torch_load))
 ```
 
-This allows tensors, including complex objects such as models, optimizers etc. to be used seamlessly across local and remote processes in the same way as other R objects ([further details](https://shikokuchuo.net/mirai/articles/mirai.html#custom-serialization-torch-parallelization)).
+This allows tensors, including complex objects such as models, optimizers etc. to be used seamlessly across local and remote processes in the same way as other R objects [[further details](https://shikokuchuo.net/mirai/articles/mirai.html#custom-serialization-torch-parallelization)].
 
 ### Thanks
 

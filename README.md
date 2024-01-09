@@ -87,8 +87,8 @@ result.
 
 ``` r
 m$data
-#>  [1] 0.2680443 1.9424505 0.9222975 0.6944308 3.2387027 0.3087656 1.4400283
-#>  [8] 1.0842488 0.5148136 3.7307269
+#>  [1]  0.26549241 15.18477235 -0.57375666 -0.90265239  0.57895303  1.72725582
+#>  [7] -1.10784618 -1.74289915  0.06585545  3.76658605
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -96,8 +96,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] 0.2680443 1.9424505 0.9222975 0.6944308 3.2387027 0.3087656 1.4400283
-#>  [8] 1.0842488 0.5148136 3.7307269
+#>  [1]  0.26549241 15.18477235 -0.57375666 -0.90265239  0.57895303  1.72725582
+#>  [7] -1.10784618 -1.74289915  0.06585545  3.76658605
 ```
 
 ### Daemons
@@ -161,18 +161,13 @@ cl
 ```
 
 A ‘miraiCluster’ is fully compatible with all ‘parallel’ functions such
-as `parallel::clusterApply()` ([further
-details](https://shikokuchuo.net/mirai/articles/mirai.html#parallel-clusters)).
+as `parallel::clusterApply()` \[[further
+details](https://shikokuchuo.net/mirai/articles/mirai.html#parallel-clusters)\].
 
-A ‘miraiCluster’ may also be registered for use with the
-[`foreach`](https://cran.r-project.org/package=foreach) package by
-[`doParallel`](https://cran.r-project.org/package=doParallel).
+### Asynchronous Shiny and Plumber Applications
 
-### Asynchronous Shiny and Plumber Backend
-
-{mirai} serves as a backend for enterprise asynchronous
-[`shiny`](https://cran.r-project.org/package=shiny) or
-[`plumber`](https://cran.r-project.org/package=plumber) applications.
+{mirai} serves as a backend for scaling enterprise asynchronous {shiny}
+or {plumber} applications.
 
 A ‘mirai’ may be used interchangeably with a ‘promise’ by using the the
 promise pipe `%...>%`, or explictly by `promises::as.promise()`,
@@ -189,16 +184,18 @@ p
 #> <Promise [pending]>
 ```
 
-Usage examples: [for
-plumber](https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-plumber-backend).
+Example usage is provided for
+[shiny](https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-shiny-applications)
+and for
+[plumber](https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-plumber-applications).
 
 ### Torch Parallelization
 
 The custom serialization interface in {mirai} is accessed via
 `serialization()`.
 
-In the case of [`torch`](https://cran.r-project.org/package=torch), this
-requires just the following call at the head of your session:
+In the case of {torch}, this requires just the following call at the
+head of your session:
 
 ``` r
 serialization(refhook = list(torch::torch_serialize, torch::torch_load))
@@ -206,8 +203,8 @@ serialization(refhook = list(torch::torch_serialize, torch::torch_load))
 
 This allows tensors, including complex objects such as models,
 optimizers etc. to be used seamlessly across local and remote processes
-in the same way as other R objects ([further
-details](https://shikokuchuo.net/mirai/articles/mirai.html#custom-serialization-torch-parallelization)).
+in the same way as other R objects \[[further
+details](https://shikokuchuo.net/mirai/articles/mirai.html#custom-serialization-torch-parallelization)\].
 
 ### Thanks
 

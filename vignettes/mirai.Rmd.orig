@@ -27,8 +27,9 @@ knitr::opts_chunk$set(
 8. [Compute Profiles](#compute-profiles)
 9. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
 10. [Parallel Clusters](#parallel-clusters)
-11. [Promises: Async Plumber Applications](#promises-async-plumber-applications)
-12. [Custom Serialization: Torch Parallelization](#custom-serialization-torch-parallelization)
+11. [Promises: Async Shiny Applications](#promises-async-shiny-applications)
+12. [Promises: Async Plumber Applications](#promises-async-plumber-applications)
+13. [Custom Serialization: Torch Parallelization](#custom-serialization-torch-parallelization)
 
 ### Example 1: Compute-intensive Operations
 
@@ -532,6 +533,54 @@ They may be registered by package [`doParallel`](https://cran.r-project.org/pack
 
 [&laquo; Back to ToC](#table-of-contents)
 
+### Promises: Async Shiny Applications
+
+'mirai' supplies its own `as.promise()` method, allowing it to be used as a promise.
+
+A 'mirai' may be piped directly using the promise pipe `&...>%` (which implicitly calls `as.promise()` on the 'mirai') or converted into a promise by `as.promise()`, which then allows using the methods `$then()`, `$finally()` etc.
+
+The below example simulates a plot function requiring a long compute in a ‘shiny’ app.
+
+This app takes c. 2s to start compared to the 8s it would otherwise take if not running in parallel.
+
+```{r shiny, eval=FALSE}
+library(shiny)
+library(promises) # for promise pipe
+
+daemons(4L) # handle 4 simulateneous computes
+
+ui <- fluidPage(
+  fluidRow(
+    plotOutput("one"),
+    plotOutput("two"),
+  ),
+  fluidRow(
+    plotOutput("three"),
+    plotOutput("four"),
+  )
+)
+
+make_plot <- function(time) {
+  Sys.sleep(time)
+  runif(10)
+}
+
+args <- list(make_plot = make_plot, time = 2)
+
+server <- function(input, output, session) {
+  output$one <- renderPlot(mirai(make_plot(time), .args = args) %...>% plot())
+  output$two <- renderPlot(mirai(make_plot(time), .args = args) %...>% plot())
+  output$three <- renderPlot(mirai(make_plot(time), .args = args) %...>% plot())
+  output$four <- renderPlot(mirai(make_plot(time), .args = args) %...>% plot())
+  session$onSessionEnded(stopApp)
+}
+
+shinyApp(ui = ui, server = server)
+```
+*Thanks to Daniel Falbel for providing the original example on which this is based.*
+
+[&laquo; Back to ToC](#table-of-contents)
+
 ### Promises: Async Plumber Applications
 
 'mirai' supplies its own `as.promise()` method, allowing it to be used as a promise.
@@ -640,7 +689,7 @@ m <- mirai({
 ```{r sleep2post, echo=FALSE}
 Sys.sleep(2)
 ```
-Querying the endpoint produces the same result as previously.
+Querying the endpoint produces the same set of outputs as the previous example.
 
 ```{r queryapipost}
 library(nanonext)
