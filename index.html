@@ -134,13 +134,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]  -1.95796164   0.19191299  -0.93159894  -0.03350754  -0.03134992</span></span>
-<span><span class="co">#&gt;  [6] -31.89800620 -29.84402904  -1.07342329   5.21069463  -0.51073524</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] -0.5332582 -0.1946295  0.1806072 -2.5935705 -0.5650986 -1.7696028</span></span>
+<span><span class="co">#&gt;  [7] -0.3855689  5.5368785 -5.1379670 -1.8752643</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]  -1.95796164   0.19191299  -0.93159894  -0.03350754  -0.03134992</span></span>
-<span><span class="co">#&gt;  [6] -31.89800620 -29.84402904  -1.07342329   5.21069463  -0.51073524</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] -0.5332582 -0.1946295  0.1806072 -2.5935705 -0.5650986 -1.7696028</span></span>
+<span><span class="co">#&gt;  [7] -0.3855689  5.5368785 -5.1379670 -1.8752643</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
@@ -187,7 +187,7 @@
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>; <span class="st">"hello"</span><span class="op">}</span><span class="op">)</span> <span class="op"><a href="https://rstudio.github.io/promises/reference/pipes.html" class="external-link">%...&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">p</span></span>
 <span><span class="co">#&gt; &lt;Promise [pending]&gt;</span></span></code></pre></div>
-<p>Example usage is provided for <a href="https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-shiny-applications">shiny</a> and for <a href="https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-plumber-applications">plumber</a>.</p>
+<p>Example usage is provided for <a href="https://shikokuchuo.net/mirai/articles/mirai.html#async-shiny-applications">shiny</a> and for <a href="https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-plumber-applications">plumber</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="torch-parallelization">Torch Parallelization<a class="anchor" aria-label="anchor" href="#torch-parallelization"></a>
