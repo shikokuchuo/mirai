@@ -87,8 +87,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  -1.95796164   0.19191299  -0.93159894  -0.03350754  -0.03134992
-#>  [6] -31.89800620 -29.84402904  -1.07342329   5.21069463  -0.51073524
+#>  [1] -0.5332582 -0.1946295  0.1806072 -2.5935705 -0.5650986 -1.7696028
+#>  [7] -0.3855689  5.5368785 -5.1379670 -1.8752643
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -96,8 +96,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  -1.95796164   0.19191299  -0.93159894  -0.03350754  -0.03134992
-#>  [6] -31.89800620 -29.84402904  -1.07342329   5.21069463  -0.51073524
+#>  [1] -0.5332582 -0.1946295  0.1806072 -2.5935705 -0.5650986 -1.7696028
+#>  [7] -0.3855689  5.5368785 -5.1379670 -1.8752643
 ```
 
 ### Daemons
@@ -189,7 +189,7 @@ p
 ```
 
 Example usage is provided for
-[shiny](https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-shiny-applications)
+[shiny](https://shikokuchuo.net/mirai/articles/mirai.html#async-shiny-applications)
 and for
 [plumber](https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-plumber-applications).
 

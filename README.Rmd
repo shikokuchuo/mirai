@@ -154,7 +154,7 @@ p <- mirai({Sys.sleep(1); "hello"}) %...>% cat()
 p
 ```
 
-Example usage is provided for [shiny](https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-shiny-applications) and for [plumber](https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-plumber-applications).
+Example usage is provided for [shiny](https://shikokuchuo.net/mirai/articles/mirai.html#async-shiny-applications) and for [plumber](https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-plumber-applications).
 
 ### Torch Parallelization
 
