@@ -355,7 +355,7 @@
 <h2 class="page-header" data-toc-text="0.5.3" id="mirai-053">mirai 0.5.3<small>2022-08-16</small><a class="anchor" aria-label="anchor" href="#mirai-053"></a></h2>
 <ul><li>
 <code><a href="../reference/mirai.html">mirai()</a></code> gains a ‘.args’ argument for passing a list of objects already in the calling environment, allowing for example <code>mirai(func(x, y, z), .args = list(x, y, z))</code> rather than having to specify <code>mirai(func(x, y, z), x = x, y = y, z = z)</code>.</li>
-<li>Errors from inside a mirai will now return the error message as a character string of class ‘miraiError’ and ‘errorValue’, rather than just a nul byte. Utility function <code><a href="../reference/is_mirai_error.html">is_mirai_error()</a></code> should be used in place of <code>is_nul_byte()</code>, which is no longer re-exported.</li>
+<li>Errors from inside a mirai will now return the error message as a character string of class ‘miraiError’ and ‘errorValue’, rather than just a nul byte. Utility function <code><a href="../reference/is_mirai_error.html">is_mirai_error()</a></code> should be used in place of <code><a href="https://shikokuchuo.net/nanonext/reference/is_error_value.html" class="external-link">is_nul_byte()</a></code>, which is no longer re-exported.</li>
 <li>
 <code><a href="../reference/is_mirai_error.html">is_error_value()</a></code> can be used to test for all errors, including timeouts where the ‘.timeout’ argument has been used.</li>
 <li>All re-exports from ‘nanonext’ have been brought in-package for better documentation.</li>
@@ -393,7 +393,7 @@
 <li>A mirai now resolves automatically without requiring <code><a href="../reference/call_mirai.html">call_mirai()</a></code>. Access the <code>$value</code> directly and an ‘unresolved’ logical NA will be returned if the async operation is yet to complete.</li>
 <li>
 <code><a href="../reference/stop_mirai.html">stop_mirai()</a></code> added as a function to stop evaluation of an ongoing async operation.</li>
-<li>Auxiliary functions <code>is_nul_byte()</code> and <code><a href="../reference/unresolved.html">unresolved()</a></code> re-exported from {nanonext} to test for evaluation errors and resolution of a ‘mirai’ respectively.</li>
+<li>Auxiliary functions <code><a href="https://shikokuchuo.net/nanonext/reference/is_error_value.html" class="external-link">is_nul_byte()</a></code> and <code><a href="../reference/unresolved.html">unresolved()</a></code> re-exported from {nanonext} to test for evaluation errors and resolution of a ‘mirai’ respectively.</li>
 <li>New <code><a href="../reference/daemons.html">daemons()</a></code> interface to set and manage persistent background processes for receiving ‘mirai’ requests.</li>
 </ul></div>
     <div class="section level2">
