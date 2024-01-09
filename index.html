@@ -134,13 +134,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]  0.26549241 15.18477235 -0.57375666 -0.90265239  0.57895303  1.72725582</span></span>
-<span><span class="co">#&gt;  [7] -1.10784618 -1.74289915  0.06585545  3.76658605</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  -1.95796164   0.19191299  -0.93159894  -0.03350754  -0.03134992</span></span>
+<span><span class="co">#&gt;  [6] -31.89800620 -29.84402904  -1.07342329   5.21069463  -0.51073524</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]  0.26549241 15.18477235 -0.57375666 -0.90265239  0.57895303  1.72725582</span></span>
-<span><span class="co">#&gt;  [7] -1.10784618 -1.74289915  0.06585545  3.76658605</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  -1.95796164   0.19191299  -0.93159894  -0.03350754  -0.03134992</span></span>
+<span><span class="co">#&gt;  [6] -31.89800620 -29.84402904  -1.07342329   5.21069463  -0.51073524</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
@@ -178,8 +178,9 @@
 <div class="section level3">
 <h3 id="asynchronous-shiny-and-plumber-applications">Asynchronous Shiny and Plumber Applications<a class="anchor" aria-label="anchor" href="#asynchronous-shiny-and-plumber-applications"></a>
 </h3>
-<p>{mirai} serves as a backend for scaling enterprise asynchronous {shiny} or {plumber} applications.</p>
-<p>A ‘mirai’ may be used interchangeably with a ‘promise’ by using the the promise pipe <code>%...&gt;%</code>, or explictly by <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">promises::as.promise()</a></code>, allowing side-effects to be performed upon asynchronous resolution of a ‘mirai’.</p>
+<p>{mirai} serves as an asynchronous backend for scaling enterprise {shiny} or {plumber} applications.</p>
+<p>A ‘mirai’ plugs in directly to Shiny’s reactive framework without the need to use promises [<a href="https://shikokuchuo.net/mirai/articles/mirai.html#shiny-example-usage">see example</a>].</p>
+<p>Alternatively, ‘mirai’ may be used interchangeably with ‘promises’ by using the promise pipe <code>%...&gt;%</code>, or explictly by <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">promises::as.promise()</a></code>, allowing side-effects to be performed upon asynchronous resolution of a ‘mirai’.</p>
 <p>The following example outputs “hello” to the console after one second when the ‘mirai’ resolves.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/promises/" class="external-link">promises</a></span><span class="op">)</span></span>
