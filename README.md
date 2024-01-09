@@ -87,8 +87,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  0.26549241 15.18477235 -0.57375666 -0.90265239  0.57895303  1.72725582
-#>  [7] -1.10784618 -1.74289915  0.06585545  3.76658605
+#>  [1]  -1.95796164   0.19191299  -0.93159894  -0.03350754  -0.03134992
+#>  [6] -31.89800620 -29.84402904  -1.07342329   5.21069463  -0.51073524
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -96,8 +96,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  0.26549241 15.18477235 -0.57375666 -0.90265239  0.57895303  1.72725582
-#>  [7] -1.10784618 -1.74289915  0.06585545  3.76658605
+#>  [1]  -1.95796164   0.19191299  -0.93159894  -0.03350754  -0.03134992
+#>  [6] -31.89800620 -29.84402904  -1.07342329   5.21069463  -0.51073524
 ```
 
 ### Daemons
@@ -166,13 +166,17 @@ details](https://shikokuchuo.net/mirai/articles/mirai.html#parallel-clusters)\].
 
 ### Asynchronous Shiny and Plumber Applications
 
-{mirai} serves as a backend for scaling enterprise asynchronous {shiny}
+{mirai} serves as an asynchronous backend for scaling enterprise {shiny}
 or {plumber} applications.
 
-A ‘mirai’ may be used interchangeably with a ‘promise’ by using the the
-promise pipe `%...>%`, or explictly by `promises::as.promise()`,
-allowing side-effects to be performed upon asynchronous resolution of a
-‘mirai’.
+A ‘mirai’ plugs in directly to Shiny’s reactive framework without the
+need to use promises \[[see
+example](https://shikokuchuo.net/mirai/articles/mirai.html#shiny-example-usage)\].
+
+Alternatively, ‘mirai’ may be used interchangeably with ‘promises’ by
+using the promise pipe `%...>%`, or explictly by
+`promises::as.promise()`, allowing side-effects to be performed upon
+asynchronous resolution of a ‘mirai’.
 
 The following example outputs “hello” to the console after one second
 when the ‘mirai’ resolves.

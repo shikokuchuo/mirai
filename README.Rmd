@@ -140,9 +140,11 @@ A 'miraiCluster' is fully compatible with all 'parallel' functions such as `para
 
 ### Asynchronous Shiny and Plumber Applications
 
-{mirai} serves as a backend for scaling enterprise asynchronous {shiny} or {plumber} applications.
+{mirai} serves as an asynchronous backend for scaling enterprise {shiny} or {plumber} applications.
 
-A 'mirai' may be used interchangeably with a 'promise' by using the the promise pipe `%...>%`, or explictly by `promises::as.promise()`, allowing side-effects to be performed upon asynchronous resolution of a 'mirai'.
+A 'mirai' plugs in directly to Shiny's reactive framework without the need to use promises [[see example](https://shikokuchuo.net/mirai/articles/mirai.html#shiny-example-usage)].
+
+Alternatively, 'mirai' may be used interchangeably with 'promises' by using the promise pipe `%...>%`, or explictly by `promises::as.promise()`, allowing side-effects to be performed upon asynchronous resolution of a 'mirai'.
 
 The following example outputs "hello" to the console after one second when the 'mirai' resolves.
 
