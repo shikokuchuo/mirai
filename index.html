@@ -57,6 +57,27 @@
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/parallel.html">mirai - Parallel Integration</a>
+    </li>
+    <li>
+      <a href="articles/plumber.html">mirai - Plumber Integration</a>
+    </li>
+    <li>
+      <a href="articles/shiny.html">mirai - Shiny Integration</a>
+    </li>
+    <li>
+      <a href="articles/torch.html">mirai - Torch Integration</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="news/index.html">Changelog</a>
 </li>
@@ -134,13 +155,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -0.5332582 -0.1946295  0.1806072 -2.5935705 -0.5650986 -1.7696028</span></span>
-<span><span class="co">#&gt;  [7] -0.3855689  5.5368785 -5.1379670 -1.8752643</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  -1.43344968  -0.02044095  -0.54523216   3.66578804   5.10911257</span></span>
+<span><span class="co">#&gt;  [6]   0.19572871   0.27279264  -1.83408111 -48.92140310  -0.69761779</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -0.5332582 -0.1946295  0.1806072 -2.5935705 -0.5650986 -1.7696028</span></span>
-<span><span class="co">#&gt;  [7] -0.3855689  5.5368785 -5.1379670 -1.8752643</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  -1.43344968  -0.02044095  -0.54523216   3.66578804   5.10911257</span></span>
+<span><span class="co">#&gt;  [6]   0.19572871   0.27279264  -1.83408111 -48.92140310  -0.69761779</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
@@ -173,13 +194,13 @@
 <code class="sourceCode R"><span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_cluster.html">make_cluster</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">cl</span></span>
 <span><span class="co">#&gt; &lt; miraiCluster | ID: `0` nodes: 4 active: TRUE &gt;</span></span></code></pre></div>
-<p>A ‘miraiCluster’ is fully compatible with all ‘parallel’ functions such as <code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parallel::clusterApply()</a></code> [<a href="https://shikokuchuo.net/mirai/articles/mirai.html#parallel-clusters">further details</a>].</p>
+<p>A ‘miraiCluster’ is fully compatible with all ‘parallel’ functions such as <code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parallel::clusterApply()</a></code> [<a href="https://shikokuchuo.net/mirai/articles/parallel.html">further details</a>].</p>
 </div>
 <div class="section level3">
 <h3 id="asynchronous-shiny-and-plumber-applications">Asynchronous Shiny and Plumber Applications<a class="anchor" aria-label="anchor" href="#asynchronous-shiny-and-plumber-applications"></a>
 </h3>
 <p>{mirai} serves as an asynchronous backend for scaling enterprise {shiny} or {plumber} applications.</p>
-<p>A ‘mirai’ plugs in directly to Shiny’s reactive framework without the need to use promises [<a href="https://shikokuchuo.net/mirai/articles/mirai.html#shiny-example-usage">see example</a>].</p>
+<p>A ‘mirai’ plugs in directly to Shiny’s reactive framework without the need to use promises [<a href="https://shikokuchuo.net/mirai/articles/shiny.html#shiny-example-usage">see example</a>].</p>
 <p>Alternatively, ‘mirai’ may be used interchangeably with ‘promises’ by using the promise pipe <code>%...&gt;%</code>, or explictly by <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">promises::as.promise()</a></code>, allowing side-effects to be performed upon asynchronous resolution of a ‘mirai’.</p>
 <p>The following example outputs “hello” to the console after one second when the ‘mirai’ resolves.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -187,7 +208,7 @@
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>; <span class="st">"hello"</span><span class="op">}</span><span class="op">)</span> <span class="op"><a href="https://rstudio.github.io/promises/reference/pipes.html" class="external-link">%...&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">p</span></span>
 <span><span class="co">#&gt; &lt;Promise [pending]&gt;</span></span></code></pre></div>
-<p>Example usage is provided for <a href="https://shikokuchuo.net/mirai/articles/mirai.html#async-shiny-applications">shiny</a> and for <a href="https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-plumber-applications">plumber</a>.</p>
+<p>Example usage is provided for <a href="https://shikokuchuo.net/mirai/articles/shiny.html">shiny</a> and for <a href="https://shikokuchuo.net/mirai/articles/plumber.html">plumber</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="torch-parallelization">Torch Parallelization<a class="anchor" aria-label="anchor" href="#torch-parallelization"></a>
@@ -196,7 +217,7 @@
 <p>In the case of {torch}, this requires just the following call at the head of your session:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/serialization.html">serialization</a></span><span class="op">(</span>refhook <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">torch</span><span class="fu">::</span><span class="va">torch_serialize</span>, <span class="fu">torch</span><span class="fu">::</span><span class="va">torch_load</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>This allows tensors, including complex objects such as models, optimizers etc. to be used seamlessly across local and remote processes in the same way as other R objects [<a href="https://shikokuchuo.net/mirai/articles/mirai.html#custom-serialization-torch-parallelization">further details</a>].</p>
+<p>This allows tensors, including complex objects such as models, optimizers etc. to be used seamlessly across local and remote processes in the same way as other R objects [<a href="https://shikokuchuo.net/mirai/articles/torch.html">further details</a>].</p>
 </div>
 <div class="section level3">
 <h3 id="thanks">Thanks<a class="anchor" aria-label="anchor" href="#thanks"></a>

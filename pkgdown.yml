@@ -3,7 +3,11 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   mirai: mirai.html
-last_built: 2024-01-09T14:35Z
+  parallel: parallel.html
+  plumber: plumber.html
+  shiny: shiny.html
+  torch: torch.html
+last_built: 2024-01-10T22:35Z
 urls:
   reference: https://shikokuchuo.net/mirai/reference
   article: https://shikokuchuo.net/mirai/articles

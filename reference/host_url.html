@@ -31,6 +31,25 @@ local_url constructs a random URL suitable for local daemons."><meta property="o
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/parallel.html">mirai - Parallel Integration</a>
+    </li>
+    <li>
+      <a href="../articles/plumber.html">mirai - Plumber Integration</a>
+    </li>
+    <li>
+      <a href="../articles/shiny.html">mirai - Shiny Integration</a>
+    </li>
+    <li>
+      <a href="../articles/torch.html">mirai - Torch Integration</a>
+    </li>
+  </ul></li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
@@ -112,16 +131,16 @@ connections from the network addresses the daemons are connecting from.
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">host_url</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tcp://fv-az564-890:0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tcp://fv-az1240-119:0"</span>
 <span class="r-in"><span><span class="fu">host_url</span><span class="op">(</span>ws <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ws://fv-az564-890:0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ws://fv-az1240-119:0"</span>
 <span class="r-in"><span><span class="fu">host_url</span><span class="op">(</span>tls <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tls+tcp://fv-az564-890:0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tls+tcp://fv-az1240-119:0"</span>
 <span class="r-in"><span><span class="fu">host_url</span><span class="op">(</span>ws <span class="op">=</span> <span class="cn">TRUE</span>, tls <span class="op">=</span> <span class="cn">TRUE</span>, port <span class="op">=</span> <span class="fl">5555</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "wss://fv-az564-890:5555"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "wss://fv-az1240-119:5555"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">local_url</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "abstract://046f827217de49f6a003e97d"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "abstract://a83b3ec7d9a57ccdad102778"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
