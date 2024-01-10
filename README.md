@@ -87,8 +87,8 @@ result.
 
 ``` r
 m$data
-#>  [1] -0.5332582 -0.1946295  0.1806072 -2.5935705 -0.5650986 -1.7696028
-#>  [7] -0.3855689  5.5368785 -5.1379670 -1.8752643
+#>  [1]  -1.43344968  -0.02044095  -0.54523216   3.66578804   5.10911257
+#>  [6]   0.19572871   0.27279264  -1.83408111 -48.92140310  -0.69761779
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -96,8 +96,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] -0.5332582 -0.1946295  0.1806072 -2.5935705 -0.5650986 -1.7696028
-#>  [7] -0.3855689  5.5368785 -5.1379670 -1.8752643
+#>  [1]  -1.43344968  -0.02044095  -0.54523216   3.66578804   5.10911257
+#>  [6]   0.19572871   0.27279264  -1.83408111 -48.92140310  -0.69761779
 ```
 
 ### Daemons
@@ -162,7 +162,7 @@ cl
 
 A ‘miraiCluster’ is fully compatible with all ‘parallel’ functions such
 as `parallel::clusterApply()` \[[further
-details](https://shikokuchuo.net/mirai/articles/mirai.html#parallel-clusters)\].
+details](https://shikokuchuo.net/mirai/articles/parallel.html)\].
 
 ### Asynchronous Shiny and Plumber Applications
 
@@ -171,7 +171,7 @@ or {plumber} applications.
 
 A ‘mirai’ plugs in directly to Shiny’s reactive framework without the
 need to use promises \[[see
-example](https://shikokuchuo.net/mirai/articles/mirai.html#shiny-example-usage)\].
+example](https://shikokuchuo.net/mirai/articles/shiny.html#shiny-example-usage)\].
 
 Alternatively, ‘mirai’ may be used interchangeably with ‘promises’ by
 using the promise pipe `%...>%`, or explictly by
@@ -189,9 +189,8 @@ p
 ```
 
 Example usage is provided for
-[shiny](https://shikokuchuo.net/mirai/articles/mirai.html#async-shiny-applications)
-and for
-[plumber](https://shikokuchuo.net/mirai/articles/mirai.html#promises-async-plumber-applications).
+[shiny](https://shikokuchuo.net/mirai/articles/shiny.html) and for
+[plumber](https://shikokuchuo.net/mirai/articles/plumber.html).
 
 ### Torch Parallelization
 
@@ -208,7 +207,7 @@ serialization(refhook = list(torch::torch_serialize, torch::torch_load))
 This allows tensors, including complex objects such as models,
 optimizers etc. to be used seamlessly across local and remote processes
 in the same way as other R objects \[[further
-details](https://shikokuchuo.net/mirai/articles/mirai.html#custom-serialization-torch-parallelization)\].
+details](https://shikokuchuo.net/mirai/articles/torch.html)\].
 
 ### Thanks
 

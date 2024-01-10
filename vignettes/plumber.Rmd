@@ -1,0 +1,153 @@
+---
+title: "mirai - Plumber Integration"
+vignette: >
+  %\VignetteIndexEntry{mirai - Plumber Integration}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+### Plumber Integration
+
+'mirai' supplies its own `as.promise()` method, allowing it to be used as a promise.
+
+A 'mirai' may be piped directly using the promise pipe `&...>%`, which implicitly calls `as.promise()` on the 'mirai', or converted into a promise by `as.promise()`, which then allows using the methods `$then()`, `$finally()` etc.
+
+Below we provide example usage of how to use mirai as an async distributed backend for {plumber} pipelines.
+
+The plumber router code is run in a daemon process itself so that it does not block the interactive process. It is important to set up this daemon with the argument `autoexit = tools::SIGINT`, so that the plumber server is interrupted and exits cleanly when we tear it down.
+
+#### Example GET Endpoint
+
+The /echo endpoint takes a GET request, sleeps for 1 second (simulating an expensive computation) and just returns the 'msg' request header together with a timestamp and the process ID of the process it is run on.
+
+
+```r
+library(mirai)
+
+daemons(1L, dispatcher = FALSE, autoexit = tools::SIGINT)
+#> [1] 1
+
+m <- mirai({
+  library(plumber)
+  library(promises) # to provide the promise pipe
+  library(mirai)
+
+  daemons(4L, dispatcher = FALSE) # handles 4 requests simultaneously
+  # does not use dispatcher (suitable when all requests require similar compute)
+
+  pr() |>
+    pr_get(
+      "/echo",
+      function(req, res) {
+        mirai(
+          {
+            Sys.sleep(1L)
+            list(status = 200L, body = list(time = format(Sys.time()),
+                                            msg = req[["HEADERS"]][["msg"]],
+                                            pid = Sys.getpid()))
+          },
+          req = req
+        ) %...>% (function(x) {
+          res$status <- x$status
+          res$body <- x$body
+        })
+      }
+    ) |>
+    pr_run(host = "127.0.0.1", port = 8985)
+})
+```
+
+The API can be queried using an async HTTP client such as `nanonext::ncurl_aio()`.
+
+Here, all 8 requests are submitted at once, but we note that that responses have differing timestamps as only 4 can be processed at any given time.
+
+
+```r
+library(nanonext)
+res <- lapply(1:8,
+              function(i) ncurl_aio("http://127.0.0.1:8985/echo",
+                                    headers = c(msg = as.character(i))))
+res <- lapply(res, call_aio)
+for (r in res) print(r$data)
+#> [1] "{\"time\":[\"2024-01-10 22:18:07\"],\"msg\":[\"1\"],\"pid\":[20080]}"
+#> [1] "{\"time\":[\"2024-01-10 22:18:07\"],\"msg\":[\"2\"],\"pid\":[20087]}"
+#> [1] "{\"time\":[\"2024-01-10 22:18:07\"],\"msg\":[\"3\"],\"pid\":[20082]}"
+#> [1] "{\"time\":[\"2024-01-10 22:18:08\"],\"msg\":[\"4\"],\"pid\":[20080]}"
+#> [1] "{\"time\":[\"2024-01-10 22:18:07\"],\"msg\":[\"5\"],\"pid\":[20084]}"
+#> [1] "{\"time\":[\"2024-01-10 22:18:08\"],\"msg\":[\"6\"],\"pid\":[20084]}"
+#> [1] "{\"time\":[\"2024-01-10 22:18:08\"],\"msg\":[\"7\"],\"pid\":[20082]}"
+#> [1] "{\"time\":[\"2024-01-10 22:18:08\"],\"msg\":[\"8\"],\"pid\":[20087]}"
+
+daemons(0)
+#> [1] 0
+```
+
+#### Example POST Endpoint
+
+Below is a demonstration of the equivalent using a POST endpoint, accepting a JSON instruction sent as request data.
+
+It is important to note in this case that `req$postBody` should be accessed in the router process and passed in as an argument to the 'mirai' as this is retrieved using a connection that is not serializable.
+
+
+```r
+library(mirai)
+
+daemons(1L, dispatcher = FALSE, autoexit = tools::SIGINT)
+#> [1] 1
+
+m <- mirai({
+  library(plumber)
+  library(promises) # to provide the promise pipe
+  library(mirai)
+
+  daemons(4L) # handles 4 requests simultaneously
+  # uses dispatcher (suitable for requests with differing compute lengths)
+
+  pr() |>
+    pr_post(
+      "/echo",
+      function(req, res) {
+        mirai(
+          {
+            Sys.sleep(1L) # simulate expensive computation
+            list(status = 200L,
+                 body = list(time = format(Sys.time()),
+                             msg = jsonlite::fromJSON(data)[["msg"]],
+                             pid = Sys.getpid()))
+          },
+          data = req$postBody
+        ) %...>% (function(x) {
+          res$status <- x$status
+          res$body <- x$body
+        })
+      }
+    ) |>
+    pr_run(host = "127.0.0.1", port = 8986)
+})
+```
+
+Querying the endpoint produces the same set of outputs as the previous example.
+
+
+```r
+library(nanonext)
+res <- lapply(1:8,
+              function(i) ncurl_aio("http://127.0.0.1:8986/echo",
+                                    method = "POST",
+                                    data = sprintf('{"msg":"%d"}', i)))
+res <- lapply(res, call_aio)
+for (r in res) print(r$data)
+#> [1] "{\"time\":[\"2024-01-10 22:18:11\"],\"msg\":[\"1\"],\"pid\":[20357]}"
+#> [1] "{\"time\":[\"2024-01-10 22:18:11\"],\"msg\":[\"2\"],\"pid\":[20359]}"
+#> [1] "{\"time\":[\"2024-01-10 22:18:11\"],\"msg\":[\"3\"],\"pid\":[20362]}"
+#> [1] "{\"time\":[\"2024-01-10 22:18:11\"],\"msg\":[\"4\"],\"pid\":[20366]}"
+#> [1] "{\"time\":[\"2024-01-10 22:18:12\"],\"msg\":[\"5\"],\"pid\":[20357]}"
+#> [1] "{\"time\":[\"2024-01-10 22:18:12\"],\"msg\":[\"6\"],\"pid\":[20359]}"
+#> [1] "{\"time\":[\"2024-01-10 22:18:12\"],\"msg\":[\"7\"],\"pid\":[20366]}"
+#> [1] "{\"time\":[\"2024-01-10 22:18:12\"],\"msg\":[\"8\"],\"pid\":[20362]}"
+
+daemons(0)
+#> [1] 0
+```

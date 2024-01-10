@@ -20,10 +20,6 @@ vignette: >
 7. [Distributed Computing: TLS Secure Connections](#distributed-computing-tls-secure-connections)
 8. [Compute Profiles](#compute-profiles)
 9. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
-10. [Parallel Clusters](#parallel-clusters)
-11. [Async Shiny Applications](#async-shiny-applications)
-12. [Promises: Async Plumber Applications](#promises-async-plumber-applications)
-13. [Custom Serialization: Torch Parallelization](#custom-serialization-torch-parallelization)
 
 ### Example 1: Compute-intensive Operations
 
@@ -68,7 +64,7 @@ Upon completion, the 'mirai' resolves automatically to the evaluated result.
 
 ```r
 m$data |> str()
-#>  num [1:100000000] 0.684 -7.893 0.775 2.639 -0.713 ...
+#>  num [1:100000000] 0.528 1.653 -0.151 0.256 0.452 ...
 ```
 
 Alternatively, explicitly call and wait for the result using `call_mirai()`.
@@ -76,7 +72,7 @@ Alternatively, explicitly call and wait for the result using `call_mirai()`.
 
 ```r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] 0.684 -7.893 0.775 2.639 -0.713 ...
+#>  num [1:100000000] 0.528 1.653 -0.151 0.256 0.452 ...
 ```
 
 For easy programmatic use of `mirai()`, '.expr' accepts a pre-constructed language object, and also a list of named arguments passed via '.args'. So, the following would be equivalent to the above:
@@ -93,7 +89,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -1.75537 -0.04664 0.00733 0.03312 0.27412 ...
+#>  num [1:100000000] -0.23 2.545 1.844 0.382 -0.754 ...
 ```
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -179,9 +175,9 @@ for (i in 1:10) {
 #> iteration 5 successful
 #> iteration 6 successful
 #> iteration 7 successful
-#> Error: random error
 #> iteration 8 successful
 #> iteration 9 successful
+#> Error: random error
 #> iteration 10 successful
 ```
 
@@ -219,12 +215,12 @@ status()
 #> 
 #> $daemons
 #>                                     i online instance assigned complete
-#> abstract://d5536b65475a232046163bbe 1      1        1        0        0
-#> abstract://7fc3023cb72b596b4e6d0427 2      1        1        0        0
-#> abstract://06c60e95499d671fc080522d 3      1        1        0        0
-#> abstract://a01df16d6f324c25e4cbd2f6 4      1        1        0        0
-#> abstract://0f57a3c84a91603f62f06481 5      1        1        0        0
-#> abstract://35c58ff8b4e74811a46f7808 6      1        1        0        0
+#> abstract://389d1b697878f987f687e37f 1      1        1        1        0
+#> abstract://7fb26d9f95e11b3e75001696 2      1        1        1        0
+#> abstract://7a148fd3243d8d9559aadd70 3      1        1        1        0
+#> abstract://6dac5528ae1909eb5a778609 4      1        1        1        0
+#> abstract://9c1ad061914433f060f918ff 5      1        1        1        0
+#> abstract://abf8c29588a01fd28354b911 6      1        1        1        0
 ```
 
 The default `dispatcher = TRUE` creates a `dispatcher()` background process that connects to individual daemon processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to daemons for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.
@@ -259,7 +255,7 @@ status()
 #> [1] 6
 #> 
 #> $daemons
-#> [1] "abstract://3e78fd8940d83598ba069a19"
+#> [1] "abstract://712946bc701bf260e1980f5a"
 ```
 
 This implementation sends tasks immediately, and ensures that tasks are evenly-distributed amongst daemons. This means that optimal scheduling is not guaranteed as the duration of tasks cannot be known *a priori*. As an example, tasks could be queued at a daemon behind a long-running task, whilst other daemons are idle having already completed their tasks.
@@ -363,7 +359,7 @@ By specifying `dispatcher = FALSE`, remote daemons connect directly to the host 
 
 ```r
 daemons(url = host_url(), dispatcher = FALSE)
-#> [1] "tcp://hostname:40729"
+#> [1] "tcp://hostname:38447"
 ```
 
 Note that above, calling `host_url()` without a port value uses the default of '0'. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided in the return value of the call, or it may be queried at any time via `status()`.
@@ -379,7 +375,7 @@ status()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://hostname:40729"
+#> [1] "tcp://hostname:38447"
 ```
 
 To reset all connections and revert to default behaviour:
@@ -456,10 +452,10 @@ daemons(n = 2, url = host_url())
 
 launch_remote(1:2)
 #> [1]
-#> Rscript -e "mirai::daemon('tcp://hostname:45703',rs=c(10407,1915951292,602430093,-399070230,1718389859,342913608,-2044646487))"
+#> Rscript -e "mirai::daemon('tcp://hostname:40227',rs=c(10407,-1161792096,-944287455,-1911839634,-82165225,-1418127508,-1919664771))"
 #> 
 #> [2]
-#> Rscript -e "mirai::daemon('tcp://hostname:40897',rs=c(10407,-1828158877,1622854652,-486616264,-1055165941,1370591224,-1699027618))"
+#> Rscript -e "mirai::daemon('tcp://hostname:41663',rs=c(10407,-2043862129,185544717,1701915152,-966466064,1809908748,1857730719))"
 
 daemons(0)
 #> [1] 0
@@ -491,37 +487,37 @@ The generated self-signed certificate is available via `launch_remote()`. This f
 ```r
 launch_remote(1)
 #> [1]
-#> Rscript -e "mirai::daemon('wss://hostname:42913/1',tls=c('-----BEGIN CERTIFICATE-----
+#> Rscript -e "mirai::daemon('wss://hostname:44221/1',tls=c('-----BEGIN CERTIFICATE-----
 #> MIIFNzCCAx+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAzMREwDwYDVQQDDAhrdW1h
 #> bW90bzERMA8GA1UECgwITmFub25leHQxCzAJBgNVBAYTAkpQMB4XDTAxMDEwMTAw
 #> MDAwMFoXDTMwMTIzMTIzNTk1OVowMzERMA8GA1UEAwwIa3VtYW1vdG8xETAPBgNV
 #> BAoMCE5hbm9uZXh0MQswCQYDVQQGEwJKUDCCAiIwDQYJKoZIhvcNAQEBBQADggIP
-#> ADCCAgoCggIBAIbupMAI9ljobqS/7n1FBuPRCLWR7YYihsiWa51Uub0BIBtjwxsZ
-#> QSewPGsmJj6yAP8Ya0naLjtDJaLAw9D60+vQJiVlcWGloPB4gCmRKY2hRfE2ANq0
-#> wyx0ozrN0x0RAFy7XkPdv2Rl8GHdIsXYMPIvPXHQ6QyEkiKurQrceD5EzHHzgTKT
-#> q6OV5CYuadEo9XI3L0wdOKccCzkt1AY61y0jZ32YaRLM91HMAhKVz6cdRQmAFI7E
-#> b7hxTwCpDBEjqEN7wAMZvBB/beJyweLGpyyOwVu5xCX7BUjE7C6uoHvcPAvhQQsB
-#> jdwkR7NGz4Aj3m3j1u/eK9UIRcwjvDjY6YXZjGLaYDyHrLCyefSqS8JWR8VbnDjB
-#> BQmODeSfEH9cclAK21g/dWuYxafY6VbsyyGAJzq7wWFRUvJxjDld5gFpDVBbQ/nU
-#> +tNr5a93iN8R9b1z+ATW5Mzw/BAUOOWw+l7kDcKLU5mvKAdhU1ytskhI8h1UCTBm
-#> zGMl//VURBVvHyg1jnnfETLG+mrrcPjRz91ok8ABtapDorvnPspxcRt0jV40HrZs
-#> tt97AOpjCeKd9sGuWxoEE6kQlbyAELdxGI0qpCv4FOOTSwaKlwzd01vs1UBY8HXN
-#> gjJfepyiSCNiraiI5acIxcmSP0VmnstRo0n1SLUDayZ+oIZeknwn/QtlAgMBAAGj
-#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFCmNVk6tuv+sXvt1bFZb
-#> iBKgdbjtMB8GA1UdIwQYMBaAFCmNVk6tuv+sXvt1bFZbiBKgdbjtMA0GCSqGSIb3
-#> DQEBCwUAA4ICAQBpRdPSo5bd0GX0jUUXQat8YDFprcPM+hH031zeEbNgKxd2Txsy
-#> SdGnLKe4dCFvYMgetn06FFJU8fUqjcy47qFXmF74NecO+9hnnK8JMvO1bSJGTCO0
-#> guXcfwI31m5IaAIpyWdX1NzwJsYfvImYGWFt3JsUWqbNmGW6e6IGgYkJcJysW/fz
-#> jVCTPodI1L009oIBRGO3pdSSenISNRkgpMT0GlTcVnxLky7u+OyYExR8iIyzA7g3
-#> zy+aRbyXNFJ4U4/Isf7uFFlf6wQLoetp/bcHDXIb6Sk3y1T2oBa2+EMtrVERYnOO
-#> 3gzuCBZ/LBhKTYCIK9/OMwoycrvDSarWeRG7ORenFQ8rxQxfqAPAor9jSKAKjPxF
-#> jgaYbgrYxd1+PebY61mS3piCK9pzwocnvsW22MkS94KvST4PO5WgbFF/MaHbM7XN
-#> aYTBeSPxFj2W+01IWNVM6rZJiYsDRWYCAhIEJiCockiL9McixhmkDQELibgLl26r
-#> 6QVbSDhZQvozS9C/eHL0jdDQyjh31PuOumV3r3iRz47NUU/FhjDnyh9vKouADzHd
-#> 89dyva/okOg4tJG9Wao61EG04UjVbpmkDBi9V7wFVZD4sZLPcNzRjn9J/sypfkMk
-#> nQI+RsADDUo8HXMJbqgahS8szlKJwCnxh4EKlxqCUes8K6SVHcMdUHDL8Q==
+#> ADCCAgoCggIBAKnvbLWqfZjbFWrRyrwOu2HLmsXJ98OlmY8DGb6VP6knHqqM5QAt
+#> IBB40AHs2okVTbS2qNQ/8a3IusouEIDpDZgHFsCaixNUDqJZqROJKqy1sTz42yuf
+#> WKR8tCS53YXR1r49lIcbJx0hU2+BFcTHmy8slAB3V6boJI9mxoK5Fl548ogJggEQ
+#> 4KHOIF6cG+vhIDwD+QP+5L7Di/5vgtOKIBMO0FHZvkRZ7Q/hPU39TeyFmXoGwbfl
+#> GXOUENorsyULLnYLMC833uNPHjq/9W64ITiTZDPp44pMtmlH2xjPjbjXy1zER47q
+#> w8Niwib+zBHWWYJZ0eq0CGm0z6yLYQF+gATzBYuh8Qut8zT7iEfZuTM2eCwYaW3W
+#> 2UHH19tTpcOc/dtrjSvbc/iteWUhj7IljPNqXkwQlUfvNUpaGD+vNc2mcqzhGhzo
+#> JltfBbXoQUjQKdKnSVJkaJ9qMXARG/hce/ZkzNV3cJ/oysXWbj/JlSFK60VfAxqE
+#> RrBVhLuBSTGSor4eI7p2DhSOw/7jOOc28xYYdpkBxGDyU9yTCoYT3kbBOkmlt9Zd
+#> YqOv81NMeqhvXOeSEntRYn0TnCap7uQe0ZJOHOsM3DEC19bK6YkiLvPwVu0LjU0d
+#> FWb9D8LC2oMMDRZTO2FffRtaLgLn39iaF+E+LiUzUv/Q1SMArGLgntu3AgMBAAGj
+#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFAk9DxNWGYxq1IxWu5eH
+#> tW4H0iNiMB8GA1UdIwQYMBaAFAk9DxNWGYxq1IxWu5eHtW4H0iNiMA0GCSqGSIb3
+#> DQEBCwUAA4ICAQALVWdomOAx9lb/OlcgOllAjhIa3fOrfNEUg4idzWfjmM4YHp09
+#> kMsuDXjcnvzMe8La5mRTFeOLS9+N8n9+x9MWydWb3hjcvrx1UfSU81SdSAARahhm
+#> 1qlO3pmmOBqUITWiShx2AJioBcZVWsYCvQN8qeNhBXonJDyeKkMupB8H/SiEb6fN
+#> WvpjnmmxwT9b8k883zFFqVtgOEyGHCPfkmZfj2paOxuIYf3EdbqljzKjQ+HpXyhi
+#> Iw1XaTq3YQKYJXQnXRwvHJcjO3vLW1tW8nsFfa7b/Um+rmljFU33D3lTpDGD2rOZ
+#> 3enux5SjJdDVAhCHs7Mob8/HuSce6fotXZ1mn2j7K+hXL4uDcgvMxMsqy+hGVQfd
+#> RRv4lT7CsX+pVRLSD32rkODrTBp0lm4GLLY9B9K4S+eFbYl6iqh8z41+5evpwn+4
+#> sazOqN1iaeUWkDnC8hiBYaqtW0k+HCPgUql+dy+MmlHQG+iDLa3CL4ft7Kz9s4ss
+#> dc21foCg1s2lu9kOkH8lB261qsBU9e4nnRwzDDAHXBPH8MmUdzg0v3AFI6nagKpk
+#> DWba+9VbMt05hkaQ67M5srKEqmU/LIVRG8ISd7Pt10twhQQZ5WQMfhKWARcbqved
+#> 0UdJcWm3apYm1LkCWihv/0CVpEaOVZCOmjA9huCUAX98G+JMyYpgXDxVlg==
 #> -----END CERTIFICATE-----
-#> ',''),rs=c(10407,1515203227,-1896415968,63132321,1094473710,-1514700905,-2063411476))"
+#> ',''),rs=c(10407,2104974505,-453851050,1928121055,-657799276,-1374136955,-78037886))"
 ```
 
 The printed value may be deployed directly on a remote machine.
@@ -619,423 +615,5 @@ is_error_value(m3$data)
 ```
 
 `is_error_value()` tests for all mirai execution errors, user interrupts and timeouts.
-
-[&laquo; Back to ToC](#table-of-contents)
-
-### Parallel Clusters
-
-`mirai` provides an (experimental) alternative communications backend for R. This functionality was developed to fulfil a request by R Core at R Project Sprint 2023.
-
-`make_cluster()` creates a cluster object of class 'miraiCluster', which may be used for any function in the `parallel` base package such as `parallel::clusterApply()`, `parallel::parLapply()` or the load-balanced version `parallel::parLapplyLB()`.
-
-  + Specify 'n' to launch nodes on the local machine.
-  + Specify 'url' for receiving connections from remote nodes.
-  + Optionally, specify 'remote' to launch remote daemons using a remote configuration generated by `remote_config()` or `ssh_config()`, or else the shell commands for manual deployment of nodes are printed to the console.
-  + `status()` may be called on a 'miraiCluster` to query the number of connected nodes at any time.
-
-
-```r
-cl <- make_cluster(4)
-cl
-#> < miraiCluster | ID: `1` nodes: 4 active: TRUE >
-
-parallel::parLapply(cl, iris, mean)
-#> $Sepal.Length
-#> [1] 5.843333
-#> 
-#> $Sepal.Width
-#> [1] 3.057333
-#> 
-#> $Petal.Length
-#> [1] 3.758
-#> 
-#> $Petal.Width
-#> [1] 1.199333
-#> 
-#> $Species
-#> [1] NA
-
-status(cl)
-#> $connections
-#> [1] 2
-#> 
-#> $daemons
-#> [1] "abstract://b54f6b3c1f8cdcc0e8bea9be"
-
-stop_cluster(cl)
-
-cl <- make_cluster(n = 2, url = host_url())
-#> Shell commands for deployment on nodes:
-#> 
-#> [1]
-#> Rscript -e "mirai::daemon('tcp://hostname:37177',rs=c(10407,236067212,1230410013,-1328698054,-1279678093,45778968,811610937))"
-#> 
-#> [2]
-#> Rscript -e "mirai::daemon('tcp://hostname:37177',rs=c(10407,-9427494,-421994692,-1307624249,143395137,2059568915,2042720492))"
-
-stop_cluster(cl)
-```
-
-Created clusters are fully compatible with `parallel` cluster types.
-
-They may be registered by package [`doParallel`](https://cran.r-project.org/package=doParallel) for use with the [`foreach`](https://cran.r-project.org/package=foreach) package.
-
-[&laquo; Back to ToC](#table-of-contents)
-
-### Async Shiny Applications
-
-#### Shiny Example Usage
-
-{mirai} may be used to scale enterprise Shiny applications and plugs straight into the reactive framework, without the need to use promises.
-
-The following example has a button to submit tasks, which will be processed by one of 5 daemons, outputting a pretty spiral pattern upon completion.
-
-You will find that if you submit more than 5 tasks that the chart updates 5 at a time, limited by the parallel capacity of the application.
-
-
-```r
-library(mirai)
-library(shiny)
-library(ggplot2)
-library(aRtsy)
-
-run_task <- function() {
-  Sys.sleep(5L)
-  list(
-    colors = aRtsy::colorPalette(name = "random", n = 3),
-    angle = runif(n = 1, min = - 2 * pi, max = 2 * pi),
-    size = 1,
-    p = 1
-  )
-}
-
-plot_result <- function(result) {
-  do.call(what = canvas_phyllotaxis, args = result)
-}
-
-status_message <- function(tasks) {
-  if (tasks == 0L) {
-    "All tasks completed."
-  } else {
-    sprintf("%d task%s in progress at %s", tasks, if (tasks > 1L) "s" else "", format.POSIXct(Sys.time()))
-  }
-}
-
-ui <- fluidPage(
-  actionButton("task", "Submit a task (5 seconds)"),
-  textOutput("status"),
-  plotOutput("result")
-)
-
-server <- function(input, output, session) {
-  # reactive values and outputs
-  reactive_result <- reactiveVal(ggplot())
-  reactive_status <- reactiveVal("No task submitted yet.")
-  output$result <- renderPlot(reactive_result(), height = 600, width = 600)
-  output$status <- renderText(reactive_status())
-  poll_for_results <- reactiveVal(FALSE)
-
-  # mirai setup - 5 local daemons with dispatcher
-  daemons(5L)
-  onStop(function() daemons(0L))
-  q <- list()
-
-  # button to submit a task
-  observeEvent(input$task, {
-    q[[length(q) + 1L]] <<- mirai(run_task(), run_task = run_task)
-    poll_for_results(TRUE)
-  })
-
-  # event loop to collect finished tasks
-  observe({
-    req(poll_for_results())
-    invalidateLater(millis = 250)
-    if (length(q)) {
-      if (!unresolved(q[[1L]])) {
-        reactive_result(plot_result(q[[1L]][["data"]]))
-        q[[1L]] <<- NULL
-      }
-      reactive_status(status_message(length(q)))
-    } else {
-      poll_for_results(FALSE)
-    }
-  })
-}
-
-shinyApp(ui = ui, server = server)
-```
-*Thanks to Daniel Woodie and William Landau for providing the original example on which this is based.*
-
-#### Example Using Promises
-
-Alternatively, a 'mirai' may be used as a promise as it supplies its own `as.promise()` method.
-
-A 'mirai' may be piped directly using the promise pipe `&...>%`, which implicitly calls `as.promise()` on the 'mirai', or converted into a promise by `as.promise()`, which then allows using the methods `$then()`, `$finally()` etc.
-
-The below example simulates a plot function requiring a long compute in a ‘shiny’ app.
-
-This app takes c. 2s to start compared to the 8s it would otherwise take if not running in parallel.
-
-
-```r
-library(shiny)
-library(promises) # for promise pipe
-
-daemons(4L) # handle 4 simulateneous computes
-
-ui <- fluidPage(
-  fluidRow(
-    plotOutput("one"),
-    plotOutput("two"),
-  ),
-  fluidRow(
-    plotOutput("three"),
-    plotOutput("four"),
-  )
-)
-
-make_plot <- function(time) {
-  Sys.sleep(time)
-  runif(10)
-}
-
-args <- list(make_plot = make_plot, time = 2)
-
-server <- function(input, output, session) {
-  output$one <- renderPlot(mirai(make_plot(time), .args = args) %...>% plot())
-  output$two <- renderPlot(mirai(make_plot(time), .args = args) %...>% plot())
-  output$three <- renderPlot(mirai(make_plot(time), .args = args) %...>% plot())
-  output$four <- renderPlot(mirai(make_plot(time), .args = args) %...>% plot())
-  session$onSessionEnded(stopApp)
-}
-
-shinyApp(ui = ui, server = server)
-```
-*Thanks to Daniel Falbel for providing the original example on which this is based.*
-
-[&laquo; Back to ToC](#table-of-contents)
-
-### Promises: Async Plumber Applications
-
-'mirai' supplies its own `as.promise()` method, allowing it to be used as a promise.
-
-A 'mirai' may be piped directly using the promise pipe `&...>%`, which implicitly calls `as.promise()` on the 'mirai', or converted into a promise by `as.promise()`, which then allows using the methods `$then()`, `$finally()` etc.
-
-Below we provide example usage of how to use mirai as an async distributed backend for {plumber} pipelines.
-
-The plumber router code is run in a daemon process itself so that it does not block the interactive process. It is important to set up this daemon with the argument `autoexit = tools::SIGINT`, so that the plumber server is interrupted and exits cleanly when we tear it down.
-
-#### Example GET Endpoint
-
-The /echo endpoint takes a GET request, sleeps for 1 second (simulating an expensive computation) and just returns the 'msg' request header together with a timestamp and the process ID of the process it is run on.
-
-
-```r
-library(mirai)
-
-daemons(1L, dispatcher = FALSE, autoexit = tools::SIGINT)
-#> [1] 1
-
-m <- mirai({
-  library(plumber)
-  library(promises) # to provide the promise pipe
-  library(mirai)
-
-  daemons(4L, dispatcher = FALSE) # handles 4 requests simultaneously
-  # does not use dispatcher (suitable when all requests require similar compute)
-
-  pr() |>
-    pr_get(
-      "/echo",
-      function(req, res) {
-        mirai(
-          {
-            Sys.sleep(1L)
-            list(status = 200L, body = list(time = format(Sys.time()),
-                                            msg = req[["HEADERS"]][["msg"]],
-                                            pid = Sys.getpid()))
-          },
-          req = req
-        ) %...>% (function(x) {
-          res$status <- x$status
-          res$body <- x$body
-        })
-      }
-    ) |>
-    pr_run(host = "127.0.0.1", port = 8985)
-})
-```
-
-The API can be queried using an async HTTP client such as `nanonext::ncurl_aio()`.
-
-Here, all 8 requests are submitted at once, but we note that that responses have differing timestamps as only 4 can be processed at any given time.
-
-
-```r
-library(nanonext)
-res <- lapply(1:8,
-              function(i) ncurl_aio("http://127.0.0.1:8985/echo",
-                                    headers = c(msg = as.character(i))))
-res <- lapply(res, call_aio)
-for (r in res) print(r$data)
-#> [1] "{\"time\":[\"2024-01-09 14:17:05\"],\"msg\":[\"1\"],\"pid\":[22578]}"
-#> [1] "{\"time\":[\"2024-01-09 14:17:05\"],\"msg\":[\"2\"],\"pid\":[22572]}"
-#> [1] "{\"time\":[\"2024-01-09 14:17:06\"],\"msg\":[\"3\"],\"pid\":[22578]}"
-#> [1] "{\"time\":[\"2024-01-09 14:17:06\"],\"msg\":[\"4\"],\"pid\":[22575]}"
-#> [1] "{\"time\":[\"2024-01-09 14:17:05\"],\"msg\":[\"5\"],\"pid\":[22575]}"
-#> [1] "{\"time\":[\"2024-01-09 14:17:06\"],\"msg\":[\"6\"],\"pid\":[22570]}"
-#> [1] "{\"time\":[\"2024-01-09 14:17:05\"],\"msg\":[\"7\"],\"pid\":[22570]}"
-#> [1] "{\"time\":[\"2024-01-09 14:17:06\"],\"msg\":[\"8\"],\"pid\":[22572]}"
-
-daemons(0)
-#> [1] 0
-```
-
-#### Example POST Endpoint
-
-Below is a demonstration of the equivalent using a POST endpoint, accepting a JSON instruction sent as request data.
-
-It is important to note in this case that `req$postBody` should be accessed in the router process and passed in as an argument to the 'mirai' as this is retrieved using a connection that is not serializable.
-
-
-```r
-library(mirai)
-
-daemons(1L, dispatcher = FALSE, autoexit = tools::SIGINT)
-#> [1] 1
-
-m <- mirai({
-  library(plumber)
-  library(promises) # to provide the promise pipe
-  library(mirai)
-
-  daemons(4L) # handles 4 requests simultaneously
-  # uses dispatcher (suitable for requests with differing compute lengths)
-
-  pr() |>
-    pr_post(
-      "/echo",
-      function(req, res) {
-        mirai(
-          {
-            Sys.sleep(1L) # simulate expensive computation
-            list(status = 200L,
-                 body = list(time = format(Sys.time()),
-                             msg = jsonlite::fromJSON(data)[["msg"]],
-                             pid = Sys.getpid()))
-          },
-          data = req$postBody
-        ) %...>% (function(x) {
-          res$status <- x$status
-          res$body <- x$body
-        })
-      }
-    ) |>
-    pr_run(host = "127.0.0.1", port = 8986)
-})
-```
-
-Querying the endpoint produces the same set of outputs as the previous example.
-
-
-```r
-library(nanonext)
-res <- lapply(1:8,
-              function(i) ncurl_aio("http://127.0.0.1:8986/echo",
-                                    method = "POST",
-                                    data = sprintf('{"msg":"%d"}', i)))
-res <- lapply(res, call_aio)
-for (r in res) print(r$data)
-#> [1] "{\"time\":[\"2024-01-09 14:17:09\"],\"msg\":[\"1\"],\"pid\":[22853]}"
-#> [1] "{\"time\":[\"2024-01-09 14:17:10\"],\"msg\":[\"2\"],\"pid\":[22855]}"
-#> [1] "{\"time\":[\"2024-01-09 14:17:11\"],\"msg\":[\"3\"],\"pid\":[22858]}"
-#> [1] "{\"time\":[\"2024-01-09 14:17:10\"],\"msg\":[\"4\"],\"pid\":[22858]}"
-#> [1] "{\"time\":[\"2024-01-09 14:17:11\"],\"msg\":[\"5\"],\"pid\":[22853]}"
-#> [1] "{\"time\":[\"2024-01-09 14:17:11\"],\"msg\":[\"6\"],\"pid\":[22862]}"
-#> [1] "{\"time\":[\"2024-01-09 14:17:11\"],\"msg\":[\"7\"],\"pid\":[22855]}"
-#> [1] "{\"time\":[\"2024-01-09 14:17:10\"],\"msg\":[\"8\"],\"pid\":[22862]}"
-
-daemons(0)
-#> [1] 0
-```
-[&laquo; Back to ToC](#table-of-contents)
-
-### Custom Serialization: Torch Parallelization
-
-Custom serialization functions may be registered to handle external pointer type reference objects.
-
-This allows tensors from the [`torch`](https://cran.r-project.org/package=torch) package to be used seamlessly in 'mirai' computations.
-
-1. Register the serialization and unserialization functions as a list supplied to the 'refhook' argument of `serialization()`.
-
-2. Set up dameons - this may be done before or after setting `serialization()`.
-
-3. Use `everywhere()` to make the 'torch' package available on all dameons (for convenience, optional).
-
-
-```r
-library(torch)
-serialization(refhook = list(torch:::torch_serialize, torch::torch_load))
-daemons(1)
-#> [1] 1
-everywhere(library(torch))
-```
-
-The below example creates a convolutional neural network using `torch::nn_module()`, which is then passed a set of parameters and initialized within a 'mirai'.
-
-
-```r
-model <- nn_module(
-  initialize = function(in_size, out_size) {
-    self$conv1 <- nn_conv2d(in_size, out_size, 5)
-    self$conv2 <- nn_conv2d(in_size, out_size, 5)
-  },
-  forward = function(x) {
-    x <- self$conv1(x)
-    x <- nnf_relu(x)
-    x <- self$conv2(x)
-    x <- nnf_relu(x)
-    x
-  }
-)
-
-params <- list(in_size = 1, out_size = 20)
-
-m <- mirai(do.call(model, params), .args = list(model, params))
-call_mirai(m)$data
-#> An `nn_module` containing 1,040 parameters.
-#> 
-#> ── Modules ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-#> • conv1: <nn_conv2d> #520 parameters
-#> • conv2: <nn_conv2d> #520 parameters
-```
-The returned model is an object containing many tensor elements. The model parameters can then be further passed to an optimiser, with that also initialized within a 'mirai' process.
-
-
-```r
-optim <- mirai(optim_rmsprop(params = params), params = m$data$parameters)
-call_mirai(optim)$data
-#> <optim_rmsprop>
-#>   Inherits from: <torch_optimizer>
-#>   Public:
-#>     add_param_group: function (param_group) 
-#>     clone: function (deep = FALSE) 
-#>     defaults: list
-#>     initialize: function (params, lr = 0.01, alpha = 0.99, eps = 1e-08, weight_decay = 0, 
-#>     load_state_dict: function (state_dict, ..., .refer_to_state_dict = FALSE) 
-#>     param_groups: list
-#>     state: State, R6
-#>     state_dict: function () 
-#>     step: function (closure = NULL) 
-#>     zero_grad: function () 
-#>   Private:
-#>     step_helper: function (closure, loop_fun)
-
-daemons(0)
-#> [1] 0
-```
-Above, tensors and complex objects containing tensors were passed seamlessly between host and daemon processes, in the same way as any other R object.
-
-The implementation leverages R's own native 'refhook' mechanism to allow such completely transparent usage, and is designed to be fast and efficient using the serialization methods from the 'torch' package directly, minimising data copies where possible.
 
 [&laquo; Back to ToC](#table-of-contents)

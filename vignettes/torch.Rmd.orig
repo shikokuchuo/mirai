@@ -1,0 +1,74 @@
+---
+title: "mirai - Torch Integration"
+vignette: >
+  %\VignetteIndexEntry{mirai - Torch Integration}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  out.width = "100%"
+)
+```
+
+### Torch Integration
+
+Custom serialization functions may be registered to handle external pointer type reference objects.
+
+This allows tensors from the [`torch`](https://cran.r-project.org/package=torch) package to be used seamlessly in 'mirai' computations.
+
+1. Register the serialization and unserialization functions as a list supplied to the 'refhook' argument of `serialization()`.
+
+2. Set up dameons - this may be done before or after setting `serialization()`.
+
+3. Use `everywhere()` to make the 'torch' package available on all dameons (for convenience, optional).
+
+```{r tensors}
+library(torch)
+serialization(refhook = list(torch:::torch_serialize, torch::torch_load))
+daemons(1)
+everywhere(library(torch))
+```
+
+The below example creates a convolutional neural network using `torch::nn_module()`, which is then passed a set of parameters and initialized within a 'mirai'.
+
+```{r tensors2}
+model <- nn_module(
+  initialize = function(in_size, out_size) {
+    self$conv1 <- nn_conv2d(in_size, out_size, 5)
+    self$conv2 <- nn_conv2d(in_size, out_size, 5)
+  },
+  forward = function(x) {
+    x <- self$conv1(x)
+    x <- nnf_relu(x)
+    x <- self$conv2(x)
+    x <- nnf_relu(x)
+    x
+  }
+)
+
+params <- list(in_size = 1, out_size = 20)
+
+m <- mirai(do.call(model, params), .args = list(model, params))
+call_mirai(m)$data
+```
+The returned model is an object containing many tensor elements.
+
+```{r tensors3}
+m$data$parameters$conv1.weight
+```
+
+The model parameters can then be further passed to an optimiser, with that also initialized within a 'mirai' process.
+
+```{r tensors4}
+optim <- mirai(optim_rmsprop(params = params), params = m$data$parameters)
+call_mirai(optim)$data
+
+daemons(0)
+```
+Above, tensors and complex objects containing tensors were passed seamlessly between host and daemon processes, in the same way as any other R object.
+
+The implementation leverages R's own native 'refhook' mechanism to allow such completely transparent usage, and is designed to be fast and efficient using the serialization methods from the 'torch' package directly, minimising data copies where possible.
