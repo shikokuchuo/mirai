@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.3.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.3.9005</span>
       </span>
     </div>
 
@@ -65,6 +65,9 @@
     </li>
     <li>
       <a href="../articles/plumber.html">mirai - Plumber Integration</a>
+    </li>
+    <li>
+      <a href="../articles/promises.html">mirai - Promises Integration</a>
     </li>
     <li>
       <a href="../articles/shiny.html">mirai - Shiny Integration</a>
@@ -120,15 +123,17 @@
 <div class="section level4">
 <h4 id="shiny-example-usage">Shiny Example Usage<a class="anchor" aria-label="anchor" href="#shiny-example-usage"></a>
 </h4>
-<p>{mirai} may be used to scale enterprise Shiny applications and plugs
-straight into the reactive framework, without the need to use
-promises.</p>
+<p>{mirai} may be used as an asynchronous / distributed backend to scale
+<a href="https://cran.r-project.org/package=shiny" class="external-link">{shiny}</a>
+applications and plugs directly into the reactive framework, without the
+need to use promises. Because of this, it is especially suited to
+large-scale enterprise applications.</p>
 <p>The following example has a button to submit tasks, which will be
 processed by one of 5 daemons, outputting a pretty spiral pattern upon
 completion.</p>
-<p>You will find that if you submit more than 5 tasks that the chart
-updates 5 at a time, limited by the parallel capacity of the
-application.</p>
+<p>You will find that if you submit more than 5 tasks, the chart updates
+5 at a time, limited by the number of daemons set (the
+parallel-processing capacity of the application).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
@@ -200,7 +205,8 @@ application.</p>
 <span></span>
 <span><span class="fu">shinyApp</span><span class="op">(</span>ui <span class="op">=</span> <span class="va">ui</span>, server <span class="op">=</span> <span class="va">server</span><span class="op">)</span></span></code></pre></div>
 <p><em>Thanks to Daniel Woodie and William Landau for providing the
-original example on which this is based.</em></p>
+original example on which this is based. Please see <a href="https://wlandau.github.io/crew/articles/shiny.html" class="external-link uri">https://wlandau.github.io/crew/articles/shiny.html</a> which
+also has examples of the fantastic artwork produced.</em></p>
 </div>
 <div class="section level4">
 <h4 id="example-using-promises">Example Using Promises<a class="anchor" aria-label="anchor" href="#example-using-promises"></a>
@@ -213,9 +219,9 @@ own <code><a href="https://rstudio.github.io/promises/reference/is.promise.html"
 <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code>, which then allows using the methods
 <code>$then()</code>, <code>$finally()</code> etc.</p>
 <p>The below example simulates a plot function requiring a long compute
-in a ‘shiny’ app.</p>
-<p>This app takes c. 2s to start compared to the 8s it would otherwise
-take if not running in parallel.</p>
+in a ‘shiny’ application.</p>
+<p>The application starts in around 2s rather than the 8s it would take
+if not running in parallel.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/promises/" class="external-link">promises</a></span><span class="op">)</span> <span class="co"># for promise pipe</span></span>

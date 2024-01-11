@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.3.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.3.9005</span>
       </span>
     </div>
 
@@ -65,6 +65,9 @@
     </li>
     <li>
       <a href="../articles/plumber.html">mirai - Plumber Integration</a>
+    </li>
+    <li>
+      <a href="../articles/promises.html">mirai - Promises Integration</a>
     </li>
     <li>
       <a href="../articles/shiny.html">mirai - Shiny Integration</a>
@@ -117,30 +120,22 @@
 <div class="section level3">
 <h3 id="plumber-integration">Plumber Integration<a class="anchor" aria-label="anchor" href="#plumber-integration"></a>
 </h3>
-<p>‘mirai’ supplies its own <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code> method, allowing
-it to be used as a promise.</p>
-<p>A ‘mirai’ may be piped directly using the promise pipe
-<code>&amp;...&gt;%</code>, which implicitly calls
-<code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code> on the ‘mirai’, or converted into a promise by
-<code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code>, which then allows using the methods
-<code>$then()</code>, <code>$finally()</code> etc.</p>
-<p>Below we provide example usage of how to use mirai as an async
-distributed backend for {plumber} pipelines.</p>
-<p>The plumber router code is run in a daemon process itself so that it
-does not block the interactive process. It is important to set up this
-daemon with the argument <code>autoexit = tools::SIGINT</code>, so that
-the plumber server is interrupted and exits cleanly when we tear it
-down.</p>
+<p>{mirai} may be used as an asynchronous / distributed backend for <a href="https://cran.r-project.org/package=plumber" class="external-link">{plumber}</a>
+pipelines.</p>
+<p>Example usage is provided below for different types of endpoint.</p>
 <div class="section level4">
 <h4 id="example-get-endpoint">Example GET Endpoint<a class="anchor" aria-label="anchor" href="#example-get-endpoint"></a>
 </h4>
+<p>The plumber router code is run in a daemon process itself so that it
+does not block the interactive process.</p>
 <p>The /echo endpoint takes a GET request, sleeps for 1 second
-(simulating an expensive computation) and just returns the ‘msg’ request
-header together with a timestamp and the process ID of the process it is
-run on.</p>
+(simulating an expensive computation) and simply returns the ‘msg’
+request header together with a timestamp and the process ID of the
+process it is run on.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># important to supply SIGINT so the plumber server is interrupted and exits cleanly when torn down.</span></span>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1L</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span>, autoexit <span class="op">=</span> <span class="fu">tools</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/tools/pskill.html" class="external-link">SIGINT</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span></span>
@@ -149,8 +144,8 @@ run on.</p>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/promises/" class="external-link">promises</a></span><span class="op">)</span> <span class="co"># to provide the promise pipe</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">4L</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># handles 4 requests simultaneously</span></span>
 <span>  <span class="co"># does not use dispatcher (suitable when all requests require similar compute)</span></span>
+<span>  <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">4L</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># handles 4 requests simultaneously</span></span>
 <span></span>
 <span>  <span class="fu">pr</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">pr_get</span><span class="op">(</span></span>
@@ -176,7 +171,7 @@ run on.</p>
 <code><a href="https://shikokuchuo.net/nanonext/reference/ncurl_aio.html" class="external-link">nanonext::ncurl_aio()</a></code>.</p>
 <p>Here, all 8 requests are submitted at once, but we note that that
 responses have differing timestamps as only 4 can be processed at any
-given time.</p>
+one time (limited by the number of daemons set).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/nanonext/" class="external-link">nanonext</a></span><span class="op">)</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span>,</span>
@@ -184,14 +179,14 @@ given time.</p>
 <span>                                    headers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>msg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">call_aio</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">r</span> <span class="kw">in</span> <span class="va">res</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">r</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-10 22:18:07\"],\"msg\":[\"1\"],\"pid\":[20080]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-10 22:18:07\"],\"msg\":[\"2\"],\"pid\":[20087]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-10 22:18:07\"],\"msg\":[\"3\"],\"pid\":[20082]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-10 22:18:08\"],\"msg\":[\"4\"],\"pid\":[20080]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-10 22:18:07\"],\"msg\":[\"5\"],\"pid\":[20084]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-10 22:18:08\"],\"msg\":[\"6\"],\"pid\":[20084]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-10 22:18:08\"],\"msg\":[\"7\"],\"pid\":[20082]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-10 22:18:08\"],\"msg\":[\"8\"],\"pid\":[20087]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-11 12:16:11\"],\"msg\":[\"1\"],\"pid\":[34995]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-11 12:16:11\"],\"msg\":[\"2\"],\"pid\":[34987]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-11 12:16:11\"],\"msg\":[\"3\"],\"pid\":[34992]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-11 12:16:11\"],\"msg\":[\"4\"],\"pid\":[34989]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-11 12:16:12\"],\"msg\":[\"5\"],\"pid\":[34989]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-11 12:16:12\"],\"msg\":[\"6\"],\"pid\":[34987]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-11 12:16:12\"],\"msg\":[\"7\"],\"pid\":[34992]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-11 12:16:12\"],\"msg\":[\"8\"],\"pid\":[34995]}"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
@@ -208,6 +203,7 @@ serializable.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># important to supply SIGINT so the plumber server is interrupted and exits cleanly when torn down.</span></span>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1L</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span>, autoexit <span class="op">=</span> <span class="fu">tools</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/tools/pskill.html" class="external-link">SIGINT</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span></span>
@@ -216,8 +212,8 @@ serializable.</p>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/promises/" class="external-link">promises</a></span><span class="op">)</span> <span class="co"># to provide the promise pipe</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">4L</span><span class="op">)</span> <span class="co"># handles 4 requests simultaneously</span></span>
 <span>  <span class="co"># uses dispatcher (suitable for requests with differing compute lengths)</span></span>
+<span>  <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">4L</span>, dispatcher <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># handles 4 requests simultaneously</span></span>
 <span></span>
 <span>  <span class="fu">pr</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">pr_post</span><span class="op">(</span></span>
@@ -250,14 +246,14 @@ previous example.</p>
 <span>                                    data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">'{"msg":"%d"}'</span>, <span class="va">i</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">call_aio</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">r</span> <span class="kw">in</span> <span class="va">res</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">r</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-10 22:18:11\"],\"msg\":[\"1\"],\"pid\":[20357]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-10 22:18:11\"],\"msg\":[\"2\"],\"pid\":[20359]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-10 22:18:11\"],\"msg\":[\"3\"],\"pid\":[20362]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-10 22:18:11\"],\"msg\":[\"4\"],\"pid\":[20366]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-10 22:18:12\"],\"msg\":[\"5\"],\"pid\":[20357]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-10 22:18:12\"],\"msg\":[\"6\"],\"pid\":[20359]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-10 22:18:12\"],\"msg\":[\"7\"],\"pid\":[20366]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-10 22:18:12\"],\"msg\":[\"8\"],\"pid\":[20362]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-11 12:16:15\"],\"msg\":[\"1\"],\"pid\":[35264]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-11 12:16:16\"],\"msg\":[\"2\"],\"pid\":[35269]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-11 12:16:15\"],\"msg\":[\"3\"],\"pid\":[35266]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-11 12:16:16\"],\"msg\":[\"4\"],\"pid\":[35264]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-11 12:16:15\"],\"msg\":[\"5\"],\"pid\":[35269]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-11 12:16:15\"],\"msg\":[\"6\"],\"pid\":[35272]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-11 12:16:16\"],\"msg\":[\"7\"],\"pid\":[35272]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-01-11 12:16:16\"],\"msg\":[\"8\"],\"pid\":[35266]}"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>

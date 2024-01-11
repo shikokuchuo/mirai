@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.3.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.11.3.9005</span>
       </span>
     </div>
 
@@ -65,6 +65,9 @@
     </li>
     <li>
       <a href="../articles/plumber.html">mirai - Plumber Integration</a>
+    </li>
+    <li>
+      <a href="../articles/promises.html">mirai - Promises Integration</a>
     </li>
     <li>
       <a href="../articles/shiny.html">mirai - Shiny Integration</a>
@@ -119,15 +122,17 @@
 </h3>
 <p>Custom serialization functions may be registered to handle external
 pointer type reference objects.</p>
-<p>This allows tensors from the <a href="https://cran.r-project.org/package=torch" class="external-link"><code>torch</code></a>
-package to be used seamlessly in ‘mirai’ computations.</p>
+<p>This allows tensors from the <a href="https://cran.r-project.org/package=torch" class="external-link">{torch}</a> package to
+be used seamlessly in ‘mirai’ computations.</p>
+<div class="section level4">
+<h4 id="setup-steps">Setup Steps<a class="anchor" aria-label="anchor" href="#setup-steps"></a>
+</h4>
 <ol style="list-style-type: decimal">
 <li><p>Register the serialization and unserialization functions as a
-list supplied to the ‘refhook’ argument of
-<code><a href="../reference/serialization.html">serialization()</a></code>.</p></li>
+list supplied to <code><a href="../reference/serialization.html">serialization()</a></code>.</p></li>
 <li><p>Set up dameons - this may be done before or after setting
 <code><a href="../reference/serialization.html">serialization()</a></code>.</p></li>
-<li><p>Use <code><a href="../reference/everywhere.html">everywhere()</a></code> to make the ‘torch’ package
+<li><p>Use <code><a href="../reference/everywhere.html">everywhere()</a></code> to make the {torch} package
 available on all dameons (for convenience, optional).</p></li>
 </ol>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -136,9 +141,15 @@ available on all dameons (for convenience, optional).</p></li>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="fu"><a href="../reference/everywhere.html">everywhere</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://torch.mlverse.org/docs" class="external-link">torch</a></span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="example-usage">Example Usage<a class="anchor" aria-label="anchor" href="#example-usage"></a>
+</h4>
 <p>The below example creates a convolutional neural network using
-<code>torch::nn_module()</code>, which is then passed a set of
-parameters and initialized within a ‘mirai’.</p>
+<code>torch::nn_module()</code>.</p>
+<p>A set of model parameters is also specified.</p>
+<p>The model specification and parameters are then passed to and
+initialized within a ‘mirai’.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">nn_module</span><span class="op">(</span></span>
 <span>  initialize <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">in_size</span>, <span class="va">out_size</span><span class="op">)</span> <span class="op">{</span></span>
@@ -157,6 +168,7 @@ parameters and initialized within a ‘mirai’.</p>
 <span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>in_size <span class="op">=</span> <span class="fl">1</span>, out_size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">params</span><span class="op">)</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">params</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu"><a href="../reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; An `nn_module` containing 1,040 parameters.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -168,41 +180,43 @@ parameters and initialized within a ‘mirai’.</p>
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">conv1.weight</span></span>
 <span><span class="co">#&gt; torch_tensor</span></span>
 <span><span class="co">#&gt; (1,1,.,.) = </span></span>
-<span><span class="co">#&gt;  -0.1205 -0.1757 -0.0501  0.1389  0.0922</span></span>
-<span><span class="co">#&gt;  -0.1649 -0.1273  0.0191  0.1186 -0.0943</span></span>
-<span><span class="co">#&gt;   0.1665 -0.0876 -0.1023  0.0301  0.1141</span></span>
-<span><span class="co">#&gt;   0.0322  0.0580  0.0123 -0.0415 -0.1614</span></span>
-<span><span class="co">#&gt;   0.1639  0.1523 -0.1057 -0.0188 -0.0248</span></span>
+<span><span class="co">#&gt;  -0.0679  0.1029  0.1385  0.1610 -0.0206</span></span>
+<span><span class="co">#&gt;  -0.0851 -0.0514 -0.1901  0.0832  0.1121</span></span>
+<span><span class="co">#&gt;   0.1122  0.0309 -0.1937 -0.1249  0.0343</span></span>
+<span><span class="co">#&gt;   0.1398 -0.0798  0.0933  0.0672 -0.0778</span></span>
+<span><span class="co">#&gt;  -0.0879 -0.0727 -0.1004  0.1328  0.0231</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (2,1,.,.) = </span></span>
-<span><span class="co">#&gt;  -0.1008  0.1984 -0.0736 -0.1917  0.1427</span></span>
-<span><span class="co">#&gt;   0.0703  0.0128  0.0620 -0.0524 -0.0565</span></span>
-<span><span class="co">#&gt;   0.0750 -0.0657  0.1786 -0.1733 -0.0639</span></span>
-<span><span class="co">#&gt;  -0.1578  0.1989  0.1473 -0.1071  0.0607</span></span>
-<span><span class="co">#&gt;  -0.1334 -0.1061 -0.1487 -0.1097 -0.0244</span></span>
+<span><span class="co">#&gt;   0.1520 -0.0140  0.0621  0.1891 -0.0192</span></span>
+<span><span class="co">#&gt;   0.1381  0.1579  0.0415  0.1586 -0.1211</span></span>
+<span><span class="co">#&gt;  -0.0809 -0.0243 -0.1879 -0.1244 -0.1937</span></span>
+<span><span class="co">#&gt;   0.0408  0.1539 -0.0597 -0.1490  0.1888</span></span>
+<span><span class="co">#&gt;   0.1035  0.0616  0.0775  0.0979 -0.1342</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (3,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.0814  0.1406  0.0929  0.0101  0.0254</span></span>
-<span><span class="co">#&gt;   0.0645  0.0082 -0.1432 -0.0091 -0.1674</span></span>
-<span><span class="co">#&gt;   0.0242 -0.1321 -0.1690 -0.0254 -0.1345</span></span>
-<span><span class="co">#&gt;  -0.1011  0.0083 -0.1139 -0.0948 -0.0941</span></span>
-<span><span class="co">#&gt;  -0.0352 -0.1540  0.0097 -0.1977  0.0735</span></span>
+<span><span class="co">#&gt;   0.0944 -0.1438 -0.0957 -0.1855 -0.1500</span></span>
+<span><span class="co">#&gt;  -0.1392 -0.1959 -0.0065  0.1261 -0.1844</span></span>
+<span><span class="co">#&gt;   0.1375  0.0872 -0.0247 -0.1190  0.1837</span></span>
+<span><span class="co">#&gt;   0.0579 -0.0641  0.1278 -0.1847 -0.1106</span></span>
+<span><span class="co">#&gt;  -0.0202 -0.1681  0.0986 -0.1300  0.1095</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (4,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.1920  0.1211  0.1399  0.1913 -0.0115</span></span>
-<span><span class="co">#&gt;  -0.1858  0.0491 -0.0151 -0.0219 -0.1164</span></span>
-<span><span class="co">#&gt;  -0.1854  0.0309 -0.0076  0.0381 -0.0900</span></span>
-<span><span class="co">#&gt;   0.0488  0.1269  0.0352  0.0338 -0.0510</span></span>
-<span><span class="co">#&gt;  -0.0565 -0.0516 -0.0590  0.1656 -0.1994</span></span>
+<span><span class="co">#&gt;   0.0105  0.0562  0.1678  0.1800  0.1642</span></span>
+<span><span class="co">#&gt;   0.1107 -0.0196 -0.0244 -0.1933 -0.1752</span></span>
+<span><span class="co">#&gt;  -0.1280  0.0362 -0.1671 -0.0661  0.1871</span></span>
+<span><span class="co">#&gt;  -0.0716  0.1232  0.0725 -0.0820  0.0994</span></span>
+<span><span class="co">#&gt;  -0.1820 -0.1687  0.1173  0.1916 -0.1074</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (5,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.1760 -0.0951 -0.0583  0.1938  0.0130</span></span>
+<span><span class="co">#&gt;   0.1298  0.1826  0.1107 -0.0559  0.1817</span></span>
 <span><span class="co">#&gt; ... [the output was truncated (use n=-1 to disable)]</span></span>
 <span><span class="co">#&gt; [ CPUFloatType{20,1,5,5} ][ requires_grad = TRUE ]</span></span></code></pre></div>
-<p>The model parameters can then be further passed to an optimiser, with
-that also initialized within a ‘mirai’ process.</p>
+<p>It is usual for model parameters to then be passed to an
+optimiser.</p>
+<p>This can also be initialized within a ‘mirai’ process.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">optim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu">optim_rmsprop</span><span class="op">(</span>params <span class="op">=</span> <span class="va">params</span><span class="op">)</span>, params <span class="op">=</span> <span class="va">m</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu"><a href="../reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">optim</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; &lt;optim_rmsprop&gt;</span></span>
 <span><span class="co">#&gt;   Inherits from: &lt;torch_optimizer&gt;</span></span>
@@ -225,10 +239,11 @@ that also initialized within a ‘mirai’ process.</p>
 <p>Above, tensors and complex objects containing tensors were passed
 seamlessly between host and daemon processes, in the same way as any
 other R object.</p>
-<p>The implementation leverages R’s own native ‘refhook’ mechanism to
-allow such completely transparent usage, and is designed to be fast and
-efficient using the serialization methods from the ‘torch’ package
-directly, minimising data copies where possible.</p>
+<p>The custom serialization in {mirai} leverages R’s own native
+‘refhook’ mechanism to allow such completely transparent usage.</p>
+<p>It is designed to be fast and efficient, minimising data copies and
+using the serialization methods from the ‘torch’ package directly.</p>
+</div>
 </div>
   </div>
 
