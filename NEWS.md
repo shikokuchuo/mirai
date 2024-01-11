@@ -4,6 +4,7 @@
 * Adds `local_url()` helper to construct a random inter-process communications URL for local daemons (thanks @noamross #90).
 * `daemon()` argument 'autoexit' now accepts a signal value such as `tools::SIGINT` in order to raise it upon exit.
 * `daemon()` now records the state of initial global environment objects (e.g. those created in .Rprofile) for cleanup purposes (thanks @noamross #91).
+* Slightly more optimal `as.promise()` method for 'mirai'.
 * Eliminates potential memory leaks along certain error paths.
 * Requires nanonext >= 0.12.0.
 

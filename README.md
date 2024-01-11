@@ -87,8 +87,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  0.1216695  0.5158258  0.3489981  7.1681201 -0.3932899 -2.5426533
-#>  [7]  0.1395066  2.8653453  1.9386388  8.2189833
+#>  [1] -2.4019171  1.5201849  1.9796594 -1.1776160  1.7105682  0.5846011
+#>  [7] -0.8491733  0.5051374  0.6578147 -0.4163341
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -96,15 +96,14 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  0.1216695  0.5158258  0.3489981  7.1681201 -0.3932899 -2.5426533
-#>  [7]  0.1395066  2.8653453  1.9386388  8.2189833
+#>  [1] -2.4019171  1.5201849  1.9796594 -1.1776160  1.7105682  0.5846011
+#>  [7] -0.8491733  0.5051374  0.6578147 -0.4163341
 ```
 
 ### Daemons
 
 Daemons are persistent background processes created to receive ‘mirai’
-requests. This is potentially more efficient as new processes no longer
-need to be created on an *ad hoc* basis.
+requests.
 
 They may be deployed for:
 
@@ -133,16 +132,16 @@ vignette("mirai", package = "mirai")
 
 ### Integrations
 
-The following core integrations are provided, with usage examples in the
-linked vignettes:
+The following core integrations are documented, with usage examples in
+the linked vignettes:
 
 [{parallel}](https://shikokuchuo.net/mirai/articles/parallel.html) -
 provides an alternative communications backend for R, implementing a
 low-level feature request by R-Core at R Project Sprint 2023.
 
-[{promises}](https://shikokuchuo.net/mirai/articles/promises.html) - the
-‘mirai’ `as.promise()` method allows for their use as ‘promises’ or to
-be piped using the promise pipe `%...>%`.
+[{promises}](https://shikokuchuo.net/mirai/articles/promises.html) -
+‘mirai’ may be used interchangeably with ‘promises’ by using the promise
+pipe `%...>%` or the `as.promise()` method.
 
 [{plumber}](https://shikokuchuo.net/mirai/articles/plumber.html) -
 serves as an asynchronous / distributed backend, scaling applications
@@ -181,9 +180,7 @@ We would like to thank in particular:
 [William Landau](https://github.com/wlandau/), for being instrumental in
 shaping development of the package, from initiating the original request
 for persistent daemons, through to orchestrating robustness testing for
-the high performance computing requirements of
-[`crew`](https://cran.r-project.org/package=crew) and
-[`targets`](https://cran.r-project.org/package=targets).
+the high performance computing requirements of {crew} and {targets}.
 
 [Henrik Bengtsson](https://github.com/HenrikBengtsson/), for valuable
 and incisive insights leading to the interface accepting broader usage
@@ -194,8 +191,7 @@ R’s implementation of L’Ecuyer-CMRG streams, used to ensure statistical
 independence in parallel processing.
 
 [Daniel Falbel](https://github.com/dfalbel/), for discussion around an
-efficient solution to serialization and transmission of
-[`torch`](https://cran.r-project.org/package=torch) tensors.
+efficient solution to serialization and transmission of {torch} tensors.
 
 [« Back to ToC](#table-of-contents)
 
