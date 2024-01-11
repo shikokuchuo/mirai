@@ -158,18 +158,18 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]  0.1216695  0.5158258  0.3489981  7.1681201 -0.3932899 -2.5426533</span></span>
-<span><span class="co">#&gt;  [7]  0.1395066  2.8653453  1.9386388  8.2189833</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] -2.4019171  1.5201849  1.9796594 -1.1776160  1.7105682  0.5846011</span></span>
+<span><span class="co">#&gt;  [7] -0.8491733  0.5051374  0.6578147 -0.4163341</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]  0.1216695  0.5158258  0.3489981  7.1681201 -0.3932899 -2.5426533</span></span>
-<span><span class="co">#&gt;  [7]  0.1395066  2.8653453  1.9386388  8.2189833</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] -2.4019171  1.5201849  1.9796594 -1.1776160  1.7105682  0.5846011</span></span>
+<span><span class="co">#&gt;  [7] -0.8491733  0.5051374  0.6578147 -0.4163341</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
 </h3>
-<p>Daemons are persistent background processes created to receive ‘mirai’ requests. This is potentially more efficient as new processes no longer need to be created on an <em>ad hoc</em> basis.</p>
+<p>Daemons are persistent background processes created to receive ‘mirai’ requests.</p>
 <p>They may be deployed for:</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/mirai.html#daemons-local-persistent-processes">local</a> parallel processing, or</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-remote-daemons">remote</a> network distributed computing.</p>
@@ -182,9 +182,9 @@
 <div class="section level3">
 <h3 id="integrations">Integrations<a class="anchor" aria-label="anchor" href="#integrations"></a>
 </h3>
-<p>The following core integrations are provided, with usage examples in the linked vignettes:</p>
+<p>The following core integrations are documented, with usage examples in the linked vignettes:</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/parallel.html">{parallel}</a> - provides an alternative communications backend for R, implementing a low-level feature request by R-Core at R Project Sprint 2023.</p>
-<p><a href="https://shikokuchuo.net/mirai/articles/promises.html">{promises}</a> - the ‘mirai’ <code>as.promise()</code> method allows for their use as ‘promises’ or to be piped using the promise pipe <code>%...&gt;%</code>.</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/promises.html">{promises}</a> - ‘mirai’ may be used interchangeably with ‘promises’ by using the promise pipe <code>%...&gt;%</code> or the <code>as.promise()</code> method.</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/plumber.html">{plumber}</a> - serves as an asynchronous / distributed backend, scaling applications via the use of promises.</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/shiny.html">{shiny}</a> - serves as an asynchronous / distributed backend, plugging directly into the reactive framework without the need for promises.</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/torch.html">{torch}</a> - the custom serialization interface allows tensors and complex objects such as models and optimizers to be used seamlessly across parallel processes.</p>
@@ -201,10 +201,10 @@
 <h3 id="thanks">Thanks<a class="anchor" aria-label="anchor" href="#thanks"></a>
 </h3>
 <p>We would like to thank in particular:</p>
-<p><a href="https://github.com/wlandau/" class="external-link">William Landau</a>, for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> and <a href="https://cran.r-project.org/package=targets" class="external-link"><code>targets</code></a>.</p>
+<p><a href="https://github.com/wlandau/" class="external-link">William Landau</a>, for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of {crew} and {targets}.</p>
 <p><a href="https://github.com/HenrikBengtsson/" class="external-link">Henrik Bengtsson</a>, for valuable and incisive insights leading to the interface accepting broader usage patterns.</p>
 <p><a href="https://github.com/ltierney/" class="external-link">Luke Tierney</a>, R Core, for discussion on R’s implementation of L’Ecuyer-CMRG streams, used to ensure statistical independence in parallel processing.</p>
-<p><a href="https://github.com/dfalbel/" class="external-link">Daniel Falbel</a>, for discussion around an efficient solution to serialization and transmission of <a href="https://cran.r-project.org/package=torch" class="external-link"><code>torch</code></a> tensors.</p>
+<p><a href="https://github.com/dfalbel/" class="external-link">Daniel Falbel</a>, for discussion around an efficient solution to serialization and transmission of {torch} tensors.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
