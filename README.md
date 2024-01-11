@@ -87,8 +87,8 @@ result.
 
 ``` r
 m$data
-#>  [1] -1.8371814 -0.6623062 -0.4788542  1.2682884  0.6763480  1.4785289
-#>  [7]  0.7884642 -2.0883185 -1.5098757 -0.5443121
+#>  [1]  0.1216695  0.5158258  0.3489981  7.1681201 -0.3932899 -2.5426533
+#>  [7]  0.1395066  2.8653453  1.9386388  8.2189833
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -96,8 +96,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] -1.8371814 -0.6623062 -0.4788542  1.2682884  0.6763480  1.4785289
-#>  [7]  0.7884642 -2.0883185 -1.5098757 -0.5443121
+#>  [1]  0.1216695  0.5158258  0.3489981  7.1681201 -0.3932899 -2.5426533
+#>  [7]  0.1395066  2.8653453  1.9386388  8.2189833
 ```
 
 ### Daemons
@@ -106,17 +106,24 @@ Daemons are persistent background processes created to receive ‘mirai’
 requests. This is potentially more efficient as new processes no longer
 need to be created on an *ad hoc* basis.
 
-They may be deployed
-[locally](https://shikokuchuo.net/mirai/articles/mirai.html#daemons-local-persistent-processes)
-or
-[remotely](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-remote-daemons),
-even
-[launched](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-launching-daemons)
-across the network via SSH etc., optionally using
-automatically-configured [secure TLS
-connections](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-tls-secure-connections).
+They may be deployed for:
 
-Refer to the [mirai
+[local](https://shikokuchuo.net/mirai/articles/mirai.html#daemons-local-persistent-processes)
+parallel processing, or
+
+[remote](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-remote-daemons)
+network distributed computing.
+
+[Launchers](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-launching-daemons)
+allow daemons to be started both on the local machine and across the
+network via SSH etc.
+
+[Secure TLS
+connections](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-tls-secure-connections)
+can be automatically-configured on-the-fly for remote daemon
+connections.
+
+Refer to the [{mirai}
 vignette](https://shikokuchuo.net/mirai/articles/mirai.html) for full
 package functionality. This may be accessed within R by:
 
@@ -126,44 +133,46 @@ vignette("mirai", package = "mirai")
 
 ### Integrations
 
-{mirai} enhances the
-[{parallel}](https://shikokuchuo.net/mirai/articles/parallel.html)
-package by providing an alternative communications backend for R,
-implementing a low-level feature request by R-Core at [R Project Sprint
-2023](https://contributor.r-project.org/r-project-sprint-2023/).
+The following core integrations are provided, with usage examples in the
+linked vignettes:
 
-{mirai} also supplies its own `as.promise()` method, allowing it to be
-used as a promise from the
-[{promises}](https://shikokuchuo.net/mirai/articles/promises.html)
-package.
+[{parallel}](https://shikokuchuo.net/mirai/articles/parallel.html) -
+provides an alternative communications backend for R, implementing a
+low-level feature request by R-Core at R Project Sprint 2023.
 
-Further example integrations are provided for
-[{plumber}](https://shikokuchuo.net/mirai/articles/plumber.html),
-[{shiny}](https://shikokuchuo.net/mirai/articles/shiny.html), and
-[{torch}](https://shikokuchuo.net/mirai/articles/torch.html).
+[{promises}](https://shikokuchuo.net/mirai/articles/promises.html) - the
+‘mirai’ `as.promise()` method allows for their use as ‘promises’ or to
+be piped using the promise pipe `%...>%`.
 
-### Powering Crew and Targets
+[{plumber}](https://shikokuchuo.net/mirai/articles/plumber.html) -
+serves as an asynchronous / distributed backend, scaling applications
+via the use of promises.
 
-The [`crew`](https://cran.r-project.org/package=crew) package is a
-distributed worker-launcher extending {mirai} to different distributed
-computing platforms, from traditional clusters to cloud services.
+[{shiny}](https://shikokuchuo.net/mirai/articles/shiny.html) - serves as
+an asynchronous / distributed backend, plugging directly into the
+reactive framework without the need for promises.
 
-[`crew.cluster`](https://cran.r-project.org/package=crew.cluster)
-enables mirai-based workflows on traditional high-performance computing
-clusters using:
+[{torch}](https://shikokuchuo.net/mirai/articles/torch.html) - the
+custom serialization interface allows tensors and complex objects such
+as models and optimizers to be used seamlessly across parallel
+processes.
 
-- LFS
-- PBS/TORQUE
-- SGE
-- SLURM
+### Powering Crew and Targets High Performance Computing
 
-[`crew.aws.batch`](https://cran.r-project.org/package=crew.aws.batch)
-extends {mirai} to cloud computing using AWS Batch.
-
-[`targets`](https://cran.r-project.org/package=targets), a Make-like
+[{targets}](https://cran.r-project.org/package=targets), a Make-like
 pipeline tool for statistics and data science, has integrated and
-adopted [`crew`](https://cran.r-project.org/package=crew) as its default
-high-performance computing backend.
+adopted {crew} as its default high-performance computing backend.
+
+[{crew}](https://cran.r-project.org/package=crew) is a distributed
+worker-launcher extending {mirai} to different distributed computing
+platforms, from traditional clusters to cloud services.
+
+[{crew.cluster}](https://cran.r-project.org/package=crew.cluster)
+enables mirai-based workflows on traditional high-performance computing
+clusters using LFS, PBS/TORQUE, SGE and SLURM.
+
+[{crew.aws.batch}](https://cran.r-project.org/package=crew.aws.batch)
+extends {mirai} to cloud computing using AWS Batch.
 
 ### Thanks
 
