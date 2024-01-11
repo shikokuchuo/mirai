@@ -158,43 +158,44 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -1.8371814 -0.6623062 -0.4788542  1.2682884  0.6763480  1.4785289</span></span>
-<span><span class="co">#&gt;  [7]  0.7884642 -2.0883185 -1.5098757 -0.5443121</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  0.1216695  0.5158258  0.3489981  7.1681201 -0.3932899 -2.5426533</span></span>
+<span><span class="co">#&gt;  [7]  0.1395066  2.8653453  1.9386388  8.2189833</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -1.8371814 -0.6623062 -0.4788542  1.2682884  0.6763480  1.4785289</span></span>
-<span><span class="co">#&gt;  [7]  0.7884642 -2.0883185 -1.5098757 -0.5443121</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  0.1216695  0.5158258  0.3489981  7.1681201 -0.3932899 -2.5426533</span></span>
+<span><span class="co">#&gt;  [7]  0.1395066  2.8653453  1.9386388  8.2189833</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
 </h3>
 <p>Daemons are persistent background processes created to receive ‘mirai’ requests. This is potentially more efficient as new processes no longer need to be created on an <em>ad hoc</em> basis.</p>
-<p>They may be deployed <a href="https://shikokuchuo.net/mirai/articles/mirai.html#daemons-local-persistent-processes">locally</a> or <a href="https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-remote-daemons">remotely</a>, even <a href="https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-launching-daemons">launched</a> across the network via SSH etc., optionally using automatically-configured <a href="https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-tls-secure-connections">secure TLS connections</a>.</p>
-<p>Refer to the <a href="https://shikokuchuo.net/mirai/articles/mirai.html">mirai vignette</a> for full package functionality. This may be accessed within R by:</p>
+<p>They may be deployed for:</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/mirai.html#daemons-local-persistent-processes">local</a> parallel processing, or</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-remote-daemons">remote</a> network distributed computing.</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-launching-daemons">Launchers</a> allow daemons to be started both on the local machine and across the network via SSH etc.</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-tls-secure-connections">Secure TLS connections</a> can be automatically-configured on-the-fly for remote daemon connections.</p>
+<p>Refer to the <a href="https://shikokuchuo.net/mirai/articles/mirai.html">{mirai} vignette</a> for full package functionality. This may be accessed within R by:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"mirai"</span>, package <span class="op">=</span> <span class="st">"mirai"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="integrations">Integrations<a class="anchor" aria-label="anchor" href="#integrations"></a>
 </h3>
-<p>{mirai} enhances the <a href="https://shikokuchuo.net/mirai/articles/parallel.html">{parallel}</a> package by providing an alternative communications backend for R, implementing a low-level feature request by R-Core at <a href="https://contributor.r-project.org/r-project-sprint-2023/" class="external-link">R Project Sprint 2023</a>.</p>
-<p>{mirai} also supplies its own <code>as.promise()</code> method, allowing it to be used as a promise from the <a href="https://shikokuchuo.net/mirai/articles/promises.html">{promises}</a> package.</p>
-<p>Further example integrations are provided for <a href="https://shikokuchuo.net/mirai/articles/plumber.html">{plumber}</a>, <a href="https://shikokuchuo.net/mirai/articles/shiny.html">{shiny}</a>, and <a href="https://shikokuchuo.net/mirai/articles/torch.html">{torch}</a>.</p>
+<p>The following core integrations are provided, with usage examples in the linked vignettes:</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/parallel.html">{parallel}</a> - provides an alternative communications backend for R, implementing a low-level feature request by R-Core at R Project Sprint 2023.</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/promises.html">{promises}</a> - the ‘mirai’ <code>as.promise()</code> method allows for their use as ‘promises’ or to be piped using the promise pipe <code>%...&gt;%</code>.</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/plumber.html">{plumber}</a> - serves as an asynchronous / distributed backend, scaling applications via the use of promises.</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/shiny.html">{shiny}</a> - serves as an asynchronous / distributed backend, plugging directly into the reactive framework without the need for promises.</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/torch.html">{torch}</a> - the custom serialization interface allows tensors and complex objects such as models and optimizers to be used seamlessly across parallel processes.</p>
 </div>
 <div class="section level3">
-<h3 id="powering-crew-and-targets">Powering Crew and Targets<a class="anchor" aria-label="anchor" href="#powering-crew-and-targets"></a>
+<h3 id="powering-crew-and-targets-high-performance-computing">Powering Crew and Targets High Performance Computing<a class="anchor" aria-label="anchor" href="#powering-crew-and-targets-high-performance-computing"></a>
 </h3>
-<p>The <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> package is a distributed worker-launcher extending {mirai} to different distributed computing platforms, from traditional clusters to cloud services.</p>
-<p><a href="https://cran.r-project.org/package=crew.cluster" class="external-link"><code>crew.cluster</code></a> enables mirai-based workflows on traditional high-performance computing clusters using:</p>
-<ul>
-<li>LFS</li>
-<li>PBS/TORQUE</li>
-<li>SGE</li>
-<li>SLURM</li>
-</ul>
-<p><a href="https://cran.r-project.org/package=crew.aws.batch" class="external-link"><code>crew.aws.batch</code></a> extends {mirai} to cloud computing using AWS Batch.</p>
-<p><a href="https://cran.r-project.org/package=targets" class="external-link"><code>targets</code></a>, a Make-like pipeline tool for statistics and data science, has integrated and adopted <a href="https://cran.r-project.org/package=crew" class="external-link"><code>crew</code></a> as its default high-performance computing backend.</p>
+<p><a href="https://cran.r-project.org/package=targets" class="external-link">{targets}</a>, a Make-like pipeline tool for statistics and data science, has integrated and adopted {crew} as its default high-performance computing backend.</p>
+<p><a href="https://cran.r-project.org/package=crew" class="external-link">{crew}</a> is a distributed worker-launcher extending {mirai} to different distributed computing platforms, from traditional clusters to cloud services.</p>
+<p><a href="https://cran.r-project.org/package=crew.cluster" class="external-link">{crew.cluster}</a> enables mirai-based workflows on traditional high-performance computing clusters using LFS, PBS/TORQUE, SGE and SLURM.</p>
+<p><a href="https://cran.r-project.org/package=crew.aws.batch" class="external-link">{crew.aws.batch}</a> extends {mirai} to cloud computing using AWS Batch.</p>
 </div>
 <div class="section level3">
 <h3 id="thanks">Thanks<a class="anchor" aria-label="anchor" href="#thanks"></a>
