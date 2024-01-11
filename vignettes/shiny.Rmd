@@ -13,16 +13,15 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 ```
-
 ### Shiny Integration
 
 #### Shiny Example Usage
 
-{mirai} may be used to scale enterprise Shiny applications and plugs straight into the reactive framework, without the need to use promises.
+{mirai} may be used as an asynchronous / distributed backend to scale [{shiny}](https://cran.r-project.org/package=shiny) applications and plugs directly into the reactive framework, without the need to use promises. Because of this, it is especially suited to large-scale enterprise applications.
 
 The following example has a button to submit tasks, which will be processed by one of 5 daemons, outputting a pretty spiral pattern upon completion.
 
-You will find that if you submit more than 5 tasks that the chart updates 5 at a time, limited by the parallel capacity of the application.
+You will find that if you submit more than 5 tasks, the chart updates 5 at a time, limited by the number of daemons set (the parallel-processing capacity of the application).
 
 ```{r shiny, eval=FALSE}
 library(mirai)
@@ -95,7 +94,7 @@ server <- function(input, output, session) {
 
 shinyApp(ui = ui, server = server)
 ```
-*Thanks to Daniel Woodie and William Landau for providing the original example on which this is based.*
+*Thanks to Daniel Woodie and William Landau for providing the original example on which this is based. Please see <https://wlandau.github.io/crew/articles/shiny.html> which also has examples of the fantastic artwork produced.*
 
 #### Example Using Promises
 
@@ -103,9 +102,9 @@ Alternatively, a 'mirai' may be used as a promise as it supplies its own `as.pro
 
 A 'mirai' may be piped directly using the promise pipe `&...>%`, which implicitly calls `as.promise()` on the 'mirai', or converted into a promise by `as.promise()`, which then allows using the methods `$then()`, `$finally()` etc.
 
-The below example simulates a plot function requiring a long compute in a ‘shiny’ app.
+The below example simulates a plot function requiring a long compute in a ‘shiny’ application.
 
-This app takes c. 2s to start compared to the 8s it would otherwise take if not running in parallel.
+The application starts in around 2s rather than the 8s it would take if not running in parallel.
 
 ```{r shinypromises, eval=FALSE}
 library(shiny)

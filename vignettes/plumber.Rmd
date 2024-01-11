@@ -7,25 +7,22 @@ vignette: >
 ---
 
 
-
 ### Plumber Integration
 
-'mirai' supplies its own `as.promise()` method, allowing it to be used as a promise.
+{mirai} may be used as an asynchronous / distributed backend for [{plumber}](https://cran.r-project.org/package=plumber) pipelines.
 
-A 'mirai' may be piped directly using the promise pipe `&...>%`, which implicitly calls `as.promise()` on the 'mirai', or converted into a promise by `as.promise()`, which then allows using the methods `$then()`, `$finally()` etc.
-
-Below we provide example usage of how to use mirai as an async distributed backend for {plumber} pipelines.
-
-The plumber router code is run in a daemon process itself so that it does not block the interactive process. It is important to set up this daemon with the argument `autoexit = tools::SIGINT`, so that the plumber server is interrupted and exits cleanly when we tear it down.
+Example usage is provided below for different types of endpoint.
 
 #### Example GET Endpoint
 
-The /echo endpoint takes a GET request, sleeps for 1 second (simulating an expensive computation) and just returns the 'msg' request header together with a timestamp and the process ID of the process it is run on.
+The plumber router code is run in a daemon process itself so that it does not block the interactive process.
 
+The /echo endpoint takes a GET request, sleeps for 1 second (simulating an expensive computation) and simply returns the 'msg' request header together with a timestamp and the process ID of the process it is run on.
 
 ```r
 library(mirai)
 
+# important to supply SIGINT so the plumber server is interrupted and exits cleanly when torn down.
 daemons(1L, dispatcher = FALSE, autoexit = tools::SIGINT)
 #> [1] 1
 
@@ -34,8 +31,8 @@ m <- mirai({
   library(promises) # to provide the promise pipe
   library(mirai)
 
-  daemons(4L, dispatcher = FALSE) # handles 4 requests simultaneously
   # does not use dispatcher (suitable when all requests require similar compute)
+  daemons(4L, dispatcher = FALSE) # handles 4 requests simultaneously
 
   pr() |>
     pr_get(
@@ -61,8 +58,7 @@ m <- mirai({
 
 The API can be queried using an async HTTP client such as `nanonext::ncurl_aio()`.
 
-Here, all 8 requests are submitted at once, but we note that that responses have differing timestamps as only 4 can be processed at any given time.
-
+Here, all 8 requests are submitted at once, but we note that that responses have differing timestamps as only 4 can be processed at any one time (limited by the number of daemons set).
 
 ```r
 library(nanonext)
@@ -71,14 +67,14 @@ res <- lapply(1:8,
                                     headers = c(msg = as.character(i))))
 res <- lapply(res, call_aio)
 for (r in res) print(r$data)
-#> [1] "{\"time\":[\"2024-01-10 22:18:07\"],\"msg\":[\"1\"],\"pid\":[20080]}"
-#> [1] "{\"time\":[\"2024-01-10 22:18:07\"],\"msg\":[\"2\"],\"pid\":[20087]}"
-#> [1] "{\"time\":[\"2024-01-10 22:18:07\"],\"msg\":[\"3\"],\"pid\":[20082]}"
-#> [1] "{\"time\":[\"2024-01-10 22:18:08\"],\"msg\":[\"4\"],\"pid\":[20080]}"
-#> [1] "{\"time\":[\"2024-01-10 22:18:07\"],\"msg\":[\"5\"],\"pid\":[20084]}"
-#> [1] "{\"time\":[\"2024-01-10 22:18:08\"],\"msg\":[\"6\"],\"pid\":[20084]}"
-#> [1] "{\"time\":[\"2024-01-10 22:18:08\"],\"msg\":[\"7\"],\"pid\":[20082]}"
-#> [1] "{\"time\":[\"2024-01-10 22:18:08\"],\"msg\":[\"8\"],\"pid\":[20087]}"
+#> [1] "{\"time\":[\"2024-01-11 12:16:11\"],\"msg\":[\"1\"],\"pid\":[34995]}"
+#> [1] "{\"time\":[\"2024-01-11 12:16:11\"],\"msg\":[\"2\"],\"pid\":[34987]}"
+#> [1] "{\"time\":[\"2024-01-11 12:16:11\"],\"msg\":[\"3\"],\"pid\":[34992]}"
+#> [1] "{\"time\":[\"2024-01-11 12:16:11\"],\"msg\":[\"4\"],\"pid\":[34989]}"
+#> [1] "{\"time\":[\"2024-01-11 12:16:12\"],\"msg\":[\"5\"],\"pid\":[34989]}"
+#> [1] "{\"time\":[\"2024-01-11 12:16:12\"],\"msg\":[\"6\"],\"pid\":[34987]}"
+#> [1] "{\"time\":[\"2024-01-11 12:16:12\"],\"msg\":[\"7\"],\"pid\":[34992]}"
+#> [1] "{\"time\":[\"2024-01-11 12:16:12\"],\"msg\":[\"8\"],\"pid\":[34995]}"
 
 daemons(0)
 #> [1] 0
@@ -90,10 +86,10 @@ Below is a demonstration of the equivalent using a POST endpoint, accepting a JS
 
 It is important to note in this case that `req$postBody` should be accessed in the router process and passed in as an argument to the 'mirai' as this is retrieved using a connection that is not serializable.
 
-
 ```r
 library(mirai)
 
+# important to supply SIGINT so the plumber server is interrupted and exits cleanly when torn down.
 daemons(1L, dispatcher = FALSE, autoexit = tools::SIGINT)
 #> [1] 1
 
@@ -102,8 +98,8 @@ m <- mirai({
   library(promises) # to provide the promise pipe
   library(mirai)
 
-  daemons(4L) # handles 4 requests simultaneously
   # uses dispatcher (suitable for requests with differing compute lengths)
+  daemons(4L, dispatcher = TRUE) # handles 4 requests simultaneously
 
   pr() |>
     pr_post(
@@ -130,7 +126,6 @@ m <- mirai({
 
 Querying the endpoint produces the same set of outputs as the previous example.
 
-
 ```r
 library(nanonext)
 res <- lapply(1:8,
@@ -139,14 +134,14 @@ res <- lapply(1:8,
                                     data = sprintf('{"msg":"%d"}', i)))
 res <- lapply(res, call_aio)
 for (r in res) print(r$data)
-#> [1] "{\"time\":[\"2024-01-10 22:18:11\"],\"msg\":[\"1\"],\"pid\":[20357]}"
-#> [1] "{\"time\":[\"2024-01-10 22:18:11\"],\"msg\":[\"2\"],\"pid\":[20359]}"
-#> [1] "{\"time\":[\"2024-01-10 22:18:11\"],\"msg\":[\"3\"],\"pid\":[20362]}"
-#> [1] "{\"time\":[\"2024-01-10 22:18:11\"],\"msg\":[\"4\"],\"pid\":[20366]}"
-#> [1] "{\"time\":[\"2024-01-10 22:18:12\"],\"msg\":[\"5\"],\"pid\":[20357]}"
-#> [1] "{\"time\":[\"2024-01-10 22:18:12\"],\"msg\":[\"6\"],\"pid\":[20359]}"
-#> [1] "{\"time\":[\"2024-01-10 22:18:12\"],\"msg\":[\"7\"],\"pid\":[20366]}"
-#> [1] "{\"time\":[\"2024-01-10 22:18:12\"],\"msg\":[\"8\"],\"pid\":[20362]}"
+#> [1] "{\"time\":[\"2024-01-11 12:16:15\"],\"msg\":[\"1\"],\"pid\":[35264]}"
+#> [1] "{\"time\":[\"2024-01-11 12:16:16\"],\"msg\":[\"2\"],\"pid\":[35269]}"
+#> [1] "{\"time\":[\"2024-01-11 12:16:15\"],\"msg\":[\"3\"],\"pid\":[35266]}"
+#> [1] "{\"time\":[\"2024-01-11 12:16:16\"],\"msg\":[\"4\"],\"pid\":[35264]}"
+#> [1] "{\"time\":[\"2024-01-11 12:16:15\"],\"msg\":[\"5\"],\"pid\":[35269]}"
+#> [1] "{\"time\":[\"2024-01-11 12:16:15\"],\"msg\":[\"6\"],\"pid\":[35272]}"
+#> [1] "{\"time\":[\"2024-01-11 12:16:16\"],\"msg\":[\"7\"],\"pid\":[35272]}"
+#> [1] "{\"time\":[\"2024-01-11 12:16:16\"],\"msg\":[\"8\"],\"pid\":[35266]}"
 
 daemons(0)
 #> [1] 0

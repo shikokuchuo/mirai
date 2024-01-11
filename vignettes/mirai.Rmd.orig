@@ -36,7 +36,6 @@ Multiple long computes (model fits etc.) can be performed in parallel on availab
 Use `mirai()` to evaluate an expression asynchronously in a separate, clean R process.
 
 A 'mirai' object is returned immediately.
-
 ```{r exec}
 library(mirai)
 
@@ -51,30 +50,23 @@ m <- mirai(
 
 m
 ```
-
 Above, all specified `name = value` pairs are passed through to the 'mirai'.
 
 The 'mirai' yields an 'unresolved' logical NA whilst the async operation is ongoing.
-
 ```{r do}
 m$data
 ```
 ```{r dowhile, echo=FALSE}
 call_mirai(m)
 ```
-
 Upon completion, the 'mirai' resolves automatically to the evaluated result.
-
 ```{r resolv}
 m$data |> str()
 ```
-
 Alternatively, explicitly call and wait for the result using `call_mirai()`.
-
 ```{r call}
 call_mirai(m)$data |> str()
 ```
-
 For easy programmatic use of `mirai()`, '.expr' accepts a pre-constructed language object, and also a list of named arguments passed via '.args'. So, the following would be equivalent to the above:
 
 ```{r equiv}
@@ -101,7 +93,6 @@ High-frequency real-time data cannot be written to file/database synchronously w
 Cache data in memory and use `mirai()` to perform periodic write operations concurrently in a separate process.
 
 Below, '.args' is used to pass a list of objects already present in the calling environment to the mirai by name. This is an alternative use of '.args', and may be combined with `...` to also pass in `name = value` pairs.
-
 ```{r exec2}
 library(mirai)
 
@@ -110,13 +101,11 @@ file <- tempfile()
 
 m <- mirai(write.csv(x, file = file), .args = list(x, file))
 ```
-
 A 'mirai' object is returned immediately.
 
 `unresolved()` may be used in control flow statements to perform actions which depend on resolution of the 'mirai', both before and after.
 
 This means there is no need to actually wait (block) for a 'mirai' to resolve, as the example below demonstrates.
-
 ```{r call2}
 # unresolved() queries for resolution itself so no need to use it again within the while loop
 
@@ -128,7 +117,6 @@ while (unresolved(m)) {
 cat("Write complete:", is.null(m$data))
 
 ```
-
 Now actions which depend on the resolution may be processed, for example the next write.
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -140,7 +128,6 @@ Use case: isolating code that can potentially fail in a separate process to ensu
 As part of a data science / machine learning pipeline, iterations of model training may periodically fail for stochastic and uncontrollable reasons (e.g. buggy memory management on graphics cards).
 
 Running each iteration in a 'mirai' isolates this potentially-problematic code such that even if it does fail, it does not bring down the entire pipeline.
-
 ```{r exec3r}
 library(mirai)
 
@@ -163,7 +150,6 @@ for (i in 1:10) {
 }
 
 ```
-
 Further, by testing the return value of each 'mirai' for errors, error-handling code is then able to automate recovery and re-attempts, as in the above example. Further details on [error handling](#errors-interrupts-and-timeouts) can be found in the section below.
 
 The end result is a resilient and fault-tolerant pipeline that minimises downtime by eliminating interruptions of long computes.
@@ -179,64 +165,49 @@ This is potentially more efficient as new processes no longer need to be created
 #### With Dispatcher (default)
 
 Call `daemons()` specifying the number of daemons to launch.
-
 ```{r daemons}
 daemons(6)
 ```
-
 ```{r daemons2, include=FALSE}
-Sys.sleep(1)
+Sys.sleep(1L)
 ```
-
 To view the current status, `status()` provides the number of active connections along with a matrix of statistics for each daemon.
-
 ```{r daemons3}
 status()
 ```
-
 The default `dispatcher = TRUE` creates a `dispatcher()` background process that connects to individual daemon processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to daemons for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.
 
 Dispatcher uses synchronisation primitives from [`nanonext`](https://doi.org/10.5281/zenodo.7903429), waiting upon rather than polling for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).
-
 ```{r daemons4}
 daemons(0)
 ```
-
 Set the number of daemons to zero to reset. This reverts to the default of creating a new background process for each 'mirai' request.
 
 #### Without Dispatcher
 
 Alternatively, specifying `dispatcher = FALSE`, the background daemons connect directly to the host process.
-
 ```{r daemonsq}
 daemons(6, dispatcher = FALSE)
 ```
 ```{r daemonsq2, include=FALSE}
 Sys.sleep(0.5)
 ```
-
 Requesting the status now shows 6 connections, along with the host URL at `$daemons`.
-
 ```{r daemonsqv}
 status()
 ```
-
 This implementation sends tasks immediately, and ensures that tasks are evenly-distributed amongst daemons. This means that optimal scheduling is not guaranteed as the duration of tasks cannot be known *a priori*. As an example, tasks could be queued at a daemon behind a long-running task, whilst other daemons are idle having already completed their tasks.
 
 The advantage of this approach is that it is low-level and does not require an additional dispatcher process. It is well-suited to working with similar-length tasks, or where the number of concurrent tasks typically does not exceed available daemons.
 
 `everywhere()` may be used to evaluate an expression on all connected daemons and persist the resultant state, regardless of a daemon's 'cleanup' setting.
-
 ```{r everywhere}
 everywhere(library(parallel))
 ```
-
 The above keeps the `parallel` package loaded for all evaluations. Other types of setup task may also be performed such as making a common resource available, etc.
-
 ```{r daemons5}
 daemons(0)
 ```
-
 Set the number of daemons to zero to reset.
 
 #### Everywhere
@@ -262,23 +233,17 @@ The default `dispatcher = TRUE` creates a background `dispatcher()` process on t
 It is recommended to use a websocket URL starting `ws://` instead of TCP in this scenario (used interchangeably with `tcp://`). A websocket URL supports a path after the port number, which can be made unique for each daemon. In this way a dispatcher can connect to an arbitrary number of daemons over a single port.
 
 Supplying a vector of URLs allows the use of arbitrary port numbers / paths. 'n' does not need to be specified if it can be inferred from the length of the 'url' vector, for example:
-
 ```{r vectorqueue, eval=FALSE}
 daemons(url = c("ws://10.75.32.70:5566/cpu", "ws://10.75.32.70:5566/gpu", "ws://10.75.32.70:7788/1"))
 ```
-
 Alternatively, below a single URL is supplied, along with `n = 4` to specify that the dispatcher should listen at 4 URLs. In such a case, an integer sequence is automatically appended to the path `/1` through `/4` to produce the URLs.
-
 ```{r localqueue}
 daemons(n = 4, url = host_url(port = 5555))
 ```
-
 Requesting status on the host machine:
-
 ```{r remotev2}
 status()
 ```
-
 As per the local case, `$connections` shows the single connection to dispatcher, however `$daemons` now provides a matrix of statistics for the remote daemons.
 
 - `i` index number.
@@ -290,37 +255,29 @@ As per the local case, `$connections` shows the single connection to dispatcher,
 Dispatcher automatically adjusts to the number of daemons actually connected. Hence it is possible to dynamically scale up or down the number of daemons according to requirements (limited to the 'n' URLs assigned).
 
 To reset all connections and revert to default behaviour:
-
 ```{r reset2}
 daemons(0)
 ```
-
 Closing the connection causes the dispatcher to exit automatically, and in turn all connected daemons when their respective connections with the dispatcher are terminated.
 
 #### Connecting to Remote Daemons Directly
 
 By specifying `dispatcher = FALSE`, remote daemons connect directly to the host process. The host listens at a single URL, and distributes tasks to all connected daemons.
-
 ```{r remote}
 daemons(url = host_url(), dispatcher = FALSE)
 ```
-
 Note that above, calling `host_url()` without a port value uses the default of '0'. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided in the return value of the call, or it may be queried at any time via `status()`.
 
 The number of daemons connecting to the host URL is not limited and network resources may be added or removed at any time, with tasks automatically distributed to all connected daemons.
 
 `$connections` will show the actual number of connected daemons.
-
 ```{r remotev}
 status()
 ```
-
 To reset all connections and revert to default behaviour:
-
 ```{r reset}
 daemons(0)
 ```
-
 This causes all connected daemons to exit automatically.
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -334,7 +291,6 @@ To launch remote daemons, supply a remote launch configuration to the 'remote' a
 #### SSH Direct Connection
 
 The first example below launches 4 daemons on the machine 10.75.32.90 (using the default SSH port of 22 as this was not specified), connecting back to the dispatcher URLs:
-
 ```{r ldmn, eval=FALSE}
 daemons(
   n = 4,
@@ -343,7 +299,6 @@ daemons(
 )
 ```
 The second example below launches one daemon on each of 10.75.32.90 and 10.75.32.91 using the custom SSH port of 222:
-
 ```{r ldmnd, eval=FALSE}
 daemons(
   n = 2,
@@ -362,7 +317,6 @@ In these cases SSH tunnelling offers a solution by creating a tunnel once the in
 Tunnelling requires the hostname for 'url' specified when setting up daemons to be either '127.0.0.1' or 'localhost'. This is as the tunnel is created between 127.0.0.1:port or equivalently localhost:port on each machine. The host listens to its localhost:port and the remotes each dial into localhost:port on their own respective machines.
 
 The below example launches 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling over port 5555 ('url' hostname is specified as 'localhost'):
-
 ```{r sshrevtun, eval=FALSE}
 daemons(
   url = "tcp://localhost:5555",
@@ -376,7 +330,6 @@ daemons(
 #### Manual Deployment
 
 As an alternative to automated launches, calling `launch_remote()` without specifying 'remote' may be used to return the shell commands for deploying daemons manually. The printed return values may be copy / pasted directly to a remote machine.
-
 ```{r launchremotereal}
 daemons(n = 2, url = host_url())
 
@@ -384,7 +337,6 @@ launch_remote(1:2)
 
 daemons(0)
 ```
-
 Note that `daemons()` should be set up on the host machine before launching `daemon()` on remote resources, otherwise the daemon instances will exit if a connection is not immediately available. Alternatively, specifying the argument `autoexit = FALSE` will allow daemons to wait (indefinitely) for a connection to become available.
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -396,21 +348,16 @@ TLS is available as an option to secure communications from the local machine to
 #### Zero-configuration
 
 An automatic zero-configuration default is implemented. Simply specify a secure URL of the form `wss://` or `tls+tcp://` when setting daemons, or use `host_url(tls = TRUE)`, for example:
-
 ```{r tlsremote}
 daemons(n = 4, url = host_url(ws = TRUE, tls = TRUE))
 ```
-
 Single-use keys and certificates are automatically generated and configured, without requiring any further intervention. The private key is always retained on the host machine and never transmitted.
 
 The generated self-signed certificate is available via `launch_remote()`. This function conveniently constructs the full shell command to launch a daemon, including the correctly specified 'tls' argument to `daemon()`.
-
 ```{r launch_remote}
 launch_remote(1)
 ```
-
 The printed value may be deployed directly on a remote machine.
-
 ```{r tlsclose, include=FALSE}
 daemons(0)
 ```
@@ -464,7 +411,6 @@ Similarly, functions such as `status()`, `launch_local()` or `launch_remote()` s
 ### Errors, Interrupts and Timeouts
 
 If execution in a mirai fails, the error message is returned as a character string of class 'miraiError' and 'errorValue' to facilitate debugging. `is_mirai_error()` may be used to test for mirai execution errors.
-
 ```{r errorexample}
 m1 <- mirai(stop("occurred with a custom message", call. = FALSE))
 call_mirai(m1)$data
@@ -475,15 +421,11 @@ call_mirai(m2)$data
 is_mirai_error(m2$data)
 is_error_value(m2$data)
 ```
-
 If a daemon instance is sent a user interrupt, the mirai will resolve to an empty character string of class 'miraiInterrupt' and 'errorValue'. `is_mirai_interrupt()` may be used to test for such interrupts.
-
 ```{r interruptexample}
 is_mirai_interrupt(m2$data)
 ```
-
 If execution of a mirai surpasses the timeout set via the '.timeout' argument, the mirai will resolve to an 'errorValue'. This can, amongst other things, guard against mirai processes that have the potential to hang and never return.
-
 ```{r timeouts}
 m3 <- mirai(nanonext::msleep(1000), .timeout = 500)
 call_mirai(m3)$data
@@ -492,7 +434,6 @@ is_mirai_error(m3$data)
 is_mirai_interrupt(m3$data)
 is_error_value(m3$data)
 ```
-
 `is_error_value()` tests for all mirai execution errors, user interrupts and timeouts.
 
 [&laquo; Back to ToC](#table-of-contents)

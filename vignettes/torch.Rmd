@@ -7,18 +7,19 @@ vignette: >
 ---
 
 
-
 ### Torch Integration
 
 Custom serialization functions may be registered to handle external pointer type reference objects.
 
-This allows tensors from the [`torch`](https://cran.r-project.org/package=torch) package to be used seamlessly in 'mirai' computations.
+This allows tensors from the [{torch}](https://cran.r-project.org/package=torch) package to be used seamlessly in 'mirai' computations.
 
-1. Register the serialization and unserialization functions as a list supplied to the 'refhook' argument of `serialization()`.
+#### Setup Steps
+
+1. Register the serialization and unserialization functions as a list supplied to `serialization()`.
 
 2. Set up dameons - this may be done before or after setting `serialization()`.
 
-3. Use `everywhere()` to make the 'torch' package available on all dameons (for convenience, optional).
+3. Use `everywhere()` to make the {torch} package available on all dameons (for convenience, optional).
 
 
 ```r
@@ -28,9 +29,13 @@ daemons(1)
 #> [1] 1
 everywhere(library(torch))
 ```
+#### Example Usage
 
-The below example creates a convolutional neural network using `torch::nn_module()`, which is then passed a set of parameters and initialized within a 'mirai'.
+The below example creates a convolutional neural network using `torch::nn_module()`.
 
+A set of model parameters is also specified.
+
+The model specification and parameters are then passed to and initialized within a 'mirai'.
 
 ```r
 model <- nn_module(
@@ -50,6 +55,7 @@ model <- nn_module(
 params <- list(in_size = 1, out_size = 20)
 
 m <- mirai(do.call(model, params), .args = list(model, params))
+
 call_mirai(m)$data
 #> An `nn_module` containing 1,040 parameters.
 #> 
@@ -59,49 +65,49 @@ call_mirai(m)$data
 ```
 The returned model is an object containing many tensor elements.
 
-
 ```r
 m$data$parameters$conv1.weight
 #> torch_tensor
 #> (1,1,.,.) = 
-#>  -0.1205 -0.1757 -0.0501  0.1389  0.0922
-#>  -0.1649 -0.1273  0.0191  0.1186 -0.0943
-#>   0.1665 -0.0876 -0.1023  0.0301  0.1141
-#>   0.0322  0.0580  0.0123 -0.0415 -0.1614
-#>   0.1639  0.1523 -0.1057 -0.0188 -0.0248
+#>  -0.0679  0.1029  0.1385  0.1610 -0.0206
+#>  -0.0851 -0.0514 -0.1901  0.0832  0.1121
+#>   0.1122  0.0309 -0.1937 -0.1249  0.0343
+#>   0.1398 -0.0798  0.0933  0.0672 -0.0778
+#>  -0.0879 -0.0727 -0.1004  0.1328  0.0231
 #> 
 #> (2,1,.,.) = 
-#>  -0.1008  0.1984 -0.0736 -0.1917  0.1427
-#>   0.0703  0.0128  0.0620 -0.0524 -0.0565
-#>   0.0750 -0.0657  0.1786 -0.1733 -0.0639
-#>  -0.1578  0.1989  0.1473 -0.1071  0.0607
-#>  -0.1334 -0.1061 -0.1487 -0.1097 -0.0244
+#>   0.1520 -0.0140  0.0621  0.1891 -0.0192
+#>   0.1381  0.1579  0.0415  0.1586 -0.1211
+#>  -0.0809 -0.0243 -0.1879 -0.1244 -0.1937
+#>   0.0408  0.1539 -0.0597 -0.1490  0.1888
+#>   0.1035  0.0616  0.0775  0.0979 -0.1342
 #> 
 #> (3,1,.,.) = 
-#>   0.0814  0.1406  0.0929  0.0101  0.0254
-#>   0.0645  0.0082 -0.1432 -0.0091 -0.1674
-#>   0.0242 -0.1321 -0.1690 -0.0254 -0.1345
-#>  -0.1011  0.0083 -0.1139 -0.0948 -0.0941
-#>  -0.0352 -0.1540  0.0097 -0.1977  0.0735
+#>   0.0944 -0.1438 -0.0957 -0.1855 -0.1500
+#>  -0.1392 -0.1959 -0.0065  0.1261 -0.1844
+#>   0.1375  0.0872 -0.0247 -0.1190  0.1837
+#>   0.0579 -0.0641  0.1278 -0.1847 -0.1106
+#>  -0.0202 -0.1681  0.0986 -0.1300  0.1095
 #> 
 #> (4,1,.,.) = 
-#>   0.1920  0.1211  0.1399  0.1913 -0.0115
-#>  -0.1858  0.0491 -0.0151 -0.0219 -0.1164
-#>  -0.1854  0.0309 -0.0076  0.0381 -0.0900
-#>   0.0488  0.1269  0.0352  0.0338 -0.0510
-#>  -0.0565 -0.0516 -0.0590  0.1656 -0.1994
+#>   0.0105  0.0562  0.1678  0.1800  0.1642
+#>   0.1107 -0.0196 -0.0244 -0.1933 -0.1752
+#>  -0.1280  0.0362 -0.1671 -0.0661  0.1871
+#>  -0.0716  0.1232  0.0725 -0.0820  0.0994
+#>  -0.1820 -0.1687  0.1173  0.1916 -0.1074
 #> 
 #> (5,1,.,.) = 
-#>   0.1760 -0.0951 -0.0583  0.1938  0.0130
+#>   0.1298  0.1826  0.1107 -0.0559  0.1817
 #> ... [the output was truncated (use n=-1 to disable)]
 #> [ CPUFloatType{20,1,5,5} ][ requires_grad = TRUE ]
 ```
+It is usual for model parameters to then be passed to an optimiser.
 
-The model parameters can then be further passed to an optimiser, with that also initialized within a 'mirai' process.
-
+This can also be initialized within a 'mirai' process.
 
 ```r
 optim <- mirai(optim_rmsprop(params = params), params = m$data$parameters)
+
 call_mirai(optim)$data
 #> <optim_rmsprop>
 #>   Inherits from: <torch_optimizer>
@@ -124,4 +130,6 @@ daemons(0)
 ```
 Above, tensors and complex objects containing tensors were passed seamlessly between host and daemon processes, in the same way as any other R object.
 
-The implementation leverages R's own native 'refhook' mechanism to allow such completely transparent usage, and is designed to be fast and efficient using the serialization methods from the 'torch' package directly, minimising data copies where possible.
+The custom serialization in {mirai} leverages R's own native 'refhook' mechanism to allow such completely transparent usage.
+
+It is designed to be fast and efficient, minimising data copies and using the serialization methods from the 'torch' package directly.

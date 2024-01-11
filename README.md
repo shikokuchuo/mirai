@@ -87,8 +87,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  -1.43344968  -0.02044095  -0.54523216   3.66578804   5.10911257
-#>  [6]   0.19572871   0.27279264  -1.83408111 -48.92140310  -0.69761779
+#>  [1] -1.8371814 -0.6623062 -0.4788542  1.2682884  0.6763480  1.4785289
+#>  [7]  0.7884642 -2.0883185 -1.5098757 -0.5443121
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -96,8 +96,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  -1.43344968  -0.02044095  -0.54523216   3.66578804   5.10911257
-#>  [6]   0.19572871   0.27279264  -1.83408111 -48.92140310  -0.69761779
+#>  [1] -1.8371814 -0.6623062 -0.4788542  1.2682884  0.6763480  1.4785289
+#>  [7]  0.7884642 -2.0883185 -1.5098757 -0.5443121
 ```
 
 ### Daemons
@@ -124,6 +124,24 @@ package functionality. This may be accessed within R by:
 vignette("mirai", package = "mirai")
 ```
 
+### Integrations
+
+{mirai} enhances the
+[{parallel}](https://shikokuchuo.net/mirai/articles/parallel.html)
+package by providing an alternative communications backend for R,
+implementing a low-level feature request by R-Core at [R Project Sprint
+2023](https://contributor.r-project.org/r-project-sprint-2023/).
+
+{mirai} also supplies its own `as.promise()` method, allowing it to be
+used as a promise from the
+[{promises}](https://shikokuchuo.net/mirai/articles/promises.html)
+package.
+
+Further example integrations are provided for
+[{plumber}](https://shikokuchuo.net/mirai/articles/plumber.html),
+[{shiny}](https://shikokuchuo.net/mirai/articles/shiny.html), and
+[{torch}](https://shikokuchuo.net/mirai/articles/torch.html).
+
 ### Powering Crew and Targets
 
 The [`crew`](https://cran.r-project.org/package=crew) package is a
@@ -146,68 +164,6 @@ extends {mirai} to cloud computing using AWS Batch.
 pipeline tool for statistics and data science, has integrated and
 adopted [`crew`](https://cran.r-project.org/package=crew) as its default
 high-performance computing backend.
-
-### Parallel Clusters
-
-{mirai} provides an alternative communications backend for R’s
-‘parallel’ base package, implementing a low-level feature request by
-R-Core at [R Project Sprint
-2023](https://contributor.r-project.org/r-project-sprint-2023/).
-
-``` r
-cl <- make_cluster(4)
-cl
-#> < miraiCluster | ID: `0` nodes: 4 active: TRUE >
-```
-
-A ‘miraiCluster’ is fully compatible with all ‘parallel’ functions such
-as `parallel::clusterApply()` \[[further
-details](https://shikokuchuo.net/mirai/articles/parallel.html)\].
-
-### Asynchronous Shiny and Plumber Applications
-
-{mirai} serves as an asynchronous backend for scaling enterprise {shiny}
-or {plumber} applications.
-
-A ‘mirai’ plugs in directly to Shiny’s reactive framework without the
-need to use promises \[[see
-example](https://shikokuchuo.net/mirai/articles/shiny.html#shiny-example-usage)\].
-
-Alternatively, ‘mirai’ may be used interchangeably with ‘promises’ by
-using the promise pipe `%...>%`, or explictly by
-`promises::as.promise()`, allowing side-effects to be performed upon
-asynchronous resolution of a ‘mirai’.
-
-The following example outputs “hello” to the console after one second
-when the ‘mirai’ resolves.
-
-``` r
-library(promises)
-p <- mirai({Sys.sleep(1); "hello"}) %...>% cat()
-p
-#> <Promise [pending]>
-```
-
-Example usage is provided for
-[shiny](https://shikokuchuo.net/mirai/articles/shiny.html) and for
-[plumber](https://shikokuchuo.net/mirai/articles/plumber.html).
-
-### Torch Parallelization
-
-The custom serialization interface in {mirai} is accessed via
-`serialization()`.
-
-In the case of {torch}, this requires just the following call at the
-head of your session:
-
-``` r
-serialization(refhook = list(torch::torch_serialize, torch::torch_load))
-```
-
-This allows tensors, including complex objects such as models,
-optimizers etc. to be used seamlessly across local and remote processes
-in the same way as other R objects \[[further
-details](https://shikokuchuo.net/mirai/articles/torch.html)\].
 
 ### Thanks
 

@@ -1,0 +1,39 @@
+---
+title: "mirai - Promises Integration"
+vignette: >
+  %\VignetteIndexEntry{mirai - Promises Integration}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+### Promises Integration
+
+{mirai} supplies its own `as.promise()` method, allowing it to be used as a promise.
+
+A 'mirai' may be piped directly using the promise pipe `&...>%`, which implicitly calls `as.promise()` on the 'mirai'.
+
+Alternatively, it may be converted into a promise by `as.promise()`, which then allows using the methods `$then()`, `$finally()` etc.
+
+The following example outputs "hello" to the console after one second when the 'mirai' resolves.
+
+```r
+library(promises)
+p <- mirai({Sys.sleep(1); "hello"}) %...>% cat()
+p
+#> <Promise [pending]>
+```
+It is possible to both access a 'mirai' value at `$data` and to use a promise for enacting a side effect (assigning the value to an environment in the example below).
+
+```r
+library(promises)
+env <- new.env()
+
+m <- mirai({Sys.sleep(1); "hello"})
+p <- as.promise(m)$then(function(x) env[["response"]] <- x)
+
+call_mirai(m)$data
+#> [1] "hello"
+env[["response"]]
+#> [1] "hello"
+```
