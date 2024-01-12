@@ -1,4 +1,4 @@
-# mirai 0.11.3.9005 (development)
+# mirai 0.12.0
 
 * More minimal print methods for 'mirai' and 'miraiCluster'.
 * Adds `local_url()` helper to construct a random inter-process communications URL for local daemons (thanks @noamross #90).

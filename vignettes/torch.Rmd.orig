@@ -28,7 +28,9 @@ This allows tensors from the [{torch}](https://cran.r-project.org/package=torch)
 3. Use `everywhere()` to make the {torch} package available on all dameons (for convenience, optional).
 
 ```{r tensors}
+library(mirai)
 library(torch)
+
 serialization(refhook = list(torch:::torch_serialize, torch::torch_load))
 daemons(1)
 everywhere(library(torch))

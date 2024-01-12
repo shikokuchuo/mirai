@@ -18,7 +18,9 @@ Alternatively, it may be converted into a promise by `as.promise()`, which then 
 The following example outputs "hello" to the console after one second when the 'mirai' resolves.
 
 ```r
+library(mirai)
 library(promises)
+
 p <- mirai({Sys.sleep(1); "hello"}) %...>% cat()
 p
 #> <Promise [pending]>
@@ -26,14 +28,18 @@ p
 It is possible to both access a 'mirai' value at `$data` and to use a promise for enacting a side effect (assigning the value to an environment in the example below).
 
 ```r
+library(mirai)
 library(promises)
+
 env <- new.env()
 
 m <- mirai({Sys.sleep(1); "hello"})
-p <- as.promise(m)$then(function(x) env[["response"]] <- x)
+p <- as.promise(m)$then(function(x) env$res <- x)
 
 call_mirai(m)$data
 #> [1] "hello"
-env[["response"]]
+
+# after returning to the top level prompt:
+env$res
 #> [1] "hello"
 ```
