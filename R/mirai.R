@@ -140,7 +140,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 
   arglist <- list(..., .expr = select_expr(substitute(.expr), .expr))
   if (length(.args))
-    arglist <- if (length(names(.args))) c(.args, arglist) else c(`names<-`(.args, as.character(substitute(.args)[-1L])), arglist)
+    arglist <- c(if (length(names(.args))) .args else `names<-`(.args, as.character(substitute(.args)[-1L])), arglist)
 
   data <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
