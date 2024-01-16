@@ -138,7 +138,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 
   missing(.expr) && stop(._[["missing_expression"]])
 
-  arglist <- list(..., .expr = select_expr(substitute(.expr), .expr))
+  expr <- substitute(.expr)
+  arglist <- list(..., .expr = if (is.symbol(expr) && is.language(.expr)) .expr else expr)
   if (length(.args))
     arglist <- c(if (length(names(.args))) .args else `names<-`(.args, as.character(substitute(.args)[-1L])), arglist)
 
@@ -202,17 +203,18 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 
   if (length(envir)) {
 
-    expr <- c(as.expression(select_expr(substitute(.expr), .expr)), .snapshot)
+    expr <- substitute(.expr)
+    .expr <- c(as.expression(if (is.symbol(expr) && is.language(.expr)) .expr else expr), .snapshot)
     if (length(.args) && is.null(names(.args)))
       names(.args) <- as.character(substitute(.args)[-1L])
 
     if (length(envir[["sockc"]])) {
-      expr <- c(expr, .timedelay)
+      .expr <- c(.expr, .timedelay)
       for (i in seq_len(envir[["n"]]))
-        mirai(.expr = expr, ..., .args = .args, .compute = .compute)
+        mirai(.expr = .expr, ..., .args = .args, .compute = .compute)
     } else {
       for (i in seq_len(max(stat(envir[["sock"]], "pipes"), envir[["n"]])))
-        mirai(.expr = expr, ..., .args = .args, .compute = .compute)
+        mirai(.expr = .expr, ..., .args = .args, .compute = .compute)
     }
 
   }
@@ -448,9 +450,6 @@ print.miraiInterrupt <- function(x, ...) {
 }
 
 # internals --------------------------------------------------------------------
-
-select_expr <- function(expr, .expr)
-  if (is.symbol(expr) && is.language(get0(as.character(expr), envir = sys.frame(-2L)))) .expr else expr
 
 mk_interrupt_error <- function(e) .interrupt_error
 
