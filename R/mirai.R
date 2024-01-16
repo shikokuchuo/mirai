@@ -205,7 +205,11 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
   envir <- ..[[.compute]]
 
   if (length(envir)) {
+
     expr <- c(as.expression(substitute(.expr)), .snapshot)
+    if (length(.args) && is.null(names(.args)))
+      names(.args) <- as.character(substitute(.args)[-1L])
+
     if (length(envir[["sockc"]])) {
       expr <- c(expr, .timedelay)
       for (i in seq_len(envir[["n"]]))
@@ -214,6 +218,7 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
       for (i in seq_len(max(stat(envir[["sock"]], "pipes"), envir[["n"]])))
         mirai(.expr = expr, ..., .args = .args, .compute = .compute)
     }
+
   }
 
 }

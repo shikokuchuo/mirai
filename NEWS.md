@@ -1,3 +1,7 @@
+# mirai 0.12.0.9000 (development)
+
+* Fixes use of `everywhere()` specifying '.args' as an unnamed list.
+
 # mirai 0.12.0
 
 * More minimal print methods for 'mirai' and 'miraiCluster'.
