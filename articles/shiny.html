@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0.9000</span>
       </span>
     </div>
 
@@ -126,19 +126,21 @@
 <p>{mirai} may be used as an asynchronous / distributed backend to scale
 <a href="https://cran.r-project.org/package=shiny" class="external-link">{shiny}</a>
 applications and plugs directly into the reactive framework, without the
-need to use promises. Because of this, it is especially suited to
-large-scale enterprise applications.</p>
+need to use promises.</p>
+<p>Depending on the options suppled to <code><a href="../reference/daemons.html">daemons()</a></code>, tasks may
+be distributed across local background processes or multiple networked
+servers in an efficient and performant manner.</p>
 <p>The following example has a button to submit tasks, which will be
 processed by one of 5 daemons, outputting a pretty spiral pattern upon
-completion.</p>
-<p>You will find that if you submit more than 5 tasks, the chart updates
-5 at a time, limited by the number of daemons set (the
-parallel-processing capacity of the application).</p>
+completion. If more than 5 tasks are submitted at once, the chart
+updates 5 at a time, limited by the number of available daemons.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://koenderks.github.io/aRtsy/" class="external-link">aRtsy</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># function definitions</span></span>
 <span></span>
 <span><span class="va">run_task</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">5L</span><span class="op">)</span></span>
@@ -176,14 +178,15 @@ parallel-processing capacity of the application).</p>
 <span>  <span class="va">output</span><span class="op">$</span><span class="va">status</span> <span class="op">&lt;-</span> <span class="fu">renderText</span><span class="op">(</span><span class="fu">reactive_status</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">poll_for_results</span> <span class="op">&lt;-</span> <span class="fu">reactiveVal</span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="co"># mirai setup - 5 local daemons with dispatcher</span></span>
-<span>  <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">5L</span><span class="op">)</span></span>
+<span>  <span class="co"># automatically shutdown daemons when app exits</span></span>
 <span>  <span class="fu">onStop</span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0L</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># create empty mirai queue</span></span>
 <span>  <span class="va">q</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># button to submit a task</span></span>
 <span>  <span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">task</span>, <span class="op">{</span></span>
-<span>    <span class="va">q</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">q</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1L</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;&lt;-</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu">run_task</span><span class="op">(</span><span class="op">)</span>, run_task <span class="op">=</span> <span class="va">run_task</span><span class="op">)</span></span>
+<span>    <span class="va">q</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">q</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1L</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;&lt;-</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu">run_task</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="fu">poll_for_results</span><span class="op">(</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span></span>
@@ -203,7 +206,15 @@ parallel-processing capacity of the application).</p>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="fu">shinyApp</span><span class="op">(</span>ui <span class="op">=</span> <span class="va">ui</span>, server <span class="op">=</span> <span class="va">server</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># mirai setup - 5 local daemons with dispatcher</span></span>
+<span><span class="co"># switch off cleanup as not necessary (each task is self-contained)</span></span>
+<span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">5L</span>, cleanup <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># pre-load function on each daemon for efficiency</span></span>
+<span><span class="fu"><a href="../reference/everywhere.html">everywhere</a></span><span class="op">(</span><span class="va">run_task</span> <span class="op">&lt;&lt;-</span> <span class="va">run_task</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">run_task</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">shinyApp</span><span class="op">(</span>ui <span class="op">=</span> <span class="va">ui</span>, server <span class="op">=</span> <span class="va">server</span><span class="op">)</span></span>
+<span><span class="fu">runApp</span><span class="op">(</span><span class="va">app</span><span class="op">)</span></span></code></pre></div>
 <p><em>Thanks to Daniel Woodie and William Landau for providing the
 original example on which this is based. Please see <a href="https://wlandau.github.io/crew/articles/shiny.html" class="external-link uri">https://wlandau.github.io/crew/articles/shiny.html</a> which
 also has examples of the fantastic artwork produced.</em></p>
