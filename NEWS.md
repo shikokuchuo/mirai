@@ -1,6 +1,6 @@
 # mirai 0.12.0.9000 (development)
 
-* Fixes use of `everywhere()` specifying '.args' as an unnamed list.
+* Fixes use of `everywhere()` specifying '.args' as an unnamed list or '.expr' as a language object.
 
 # mirai 0.12.0
 

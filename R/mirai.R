@@ -138,13 +138,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 
   missing(.expr) && stop(._[["missing_expression"]])
 
-  expr <- substitute(.expr)
-  arglist <- list(..., .expr = if (is.symbol(expr) && is.language(get0(as.character(expr), envir = sys.frame(-1L)))) .expr else expr)
-
-  if (length(.args)) {
-    if (!is.list(.args)) .args <- as.list(.args)
+  arglist <- list(..., .expr = select_expr(substitute(.expr), .expr))
+  if (length(.args))
     arglist <- if (length(names(.args))) c(.args, arglist) else c(`names<-`(.args, as.character(substitute(.args)[-1L])), arglist)
-  }
 
   data <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
@@ -206,7 +202,7 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 
   if (length(envir)) {
 
-    expr <- c(as.expression(substitute(.expr)), .snapshot)
+    expr <- c(as.expression(select_expr(substitute(.expr), .expr)), .snapshot)
     if (length(.args) && is.null(names(.args)))
       names(.args) <- as.character(substitute(.args)[-1L])
 
@@ -452,6 +448,9 @@ print.miraiInterrupt <- function(x, ...) {
 }
 
 # internals --------------------------------------------------------------------
+
+select_expr <- function(expr, .expr)
+  if (is.symbol(expr) && is.language(get0(as.character(expr), envir = sys.frame(-2L)))) .expr else expr
 
 mk_interrupt_error <- function(e) .interrupt_error
 
