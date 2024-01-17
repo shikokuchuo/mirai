@@ -499,9 +499,10 @@ parse_dots <- function(...) {
   for (dot in dots)
     is.numeric(dot) || is.logical(dot) || stop(._[["wrong_dots"]])
   dnames <- names(dots)
-  dots <- strcat(",", paste(dnames, dots, sep = "=", collapse = ","))
-  if ("output" %in% dnames) class(dots) <- "output"
-  dots
+  out <- strcat(",", paste(dnames, dots, sep = "=", collapse = ","))
+  pos <- dnames == "output"
+  if (any(pos) && as.logical(dots[pos])) class(out) <- "output"
+  out
 }
 
 parse_tls <- function(tls)

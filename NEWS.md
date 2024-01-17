@@ -1,5 +1,6 @@
 # mirai 0.12.0.9000 (development)
 
+* Fixes `daemons()` specifying 'output = FALSE' being taken as TRUE.
 * Fixes use of `everywhere()` specifying '.args' as an unnamed list or '.expr' as a language object.
 
 # mirai 0.12.0

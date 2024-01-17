@@ -77,7 +77,7 @@ if (connection) {
   nanotest(is.character(status()[["daemons"]]))
   nanotestz(daemons(0L))
   Sys.sleep(1L)
-  nanotesto(daemons(1L, dispatcher = FALSE, idletime = 500L, timerstart = 1L, cleanup = FALSE, seed = 1546, .compute = "new"))
+  nanotesto(daemons(1L, dispatcher = FALSE, idletime = 500L, timerstart = 1L, cleanup = FALSE, output = TRUE, seed = 1546, .compute = "new"))
   nanotest(is.character(nextget("urls", .compute = "new")))
   nanotest(is.integer(nextstream(.compute = "new")))
   Sys.sleep(1.5)
