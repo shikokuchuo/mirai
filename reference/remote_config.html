@@ -20,7 +20,7 @@ ssh_config generates a remote configuration for launching daemons over
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0.9001</span>
       </span>
     </div>
 
@@ -94,7 +94,7 @@ ssh_config generates a remote configuration for launching daemons over
 <span></span>
 <span><span class="fu">ssh_config</span><span class="op">(</span></span>
 <span>  <span class="va">remotes</span>,</span>
-<span>  timeout <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  timeout <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  tunnel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  command <span class="op">=</span> <span class="st">"ssh"</span>,</span>
 <span>  rscript <span class="op">=</span> <span class="st">"Rscript"</span></span>
@@ -133,7 +133,8 @@ to 22 if not specified), e.g. 'ssh://10.75.32.90:22' or 'ssh://nodename'.</p></d
 
 
 <dt>timeout</dt>
-<dd><p>[default 5] maximum time allowed for connection setup in seconds.</p></dd>
+<dd><p>[default 10] maximum time allowed for connection setup in
+seconds.</p></dd>
 
 
 <dt>tunnel</dt>
@@ -197,18 +198,18 @@ called from a relevant function.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Rscript"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">ssh_config</span><span class="op">(</span>remotes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ssh://10.75.32.90:222"</span>, <span class="st">"ssh://nodename"</span><span class="op">)</span>, timeout <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">ssh_config</span><span class="op">(</span>remotes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ssh://10.75.32.90:222"</span>, <span class="st">"ssh://nodename"</span><span class="op">)</span>, timeout <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $command</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ssh"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $args</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $args[[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "-o ConnectTimeout=10 -fTp 222" "10.75.32.90"                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "."                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "-o ConnectTimeout=5 -fTp 222" "10.75.32.90"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "."                           </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $args[[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "-o ConnectTimeout=10 -fTp 22" "nodename"                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "."                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "-o ConnectTimeout=5 -fTp 22" "nodename"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "."                          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $rscript</span>
