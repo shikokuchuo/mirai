@@ -493,22 +493,19 @@ tokenized_url <- function(url) sprintf("%s/%s", url, random(12L))
 req_socket <- function(url, tls = NULL, resend = .intmax)
   `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", resend)
 
-parse_dots <- function(...)
-  if (missing(...)) "" else {
-    dots <- list(...)
-    for (dot in dots)
-      is.numeric(dot) || is.logical(dot) || stop(._[["wrong_dots"]])
-    dnames <- names(dots)
-    dots <- strcat(",", paste(dnames, dots, sep = "=", collapse = ","))
-    "output" %in% dnames && return(`class<-`(dots, "output"))
-    dots
-  }
+parse_dots <- function(...) {
+  missing(...) && return("")
+  dots <- list(...)
+  for (dot in dots)
+    is.numeric(dot) || is.logical(dot) || stop(._[["wrong_dots"]])
+  dnames <- names(dots)
+  dots <- strcat(",", paste(dnames, dots, sep = "=", collapse = ","))
+  if ("output" %in% dnames) class(dots) <- "output"
+  dots
+}
 
 parse_tls <- function(tls)
-  switch(length(tls) + 1L,
-         "",
-         sprintf(",tls='%s'", tls),
-         sprintf(",tls=c('%s','%s')", tls[1L], tls[2L]))
+  switch(length(tls) + 1L, "", sprintf(",tls='%s'", tls), sprintf(",tls=c('%s','%s')", tls[1L], tls[2L]))
 
 mirai_lp <- function(lp = .libPaths()) lp[file.exists(file.path(lp, "mirai"))][1L]
 
