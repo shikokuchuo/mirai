@@ -140,16 +140,16 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   expr <- substitute(.expr)
   arglist <- list(..., .expr = if (is.symbol(expr) && is.language(.expr)) .expr else expr)
   if (length(.args))
-    arglist <- c(if (length(names(.args))) .args else `names<-`(.args, as.character(substitute(.args)[-1L])), arglist)
+    arglist <- c(if (is.null(names(.args))) `names<-`(.args, as.character(substitute(.args)[-1L])) else .args, arglist)
   data <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
   envir <- ..[[.compute]]
-  if (length(envir)) {
-    aio <- request_signal(.context(envir[["sock"]]), data = data, cv = envir[["cv"]], send_mode = 3L, recv_mode = 1L, timeout = .timeout)
-  } else {
+  if (is.null(envir)) {
     sock <- ephemeral_daemon()
     aio <- request(.context(sock), data = data, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
+  } else {
+    aio <- request_signal(.context(envir[["sock"]]), data = data, cv = envir[["cv"]], send_mode = 3L, recv_mode = 1L, timeout = .timeout)
   }
 
   `class<-`(aio, c("mirai", "recvAio"))
@@ -202,12 +202,12 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
     if (length(.args) && is.null(names(.args)))
       names(.args) <- as.character(substitute(.args)[-1L])
 
-    if (length(envir[["sockc"]])) {
-      .expr <- c(.expr, .timedelay)
-      for (i in seq_len(envir[["n"]]))
+    if (is.null(envir[["sockc"]])) {
+      for (i in seq_len(max(stat(envir[["sock"]], "pipes"), envir[["n"]])))
         mirai(.expr = .expr, ..., .args = .args, .compute = .compute)
     } else {
-      for (i in seq_len(max(stat(envir[["sock"]], "pipes"), envir[["n"]])))
+      .expr <- c(.expr, .timedelay)
+      for (i in seq_len(envir[["n"]]))
         mirai(.expr = .expr, ..., .args = .args, .compute = .compute)
     }
 

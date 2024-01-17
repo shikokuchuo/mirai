@@ -125,7 +125,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
       }
     }
 
-    auto && launch_daemon(write_args3(url = nurl, dots = dots, rs = next_stream(envir)), is.object(dots))
+    auto && launch_daemon(wa3(nurl, dots, next_stream(envir)), dots)
 
     basenames[i] <- burl
     servernames[i] <- listurl

@@ -104,14 +104,14 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
     length(url) == 1L || stop(._[["single_url"]])
     daemons(url = url, remote = remote, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
 
-    if (length(remote)) {
-      args <- remote[["args"]]
-      n <- if (is.list(args)) length(args) else 1L
-    } else {
+    if (is.null(remote)) {
       if (missing(n)) n <- 1L
       is.numeric(n) || stop(._[["numeric_n"]])
       cat("Shell commands for deployment on nodes:\n\n", file = stdout())
       print(launch_remote(rep(..[[id]][["urls"]], n), .compute = id))
+    } else {
+      args <- remote[["args"]]
+      n <- if (is.list(args)) length(args) else 1L
     }
 
   } else {
@@ -154,7 +154,7 @@ sendData.miraiNode <- function(node, data) {
 
   id <- attr(node, "id")
   envir <- ..[[id]]
-  length(envir) || stop(._[["cluster_inactive"]])
+  is.null(envir) && stop(._[["cluster_inactive"]])
 
   value <- data[["data"]]
   tagged <- !is.null(value[["tag"]])
