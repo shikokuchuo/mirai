@@ -214,7 +214,8 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #' @param remotes the character URL or vector of URLs to SSH into, using the
 #'     'ssh://' scheme and including the port open for SSH connections (defaults
 #'     to 22 if not specified), e.g. 'ssh://10.75.32.90:22' or 'ssh://nodename'.
-#' @param timeout [default 5] maximum time allowed for connection setup in seconds.
+#' @param timeout [default 10] maximum time allowed for connection setup in
+#'     seconds.
 #' @param tunnel [default FALSE] logical value whether to use SSH reverse
 #'     tunnelling. If TRUE, a tunnel is created between the same ports (as
 #'     specified in 'url') on the local and remote machines. Setting to TRUE
@@ -251,7 +252,7 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #'     respective machines.
 #'
 #' @examples
-#' ssh_config(remotes = c("ssh://10.75.32.90:222", "ssh://nodename"), timeout = 10)
+#' ssh_config(remotes = c("ssh://10.75.32.90:222", "ssh://nodename"), timeout = 5)
 #'
 #' \dontrun{
 #'
@@ -282,7 +283,7 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #' @rdname remote_config
 #' @export
 #'
-ssh_config <- function(remotes, timeout = 5, tunnel = FALSE, command = "ssh", rscript = "Rscript") {
+ssh_config <- function(remotes, timeout = 10, tunnel = FALSE, command = "ssh", rscript = "Rscript") {
 
   premotes <- lapply(remotes, parse_url)
   hostnames <- lapply(premotes, .subset2, "hostname")

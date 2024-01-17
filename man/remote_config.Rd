@@ -9,7 +9,7 @@ remote_config(command = NULL, args = c("", "."), rscript = "Rscript")
 
 ssh_config(
   remotes,
-  timeout = 5,
+  timeout = 10,
   tunnel = FALSE,
   command = "ssh",
   rscript = "Rscript"
@@ -37,7 +37,8 @@ should be replaced with 'Rscript.exe'.}
 'ssh://' scheme and including the port open for SSH connections (defaults
 to 22 if not specified), e.g. 'ssh://10.75.32.90:22' or 'ssh://nodename'.}
 
-\item{timeout}{[default 5] maximum time allowed for connection setup in seconds.}
+\item{timeout}{[default 10] maximum time allowed for connection setup in
+seconds.}
 
 \item{tunnel}{[default FALSE] logical value whether to use SSH reverse
 tunnelling. If TRUE, a tunnel is created between the same ports (as
@@ -92,7 +93,7 @@ A list in the required format to be supplied to the 'remote' argument
 \examples{
 remote_config(command = "ssh", args = c("-fTp 22 10.75.32.90", "."))
 
-ssh_config(remotes = c("ssh://10.75.32.90:222", "ssh://nodename"), timeout = 10)
+ssh_config(remotes = c("ssh://10.75.32.90:222", "ssh://nodename"), timeout = 5)
 
 \dontrun{
 

@@ -146,7 +146,7 @@ registerPromisesMethods <- function(pkgname, pkgpath) {
     requires_local = "SSH tunnelling requires 'url' hostname to be '127.0.0.1' or 'localhost'",
     refhook_invalid = "'refhook' must be a list of 2 functions or NULL",
     single_url = "only one 'url' should be specified",
-    sync_timeout = "initial sync with dispatcher timed out after 5s",
+    sync_timeout = "initial sync with dispatcher timed out after 10s",
     url_spec = "numeric value for 'url' is out of bounds",
     wrong_dots = "'...' arguments should only be of integer, numeric or logical type"
   ),
@@ -154,7 +154,7 @@ registerPromisesMethods <- function(pkgname, pkgpath) {
 )
 
 .intmax <- .Machine[["integer.max"]]
-.timelimit <- 5000L
+.timelimit <- 10000L
 
 as.promise <- NULL
 recvData <- NULL

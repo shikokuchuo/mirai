@@ -324,7 +324,7 @@ sub_real_port <- function(port, url) sub("(?<=:)0(?![^/])", port, url, perl = TR
 
 query_dispatcher <- function(sock, command, mode) {
   send(sock, data = command, mode = 2L, block = .timelimit)
-  recv(sock, mode = mode, block = .timelimit + .timelimit)
+  recv(sock, mode = mode, block = .timelimit)
 }
 
 create_req <- function(ctx, cv)
