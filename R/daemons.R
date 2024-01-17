@@ -281,11 +281,12 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       if (dispatcher) {
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
         if (length(tls)) tls_config(server = tls, pass = pass)
+        dots <- parse_dots(...)
         urld <- local_url()
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld, resend = 0L)
         sockc <- req_socket(urlc, resend = 0L)
-        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), url, n, urlc, tls = tls, pass = pass) || stop(._[["sync_timeout"]])
+        launch_and_sync_daemon(sock, write_args5(urld = urld, dots = dots, n = n, urlc = urlc, url = url), is.object(dots), tls, pass) || stop(._[["sync_timeout"]])
         init_monitor(sockc = sockc, envir = envir) || stop(._[["sync_timeout"]])
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass), resend = resilience * .intmax)
@@ -322,21 +323,22 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       urld <- local_url()
       cv <- cv()
       create_stream(n = n, seed = seed, envir = envir)
+      dots <- parse_dots(...)
       if (dispatcher) {
         sock <- req_socket(urld, resend = 0L)
         urlc <- strcat(urld, "c")
         sockc <- req_socket(urlc, resend = 0L)
-        launch_and_sync_daemon(sock = sock, urld, parse_dots(...), n, urlc, rs = envir[["stream"]]) || stop(._[["sync_timeout"]])
+        launch_and_sync_daemon(sock, write_args4(urld = urld, dots = dots, rs = envir[["stream"]], n = n, urlc = urlc), is.object(dots)) || stop(._[["sync_timeout"]])
         for (i in seq_len(n)) next_stream(envir)
         init_monitor(sockc = sockc, envir = envir) || stop(._[["sync_timeout"]])
       } else {
         sock <- req_socket(urld, resend = resilience * .intmax)
         if (is.null(seed)) {
           for (i in seq_len(n))
-            launch_daemon(urld, parse_dots(...), next_stream(envir))
+            launch_daemon(write_args3(url = urld, dots = dots, rs = next_stream(envir)), is.object(dots))
         } else {
           for (i in seq_len(n))
-            launch_and_sync_daemon(sock = sock, urld, parse_dots(...), next_stream(envir))
+            launch_and_sync_daemon(sock, write_args3(url = urld, dots = dots, rs = next_stream(envir)), is.object(dots))
         }
         `[[<-`(envir, "urls", urld)
       }
@@ -508,23 +510,24 @@ parse_tls <- function(tls)
          sprintf(",tls='%s'", tls),
          sprintf(",tls=c('%s','%s')", tls[1L], tls[2L]))
 
-write_args <- function(dots, rs = NULL, tls = NULL, libpath = NULL)
-  shQuote(switch(length(dots),
-                 sprintf("mirai::.daemon('%s')", dots[[1L]]),
-                 sprintf("mirai::daemon('%s'%s%s)", dots[[1L]], dots[[2L]], parse_tls(tls)),
-                 sprintf("mirai::daemon('%s'%s%s,rs=c(%s))", dots[[1L]], dots[[2L]], parse_tls(tls), paste0(dots[[3L]], collapse = ",")),
-                 sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',n=%d,rs=c(%s),monitor='%s'%s)", libpath, dots[[1L]], dots[[3L]], paste0(rs, collapse= ","), dots[[4L]], dots[[2L]]),
-                 sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',c('%s'),n=%d,monitor='%s'%s)", libpath, dots[[1L]], paste0(dots[[3L]], collapse = "','"), dots[[4L]], dots[[5L]], dots[[2L]])))
+mirai_lp <- function(lp = .libPaths()) lp[file.exists(file.path(lp, "mirai"))][1L]
 
-launch_daemon <- function(..., rs = NULL, tls = NULL) {
-  dots <- list(...)
-  dlen <- length(dots)
-  output <- dlen > 1L && is.object(dots[[2L]])
-  libpath <- if (dlen > 3L) (lp <- .libPaths())[file.exists(file.path(lp, "mirai"))][1L]
-  system2(command = .command, args = c(if (length(libpath)) "--vanilla", "-e", write_args(dots, rs = rs, tls = tls, libpath = libpath)), stdout = if (output) "", stderr = if (output) "", wait = FALSE)
-}
+write_args2 <- function(url, dots, tls = NULL)
+  shQuote(sprintf("mirai::daemon('%s'%s%s)", url, dots, parse_tls(tls)))
 
-launch_and_sync_daemon <- function(sock, ..., rs = NULL, tls = NULL, pass = NULL) {
+write_args3 <- function(url, dots, rs, tls = NULL)
+  shQuote(sprintf("mirai::daemon('%s'%s%s,rs=c(%s))", url, dots, parse_tls(tls), paste0(rs, collapse = ",")))
+
+write_args4 <- function(urld, dots, rs, n, urlc)
+  shQuote(sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',n=%d,rs=c(%s),monitor='%s'%s)", mirai_lp(), urld, n, paste0(rs, collapse= ","), urlc, dots))
+
+write_args5 <- function(urld, dots, rs, n, urlc, url)
+  shQuote(sprintf(".libPaths(c('%s',.libPaths()));mirai::dispatcher('%s',c('%s'),n=%d,monitor='%s'%s)", mirai_lp(), urld, paste0(url, collapse = "','"), n, urlc, dots))
+
+launch_daemon <- function(args, output)
+  system2(command = .command, args = c("-e", args), stdout = if (output) "", stderr = if (output) "", wait = FALSE)
+
+launch_and_sync_daemon <- function(sock, args, output, tls = NULL, pass = NULL) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE)
   if (is.character(tls)) {
@@ -546,7 +549,7 @@ launch_and_sync_daemon <- function(sock, ..., rs = NULL, tls = NULL, pass = NULL
       Sys.setenv(MIRAI_TEMP_VAR = pass)
     }
   }
-  launch_daemon(..., rs = rs)
+  launch_daemon(args = args, output = output)
   until(cv, .timelimit)
 }
 

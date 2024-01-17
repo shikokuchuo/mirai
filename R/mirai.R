@@ -31,8 +31,7 @@
 #'     over, any arguments specified via '.args'.
 #' @param .args (optional) \strong{either} a list of objects to be passed by
 #'     \link{name} (found in the current scope), \strong{or else} a list of
-#'     name = value pairs, as in '...'. If an object other than a list is
-#'     supplied, it will be coerced to a list.
+#'     name = value pairs, as in '...'.
 #' @param .timeout [default NULL] for no timeout, or an integer value in
 #'     milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
@@ -142,20 +141,15 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   arglist <- list(..., .expr = if (is.symbol(expr) && is.language(.expr)) .expr else expr)
   if (length(.args))
     arglist <- c(if (length(names(.args))) .args else `names<-`(.args, as.character(substitute(.args)[-1L])), arglist)
-
   data <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
   envir <- ..[[.compute]]
   if (length(envir)) {
     aio <- request_signal(.context(envir[["sock"]]), data = data, cv = envir[["cv"]], send_mode = 3L, recv_mode = 1L, timeout = .timeout)
-
   } else {
-    url <- local_url()
-    sock <- req_socket(url, resend = 0L)
-    launch_daemon(url)
+    sock <- ephemeral_daemon()
     aio <- request(.context(sock), data = data, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
-
   }
 
   `class<-`(aio, c("mirai", "recvAio"))
@@ -228,7 +222,8 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #'
 #' @param aio a 'mirai' object.
 #'
-#' @return The passed mirai (invisibly). The retrieved value is stored at \code{$data}.
+#' @return The passed mirai (invisibly). The retrieved value is stored at
+#'     \code{$data}.
 #'
 #' @details This function will wait for the async operation to complete if still
 #'     in progress (blocking).
@@ -378,9 +373,9 @@ is_mirai <- function(x) inherits(x, "mirai")
 #'
 #' @return Logical value TRUE or FALSE.
 #'
-#' @details Is the object a 'miraiError'. When execution in a mirai process fails,
-#'     the error message is returned as a character string of class 'miraiError'
-#'     and 'errorValue'.
+#' @details Is the object a 'miraiError'. When execution in a mirai process
+#'     fails, the error message is returned as a character string of class
+#'     'miraiError' and 'errorValue'.
 #'
 #'     Is the object a 'miraiInterrupt'. When an ongoing mirai is sent a user
 #'     interrupt, the mirai will resolve to an empty character string classed as
@@ -450,6 +445,12 @@ print.miraiInterrupt <- function(x, ...) {
 }
 
 # internals --------------------------------------------------------------------
+
+ephemeral_daemon <- function(url = local_url()) {
+  sock <- req_socket(url, resend = 0L)
+  system2(command = .command, args = c("-e", shQuote(sprintf("mirai::.daemon('%s')", url))), stdout = NULL, stderr = NULL, wait = FALSE)
+  sock
+}
 
 mk_interrupt_error <- function(e) .interrupt_error
 

@@ -13,7 +13,8 @@ call_mirai_(aio)
 \item{aio}{a 'mirai' object.}
 }
 \value{
-The passed mirai (invisibly). The retrieved value is stored at \code{$data}.
+The passed mirai (invisibly). The retrieved value is stored at
+    \code{$data}.
 }
 \description{
 \code{call_mirai} retrieves the value of a mirai, waiting for the the

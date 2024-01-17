@@ -22,9 +22,9 @@ Logical value TRUE or FALSE.
 Validator functions for error value types created by \pkg{mirai}.
 }
 \details{
-Is the object a 'miraiError'. When execution in a mirai process fails,
-    the error message is returned as a character string of class 'miraiError'
-    and 'errorValue'.
+Is the object a 'miraiError'. When execution in a mirai process
+    fails, the error message is returned as a character string of class
+    'miraiError' and 'errorValue'.
 
     Is the object a 'miraiInterrupt'. When an ongoing mirai is sent a user
     interrupt, the mirai will resolve to an empty character string classed as
