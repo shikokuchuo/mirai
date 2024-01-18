@@ -92,6 +92,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
   active <- servers <- queue <- vector(mode = "list", length = n)
   if (auto) {
     dots <- parse_dots(...)
+    output <- attr(dots, "output")
   } else {
     baseurl <- parse_url(url)
     ports <- get_ports(baseurl = baseurl, n = n)
@@ -125,7 +126,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
       }
     }
 
-    auto && launch_daemon(wa3(nurl, dots, next_stream(envir)), dots)
+    auto && launch_daemon(wa3(nurl, dots, next_stream(envir)), output)
 
     basenames[i] <- burl
     servernames[i] <- listurl
