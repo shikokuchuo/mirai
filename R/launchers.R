@@ -83,11 +83,13 @@ launch_local <- function(url, ..., tls = NULL, .compute = "default") {
   output <- attr(dots, "output")
   if (is.null(tls)) tls <- envir[["tls"]]
   url <- process_url(url, .compute = .compute)
-  for (u in url)
-    launch_daemon(
-      if (is.null(envir[["stream"]])) wa2(u, dots, tls) else wa3(u, dots, next_stream(envir), tls),
-      output
-    )
+  if (is.null(envir[["stream"]])) {
+    for (u in url)
+      launch_daemon(wa2(u, dots, tls), output)
+  } else {
+    for (u in url)
+      launch_daemon(wa3(u, dots, next_stream(envir), tls), output)
+  }
 
 }
 

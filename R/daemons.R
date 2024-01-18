@@ -337,10 +337,10 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         sock <- req_socket(urld, resend = resilience * .intmax)
         if (is.null(seed)) {
           for (i in seq_len(n))
-            launch_daemon(wa3(urld, dots, next_stream(envir)), dots)
+            launch_daemon(wa3(urld, dots, next_stream(envir)), output)
         } else {
           for (i in seq_len(n))
-            launch_and_sync_daemon(sock, wa3(urld, dots, next_stream(envir)), dots)
+            launch_and_sync_daemon(sock, wa3(urld, dots, next_stream(envir)), output)
         }
         `[[<-`(envir, "urls", urld)
       }
