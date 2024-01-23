@@ -482,7 +482,7 @@ check_create_tls <- function(url, tls, envir) {
 }
 
 create_stream <- function(n, seed, envir) {
-  rsignrank(1L, 1L)
+  rexp(1L)
   oseed <- .GlobalEnv[[".Random.seed"]]
   RNGkind("L'Ecuyer-CMRG")
   if (length(seed)) set.seed(seed)

@@ -10,7 +10,7 @@ status](https://www.r-pkg.org/badges/version/mirai?color=112d4e)](https://CRAN.R
 [![mirai status
 badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e)](https://shikokuchuo.r-universe.dev/mirai)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
-[![codecov](https://codecov.io/gh/shikokuchuo/mirai/branch/main/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/mirai)
+[![codecov](https://codecov.io/gh/shikokuchuo/mirai/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/mirai)
 [![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)
 <!-- badges: end -->
 
@@ -87,8 +87,8 @@ result.
 
 ``` r
 m$data
-#>  [1] -2.4019171  1.5201849  1.9796594 -1.1776160  1.7105682  0.5846011
-#>  [7] -0.8491733  0.5051374  0.6578147 -0.4163341
+#>  [1]  2.1008424 -1.1086334 -0.5883114 -0.1746657 -2.1993281 -0.4546843
+#>  [7] -5.7252220 -1.6997800 -0.9020114  0.4759995
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -96,8 +96,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] -2.4019171  1.5201849  1.9796594 -1.1776160  1.7105682  0.5846011
-#>  [7] -0.8491733  0.5051374  0.6578147 -0.4163341
+#>  [1]  2.1008424 -1.1086334 -0.5883114 -0.1746657 -2.1993281 -0.4546843
+#>  [7] -5.7252220 -1.6997800 -0.9020114  0.4759995
 ```
 
 ### Daemons

@@ -32,16 +32,15 @@ Lightweight parallel code execution and distributed computing. Designed for
 \code{vignette("mirai", package = "mirai")}
 }
 
-\section{Links}{
-
-
-    \CRANpkg{mirai} website: \url{https://shikokuchuo.net/mirai/}
-
-    \CRANpkg{nanonext} website: \url{https://shikokuchuo.net/nanonext/}
-
-    NNG website: \url{https://nng.nanomsg.org/}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://shikokuchuo.net/mirai/}
+  \item \url{https://github.com/shikokuchuo/mirai/}
+  \item Report bugs at \url{https://github.com/shikokuchuo/mirai/issues}
 }
 
+}
 \author{
 Charlie Gao \email{charlie.gao@shikokuchuo.net}
     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})

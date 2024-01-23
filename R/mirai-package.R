@@ -38,14 +38,6 @@
 #'
 #' \code{vignette("mirai", package = "mirai")}
 #'
-#' @section Links:
-#'
-#'     \CRANpkg{mirai} website: \url{https://shikokuchuo.net/mirai/}
-#'
-#'     \CRANpkg{nanonext} website: \url{https://shikokuchuo.net/nanonext/}
-#'
-#'     NNG website: \url{https://nng.nanomsg.org/}
-#'
 #' @encoding UTF-8
 #' @author Charlie Gao \email{charlie.gao@@shikokuchuo.net}
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
@@ -56,12 +48,9 @@
 #'     send_aio socket stat stop_aio strcat tls_config unresolved until wait
 #'     write_cert
 #' @importFrom parallel nextRNGStream stopCluster
-#' @importFrom stats rsignrank
+#' @importFrom stats rexp
 #'
-#' @docType package
-#' @name mirai-package
-#'
-NULL
+"_PACKAGE"
 
 # nocov start
 # tested implicitly
