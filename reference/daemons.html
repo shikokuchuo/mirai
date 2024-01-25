@@ -208,7 +208,7 @@ different resources).</p></dd>
     the daemons were started with <code>autoexit = FALSE</code>). If a daemon is
     processing a task, it will exit as soon as the task is complete.</p>
 <p>To reset persistent daemons started with <code>autoexit = FALSE</code>, use
-    <code>daemons(NULL)</code> instead, which also sends exit signals to all
+    <code>daemons(NULL)</code> instead, which also sends exit instructions to all
     connected daemons prior to resetting.</p>
 <p>For historical reasons, <code>daemons()</code> with no arguments returns the
     value of <code><a href="status.html">status</a></code>.</p>
