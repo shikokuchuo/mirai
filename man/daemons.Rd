@@ -107,7 +107,7 @@ Use \code{daemons(0)} to reset daemon connections:
     processing a task, it will exit as soon as the task is complete.
 
     To reset persistent daemons started with \code{autoexit = FALSE}, use
-    \code{daemons(NULL)} instead, which also sends exit signals to all
+    \code{daemons(NULL)} instead, which also sends exit instructions to all
     connected daemons prior to resetting.
 
     For historical reasons, \code{daemons()} with no arguments returns the

@@ -75,17 +75,17 @@
 #'     default TRUE ensures that it will exit cleanly once its socket connection
 #'     has ended.
 #'
+#'     Instead of TRUE, supplying a signal from the \pkg{tools} package, e.g.
+#'     \code{tools::SIGINT}, or an equivalent integer value, sets the signal to
+#'     be raised when the socket connection ends. As an example, supplying
+#'     SIGINT allows a potentially more immediate exit by interrupting any
+#'     ongoing evaluation rather than letting it complete.
+#'
 #'     Setting to FALSE allows the daemon to persist indefinitely even when
 #'     there is no longer a socket connection. This allows a host session to end
 #'     and a new session to connect at the URL where the daemon is dialled in.
 #'     Daemons must be terminated with \code{daemons(NULL)} in this case, which
-#'     sends an exit signal to all connected daemons.
-#'
-#'     Supplying a signal from the \pkg{tools} package, e.g. \code{tools::SIGINT},
-#'     or an equivalent integer value, sets this signal to be raised when the
-#'     socket connection ends. As an example, supplying SIGINT allows a
-#'     potentially more immediate exit by interrupting any ongoing evaluation
-#'     rather than letting it complete.
+#'     sends explicit exit instructions to all connected daemons.
 #'
 #'     Persistence also implies that dials are performed asynchronously, which
 #'     means retries are attempted (indefinitely) if not immediately successful.
