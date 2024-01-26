@@ -1,4 +1,4 @@
-# Copyright (C) 2023 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2023-2024 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of mirai.
 #
@@ -198,10 +198,10 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
         if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["req"]])) {
           req <- .subset2(queue[[i]][["req"]], "value")
           if (is.object(req)) req <- serialize(req, NULL)
-          send(queue[[i]][["ctx"]], data = req, mode = 2L)
+          send(queue[[i]][["ctx"]], data = req, mode = 2L, block = TRUE)
           q <- queue[[i]][["daemon"]]
           if (req[3L]) {
-            send(queue[[i]][["rctx"]], NULL, mode = 2L)
+            send(queue[[i]][["rctx"]], NULL, mode = 2L, block = TRUE)
             reap(queue[[i]][["rctx"]])
           } else {
             serverfree[q] <- TRUE

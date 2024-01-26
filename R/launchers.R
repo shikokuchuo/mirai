@@ -1,4 +1,4 @@
-# Copyright (C) 2023 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2023-2024 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of mirai.
 #

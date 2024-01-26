@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2023 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of mirai.
 #
@@ -155,13 +155,13 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
 
     (count >= maxtasks || count > timerstart && mclock() - start >= walltime) && {
       next_config(mark = TRUE)
-      send(ctx, data = data, mode = 3L)
+      send(ctx, data = data, mode = 3L, block = TRUE)
       aio <- recv_aio_signal(ctx, cv = cv, mode = 8L)
       wait(cv)
       break
     }
 
-    send(ctx, data = data, mode = 3L)
+    send(ctx, data = data, mode = 3L, block = TRUE)
     perform_cleanup(cleanup)
     if (count <= timerstart) start <- mclock()
 
