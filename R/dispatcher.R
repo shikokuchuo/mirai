@@ -311,7 +311,8 @@ get_and_reset_env <- function(x) {
 }
 
 get_tls <- function(baseurl, tls, pass) {
-  if (substr(baseurl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
+  sch <- substr(baseurl[["scheme"]], 1L, 3L)
+  if ((sch == "wss" || sch == "tls") && is.null(tls)) {
     tls <- get_and_reset_env("MIRAI_TEMP_FIELD1")
     if (length(tls)) tls <- c(tls, get_and_reset_env("MIRAI_TEMP_FIELD2"))
   }

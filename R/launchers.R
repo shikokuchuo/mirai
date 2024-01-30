@@ -396,6 +396,6 @@ process_url <- function(url, .compute) {
 
 parse_check_local_url <- function(url) {
   purl <- parse_url(url)
-  purl[["hostname"]] %in% c("localhost", "127.0.0.1") || stop(._[["requires_local"]])
+  purl[["hostname"]] == "127.0.0.1" || purl[["hostname"]] == "localhost" || stop(._[["requires_local"]])
   purl
 }

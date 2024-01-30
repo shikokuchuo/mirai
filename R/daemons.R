@@ -473,7 +473,8 @@ serialization <- function(refhook = list()) {
 
 check_create_tls <- function(url, tls, envir) {
   purl <- parse_url(url)
-  if (substr(purl[["scheme"]], 1L, 3L) %in% c("wss", "tls") && is.null(tls)) {
+  sch <- substr(purl[["scheme"]], 1L, 3L)
+  if ((sch == "wss" || sch == "tls") && is.null(tls)) {
     cert <- write_cert(cn = purl[["hostname"]])
     `[[<-`(envir, "tls", cert[["client"]])
     tls <- cert[["server"]]
