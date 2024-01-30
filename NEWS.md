@@ -1,10 +1,10 @@
-# mirai 0.12.0.9005 (development)
+# mirai 0.12.0.9006 (development)
 
-* Ensures compatibility with nanonext >= 0.13.0.
 * Dispatcher sync (and status) timeouts widened to 10s to allow for launching large numbers of daemons.
 * Default for `ssh_config()` argument 'timeout' widened to 10 (seconds).
 * Fixes `daemons()` specifying 'output = FALSE' registering as TRUE instead.
 * Fixes use of `everywhere()` specifying '.args' as an unnamed list or '.expr' as a language object.
+* Ensures compatibility with nanonext >= 0.13.0.
 
 # mirai 0.12.0
 
