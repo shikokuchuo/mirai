@@ -287,8 +287,8 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld, resend = 0L)
         sockc <- socket(protocol = "pair", listen = urlc)
-        launch_and_sync_daemon(sock, wa5(urld, dots, n, urlc, url), output, tls, pass) || stop(._[["sync_timeout"]])
-        init_monitor(sockc = sockc, envir = envir) || stop(._[["sync_timeout"]])
+        launch_and_sync_daemon(sock, wa5(urld, dots, n, urlc, url), output, tls, pass)
+        init_monitor(sockc = sockc, envir = envir)
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass), resend = resilience * .intmax)
         store_urls(sock = sock, envir = envir)
@@ -330,9 +330,9 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         sock <- req_socket(urld, resend = 0L)
         urlc <- strcat(urld, "c")
         sockc <- socket(protocol = "pair", listen = urlc)
-        launch_and_sync_daemon(sock, wa4(urld, dots, envir[["stream"]], n, urlc), output) || stop(._[["sync_timeout"]])
+        launch_and_sync_daemon(sock, wa4(urld, dots, envir[["stream"]], n, urlc), output)
         for (i in seq_len(n)) next_stream(envir)
-        init_monitor(sockc = sockc, envir = envir) || stop(._[["sync_timeout"]])
+        init_monitor(sockc = sockc, envir = envir)
       } else {
         sock <- req_socket(urld, resend = resilience * .intmax)
         if (is.null(seed)) {
@@ -551,14 +551,13 @@ launch_and_sync_daemon <- function(sock, args, output, tls = NULL, pass = NULL) 
     }
   }
   launch_daemon(args, output)
-  until(cv, .limit_long)
+  until(cv, .limit_long) || stop(._[["sync_timeout"]])
 }
 
 init_monitor <- function(sockc, envir) {
-  res <- query_dispatcher(sockc, command = FALSE, mode = 2L, block = .limit_long)
-  valid <- !is.object(res)
-  if (valid) `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L]))
-  valid
+  res <- recv(sockc, mode = 2L, block = .limit_long)
+  is.object(res) && stop(._[["sync_timeout"]])
+  `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L]))
 }
 
 store_urls <- function(sock, envir) {
@@ -578,7 +577,7 @@ send_signal <- function(envir) {
 }
 
 query_status <- function(envir) {
-  res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L, block = .limit_short)
+  res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L)
   is.object(res) && return(res)
   `attributes<-`(res, list(dim = c(envir[["n"]], 5L),
                            dimnames = list(envir[["urls"]], c("i", "online", "instance", "assigned", "complete"))))

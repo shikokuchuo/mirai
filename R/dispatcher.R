@@ -143,7 +143,6 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
     on.exit(reap(sockc), add = TRUE, after = FALSE)
     pipe_notify(sockc, cv = cv, remove = TRUE, flag = TRUE)
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
-    recv(sockc, mode = 6L, block = .limit_long) && stop(._[["sync_timeout"]])
     send(sockc, c(Sys.getpid(), servernames), mode = 2L)
     cmessage <- recv_aio_signal(sockc, cv = cv, mode = 5L)
   }
@@ -288,7 +287,7 @@ saisei <- function(i, force = FALSE, .compute = "default") {
   envir <- ..[[.compute]]
   i <- as.integer(i[1L])
   length(envir[["sockc"]]) && i > 0L && i <= envir[["n"]] && substr(envir[["urls"]][i], 1L, 1L) != "t" || return()
-  r <- query_dispatcher(sock = envir[["sockc"]], command = if (force) -i else i, mode = 9L, block = .limit_short)
+  r <- query_dispatcher(sock = envir[["sockc"]], command = if (force) -i else i, mode = 9L)
   is.character(r) && nzchar(r) || return()
   envir[["urls"]][i] <- r
   r
@@ -324,9 +323,10 @@ get_tls <- function(baseurl, tls, pass) {
 
 sub_real_port <- function(port, url) sub("(?<=:)0(?![^/])", port, url, perl = TRUE)
 
-query_dispatcher <- function(sock, command, mode, block)
-  if (r <- send(sock, data = command, mode = 2L, block = block)) r else
-    recv(sock, mode = mode, block = block)
+query_dispatcher <- function(sock, command, mode) {
+  send(sock, data = command, mode = 2L)
+  recv(sock, mode = mode, block = .limit_short)
+}
 
 create_req <- function(ctx, cv)
   list(ctx = ctx, req = recv_aio_signal(ctx, cv = cv, mode = 8L))
