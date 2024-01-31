@@ -578,7 +578,7 @@ send_signal <- function(envir) {
 }
 
 query_status <- function(envir) {
-  res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L)
+  res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L, block = .limit_short)
   is.object(res) && return(res)
   `attributes<-`(res, list(dim = c(envir[["n"]], 5L),
                            dimnames = list(envir[["urls"]], c("i", "online", "instance", "assigned", "complete"))))

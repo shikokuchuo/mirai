@@ -288,7 +288,7 @@ saisei <- function(i, force = FALSE, .compute = "default") {
   envir <- ..[[.compute]]
   i <- as.integer(i[1L])
   length(envir[["sockc"]]) && i > 0L && i <= envir[["n"]] && substr(envir[["urls"]][i], 1L, 1L) != "t" || return()
-  r <- query_dispatcher(sock = envir[["sockc"]], command = if (force) -i else i, mode = 9L)
+  r <- query_dispatcher(sock = envir[["sockc"]], command = if (force) -i else i, mode = 9L, block = .limit_short)
   is.character(r) && nzchar(r) || return()
   envir[["urls"]][i] <- r
   r
@@ -324,7 +324,7 @@ get_tls <- function(baseurl, tls, pass) {
 
 sub_real_port <- function(port, url) sub("(?<=:)0(?![^/])", port, url, perl = TRUE)
 
-query_dispatcher <- function(sock, command, mode, block = .limit_short)
+query_dispatcher <- function(sock, command, mode, block)
   if (r <- send(sock, data = command, mode = 2L, block = block)) r else
     recv(sock, mode = mode, block = block)
 
