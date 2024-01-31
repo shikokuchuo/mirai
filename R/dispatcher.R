@@ -144,7 +144,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
     pipe_notify(sockc, cv = cv, remove = TRUE, flag = TRUE)
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
     recv(sockc, mode = 6L, block = .limit_long) && stop(._[["sync_timeout"]])
-    saio <- send_aio(sockc, c(Sys.getpid(), servernames), mode = 2L)
+    send(sockc, c(Sys.getpid(), servernames), mode = 2L)
     cmessage <- recv_aio_signal(sockc, cv = cv, mode = 5L)
   }
 
@@ -189,7 +189,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
         } else {
           data <- as.integer(c(seq_n, activevec, instance, assigned, complete))
         }
-        saio <- send_aio(sockc, data = data, mode = 2L)
+        send(sockc, data = data, mode = 2L)
         cmessage <- recv_aio_signal(sockc, cv = cv, mode = 5L)
         next
       }

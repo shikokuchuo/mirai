@@ -145,7 +145,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 
   envir <- ..[[.compute]]
   if (is.null(envir)) {
-    sock <- ephemeral_daemon()
+    sock <- ephemeral_daemon(local_url())
     aio <- request(.context(sock), data = data, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
   } else {
@@ -446,7 +446,7 @@ print.miraiInterrupt <- function(x, ...) {
 
 # internals --------------------------------------------------------------------
 
-ephemeral_daemon <- function(url = local_url()) {
+ephemeral_daemon <- function(url) {
   sock <- req_socket(url, resend = 0L)
   system2(command = .command, args = c("-e", shQuote(sprintf("mirai::.daemon('%s')", url))), stdout = FALSE, stderr = FALSE, wait = FALSE)
   sock

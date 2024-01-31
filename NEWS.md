@@ -1,4 +1,4 @@
-# mirai 0.12.0.9008 (development)
+# mirai 0.12.0.9009 (development)
 
 * Dispatcher initial sync timeout widened to 10s to allow for launching large numbers of daemons.
 * Default for `ssh_config()` argument 'timeout' widened to 10 (seconds).
