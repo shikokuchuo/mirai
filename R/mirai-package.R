@@ -143,7 +143,8 @@ registerPromisesMethods <- function(pkgname, pkgpath) {
 )
 
 .intmax <- .Machine[["integer.max"]]
-.timelimit <- 10000L
+.limit_short <- 5000L
+.limit_long <- 10000L
 
 as.promise <- NULL
 recvData <- NULL

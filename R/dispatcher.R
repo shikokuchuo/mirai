@@ -139,11 +139,11 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
 
   ctrchannel <- is.character(monitor)
   if (ctrchannel) {
-    sockc <- socket(protocol = "rep")
+    sockc <- socket(protocol = "pair")
     on.exit(reap(sockc), add = TRUE, after = FALSE)
     pipe_notify(sockc, cv = cv, remove = TRUE, flag = TRUE)
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
-    recv(sockc, mode = 6L, block = .timelimit) && stop(._[["sync_timeout"]])
+    recv(sockc, mode = 6L, block = .limit_long) && stop(._[["sync_timeout"]])
     saio <- send_aio(sockc, c(Sys.getpid(), servernames), mode = 2L)
     cmessage <- recv_aio_signal(sockc, cv = cv, mode = 5L)
   }
@@ -324,10 +324,9 @@ get_tls <- function(baseurl, tls, pass) {
 
 sub_real_port <- function(port, url) sub("(?<=:)0(?![^/])", port, url, perl = TRUE)
 
-query_dispatcher <- function(sock, command, mode) {
-  send(sock, data = command, mode = 2L, block = .timelimit)
-  recv(sock, mode = mode, block = .timelimit)
-}
+query_dispatcher <- function(sock, command, mode, block = .limit_short)
+  if (r <- send(sock, data = command, mode = 2L, block = block)) r else
+    recv(sock, mode = mode, block = block)
 
 create_req <- function(ctx, cv)
   list(ctx = ctx, req = recv_aio_signal(ctx, cv = cv, mode = 8L))

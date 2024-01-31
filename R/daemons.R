@@ -286,7 +286,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         urld <- local_url()
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld, resend = 0L)
-        sockc <- req_socket(urlc, resend = 0L)
+        sockc <- socket(protocol = "pair", listen = urlc)
         launch_and_sync_daemon(sock, wa5(urld, dots, n, urlc, url), output, tls, pass) || stop(._[["sync_timeout"]])
         init_monitor(sockc = sockc, envir = envir) || stop(._[["sync_timeout"]])
       } else {
@@ -329,7 +329,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       if (dispatcher) {
         sock <- req_socket(urld, resend = 0L)
         urlc <- strcat(urld, "c")
-        sockc <- req_socket(urlc, resend = 0L)
+        sockc <- socket(protocol = "pair", listen = urlc)
         launch_and_sync_daemon(sock, wa4(urld, dots, envir[["stream"]], n, urlc), output) || stop(._[["sync_timeout"]])
         for (i in seq_len(n)) next_stream(envir)
         init_monitor(sockc = sockc, envir = envir) || stop(._[["sync_timeout"]])
@@ -551,11 +551,11 @@ launch_and_sync_daemon <- function(sock, args, output, tls = NULL, pass = NULL) 
     }
   }
   launch_daemon(args, output)
-  until(cv, .timelimit)
+  until(cv, .limit_long)
 }
 
 init_monitor <- function(sockc, envir) {
-  res <- query_dispatcher(sockc, command = FALSE, mode = 2L)
+  res <- query_dispatcher(sockc, command = FALSE, mode = 2L, block = .limit_long)
   valid <- !is.object(res)
   if (valid) `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L]))
   valid
