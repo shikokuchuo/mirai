@@ -171,7 +171,8 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
 
 #' dot Daemon
 #'
-#' Implements an ephemeral executor for the remote process.
+#' Ephemeral executor for the remote process. User code must not call this.
+#'     Consider \code{daemon(maxtasks = 1L)} instead.
 #'
 #' @inheritParams daemon
 #'
@@ -183,7 +184,6 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
 .daemon <- function(url) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = NA)
-  on.exit(reap(sock))
   ._mirai_. <- recv(sock, mode = 1L, block = TRUE)
   data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
                    error = mk_mirai_error, interrupt = mk_interrupt_error)

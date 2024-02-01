@@ -18,8 +18,8 @@
 
 #' Dispatcher
 #'
-#' Dispatches tasks from a host to multiple daemons for processing, using a FIFO
-#'     scheduling rule, queuing tasks as required. Daemon / dispatcher settings
+#' Dispatches tasks from a host to daemons for processing, using FIFO
+#'     scheduling, queuing tasks as required. Daemon / dispatcher settings
 #'     may be controlled by \code{\link{daemons}} and this function should not
 #'     need to be invoked directly.
 #'

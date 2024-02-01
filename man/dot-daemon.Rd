@@ -15,6 +15,7 @@ port to connect to (and optionally for websockets, a path), e.g.
 Invisible NULL.
 }
 \description{
-Implements an ephemeral executor for the remote process.
+Ephemeral executor for the remote process. User code must not call this.
+    Consider \code{daemon(maxtasks = 1L)} instead.
 }
 \keyword{internal}
