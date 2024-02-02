@@ -15,13 +15,12 @@ by \link{name}.}
 objects referenced in '.expr'. Used in addition to, and taking precedence
 over, any arguments specified via '.args'.}
 
-\item{.args}{(optional) \strong{either} a list of objects to be passed by
+\item{.args}{(optional) \strong{either} a list of objects passed by
 \link{name} (found in the current scope), \strong{or else} a list of
 name = value pairs, as in '...'.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
-to use (each compute profile has its own set of daemons for connecting to
-different resources).}
+to use (each compute profile has its own independent set of daemons).}
 }
 \value{
 Invisible NULL.

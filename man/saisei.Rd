@@ -13,8 +13,7 @@ saisei(i, force = FALSE, .compute = "default")
 when there is an existing active connection.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
-to use (each compute profile has its own set of daemons for connecting to
-different resources).}
+to use (each compute profile has its own independent set of daemons).}
 }
 \value{
 The regenerated character URL upon success, or else NULL.

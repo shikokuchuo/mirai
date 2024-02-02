@@ -1,4 +1,4 @@
-# Copyright (C) 2023 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2023-2024 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of mirai.
 #
@@ -35,8 +35,8 @@
 #'     For \code{nextstream}: This function should be called for its return
 #'     value when required. The function also has the side effect of
 #'     automatically advancing the stream stored within the compute profile.
-#'     This ensures that next time the function is called the correct value will
-#'     be returned.
+#'     This ensures that the next recursive stream is returned when the function
+#'     is called again.
 #'
 #' @examples
 #' if (interactive()) {
@@ -62,9 +62,9 @@ nextstream <- function(.compute = "default") next_stream(..[[.compute]])
 #' \code{nextget} retrieves the specified item from the specified compute
 #'     profile.
 #'
-#' @param x character value of item to retrieve. One of 'pid' (dispatcher process
-#'     ID), 'urls' (URLs dispatcher is listening at) or 'tls' (the stored client
-#'     TLS configuration to be sent to daemons).
+#' @param x character value of item to retrieve. One of 'pid' (dispatcher
+#'     process ID), 'urls' (URLs dispatcher is listening at) or 'tls' (the
+#'     stored client TLS configuration for use by daemons).
 #'
 #' @return For \code{nextget}: the requested item, or else NULL if not present.
 #'

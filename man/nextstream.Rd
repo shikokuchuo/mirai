@@ -11,12 +11,11 @@ nextget(x, .compute = "default")
 }
 \arguments{
 \item{.compute}{[default 'default'] character value for the compute profile
-to use (each compute profile has its own set of daemons for connecting to
-different resources).}
+to use (each compute profile has its own independent set of daemons).}
 
-\item{x}{character value of item to retrieve. One of 'pid' (dispatcher process
-ID), 'urls' (URLs dispatcher is listening at) or 'tls' (the stored client
-TLS configuration to be sent to daemons).}
+\item{x}{character value of item to retrieve. One of 'pid' (dispatcher
+process ID), 'urls' (URLs dispatcher is listening at) or 'tls' (the
+stored client TLS configuration for use by daemons).}
 }
 \value{
 For \code{nextstream}: a length 7 integer vector, as given by
@@ -41,8 +40,8 @@ These functions are exported for use by packages extending
     For \code{nextstream}: This function should be called for its return
     value when required. The function also has the side effect of
     automatically advancing the stream stored within the compute profile.
-    This ensures that next time the function is called the correct value will
-    be returned.
+    This ensures that the next recursive stream is returned when the function
+    is called again.
 }
 \examples{
 if (interactive()) {
