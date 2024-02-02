@@ -20,7 +20,7 @@ nextget retrieves the specified item from the specified compute
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.0.9011</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.1</span>
       </span>
     </div>
 
@@ -99,14 +99,13 @@ nextget retrieves the specified item from the specified compute
     <h2>Arguments</h2>
     <dl><dt>.compute</dt>
 <dd><p>[default 'default'] character value for the compute profile
-to use (each compute profile has its own set of daemons for connecting to
-different resources).</p></dd>
+to use (each compute profile has its own independent set of daemons).</p></dd>
 
 
 <dt>x</dt>
-<dd><p>character value of item to retrieve. One of 'pid' (dispatcher process
-ID), 'urls' (URLs dispatcher is listening at) or 'tls' (the stored client
-TLS configuration to be sent to daemons).</p></dd>
+<dd><p>character value of item to retrieve. One of 'pid' (dispatcher
+process ID), 'urls' (URLs dispatcher is listening at) or 'tls' (the
+stored client TLS configuration for use by daemons).</p></dd>
 
 </dl></div>
     <div id="value">
@@ -130,8 +129,8 @@ TLS configuration to be sent to daemons).</p></dd>
 <p>For <code>nextstream</code>: This function should be called for its return
     value when required. The function also has the side effect of
     automatically advancing the stream stored within the compute profile.
-    This ensures that next time the function is called the correct value will
-    be returned.</p>
+    This ensures that the next recursive stream is returned when the function
+    is called again.</p>
     </div>
 
     <div id="ref-examples">
