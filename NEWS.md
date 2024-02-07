@@ -1,3 +1,5 @@
+# mirai 0.12.1.9000 (development)
+
 # mirai 0.12.1
 
 * Dispatcher initial sync timeout widened to 10s to allow for launching large numbers of daemons.
