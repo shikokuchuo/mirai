@@ -19,10 +19,10 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
 <meta property="og:title" content="Minimalist Async Evaluation Framework for R">
-<meta property="og:description" content="Lightweight parallel code execution and distributed computing.
-    Designed for simplicity, a mirai evaluates an R expression asynchronously,
-    on local or network resources, resolving automatically upon completion.
-    Efficient scheduling over fast inter-process communications or secure TLS
+<meta property="og:description" content="Fast parallel code execution and distributed computing. Designed
+    for simplicity, a mirai evaluates an R expression asynchronously, on local
+    or network resources, resolving automatically upon completion. Efficient and
+    reliable scheduling over fast inter-process communications or secure TLS
     connections over TCP/IP, built on nanonext and NNG (Nanomsg Next Gen).">
 <meta property="og:image" content="https://shikokuchuo.net/mirai/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -116,7 +116,16 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>Minimalist async evaluation framework for R. <br><br> Lightweight parallel code execution and distributed computing. <br><br> Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion. <br><br><code><a href="reference/mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately. ‘mirai’ (未来 みらい) is Japanese for ‘future’. <br><br> Efficient scheduling over fast inter-process communications or secure TLS connections over TCP/IP, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen). <br><br> {mirai} has a tiny pure R code base, relying solely on <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link"><code>nanonext</code></a>, a high-performance binding for the ‘NNG’ (Nanomsg Next Gen) C library with zero package dependencies. <br><br></p>
+<div class="section level4">
+<h4 id="みらい">みらい<a class="anchor" aria-label="anchor" href="#%E3%81%BF%E3%82%89%E3%81%84"></a>
+</h4>
+<p><br></p>
+<div class="section level5">
+<h5 id="minimalist-futuristic-reliable">Minimalist. Futuristic. Reliable.<a class="anchor" aria-label="anchor" href="#minimalist-futuristic-reliable"></a>
+</h5>
+<p><br> Minimalist async evaluation framework for R. Fast parallel code execution and distributed computing. <br><br><code><a href="reference/mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately. Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion. <br><br> Efficient scheduling over fast inter-process communications or secure TLS connections over TCP/IP, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen). <br><br> {mirai} has a tiny pure R code base, relying solely on <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link"><code>nanonext</code></a>, a high-performance binding for the ‘NNG’ (Nanomsg Next Gen) C library with zero package dependencies. <br><br></p>
+</div>
+</div>
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
@@ -158,13 +167,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]   6.34034300  -0.04935289 -16.62688852 -21.83976726   0.32279128</span></span>
-<span><span class="co">#&gt;  [6]   3.09797711  -0.04578803  -0.06014354 -20.26223825   0.15772017</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  -0.08295478   1.22776260  -0.36085405  -3.75600305   3.46431923</span></span>
+<span><span class="co">#&gt;  [6]   0.28865700  -0.26624047  -2.77120347   0.81448971 -12.05475992</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]   6.34034300  -0.04935289 -16.62688852 -21.83976726   0.32279128</span></span>
-<span><span class="co">#&gt;  [6]   3.09797711  -0.04578803  -0.06014354 -20.26223825   0.15772017</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  -0.08295478   1.22776260  -0.36085405  -3.75600305   3.46431923</span></span>
+<span><span class="co">#&gt;  [6]   0.28865700  -0.26624047  -2.77120347   0.81448971 -12.05475992</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
