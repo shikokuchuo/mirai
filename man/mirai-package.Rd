@@ -11,7 +11,7 @@ Fast parallel code execution and distributed computing. Designed for
     or network resources, resolving automatically upon completion. Efficient
     and reliable scheduling over fast inter-process communications or secure
     TLS connections over TCP/IP, built on 'nanonext' and 'NNG' (Nanomsg Next
-    Gen).
+    Gen) technology.
 }
 \section{Notes}{
 

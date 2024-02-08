@@ -14,23 +14,17 @@ badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e)](https://sh
 [![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)
 <!-- badges: end -->
 
-#### みらい
+### みらい
 
-<br />
-
-##### Minimalist. Futuristic. Reliable.
-
-<br /> Minimalist async evaluation framework for R. Fast parallel code
-execution and distributed computing. <br /><br /> `mirai()` returns a
-‘mirai’ object immediately. Designed for simplicity, a ‘mirai’ evaluates
-an R expression asynchronously, on local or network resources, resolving
+<br /> Minimalist ・ Futuristic ・ Reliable <br /><br /> Async
+evaluation framework for R. <br /><br /> Fast parallel code execution
+and distributed computing. <br /><br /> `mirai()` returns a ‘mirai’
+object immediately. Designed for simplicity, a ‘mirai’ evaluates an R
+expression asynchronously, on local or network resources, resolving
 automatically upon completion. <br /><br /> Efficient scheduling over
 fast inter-process communications or secure TLS connections over TCP/IP,
-built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen). <br /><br /> {mirai}
-has a tiny pure R code base, relying solely on
-[`nanonext`](https://doi.org/10.5281/zenodo.7903429), a high-performance
-binding for the ‘NNG’ (Nanomsg Next Gen) C library with zero package
-dependencies. <br /><br />
+built on [nanonext](https://doi.org/10.5281/zenodo.7903429) and
+[NNG](https://nng.nanomsg.org/) technology.
 
 ### Installation
 
@@ -92,8 +86,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  -0.08295478   1.22776260  -0.36085405  -3.75600305   3.46431923
-#>  [6]   0.28865700  -0.26624047  -2.77120347   0.81448971 -12.05475992
+#>  [1]   0.13054418  -2.02865586  -1.01018934   0.22447429 -27.03949620
+#>  [6]  -0.03698294   4.45485315  -0.98991344  -0.49293723   7.66024205
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -101,8 +95,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  -0.08295478   1.22776260  -0.36085405  -3.75600305   3.46431923
-#>  [6]   0.28865700  -0.26624047  -2.77120347   0.81448971 -12.05475992
+#>  [1]   0.13054418  -2.02865586  -1.01018934   0.22447429 -27.03949620
+#>  [6]  -0.03698294   4.45485315  -0.98991344  -0.49293723   7.66024205
 ```
 
 ### Daemons
@@ -112,10 +106,10 @@ requests.
 
 They may be deployed for:
 
-[local](https://shikokuchuo.net/mirai/articles/mirai.html#daemons-local-persistent-processes)
-parallel processing, or
+[Local](https://shikokuchuo.net/mirai/articles/mirai.html#daemons-local-persistent-processes)
+parallel processing; or
 
-[remote](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-remote-daemons)
+[Remote](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-remote-daemons)
 network distributed computing.
 
 [Launchers](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-launching-daemons)
