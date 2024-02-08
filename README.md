@@ -14,18 +14,23 @@ badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e)](https://sh
 [![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)
 <!-- badges: end -->
 
-Minimalist async evaluation framework for R. <br /><br /> Lightweight
-parallel code execution and distributed computing. <br /><br /> Designed
-for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on
-local or network resources, resolving automatically upon completion.
-<br /><br /> `mirai()` returns a ‘mirai’ object immediately. ‘mirai’
-(未来 みらい) is Japanese for ‘future’. <br /><br /> Efficient
-scheduling over fast inter-process communications or secure TLS
-connections over TCP/IP, built on ‘nanonext’ and ‘NNG’ (Nanomsg Next
-Gen). <br /><br /> {mirai} has a tiny pure R code base, relying solely
-on [`nanonext`](https://doi.org/10.5281/zenodo.7903429), a
-high-performance binding for the ‘NNG’ (Nanomsg Next Gen) C library with
-zero package dependencies. <br /><br />
+#### みらい
+
+<br />
+
+##### Minimalist. Futuristic. Reliable.
+
+<br /> Minimalist async evaluation framework for R. Fast parallel code
+execution and distributed computing. <br /><br /> `mirai()` returns a
+‘mirai’ object immediately. Designed for simplicity, a ‘mirai’ evaluates
+an R expression asynchronously, on local or network resources, resolving
+automatically upon completion. <br /><br /> Efficient scheduling over
+fast inter-process communications or secure TLS connections over TCP/IP,
+built on ‘nanonext’ and ‘NNG’ (Nanomsg Next Gen). <br /><br /> {mirai}
+has a tiny pure R code base, relying solely on
+[`nanonext`](https://doi.org/10.5281/zenodo.7903429), a high-performance
+binding for the ‘NNG’ (Nanomsg Next Gen) C library with zero package
+dependencies. <br /><br />
 
 ### Installation
 
@@ -87,8 +92,8 @@ result.
 
 ``` r
 m$data
-#>  [1]   6.34034300  -0.04935289 -16.62688852 -21.83976726   0.32279128
-#>  [6]   3.09797711  -0.04578803  -0.06014354 -20.26223825   0.15772017
+#>  [1]  -0.08295478   1.22776260  -0.36085405  -3.75600305   3.46431923
+#>  [6]   0.28865700  -0.26624047  -2.77120347   0.81448971 -12.05475992
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -96,8 +101,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]   6.34034300  -0.04935289 -16.62688852 -21.83976726   0.32279128
-#>  [6]   3.09797711  -0.04578803  -0.06014354 -20.26223825   0.15772017
+#>  [1]  -0.08295478   1.22776260  -0.36085405  -3.75600305   3.46431923
+#>  [6]   0.28865700  -0.26624047  -2.77120347   0.81448971 -12.05475992
 ```
 
 ### Daemons

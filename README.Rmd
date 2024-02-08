@@ -23,13 +23,14 @@ knitr::opts_chunk$set(
 [![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)
 <!-- badges: end -->
 
-Minimalist async evaluation framework for R.
+#### みらい
+<br />
+
+##### Minimalist. Futuristic. Reliable.
+<br />
+Minimalist async evaluation framework for R. Fast parallel code execution and distributed computing.
 <br /><br />
-Lightweight parallel code execution and distributed computing.
-<br /><br />
-Designed for simplicity, a 'mirai' evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion.
-<br /><br />
-`mirai()` returns a 'mirai' object immediately. 'mirai' (未来 みらい) is Japanese for 'future'.
+`mirai()` returns a 'mirai' object immediately. Designed for simplicity, a 'mirai' evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion.
 <br /><br />
 Efficient scheduling over fast inter-process communications or secure TLS connections over TCP/IP, built on 'nanonext' and 'NNG' (Nanomsg Next Gen).
 <br /><br />
