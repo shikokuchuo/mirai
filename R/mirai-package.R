@@ -20,8 +20,8 @@
 #'     simplicity, a 'mirai' evaluates an R expression asynchronously, on local
 #'     or network resources, resolving automatically upon completion. Efficient
 #'     and reliable scheduling over fast inter-process communications or secure
-#'     TLS connections over TCP/IP, built on 'nanonext' and 'NNG' (Nanomsg Next
-#'     Gen) technology.
+#'     TLS connections over TCP/IP, built on the latest 'nanonext' and 'NNG'
+#'     (Nanomsg Next Gen) technology.
 #'
 #' @section Notes:
 #'

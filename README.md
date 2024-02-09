@@ -17,13 +17,21 @@ badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e)](https://sh
 ### みらい
 
 <br /> Minimalist ・ Futuristic ・ Reliable <br /><br /> Async
-evaluation framework for R. <br /><br /> Fast parallel code execution
-and distributed computing. <br /><br /> `mirai()` returns a ‘mirai’
-object immediately. Designed for simplicity, a ‘mirai’ evaluates an R
-expression asynchronously, on local or network resources, resolving
-automatically upon completion. <br /><br /> Efficient scheduling over
-fast inter-process communications or secure TLS connections over TCP/IP,
-built on [nanonext](https://doi.org/10.5281/zenodo.7903429) and
+evaluation framework for R.
+
+<div align="right">
+
+*mirai パッケージを試してみたところ、かなり速くて驚きました*
+
+</div>
+
+Fast parallel code execution and distributed computing. <br /><br />
+`mirai()` returns a ‘mirai’ object immediately. Designed for simplicity,
+a ‘mirai’ evaluates an R expression asynchronously, on local or network
+resources, resolving automatically upon completion. <br /><br />
+Efficient scheduling over fast inter-process communications or secure
+TLS connections over TCP/IP, built on the latest
+[nanonext](https://doi.org/10.5281/zenodo.7903429) and
 [NNG](https://nng.nanomsg.org/) technology.
 
 ### Installation
@@ -86,8 +94,8 @@ result.
 
 ``` r
 m$data
-#>  [1]   0.13054418  -2.02865586  -1.01018934   0.22447429 -27.03949620
-#>  [6]  -0.03698294   4.45485315  -0.98991344  -0.49293723   7.66024205
+#>  [1] -12.74029021  -1.81034723   2.18843960   2.65384184  -0.99727125
+#>  [6]  -1.00273622   0.37681221   0.45694658  -0.55238022  -0.07849115
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -95,8 +103,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]   0.13054418  -2.02865586  -1.01018934   0.22447429 -27.03949620
-#>  [6]  -0.03698294   4.45485315  -0.98991344  -0.49293723   7.66024205
+#>  [1] -12.74029021  -1.81034723   2.18843960   2.65384184  -0.99727125
+#>  [6]  -1.00273622   0.37681221   0.45694658  -0.55238022  -0.07849115
 ```
 
 ### Daemons

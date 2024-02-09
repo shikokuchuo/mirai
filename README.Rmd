@@ -28,12 +28,12 @@ knitr::opts_chunk$set(
 Minimalist ・ Futuristic ・ Reliable
 <br /><br />
 Async evaluation framework for R.
-<br /><br />
+<div align = "right"> *mirai パッケージを試してみたところ、かなり速くて驚きました* </div>
 Fast parallel code execution and distributed computing.
 <br /><br />
 `mirai()` returns a 'mirai' object immediately. Designed for simplicity, a 'mirai' evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion.
 <br /><br />
-Efficient scheduling over fast inter-process communications or secure TLS connections over TCP/IP, built on [nanonext](https://doi.org/10.5281/zenodo.7903429) and [NNG](https://nng.nanomsg.org/) technology.
+Efficient scheduling over fast inter-process communications or secure TLS connections over TCP/IP, built on the latest [nanonext](https://doi.org/10.5281/zenodo.7903429) and [NNG](https://nng.nanomsg.org/) technology.
 
 ### Installation
 
