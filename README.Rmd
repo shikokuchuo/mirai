@@ -27,7 +27,7 @@ knitr::opts_chunk$set(
 <br />
 Minimalist ・ Futuristic ・ Reliable
 <br /><br />
-Async evaluation framework for R.
+Async evaluation for R
 <br /><br />
 Fast parallel code execution and distributed computing.
 <br /><br />

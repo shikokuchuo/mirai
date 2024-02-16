@@ -4,7 +4,7 @@
 \encoding{UTF-8}
 \name{mirai-package}
 \alias{mirai-package}
-\title{mirai: Minimalist Async Evaluation Framework for R}
+\title{mirai: Async Evaluation for R}
 \description{
 Fast parallel code execution and distributed computing. Designed for
     simplicity, a 'mirai' evaluates an R expression asynchronously, on local
