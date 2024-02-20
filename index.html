@@ -120,7 +120,7 @@
 <div class="section level3">
 <h3 id="みらい">みらい<a class="anchor" aria-label="anchor" href="#%E3%81%BF%E3%82%89%E3%81%84"></a>
 </h3>
-<p><br> Minimalist ・ Futuristic ・ Reliable <br><br> Async evaluation for R <br><br> Fast parallel code execution and distributed computing. <br><br><code><a href="reference/mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately. Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion. <br><br> State of the art networking and concurrency via <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link">nanonext</a> offers reliable and efficient scheduling over fast inter-process communications or TCP/IP secured by TLS.</p>
+<p><br> minimalist ・ futuristic ・ whisper <br><br> Async evaluation for R <br><br> Fast parallel code execution and distributed computing. <br><br><code><a href="reference/mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately. Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion. <br><br> State of the art networking and concurrency via <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link">nanonext</a> offers reliable and efficient scheduling over fast inter-process communications or TCP/IP secured by TLS.</p>
 <div align="right">
 <p><em>mirai パッケージを試してみたところ、かなり速くて驚きました</em></p>
 </div>
@@ -166,13 +166,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]   0.43174294  -0.02218391   1.69838206   1.09322868   1.55544455</span></span>
-<span><span class="co">#&gt;  [6]   0.64290302   0.91472170   0.58879567 -45.07770981   2.31619306</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]   0.57702381   2.25748285  -0.02218435  -0.90914266  -0.01864749</span></span>
+<span><span class="co">#&gt;  [6] -53.62650664  -1.09993738 -45.07682847   0.44297125   1.73303074</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]   0.43174294  -0.02218391   1.69838206   1.09322868   1.55544455</span></span>
-<span><span class="co">#&gt;  [6]   0.64290302   0.91472170   0.58879567 -45.07770981   2.31619306</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]   0.57702381   2.25748285  -0.02218435  -0.90914266  -0.01864749</span></span>
+<span><span class="co">#&gt;  [6] -53.62650664  -1.09993738 -45.07682847   0.44297125   1.73303074</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
@@ -209,7 +209,7 @@
 <h3 id="thanks">Thanks<a class="anchor" aria-label="anchor" href="#thanks"></a>
 </h3>
 <p>We would like to thank in particular:</p>
-<p><a href="https://github.com/wlandau/" class="external-link">William Landau</a>, for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of {crew} and {targets}.</p>
+<p><a href="https://github.com/wlandau/" class="external-link">Will Landau</a>, for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of {crew} and {targets}.</p>
 <p><a href="https://github.com/HenrikBengtsson/" class="external-link">Henrik Bengtsson</a>, for valuable and incisive insights leading to the interface accepting broader usage patterns.</p>
 <p><a href="https://github.com/ltierney/" class="external-link">Luke Tierney</a>, R Core, for discussion on R’s implementation of L’Ecuyer-CMRG streams, used to ensure statistical independence in parallel processing.</p>
 <p><a href="https://github.com/dfalbel/" class="external-link">Daniel Falbel</a>, for discussion around an efficient solution to serialization and transmission of {torch} tensors.</p>
