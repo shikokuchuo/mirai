@@ -1,5 +1,5 @@
 bibentry(bibtype = "Manual",
-         title = "mirai: Minimalist Async Evaluation Framework for R",
+         title = "mirai: Async Evaluation for R",
          author = person("Charlie", "Gao"),
          year = 2024,
          note = sprintf("R package version %s", meta$Version),

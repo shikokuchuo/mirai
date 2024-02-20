@@ -16,13 +16,13 @@ badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e)](https://sh
 
 ### みらい
 
-<br /> Minimalist ・ Futuristic ・ Reliable <br /><br /> Async
-evaluation for R <br /><br /> Fast parallel code execution and
-distributed computing. <br /><br /> `mirai()` returns a ‘mirai’ object
-immediately. Designed for simplicity, a ‘mirai’ evaluates an R
-expression asynchronously, on local or network resources, resolving
-automatically upon completion. <br /><br /> State of the art networking
-and concurrency via [nanonext](https://doi.org/10.5281/zenodo.7903429)
+<br /> minimalist ・ futuristic ・ whisper <br /><br /> Async evaluation
+for R <br /><br /> Fast parallel code execution and distributed
+computing. <br /><br /> `mirai()` returns a ‘mirai’ object immediately.
+Designed for simplicity, a ‘mirai’ evaluates an R expression
+asynchronously, on local or network resources, resolving automatically
+upon completion. <br /><br /> State of the art networking and
+concurrency via [nanonext](https://doi.org/10.5281/zenodo.7903429)
 offers reliable and efficient scheduling over fast inter-process
 communications or TCP/IP secured by TLS.
 
@@ -92,8 +92,8 @@ result.
 
 ``` r
 m$data
-#>  [1]   0.43174294  -0.02218391   1.69838206   1.09322868   1.55544455
-#>  [6]   0.64290302   0.91472170   0.58879567 -45.07770981   2.31619306
+#>  [1]   0.57702381   2.25748285  -0.02218435  -0.90914266  -0.01864749
+#>  [6] -53.62650664  -1.09993738 -45.07682847   0.44297125   1.73303074
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -101,8 +101,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]   0.43174294  -0.02218391   1.69838206   1.09322868   1.55544455
-#>  [6]   0.64290302   0.91472170   0.58879567 -45.07770981   2.31619306
+#>  [1]   0.57702381   2.25748285  -0.02218435  -0.90914266  -0.01864749
+#>  [6] -53.62650664  -1.09993738 -45.07682847   0.44297125   1.73303074
 ```
 
 ### Daemons
@@ -182,7 +182,7 @@ extends {mirai} to cloud computing using AWS Batch.
 
 We would like to thank in particular:
 
-[William Landau](https://github.com/wlandau/), for being instrumental in
+[Will Landau](https://github.com/wlandau/), for being instrumental in
 shaping development of the package, from initiating the original request
 for persistent daemons, through to orchestrating robustness testing for
 the high performance computing requirements of {crew} and {targets}.
