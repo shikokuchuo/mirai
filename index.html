@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Async Evaluation for R • mirai</title>
+<title>Minimalist Async Evaluation Framework for R • mirai</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
-<meta property="og:title" content="Async Evaluation for R">
+<meta property="og:title" content="Minimalist Async Evaluation Framework for R">
 <meta property="og:description" content="Fast parallel code execution and distributed computing. Designed
     for simplicity, a mirai evaluates an R expression asynchronously, on local
     or network resources, resolving automatically upon completion. State of the
@@ -120,7 +120,7 @@
 <div class="section level3">
 <h3 id="みらい">みらい<a class="anchor" aria-label="anchor" href="#%E3%81%BF%E3%82%89%E3%81%84"></a>
 </h3>
-<p><br> minimalist ・ futuristic ・ whisper <br><br> Async evaluation for R <br><br> Fast parallel code execution and distributed computing. <br><br><code><a href="reference/mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately. Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion. <br><br> State of the art networking and concurrency via <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link">nanonext</a> offers reliable and efficient scheduling over fast inter-process communications or TCP/IP secured by TLS.</p>
+<p><br> minimalist ・ futuristic ・ whisper <br><br> Minimalist Async Evaluation Framework for R <br><br> Fast parallel code execution and distributed computing. <br><br><code><a href="reference/mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately. Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion. <br><br> State of the art networking and concurrency via <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link">nanonext</a> offers reliable and efficient scheduling over fast inter-process communications or TCP/IP secured by TLS.</p>
 <div align="right">
 <p><em>mirai パッケージを試してみたところ、かなり速くて驚きました</em></p>
 </div>
@@ -166,13 +166,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]   0.57702381   2.25748285  -0.02218435  -0.90914266  -0.01864749</span></span>
-<span><span class="co">#&gt;  [6] -53.62650664  -1.09993738 -45.07682847   0.44297125   1.73303074</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  0.97899952 -0.30239805  0.03394035 -7.26929299  2.64589209  0.37794436</span></span>
+<span><span class="co">#&gt;  [7] -0.13756496 29.46345196 -3.30689964  1.02145096</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]   0.57702381   2.25748285  -0.02218435  -0.90914266  -0.01864749</span></span>
-<span><span class="co">#&gt;  [6] -53.62650664  -1.09993738 -45.07682847   0.44297125   1.73303074</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  0.97899952 -0.30239805  0.03394035 -7.26929299  2.64589209  0.37794436</span></span>
+<span><span class="co">#&gt;  [7] -0.13756496 29.46345196 -3.30689964  1.02145096</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
