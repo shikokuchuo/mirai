@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # mirai. If not, see <https://www.gnu.org/licenses/>.
 
-#' mirai: Async Evaluation for R
+#' mirai: Minimalist Async Evaluation Framework for R
 #'
 #' Fast parallel code execution and distributed computing. Designed for
 #'     simplicity, a 'mirai' evaluates an R expression asynchronously, on local

@@ -16,13 +16,13 @@ badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e)](https://sh
 
 ### みらい
 
-<br /> minimalist ・ futuristic ・ whisper <br /><br /> Async evaluation
-for R <br /><br /> Fast parallel code execution and distributed
-computing. <br /><br /> `mirai()` returns a ‘mirai’ object immediately.
-Designed for simplicity, a ‘mirai’ evaluates an R expression
-asynchronously, on local or network resources, resolving automatically
-upon completion. <br /><br /> State of the art networking and
-concurrency via [nanonext](https://doi.org/10.5281/zenodo.7903429)
+<br /> minimalist ・ futuristic ・ whisper <br /><br /> Minimalist Async
+Evaluation Framework for R <br /><br /> Fast parallel code execution and
+distributed computing. <br /><br /> `mirai()` returns a ‘mirai’ object
+immediately. Designed for simplicity, a ‘mirai’ evaluates an R
+expression asynchronously, on local or network resources, resolving
+automatically upon completion. <br /><br /> State of the art networking
+and concurrency via [nanonext](https://doi.org/10.5281/zenodo.7903429)
 offers reliable and efficient scheduling over fast inter-process
 communications or TCP/IP secured by TLS.
 
@@ -92,8 +92,8 @@ result.
 
 ``` r
 m$data
-#>  [1]   0.57702381   2.25748285  -0.02218435  -0.90914266  -0.01864749
-#>  [6] -53.62650664  -1.09993738 -45.07682847   0.44297125   1.73303074
+#>  [1]  0.97899952 -0.30239805  0.03394035 -7.26929299  2.64589209  0.37794436
+#>  [7] -0.13756496 29.46345196 -3.30689964  1.02145096
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -101,8 +101,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]   0.57702381   2.25748285  -0.02218435  -0.90914266  -0.01864749
-#>  [6] -53.62650664  -1.09993738 -45.07682847   0.44297125   1.73303074
+#>  [1]  0.97899952 -0.30239805  0.03394035 -7.26929299  2.64589209  0.37794436
+#>  [7] -0.13756496 29.46345196 -3.30689964  1.02145096
 ```
 
 ### Daemons
