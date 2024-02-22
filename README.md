@@ -16,8 +16,8 @@ badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e)](https://sh
 
 ### みらい
 
-<br /> minimalist ・ futuristic ・ whisper <br /><br /> Minimalist Async
-Evaluation Framework for R <br /><br /> Fast parallel code execution and
+<br /> futuristic ・ whisper <br /><br /> Minimalist Async Evaluation
+Framework for R <br /><br /> Fast parallel code execution and
 distributed computing. <br /><br /> `mirai()` returns a ‘mirai’ object
 immediately. Designed for simplicity, a ‘mirai’ evaluates an R
 expression asynchronously, on local or network resources, resolving
@@ -92,8 +92,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  0.97899952 -0.30239805  0.03394035 -7.26929299  2.64589209  0.37794436
-#>  [7] -0.13756496 29.46345196 -3.30689964  1.02145096
+#>  [1] -1.0953090  2.2070137 -0.3392922 -2.0252510  0.1393259  7.1774169
+#>  [7] -0.4937660 -2.9473118  0.4531009 -0.9129844
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -101,8 +101,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  0.97899952 -0.30239805  0.03394035 -7.26929299  2.64589209  0.37794436
-#>  [7] -0.13756496 29.46345196 -3.30689964  1.02145096
+#>  [1] -1.0953090  2.2070137 -0.3392922 -2.0252510  0.1393259  7.1774169
+#>  [7] -0.4937660 -2.9473118  0.4531009 -0.9129844
 ```
 
 ### Daemons
