@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 
 ### みらい
 <br />
-futuristic ・ whisper
+( futuristic ・ whisper )
 <br /><br />
 Minimalist Async Evaluation Framework for R
 <br /><br />
