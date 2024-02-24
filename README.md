@@ -34,16 +34,16 @@ communications or TCP/IP secured by TLS.
 
 ### Installation
 
-Install the latest release from CRAN:
+Releases are made on rOpenSci R-universe, and also CRAN:
 
 ``` r
-install.packages("mirai")
+install.packages("mirai", repos = c("shikokuchuo.r-universe.dev", "cloud.r-project.org"))
 ```
 
-or the development version from rOpenSci R-universe:
+Install the latest development version from Github:
 
 ``` r
-install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
+remotes::install_github("shikokuchuo/mirai")
 ```
 
 ### Quick Start
@@ -92,8 +92,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  3.8193149  0.1715355 -0.1672648  0.1065773  1.5537270  0.6436137
-#>  [7]  9.3828602 -5.9785448  5.8296983  0.2618271
+#>  [1] -0.22515355  0.03366042  1.65523054  2.65699942 34.62952177  0.02887710
+#>  [7]  0.37636440  0.60414545 29.70847826 -4.44141333
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -101,8 +101,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  3.8193149  0.1715355 -0.1672648  0.1065773  1.5537270  0.6436137
-#>  [7]  9.3828602 -5.9785448  5.8296983  0.2618271
+#>  [1] -0.22515355  0.03366042  1.65523054  2.65699942 34.62952177  0.02887710
+#>  [7]  0.37636440  0.60414545 29.70847826 -4.44141333
 ```
 
 ### Daemons
