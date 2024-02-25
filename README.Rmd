@@ -157,22 +157,16 @@ We would like to thank in particular:
 
 [Daniel Falbel](https://github.com/dfalbel/), for discussion around an efficient solution to serialization and transmission of {torch} tensors.
 
-[&laquo; Back to ToC](#table-of-contents)
-
 ### Links
 
-mirai website: <https://shikokuchuo.net/mirai/><br />
-mirai on CRAN: <https://cran.r-project.org/package=mirai>
+◈ mirai R package: <https://shikokuchuo.net/mirai/>
 
-Listed in CRAN Task View: <br />
+mirai is listed in CRAN Task View: <br />
 - High Performance Computing: <https://cran.r-project.org/view=HighPerformanceComputing>
 
-nanonext website: <https://shikokuchuo.net/nanonext/><br />
-nanonext on CRAN: <https://cran.r-project.org/package=nanonext>
+◈ nanonext R package: <https://shikokuchuo.net/nanonext/>
 
 NNG website: <https://nng.nanomsg.org/><br />
-
-[&laquo; Back to ToC](#table-of-contents)
 
 --
 

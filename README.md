@@ -92,8 +92,8 @@ result.
 
 ``` r
 m$data
-#>  [1] 0.6241584 1.8421814 6.1217990 1.0420236 0.7611066 1.3138764 0.9596711
-#>  [8] 0.1633507 0.5428347 1.6021574
+#>  [1] -10.70436633   0.20734951  -0.08374811   0.38162353   5.79477942
+#>  [6]   0.17256912   2.62038351 -11.94056747   4.82277486  -0.09341982
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -101,8 +101,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] 0.6241584 1.8421814 6.1217990 1.0420236 0.7611066 1.3138764 0.9596711
-#>  [8] 0.1633507 0.5428347 1.6021574
+#>  [1] -10.70436633   0.20734951  -0.08374811   0.38162353   5.79477942
+#>  [6]   0.17256912   2.62038351 -11.94056747   4.82277486  -0.09341982
 ```
 
 ### Daemons
@@ -198,22 +198,16 @@ independence in parallel processing.
 [Daniel Falbel](https://github.com/dfalbel/), for discussion around an
 efficient solution to serialization and transmission of {torch} tensors.
 
-[« Back to ToC](#table-of-contents)
-
 ### Links
 
-mirai website: <https://shikokuchuo.net/mirai/><br /> mirai on CRAN:
-<https://cran.r-project.org/package=mirai>
+◈ mirai R package: <https://shikokuchuo.net/mirai/>
 
-Listed in CRAN Task View: <br /> - High Performance Computing:
+mirai is listed in CRAN Task View: <br /> - High Performance Computing:
 <https://cran.r-project.org/view=HighPerformanceComputing>
 
-nanonext website: <https://shikokuchuo.net/nanonext/><br /> nanonext on
-CRAN: <https://cran.r-project.org/package=nanonext>
+◈ nanonext R package: <https://shikokuchuo.net/nanonext/>
 
 NNG website: <https://nng.nanomsg.org/><br />
-
-[« Back to ToC](#table-of-contents)
 
 –
 
