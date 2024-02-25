@@ -17,10 +17,10 @@ badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e)](https://sh
 ### みらい
 
 <br /> ( futuristic ・ whisper ) <br /><br /> Minimalist Async
-Evaluation Framework for R <br /><br /> Fast parallel code execution and
-distributed computing. <br /><br /> `mirai()` returns a ‘mirai’ object
-immediately. Designed for simplicity, a ‘mirai’ evaluates an R
-expression asynchronously, on local or network resources, resolving
+Evaluation Framework for R <br /><br /> Lightweight parallel code
+execution and distributed computing. <br /><br /> `mirai()` returns a
+‘mirai’ object immediately. Designed for simplicity, a ‘mirai’ evaluates
+an R expression asynchronously, on local or network resources, resolving
 automatically upon completion. <br /><br /> State of the art networking
 and concurrency via [nanonext](https://doi.org/10.5281/zenodo.7903429)
 offers reliable and efficient scheduling over fast inter-process
@@ -92,8 +92,8 @@ result.
 
 ``` r
 m$data
-#>  [1] -0.22515355  0.03366042  1.65523054  2.65699942 34.62952177  0.02887710
-#>  [7]  0.37636440  0.60414545 29.70847826 -4.44141333
+#>  [1] 0.6241584 1.8421814 6.1217990 1.0420236 0.7611066 1.3138764 0.9596711
+#>  [8] 0.1633507 0.5428347 1.6021574
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -101,8 +101,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] -0.22515355  0.03366042  1.65523054  2.65699942 34.62952177  0.02887710
-#>  [7]  0.37636440  0.60414545 29.70847826 -4.44141333
+#>  [1] 0.6241584 1.8421814 6.1217990 1.0420236 0.7611066 1.3138764 0.9596711
+#>  [8] 0.1633507 0.5428347 1.6021574
 ```
 
 ### Daemons
@@ -163,20 +163,20 @@ processes.
 
 ### Powering Crew and Targets High Performance Computing
 
-[{targets}](https://cran.r-project.org/package=targets), a Make-like
-pipeline tool for statistics and data science, has integrated and
-adopted {crew} as its default high-performance computing backend.
+[{targets}](https://docs.ropensci.org/targets/), a Make-like pipeline
+tool for statistics and data science, has integrated and adopted {crew}
+as its default high-performance computing backend.
 
-[{crew}](https://cran.r-project.org/package=crew) is a distributed
+[{crew}](https://wlandau.github.io/crew/) is a distributed
 worker-launcher extending {mirai} to different distributed computing
 platforms, from traditional clusters to cloud services.
 
-[{crew.cluster}](https://cran.r-project.org/package=crew.cluster)
-enables mirai-based workflows on traditional high-performance computing
-clusters using LFS, PBS/TORQUE, SGE and SLURM.
+[{crew.cluster}](https://wlandau.github.io/crew.cluster/) enables
+mirai-based workflows on traditional high-performance computing clusters
+using LFS, PBS/TORQUE, SGE and SLURM.
 
-[{crew.aws.batch}](https://cran.r-project.org/package=crew.aws.batch)
-extends {mirai} to cloud computing using AWS Batch.
+[{crew.aws.batch}](https://wlandau.github.io/crew.aws.batch/) extends
+{mirai} to cloud computing using AWS Batch.
 
 ### Thanks
 

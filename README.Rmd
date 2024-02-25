@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 <br /><br />
 Minimalist Async Evaluation Framework for R
 <br /><br />
-Fast parallel code execution and distributed computing.
+Lightweight parallel code execution and distributed computing.
 <br /><br />
 `mirai()` returns a 'mirai' object immediately. Designed for simplicity, a 'mirai' evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion.
 <br /><br />
@@ -137,13 +137,13 @@ The following core integrations are documented, with usage examples in the linke
 
 ### Powering Crew and Targets High Performance Computing
 
-[{targets}](https://cran.r-project.org/package=targets), a Make-like pipeline tool for statistics and data science, has integrated and adopted {crew} as its default high-performance computing backend.
+[{targets}](https://docs.ropensci.org/targets/), a Make-like pipeline tool for statistics and data science, has integrated and adopted {crew} as its default high-performance computing backend.
 
-[{crew}](https://cran.r-project.org/package=crew) is a distributed worker-launcher extending {mirai} to different distributed computing platforms, from traditional clusters to cloud services.
+[{crew}](https://wlandau.github.io/crew/) is a distributed worker-launcher extending {mirai} to different distributed computing platforms, from traditional clusters to cloud services.
 
-[{crew.cluster}](https://cran.r-project.org/package=crew.cluster) enables mirai-based workflows on traditional high-performance computing clusters using LFS, PBS/TORQUE, SGE and SLURM.
+[{crew.cluster}](https://wlandau.github.io/crew.cluster/) enables mirai-based workflows on traditional high-performance computing clusters using LFS, PBS/TORQUE, SGE and SLURM.
 
-[{crew.aws.batch}](https://cran.r-project.org/package=crew.aws.batch) extends {mirai} to cloud computing using AWS Batch.
+[{crew.aws.batch}](https://wlandau.github.io/crew.aws.batch/) extends {mirai} to cloud computing using AWS Batch.
 
 ### Thanks
 

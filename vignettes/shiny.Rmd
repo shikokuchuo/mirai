@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 #### Shiny Example Usage
 
-{mirai} may be used as an asynchronous / distributed backend to scale [{shiny}](https://cran.r-project.org/package=shiny) applications and plugs directly into the reactive framework, without the need to use promises.
+{mirai} may be used as an asynchronous / distributed backend to scale [{shiny}](https://shiny.posit.co/) applications and plugs directly into the reactive framework, without the need to use promises.
 
 Depending on the options suppled to `daemons()`, tasks may be distributed across local background processes or multiple networked servers in an efficient and performant manner.
 

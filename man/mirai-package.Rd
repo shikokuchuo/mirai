@@ -6,7 +6,7 @@
 \alias{mirai-package}
 \title{mirai: Minimalist Async Evaluation Framework for R}
 \description{
-Fast parallel code execution and distributed computing. Designed for
+Lightweight parallel code execution and distributed computing. Designed for
     simplicity, a 'mirai' evaluates an R expression asynchronously, on local
     or network resources, resolving automatically upon completion. State of
     the art networking and concurrency via 'nanonext' and 'NNG' (Nanomsg Next

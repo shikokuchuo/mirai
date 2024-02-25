@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 Custom serialization functions may be registered to handle external pointer type reference objects.
 
-This allows tensors from the [{torch}](https://cran.r-project.org/package=torch) package to be used seamlessly in 'mirai' computations.
+This allows tensors from the [{torch}](https://torch.mlverse.org/) package to be used seamlessly in 'mirai' computations.
 
 #### Setup Steps
 

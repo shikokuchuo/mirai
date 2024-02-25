@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 ### Plumber Integration
 
-{mirai} may be used as an asynchronous / distributed backend for [{plumber}](https://cran.r-project.org/package=plumber) pipelines.
+{mirai} may be used as an asynchronous / distributed backend for [{plumber}](https://www.rplumber.io/) pipelines.
 
 Example usage is provided below for different types of endpoint.
 
