@@ -122,8 +122,8 @@
 </h3>
 <p>Custom serialization functions may be registered to handle external
 pointer type reference objects.</p>
-<p>This allows tensors from the <a href="https://cran.r-project.org/package=torch" class="external-link">{torch}</a> package to
-be used seamlessly in ‘mirai’ computations.</p>
+<p>This allows tensors from the <a href="https://torch.mlverse.org/" class="external-link">{torch}</a> package to be used
+seamlessly in ‘mirai’ computations.</p>
 <div class="section level4">
 <h4 id="setup-steps">Setup Steps<a class="anchor" aria-label="anchor" href="#setup-steps"></a>
 </h4>
@@ -174,7 +174,7 @@ initialized within a ‘mirai’.</p>
 <span><span class="fu"><a href="../reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; An `nn_module` containing 1,040 parameters.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Modules ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; ── Modules ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; • conv1: &lt;nn_conv2d&gt; #520 parameters</span></span>
 <span><span class="co">#&gt; • conv2: &lt;nn_conv2d&gt; #520 parameters</span></span></code></pre></div>
 <p>The returned model is an object containing many tensor elements.</p>
@@ -182,35 +182,35 @@ initialized within a ‘mirai’.</p>
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">conv1.weight</span></span>
 <span><span class="co">#&gt; torch_tensor</span></span>
 <span><span class="co">#&gt; (1,1,.,.) = </span></span>
-<span><span class="co">#&gt;  -0.0193 -0.0262  0.0308  0.0845 -0.0200</span></span>
-<span><span class="co">#&gt;  -0.0404 -0.1880  0.0861 -0.0194  0.1317</span></span>
-<span><span class="co">#&gt;   0.1639  0.0296 -0.0472 -0.0103 -0.1201</span></span>
-<span><span class="co">#&gt;   0.1388  0.1742  0.1063 -0.1713  0.1978</span></span>
-<span><span class="co">#&gt;  -0.0162  0.1412  0.0380 -0.0280 -0.1454</span></span>
+<span><span class="co">#&gt;  -0.0086  0.0254  0.0687 -0.0105 -0.0753</span></span>
+<span><span class="co">#&gt;  -0.1362  0.0654 -0.0027 -0.1823  0.0603</span></span>
+<span><span class="co">#&gt;  -0.0062 -0.1302 -0.1665  0.1108  0.0812</span></span>
+<span><span class="co">#&gt;   0.1842 -0.1088 -0.1089 -0.1304  0.1951</span></span>
+<span><span class="co">#&gt;  -0.0307 -0.0876  0.1167  0.0421 -0.0779</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (2,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.1296  0.1500  0.0238 -0.1578 -0.0618</span></span>
-<span><span class="co">#&gt;  -0.1500  0.0225  0.0557  0.1778 -0.0811</span></span>
-<span><span class="co">#&gt;   0.0661 -0.1901  0.1322 -0.0638 -0.0589</span></span>
-<span><span class="co">#&gt;   0.1488  0.1738 -0.0089  0.1425 -0.1399</span></span>
-<span><span class="co">#&gt;   0.0925 -0.0132  0.0687 -0.1948  0.0033</span></span>
+<span><span class="co">#&gt;  -0.1645 -0.1112  0.1982 -0.1861  0.0050</span></span>
+<span><span class="co">#&gt;  -0.0487 -0.0871  0.0554  0.1073 -0.0756</span></span>
+<span><span class="co">#&gt;  -0.1663  0.0077 -0.1920 -0.0195 -0.0595</span></span>
+<span><span class="co">#&gt;   0.0111 -0.0025  0.1631 -0.0315  0.1216</span></span>
+<span><span class="co">#&gt;   0.1886 -0.1567  0.0554  0.0150 -0.0205</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (3,1,.,.) = </span></span>
-<span><span class="co">#&gt;  -0.0904 -0.1187  0.1255 -0.0646  0.1928</span></span>
-<span><span class="co">#&gt;   0.1217 -0.1250  0.0129 -0.0716 -0.0458</span></span>
-<span><span class="co">#&gt;   0.1168 -0.1885  0.1726 -0.1144  0.1238</span></span>
-<span><span class="co">#&gt;  -0.0081  0.0355 -0.1547  0.1598  0.0794</span></span>
-<span><span class="co">#&gt;   0.1676  0.1681  0.0128  0.0941  0.1344</span></span>
+<span><span class="co">#&gt;   0.0171  0.0304 -0.1556  0.1295  0.1315</span></span>
+<span><span class="co">#&gt;  -0.1445  0.0111  0.1528  0.1383  0.0425</span></span>
+<span><span class="co">#&gt;  -0.0562  0.1270  0.0210  0.1337  0.0721</span></span>
+<span><span class="co">#&gt;   0.1621  0.0851 -0.0242 -0.1696  0.0396</span></span>
+<span><span class="co">#&gt;   0.1895  0.1438 -0.0873  0.0403  0.1860</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (4,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.0562  0.1450 -0.1598  0.1984  0.1108</span></span>
-<span><span class="co">#&gt;  -0.1500  0.0927 -0.0415 -0.1034  0.1692</span></span>
-<span><span class="co">#&gt;   0.0995 -0.0878 -0.1666 -0.0376  0.1874</span></span>
-<span><span class="co">#&gt;   0.0130  0.0755 -0.0761  0.0096  0.1477</span></span>
-<span><span class="co">#&gt;  -0.0088 -0.1726 -0.0486 -0.0006  0.1492</span></span>
+<span><span class="co">#&gt;  -0.0101 -0.1460  0.0260  0.0511  0.0726</span></span>
+<span><span class="co">#&gt;   0.1379 -0.1271 -0.0677 -0.1966  0.1740</span></span>
+<span><span class="co">#&gt;  -0.0882 -0.0774 -0.1440  0.0796  0.0129</span></span>
+<span><span class="co">#&gt;   0.0191  0.0340 -0.1444  0.1827  0.1365</span></span>
+<span><span class="co">#&gt;  -0.1977 -0.0124  0.0987  0.0948  0.0799</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (5,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.1770  0.0137 -0.0971  0.1783  0.1272</span></span>
+<span><span class="co">#&gt;  -0.1495 -0.0418  0.0334  0.0977 -0.1629</span></span>
 <span><span class="co">#&gt; ... [the output was truncated (use n=-1 to disable)]</span></span>
 <span><span class="co">#&gt; [ CPUFloatType{20,1,5,5} ][ requires_grad = TRUE ]</span></span></code></pre></div>
 <p>It is usual for model parameters to then be passed to an
