@@ -4,15 +4,24 @@
 \alias{serialization}
 \title{Custom Serialization Functions}
 \usage{
-serialization(refhook = list())
+serialization(refhook = list(), class = "", list = FALSE)
 }
 \arguments{
 \item{refhook}{\strong{either} a list or pairlist of two functions: the
-signature for the first must accept a list of external pointer type
-objects and return a raw vector, e.g. \code{torch::torch_serialize}, and
-the second must accept a raw vector and return a list of external pointer
-type objects, e.g. \code{torch::torch_load},\cr \strong{or else} NULL to
-reset.}
+signature for the first must accept a reference object inheriting from
+'class' (or a list of such objects) and return a raw vector, and the
+second must accept a raw vector and return reference objects (or a list
+of such objects), \cr \strong{or else} NULL to reset.}
+
+\item{class}{[default ""] a character string representing the class of object
+that these serialization function will be applied to, e.g. 'ArrowTabular'
+or 'torch_tensor'.}
+
+\item{list}{[default FALSE] the serialization functions accept and return
+reference object individually e.g. \code{arrow::write_to_raw} and
+\code{arrow::read_ipc_stream}. If TRUE, the serialization functions
+accept and return a list of reference objects, e.g.
+\code{torch::torch_serialize} and \code{torch::torch_load}.}
 }
 \value{
 Invisibly, the pairlist of currently-registered 'refhook' functions.

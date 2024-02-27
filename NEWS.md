@@ -1,4 +1,6 @@
-# mirai 0.12.1.9000 (development)
+# mirai 0.12.1.9001 (development)
+
+* `serialization` adds arguments 'class' and 'list' for custom serialisation of all types of reference object / serialization function signature.
 
 # mirai 0.12.1
 
