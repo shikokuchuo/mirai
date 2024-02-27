@@ -29,7 +29,7 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -38,6 +38,11 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
+
+      - name: Add r-universe to repos
+        run: |
+          cat("\noptions(repos=c(UNIV='https://hibiki-ai.r-universe.dev',CRAN ='https://cloud.r-project.org'))\n", file = "~/.Rprofile", append = TRUE)
+        shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
