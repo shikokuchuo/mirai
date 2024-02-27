@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.1.9001</span>
       </span>
     </div>
 
@@ -139,7 +139,9 @@ available on all dameons (for convenience, optional).</p></li>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://torch.mlverse.org/docs" class="external-link">torch</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/serialization.html">serialization</a></span><span class="op">(</span>refhook <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">torch</span><span class="fu">:::</span><span class="va">torch_serialize</span>, <span class="fu">torch</span><span class="fu">::</span><span class="va">torch_load</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/serialization.html">serialization</a></span><span class="op">(</span>refhook <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">torch</span><span class="fu">:::</span><span class="va">torch_serialize</span>, <span class="fu">torch</span><span class="fu">::</span><span class="va">torch_load</span><span class="op">)</span>,</span>
+<span>              class <span class="op">=</span> <span class="st">"torch_tensor"</span>,</span>
+<span>              list <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="fu"><a href="../reference/everywhere.html">everywhere</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://torch.mlverse.org/docs" class="external-link">torch</a></span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -182,35 +184,35 @@ initialized within a ‘mirai’.</p>
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">conv1.weight</span></span>
 <span><span class="co">#&gt; torch_tensor</span></span>
 <span><span class="co">#&gt; (1,1,.,.) = </span></span>
-<span><span class="co">#&gt;  -0.0086  0.0254  0.0687 -0.0105 -0.0753</span></span>
-<span><span class="co">#&gt;  -0.1362  0.0654 -0.0027 -0.1823  0.0603</span></span>
-<span><span class="co">#&gt;  -0.0062 -0.1302 -0.1665  0.1108  0.0812</span></span>
-<span><span class="co">#&gt;   0.1842 -0.1088 -0.1089 -0.1304  0.1951</span></span>
-<span><span class="co">#&gt;  -0.0307 -0.0876  0.1167  0.0421 -0.0779</span></span>
+<span><span class="co">#&gt;  -0.1377 -0.1946 -0.0898 -0.0106  0.1031</span></span>
+<span><span class="co">#&gt;   0.0351 -0.1507  0.0192 -0.0240  0.1700</span></span>
+<span><span class="co">#&gt;   0.1107 -0.1232 -0.0690 -0.0868  0.0884</span></span>
+<span><span class="co">#&gt;  -0.0267 -0.0022  0.1997 -0.1383  0.0435</span></span>
+<span><span class="co">#&gt;  -0.1809 -0.1085 -0.0297 -0.0644 -0.0401</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (2,1,.,.) = </span></span>
-<span><span class="co">#&gt;  -0.1645 -0.1112  0.1982 -0.1861  0.0050</span></span>
-<span><span class="co">#&gt;  -0.0487 -0.0871  0.0554  0.1073 -0.0756</span></span>
-<span><span class="co">#&gt;  -0.1663  0.0077 -0.1920 -0.0195 -0.0595</span></span>
-<span><span class="co">#&gt;   0.0111 -0.0025  0.1631 -0.0315  0.1216</span></span>
-<span><span class="co">#&gt;   0.1886 -0.1567  0.0554  0.0150 -0.0205</span></span>
+<span><span class="co">#&gt;  -0.1002  0.1828  0.0886 -0.1793  0.1938</span></span>
+<span><span class="co">#&gt;  -0.0046  0.1006 -0.0480 -0.0389  0.0083</span></span>
+<span><span class="co">#&gt;   0.0761  0.0242  0.0283 -0.1859  0.1711</span></span>
+<span><span class="co">#&gt;   0.0402 -0.1847  0.1351  0.1842  0.0094</span></span>
+<span><span class="co">#&gt;   0.1114 -0.1828 -0.1846 -0.0650  0.1380</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (3,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.0171  0.0304 -0.1556  0.1295  0.1315</span></span>
-<span><span class="co">#&gt;  -0.1445  0.0111  0.1528  0.1383  0.0425</span></span>
-<span><span class="co">#&gt;  -0.0562  0.1270  0.0210  0.1337  0.0721</span></span>
-<span><span class="co">#&gt;   0.1621  0.0851 -0.0242 -0.1696  0.0396</span></span>
-<span><span class="co">#&gt;   0.1895  0.1438 -0.0873  0.0403  0.1860</span></span>
+<span><span class="co">#&gt;   0.1659 -0.0655  0.0936  0.1089  0.0514</span></span>
+<span><span class="co">#&gt;  -0.0058  0.1683 -0.0303 -0.0817 -0.1813</span></span>
+<span><span class="co">#&gt;  -0.0236 -0.1817 -0.1238  0.1651  0.1937</span></span>
+<span><span class="co">#&gt;  -0.1627 -0.0650  0.1760  0.0215 -0.0887</span></span>
+<span><span class="co">#&gt;  -0.0851  0.1430  0.1322 -0.1617 -0.1646</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (4,1,.,.) = </span></span>
-<span><span class="co">#&gt;  -0.0101 -0.1460  0.0260  0.0511  0.0726</span></span>
-<span><span class="co">#&gt;   0.1379 -0.1271 -0.0677 -0.1966  0.1740</span></span>
-<span><span class="co">#&gt;  -0.0882 -0.0774 -0.1440  0.0796  0.0129</span></span>
-<span><span class="co">#&gt;   0.0191  0.0340 -0.1444  0.1827  0.1365</span></span>
-<span><span class="co">#&gt;  -0.1977 -0.0124  0.0987  0.0948  0.0799</span></span>
+<span><span class="co">#&gt;  -0.0520 -0.0200  0.0354 -0.1181 -0.1892</span></span>
+<span><span class="co">#&gt;   0.1204  0.0877  0.1280 -0.0056  0.0088</span></span>
+<span><span class="co">#&gt;  -0.1765 -0.0036 -0.0664  0.0417  0.0189</span></span>
+<span><span class="co">#&gt;   0.1327 -0.1689  0.0132  0.0849 -0.0634</span></span>
+<span><span class="co">#&gt;   0.0072 -0.1516  0.0633  0.0185  0.0992</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (5,1,.,.) = </span></span>
-<span><span class="co">#&gt;  -0.1495 -0.0418  0.0334  0.0977 -0.1629</span></span>
+<span><span class="co">#&gt;   0.0992  0.0912 -0.1982  0.1880 -0.0986</span></span>
 <span><span class="co">#&gt; ... [the output was truncated (use n=-1 to disable)]</span></span>
 <span><span class="co">#&gt; [ CPUFloatType{20,1,5,5} ][ requires_grad = TRUE ]</span></span></code></pre></div>
 <p>It is usual for model parameters to then be passed to an
