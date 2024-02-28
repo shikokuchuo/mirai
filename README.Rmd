@@ -39,16 +39,16 @@ State of the art networking and concurrency via [nanonext](https://doi.org/10.52
 
 ### Installation
 
-Releases are made on rOpenSci R-universe, and also CRAN:
+Install the latest version from the R-releases R-universe, or CRAN:
 
-```{r runiv, eval=FALSE}
-install.packages("mirai", repos = c("shikokuchuo.r-universe.dev", "cloud.r-project.org"))
+```{r releases, eval=FALSE}
+install.packages("mirai", repos = "https://r-releases.r-universe.dev")
 ```
 
-Install the latest development version from Github:
+Install the latest development version from the author's R-universe:
 
-```{r github, eval=FALSE}
-remotes::install_github("shikokuchuo/mirai")
+```{r universe, eval=FALSE}
+install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
 ```
 
 ### Quick Start
