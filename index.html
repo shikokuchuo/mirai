@@ -128,12 +128,12 @@
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
-<p>Releases are made on rOpenSci R-universe, and also CRAN:</p>
+<p>Install the latest version from the R-releases R-universe, or CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"shikokuchuo.r-universe.dev"</span>, <span class="st">"cloud.r-project.org"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Install the latest development version from Github:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span>, repos <span class="op">=</span> <span class="st">"https://r-releases.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
+<p>Install the latest development version from the author’s R-universe:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"shikokuchuo/mirai"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span>, repos <span class="op">=</span> <span class="st">"https://shikokuchuo.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
@@ -166,13 +166,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -10.70436633   0.20734951  -0.08374811   0.38162353   5.79477942</span></span>
-<span><span class="co">#&gt;  [6]   0.17256912   2.62038351 -11.94056747   4.82277486  -0.09341982</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]   2.81559562 -12.90094618  -0.15254663  -0.06498899  -0.92778658</span></span>
+<span><span class="co">#&gt;  [6]  -1.07783409 -15.38722166  -6.55537243  -0.07751369   0.35516464</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -10.70436633   0.20734951  -0.08374811   0.38162353   5.79477942</span></span>
-<span><span class="co">#&gt;  [6]   0.17256912   2.62038351 -11.94056747   4.82277486  -0.09341982</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]   2.81559562 -12.90094618  -0.15254663  -0.06498899  -0.92778658</span></span>
+<span><span class="co">#&gt;  [6]  -1.07783409 -15.38722166  -6.55537243  -0.07751369   0.35516464</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
