@@ -40,7 +40,7 @@ Install the latest version from the R-releases R-universe, or CRAN:
 install.packages("mirai", repos = "https://r-releases.r-universe.dev")
 ```
 
-Install the latest development version from the author’s R-universe:
+Or the development build from the author’s R-universe:
 
 ``` r
 install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
@@ -92,8 +92,8 @@ result.
 
 ``` r
 m$data
-#>  [1]   2.81559562 -12.90094618  -0.15254663  -0.06498899  -0.92778658
-#>  [6]  -1.07783409 -15.38722166  -6.55537243  -0.07751369   0.35516464
+#>  [1]  -2.36657873  -0.09743428  -1.72167251  -1.30269614   3.21042977
+#>  [6]   0.31148478  -0.76763872  -0.58083056 -10.26332874  -0.42255091
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -101,8 +101,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]   2.81559562 -12.90094618  -0.15254663  -0.06498899  -0.92778658
-#>  [6]  -1.07783409 -15.38722166  -6.55537243  -0.07751369   0.35516464
+#>  [1]  -2.36657873  -0.09743428  -1.72167251  -1.30269614   3.21042977
+#>  [6]   0.31148478  -0.76763872  -0.58083056 -10.26332874  -0.42255091
 ```
 
 ### Daemons

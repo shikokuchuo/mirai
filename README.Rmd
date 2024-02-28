@@ -45,7 +45,7 @@ Install the latest version from the R-releases R-universe, or CRAN:
 install.packages("mirai", repos = "https://r-releases.r-universe.dev")
 ```
 
-Install the latest development version from the author's R-universe:
+Or the development build from the author's R-universe:
 
 ```{r universe, eval=FALSE}
 install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
