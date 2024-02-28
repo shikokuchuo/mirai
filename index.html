@@ -131,7 +131,7 @@
 <p>Install the latest version from the R-releases R-universe, or CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span>, repos <span class="op">=</span> <span class="st">"https://r-releases.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
-<p>Install the latest development version from the author’s R-universe:</p>
+<p>Or the development build from the author’s R-universe:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span>, repos <span class="op">=</span> <span class="st">"https://shikokuchuo.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -166,13 +166,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]   2.81559562 -12.90094618  -0.15254663  -0.06498899  -0.92778658</span></span>
-<span><span class="co">#&gt;  [6]  -1.07783409 -15.38722166  -6.55537243  -0.07751369   0.35516464</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  -2.36657873  -0.09743428  -1.72167251  -1.30269614   3.21042977</span></span>
+<span><span class="co">#&gt;  [6]   0.31148478  -0.76763872  -0.58083056 -10.26332874  -0.42255091</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]   2.81559562 -12.90094618  -0.15254663  -0.06498899  -0.92778658</span></span>
-<span><span class="co">#&gt;  [6]  -1.07783409 -15.38722166  -6.55537243  -0.07751369   0.35516464</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  -2.36657873  -0.09743428  -1.72167251  -1.30269614   3.21042977</span></span>
+<span><span class="co">#&gt;  [6]   0.31148478  -0.76763872  -0.58083056 -10.26332874  -0.42255091</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
