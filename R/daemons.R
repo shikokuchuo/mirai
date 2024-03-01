@@ -432,10 +432,10 @@ status <- function(.compute = "default") {
 #' @param class [default ""] a character string representing the class of object
 #'     that these serialization function will be applied to, e.g. 'ArrowTabular'
 #'     or 'torch_tensor'.
-#' @param list [default FALSE] the serialization functions accept and return
+#' @param vec [default FALSE] the serialization functions accept and return
 #'     reference object individually e.g. \code{arrow::write_to_raw} and
-#'     \code{arrow::read_ipc_stream}. If TRUE, the serialization functions
-#'     accept and return a list of reference objects, e.g.
+#'     \code{arrow::read_ipc_stream}. If TRUE, the serialization functions are
+#'     vectorized and accept and return a list of reference objects, e.g.
 #'     \code{torch::torch_serialize} and \code{torch::torch_load}.
 #'
 #' @return Invisibly, the pairlist of currently-registered 'refhook' functions.
@@ -458,10 +458,10 @@ status <- function(.compute = "default") {
 #'
 #' @export
 #'
-serialization <- function(refhook = list(), class = "", list = FALSE) {
+serialization <- function(refhook = list(), class = "", vec = FALSE) {
 
   register <- !missing(refhook)
-  cfg <- next_config(refhook = refhook, class = class, list = list)
+  cfg <- next_config(refhook = refhook, class = class, vec = vec)
 
   if (register) {
     if (is.list(refhook) && length(refhook) == 2L && is.function(refhook[[1L]]) && is.function(refhook[[2L]]))
@@ -469,8 +469,8 @@ serialization <- function(refhook = list(), class = "", list = FALSE) {
         if (is.null(refhook))
           cat("mirai serialization functions cancelled\n", file = stderr()) else
             stop(._[["refhook_invalid"]])
-    `[[<-`(., "refhook", list(refhook, class, list))
-    register_everywhere(refhook = refhook, class = class, list = list)
+    `[[<-`(., "refhook", list(refhook, class, vec))
+    register_everywhere(refhook = refhook, class = class, vec = vec)
   }
 
   invisible(cfg)
@@ -591,13 +591,13 @@ query_status <- function(envir) {
                            dimnames = list(envir[["urls"]], c("i", "online", "instance", "assigned", "complete"))))
 }
 
-register_everywhere <- function(refhook, class, list)
+register_everywhere <- function(refhook, class, vec)
   for (.compute in names(..))
-    everywhere(mirai::serialization(refhook = refhook, class = class, list = list),
-               refhook = refhook, class = class, list = list, .compute = .compute)
+    everywhere(mirai::serialization(refhook = refhook, class = class, vec = vec),
+               refhook = refhook, class = class, vec = vec, .compute = .compute)
 
 serialization_refhook <- function(refhook = .[["refhook"]])
   if (length(refhook[[1L]]))
-    register_everywhere(refhook = refhook[[1L]], class = refhook[[2L]], list = refhook[[3L]])
+    register_everywhere(refhook = refhook[[1L]], class = refhook[[2L]], vec = refhook[[3L]])
 
 ._scm_. <- as.raw(c(0x07, 0x00, 0x00, 0x00, 0x42, 0x0a, 0x03, 0x00, 0x00, 0x00, 0x02, 0x03, 0x04, 0x00, 0x00, 0x05, 0x03, 0x00, 0x05, 0x00, 0x00, 0x00, 0x55, 0x54, 0x46, 0x2d, 0x38, 0xfc, 0x00, 0x00, 0x00))
