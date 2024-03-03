@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.1.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.1.9003</span>
       </span>
     </div>
 
@@ -128,7 +128,7 @@
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
-<p>Install the latest version from the R-releases R-universe, or CRAN:</p>
+<p>Install the latest version from r-releases R-universe, or CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span>, repos <span class="op">=</span> <span class="st">"https://r-releases.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
 <p>Or the development build from the author’s R-universe:</p>
@@ -166,13 +166,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]  -2.36657873  -0.09743428  -1.72167251  -1.30269614   3.21042977</span></span>
-<span><span class="co">#&gt;  [6]   0.31148478  -0.76763872  -0.58083056 -10.26332874  -0.42255091</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  2.3215460  1.0215716 -8.1280862 -8.6807466  0.8382535  1.1929566</span></span>
+<span><span class="co">#&gt;  [7] -0.1151975 -0.1230302  0.9788839  0.4307474</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]  -2.36657873  -0.09743428  -1.72167251  -1.30269614   3.21042977</span></span>
-<span><span class="co">#&gt;  [6]   0.31148478  -0.76763872  -0.58083056 -10.26332874  -0.42255091</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  2.3215460  1.0215716 -8.1280862 -8.6807466  0.8382535  1.1929566</span></span>
+<span><span class="co">#&gt;  [7] -0.1151975 -0.1230302  0.9788839  0.4307474</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
