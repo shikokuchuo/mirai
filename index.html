@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.12.1.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.0</span>
       </span>
     </div>
 
@@ -120,19 +120,22 @@
 <div class="section level3">
 <h3 id="みらい">みらい<a class="anchor" aria-label="anchor" href="#%E3%81%BF%E3%82%89%E3%81%84"></a>
 </h3>
-<p><br> ( futuristic ・ whisper ) <br><br> Minimalist Async Evaluation Framework for R <br><br> Lightweight parallel code execution and distributed computing. <br><br><code><a href="reference/mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately. Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion. <br><br> State of the art networking and concurrency via <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link">nanonext</a> offers reliable and efficient scheduling over fast inter-process communications or TCP/IP secured by TLS.</p>
-<div align="right">
+<p><br> ( futuristic ・ whisper ) <br><br> Minimalist Async Evaluation Framework for R <br><br> Lightweight parallel code execution and distributed computing. <br><br><code><a href="reference/mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately. Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion. <br><br> State of the art networking and concurrency via <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link">nanonext</a> offers reliable and efficient scheduling over fast inter-process communications or TCP/IP secured by TLS. <br><br></p>
+<blockquote>
 <p><em>mirai パッケージを試してみたところ、かなり速くて驚きました</em></p>
-</div>
+</blockquote>
 </div>
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
-<p>Install the latest version from r-releases R-universe, or CRAN:</p>
+<p>Install the latest version from r-releases R-universe:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span>, repos <span class="op">=</span> <span class="st">"https://r-releases.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
-<p>Or the development build from the author’s R-universe:</p>
+<p>Install the previous version from CRAN:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span><span class="op">)</span></span></code></pre></div>
+<p>Or the development build from the author’s R-universe:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span>, repos <span class="op">=</span> <span class="st">"https://shikokuchuo.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -140,7 +143,7 @@
 </h3>
 <p>Use <code><a href="reference/mirai.html">mirai()</a></code> to evaluate an expression asynchronously in a separate, clean R process.</p>
 <p>A ‘mirai’ object is returned immediately.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span></span>
@@ -156,23 +159,23 @@
 <span><span class="co">#&gt; &lt; mirai | $data &gt;</span></span></code></pre></div>
 <p>Above, all specified <code>name = value</code> pairs are passed through to the ‘mirai’.</p>
 <p>The ‘mirai’ yields an ‘unresolved’ logical NA whilst the async operation is ongoing.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; 'unresolved' logi NA</span></span></code></pre></div>
 <p>To check whether a mirai has resolved:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/unresolved.html">unresolved</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]  2.3215460  1.0215716 -8.1280862 -8.6807466  0.8382535  1.1929566</span></span>
-<span><span class="co">#&gt;  [7] -0.1151975 -0.1230302  0.9788839  0.4307474</span></span></code></pre></div>
-<p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
+<span><span class="co">#&gt;  [1]  0.1688534  1.5476048  0.7518829 -3.4358838 -0.9399612 -1.0638737</span></span>
+<span><span class="co">#&gt;  [7] -0.2910459  1.3299943  0.6461598  5.9222988</span></span></code></pre></div>
+<p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]  2.3215460  1.0215716 -8.1280862 -8.6807466  0.8382535  1.1929566</span></span>
-<span><span class="co">#&gt;  [7] -0.1151975 -0.1230302  0.9788839  0.4307474</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  0.1688534  1.5476048  0.7518829 -3.4358838 -0.9399612 -1.0638737</span></span>
+<span><span class="co">#&gt;  [7] -0.2910459  1.3299943  0.6461598  5.9222988</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
@@ -184,7 +187,7 @@
 <p><a href="https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-launching-daemons">Launchers</a> allow daemons to be started both on the local machine and across the network via SSH etc.</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-tls-secure-connections">Secure TLS connections</a> can be automatically-configured on-the-fly for remote daemon connections.</p>
 <p>Refer to the <a href="https://shikokuchuo.net/mirai/articles/mirai.html">{mirai} vignette</a> for full package functionality. This may be accessed within R by:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"mirai"</span>, package <span class="op">=</span> <span class="st">"mirai"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -271,7 +274,8 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://CRAN.R-project.org/package=mirai" class="external-link"><img src="https://www.r-pkg.org/badges/version/mirai?color=112d4e" alt="CRAN status"></a></li>
-<li><a href="https://shikokuchuo.r-universe.dev/mirai" class="external-link"><img src="https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e" alt="mirai status badge"></a></li>
+<li><a href="https://r-releases.r-universe.dev/mirai" class="external-link"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-releases.r-universe.dev%2Fapi%2Fpackages%2Fmirai&amp;query=%24.Version&amp;label=r-releases&amp;color=eba54c" alt="r-releases status"></a></li>
+<li><a href="https://shikokuchuo.r-universe.dev/mirai" class="external-link"><img src="https://shikokuchuo.r-universe.dev/badges/mirai?color=d89199" alt="R-universe status"></a></li>
 <li><a href="https://github.com/shikokuchuo/mirai/actions" class="external-link"><img src="https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://app.codecov.io/gh/shikokuchuo/mirai" class="external-link"><img src="https://codecov.io/gh/shikokuchuo/mirai/graph/badge.svg" alt="codecov"></a></li>
 <li><a href="https://zenodo.org/badge/latestdoi/459341940" class="external-link"><img src="https://zenodo.org/badge/459341940.svg" alt="DOI"></a></li>
