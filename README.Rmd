@@ -39,7 +39,7 @@ State of the art networking and concurrency via [nanonext](https://doi.org/10.52
 
 ### Installation
 
-Install the latest version from the R-releases R-universe, or CRAN:
+Install the latest version from r-releases R-universe, or CRAN:
 
 ```{r releases, eval=FALSE}
 install.packages("mirai", repos = "https://r-releases.r-universe.dev")

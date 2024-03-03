@@ -34,7 +34,7 @@ communications or TCP/IP secured by TLS.
 
 ### Installation
 
-Install the latest version from the R-releases R-universe, or CRAN:
+Install the latest version from r-releases R-universe, or CRAN:
 
 ``` r
 install.packages("mirai", repos = "https://r-releases.r-universe.dev")
@@ -92,8 +92,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  -2.36657873  -0.09743428  -1.72167251  -1.30269614   3.21042977
-#>  [6]   0.31148478  -0.76763872  -0.58083056 -10.26332874  -0.42255091
+#>  [1]  2.3215460  1.0215716 -8.1280862 -8.6807466  0.8382535  1.1929566
+#>  [7] -0.1151975 -0.1230302  0.9788839  0.4307474
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -101,8 +101,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  -2.36657873  -0.09743428  -1.72167251  -1.30269614   3.21042977
-#>  [6]   0.31148478  -0.76763872  -0.58083056 -10.26332874  -0.42255091
+#>  [1]  2.3215460  1.0215716 -8.1280862 -8.6807466  0.8382535  1.1929566
+#>  [7] -0.1151975 -0.1230302  0.9788839  0.4307474
 ```
 
 ### Daemons
