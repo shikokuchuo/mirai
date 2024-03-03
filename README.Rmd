@@ -17,7 +17,8 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/mirai?color=112d4e)](https://CRAN.R-project.org/package=mirai)
-[![mirai status badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e)](https://shikokuchuo.r-universe.dev/mirai)
+[![r-releases status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-releases.r-universe.dev%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=r-releases&color=eba54c)](https://r-releases.r-universe.dev/mirai)
+[![R-universe status](https://shikokuchuo.r-universe.dev/badges/mirai?color=d89199)](https://shikokuchuo.r-universe.dev/mirai)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
 [![codecov](https://codecov.io/gh/shikokuchuo/mirai/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/mirai)
 [![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)
@@ -34,15 +35,22 @@ Lightweight parallel code execution and distributed computing.
 `mirai()` returns a 'mirai' object immediately. Designed for simplicity, a 'mirai' evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion.
 <br /><br />
 State of the art networking and concurrency via [nanonext](https://doi.org/10.5281/zenodo.7903429) offers reliable and efficient scheduling over fast inter-process communications or TCP/IP secured by TLS.
+<br /><br />
 
-<div align = "right"> *mirai パッケージを試してみたところ、かなり速くて驚きました* </div>
+> *mirai パッケージを試してみたところ、かなり速くて驚きました*
 
 ### Installation
 
-Install the latest version from r-releases R-universe, or CRAN:
+Install the latest version from r-releases R-universe:
 
 ```{r releases, eval=FALSE}
 install.packages("mirai", repos = "https://r-releases.r-universe.dev")
+```
+
+Install the previous version from CRAN:
+
+```{r cran, eval=FALSE}
+install.packages("mirai")
 ```
 
 Or the development build from the author's R-universe:

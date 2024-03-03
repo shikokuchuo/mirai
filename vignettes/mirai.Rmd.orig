@@ -26,6 +26,7 @@ knitr::opts_chunk$set(
 7. [Distributed Computing: TLS Secure Connections](#distributed-computing-tls-secure-connections)
 8. [Compute Profiles](#compute-profiles)
 9. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
+10. [Serialization](#serialization)
 
 ### Example 1: Compute-intensive Operations
 
@@ -435,5 +436,46 @@ is_mirai_interrupt(m3$data)
 is_error_value(m3$data)
 ```
 `is_error_value()` tests for all mirai execution errors, user interrupts and timeouts.
+
+[&laquo; Back to ToC](#table-of-contents)
+
+### Serialization
+
+Native R serialization is used for sending data between host and daemons. Some R objects by their nature cannot be serialized, such as those accessed via an external pointer. In these cases, performing 'mirai' operations on them will error.
+
+Using the [{arrow}](https://arrow.apache.org/docs/r/) package as an example:
+
+```{r arrowfail}
+library(arrow, warn.conflicts = FALSE)
+daemons(2)
+everywhere(library(arrow))
+
+x <- as_arrow_table(head(iris))
+
+m <- mirai(list(a = as_arrow_table(x), b = "some text"), x = x)
+call_mirai(m)$data
+```
+However it is possible to register custom serialization and unserialization functions as 'refhooks' or hooks into R's native serialization mechanism for reference objects.
+
+It is only required to specify them once upfront, as a list of functions. The argument 'class' must also be specified to activate them and restrict their use to this class of object only.
+
+```{r arrowpass}
+serialization(refhook = list(arrow::write_to_raw, arrow::read_ipc_stream), class = "ArrowTabular")
+
+m <- mirai(list(a = as_arrow_table(x), b = "some text"), x = x)
+call_mirai(m)$data
+
+daemons(0)
+```
+It can be seen that this time, the arrow table is seamlessly handled in the 'mirai' process. This is the case even when the object is deeply nested inside lists or other structures.
+
+To change registered serialization functions, just call `serialization()` again supplying the new functions, or else to cancel them entirely:
+
+```{r serialcancel}
+serialization(NULL)
+```
+The 'vec' argument to `serialization()` may be specified as `TRUE` if the serialization functions are vectorized and take lists of objects, as is the case for [{safetensors}](https://mlverse.github.io/safetensors/), used for serialization in [{torch}](https://torch.mlverse.org/).
+
+Please refer to the [torch vignette](https://shikokuchuo.net/mirai/articles/torch.html) for further examples.
 
 [&laquo; Back to ToC](#table-of-contents)

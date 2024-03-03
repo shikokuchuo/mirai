@@ -7,8 +7,10 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/mirai?color=112d4e)](https://CRAN.R-project.org/package=mirai)
-[![mirai status
-badge](https://shikokuchuo.r-universe.dev/badges/mirai?color=24a60e)](https://shikokuchuo.r-universe.dev/mirai)
+[![r-releases
+status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-releases.r-universe.dev%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=r-releases&color=eba54c)](https://r-releases.r-universe.dev/mirai)
+[![R-universe
+status](https://shikokuchuo.r-universe.dev/badges/mirai?color=d89199)](https://shikokuchuo.r-universe.dev/mirai)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
 [![codecov](https://codecov.io/gh/shikokuchuo/mirai/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/mirai)
 [![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)
@@ -24,20 +26,22 @@ an R expression asynchronously, on local or network resources, resolving
 automatically upon completion. <br /><br /> State of the art networking
 and concurrency via [nanonext](https://doi.org/10.5281/zenodo.7903429)
 offers reliable and efficient scheduling over fast inter-process
-communications or TCP/IP secured by TLS.
+communications or TCP/IP secured by TLS. <br /><br />
 
-<div align="right">
-
-*mirai パッケージを試してみたところ、かなり速くて驚きました*
-
-</div>
+> *mirai パッケージを試してみたところ、かなり速くて驚きました*
 
 ### Installation
 
-Install the latest version from r-releases R-universe, or CRAN:
+Install the latest version from r-releases R-universe:
 
 ``` r
 install.packages("mirai", repos = "https://r-releases.r-universe.dev")
+```
+
+Install the previous version from CRAN:
+
+``` r
+install.packages("mirai")
 ```
 
 Or the development build from the author’s R-universe:
@@ -92,8 +96,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  2.3215460  1.0215716 -8.1280862 -8.6807466  0.8382535  1.1929566
-#>  [7] -0.1151975 -0.1230302  0.9788839  0.4307474
+#>  [1]  0.1688534  1.5476048  0.7518829 -3.4358838 -0.9399612 -1.0638737
+#>  [7] -0.2910459  1.3299943  0.6461598  5.9222988
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -101,8 +105,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  2.3215460  1.0215716 -8.1280862 -8.6807466  0.8382535  1.1929566
-#>  [7] -0.1151975 -0.1230302  0.9788839  0.4307474
+#>  [1]  0.1688534  1.5476048  0.7518829 -3.4358838 -0.9399612 -1.0638737
+#>  [7] -0.2910459  1.3299943  0.6461598  5.9222988
 ```
 
 ### Daemons

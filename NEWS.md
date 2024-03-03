@@ -1,6 +1,6 @@
-# mirai 0.12.1.9003 (development)
+# mirai 0.13.0
 
-* `serialization` adds arguments 'class' and 'vec' for custom serialisation of all types of reference object / serialization function signature.
+* `serialization` adds arguments 'class' and 'vec' for custom serialisation of all reference object types.
 * Requires nanonext >= 0.13.3.
 
 # mirai 0.12.1
