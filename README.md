@@ -7,10 +7,10 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/mirai?color=112d4e)](https://CRAN.R-project.org/package=mirai)
-[![r-releases
-status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-releases.r-universe.dev%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=r-releases&color=1938df)](https://r-releases.r-universe.dev/mirai)
+[![R-releases
+status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-releases.r-universe.dev%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=R-releases&color=0043ce)](https://r-releases.r-universe.dev/mirai)
 [![R-universe
-status](https://shikokuchuo.r-universe.dev/badges/mirai?color=df9fa5)](https://shikokuchuo.r-universe.dev/mirai)
+status](https://shikokuchuo.r-universe.dev/badges/mirai?color=f8aac0)](https://shikokuchuo.r-universe.dev/mirai)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
 [![codecov](https://codecov.io/gh/shikokuchuo/mirai/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/mirai)
 [![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)
@@ -96,8 +96,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  0.5373440 -2.4198015  0.2881613 -1.8082428 -3.3368211 -0.2996864
-#>  [7] -0.5530231  3.4702789 -0.4132570  1.8610053
+#>  [1]   0.15531882  -1.25610679  -0.04647732  29.38778138   0.15526156
+#>  [6]   6.44074416   0.03402775 -21.51587169  -0.79611066   6.43836998
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -105,8 +105,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  0.5373440 -2.4198015  0.2881613 -1.8082428 -3.3368211 -0.2996864
-#>  [7] -0.5530231  3.4702789 -0.4132570  1.8610053
+#>  [1]   0.15531882  -1.25610679  -0.04647732  29.38778138   0.15526156
+#>  [6]   6.44074416   0.03402775 -21.51587169  -0.79611066   6.43836998
 ```
 
 ### Daemons
