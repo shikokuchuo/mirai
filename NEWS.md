@@ -1,5 +1,7 @@
 # mirai 0.13.0.9001 (development)
 
+* Fixes regression in mirai 0.12.1, which introduced the potential for unintentional low level errors to emerge when querying dispatcher (thanks @dsweber2 for reporting in downstream {targets}).
+
 # mirai 0.13.0
 
 * `serialization` adds arguments 'class' and 'vec' for custom serialisation of all reference object types.
