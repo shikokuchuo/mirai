@@ -8,7 +8,7 @@
 [![CRAN
 status](https://www.r-pkg.org/badges/version/mirai?color=112d4e)](https://CRAN.R-project.org/package=mirai)
 [![R-releases
-status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-releases.r-universe.dev%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=R-releases&color=0043ce)](https://r-releases.r-universe.dev/mirai)
+status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-releases.r-universe.dev%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=R-releases&color=112d4e)](https://r-releases.r-universe.dev/mirai)
 [![R-universe
 status](https://shikokuchuo.r-universe.dev/badges/mirai?color=f8aac0)](https://shikokuchuo.r-universe.dev/mirai)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
@@ -32,19 +32,19 @@ communications or TCP/IP secured by TLS. <br /><br />
 
 ### Installation
 
-Install the latest version from r-releases R-universe:
+Install the fast release channel version (0.13.0) from R-releases:
 
 ``` r
 install.packages("mirai", repos = "https://r-releases.r-universe.dev")
 ```
 
-Install the previous version from CRAN:
+Or the slow release channel version (0.12.1) from CRAN:
 
 ``` r
 install.packages("mirai")
 ```
 
-Or the development build from the author’s R-universe:
+Or the latest development build from the author’s R-universe:
 
 ``` r
 install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
@@ -96,8 +96,8 @@ result.
 
 ``` r
 m$data
-#>  [1]   0.15531882  -1.25610679  -0.04647732  29.38778138   0.15526156
-#>  [6]   6.44074416   0.03402775 -21.51587169  -0.79611066   6.43836998
+#>  [1] -1.19893600 -0.20521968 -3.30412038 26.79275495 -0.54883361 -1.82204584
+#>  [7]  0.03732352 -0.30265241 -4.87282692 -0.83407288
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -105,8 +105,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]   0.15531882  -1.25610679  -0.04647732  29.38778138   0.15526156
-#>  [6]   6.44074416   0.03402775 -21.51587169  -0.79611066   6.43836998
+#>  [1] -1.19893600 -0.20521968 -3.30412038 26.79275495 -0.54883361 -1.82204584
+#>  [7]  0.03732352 -0.30265241 -4.87282692 -0.83407288
 ```
 
 ### Daemons
