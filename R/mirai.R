@@ -143,9 +143,13 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   data <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
   envir <- ..[[.compute]]
-  aio <- if (is.null(envir))
-    request(ephemeral_daemon(local_url()), data = data, send_mode = 1L, recv_mode = 1L, timeout = .timeout) else
-      request_signal(.context(envir[["sock"]]), data = data, cv = envir[["cv"]], send_mode = 3L, recv_mode = 1L, timeout = .timeout)
+  if (is.null(envir)) {
+    sock <- ephemeral_daemon(local_url())
+    aio <- request(sock, data = data, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    reg.finalizer(.subset2(aio, "aio"), function(x) reap(sock))
+  } else {
+    aio <- request_signal(.context(envir[["sock"]]), data = data, cv = envir[["cv"]], send_mode = 3L, recv_mode = 1L, timeout = .timeout)
+  }
 
   `class<-`(aio, c("mirai", "recvAio"))
 

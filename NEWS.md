@@ -1,4 +1,4 @@
-# mirai 0.13.0.9002 (development)
+# mirai 0.13.0.9003 (development)
 
 * Fixes regression in mirai 0.12.1, which introduced the potential for unintentional low level errors to emerge when querying dispatcher (thanks @dsweber2 for reporting in downstream {targets}).
 * Internal performance enhancements.
