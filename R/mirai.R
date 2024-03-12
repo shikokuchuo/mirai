@@ -145,8 +145,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   envir <- ..[[.compute]]
   if (is.null(envir)) {
     sock <- ephemeral_daemon(local_url())
-    aio <- request(sock, data = data, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
-    reg.finalizer(.subset2(aio, "aio"), function(x) reap(sock))
+    aio <- request(.context(sock), data = data, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    `attr<-`(.subset2(aio, "aio"), "sock", sock)
   } else {
     aio <- request_signal(.context(envir[["sock"]]), data = data, cv = envir[["cv"]], send_mode = 3L, recv_mode = 1L, timeout = .timeout)
   }
