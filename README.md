@@ -10,7 +10,7 @@ status](https://www.r-pkg.org/badges/version/mirai?color=112d4e)](https://CRAN.R
 [![R-releases
 status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-releases.r-universe.dev%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=R-releases&color=112d4e)](https://r-releases.r-universe.dev/mirai)
 [![R-universe
-status](https://shikokuchuo.r-universe.dev/badges/mirai?color=f8aac0)](https://shikokuchuo.r-universe.dev/mirai)
+status](https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc)](https://shikokuchuo.r-universe.dev/mirai)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
 [![codecov](https://codecov.io/gh/shikokuchuo/mirai/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/mirai)
 [![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)
@@ -32,13 +32,13 @@ communications or TCP/IP secured by TLS. <br /><br />
 
 ### Installation
 
-Install the fast release channel version (0.13.0) from R-releases:
+Install the fast channel release (v0.13.0) from R-releases:
 
 ``` r
 install.packages("mirai", repos = "https://r-releases.r-universe.dev")
 ```
 
-Or the slow release channel version (0.12.1) from CRAN:
+Or the slow channel release (v0.12.1) from CRAN:
 
 ``` r
 install.packages("mirai")
@@ -96,8 +96,8 @@ result.
 
 ``` r
 m$data
-#>  [1] -1.19893600 -0.20521968 -3.30412038 26.79275495 -0.54883361 -1.82204584
-#>  [7]  0.03732352 -0.30265241 -4.87282692 -0.83407288
+#>  [1]  0.6471004  0.7911285 -0.6812948 -7.7420506 -2.2608365 -0.4423142
+#>  [7] -0.1291647 -1.4677935  1.2640171  1.5453552
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -105,8 +105,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] -1.19893600 -0.20521968 -3.30412038 26.79275495 -0.54883361 -1.82204584
-#>  [7]  0.03732352 -0.30265241 -4.87282692 -0.83407288
+#>  [1]  0.6471004  0.7911285 -0.6812948 -7.7420506 -2.2608365 -0.4423142
+#>  [7] -0.1291647 -1.4677935  1.2640171  1.5453552
 ```
 
 ### Daemons

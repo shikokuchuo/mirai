@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/mirai?color=112d4e)](https://CRAN.R-project.org/package=mirai)
 [![R-releases status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-releases.r-universe.dev%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=R-releases&color=112d4e)](https://r-releases.r-universe.dev/mirai)
-[![R-universe status](https://shikokuchuo.r-universe.dev/badges/mirai?color=f8aac0)](https://shikokuchuo.r-universe.dev/mirai)
+[![R-universe status](https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc)](https://shikokuchuo.r-universe.dev/mirai)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
 [![codecov](https://codecov.io/gh/shikokuchuo/mirai/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/mirai)
 [![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)
@@ -41,13 +41,13 @@ State of the art networking and concurrency via [nanonext](https://doi.org/10.52
 
 ### Installation
 
-Install the fast release channel version (0.13.0) from R-releases:
+Install the fast channel release (v0.13.0) from R-releases:
 
 ```{r releases, eval=FALSE}
 install.packages("mirai", repos = "https://r-releases.r-universe.dev")
 ```
 
-Or the slow release channel version (0.12.1) from CRAN:
+Or the slow channel release (v0.12.1) from CRAN:
 
 ```{r cran, eval=FALSE}
 install.packages("mirai")
