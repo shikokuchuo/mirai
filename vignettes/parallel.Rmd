@@ -51,7 +51,7 @@ status(cl)
 #> [1] 4
 #> 
 #> $daemons
-#> [1] "abstract://dbfed51655e80d0b27a24cc6"
+#> [1] "abstract://b3c70b500b2fda89d2c207c4"
 
 stop_cluster(cl)
 ```
@@ -62,10 +62,10 @@ cl <- make_cluster(n = 2, url = host_url())
 #> Shell commands for deployment on nodes:
 #> 
 #> [1]
-#> Rscript -e "mirai::daemon('tcp://hostname:42471',rs=c(10407,1544508607,-732721164,-718427547,-1315073054,-812390917,-1575491328))"
+#> Rscript -e "mirai::daemon('tcp://hostname:44941',rs=c(10407,1389412062,-1447551545,1606021980,211782829,-1030393974,-673295485))"
 #> 
 #> [2]
-#> Rscript -e "mirai::daemon('tcp://hostname:42471',rs=c(10407,1287587055,-2075729006,752482380,-1547133862,-1770470198,1209753632))"
+#> Rscript -e "mirai::daemon('tcp://hostname:44941',rs=c(10407,-2046413381,-1694761865,-850453560,356039814,445330416,-423507248))"
 
 stop_cluster(cl)
 ```

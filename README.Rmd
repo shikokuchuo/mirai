@@ -41,7 +41,7 @@ State of the art networking and concurrency via [nanonext](https://doi.org/10.52
 
 ### Installation
 
-Install the fast channel release (v0.13.0) from R-releases:
+Install the fast channel release (v0.13.1) from R-releases:
 
 ```{r releases, eval=FALSE}
 install.packages("mirai", repos = "https://r-releases.r-universe.dev")

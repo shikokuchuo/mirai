@@ -32,7 +32,7 @@ communications or TCP/IP secured by TLS. <br /><br />
 
 ### Installation
 
-Install the fast channel release (v0.13.0) from R-releases:
+Install the fast channel release (v0.13.1) from R-releases:
 
 ``` r
 install.packages("mirai", repos = "https://r-releases.r-universe.dev")
@@ -96,8 +96,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  0.6471004  0.7911285 -0.6812948 -7.7420506 -2.2608365 -0.4423142
-#>  [7] -0.1291647 -1.4677935  1.2640171  1.5453552
+#>  [1]   1.20758031 -41.42852842   0.32189519   1.19199609  -0.58274317
+#>  [6]  -1.71602183   0.83892893   3.10660130  -0.02413796   0.82810227
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -105,8 +105,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  0.6471004  0.7911285 -0.6812948 -7.7420506 -2.2608365 -0.4423142
-#>  [7] -0.1291647 -1.4677935  1.2640171  1.5453552
+#>  [1]   1.20758031 -41.42852842   0.32189519   1.19199609  -0.58274317
+#>  [6]  -1.71602183   0.83892893   3.10660130  -0.02413796   0.82810227
 ```
 
 ### Daemons
