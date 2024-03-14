@@ -177,9 +177,6 @@ updates 5 at a time, limited by the number of available daemons.</p>
 <span>  <span class="va">output</span><span class="op">$</span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">renderPlot</span><span class="op">(</span><span class="fu">reactive_result</span><span class="op">(</span><span class="op">)</span>, height <span class="op">=</span> <span class="fl">600</span>, width <span class="op">=</span> <span class="fl">600</span><span class="op">)</span></span>
 <span>  <span class="va">output</span><span class="op">$</span><span class="va">status</span> <span class="op">&lt;-</span> <span class="fu">renderText</span><span class="op">(</span><span class="fu">reactive_status</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">poll_for_results</span> <span class="op">&lt;-</span> <span class="fu">reactiveVal</span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># automatically shutdown daemons when app exits</span></span>
-<span>  <span class="fu">onStop</span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0L</span><span class="op">)</span><span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="co"># create empty mirai queue</span></span>
 <span>  <span class="va">q</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -209,6 +206,8 @@ updates 5 at a time, limited by the number of available daemons.</p>
 <span><span class="co"># mirai setup - 5 local daemons with dispatcher</span></span>
 <span><span class="co"># switch off cleanup as not necessary (each task is self-contained)</span></span>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">5L</span>, cleanup <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co"># automatically shutdown daemons when app exits</span></span>
+<span><span class="fu">onStop</span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0L</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># pre-load function on each daemon for efficiency</span></span>
 <span><span class="fu"><a href="../reference/everywhere.html">everywhere</a></span><span class="op">(</span><span class="va">run_task</span> <span class="op">&lt;&lt;-</span> <span class="va">run_task</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">run_task</span><span class="op">)</span><span class="op">)</span></span>
