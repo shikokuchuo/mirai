@@ -66,9 +66,6 @@ server <- function(input, output, session) {
   output$result <- renderPlot(reactive_result(), height = 600, width = 600)
   output$status <- renderText(reactive_status())
   poll_for_results <- reactiveVal(FALSE)
-
-  # automatically shutdown daemons when app exits
-  onStop(function() daemons(0L))
   
   # create empty mirai queue
   q <- list()
@@ -98,6 +95,8 @@ server <- function(input, output, session) {
 # mirai setup - 5 local daemons with dispatcher
 # switch off cleanup as not necessary (each task is self-contained)
 daemons(5L, cleanup = FALSE)
+# automatically shutdown daemons when app exits
+onStop(function() daemons(0L))
 
 # pre-load function on each daemon for efficiency
 everywhere(run_task <<- run_task, .args = list(run_task))
