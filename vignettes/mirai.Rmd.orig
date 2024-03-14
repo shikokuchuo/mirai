@@ -460,7 +460,13 @@ However it is possible to register custom serialization and unserialization func
 It is only required to specify them once upfront, as a list of functions. The argument 'class' must also be specified to activate them and restrict their use to this class of object only.
 
 ```{r arrowpass}
-serialization(refhook = list(arrow::write_to_raw, arrow::read_ipc_stream), class = "ArrowTabular")
+serialization(
+  refhook = list(
+    arrow::write_to_raw,
+    function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)
+  ),
+  class = "ArrowTabular"
+)
 
 m <- mirai(list(a = as_arrow_table(x), b = "some text"), x = x)
 call_mirai(m)$data
