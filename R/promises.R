@@ -51,17 +51,17 @@
 #' @export
 #'
 as.promise.mirai <- function(x)
-  promises::then(
-    promises::promise(
-      function(resolve, reject) {
-        query <- function()
-          if (unresolved(x))
-            .[["later"]](query, delay = 0.1) else
-              if (is_error_value(value <- .subset2(x, "value")))
-                reject(value) else
-                  resolve(value)
-        query()
-      }
-    ),
-    onRejected = unlist
+  promises::promise(
+    function(resolve, reject) {
+      query <- function()
+        if (unresolved(x)) {
+          .[["later"]](query, delay = 0.1)
+        } else {
+          value <- .subset2(x, "value")
+          if (is_error_value(value) && !is_mirai_interrupt(value))
+            reject(value) else
+              resolve(value)
+        }
+      query()
+    }
   )
