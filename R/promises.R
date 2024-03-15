@@ -59,7 +59,7 @@ as.promise.mirai <- function(x)
         } else {
           value <- .subset2(x, "value")
           if (is_error_value(value) && !is_mirai_interrupt(value))
-            reject(value) else
+            reject(simpleError(value)) else
               resolve(value)
         }
       query()
