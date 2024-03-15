@@ -50,18 +50,19 @@
 #' @method as.promise mirai
 #' @export
 #'
-as.promise.mirai <- function(x)
+as.promise.mirai <- function(x) {
   promises::promise(
     function(resolve, reject) {
       query <- function()
         if (unresolved(x)) {
-          .[["later"]](query, delay = 0.1)
+          later::later(query, delay = 0.1)
         } else {
           value <- .subset2(x, "value")
-          if (is_error_value(value) && !is_mirai_interrupt(value))
+          if (mirai::is_error_value(value) && !mirai::is_mirai_interrupt(value))
             tryCatch(stop(value), error = reject) else
               resolve(value)
         }
       query()
     }
   )
+}

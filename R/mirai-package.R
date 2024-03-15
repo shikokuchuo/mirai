@@ -103,11 +103,11 @@ registerPromisesMethods <- function(pkgname, pkgpath) {
     hfun <- c(registerPromisesMethods, .userHooksEnv[["UserHook::promises::onLoad"]])
     `[[<-`(.userHooksEnv, "UserHook::promises::onLoad", hfun)
   } else {
+    as.promise.mirai <- `environment<-`(as.promise.mirai, ns)
     `[[<-`(ns[[".__S3MethodsTable__."]], "as.promise.mirai", as.promise.mirai)
     regs <- rbind(ns[[".__NAMESPACE__."]][["S3methods"]],
                   c("as.promise", "mirai", "as.promise.mirai", NA_character_))
     `[[<-`(ns[[".__NAMESPACE__."]], "S3methods", regs)
-    `[[<-`(., "later", .getNamespace("later")[["later"]])
   }
 
 }
