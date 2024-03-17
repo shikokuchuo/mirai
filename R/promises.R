@@ -58,7 +58,7 @@ as.promise.mirai <- function(x) {
           later::later(query, delay = 0.1)
         } else {
           value <- .subset2(x, "value")
-          if (mirai::is_error_value(value) && !mirai::is_mirai_interrupt(value))
+          if (is_error_value(value) && !is_mirai_interrupt(value))
             tryCatch(stop(value), error = reject) else
               resolve(value)
         }
