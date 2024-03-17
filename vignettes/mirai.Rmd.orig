@@ -376,7 +376,7 @@ As an alternative to the zero-configuration default, a certificate may also be g
 
 2. Provide the generated CSR to the CA for it to sign a new TLS certificate.
 
-- The common name (CN) of the certificate must be identical to the hostname or IP address actually used for the connection as it is verified, and will fail if not the same.
+- The common name (CN) of the certificate must be identical to the hostname or IP address actually used for the connection. As this is verified, it will fail if not the same.
 - The received certificate should comprise a block of cipher text between the markers `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----`. Make sure to request the certificate in the PEM format. If only available in other formats, the TLS library used should usually provide conversion utilities.
 - Check also that the private key is a block of cipher text between the markers `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----`.
 
@@ -441,7 +441,7 @@ is_error_value(m3$data)
 
 ### Serialization
 
-Native R serialization is used for sending data between host and daemons. Some R objects by their nature cannot be serialized, such as those accessed via an external pointer. In these cases, performing 'mirai' operations on them will error.
+Native R serialization is used for sending data between host and daemons. Some R objects by their nature cannot be serialized, such as those accessed via an external pointer. In these cases, performing 'mirai' operations on them would normally error.
 
 Using the [{arrow}](https://arrow.apache.org/docs/r/) package as an example:
 
@@ -450,9 +450,9 @@ library(arrow, warn.conflicts = FALSE)
 daemons(2)
 everywhere(library(arrow))
 
-x <- as_arrow_table(head(iris))
+x <- as_arrow_table(iris)
 
-m <- mirai(list(a = as_arrow_table(x), b = "some text"), x = x)
+m <- mirai(list(a = head(x), b = "some text"), x = x)
 call_mirai(m)$data
 ```
 However it is possible to register custom serialization and unserialization functions as 'refhooks' or hooks into R's native serialization mechanism for reference objects.
@@ -468,7 +468,7 @@ serialization(
   class = "ArrowTabular"
 )
 
-m <- mirai(list(a = as_arrow_table(x), b = "some text"), x = x)
+m <- mirai(list(a = head(x), b = "some text"), x = x)
 call_mirai(m)$data
 
 daemons(0)
