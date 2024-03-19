@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.1.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.1.9003</span>
       </span>
     </div>
 
@@ -169,13 +169,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]   1.20758031 -41.42852842   0.32189519   1.19199609  -0.58274317</span></span>
-<span><span class="co">#&gt;  [6]  -1.71602183   0.83892893   3.10660130  -0.02413796   0.82810227</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  -1.7516360  -2.2421768   1.8608206  -0.0805829  -0.6224308  -1.6066042</span></span>
+<span><span class="co">#&gt;  [7] -12.4095806   0.5373973  -0.4459952  -0.5708949</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]   1.20758031 -41.42852842   0.32189519   1.19199609  -0.58274317</span></span>
-<span><span class="co">#&gt;  [6]  -1.71602183   0.83892893   3.10660130  -0.02413796   0.82810227</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  -1.7516360  -2.2421768   1.8608206  -0.0805829  -0.6224308  -1.6066042</span></span>
+<span><span class="co">#&gt;  [7] -12.4095806   0.5373973  -0.4459952  -0.5708949</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
@@ -216,6 +216,7 @@
 <p><a href="https://github.com/HenrikBengtsson/" class="external-link">Henrik Bengtsson</a>, for valuable and incisive insights leading to the interface accepting broader usage patterns.</p>
 <p><a href="https://github.com/ltierney/" class="external-link">Luke Tierney</a>, R Core, for discussion on R’s implementation of L’Ecuyer-CMRG streams, used to ensure statistical independence in parallel processing.</p>
 <p><a href="https://github.com/dfalbel/" class="external-link">Daniel Falbel</a>, for discussion around an efficient solution to serialization and transmission of {torch} tensors.</p>
+<p><a href="https://github.com/jcheng5/" class="external-link">Joe Cheng</a>, for discussion around the Shiny integration, and authoring {promises}, for which this package provides a method.</p>
 </div>
 <div class="section level3">
 <h3 id="links">Links<a class="anchor" aria-label="anchor" href="#links"></a>
