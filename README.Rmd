@@ -165,6 +165,8 @@ We would like to thank in particular:
 
 [Daniel Falbel](https://github.com/dfalbel/), for discussion around an efficient solution to serialization and transmission of {torch} tensors.
 
+[Joe Cheng](https://github.com/jcheng5/), for discussion around the Shiny integration, and authoring {promises}, for which this package provides a method.
+
 ### Links
 
 ◈ mirai R package: <https://shikokuchuo.net/mirai/>

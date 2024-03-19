@@ -96,8 +96,8 @@ result.
 
 ``` r
 m$data
-#>  [1]   1.20758031 -41.42852842   0.32189519   1.19199609  -0.58274317
-#>  [6]  -1.71602183   0.83892893   3.10660130  -0.02413796   0.82810227
+#>  [1]  -1.7516360  -2.2421768   1.8608206  -0.0805829  -0.6224308  -1.6066042
+#>  [7] -12.4095806   0.5373973  -0.4459952  -0.5708949
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -105,8 +105,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]   1.20758031 -41.42852842   0.32189519   1.19199609  -0.58274317
-#>  [6]  -1.71602183   0.83892893   3.10660130  -0.02413796   0.82810227
+#>  [1]  -1.7516360  -2.2421768   1.8608206  -0.0805829  -0.6224308  -1.6066042
+#>  [7] -12.4095806   0.5373973  -0.4459952  -0.5708949
 ```
 
 ### Daemons
@@ -201,6 +201,10 @@ independence in parallel processing.
 
 [Daniel Falbel](https://github.com/dfalbel/), for discussion around an
 efficient solution to serialization and transmission of {torch} tensors.
+
+[Joe Cheng](https://github.com/jcheng5/), for discussion around the
+Shiny integration, and authoring {promises}, for which this package
+provides a method.
 
 ### Links
 

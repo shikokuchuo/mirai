@@ -1,4 +1,4 @@
-# mirai 0.13.1.9002 (development)
+# mirai 0.13.1.9003 (development)
 
 * Fixes to promises error handling and Shiny vignette (thanks @jcheng5 #98 #99).
 
