@@ -142,12 +142,12 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
 stop_cluster <- function(cl)
   daemons(0L, .compute = attr(cl, "id")) || return(invisible())
 
-#' @method stopCluster miraiCluster
+#' @exportS3Method parallel::stopCluster miraiCluster
 #' @export
 #'
 stopCluster.miraiCluster <- stop_cluster
 
-#' @method sendData miraiNode
+#' @exportS3Method parallel::sendData miraiNode
 #' @export
 #'
 sendData.miraiNode <- function(node, data) {
@@ -166,12 +166,12 @@ sendData.miraiNode <- function(node, data) {
 
 }
 
-#' @method recvData miraiNode
+#' @exportS3Method parallel::recvData miraiNode
 #' @export
 #'
 recvData.miraiNode <- function(node) call_aio(.subset2(node, "mirai"))
 
-#' @method recvOneData miraiCluster
+#' @exportS3Method parallel::recvOneData miraiCluster
 #' @export
 #'
 recvOneData.miraiCluster <- function(cl) {

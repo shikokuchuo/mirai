@@ -70,7 +70,7 @@
 #'
 #' }
 #'
-#' @method as.promise mirai
+#' @exportS3Method promises::as.promise
 #' @export
 #'
 as.promise.mirai <- function(x) {
