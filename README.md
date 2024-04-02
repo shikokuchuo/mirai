@@ -7,8 +7,8 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/mirai?color=112d4e)](https://CRAN.R-project.org/package=mirai)
-[![R-releases
-status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-releases.r-universe.dev%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=R-releases&color=112d4e)](https://r-releases.r-universe.dev/mirai)
+[![R-multiverse
+status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-multiverse.r-universe.dev%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=R-multiverse&color=112d4e)](https://r-multiverse.r-universe.dev/mirai)
 [![R-universe
 status](https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc)](https://shikokuchuo.r-universe.dev/mirai)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
@@ -18,13 +18,13 @@ status](https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc)](https://s
 
 ### みらい
 
-<br /> ( futuristic ・ whisper ) <br /><br /> Minimalist Async
-Evaluation Framework for R <br /><br /> Lightweight parallel code
-execution and distributed computing. <br /><br /> `mirai()` returns a
-‘mirai’ object immediately. Designed for simplicity, a ‘mirai’ evaluates
-an R expression asynchronously, on local or network resources, resolving
-automatically upon completion. <br /><br /> State of the art networking
-and concurrency via [nanonext](https://doi.org/10.5281/zenodo.7903429)
+<br /> ( 未来 ) <br /><br /> Minimalist Async Evaluation Framework for R
+<br /><br /> Lightweight parallel code execution and distributed
+computing. <br /><br /> `mirai()` returns a ‘mirai’ object immediately.
+Designed for simplicity, a ‘mirai’ evaluates an R expression
+asynchronously, on local or network resources, resolving automatically
+upon completion. <br /><br /> State of the art networking and
+concurrency via [nanonext](https://doi.org/10.5281/zenodo.7903429)
 offers reliable and efficient scheduling over fast inter-process
 communications or TCP/IP secured by TLS. <br /><br />
 
@@ -32,10 +32,10 @@ communications or TCP/IP secured by TLS. <br /><br />
 
 ### Installation
 
-Install the fast channel release (v0.13.1) from R-releases:
+Install the fast channel release (v0.13.1) from R-multiverse:
 
 ``` r
-install.packages("mirai", repos = "https://r-releases.r-universe.dev")
+install.packages("mirai", repos = "https://r-multiverse.r-universe.dev")
 ```
 
 Or the slow channel release (v0.12.1) from CRAN:
@@ -96,8 +96,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  -1.7516360  -2.2421768   1.8608206  -0.0805829  -0.6224308  -1.6066042
-#>  [7] -12.4095806   0.5373973  -0.4459952  -0.5708949
+#>  [1] -0.62975963 -2.18867552 70.67162017 16.60924044  0.04952249 20.19284684
+#>  [7]  0.06020745  0.01414995 -0.45689733 -1.58790744
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -105,8 +105,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  -1.7516360  -2.2421768   1.8608206  -0.0805829  -0.6224308  -1.6066042
-#>  [7] -12.4095806   0.5373973  -0.4459952  -0.5708949
+#>  [1] -0.62975963 -2.18867552 70.67162017 16.60924044  0.04952249 20.19284684
+#>  [7]  0.06020745  0.01414995 -0.45689733 -1.58790744
 ```
 
 ### Daemons
@@ -203,8 +203,8 @@ independence in parallel processing.
 efficient solution to serialization and transmission of {torch} tensors.
 
 [Joe Cheng](https://github.com/jcheng5/), for discussion around the
-Shiny integration, and authoring {promises}, for which this package
-provides a method.
+Shiny integration, and authoring {promises}, for which {mirai} provides
+a method.
 
 ### Links
 
