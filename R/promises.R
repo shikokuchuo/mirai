@@ -74,18 +74,48 @@
 #' @export
 #'
 as.promise.mirai <- function(x) {
-  promises::promise(
-    function(resolve, reject) {
-      query <- function()
-        if (unresolved(x)) {
-          later::later(query, delay = 0.1)
-        } else {
-          value <- .subset2(x, "value")
-          if (is_error_value(value) && !is_mirai_interrupt(value))
-            tryCatch(stop(value), error = reject) else
-              resolve(value)
-        }
-      query()
+  force(x)
+
+  # We are going through some effort here to ensure that any error we raise here
+  # has "deep stacks" preserved while run in a Shiny app. For this to happen, we
+  # either need to raise the error while the `as.promise.mirai` call is still on
+  # the call stack, or, we are within an `onFulfilled` or `onRejected` callback
+  # from a `promises::then` call (assuming that `then()` was called while
+  # `as.promise.mirai` was still on the call stack).
+  #
+  # The only way we would violate those rules is by raising the error from
+  # within a `later::later` callback. So this code is factored to isolate that
+  # `later::later` code
+
+  promises::then(
+    resolve_when(
+      test = function() { !unresolved(x) },
+      value = .subset2(x, "value"),
+      delay_secs = 0.1
+    ),
+    onFulfilled = function(value) {
+      if (is_error_value(value) && !is_mirai_interrupt(value)) {
+        # TODO: Turn the error into a message however you want. If you want to
+        # keep structured data like error codes you can use a custom error obj.
+        stop(simpleError(paste0("Mirai error: ", value)))
+      } else {
+        value
+      }
     }
   )
+}
+
+# Returns a promise that resolves to `value` when `test()` returns TRUE,
+# checking immediately and then every `delay_secs` secs.
+resolve_when <- function(test, value, delay_secs) {
+  promises::promise(function(resolve, reject) {
+    query <- function() {
+      if (isTRUE(test())) {
+        resolve(value)
+      } else {
+        later::later(query, delay = delay_secs)
+      }
+    }
+    query()
+  })
 }
