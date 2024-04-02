@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.1.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.1.9004</span>
       </span>
     </div>
 
@@ -120,7 +120,7 @@
 <div class="section level3">
 <h3 id="みらい">みらい<a class="anchor" aria-label="anchor" href="#%E3%81%BF%E3%82%89%E3%81%84"></a>
 </h3>
-<p><br> ( futuristic ・ whisper ) <br><br> Minimalist Async Evaluation Framework for R <br><br> Lightweight parallel code execution and distributed computing. <br><br><code><a href="reference/mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately. Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion. <br><br> State of the art networking and concurrency via <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link">nanonext</a> offers reliable and efficient scheduling over fast inter-process communications or TCP/IP secured by TLS. <br><br></p>
+<p><br> ( 未来 ) <br><br> Minimalist Async Evaluation Framework for R <br><br> Lightweight parallel code execution and distributed computing. <br><br><code><a href="reference/mirai.html">mirai()</a></code> returns a ‘mirai’ object immediately. Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion. <br><br> State of the art networking and concurrency via <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link">nanonext</a> offers reliable and efficient scheduling over fast inter-process communications or TCP/IP secured by TLS. <br><br></p>
 <blockquote>
 <p><em>mirai パッケージを試してみたところ、かなり速くて驚きました</em></p>
 </blockquote>
@@ -128,9 +128,9 @@
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
-<p>Install the fast channel release (v0.13.1) from R-releases:</p>
+<p>Install the fast channel release (v0.13.1) from R-multiverse:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span>, repos <span class="op">=</span> <span class="st">"https://r-releases.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span>, repos <span class="op">=</span> <span class="st">"https://r-multiverse.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
 <p>Or the slow channel release (v0.12.1) from CRAN:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span><span class="op">)</span></span></code></pre></div>
@@ -169,13 +169,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]  -1.7516360  -2.2421768   1.8608206  -0.0805829  -0.6224308  -1.6066042</span></span>
-<span><span class="co">#&gt;  [7] -12.4095806   0.5373973  -0.4459952  -0.5708949</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] -0.62975963 -2.18867552 70.67162017 16.60924044  0.04952249 20.19284684</span></span>
+<span><span class="co">#&gt;  [7]  0.06020745  0.01414995 -0.45689733 -1.58790744</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1]  -1.7516360  -2.2421768   1.8608206  -0.0805829  -0.6224308  -1.6066042</span></span>
-<span><span class="co">#&gt;  [7] -12.4095806   0.5373973  -0.4459952  -0.5708949</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] -0.62975963 -2.18867552 70.67162017 16.60924044  0.04952249 20.19284684</span></span>
+<span><span class="co">#&gt;  [7]  0.06020745  0.01414995 -0.45689733 -1.58790744</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
@@ -216,7 +216,7 @@
 <p><a href="https://github.com/HenrikBengtsson/" class="external-link">Henrik Bengtsson</a>, for valuable and incisive insights leading to the interface accepting broader usage patterns.</p>
 <p><a href="https://github.com/ltierney/" class="external-link">Luke Tierney</a>, R Core, for discussion on R’s implementation of L’Ecuyer-CMRG streams, used to ensure statistical independence in parallel processing.</p>
 <p><a href="https://github.com/dfalbel/" class="external-link">Daniel Falbel</a>, for discussion around an efficient solution to serialization and transmission of {torch} tensors.</p>
-<p><a href="https://github.com/jcheng5/" class="external-link">Joe Cheng</a>, for discussion around the Shiny integration, and authoring {promises}, for which this package provides a method.</p>
+<p><a href="https://github.com/jcheng5/" class="external-link">Joe Cheng</a>, for discussion around the Shiny integration, and authoring {promises}, for which {mirai} provides a method.</p>
 </div>
 <div class="section level3">
 <h3 id="links">Links<a class="anchor" aria-label="anchor" href="#links"></a>
@@ -275,7 +275,7 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://CRAN.R-project.org/package=mirai" class="external-link"><img src="https://www.r-pkg.org/badges/version/mirai?color=112d4e" alt="CRAN status"></a></li>
-<li><a href="https://r-releases.r-universe.dev/mirai" class="external-link"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-releases.r-universe.dev%2Fapi%2Fpackages%2Fmirai&amp;query=%24.Version&amp;label=R-releases&amp;color=112d4e" alt="R-releases status"></a></li>
+<li><a href="https://r-multiverse.r-universe.dev/mirai" class="external-link"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-multiverse.r-universe.dev%2Fapi%2Fpackages%2Fmirai&amp;query=%24.Version&amp;label=R-multiverse&amp;color=112d4e" alt="R-multiverse status"></a></li>
 <li><a href="https://shikokuchuo.r-universe.dev/mirai" class="external-link"><img src="https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc" alt="R-universe status"></a></li>
 <li><a href="https://github.com/shikokuchuo/mirai/actions" class="external-link"><img src="https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://app.codecov.io/gh/shikokuchuo/mirai" class="external-link"><img src="https://codecov.io/gh/shikokuchuo/mirai/graph/badge.svg" alt="codecov"></a></li>
