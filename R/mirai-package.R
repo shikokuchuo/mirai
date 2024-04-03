@@ -106,8 +106,3 @@
 .intmax <- .Machine[["integer.max"]]
 .limit_short <- 5000L
 .limit_long <- 10000L
-
-as.promise <- NULL
-recvData <- NULL
-recvOneData <- NULL
-sendData <- NULL
