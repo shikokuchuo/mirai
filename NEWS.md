@@ -1,6 +1,8 @@
 # mirai 0.13.1.9004 (development)
 
+* Simplified registration for {parallel} and {promises} methods (thanks @jcheng5 #103).
 * Fixes to promises error handling and Shiny vignette (thanks @jcheng5 #98 #99).
+* Requires R >= 3.6.
 
 # mirai 0.13.1
 
