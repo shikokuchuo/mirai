@@ -1,5 +1,6 @@
-# mirai 0.13.1.9004 (development)
+# mirai 0.13.1.9006 (development)
 
+* mirai promises now preserve deep stacks when a 'miraiError' occurs within a Shiny app (thanks @jcheng5 #104).
 * Simplified registration for {parallel} and {promises} methods (thanks @jcheng5 #103).
 * Fixes to promises error handling and Shiny vignette (thanks @jcheng5 #98 #99).
 * Requires R >= 3.6.
