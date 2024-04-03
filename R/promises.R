@@ -71,7 +71,6 @@
 #' }
 #'
 #' @exportS3Method promises::as.promise
-#' @export
 #'
 as.promise.mirai <- function(x) {
   promises::promise(
