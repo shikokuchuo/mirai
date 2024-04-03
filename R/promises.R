@@ -82,3 +82,7 @@ as.promise.mirai <- function(x) {
   )
 
 }
+
+#' @exportS3Method promises::is.promising
+#'
+is.promising.mirai <- function(x) TRUE
