@@ -16,28 +16,18 @@
 
 # mirai.promises ---------------------------------------------------------------
 
-# Aspects of this method, namely the re-throw and catch of the mirai error, is
-# taken from code with the following licence:
+# Joe Cheng (3 Apr 2024):
 #
-# Copyright (c) 2016-2023 Posit Software, PBC
+# We are going through some effort here to ensure that any error we raise here
+# has "deep stacks" preserved while run in a Shiny app. For this to happen, we
+# either need to raise the error while the `as.promise.mirai` call is still on
+# the call stack, or, we are within an `onFulfilled` or `onRejected` callback
+# from a `promises::then` call (assuming that `then()` was called while
+# `as.promise.mirai` was still on the call stack).
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+# The only way we would violate those rules is by raising the error from
+# within a `later::later` callback. So this code is factored to isolate that
+# `later::later` code
 
 #' Make Mirai Promise
 #'
@@ -71,51 +61,24 @@
 #' }
 #'
 #' @exportS3Method promises::as.promise
-#' @export
 #'
 as.promise.mirai <- function(x) {
+
   force(x)
-
-  # We are going through some effort here to ensure that any error we raise here
-  # has "deep stacks" preserved while run in a Shiny app. For this to happen, we
-  # either need to raise the error while the `as.promise.mirai` call is still on
-  # the call stack, or, we are within an `onFulfilled` or `onRejected` callback
-  # from a `promises::then` call (assuming that `then()` was called while
-  # `as.promise.mirai` was still on the call stack).
-  #
-  # The only way we would violate those rules is by raising the error from
-  # within a `later::later` callback. So this code is factored to isolate that
-  # `later::later` code
-
   promises::then(
-    resolve_when(
-      test = function() { !unresolved(x) },
-      value = .subset2(x, "value"),
-      delay_secs = 0.1
+    promise = promises::promise(
+      function(resolve, reject) {
+        query <- function()
+          if (unresolved(x))
+            later::later(query, delay = 0.1) else
+              resolve(.subset2(x, "value"))
+        query()
+      }
     ),
-    onFulfilled = function(value) {
-      if (is_error_value(value) && !is_mirai_interrupt(value)) {
-        # TODO: Turn the error into a message however you want. If you want to
-        # keep structured data like error codes you can use a custom error obj.
-        stop(simpleError(paste0("Mirai error: ", value)))
-      } else {
-        value
-      }
-    }
+    onFulfilled = function(value)
+      if (is_error_value(value) && !is_mirai_interrupt(value))
+        stop(value) else
+          value
   )
-}
 
-# Returns a promise that resolves to `value` when `test()` returns TRUE,
-# checking immediately and then every `delay_secs` secs.
-resolve_when <- function(test, value, delay_secs) {
-  promises::promise(function(resolve, reject) {
-    query <- function() {
-      if (isTRUE(test())) {
-        resolve(value)
-      } else {
-        later::later(query, delay = delay_secs)
-      }
-    }
-    query()
-  })
 }
