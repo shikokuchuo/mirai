@@ -27,13 +27,6 @@ The passed mirai (invisibly). The retrieved value is stored at
 This function will wait for the async operation to complete if still
     in progress (blocking).
 
-    If an error occurs in evaluation, the error message is returned as a
-    character string of class 'miraiError' and 'errorValue'.
-    \code{\link{is_mirai_error}} may be used to test for this.
-
-    \code{\link{is_error_value}} tests for all error conditions including
-    mirai errors, interrupts, and timeouts.
-
     The mirai updates itself in place, so to access the value of a mirai
     \code{x} directly, use \code{call_mirai(x)$data}.
 }
@@ -46,6 +39,18 @@ This function will wait for the async operation to complete if still
     Using \code{\link{unresolved}} on a mirai returns TRUE only if a mirai
     has yet to resolve and FALSE otherwise. This is suitable for use in
     control flow statements such as \code{while} or \code{if}.
+}
+
+\section{Errors}{
+
+
+    If an error occurs in evaluation, the error message is returned as a
+    character string of class 'miraiError' and 'errorValue' (the stack trace
+    is available at \code{$stack.trace} on the error object).
+    \code{\link{is_mirai_error}} may be used to test for this.
+
+    \code{\link{is_error_value}} tests for all error conditions including
+    'mirai' errors, interrupts, and timeouts.
 }
 
 \examples{

@@ -24,7 +24,8 @@ Validator functions for error value types created by \pkg{mirai}.
 \details{
 Is the object a 'miraiError'. When execution in a mirai process
     fails, the error message is returned as a character string of class
-    'miraiError' and 'errorValue'.
+    'miraiError' and 'errorValue'. The stack trace is available at
+    \code{$stack.trace} on the error object.
 
     Is the object a 'miraiInterrupt'. When an ongoing mirai is sent a user
     interrupt, the mirai will resolve to an empty character string classed as
@@ -43,6 +44,7 @@ call_mirai(m)
 is_mirai_error(m$data)
 is_mirai_interrupt(m$data)
 is_error_value(m$data)
+m$data$stack.trace
 
 m2 <- mirai(Sys.sleep(1L), .timeout = 100)
 call_mirai(m2)

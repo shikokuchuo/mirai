@@ -422,18 +422,28 @@ call_mirai(m2)$data
 is_mirai_error(m2$data)
 is_error_value(m2$data)
 ```
+
+A full stack trace of evaluation within the mirai is recorded and accessible at `$stack.trace` on the error object.
+```{r stackexample}
+f <- function(x) if (x > 0) stop("positive")
+m3 <- mirai({f(-1); f(1)}, f = f)
+call_mirai(m3)$data
+
+m3$data$stack.trace
+```
+
 If a daemon instance is sent a user interrupt, the mirai will resolve to an empty character string of class 'miraiInterrupt' and 'errorValue'. `is_mirai_interrupt()` may be used to test for such interrupts.
 ```{r interruptexample}
 is_mirai_interrupt(m2$data)
 ```
 If execution of a mirai surpasses the timeout set via the '.timeout' argument, the mirai will resolve to an 'errorValue'. This can, amongst other things, guard against mirai processes that have the potential to hang and never return.
 ```{r timeouts}
-m3 <- mirai(nanonext::msleep(1000), .timeout = 500)
-call_mirai(m3)$data
+m4 <- mirai(nanonext::msleep(1000), .timeout = 500)
+call_mirai(m4)$data
 
-is_mirai_error(m3$data)
-is_mirai_interrupt(m3$data)
-is_error_value(m3$data)
+is_mirai_error(m4$data)
+is_mirai_interrupt(m4$data)
+is_error_value(m4$data)
 ```
 `is_error_value()` tests for all mirai execution errors, user interrupts and timeouts.
 

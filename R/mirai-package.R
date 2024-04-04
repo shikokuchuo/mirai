@@ -48,6 +48,7 @@
 #'     socket stat stop_aio strcat tls_config unresolved until wait write_cert
 #' @importFrom parallel nextRNGStream stopCluster
 #' @importFrom stats rexp
+#' @importFrom utils .DollarNames
 #'
 "_PACKAGE"
 

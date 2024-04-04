@@ -1,6 +1,7 @@
-# mirai 0.13.1.9007 (development)
+# mirai 0.13.1.9008 (development)
 
 * Adds `is.promising()` method for 'mirai'.
+* A 'miraiError' now includes the full call stack and may be accessed at `$stack.trace`.
 * mirai promises now preserve deep stacks when a 'miraiError' occurs within a Shiny app (thanks @jcheng5 #104).
 * Simplified registration for {parallel} and {promises} methods (thanks @jcheng5 #103).
 * Fixes to promises error handling and Shiny vignette (thanks @jcheng5 #98 #99).

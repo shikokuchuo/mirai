@@ -141,16 +141,15 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
     ctx <- .context(sock)
     aio <- recv_aio_signal(ctx, cv = cv, mode = 1L, timeout = idletime)
     wait(cv) || break
-    ._mirai_. <- .subset2(aio, "data")
-    is.environment(._mirai_.) || {
+    m <- .subset2(aio, "data")
+    is.environment(m) || {
       count < timerstart && {
         start <- mclock()
         next
       }
       break
     }
-    data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
-                     error = mk_mirai_error, interrupt = mk_interrupt_error)
+    data <- eval_mirai(m)
     count <- count + 1L
 
     (count >= maxtasks || count > timerstart && mclock() - start >= walltime) && {
@@ -184,15 +183,44 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
 .daemon <- function(url) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = NA)
-  ._mirai_. <- recv(sock, mode = 1L, block = TRUE)
-  data <- tryCatch(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
-                   error = mk_mirai_error, interrupt = mk_interrupt_error)
+  data <- eval_mirai(recv(sock, mode = 1L, block = TRUE))
   send(sock, data = data, mode = 1L, block = TRUE)
   msleep(2000L)
 
 }
 
 # internals --------------------------------------------------------------------
+
+mirai_error_handler <- function(e) {
+  sc <- sys.calls()
+  idx <- which(
+    as.logical(
+      lapply(
+        sc,
+        identical,
+        quote(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL))
+      )
+    )
+  )
+  sc <- sc[(length(sc) - 1L):(idx + 1L)]
+  if (sc[[1L]][[1L]] == ".handleSimpleError")
+    sc <- sc[-1L]
+  e[["stack.trace"]] <- sc
+  invokeRestart("mirai_error", e)
+}
+
+mirai_interrupt_handler <- function(e) invokeRestart("mirai_interrupt", e)
+
+eval_mirai <- function(._mirai_.)
+  withRestarts(
+    withCallingHandlers(
+      eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
+      error = mirai_error_handler,
+      interrupt = mirai_interrupt_handler
+    ),
+    mirai_error = mk_mirai_error,
+    mirai_interrupt = mk_interrupt_error
+  )
 
 dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
   cv <- cv()

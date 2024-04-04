@@ -52,16 +52,21 @@ This function will return a 'mirai' object immediately.
     clean environment, which is not the global environment, consisting only
     of the named objects passed as '...' and/or the list supplied to '.args'.
 
+    Specify '.compute' to send the mirai using a specific compute profile (if
+    previously created by \code{\link{daemons}}), otherwise leave as 'default'.
+}
+\section{Errors}{
+
+
     If an error occurs in evaluation, the error message is returned as a
-    character string of class 'miraiError' and 'errorValue'.
+    character string of class 'miraiError' and 'errorValue' (the stack trace
+    is available at \code{$stack.trace} on the error object).
     \code{\link{is_mirai_error}} may be used to test for this.
 
     \code{\link{is_error_value}} tests for all error conditions including
     'mirai' errors, interrupts, and timeouts.
-
-    Specify '.compute' to send the mirai using a specific compute profile (if
-    previously created by \code{\link{daemons}}), otherwise leave as 'default'.
 }
+
 \examples{
 if (interactive()) {
 # Only run examples in interactive R sessions

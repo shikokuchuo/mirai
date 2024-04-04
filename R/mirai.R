@@ -56,15 +56,18 @@
 #'     clean environment, which is not the global environment, consisting only
 #'     of the named objects passed as '...' and/or the list supplied to '.args'.
 #'
+#'     Specify '.compute' to send the mirai using a specific compute profile (if
+#'     previously created by \code{\link{daemons}}), otherwise leave as 'default'.
+#'
+#' @section Errors:
+#'
 #'     If an error occurs in evaluation, the error message is returned as a
-#'     character string of class 'miraiError' and 'errorValue'.
+#'     character string of class 'miraiError' and 'errorValue' (the stack trace
+#'     is available at \code{$stack.trace} on the error object).
 #'     \code{\link{is_mirai_error}} may be used to test for this.
 #'
 #'     \code{\link{is_error_value}} tests for all error conditions including
 #'     'mirai' errors, interrupts, and timeouts.
-#'
-#'     Specify '.compute' to send the mirai using a specific compute profile (if
-#'     previously created by \code{\link{daemons}}), otherwise leave as 'default'.
 #'
 #' @examples
 #' if (interactive()) {
@@ -227,15 +230,10 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #' @details This function will wait for the async operation to complete if still
 #'     in progress (blocking).
 #'
-#'     If an error occurs in evaluation, the error message is returned as a
-#'     character string of class 'miraiError' and 'errorValue'.
-#'     \code{\link{is_mirai_error}} may be used to test for this.
-#'
-#'     \code{\link{is_error_value}} tests for all error conditions including
-#'     mirai errors, interrupts, and timeouts.
-#'
 #'     The mirai updates itself in place, so to access the value of a mirai
 #'     \code{x} directly, use \code{call_mirai(x)$data}.
+#'
+#' @inheritSection mirai Errors
 #'
 #' @section Alternatively:
 #'
@@ -374,7 +372,8 @@ is_mirai <- function(x) inherits(x, "mirai")
 #'
 #' @details Is the object a 'miraiError'. When execution in a mirai process
 #'     fails, the error message is returned as a character string of class
-#'     'miraiError' and 'errorValue'.
+#'     'miraiError' and 'errorValue'. The stack trace is available at
+#'     \code{$stack.trace} on the error object.
 #'
 #'     Is the object a 'miraiInterrupt'. When an ongoing mirai is sent a user
 #'     interrupt, the mirai will resolve to an empty character string classed as
@@ -393,6 +392,7 @@ is_mirai <- function(x) inherits(x, "mirai")
 #' is_mirai_error(m$data)
 #' is_mirai_interrupt(m$data)
 #' is_error_value(m$data)
+#' m$data$stack.trace
 #'
 #' m2 <- mirai(Sys.sleep(1L), .timeout = 100)
 #' call_mirai(m2)
@@ -436,6 +436,16 @@ print.miraiError <- function(x, ...) {
 
 #' @export
 #'
+`$.miraiError` <- function(x, name)
+  attr(x, name, exact = FALSE)
+
+#' @export
+#'
+.DollarNames.miraiError <- function(x, pattern = "")
+  grep(pattern, "stack.trace", value = TRUE, fixed = TRUE)
+
+#' @export
+#'
 print.miraiInterrupt <- function(x, ...) {
 
   cat("'miraiInterrupt' chr \"\"\n", file = stdout())
@@ -451,15 +461,18 @@ ephemeral_daemon <- function(url) {
   sock
 }
 
+deparse_safe <- function(x) if (length(x))
+  deparse(x, width.cutoff = 500L, backtick = TRUE, control = NULL, nlines = 1L)
+
 mk_interrupt_error <- function(e) .interrupt_error
 
 mk_mirai_error <- function(e) {
-  x <- .subset2(e, "call")
-  call <- if (length(x)) deparse(x, width.cutoff = 500L, backtick = TRUE, control = NULL, nlines = 1L)
+  call <- deparse_safe(.subset2(e, "call"))
   msg <- if (is.null(call) || call == "eval(expr = ._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = NULL)")
     strcat("Error: ", .subset2(e, "message")) else
       sprintf("Error in %s: %s", call, .subset2(e, "message"))
-  cat(strcat(msg, "\n"), file = stderr());
+  cat(strcat(msg, "\n"), file = stderr())
+  attr(msg, "stack.trace") <- .subset2(e, "stack.trace")
   `class<-`(msg, c("miraiError", "errorValue", "try-error"))
 }
 
