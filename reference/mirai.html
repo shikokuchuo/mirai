@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.1.9007</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.1.9008</span>
       </span>
     </div>
 
@@ -143,13 +143,20 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <p>The expression '.expr' will be evaluated in a separate R process in a
     clean environment, which is not the global environment, consisting only
     of the named objects passed as '...' and/or the list supplied to '.args'.</p>
+<p>Specify '.compute' to send the mirai using a specific compute profile (if
+    previously created by <code><a href="daemons.html">daemons</a></code>), otherwise leave as 'default'.</p>
+    </div>
+    <div id="errors">
+    <h2>Errors</h2>
+    
+
+
 <p>If an error occurs in evaluation, the error message is returned as a
-    character string of class 'miraiError' and 'errorValue'.
+    character string of class 'miraiError' and 'errorValue' (the stack trace
+    is available at <code>$stack.trace</code> on the error object).
     <code><a href="is_mirai_error.html">is_mirai_error</a></code> may be used to test for this.</p>
 <p><code><a href="is_mirai_error.html">is_error_value</a></code> tests for all error conditions including
     'mirai' errors, interrupts, and timeouts.</p>
-<p>Specify '.compute' to send the mirai using a specific compute profile (if
-    previously created by <code><a href="daemons.html">daemons</a></code>), otherwise leave as 'default'.</p>
     </div>
 
     <div id="ref-examples">
