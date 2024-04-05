@@ -220,7 +220,7 @@ register_cluster <- function(make.default = TRUE) {
 
   func <- .getNamespace("parallel")[["registerClusterType"]]
   is.null(func) && stop(._[["register_cluster"]])
-  func("MIRAI", mirai::make_cluster, make.default = make.default)
+  func("MIRAI", make_cluster, make.default = make.default)
 
 }
 
