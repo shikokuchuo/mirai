@@ -429,7 +429,7 @@ print.mirai <- function(x, ...) {
 #'
 print.miraiError <- function(x, ...) {
 
-  cat(sprintf("'miraiError' chr %s\n", x), file = stdout())
+  cat(strcat("'miraiError' chr", x), file = stdout())
   invisible(x)
 
 }
@@ -469,9 +469,9 @@ mk_interrupt_error <- function(e) .interrupt_error
 mk_mirai_error <- function(e) {
   call <- deparse_safe(.subset2(e, "call"))
   msg <- if (is.null(call) || call == "eval(expr = ._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = NULL)")
-    strcat("Error: ", .subset2(e, "message")) else
-      sprintf("Error in %s: %s", call, .subset2(e, "message"))
-  cat(strcat(msg, "\n"), file = stderr())
+    sprintf("Error: %s\n", .subset2(e, "message")) else
+      sprintf("Error in %s: %s\n", call, .subset2(e, "message"))
+  cat(msg, file = stderr())
   attr(msg, "stack.trace") <- .subset2(e, "stack.trace")
   `class<-`(msg, c("miraiError", "errorValue", "try-error"))
 }
