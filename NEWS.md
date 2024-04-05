@@ -1,7 +1,7 @@
-# mirai 0.13.1.9009 (development)
+# mirai 0.13.1.9010 (development)
 
-* Adds `registerClusterMirai()` for registering 'miraiCluster' as a parallel Cluster type (requires R-4.4 devel).
-* Adds `is.promising()` method for 'mirai'.
+* Adds `register_cluster()` for registering 'miraiCluster' as a parallel Cluster type (requires R-4.4 devel).
+* Adds `is.promising()` method for 'mirai' for the promises package.
 * A 'miraiError' now includes the full call stack and may be accessed at `$stack.trace`, and includes the trailing line break for conistency with the base function 'as.character.error()'.
 * mirai promises now preserve deep stacks when a 'miraiError' occurs within a Shiny app (thanks @jcheng5 #104).
 * Simplified registration for {parallel} and {promises} methods (thanks @jcheng5 #103).

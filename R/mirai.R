@@ -429,7 +429,7 @@ print.mirai <- function(x, ...) {
 #'
 print.miraiError <- function(x, ...) {
 
-  cat(strcat("'miraiError' chr", x), file = stdout())
+  cat(strcat("'miraiError' chr ", x), file = stdout())
   invisible(x)
 
 }

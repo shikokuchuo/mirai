@@ -200,8 +200,8 @@ print.miraiNode <- function(x, ...) {
 
 #' Register Cluster Mirai
 #'
-#' Registers 'miraiCluster' as cluster type 'MIRAI' and optionally makes it the
-#'     default cluster type.
+#' Register 'miraiCluster' with the \pkg{parallel} package as cluster type
+#'     'MIRAI' and optionally make it the default cluster type.
 #'
 #' @param make.default [default TRUE] logical value whether to also register
 #'     'miraiCluster' as the default cluster type.
@@ -210,13 +210,13 @@ print.miraiNode <- function(x, ...) {
 #'
 #' @examples
 #' tryCatch(
-#'   registerClusterMirai(),
+#'   register_cluster(),
 #'   error = as.character
 #' )
 #'
 #' @export
 #'
-registerClusterMirai <- function(make.default = TRUE) {
+register_cluster <- function(make.default = TRUE) {
 
   func <- .getNamespace("parallel")[["registerClusterType"]]
   is.null(func) && stop(._[["register_cluster"]])

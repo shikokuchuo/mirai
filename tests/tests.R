@@ -113,7 +113,7 @@ if (connection && .Platform[["OS.type"]] != "windows") {
   Sys.sleep(1L)
 }
 # parallel cluster tests
-nanotestn(tryCatch(registerClusterMirai(), error = function(e) invisible()))
+nanotestn(tryCatch(register_cluster(), error = function(e) invisible()))
 if (connection) {
   cluster <- make_cluster(1)
   nanotest(inherits(cluster, "miraiCluster"))
