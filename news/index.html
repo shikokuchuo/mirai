@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.1.9009</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.1.9010</span>
       </span>
     </div>
 
@@ -79,9 +79,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.13.1.9009" id="mirai-01319009-development">mirai 0.13.1.9009 (development)<a class="anchor" aria-label="anchor" href="#mirai-01319009-development"></a></h2>
-<ul><li>Adds <code><a href="../reference/registerClusterMirai.html">registerClusterMirai()</a></code> for registering ‘miraiCluster’ as a parallel Cluster type (requires R-4.4 devel).</li>
-<li>Adds <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">is.promising()</a></code> method for ‘mirai’.</li>
+<h2 class="page-header" data-toc-text="0.13.1.9010" id="mirai-01319010-development">mirai 0.13.1.9010 (development)<a class="anchor" aria-label="anchor" href="#mirai-01319010-development"></a></h2>
+<ul><li>Adds <code><a href="../reference/register_cluster.html">register_cluster()</a></code> for registering ‘miraiCluster’ as a parallel Cluster type (requires R-4.4 devel).</li>
+<li>Adds <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">is.promising()</a></code> method for ‘mirai’ for the promises package.</li>
 <li>A ‘miraiError’ now includes the full call stack and may be accessed at <code>$stack.trace</code>, and includes the trailing line break for conistency with the base function ‘as.character.error()’.</li>
 <li>mirai promises now preserve deep stacks when a ‘miraiError’ occurs within a Shiny app (thanks <a href="https://github.com/jcheng5" class="external-link">@jcheng5</a> <a href="https://github.com/shikokuchuo/mirai/issues/104" class="external-link">#104</a>).</li>
 <li>Simplified registration for {parallel} and {promises} methods (thanks <a href="https://github.com/jcheng5" class="external-link">@jcheng5</a> <a href="https://github.com/shikokuchuo/mirai/issues/103" class="external-link">#103</a>).</li>
