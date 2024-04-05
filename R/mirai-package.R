@@ -46,7 +46,7 @@
 #'     is_error_value listen lock mclock msleep next_config opt opt<- parse_url
 #'     pipe_notify random reap recv recv_aio_signal request request_signal send
 #'     socket stat stop_aio strcat tls_config unresolved until wait write_cert
-#' @importFrom parallel nextRNGStream stopCluster
+#' @importFrom parallel nextRNGStream
 #' @importFrom stats rexp
 #' @importFrom utils .DollarNames
 #'
@@ -94,6 +94,7 @@
     n_one = "'n' must be 1 or greater",
     n_zero = "the number of daemons must be zero or greater",
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
+    register_cluster = "this function requires R >= 4.4",
     requires_local = "SSH tunnelling requires 'url' hostname to be '127.0.0.1' or 'localhost'",
     refhook_invalid = "'refhook' must be a list of 2 functions or NULL",
     single_url = "only one 'url' should be specified",
