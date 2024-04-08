@@ -2,7 +2,7 @@
 % Please edit documentation in R/parallel.R
 \name{register_cluster}
 \alias{register_cluster}
-\title{Register mirai Cluster}
+\title{Register Mirai Cluster}
 \usage{
 register_cluster(default = TRUE)
 }

@@ -350,7 +350,54 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
 
   }
 
-  if (is.null(envir)) 0L else if (envir[["n"]]) envir[["n"]] else envir[["urls"]]
+  `class<-`(
+    if (is.null(envir)) 0L else if (envir[["n"]]) envir[["n"]] else envir[["urls"]],
+    c("mirai_daemons", .compute)
+  )
+
+}
+
+#' @export
+#'
+print.mirai_daemons <- function(x, ...) print(unclass(x))
+
+#' With Mirai Daemons
+#'
+#' Evaluate an expression with daemons that last for the duration of the
+#'     expression.
+#'
+#' @param data a call to \code{\link{daemons}}.
+#' @param expr an expression to evaluate.
+#' @param ... not used.
+#'
+#' @return The return value of 'expr'.
+#'
+#' @details This function is an S3 method for the generic \code{with} for
+#'     class 'mirai_daemons'.
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' with(
+#'   daemons(2),
+#'   {
+#'     m1 <- mirai(Sys.getpid())
+#'     m2 <- mirai(Sys.getpid())
+#'     cat(call_mirai(m1)$data, call_mirai(m2)$data)
+#'   }
+#' )
+#'
+#' status()
+#'
+#' }
+#'
+#' @export
+#'
+with.mirai_daemons <- function(data, expr, ...) {
+
+  on.exit(daemons(0L, .compute = class(data)[2L]))
+  expr
 
 }
 

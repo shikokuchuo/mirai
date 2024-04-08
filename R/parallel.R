@@ -198,7 +198,7 @@ print.miraiNode <- function(x, ...) {
 
 }
 
-#' Register mirai Cluster
+#' Register Mirai Cluster
 #'
 #' Registers 'miraiCluster' with the \pkg{parallel} package as cluster type
 #'     'MIRAI' and (optionally) makes it the default cluster type.

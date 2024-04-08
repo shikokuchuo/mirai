@@ -1,5 +1,6 @@
-# mirai 0.13.1.9010 (development)
+# mirai 0.13.1.9011 (development)
 
+* Adds `with()` method for mirai daemons, allowing for example: `with(daemons(4), {expr})`, where the daemons last for the duration of 'expr'.
 * Adds `register_cluster()` for registering 'miraiCluster' as a parallel Cluster type (requires R >= 4.4).
 * Adds `is.promising()` method for 'mirai' for the promises package.
 * A 'miraiError' now includes the full call stack, which may be accessed at `$stack.trace`, and includes the trailing line break for consistency with 'as.character.error()'.
