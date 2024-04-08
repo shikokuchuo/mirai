@@ -350,8 +350,8 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
 
   }
 
-  `class<-`(
-    if (is.null(envir)) 0L else if (envir[["n"]]) envir[["n"]] else envir[["urls"]],
+  if (is.null(envir)) 0L else `class<-`(
+    if (envir[["n"]]) envir[["n"]] else envir[["urls"]],
     c("mirai_daemons", .compute)
   )
 

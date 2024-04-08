@@ -29,8 +29,7 @@
 #'     stream has not yet been created.
 #'
 #' @details These functions are exported for use by packages extending
-#'     \CRANpkg{mirai} with alternative launchers of \code{\link{daemon}}
-#'     processes.
+#'     \pkg{mirai} with alternative launchers of \code{\link{daemon}} processes.
 #'
 #'     For \code{nextstream}: This function should be called for its return
 #'     value when required. The function also has the side effect of
