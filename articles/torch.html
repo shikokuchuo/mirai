@@ -122,8 +122,8 @@
 </h3>
 <p>Custom serialization functions may be registered to handle external
 pointer type reference objects.</p>
-<p>This allows tensors from the <a href="https://torch.mlverse.org/" class="external-link">{torch}</a> package to be used
-seamlessly in ‘mirai’ computations.</p>
+<p>This allows tensors from the <a href="https://torch.mlverse.org/" class="external-link"><code>torch</code></a> package to be
+used seamlessly in ‘mirai’ computations.</p>
 <div class="section level4">
 <h4 id="setup-steps">Setup Steps<a class="anchor" aria-label="anchor" href="#setup-steps"></a>
 </h4>
@@ -133,8 +133,8 @@ list supplied to <code><a href="../reference/serialization.html">serialization()
 ‘torch_tensor’ and ‘vec’ as TRUE.</p></li>
 <li><p>Set up dameons - this may be done before or after setting
 <code><a href="../reference/serialization.html">serialization()</a></code>.</p></li>
-<li><p>Use <code><a href="../reference/everywhere.html">everywhere()</a></code> to make the {torch} package
-available on all dameons (for convenience, optional).</p></li>
+<li><p>Use <code><a href="../reference/everywhere.html">everywhere()</a></code> to make the <code>torch</code>
+package available on all daemons for convenience (optional).</p></li>
 </ol>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
@@ -185,35 +185,35 @@ initialized within a ‘mirai’.</p>
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">conv1.weight</span></span>
 <span><span class="co">#&gt; torch_tensor</span></span>
 <span><span class="co">#&gt; (1,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.0492  0.1129 -0.1111 -0.0605  0.1996</span></span>
-<span><span class="co">#&gt;   0.0846  0.1979 -0.0265  0.1827  0.1901</span></span>
-<span><span class="co">#&gt;   0.1251  0.1806 -0.0515  0.0915 -0.1026</span></span>
-<span><span class="co">#&gt;  -0.0086  0.0672 -0.1810  0.0904  0.1703</span></span>
-<span><span class="co">#&gt;  -0.1154  0.1902  0.1497  0.0611  0.1400</span></span>
+<span><span class="co">#&gt;   0.0485  0.0862 -0.0170 -0.1460  0.1034</span></span>
+<span><span class="co">#&gt;  -0.1670  0.1863  0.1790  0.0023 -0.1541</span></span>
+<span><span class="co">#&gt;  -0.1941  0.0238  0.0600  0.1481 -0.1249</span></span>
+<span><span class="co">#&gt;  -0.0752 -0.1696 -0.0441 -0.0970  0.0901</span></span>
+<span><span class="co">#&gt;  -0.0396  0.1583  0.1164  0.1512 -0.0156</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (2,1,.,.) = </span></span>
-<span><span class="co">#&gt;  -0.1337 -0.0400 -0.0421  0.0370 -0.0297</span></span>
-<span><span class="co">#&gt;  -0.0039  0.1002  0.1824  0.1044 -0.0219</span></span>
-<span><span class="co">#&gt;   0.0299 -0.1519  0.1708 -0.1650  0.1021</span></span>
-<span><span class="co">#&gt;   0.0134 -0.0731 -0.0839 -0.0866  0.1676</span></span>
-<span><span class="co">#&gt;  -0.0357  0.1769 -0.0789  0.0097 -0.0577</span></span>
+<span><span class="co">#&gt;  -0.0278  0.0867  0.1932 -0.0412  0.1001</span></span>
+<span><span class="co">#&gt;   0.0833 -0.1583 -0.0044  0.0877  0.1092</span></span>
+<span><span class="co">#&gt;  -0.0127 -0.1783  0.1340  0.1519 -0.0265</span></span>
+<span><span class="co">#&gt;  -0.0541  0.0382 -0.1442 -0.1959  0.1993</span></span>
+<span><span class="co">#&gt;   0.0435 -0.0355  0.0139 -0.0798 -0.0797</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (3,1,.,.) = </span></span>
-<span><span class="co">#&gt;  -0.1701 -0.1136 -0.1405  0.1584 -0.1739</span></span>
-<span><span class="co">#&gt;   0.0150  0.1612  0.0499  0.0722 -0.1766</span></span>
-<span><span class="co">#&gt;  -0.0076 -0.1217 -0.1616 -0.1480 -0.0552</span></span>
-<span><span class="co">#&gt;   0.1302 -0.1848 -0.0864  0.1443 -0.0208</span></span>
-<span><span class="co">#&gt;   0.0365 -0.0199 -0.1789 -0.0812  0.0240</span></span>
+<span><span class="co">#&gt;   0.1054 -0.0079  0.0942  0.0612  0.1845</span></span>
+<span><span class="co">#&gt;  -0.1437  0.0614 -0.1196  0.0126 -0.0547</span></span>
+<span><span class="co">#&gt;   0.0944 -0.1379 -0.1131 -0.1058 -0.1857</span></span>
+<span><span class="co">#&gt;   0.0472  0.0724  0.0144  0.1282  0.1734</span></span>
+<span><span class="co">#&gt;  -0.1580 -0.1150 -0.0244 -0.1984  0.1677</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (4,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.0996  0.1153  0.0742 -0.0310  0.0622</span></span>
-<span><span class="co">#&gt;   0.0876  0.1135 -0.0436  0.0335  0.0345</span></span>
-<span><span class="co">#&gt;   0.0857  0.1574 -0.0823 -0.0312  0.1183</span></span>
-<span><span class="co">#&gt;   0.1687  0.1858  0.0114  0.1582 -0.0925</span></span>
-<span><span class="co">#&gt;  -0.0560 -0.0355  0.0774 -0.1541  0.0923</span></span>
+<span><span class="co">#&gt;   0.0737  0.0286  0.1114 -0.0252  0.1175</span></span>
+<span><span class="co">#&gt;  -0.1407 -0.0345 -0.1002  0.1377  0.0863</span></span>
+<span><span class="co">#&gt;   0.0757  0.1443  0.0347 -0.1822 -0.0175</span></span>
+<span><span class="co">#&gt;  -0.1672 -0.0619  0.0593 -0.0508  0.0033</span></span>
+<span><span class="co">#&gt;  -0.1127  0.1615  0.1790 -0.1054  0.0833</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (5,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.0960 -0.0694  0.0127  0.1960 -0.1517</span></span>
+<span><span class="co">#&gt;   0.0696  0.1465 -0.0954 -0.0754  0.1770</span></span>
 <span><span class="co">#&gt; ... [the output was truncated (use n=-1 to disable)]</span></span>
 <span><span class="co">#&gt; [ CPUFloatType{20,1,5,5} ][ requires_grad = TRUE ]</span></span></code></pre></div>
 <p>It is usual for model parameters to then be passed to an
@@ -244,10 +244,11 @@ optimiser.</p>
 <p>Above, tensors and complex objects containing tensors were passed
 seamlessly between host and daemon processes, in the same way as any
 other R object.</p>
-<p>The custom serialization in {mirai} leverages R’s own native
-‘refhook’ mechanism to allow such completely transparent usage.</p>
-<p>It is designed to be fast and efficient, minimising data copies and
-using the serialization methods from the ‘torch’ package directly.</p>
+<p>The custom serialization in <code>mirai</code> leverages R’s own
+native ‘refhook’ mechanism to allow such completely transparent usage.
+Designed to be fast and efficient, data copies are minimised and the
+‘official’ serialization methods from the <code>torch</code> package are
+used directly.</p>
 </div>
 </div>
   </div>

@@ -121,7 +121,8 @@
 <h3 id="promises-integration">Promises Integration<a class="anchor" aria-label="anchor" href="#promises-integration"></a>
 </h3>
 <p>{mirai} supplies its own <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code> method, allowing
-it to be used as a promise.</p>
+it to be used as a promise from the <a href="https://rstudio.github.io/promises/" class="external-link"><code>promises</code></a>
+package.</p>
 <p>A ‘mirai’ may be piped directly using the promise pipe
 <code>&amp;...&gt;%</code>, which implicitly calls
 <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code> on the ‘mirai’.</p>
@@ -155,6 +156,14 @@ an environment in the example below).</p>
 <span><span class="co"># after returning to the top level prompt:</span></span>
 <span><span class="va">env</span><span class="op">$</span><span class="va">res</span></span>
 <span><span class="co">#&gt; [1] "hello"</span></span></code></pre></div>
+<p>Used in combination with <code>promises</code> &gt;= 1.3.0,
+<code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">is.promising()</a></code> returns TRUE. This allows ‘mirai’ to be used
+seamlessly in places accepting promises, such as Shiny ExtendedTasks,
+without the need to explicitly convert using
+<code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code>.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">is.promising</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 </div>
   </div>
 
