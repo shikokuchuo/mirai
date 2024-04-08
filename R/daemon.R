@@ -191,32 +191,16 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
 
 # internals --------------------------------------------------------------------
 
-mirai_error_handler <- function(e) {
-  sc <- sys.calls()
-  idx <- which(
-    as.logical(
-      lapply(
-        sc,
-        identical,
-        quote(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL))
-      )
-    )
-  )
-  sc <- sc[(length(sc) - 1L):(idx + 1L)]
-  if (sc[[1L]][[1L]] == ".handleSimpleError")
-    sc <- sc[-1L]
-  e[["stack.trace"]] <- sc
-  invokeRestart("mirai_error", e)
-}
+handle_mirai_error <- function(e) invokeRestart("mirai_error", e, sys.calls())
 
-mirai_interrupt_handler <- function(e) invokeRestart("mirai_interrupt", e)
+handle_mirai_interrupt <- function(e) invokeRestart("mirai_interrupt")
 
 eval_mirai <- function(._mirai_.)
   withRestarts(
     withCallingHandlers(
       eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
-      error = mirai_error_handler,
-      interrupt = mirai_interrupt_handler
+      error = handle_mirai_error,
+      interrupt = handle_mirai_interrupt
     ),
     mirai_error = mk_mirai_error,
     mirai_interrupt = mk_interrupt_error

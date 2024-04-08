@@ -7,8 +7,6 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/mirai?color=112d4e)](https://CRAN.R-project.org/package=mirai)
-[![R-multiverse
-status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-multiverse.r-universe.dev%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=R-multiverse&color=112d4e)](https://r-multiverse.r-universe.dev/mirai)
 [![R-universe
 status](https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc)](https://shikokuchuo.r-universe.dev/mirai)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
@@ -32,19 +30,13 @@ communications or TCP/IP secured by TLS. <br /><br />
 
 ### Installation
 
-Install the fast channel release (v0.13.1) from R-multiverse:
-
-``` r
-install.packages("mirai", repos = "https://r-multiverse.r-universe.dev")
-```
-
-Or the slow channel release (v0.12.1) from CRAN:
+Install the latest release from CRAN:
 
 ``` r
 install.packages("mirai")
 ```
 
-Or the latest development build from the author’s R-universe:
+Or the development version from R-universe:
 
 ``` r
 install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
@@ -96,8 +88,8 @@ result.
 
 ``` r
 m$data
-#>  [1] -0.62975963 -2.18867552 70.67162017 16.60924044  0.04952249 20.19284684
-#>  [7]  0.06020745  0.01414995 -0.45689733 -1.58790744
+#>  [1]  1.8451625 -0.2165991 -1.2117962  0.4428216  1.3387124  0.7469864
+#>  [7]  2.2582459 -0.8252213 -4.6168235  0.5419577
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -105,8 +97,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] -0.62975963 -2.18867552 70.67162017 16.60924044  0.04952249 20.19284684
-#>  [7]  0.06020745  0.01414995 -0.45689733 -1.58790744
+#>  [1]  1.8451625 -0.2165991 -1.2117962  0.4428216  1.3387124  0.7469864
+#>  [7]  2.2582459 -0.8252213 -4.6168235  0.5419577
 ```
 
 ### Daemons
@@ -144,43 +136,43 @@ vignette("mirai", package = "mirai")
 The following core integrations are documented, with usage examples in
 the linked vignettes:
 
-[{parallel}](https://shikokuchuo.net/mirai/articles/parallel.html) -
+[`parallel`](https://shikokuchuo.net/mirai/articles/parallel.html) -
 provides an alternative communications backend for R, implementing a
 low-level feature request by R-Core at R Project Sprint 2023.
 
-[{promises}](https://shikokuchuo.net/mirai/articles/promises.html) -
+[`promises`](https://shikokuchuo.net/mirai/articles/promises.html) -
 ‘mirai’ may be used interchangeably with ‘promises’ by using the promise
 pipe `%...>%` or the `as.promise()` method.
 
-[{plumber}](https://shikokuchuo.net/mirai/articles/plumber.html) -
+[`plumber`](https://shikokuchuo.net/mirai/articles/plumber.html) -
 serves as an asynchronous / distributed backend, scaling applications
 via the use of promises.
 
-[{shiny}](https://shikokuchuo.net/mirai/articles/shiny.html) - serves as
+[`shiny`](https://shikokuchuo.net/mirai/articles/shiny.html) - serves as
 an asynchronous / distributed backend, plugging directly into the
-reactive framework without the need for promises.
+reactive framework or accepted anywhere that takes a ‘promise’.
 
-[{torch}](https://shikokuchuo.net/mirai/articles/torch.html) - the
+[`torch`](https://shikokuchuo.net/mirai/articles/torch.html) - the
 custom serialization interface allows tensors and complex objects such
 as models and optimizers to be used seamlessly across parallel
 processes.
 
 ### Powering Crew and Targets High Performance Computing
 
-[{targets}](https://docs.ropensci.org/targets/), a Make-like pipeline
-tool for statistics and data science, has integrated and adopted {crew}
+[`targets`](https://docs.ropensci.org/targets/), a Make-like pipeline
+tool for statistics and data science, has integrated and adopted `crew`
 as its default high-performance computing backend.
 
-[{crew}](https://wlandau.github.io/crew/) is a distributed
-worker-launcher extending {mirai} to different distributed computing
+[`crew`](https://wlandau.github.io/crew/) is a distributed
+worker-launcher extending `mirai` to different distributed computing
 platforms, from traditional clusters to cloud services.
 
-[{crew.cluster}](https://wlandau.github.io/crew.cluster/) enables
+[`crew.cluster`](https://wlandau.github.io/crew.cluster/) enables
 mirai-based workflows on traditional high-performance computing clusters
 using LFS, PBS/TORQUE, SGE and SLURM.
 
-[{crew.aws.batch}](https://wlandau.github.io/crew.aws.batch/) extends
-{mirai} to cloud computing using AWS Batch.
+[`crew.aws.batch`](https://wlandau.github.io/crew.aws.batch/) extends
+`mirai` to cloud computing using AWS Batch.
 
 ### Thanks
 
@@ -189,22 +181,22 @@ We would like to thank in particular:
 [Will Landau](https://github.com/wlandau/), for being instrumental in
 shaping development of the package, from initiating the original request
 for persistent daemons, through to orchestrating robustness testing for
-the high performance computing requirements of {crew} and {targets}.
+the high performance computing requirements of `crew` and `targets`.
 
-[Henrik Bengtsson](https://github.com/HenrikBengtsson/), for valuable
-and incisive insights leading to the interface accepting broader usage
-patterns.
+[Joe Cheng](https://github.com/jcheng5/), for optimising the `promises`
+method to make `mirai` work seamlessly within Shiny, and guidance for
+implementing error stack traces.
 
 [Luke Tierney](https://github.com/ltierney/), R Core, for discussion on
 R’s implementation of L’Ecuyer-CMRG streams, used to ensure statistical
-independence in parallel processing.
+independence in parallel processing, and collaboration in ‘providing an
+alternative communications backend for R’.
+
+[Henrik Bengtsson](https://github.com/HenrikBengtsson/), for valuable
+insights leading to the interface accepting broader usage patterns.
 
 [Daniel Falbel](https://github.com/dfalbel/), for discussion around an
-efficient solution to serialization and transmission of {torch} tensors.
-
-[Joe Cheng](https://github.com/jcheng5/), for discussion around the
-Shiny integration, and authoring {promises}, for which {mirai} provides
-a method.
+efficient solution to serialization and transmission of `torch` tensors.
 
 ### Links
 

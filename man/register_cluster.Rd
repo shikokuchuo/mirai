@@ -2,24 +2,24 @@
 % Please edit documentation in R/parallel.R
 \name{register_cluster}
 \alias{register_cluster}
-\title{Register Cluster Mirai}
+\title{Register mirai Cluster}
 \usage{
-register_cluster(make.default = TRUE)
+register_cluster(default = TRUE)
 }
 \arguments{
-\item{make.default}{[default TRUE] logical value whether to also register
+\item{default}{[default TRUE] logical value whether to also register
 'miraiCluster' as the default cluster type.}
 }
 \value{
 Invisible NULL
 }
 \description{
-Register 'miraiCluster' with the \pkg{parallel} package as cluster type
-    'MIRAI' and optionally make it the default cluster type.
+Registers 'miraiCluster' with the \pkg{parallel} package as cluster type
+    'MIRAI' and (optionally) makes it the default cluster type.
 }
 \examples{
 tryCatch(
-  register_cluster(),
+  mirai::register_cluster(),
   error = as.character
 )
 

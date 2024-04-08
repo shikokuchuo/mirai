@@ -464,18 +464,29 @@ ephemeral_daemon <- function(url) {
 deparse_safe <- function(x) if (length(x))
   deparse(x, width.cutoff = 500L, backtick = TRUE, control = NULL, nlines = 1L)
 
-mk_interrupt_error <- function(e) .interrupt_error
+mk_interrupt_error <- function()
+  `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))
 
-mk_mirai_error <- function(e) {
+mk_mirai_error <- function(e, sc) {
   call <- deparse_safe(.subset2(e, "call"))
   msg <- if (is.null(call) || call == "eval(expr = ._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = NULL)")
     sprintf("Error: %s\n", .subset2(e, "message")) else
       sprintf("Error in %s: %s\n", call, .subset2(e, "message"))
   cat(msg, file = stderr())
-  attr(msg, "stack.trace") <- .subset2(e, "stack.trace")
-  `class<-`(msg, c("miraiError", "errorValue", "try-error"))
+  idx <- which(
+    as.logical(
+      lapply(
+        sc,
+        identical,
+        quote(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL))
+      )
+    )
+  )
+  sc <- sc[(length(sc) - 1L):(idx + 1L)]
+  if (sc[[1L]][[1L]] == ".handleSimpleError")
+    sc <- sc[-1L]
+  `class<-`(`attr<-`(msg, "stack.trace", sc), c("miraiError", "errorValue", "try-error"))
 }
 
-.interrupt_error <- `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))
 .snapshot <- expression(mirai:::snapshot())
 .timedelay <- expression(nanonext::msleep(500L))

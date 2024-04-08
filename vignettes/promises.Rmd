@@ -9,7 +9,7 @@ vignette: >
 
 ### Promises Integration
 
-{mirai} supplies its own `as.promise()` method, allowing it to be used as a promise.
+{mirai} supplies its own `as.promise()` method, allowing it to be used as a promise from the [`promises`](https://rstudio.github.io/promises/) package.
 
 A 'mirai' may be piped directly using the promise pipe `&...>%`, which implicitly calls `as.promise()` on the 'mirai'.
 
@@ -42,4 +42,10 @@ call_mirai(m)$data
 # after returning to the top level prompt:
 env$res
 #> [1] "hello"
+```
+Used in combination with `promises` >= 1.3.0, `is.promising()` returns TRUE. This allows 'mirai' to be used seamlessly in places accepting promises, such as Shiny ExtendedTasks, without the need to explicitly convert using `as.promise()`.
+
+```r
+is.promising(m)
+#> [1] TRUE
 ```

@@ -94,7 +94,7 @@
     n_one = "'n' must be 1 or greater",
     n_zero = "the number of daemons must be zero or greater",
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
-    register_cluster = "this function requires R >= 4.4",
+    register_cluster = "this function requires R version 4.4 or newer",
     requires_local = "SSH tunnelling requires 'url' hostname to be '127.0.0.1' or 'localhost'",
     refhook_invalid = "'refhook' must be a list of 2 functions or NULL",
     single_url = "only one 'url' should be specified",

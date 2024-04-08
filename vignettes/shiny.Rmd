@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 #### Shiny Example Usage
 
-{mirai} may be used as an asynchronous / distributed backend to scale [{shiny}](https://shiny.posit.co/) applications and plugs directly into the reactive framework, without the need to use promises.
+`mirai` may be used as an asynchronous / distributed backend to scale [Shiny](https://shiny.posit.co/) applications and plugs directly into the reactive framework, without the need to use promises.
 
 Depending on the options suppled to `daemons()`, tasks may be distributed across local background processes or multiple networked servers in an efficient and performant manner.
 
@@ -108,9 +108,7 @@ runApp(app)
 
 #### Example Using Promises
 
-Alternatively, a 'mirai' may be used as a promise as it supplies its own `as.promise()` method.
-
-A 'mirai' may be piped directly using the promise pipe `&...>%`, which implicitly calls `as.promise()` on the 'mirai', or converted into a promise by `as.promise()`, which then allows using the methods `$then()`, `$finally()` etc.
+Alternatively, a 'mirai' may be used seamlessly in any place that accepts 'promises'.
 
 The below example simulates a plot function requiring a long compute in a ‘shiny’ application.
 

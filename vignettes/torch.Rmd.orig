@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 Custom serialization functions may be registered to handle external pointer type reference objects.
 
-This allows tensors from the [{torch}](https://torch.mlverse.org/) package to be used seamlessly in 'mirai' computations.
+This allows tensors from the [`torch`](https://torch.mlverse.org/) package to be used seamlessly in 'mirai' computations.
 
 #### Setup Steps
 
@@ -25,7 +25,7 @@ This allows tensors from the [{torch}](https://torch.mlverse.org/) package to be
 
 2. Set up dameons - this may be done before or after setting `serialization()`.
 
-3. Use `everywhere()` to make the {torch} package available on all dameons (for convenience, optional).
+3. Use `everywhere()` to make the `torch` package available on all daemons for convenience (optional).
 
 ```{r tensors}
 library(mirai)
@@ -44,6 +44,7 @@ The below example creates a convolutional neural network using `torch::nn_module
 A set of model parameters is also specified.
 
 The model specification and parameters are then passed to and initialized within a 'mirai'.
+
 ```{r tensors2}
 model <- nn_module(
   initialize = function(in_size, out_size) {
@@ -81,6 +82,4 @@ daemons(0)
 ```
 Above, tensors and complex objects containing tensors were passed seamlessly between host and daemon processes, in the same way as any other R object.
 
-The custom serialization in {mirai} leverages R's own native 'refhook' mechanism to allow such completely transparent usage.
-
-It is designed to be fast and efficient, minimising data copies and using the serialization methods from the 'torch' package directly.
+The custom serialization in `mirai` leverages R's own native 'refhook' mechanism to allow such completely transparent usage. Designed to be fast and efficient, data copies are minimised and the 'official' serialization methods from the `torch` package are used directly.
