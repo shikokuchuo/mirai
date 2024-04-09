@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.1.9011</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.1.9012</span>
       </span>
     </div>
 
@@ -103,14 +103,15 @@ by <a href="https://rdrr.io/r/base/name.html" class="external-link">name</a>.</p
 
 <dt>...</dt>
 <dd><p>(optional) named arguments (name = value pairs) specifying
-objects referenced in '.expr'. Used in addition to, and taking precedence
-over, any arguments specified via '.args'.</p></dd>
+objects referenced in '.expr'. These are placed in the global environment
+of the evaluation process, unlike those supplied to '.args' below.</p></dd>
 
 
 <dt>.args</dt>
 <dd><p>(optional) <strong>either</strong> a list of objects passed by
 <a href="https://rdrr.io/r/base/name.html" class="external-link">name</a> (found in the current scope), <strong>or else</strong> a list of
-name = value pairs, as in '...'.</p></dd>
+name = value pairs, as in '...'. These remain local to the evaluation
+environment.</p></dd>
 
 
 <dt>.timeout</dt>
@@ -138,11 +139,13 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <p><code><a href="unresolved.html">unresolved</a></code> may be used on a mirai, returning TRUE if a
     'mirai' has yet to resolve and FALSE otherwise. This is suitable for use
     in control flow statements such as <code>while</code> or <code>if</code>.</p>
-<p>Alternatively, to call (and wait for) the result, use <code><a href="call_mirai.html">call_mirai</a></code>
-    on the returned mirai. This will block until the result is returned.</p>
+<p>Alternatively, to call (and wait for) the result, use
+    <code><a href="call_mirai.html">call_mirai</a></code> on the returned mirai. This will block until the
+    result is returned.</p>
 <p>The expression '.expr' will be evaluated in a separate R process in a
-    clean environment, which is not the global environment, consisting only
-    of the named objects passed as '...' and/or the list supplied to '.args'.</p>
+    clean environment (not the global environment), consisting only of the
+    objects in the list supplied to '.args', with the named objects passed as
+    '...' assigned to the global environment of that process.</p>
 <p>Specify '.compute' to send the mirai using a specific compute profile (if
     previously created by <code><a href="daemons.html">daemons</a></code>), otherwise leave as 'default'.</p>
     </div>
@@ -200,19 +203,11 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <span class="r-in"><span><span class="fu"><a href="call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">[[</span><span class="st">"data"</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">file</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># specifying global variables using list2env(envir = .GlobalEnv) in '.expr'</span></span></span>
+<span class="r-in"><span><span class="co"># evaluating scripts using source() in '.expr'</span></span></span>
 <span class="r-in"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">10L</span></span></span>
 <span class="r-in"><span><span class="va">file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"r &lt;- rnorm(n)"</span>, file <span class="op">=</span> <span class="va">file</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">globals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">file</span>, n <span class="op">=</span> <span class="va">n</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">mirai</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="op">{</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/list2env.html" class="external-link">list2env</a></span><span class="op">(</span><span class="va">globals</span>, envir <span class="op">=</span> <span class="va">.GlobalEnv</span><span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="va">file</span><span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="va">r</span></span></span>
-<span class="r-in"><span>  <span class="op">}</span>,</span></span>
-<span class="r-in"><span>  globals <span class="op">=</span> <span class="va">globals</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">mirai</span><span class="op">(</span><span class="op">{</span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="va">file</span><span class="op">)</span>; <span class="va">r</span><span class="op">}</span>, file <span class="op">=</span> <span class="va">file</span>, n <span class="op">=</span> <span class="va">n</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">[[</span><span class="st">"data"</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">file</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
