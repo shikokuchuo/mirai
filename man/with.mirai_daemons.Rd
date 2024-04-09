@@ -33,7 +33,7 @@ with(
   {
     m1 <- mirai(Sys.getpid())
     m2 <- mirai(Sys.getpid())
-    cat(call_mirai(m1)$data, call_mirai(m2)$data)
+    cat(call_mirai(m1)$data, call_mirai(m2)$data, "\n")
   }
 )
 

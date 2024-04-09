@@ -242,6 +242,16 @@
 #' # Reset to zero
 #' daemons(0)
 #'
+#' # Use with() to evaluate with daemons for the duration of the expression
+#' with(
+#'   daemons(2),
+#'   {
+#'     m1 <- mirai(Sys.getpid())
+#'     m2 <- mirai(Sys.getpid())
+#'     cat(call_mirai(m1)$data, call_mirai(m2)$data, "\n")
+#'   }
+#' )
+#'
 #' }
 #'
 #' \dontrun{
@@ -384,7 +394,7 @@ print.mirai_daemons <- function(x, ...) print(unclass(x))
 #'   {
 #'     m1 <- mirai(Sys.getpid())
 #'     m2 <- mirai(Sys.getpid())
-#'     cat(call_mirai(m1)$data, call_mirai(m2)$data)
+#'     cat(call_mirai(m1)$data, call_mirai(m2)$data, "\n")
 #'   }
 #' )
 #'
