@@ -27,11 +27,12 @@
 #'     wrapped in \{ \} where necessary), \strong{or} a language object passed
 #'     by \link{name}.
 #' @param ... (optional) named arguments (name = value pairs) specifying
-#'     objects referenced in '.expr'. Used in addition to, and taking precedence
-#'     over, any arguments specified via '.args'.
+#'     objects referenced in '.expr'. These are placed in the global environment
+#'     of the evaluation process, unlike those supplied to '.args' below.
 #' @param .args (optional) \strong{either} a list of objects passed by
 #'     \link{name} (found in the current scope), \strong{or else} a list of
-#'     name = value pairs, as in '...'.
+#'     name = value pairs, as in '...'. These remain local to the evaluation
+#'     environment.
 #' @param .timeout [default NULL] for no timeout, or an integer value in
 #'     milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
@@ -49,12 +50,14 @@
 #'     'mirai' has yet to resolve and FALSE otherwise. This is suitable for use
 #'     in control flow statements such as \code{while} or \code{if}.
 #'
-#'     Alternatively, to call (and wait for) the result, use \code{\link{call_mirai}}
-#'     on the returned mirai. This will block until the result is returned.
+#'     Alternatively, to call (and wait for) the result, use
+#'     \code{\link{call_mirai}} on the returned mirai. This will block until the
+#'     result is returned.
 #'
 #'     The expression '.expr' will be evaluated in a separate R process in a
-#'     clean environment, which is not the global environment, consisting only
-#'     of the named objects passed as '...' and/or the list supplied to '.args'.
+#'     clean environment (not the global environment), consisting only of the
+#'     objects in the list supplied to '.args', with the named objects passed as
+#'     '...' assigned to the global environment of that process.
 #'
 #'     Specify '.compute' to send the mirai using a specific compute profile (if
 #'     previously created by \code{\link{daemons}}), otherwise leave as 'default'.
@@ -109,19 +112,11 @@
 #' call_mirai(m)[["data"]]
 #' unlink(file)
 #'
-#' # specifying global variables using list2env(envir = .GlobalEnv) in '.expr'
+#' # evaluating scripts using source() in '.expr'
 #' n <- 10L
 #' file <- tempfile()
 #' cat("r <- rnorm(n)", file = file)
-#' globals <- list(file = file, n = n)
-#' m <- mirai(
-#'   {
-#'     list2env(globals, envir = .GlobalEnv)
-#'     source(file)
-#'     r
-#'   },
-#'   globals = globals
-#' )
+#' m <- mirai({source(file); r}, file = file, n = n)
 #' call_mirai(m)[["data"]]
 #' unlink(file)
 #'
@@ -140,7 +135,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   missing(.expr) && stop(._[["missing_expression"]])
 
   expr <- substitute(.expr)
-  arglist <- list(..., .expr = if (is.symbol(expr) && is.language(.expr)) .expr else expr)
+  globals <- list(...)
+  all(nzchar(names(globals))) || stop(._[["named_args"]])
+  arglist <- list(._mirai_globals_. = globals, .expr = if (is.symbol(expr) && is.language(.expr)) .expr else expr)
   if (length(.args))
     arglist <- c(if (is.null(names(.args))) `names<-`(.args, as.character(substitute(.args)[-1L])) else .args, arglist)
   data <- list2env(arglist, envir = NULL, parent = .GlobalEnv)

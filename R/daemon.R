@@ -195,7 +195,8 @@ handle_mirai_error <- function(e) invokeRestart("mirai_error", e, sys.calls())
 
 handle_mirai_interrupt <- function(e) invokeRestart("mirai_interrupt")
 
-eval_mirai <- function(._mirai_.)
+eval_mirai <- function(._mirai_.) {
+  list2env(._mirai_.[["._mirai_globals_."]], envir = .GlobalEnv)
   withRestarts(
     withCallingHandlers(
       eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
@@ -205,6 +206,7 @@ eval_mirai <- function(._mirai_.)
     mirai_error = mk_mirai_error,
     mirai_interrupt = mk_interrupt_error
   )
+}
 
 dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
   cv <- cv()
