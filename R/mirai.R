@@ -482,6 +482,7 @@ mk_mirai_error <- function(e, sc) {
   sc <- sc[(length(sc) - 1L):(idx + 1L)]
   if (sc[[1L]][[1L]] == ".handleSimpleError")
     sc <- sc[-1L]
+  sc <- lapply(sc, deparse_safe)
   `class<-`(`attr<-`(msg, "stack.trace", sc), c("miraiError", "errorValue", "try-error"))
 }
 
