@@ -461,6 +461,12 @@ ephemeral_daemon <- function(url) {
 deparse_safe <- function(x) if (length(x))
   deparse(x, width.cutoff = 500L, backtick = TRUE, control = NULL, nlines = 1L)
 
+deparse_calls <- function(call) {
+  srcref <- attr(call, "srcref")
+  if (is.null(srcref)) deparse_safe(call) else
+    as.character(srcref)
+}
+
 mk_interrupt_error <- function()
   `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))
 
@@ -482,7 +488,7 @@ mk_mirai_error <- function(e, sc) {
   sc <- sc[(length(sc) - 1L):(idx + 1L)]
   if (sc[[1L]][[1L]] == ".handleSimpleError")
     sc <- sc[-1L]
-  sc <- lapply(sc, deparse_safe)
+  sc <- lapply(sc, deparse_calls)
   `class<-`(`attr<-`(msg, "stack.trace", sc), c("miraiError", "errorValue", "try-error"))
 }
 
