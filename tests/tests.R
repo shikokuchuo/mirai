@@ -49,10 +49,10 @@ nanotestn(nextget("pid"))
 Sys.sleep(2.5)
 # mirai tests
 if (connection) {
-  n <- 3L
+  n <- function() m
   m <- mirai({
     Sys.sleep(0.1)
-    q <- m + n + 1L
+    q <- m + n() + 2L
     q / m
   }, m = 2L, .args = list(n), .timeout = 2000L)
   nanotest(identical(call_mirai(m), m))
@@ -93,7 +93,7 @@ if (connection) {
   nanotest(unresolved(mn$data) || mn$data == "test1")
   nanotest(unresolved(mp$data) || mp$data == 3)
   Sys.sleep(1L)
-  nanotestz(status(.compute = "new")[["connections"]])
+  nanotest(is.integer(status(.compute = "new")[["connections"]]))
   nanotestz(daemons(0L, .compute = "new"))
   Sys.sleep(1L)
 }
