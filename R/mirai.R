@@ -172,10 +172,10 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' # Only run examples in interactive R sessions
 #'
 #' daemons(1)
-#' # export common data by super-assignment:
+#' # export common data by a super-assignment expression:
 #' everywhere(y <<- 3)
-#' # assign explicitly to global environment:
-#' everywhere(list2env(x, envir = .GlobalEnv), x = list(a = 1, b = 2))
+#' # '...' variables are assigned to the global environment:
+#' everywhere({}, a = 1, b = 2)
 #' m <- mirai(a + b - y == 0L)
 #' call_mirai(m)$data
 #' daemons(0)

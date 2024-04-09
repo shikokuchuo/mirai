@@ -1,6 +1,6 @@
 # mirai 0.13.1.9012 (development)
 
-* `mirai()` behaviour changed such that '...' args are now assigned to the global environment of the daemon process.
+* `mirai()` and `everywhere()` behaviour changed such that '...' args are now assigned to the global environment of the daemon process.
 * Adds `with()` method for mirai daemons, allowing for example: `with(daemons(4), {expr})`, where the daemons last for the duration of 'expr'.
 * Adds `register_cluster()` for registering 'miraiCluster' as a parallel Cluster type (requires R >= 4.4).
 * Adds `is.promising()` method for 'mirai' for the promises package.
