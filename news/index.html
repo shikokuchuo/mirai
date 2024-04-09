@@ -81,7 +81,7 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.13.1.9012" id="mirai-01319012-development">mirai 0.13.1.9012 (development)<a class="anchor" aria-label="anchor" href="#mirai-01319012-development"></a></h2>
 <ul><li>
-<code><a href="../reference/mirai.html">mirai()</a></code> behaviour changed such that ‘…’ args are now assigned to the global environment of the daemon process.</li>
+<code><a href="../reference/mirai.html">mirai()</a></code> and <code><a href="../reference/everywhere.html">everywhere()</a></code> behaviour changed such that ‘…’ args are now assigned to the global environment of the daemon process.</li>
 <li>Adds <code><a href="https://rdrr.io/r/base/with.html" class="external-link">with()</a></code> method for mirai daemons, allowing for example: <code>with(daemons(4), {expr})</code>, where the daemons last for the duration of ‘expr’.</li>
 <li>Adds <code><a href="../reference/register_cluster.html">register_cluster()</a></code> for registering ‘miraiCluster’ as a parallel Cluster type (requires R &gt;= 4.4).</li>
 <li>Adds <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">is.promising()</a></code> method for ‘mirai’ for the promises package.</li>
