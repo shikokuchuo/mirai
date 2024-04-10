@@ -362,14 +362,14 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
 
   if (is.null(envir)) 0L else `class<-`(
     if (envir[["n"]]) envir[["n"]] else envir[["urls"]],
-    c("mirai_daemons", .compute)
+    c("miraiDaemons", .compute)
   )
 
 }
 
 #' @export
 #'
-print.mirai_daemons <- function(x, ...) print(unclass(x))
+print.miraiDaemons <- function(x, ...) print(unclass(x))
 
 #' With Mirai Daemons
 #'
@@ -383,7 +383,7 @@ print.mirai_daemons <- function(x, ...) print(unclass(x))
 #' @return The return value of 'expr'.
 #'
 #' @details This function is an S3 method for the generic \code{with} for
-#'     class 'mirai_daemons'.
+#'     class 'miraiDaemons'.
 #'
 #' @examples
 #' if (interactive()) {
@@ -404,7 +404,7 @@ print.mirai_daemons <- function(x, ...) print(unclass(x))
 #'
 #' @export
 #'
-with.mirai_daemons <- function(data, expr, ...) {
+with.miraiDaemons <- function(data, expr, ...) {
 
   on.exit(daemons(0L, .compute = class(data)[2L]))
   expr
