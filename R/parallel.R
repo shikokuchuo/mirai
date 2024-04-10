@@ -122,10 +122,7 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
 
   `[[<-`(`[[<-`(..[[id]], "cv2", cv2), "swapped", FALSE)
 
-  cl <- vector(mode = "list", length = n)
-  for (i in seq_along(cl))
-    cl[[i]] <- `attributes<-`(new.env(hash = FALSE, parent = emptyenv()), list(class = "miraiNode", node = i, id = id))
-
+  cl <- lapply(seq_len(n), create_node, id = id)
   `attributes<-`(cl, list(class = c("miraiCluster", "cluster"), id = id))
 
 }
@@ -225,6 +222,12 @@ register_cluster <- function(default = TRUE) {
 }
 
 # internals --------------------------------------------------------------------
+
+create_node <- function(node, id)
+  `attributes<-`(
+    new.env(hash = FALSE, parent = emptyenv()),
+    list(class = "miraiNode", node = node, id = id)
+  )
 
 cv_swap <- function(envir, state) {
   cv <- envir[["cv"]]

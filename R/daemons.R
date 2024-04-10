@@ -345,7 +345,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         init_monitor(sockc = sockc, envir = envir)
       } else {
         sock <- req_socket(urld, resend = resilience * .intmax)
-        if (is.null(seed)) {
+        if (is.null(seed) && resilience) {
           for (i in seq_len(n))
             launch_daemon(wa3(urld, dots, next_stream(envir)), output)
         } else {
