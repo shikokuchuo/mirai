@@ -453,7 +453,7 @@ is_error_value(m4$data)
 
 Native R serialization is used for sending data between host and daemons. Some R objects by their nature cannot be serialized, such as those accessed via an external pointer. In these cases, performing 'mirai' operations on them would normally error.
 
-Using the [{arrow}](https://arrow.apache.org/docs/r/) package as an example:
+Using the [`arrow`](https://arrow.apache.org/docs/r/) package as an example:
 
 ```{r arrowfail}
 library(arrow, warn.conflicts = FALSE)
@@ -490,7 +490,7 @@ To change registered serialization functions, just call `serialization()` again 
 ```{r serialcancel}
 serialization(NULL)
 ```
-The 'vec' argument to `serialization()` may be specified as `TRUE` if the serialization functions are vectorized and take lists of objects, as is the case for [{safetensors}](https://mlverse.github.io/safetensors/), used for serialization in [{torch}](https://torch.mlverse.org/).
+The 'vec' argument to `serialization()` may be specified as `TRUE` if the serialization functions are vectorized and take lists of objects, as is the case for [`safetensors`](https://mlverse.github.io/safetensors/), used for serialization in [`torch`](https://torch.mlverse.org/).
 
 Please refer to the [torch vignette](https://shikokuchuo.net/mirai/articles/torch.html) for further examples.
 

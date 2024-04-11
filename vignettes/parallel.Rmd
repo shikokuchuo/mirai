@@ -51,7 +51,7 @@ status(cl)
 #> [1] 4
 #> 
 #> $daemons
-#> [1] "abstract://b3c70b500b2fda89d2c207c4"
+#> [1] "abstract://bfdadd07dfad88c3149c2c97"
 
 stop_cluster(cl)
 ```
@@ -62,10 +62,62 @@ cl <- make_cluster(n = 2, url = host_url())
 #> Shell commands for deployment on nodes:
 #> 
 #> [1]
-#> Rscript -e "mirai::daemon('tcp://hostname:44941',rs=c(10407,1389412062,-1447551545,1606021980,211782829,-1030393974,-673295485))"
+#> Rscript -e "mirai::daemon('tcp://hostname:40081',rs=c(10407,-712929287,487124838,-1548361041,936929572,516359637,-964658030))"
 #> 
 #> [2]
-#> Rscript -e "mirai::daemon('tcp://hostname:44941',rs=c(10407,-2046413381,-1694761865,-850453560,356039814,445330416,-423507248))"
+#> Rscript -e "mirai::daemon('tcp://hostname:40081',rs=c(10407,716174157,753336392,1540784125,1343950952,-477221459,1025440810))"
 
 stop_cluster(cl)
+```
+
+Starting with R 4.4, the `parallel` package has implemented a new function `registerClusterType()` for registering alternative communications backends.
+
+The function `mirai::register_cluster()` is a wrapper around this function to register 'miraiCluster' as a cluster type and also set it as the default. This only needs only to be inserted once at the top of a script and all subsequent calls to `parallel::makeCluster()` will default to 'miraiCluster'.
+
+
+```r
+library(parallel)
+
+mirai::register_cluster()
+
+cl <- makeCluster(2)
+cl
+#> < miraiCluster | ID: `2` nodes: 2 active: TRUE >
+
+stopCluster(cl)
+```
+
+### Foreach Integration
+
+A 'miraiCluster' may also be registered by [`doParallel`](https://cran.r-project.org/package=doParallel) for use with the [`foreach`](https://cran.r-project.org/package=foreach) package.
+
+Running some parallel examples for the `foreach()` function:
+
+
+```r
+library(foreach)
+library(iterators)
+
+cl <- make_cluster(4)
+doParallel::registerDoParallel(cl)
+
+# normalize the rows of a matrix
+m <- matrix(rnorm(9), 3, 3)
+foreach(i = 1:nrow(m), .combine = rbind) %dopar%
+  (m[i, ] / mean(m[i, ]))
+#>               [,1]        [,2]      [,3]
+#> result.1  4.127729   3.3741203 -4.501849
+#> result.2 -2.495306   0.9463084  4.548998
+#> result.3 17.117011 -11.4476759 -2.669335
+
+# simple parallel matrix multiply
+a <- matrix(1:16, 4, 4)
+b <- t(a)
+foreach(b = iter(b, by='col'), .combine = cbind) %dopar%
+  (a %*% b)
+#>      [,1] [,2] [,3] [,4]
+#> [1,]  276  304  332  360
+#> [2,]  304  336  368  400
+#> [3,]  332  368  404  440
+#> [4,]  360  400  440  480
 ```

@@ -1,4 +1,4 @@
-# mirai 0.13.1.9014 (development)
+# mirai 0.13.2
 
 * `mirai()` and `everywhere()` behaviour changed such that '...' args are now assigned to the global environment of the daemon process.
 * Adds `with()` method for mirai daemons, allowing for example: `with(daemons(4), {expr})`, where the daemons last for the duration of 'expr'.

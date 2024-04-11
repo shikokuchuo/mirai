@@ -207,9 +207,10 @@ print.miraiNode <- function(x, ...) {
 #'
 #' @examples
 #' tryCatch(
-#'   mirai::register_cluster(),
-#'   error = as.character
-#' )
+#'
+#' mirai::register_cluster()
+#'
+#' , error = identity)
 #'
 #' @export
 #'

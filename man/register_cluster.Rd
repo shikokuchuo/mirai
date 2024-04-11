@@ -19,8 +19,9 @@ Registers 'miraiCluster' with the \pkg{parallel} package as cluster type
 }
 \examples{
 tryCatch(
-  mirai::register_cluster(),
-  error = as.character
-)
+
+mirai::register_cluster()
+
+, error = identity)
 
 }

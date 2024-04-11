@@ -35,7 +35,7 @@ library(bslib)
 library(mirai)
 
 ui <- page_fluid(
-  p("The time is ", textOutput("current_time", inline=TRUE)),
+  p("The time is ", textOutput("current_time", inline = TRUE)),
   hr(),
   numericInput("n", "Sample size (n)", 100),
   numericInput("delay", "Seconds to take for plot", 5),
