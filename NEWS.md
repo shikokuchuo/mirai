@@ -1,3 +1,5 @@
+# mirai 0.13.2.9000 (development)
+
 # mirai 0.13.2
 
 * `mirai()` and `everywhere()` behaviour changed such that '...' args are now assigned to the global environment of the daemon process.

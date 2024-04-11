@@ -66,7 +66,8 @@ if (connection) {
 }
 # daemons tests
 if (connection) {
-  nanotesto(daemons(1L, dispatcher = FALSE))
+  nanotesto(d <- daemons(1L, dispatcher = FALSE))
+  nanotestp(d)
   me <- mirai(mirai::mirai(), .timeout = 2000L)
   nanotest(is_mirai_error(call_mirai(me)$data) || is_error_value(me$data))
   nanotest(!is_mirai_interrupt(me$data))
@@ -118,7 +119,7 @@ if (connection && .Platform[["OS.type"]] != "windows") {
   Sys.sleep(1L)
 }
 # parallel cluster tests
-nanotestn(tryCatch(register_cluster(), error = function(e) invisible()))
+nanotestn(tryCatch(register_cluster(), error = function(e) NULL))
 if (connection) {
   cluster <- make_cluster(1)
   nanotest(inherits(cluster, "miraiCluster"))
@@ -185,8 +186,7 @@ if (connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") 
   nanotesto(daemons(url = "ws://:0", token = TRUE))
   nanotestz(daemons(0L))
   Sys.sleep(1L)
-  nanotesto(daemons(url = "tcp://:0", token = TRUE))
-  nanotestz(daemons(0L))
+  nanotestz(with(daemons(url = "tcp://:0", token = TRUE), {8L - 9L + 1L}))
   Sys.sleep(1L)
   nanotest(daemons(n = 2, "ws://:0") == 2L)
   nanotest(is.integer(nextget("pid")))
