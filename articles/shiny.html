@@ -177,7 +177,9 @@ computation is complete.</p>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="co"># run extended tasks using 2 daemons</span></span>
+<span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">shinyApp</span><span class="op">(</span>ui <span class="op">=</span> <span class="va">ui</span>, server <span class="op">=</span> <span class="va">server</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># mirai setup with 2 local daemons</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, <span class="fu">shinyApp</span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><em>Thanks to Joe Cheng for providing examples on which the above is
 based.</em></p>
@@ -202,7 +204,7 @@ updates 5 at a time, limited by the number of available daemons.</p>
 <span><span class="co"># function definitions</span></span>
 <span></span>
 <span><span class="va">run_task</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">5L</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    colors <span class="op">=</span> <span class="fu">aRtsy</span><span class="fu">::</span><span class="fu">colorPalette</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"random"</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span>
 <span>    angle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1</span>, min <span class="op">=</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">pi</span>, max <span class="op">=</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">pi</span><span class="op">)</span>,</span>
@@ -264,8 +266,8 @@ updates 5 at a time, limited by the number of available daemons.</p>
 <span></span>
 <span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">shinyApp</span><span class="op">(</span>ui <span class="op">=</span> <span class="va">ui</span>, server <span class="op">=</span> <span class="va">server</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># mirai setup - 5 local daemons with dispatcher</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">5L</span><span class="op">)</span>, <span class="fu">runApp</span><span class="op">(</span><span class="va">app</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># mirai setup with 5 local daemons</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>, <span class="fu">runApp</span><span class="op">(</span><span class="va">app</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><em>Thanks to Daniel Woodie and William Landau for providing the
 original example on which this is based. Please see <a href="https://wlandau.github.io/crew/articles/shiny.html" class="external-link uri">https://wlandau.github.io/crew/articles/shiny.html</a> which
 also has examples of the fantastic artwork produced.</em></p>
