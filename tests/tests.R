@@ -81,6 +81,7 @@ if (connection) {
   nanotest(is_error_value(dm$data) || is.matrix(dm$data))
   nanotest(is.integer(status()[["connections"]]))
   nanotest(is.character(status()[["daemons"]]))
+  nanotesti(status()$daemons, nextget("urls"))
   nanotestz(daemons(0L))
   Sys.sleep(1L)
   nanotesto(daemons(1L, dispatcher = FALSE, idletime = 500L, timerstart = 1L, cleanup = FALSE, output = TRUE, seed = 1546, .compute = "new"))
@@ -97,8 +98,8 @@ if (connection) {
   nanotest(is.integer(status(.compute = "new")[["connections"]]))
   nanotestz(daemons(0L, .compute = "new"))
   Sys.sleep(1L)
-  nanotest(daemons(url = value <- local_url(), dispatcher = FALSE) == value)
-  nanotest(grepl("://", launch_remote(status()$daemons), fixed = TRUE))
+  nanotesto(daemons(url = local_url(), dispatcher = TRUE))
+  nanotest(grepl("://", launch_remote(1L), fixed = TRUE))
   nanotestn(launch_local(nextget("urls")))
   if (requireNamespace("promises", quietly = TRUE)) {
     nanotest(promises::is.promise(p1 <- promises::as.promise(mirai("completed"))))
