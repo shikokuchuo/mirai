@@ -101,16 +101,6 @@ if (connection) {
   nanotesti(status()$daemons, nextget("urls"))
   nanotestz(daemons(0L))
   Sys.sleep(1L)
-  nanotesto(daemons(url = local_url(), dispatcher = TRUE))
-  nanotest(grepl("://", launch_remote(1L), fixed = TRUE))
-  nanotestn(launch_local(nextget("urls")))
-  if (requireNamespace("promises", quietly = TRUE)) {
-    nanotest(promises::is.promise(p1 <- promises::as.promise(mirai("completed"))))
-    nanotest(promises::is.promise(p2 <- promises::`%...>%`(mirai("completed"), identity())))
-  }
-  Sys.sleep(1L)
-  nanotestz(daemons(NULL))
-  Sys.sleep(1L)
 }
 # additional daemons tests
 if (connection && .Platform[["OS.type"]] != "windows") {
@@ -183,6 +173,18 @@ if (connection) {
   Sys.sleep(1L)
 }
 # advanced daemons and dispatcher tests
+if (connection && Sys.getenv("NOT_CRAN") == "true") {
+  nanotesto(daemons(url = local_url(), dispatcher = TRUE))
+  nanotest(grepl("://", launch_remote(1L), fixed = TRUE))
+  nanotestn(launch_local(nextget("urls")))
+  if (requireNamespace("promises", quietly = TRUE)) {
+    nanotest(promises::is.promise(p1 <- promises::as.promise(mirai("completed"))))
+    nanotest(promises::is.promise(p2 <- promises::`%...>%`(mirai("completed"), identity())))
+  }
+  Sys.sleep(1L)
+  nanotestz(daemons(NULL))
+  Sys.sleep(1L)
+}
 if (connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "true") {
   nanotesto(daemons(url = "ws://:0", token = TRUE))
   nanotestz(daemons(0L))

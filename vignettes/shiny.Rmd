@@ -29,6 +29,8 @@ The example below requires Shiny >= 1.8.1 and promises >= 1.3.0.
 
 Importantly, the app remains responsive, as shown by the clock continuing to tick whilst the simulated expensive computation is running. Also the button is disabled and the plot greyed out until the computation is complete.
 
+By wrapping the `runApp()` call in `with(daemons(...), ...)` this conveniently configures the daemons for the duration of the app, and they automatically exit when the app is stopped.
+
 ```{r shinyextended, eval=FALSE}
 library(shiny)
 library(bslib)
@@ -65,8 +67,8 @@ server <- function(input, output, session) {
 
 app <- shinyApp(ui = ui, server = server)
 
-# mirai setup with 2 local daemons
-with(daemons(2), shinyApp(ui, server))
+# run app using 2 local daemons
+with(daemons(2), runApp(app))
 ```
 *Thanks to Joe Cheng for providing examples on which the above is based.*
 
@@ -147,7 +149,7 @@ server <- function(input, output, session) {
 
 app <- shinyApp(ui = ui, server = server)
 
-# mirai setup with 5 local daemons
+# run app using 5 local daemons
 with(daemons(5), runApp(app))
 ```
 *Thanks to Daniel Woodie and William Landau for providing the original example on which this is based. Please see <https://wlandau.github.io/crew/articles/shiny.html> which also has examples of the fantastic artwork produced.*
