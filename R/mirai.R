@@ -279,18 +279,22 @@ call_mirai <- call_aio
 #'
 call_mirai_ <- call_aio_
 
-#' mirai (Stop Evaluation)
+#' mirai (Stop)
 #'
-#' Stop evaluation of a mirai that is in progress.
+#' Stops a mirai if still in progress.
 #'
 #' @param aio a 'mirai' object.
 #'
 #' @return Invisible NULL.
 #'
-#' @details Stops the asynchronous operation associated with the mirai by
-#'     aborting, and then waits for it to complete or to be completely aborted.
-#'     The mirai is then deallocated and attempting to access the value at
-#'     \code{$data} will result in an error.
+#' @details Forces the mirai to resolve immediately. If the asynchronous
+#'     evaluation was not yet complete, attempting to access its value at
+#'     \code{$data} will return a 'miraiInterrupt' (see
+#'     \code{\link{is_mirai_interrupt}}).
+#'
+#'     Note that in this case, it is only guaranteed that the mirai value is not
+#'     returned - any ongoing evaluation in the daemon process will continue and
+#'     is not interrupted.
 #'
 #' @examples
 #' if (interactive()) {
@@ -303,7 +307,10 @@ call_mirai_ <- call_aio_
 #'
 #' @export
 #'
-stop_mirai <- stop_aio
+stop_mirai <- function(aio) if (unresolved(aio)) {
+  assign("value", mk_interrupt_error(), envir = aio)
+  stop_aio(aio)
+}
 
 #' Query if a mirai is Unresolved
 #'
@@ -373,8 +380,9 @@ is_mirai <- function(x) inherits(x, "mirai")
 #'     \code{$stack.trace} on the error object.
 #'
 #'     Is the object a 'miraiInterrupt'. When an ongoing mirai is sent a user
-#'     interrupt, the mirai will resolve to an empty character string classed as
-#'     'miraiInterrupt' and 'errorValue'.
+#'     interrupt or \code{\link{stop_mirai}} is called on it, the mirai will
+#'     resolve to an empty character string classed as 'miraiInterrupt' and
+#'     'errorValue'.
 #'
 #'     Is the object an 'errorValue', such as a mirai timeout, a 'miraiError' or
 #'     a 'miraiInterrupt'. This is a catch-all condition that includes all

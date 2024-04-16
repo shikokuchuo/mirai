@@ -1,4 +1,6 @@
-# mirai 0.13.2.9000 (development)
+# mirai 0.13.2.9001 (development)
+
+* `stop_mirai()` now returns a 'miraiInterrupt' in the case the asynchronous task was still ongoing (thanks @jcheng #110).
 
 # mirai 0.13.2
 

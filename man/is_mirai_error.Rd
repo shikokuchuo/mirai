@@ -28,8 +28,9 @@ Is the object a 'miraiError'. When execution in a mirai process
     \code{$stack.trace} on the error object.
 
     Is the object a 'miraiInterrupt'. When an ongoing mirai is sent a user
-    interrupt, the mirai will resolve to an empty character string classed as
-    'miraiInterrupt' and 'errorValue'.
+    interrupt or \code{\link{stop_mirai}} is called on it, the mirai will
+    resolve to an empty character string classed as 'miraiInterrupt' and
+    'errorValue'.
 
     Is the object an 'errorValue', such as a mirai timeout, a 'miraiError' or
     a 'miraiInterrupt'. This is a catch-all condition that includes all

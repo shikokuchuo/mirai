@@ -2,7 +2,7 @@
 % Please edit documentation in R/mirai.R
 \name{stop_mirai}
 \alias{stop_mirai}
-\title{mirai (Stop Evaluation)}
+\title{mirai (Stop)}
 \usage{
 stop_mirai(aio)
 }
@@ -13,13 +13,17 @@ stop_mirai(aio)
 Invisible NULL.
 }
 \description{
-Stop evaluation of a mirai that is in progress.
+Stops a mirai if still in progress.
 }
 \details{
-Stops the asynchronous operation associated with the mirai by
-    aborting, and then waits for it to complete or to be completely aborted.
-    The mirai is then deallocated and attempting to access the value at
-    \code{$data} will result in an error.
+Forces the mirai to resolve immediately. If the asynchronous
+    evaluation was not yet complete, attempting to access its value at
+    \code{$data} will return a 'miraiInterrupt' (see
+    \code{\link{is_mirai_interrupt}}).
+
+    Note that in this case, it is only guaranteed that the mirai value is not
+    returned - any ongoing evaluation in the daemon process will continue and
+    is not interrupted.
 }
 \examples{
 if (interactive()) {
