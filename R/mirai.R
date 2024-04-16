@@ -287,14 +287,14 @@ call_mirai_ <- call_aio_
 #'
 #' @return Invisible NULL.
 #'
-#' @details Forces the mirai to resolve immediately. If the asynchronous
-#'     evaluation was not yet complete, attempting to access its value at
-#'     \code{$data} will return a 'miraiInterrupt' (see
-#'     \code{\link{is_mirai_interrupt}}).
+#' @details Forces the mirai to resolve immediately.
 #'
-#'     Note that in this case, it is only guaranteed that the mirai value is not
-#'     returned - any ongoing evaluation in the daemon process will continue and
-#'     is not interrupted.
+#'     If the asynchronous evaluation is yet to complete, the value at
+#'     \code{$data} will resolve to a 'miraiInterrupt' (see
+#'     \code{\link{is_mirai_interrupt}}). Note that in such a case, it is only
+#'     guaranteed that the mirai is aborted and the value not retrieved - any
+#'     ongoing evaluation in the daemon process will continue and is not
+#'     interrupted.
 #'
 #' @examples
 #' if (interactive()) {
@@ -302,15 +302,17 @@ call_mirai_ <- call_aio_
 #'
 #' s <- mirai(Sys.sleep(n), n = 5)
 #' stop_mirai(s)
+#' s$data
 #'
 #' }
 #'
 #' @export
 #'
-stop_mirai <- function(aio) if (unresolved(aio)) {
-  assign("value", mk_interrupt_error(), envir = aio)
-  stop_aio(aio)
-}
+stop_mirai <- function(aio)
+  if (unresolved(aio)) {
+    assign("value", mk_interrupt_error(), envir = aio)
+    stop_aio(aio)
+  }
 
 #' Query if a mirai is Unresolved
 #'
