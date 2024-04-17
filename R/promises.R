@@ -68,14 +68,15 @@ as.promise.mirai <- function(x) {
 
   if (is.null(promise)) {
 
-    promise <- promises::promise(
-      function(resolve, reject)
-        attr(x, "callback") <- function() {
-          value <- .subset2(x, "data")
-          if (is_error_value(value) && !is_mirai_interrupt(value))
-            reject(value) else
-              resolve(value)
-        }
+    promise <- promises::then(
+      promises::promise(
+        function(resolve, reject)
+          attr(x, "callback") <- function() resolve(.subset2(x, "data"))
+      ),
+      onFulfilled = function(value)
+        if (is_error_value(value) && !is_mirai_interrupt(value))
+          stop(value) else
+            value
     )
 
     if (!unresolved(x)) {
