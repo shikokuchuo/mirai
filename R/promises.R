@@ -70,20 +70,20 @@ as.promise.mirai <- function(x) {
 
     promise <- promises::promise(
       function(resolve, reject)
-        assign("callback",
-               function(...)
-                 if (is_error_value(value <- .subset2(x, "data")) && !is_mirai_interrupt(value))
-                   reject(value) else
-                     resolve(value),
-               x)
+        attr(x, "callback") <- function() {
+          value <- .subset2(x, "data")
+          if (is_error_value(value) && !is_mirai_interrupt(value))
+            reject(value) else
+              resolve(value)
+        }
     )
 
-    value <- .subset2(x, "data")
-
-    if (!unresolved(value))
-        promise <- if (is_error_value(value) && !is_mirai_interrupt(value))
-          promises::promise_reject(value) else
-            promises::promise_resolve(value)
+    if (!unresolved(x)) {
+      value <- .subset2(x, "value")
+      promise <- if (is_error_value(value) && !is_mirai_interrupt(value))
+        promises::promise_reject(value) else
+          promises::promise_resolve(value)
+    }
 
     assign("promise", promise, x)
 
