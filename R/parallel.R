@@ -180,7 +180,8 @@ recvOneData.miraiCluster <- function(cl) {
 #'
 print.miraiCluster <- function(x, ...) {
 
-  id <- attr(.subset2(x, 1L), "id")
+  id <- attr(x, "id")
+  is.null(id) && stop(._[["cluster_subsetting"]])
   cat(sprintf("< miraiCluster | ID: %s nodes: %d active: %s >\n", id, length(x), as.logical(length(..[[id]]))), file = stdout())
   invisible(x)
 

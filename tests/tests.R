@@ -122,7 +122,7 @@ if (connection) {
   nanotest(length(cluster) == 1L)
   nanotest(inherits(cluster[[1]], "miraiNode"))
   nanotestp(cluster[[1]])
-  nanotestp(cluster[1])
+  nanotesterr(print(cluster[1]), "cluster of type 'mirai' is not subsettable")
   nanotest(is.character(launch_remote(cluster)))
   nanotest(is.character(launch_remote(cluster[[1L]])))
   nanotest(is.list(status(cluster)))

@@ -2,6 +2,7 @@
 
 * Re-implements the promises method with completely event-driven (non-polling) promises (possible thanks to improvements in `nanonext` implemented with the help of @jcheng5)
 * `stop_mirai()` now returns a 'miraiInterrupt' in the case the asynchronous task was still ongoing (thanks @jcheng5 #110).
+* Requires `nanonext` >= [0.13.6.9002].
 
 # mirai 0.13.2
 

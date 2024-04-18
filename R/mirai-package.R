@@ -87,6 +87,7 @@
   list(
     arglen = "'args' and/or 'url' must be of length 1 or the same length",
     cluster_inactive = "cluster is no longer active",
+    cluster_subsetting = "cluster of type 'mirai' is not subsettable",
     correct_context = "must be called in the correct context e.g. as a function argument",
     daemons_unset = "a numeric value for 'url' requires daemons to be set",
     dot_required = "'.' must be an element of the character vector(s) supplied to 'args'",
