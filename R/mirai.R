@@ -310,7 +310,7 @@ call_mirai_ <- call_aio_
 #'
 stop_mirai <- function(aio)
   if (unresolved(aio)) {
-    assign("value", mk_interrupt_error(), envir = aio)
+    assign("value", .miraiInterrupt, envir = aio)
     stop_aio(aio)
   }
 
@@ -477,8 +477,7 @@ deparse_call <- function(call) {
     as.character(srcref)
 }
 
-mk_interrupt_error <- function()
-  `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))
+mk_interrupt_error <- function() .miraiInterrupt
 
 mk_mirai_error <- function(e, sc) {
   call <- deparse_safe(.subset2(e, "call"))
@@ -486,15 +485,7 @@ mk_mirai_error <- function(e, sc) {
     sprintf("Error: %s\n", .subset2(e, "message")) else
       sprintf("Error in %s: %s\n", call, .subset2(e, "message"))
   cat(msg, file = stderr())
-  idx <- which(
-    as.logical(
-      lapply(
-        sc,
-        identical,
-        quote(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL))
-      )
-    )
-  )
+  idx <- which(as.logical(lapply(sc, identical, quote(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL)))))
   sc <- sc[(length(sc) - 1L):(idx + 1L)]
   if (sc[[1L]][[1L]] == ".handleSimpleError")
     sc <- sc[-1L]
@@ -502,5 +493,6 @@ mk_mirai_error <- function(e, sc) {
   `class<-`(`attr<-`(msg, "stack.trace", sc), c("miraiError", "errorValue", "try-error"))
 }
 
+.miraiInterrupt <- `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))
 .snapshot <- expression(mirai:::snapshot())
 .timedelay <- expression(nanonext::msleep(500L))
