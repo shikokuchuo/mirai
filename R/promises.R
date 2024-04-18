@@ -64,22 +64,33 @@
 #'
 as.promise.mirai <- function(x) {
 
-  force(x)
-  promises::then(
-    promise = promises::promise(
-      function(resolve, reject) {
-        query <- function()
-          if (unresolved(x))
-            later::later(query, delay = 0.1) else
-              resolve(.subset2(x, "value"))
-        query()
-      }
-    ),
-    onFulfilled = function(value)
-      if (is_error_value(value) && !is_mirai_interrupt(value))
-        stop(value) else
-          value
-  )
+  promise <- .subset2(x, "promise")
+
+  if (is.null(promise)) {
+
+    promise <- promises::then(
+      promises::promise(
+        function(resolve, reject)
+          attr(x, "callback") <- function() resolve(.subset2(x, "data"))
+      ),
+      onFulfilled = function(value)
+        if (is_error_value(value) && !is_mirai_interrupt(value))
+          stop(value) else
+            value
+    )
+
+    if (!unresolved(x)) {
+      value <- .subset2(x, "value")
+      promise <- if (is_error_value(value) && !is_mirai_interrupt(value))
+        promises::promise_reject(value) else
+          promises::promise_resolve(value)
+    }
+
+    assign("promise", promise, x)
+
+  }
+
+  promise
 
 }
 

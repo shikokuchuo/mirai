@@ -1,6 +1,7 @@
-# mirai 0.13.2.9001 (development)
+# mirai 0.13.2.9002 (development)
 
-* `stop_mirai()` now returns a 'miraiInterrupt' in the case the asynchronous task was still ongoing (thanks @jcheng #110).
+* Re-implements the promises method with completely event-driven (non-polling) promises (possible thanks to improvements in `nanonext` implemented with the help of @jcheng5)
+* `stop_mirai()` now returns a 'miraiInterrupt' in the case the asynchronous task was still ongoing (thanks @jcheng5 #110).
 
 # mirai 0.13.2
 

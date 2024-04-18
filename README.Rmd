@@ -152,7 +152,7 @@ We would like to thank in particular:
 
 [Will Landau](https://github.com/wlandau/), for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of `crew` and `targets`.
 
-[Joe Cheng](https://github.com/jcheng5/), for optimising the `promises` method to make `mirai` work seamlessly within Shiny, and guidance for implementing error stack traces.
+[Joe Cheng](https://github.com/jcheng5/), for optimising the `promises` method to make `mirai` work seamlessly within Shiny, prototyping non-polling promises and guidance on implementing error stack traces.
 
 [Luke Tierney](https://github.com/ltierney/), R Core, for discussion on R's implementation of L'Ecuyer-CMRG streams, used to ensure statistical independence in parallel processing, and collaboration in 'providing an alternative communications backend for R'.
 
