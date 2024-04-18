@@ -145,10 +145,10 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   envir <- ..[[.compute]]
   if (is.null(envir)) {
     sock <- ephemeral_daemon(local_url())
-    aio <- request_promise(.context(sock), data = data, cv = NULL, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    aio <- request2(.context(sock), data = data, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
   } else {
-    aio <- request_promise(.context(envir[["sock"]]), data = data, cv = envir[["cv"]], send_mode = 3L, recv_mode = 1L, timeout = .timeout)
+    aio <- request2(.context(envir[["sock"]]), data = data, cv = envir[["cv"]], send_mode = 3L, recv_mode = 1L, timeout = .timeout)
   }
 
   `class<-`(aio, c("mirai", "recvAio"))
