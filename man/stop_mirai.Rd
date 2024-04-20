@@ -10,7 +10,7 @@ stop_mirai(aio)
 \item{aio}{a 'mirai' object.}
 }
 \value{
-The passed mirai (invisibly).
+Invisible NULL.
 }
 \description{
 Stops a mirai if still in progress, causing it to resolve immediately to an
@@ -29,8 +29,9 @@ Forces the mirai to resolve immediately. Has no effect if the mirai
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-s <- mirai(Sys.sleep(n), n = 5)
-stop_mirai(s)$data
+m <- mirai(Sys.sleep(n), n = 5)
+stop_mirai(m)
+m$data
 
 }
 

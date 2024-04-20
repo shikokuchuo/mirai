@@ -286,7 +286,7 @@ call_mirai_ <- call_aio_
 #'
 #' @param aio a 'mirai' object.
 #'
-#' @return The passed mirai (invisibly).
+#' @return Invisible NULL.
 #'
 #' @details Forces the mirai to resolve immediately. Has no effect if the mirai
 #'     has already resolved.
@@ -300,8 +300,9 @@ call_mirai_ <- call_aio_
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' s <- mirai(Sys.sleep(n), n = 5)
-#' stop_mirai(s)$data
+#' m <- mirai(Sys.sleep(n), n = 5)
+#' stop_mirai(m)
+#' m$data
 #'
 #' }
 #'
