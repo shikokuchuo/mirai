@@ -75,14 +75,14 @@ as.promise.mirai <- function(x) {
       ),
       onFulfilled = function(value)
         if (is_error_value(value) && !is_mirai_interrupt(value))
-          stop(value) else
+          stop(if (is_mirai_error(value)) value else nng_error(value)) else
             value
     )
 
     if (!unresolved(x)) {
       value <- .subset2(x, "value")
       promise <- if (is_error_value(value) && !is_mirai_interrupt(value))
-        promises::promise_reject(value) else
+        promises::promise_reject(if (is_mirai_error(value)) value else nng_error(value)) else
           promises::promise_resolve(value)
     }
 

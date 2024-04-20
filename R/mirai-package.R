@@ -43,10 +43,10 @@
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
 #' @importFrom nanonext call_aio call_aio_ .context cv cv_value dial
-#'     is_error_value listen lock mclock msleep next_config opt opt<- parse_url
-#'     pipe_notify random reap recv recv_aio_signal request request_signal send
-#'     set_promise_context socket stat stop_aio strcat tls_config unresolved
-#'     until wait write_cert
+#'     is_error_value listen lock mclock msleep next_config nng_error opt opt<-
+#'     parse_url pipe_notify random reap recv recv_aio_signal request
+#'     request_signal send set_promise_context socket stat stop_aio strcat
+#'     tls_config unresolved until wait write_cert
 #' @importFrom parallel nextRNGStream
 #' @importFrom stats rexp
 #' @importFrom utils .DollarNames
