@@ -62,7 +62,7 @@ if (connection) {
   args <- c(m = 2L, n = 4L)
   m <- mirai(.expr = `lang obj`, .args = args, .timeout = 2000L)
   nanotest(is_error_value(call_mirai_(m)$data) || m$data == 8L)
-  nanotestn(stop_mirai(m))
+  nanotest(is_mirai(stop_mirai(m)))
   Sys.sleep(2.5)
 }
 # daemons tests

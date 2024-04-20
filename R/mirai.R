@@ -281,38 +281,33 @@ call_mirai_ <- call_aio_
 
 #' mirai (Stop)
 #'
-#' Stops a mirai if still in progress.
+#' Stops a mirai if still in progress, causing it to resolve immediately to an
+#'     'errorValue' 20 (Operation canceled).
 #'
 #' @param aio a 'mirai' object.
 #'
-#' @return Invisible NULL.
+#' @return The passed mirai (invisibly).
 #'
-#' @details Forces the mirai to resolve immediately.
+#' @details Forces the mirai to resolve immediately. Has no effect if the mirai
+#'     has already resolved.
 #'
-#'     If the asynchronous evaluation is yet to complete, the value at
-#'     \code{$data} will resolve to a 'miraiInterrupt' (see
-#'     \code{\link{is_mirai_interrupt}}). Note that in such a case, it is only
-#'     guaranteed that the mirai is aborted and the value not retrieved - any
-#'     ongoing evaluation in the daemon process will continue and is not
-#'     interrupted.
+#'     If cancellation was successful, the value at \code{$data} will be an
+#'     'errorValue' 20 (Operation canceled). Note that in such a case, the mirai
+#'     is aborted and the value not retrieved - but any ongoing evaluation in
+#'     the daemon process will continue and is not interrupted.
 #'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
 #' s <- mirai(Sys.sleep(n), n = 5)
-#' stop_mirai(s)
-#' s$data
+#' stop_mirai(s)$data
 #'
 #' }
 #'
 #' @export
 #'
-stop_mirai <- function(aio)
-  if (unresolved(aio)) {
-    assign("value", .miraiInterrupt, envir = aio)
-    stop_aio(aio)
-  }
+stop_mirai <- stop_aio
 
 #' Query if a mirai is Unresolved
 #'
