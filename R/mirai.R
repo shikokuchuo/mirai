@@ -482,9 +482,9 @@ mk_interrupt_error <- function() .miraiInterrupt
 mk_mirai_error <- function(e, sc) {
   call <- deparse_safe(.subset2(e, "call"))
   msg <- if (is.null(call) || call == "eval(expr = ._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = NULL)")
-    sprintf("Error: %s\n", .subset2(e, "message")) else
-      sprintf("Error in %s: %s\n", call, .subset2(e, "message"))
-  cat(msg, file = stderr())
+    sprintf("Error: %s", .subset2(e, "message")) else
+      sprintf("Error in %s: %s", call, .subset2(e, "message"))
+  cat(strcat(msg, "\n"), file = stderr())
   idx <- which(as.logical(lapply(sc, identical, quote(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL)))))
   sc <- sc[(length(sc) - 1L):(idx + 1L)]
   if (sc[[1L]][[1L]] == ".handleSimpleError")
