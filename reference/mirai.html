@@ -108,10 +108,10 @@ of the evaluation process, unlike those supplied to '.args' below.</p></dd>
 
 
 <dt>.args</dt>
-<dd><p>(optional) <strong>either</strong> a list of objects passed by
-<a href="https://rdrr.io/r/base/name.html" class="external-link">name</a> (found in the current scope), <strong>or else</strong> a list of
-name = value pairs, as in '...'. These remain local to the evaluation
-environment.</p></dd>
+<dd><p>(optional) <strong>either</strong> a list of name = value pairs, as in
+'...', <strong>or</strong> an environment, <strong>or else</strong> a list of objects
+passed by <a href="https://rdrr.io/r/base/name.html" class="external-link">name</a> (found in the current scope). These remain local to
+the evaluation environment.</p></dd>
 
 
 <dt>.timeout</dt>
@@ -144,8 +144,9 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
     result is returned.</p>
 <p>The expression '.expr' will be evaluated in a separate R process in a
     clean environment (not the global environment), consisting only of the
-    objects in the list supplied to '.args', with the named objects passed as
-    '...' assigned to the global environment of that process.</p>
+    objects in the list or environment supplied to '.args', with the named
+    objects passed as '...' assigned to the global environment of that
+    process.</p>
 <p>Specify '.compute' to send the mirai using a specific compute profile (if
     previously created by <code><a href="daemons.html">daemons</a></code>), otherwise leave as 'default'.</p>
     </div>
