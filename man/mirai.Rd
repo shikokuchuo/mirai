@@ -15,10 +15,10 @@ by \link{name}.}
 objects referenced in '.expr'. These are placed in the global environment
 of the evaluation process, unlike those supplied to '.args' below.}
 
-\item{.args}{(optional) \strong{either} a list of objects passed by
-\link{name} (found in the current scope), \strong{or else} a list of
-name = value pairs, as in '...'. These remain local to the evaluation
-environment.}
+\item{.args}{(optional) \strong{either} a list of name = value pairs, as in
+'...', \strong{or} an environment, \strong{or else} a list of objects
+passed by \link{name} (found in the current scope). These remain local to
+the evaluation environment.}
 
 \item{.timeout}{[default NULL] for no timeout, or an integer value in
 milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
@@ -52,8 +52,9 @@ This function will return a 'mirai' object immediately.
 
     The expression '.expr' will be evaluated in a separate R process in a
     clean environment (not the global environment), consisting only of the
-    objects in the list supplied to '.args', with the named objects passed as
-    '...' assigned to the global environment of that process.
+    objects in the list or environment supplied to '.args', with the named
+    objects passed as '...' assigned to the global environment of that
+    process.
 
     Specify '.compute' to send the mirai using a specific compute profile (if
     previously created by \code{\link{daemons}}), otherwise leave as 'default'.

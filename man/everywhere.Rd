@@ -15,10 +15,10 @@ by \link{name}.}
 objects referenced in '.expr'. These are placed in the global environment
 of the evaluation process, unlike those supplied to '.args' below.}
 
-\item{.args}{(optional) \strong{either} a list of objects passed by
-\link{name} (found in the current scope), \strong{or else} a list of
-name = value pairs, as in '...'. These remain local to the evaluation
-environment.}
+\item{.args}{(optional) \strong{either} a list of name = value pairs, as in
+'...', \strong{or} an environment, \strong{or else} a list of objects
+passed by \link{name} (found in the current scope). These remain local to
+the evaluation environment.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}

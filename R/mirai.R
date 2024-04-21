@@ -29,10 +29,10 @@
 #' @param ... (optional) named arguments (name = value pairs) specifying
 #'     objects referenced in '.expr'. These are placed in the global environment
 #'     of the evaluation process, unlike those supplied to '.args' below.
-#' @param .args (optional) \strong{either} a list of objects passed by
-#'     \link{name} (found in the current scope), \strong{or else} a list of
-#'     name = value pairs, as in '...'. These remain local to the evaluation
-#'     environment.
+#' @param .args (optional) \strong{either} a list of name = value pairs, as in
+#'     '...', \strong{or} an environment, \strong{or else} a list of objects
+#'     passed by \link{name} (found in the current scope). These remain local to
+#'     the evaluation environment.
 #' @param .timeout [default NULL] for no timeout, or an integer value in
 #'     milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
@@ -56,8 +56,9 @@
 #'
 #'     The expression '.expr' will be evaluated in a separate R process in a
 #'     clean environment (not the global environment), consisting only of the
-#'     objects in the list supplied to '.args', with the named objects passed as
-#'     '...' assigned to the global environment of that process.
+#'     objects in the list or environment supplied to '.args', with the named
+#'     objects passed as '...' assigned to the global environment of that
+#'     process.
 #'
 #'     Specify '.compute' to send the mirai using a specific compute profile (if
 #'     previously created by \code{\link{daemons}}), otherwise leave as 'default'.
@@ -144,9 +145,11 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   )
   if (length(.args))
     arglist <- c(
-      if (is.null(names(.args)))
-        `names<-`(.args, as.character(substitute(.args)[-1L])) else
-          if (is.list(.args)) .args else as.list(.args),
+      if (is.environment(.args))
+        as.list(.args) else
+          if (is.null(names(.args)))
+          `names<-`(.args, as.character(substitute(.args)[-1L])) else
+            .args,
       arglist
     )
   data <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
