@@ -136,19 +136,41 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 
   expr <- substitute(.expr)
   globals <- list(...)
-  all(nzchar(names(globals))) || stop(._[["named_args"]])
-  arglist <- list(._mirai_globals_. = globals, .expr = if (is.symbol(expr) && is.language(.expr)) .expr else expr)
+  gn <- names(globals)
+  length(globals) == length(gn) && all(nzchar(gn)) || stop(._[["named_args"]])
+  arglist <- list(
+    ._mirai_globals_. = globals,
+    .expr = if (is.symbol(expr) && is.language(.expr)) .expr else expr
+  )
   if (length(.args))
-    arglist <- c(if (is.null(names(.args))) `names<-`(.args, as.character(substitute(.args)[-1L])) else .args, arglist)
+    arglist <- c(
+      if (is.null(names(.args)))
+        `names<-`(.args, as.character(substitute(.args)[-1L])) else
+          if (is.list(.args)) .args else as.list(.args),
+      arglist
+    )
   data <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
   envir <- ..[[.compute]]
   if (is.null(envir)) {
     sock <- ephemeral_daemon(local_url())
-    aio <- request(.context(sock), data = data, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    aio <- request(
+      .context(sock),
+      data = data,
+      send_mode = 1L,
+      recv_mode = 1L,
+      timeout = .timeout
+    )
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
   } else {
-    aio <- request_signal(.context(envir[["sock"]]), data = data, cv = envir[["cv"]], send_mode = 3L, recv_mode = 1L, timeout = .timeout)
+    aio <- request_signal(
+      .context(envir[["sock"]]),
+      data = data,
+      cv = envir[["cv"]],
+      send_mode = 3L,
+      recv_mode = 1L,
+      timeout = .timeout
+    )
   }
 
   `class<-`(aio, c("mirai", "recvAio"))
@@ -197,7 +219,10 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
   if (length(envir)) {
 
     expr <- substitute(.expr)
-    .expr <- c(as.expression(if (is.symbol(expr) && is.language(.expr)) .expr else expr), .snapshot)
+    .expr <- c(
+      as.expression(if (is.symbol(expr) && is.language(.expr)) .expr else expr),
+      .snapshot
+    )
     if (length(.args) && is.null(names(.args)))
       names(.args) <- as.character(substitute(.args)[-1L])
 
