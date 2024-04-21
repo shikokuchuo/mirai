@@ -11,9 +11,11 @@ mirai(.expr, ..., .args = list(), .timeout = NULL, .compute = "default")
 wrapped in \{ \} where necessary), \strong{or} a language object passed
 by \link{name}.}
 
-\item{...}{(optional) named arguments (name = value pairs) specifying
-objects referenced in '.expr'. These are placed in the global environment
-of the evaluation process, unlike those supplied to '.args' below.}
+\item{...}{(optional) \strong{either} named arguments (name = value pairs)
+specifying objects referenced in '.expr' \strong{or else} an environment.
+These objects (taken from the environment if one was supplied) are placed
+in the global environment of the evaluation process, unlike those
+supplied to '.args' below.}
 
 \item{.args}{(optional) \strong{either} a list of name = value pairs, as in
 '...', \strong{or} an environment, \strong{or else} a list of objects
@@ -52,9 +54,9 @@ This function will return a 'mirai' object immediately.
 
     The expression '.expr' will be evaluated in a separate R process in a
     clean environment (not the global environment), consisting only of the
-    objects in the list or environment supplied to '.args', with the named
-    objects passed as '...' assigned to the global environment of that
-    process.
+    objects in the list / environment supplied to '.args', with the named
+    objects (from the environment if one was supplied) passed as '...'
+    assigned to the global environment of that process.
 
     Specify '.compute' to send the mirai using a specific compute profile (if
     previously created by \code{\link{daemons}}), otherwise leave as 'default'.

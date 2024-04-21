@@ -11,9 +11,11 @@ everywhere(.expr, ..., .args = list(), .compute = "default")
 wrapped in \{ \} where necessary), \strong{or} a language object passed
 by \link{name}.}
 
-\item{...}{(optional) named arguments (name = value pairs) specifying
-objects referenced in '.expr'. These are placed in the global environment
-of the evaluation process, unlike those supplied to '.args' below.}
+\item{...}{(optional) \strong{either} named arguments (name = value pairs)
+specifying objects referenced in '.expr' \strong{or else} an environment.
+These objects (taken from the environment if one was supplied) are placed
+in the global environment of the evaluation process, unlike those
+supplied to '.args' below.}
 
 \item{.args}{(optional) \strong{either} a list of name = value pairs, as in
 '...', \strong{or} an environment, \strong{or else} a list of objects

@@ -1,8 +1,8 @@
-# mirai 0.13.2.9009 (development)
+# mirai 0.13.2.9010 (development)
 
 * Re-implements the promises method with completely event-driven (non-polling) promises (thanks @jcheng5 for prototyping).
 * `stop_mirai()` now resolves to an 'errorValue' 20 (operation canceled) in the case the asynchronous task was still ongoing (thanks @jcheng5 #110).
-* `mirai()` updated to allow an environment e.g. `environment()` to be supplied to '.args'.
+* `mirai()` updated to allow an environment e.g. `environment()` to be supplied to either '...' or '.args'.
 * Promises now display the complete error code and message for an 'errorValue' on rejection.
 * A 'miraiError' reverts to not including a trailing line break (as prior to mirai 0.13.2).
 * Requires `nanonext` >= [0.13.6.9008].

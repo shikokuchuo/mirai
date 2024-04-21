@@ -26,9 +26,11 @@
 #' @param .expr an expression to evaluate asynchronously (of arbitrary length,
 #'     wrapped in \{ \} where necessary), \strong{or} a language object passed
 #'     by \link{name}.
-#' @param ... (optional) named arguments (name = value pairs) specifying
-#'     objects referenced in '.expr'. These are placed in the global environment
-#'     of the evaluation process, unlike those supplied to '.args' below.
+#' @param ... (optional) \strong{either} named arguments (name = value pairs)
+#'     specifying objects referenced in '.expr' \strong{or else} an environment.
+#'     These objects (taken from the environment if one was supplied) are placed
+#'     in the global environment of the evaluation process, unlike those
+#'     supplied to '.args' below.
 #' @param .args (optional) \strong{either} a list of name = value pairs, as in
 #'     '...', \strong{or} an environment, \strong{or else} a list of objects
 #'     passed by \link{name} (found in the current scope). These remain local to
@@ -56,9 +58,9 @@
 #'
 #'     The expression '.expr' will be evaluated in a separate R process in a
 #'     clean environment (not the global environment), consisting only of the
-#'     objects in the list or environment supplied to '.args', with the named
-#'     objects passed as '...' assigned to the global environment of that
-#'     process.
+#'     objects in the list / environment supplied to '.args', with the named
+#'     objects (from the environment if one was supplied) passed as '...'
+#'     assigned to the global environment of that process.
 #'
 #'     Specify '.compute' to send the mirai using a specific compute profile (if
 #'     previously created by \code{\link{daemons}}), otherwise leave as 'default'.
@@ -137,8 +139,15 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 
   expr <- substitute(.expr)
   globals <- list(...)
-  gn <- names(globals)
-  length(globals) == length(gn) && all(nzchar(gn)) || stop(._[["named_args"]])
+  glen <- length(globals)
+  if (glen) {
+    gn <- names(globals)
+    if (is.null(gn)) {
+      glen == 1L && is.environment(globals[[1L]]) || stop(._[["named_args"]])
+      globals <- as.list(globals[[1L]])
+    }
+    all(nzchar(gn)) || stop(._[["named_args"]])
+  }
   arglist <- list(
     ._mirai_globals_. = globals,
     .expr = if (is.symbol(expr) && is.language(.expr)) .expr else expr

@@ -51,7 +51,7 @@ server <- function(input, output, session) {
   })
 
   extended_task <- ExtendedTask$new(
-    function(x, y) mirai({Sys.sleep(y); runif(x)}, .args = environment())
+    function(x, y) mirai({Sys.sleep(y); runif(x)}, environment())
   ) |> bind_task_button("btn")
 
   observeEvent(input$btn, extended_task$invoke(input$n, input$delay))
@@ -76,11 +76,11 @@ The key components to using ExtendedTask are:
 input_task_button("btn", "Plot uniform distribution")
 ```
 
-2. In the server, create an 'ExtendedTask' object by calling `ExtendedTask$new()` on a function which is a call to `mirai()`, and optionally bind it to the button created in (1). Here, specifying `.args = environment()` conveniently passes the 'x' and 'y' variables from the calling environment (supplied by the anonymous function).
+2. In the server, create an 'ExtendedTask' object by calling `ExtendedTask$new()` on a function which is a call to `mirai()`, and optionally bind it to the button created in (1). Here, passing in `environment()` conveniently captures the 'x' and 'y' variables from the calling environment (supplied by the anonymous function).
 
 ```{r shinystep2, eval=FALSE}
 extended_task <- ExtendedTask$new(
-    function(x, y) mirai({Sys.sleep(y); runif(x)}, .args = environment())
+    function(x, y) mirai({Sys.sleep(y); runif(x)}, environment())
   ) |> bind_task_button("btn")
 ```
 
