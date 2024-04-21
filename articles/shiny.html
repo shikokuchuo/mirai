@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9009</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9010</span>
       </span>
     </div>
 
@@ -164,7 +164,7 @@ duration of the app, exiting automatically when the app is stopped.</p>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="va">extended_task</span> <span class="op">&lt;-</span> <span class="va">ExtendedTask</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
-<span>    <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">}</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/bind_task_button.html" class="external-link">bind_task_button</a></span><span class="op">(</span><span class="st">"btn"</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">btn</span>, <span class="va">extended_task</span><span class="op">$</span><span class="fu">invoke</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">n</span>, <span class="va">input</span><span class="op">$</span><span class="va">delay</span><span class="op">)</span><span class="op">)</span></span>
@@ -191,13 +191,13 @@ computation.</li>
 <li>In the server, create an ‘ExtendedTask’ object by calling
 <code>ExtendedTask$new()</code> on a function which is a call to
 <code><a href="../reference/mirai.html">mirai()</a></code>, and optionally bind it to the button created in
-(1). Here, specifying <code>.args = environment()</code> conveniently
-passes the ‘x’ and ‘y’ variables from the calling environment (supplied
-by the anonymous function).</li>
+(1). Here, passing in <code><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment()</a></code> conveniently captures
+the ‘x’ and ‘y’ variables from the calling environment (supplied by the
+anonymous function).</li>
 </ol>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">extended_task</span> <span class="op">&lt;-</span> <span class="va">ExtendedTask</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
-<span>    <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">}</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/bind_task_button.html" class="external-link">bind_task_button</a></span><span class="op">(</span><span class="st">"btn"</span><span class="op">)</span></span></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
 <li>In the server, create an observer on the input button, which invokes

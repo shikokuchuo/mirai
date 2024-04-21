@@ -21,7 +21,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9009</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9010</span>
       </span>
     </div>
 
@@ -104,9 +104,11 @@ by <a href="https://rdrr.io/r/base/name.html" class="external-link">name</a>.</p
 
 
 <dt>...</dt>
-<dd><p>(optional) named arguments (name = value pairs) specifying
-objects referenced in '.expr'. These are placed in the global environment
-of the evaluation process, unlike those supplied to '.args' below.</p></dd>
+<dd><p>(optional) <strong>either</strong> named arguments (name = value pairs)
+specifying objects referenced in '.expr' <strong>or else</strong> an environment.
+These objects (taken from the environment if one was supplied) are placed
+in the global environment of the evaluation process, unlike those
+supplied to '.args' below.</p></dd>
 
 
 <dt>.args</dt>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9009</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9010</span>
       </span>
     </div>
 
@@ -79,12 +79,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.13.2.9009" id="mirai-01329009-development">mirai 0.13.2.9009 (development)<a class="anchor" aria-label="anchor" href="#mirai-01329009-development"></a></h2>
+<h2 class="page-header" data-toc-text="0.13.2.9010" id="mirai-01329010-development">mirai 0.13.2.9010 (development)<a class="anchor" aria-label="anchor" href="#mirai-01329010-development"></a></h2>
 <ul><li>Re-implements the promises method with completely event-driven (non-polling) promises (thanks <a href="https://github.com/jcheng5" class="external-link">@jcheng5</a> for prototyping).</li>
 <li>
 <code><a href="../reference/stop_mirai.html">stop_mirai()</a></code> now resolves to an ‘errorValue’ 20 (operation canceled) in the case the asynchronous task was still ongoing (thanks <a href="https://github.com/jcheng5" class="external-link">@jcheng5</a> <a href="https://github.com/shikokuchuo/mirai/issues/110" class="external-link">#110</a>).</li>
 <li>
-<code><a href="../reference/mirai.html">mirai()</a></code> updated to allow an environment e.g. <code><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment()</a></code> to be supplied to ‘.args’.</li>
+<code><a href="../reference/mirai.html">mirai()</a></code> updated to allow an environment e.g. <code><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment()</a></code> to be supplied to either ‘…’ or ‘.args’.</li>
 <li>Promises now display the complete error code and message for an ‘errorValue’ on rejection.</li>
 <li>A ‘miraiError’ reverts to not including a trailing line break (as prior to mirai 0.13.2).</li>
 <li>Requires <code>nanonext</code> &gt;= [0.13.6.9008].</li>
