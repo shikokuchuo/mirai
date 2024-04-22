@@ -226,8 +226,6 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
       as.expression(if (is.symbol(expr) && is.language(.expr)) .expr else expr),
       .snapshot
     )
-    if (length(.args) && is.null(names(.args)))
-      names(.args) <- as.character(substitute(.args)[-1L])
 
     if (is.null(envir[["sockc"]])) {
       for (i in seq_len(max(stat(envir[["sock"]], "pipes"), envir[["n"]])))
