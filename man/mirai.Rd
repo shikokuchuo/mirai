@@ -8,17 +8,17 @@ mirai(.expr, ..., .args = list(), .timeout = NULL, .compute = "default")
 }
 \arguments{
 \item{.expr}{an expression to evaluate asynchronously (of arbitrary length,
-wrapped in \{ \} where necessary), \strong{or} a pre-constructed language
-object.}
+wrapped in \{ \} where necessary), \strong{or else} a pre-constructed
+language object.}
 
-\item{...}{(optional) named arguments (name = value pairs) specifying objects
-referenced in '.expr', \strong{or} an environment. These objects (taken
-from the environment if one was supplied) are placed in the global
-environment of the evaluation process.}
+\item{...}{(optional) \strong{either} named arguments (name = value pairs)
+specifying objects referenced in '.expr', \strong{or} an environment.
+These objects (from the environment if one was supplied) are placed in
+the global environment of the evaluation process.}
 
-\item{.args}{(optional) a list of name = value pairs, \strong{or} an
-environment, as in '...' above. Contrary to '...', these objects remain
-local to the evaluation environment.}
+\item{.args}{(optional) \strong{either} a list of name = value pairs,
+\strong{or} an environment, as in '...' above. Contrary to '...', these
+objects remain local to the evaluation environment.}
 
 \item{.timeout}{[default NULL] for no timeout, or an integer value in
 milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
