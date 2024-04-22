@@ -146,7 +146,7 @@ plotServer <- function(id, calc_time) {
     id,
     function(input, output, session) {
       extended_task <- ExtendedTask$new(
-        function(x) mirai(run_task(calc_time = x), run_task = run_task, x = x)
+        function(x, run = run_task) mirai(run(x), environment())
       ) |> bind_task_button("resample")
       
       observeEvent(input$resample, extended_task$invoke(calc_time))
