@@ -110,9 +110,8 @@
     'miraiError' and 'errorValue'. The stack trace is available at
     <code>$stack.trace</code> on the error object.</p>
 <p>Is the object a 'miraiInterrupt'. When an ongoing mirai is sent a user
-    interrupt or <code><a href="stop_mirai.html">stop_mirai</a></code> is called on it, the mirai will
-    resolve to an empty character string classed as 'miraiInterrupt' and
-    'errorValue'.</p>
+    interrupt, it will resolve to an integer value of 1L classed as
+    'miraiInterrupt' and 'errorValue'.</p>
 <p>Is the object an 'errorValue', such as a mirai timeout, a 'miraiError' or
     a 'miraiInterrupt'. This is a catch-all condition that includes all
     returned error values.</p>

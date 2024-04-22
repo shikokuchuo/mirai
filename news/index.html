@@ -85,6 +85,7 @@
 <ul><li>(breaking change) no longer permits an unnamed list to be supplied to ‘.args’.</li>
 <li>allows an environment e.g. <code><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment()</a></code> to be supplied to ‘.args’ or as the only element of ‘…’.</li>
 </ul></li>
+<li>A ‘miraiInterrupt’ is internally now an ‘errorValue’ of 1L rather than a blank string. <code><a href="../reference/is_mirai_error.html">is_mirai_interrupt()</a></code> should continue to be used to test for one.</li>
 <li>
 <code><a href="../reference/stop_mirai.html">stop_mirai()</a></code> now resolves to an ‘errorValue’ 20 (operation canceled) in the case the asynchronous task was still ongoing (thanks <a href="https://github.com/jcheng5" class="external-link">@jcheng5</a> <a href="https://github.com/shikokuchuo/mirai/issues/110" class="external-link">#110</a>).</li>
 <li>Rejected promises now show the complete error code and message in the case of an ‘errorValue’.</li>

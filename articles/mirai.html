@@ -178,12 +178,12 @@ operation is ongoing.</p>
 result.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.6125 0.2175 -0.3631 -0.0703 1.4527 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 20.74 1.09 106.38 -0.26 -6.48 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using
 <code><a href="../reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -0.6125 0.2175 -0.3631 -0.0703 1.4527 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 20.74 1.09 106.38 -0.26 -6.48 ...</span></span></code></pre></div>
 <p>For easy programmatic use of <code><a href="../reference/mirai.html">mirai()</a></code>, ‘.expr’ accepts a
 pre-constructed language object, and also a list of named arguments
 passed via ‘.args’. So, the following would be equivalent to the
@@ -199,7 +199,7 @@ above:</p>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span>.expr <span class="op">=</span> <span class="va">expr</span>, .args <span class="op">=</span> <span class="va">args</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] -2.576 -1.226 0.442 1.026 2.407 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 3.254 0.523 2.401 1.036 0.767 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -279,9 +279,9 @@ bring down the entire pipeline.</p>
 <span><span class="co">#&gt; iteration 3 successful</span></span>
 <span><span class="co">#&gt; iteration 4 successful</span></span>
 <span><span class="co">#&gt; iteration 5 successful</span></span>
+<span><span class="co">#&gt; Error: random error</span></span>
 <span><span class="co">#&gt; iteration 6 successful</span></span>
 <span><span class="co">#&gt; iteration 7 successful</span></span>
-<span><span class="co">#&gt; Error: random error</span></span>
 <span><span class="co">#&gt; iteration 8 successful</span></span>
 <span><span class="co">#&gt; iteration 9 successful</span></span>
 <span><span class="co">#&gt; iteration 10 successful</span></span></code></pre></div>
@@ -318,12 +318,12 @@ daemon.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt;                                     i online instance assigned complete</span></span>
-<span><span class="co">#&gt; abstract://2a855252f33831795b6904fb 1      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://3fd18debbff4c39a2d21d1e6 2      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://628f6b5caf2f06476c33f538 3      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://966eb0558285ea0b2b941c16 4      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://8ebfa24c7bddd3e4c6ee45c1 5      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://f5d9b5084749387aaccdb4a1 6      1        1        0        0</span></span></code></pre></div>
+<span><span class="co">#&gt; abstract://6499e6c70cabc21226083e5c 1      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://dbe4ef0cc797a79b55d97ecc 2      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://0f9c6d5e29309f59aa1d79d7 3      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://1f80e404c792642f01315df5 4      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://51f7a0e43cc7d46ea27b6573 5      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://3a26f8cc70dd9490d61216a3 6      1        1        0        0</span></span></code></pre></div>
 <p>The default <code>dispatcher = TRUE</code> creates a
 <code><a href="../reference/dispatcher.html">dispatcher()</a></code> background process that connects to individual
 daemon processes on the local machine. This ensures that tasks are
@@ -357,7 +357,7 @@ URL at <code>$daemons</code>.</p>
 <span><span class="co">#&gt; [1] 6</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "abstract://1912ec79ea656ae469aa5c2d"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "abstract://c0d8b8d22d0040fd830a4d3e"</span></span></code></pre></div>
 <p>This implementation sends tasks immediately, and ensures that tasks
 are evenly-distributed amongst daemons. This means that optimal
 scheduling is not guaranteed as the duration of tasks cannot be known
@@ -489,7 +489,7 @@ directly to the host process. The host listens at a single URL, and
 distributes tasks to all connected daemons.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="fu"><a href="../reference/host_url.html">host_url</a></span><span class="op">(</span><span class="op">)</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tcp://hostname:40837"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://hostname:45645"</span></span></code></pre></div>
 <p>Note that above, calling <code><a href="../reference/host_url.html">host_url()</a></code> without a port value
 uses the default of ‘0’. This is a wildcard value that will
 automatically cause a free ephemeral port to be assigned. The actual
@@ -506,7 +506,7 @@ daemons.</p>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "tcp://hostname:40837"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://hostname:45645"</span></span></code></pre></div>
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
@@ -591,10 +591,10 @@ return values may be copy / pasted directly to a remote machine.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/launch_local.html">launch_remote</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1]</span></span>
-<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:42641',rs=c(10407,-1279712270,1980175051,-227976304,-745233839,-1667950626,225993415))"</span></span>
+<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:44977',rs=c(10407,642033924,-896234443,1346893682,-391909301,-1899611376,-1597170735))"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [2]</span></span>
-<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:32821',rs=c(10407,1708971168,748514514,974236642,-1140425817,-1873245315,-1748552424))"</span></span>
+<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:42295',rs=c(10407,346413147,587461580,559275723,829030531,-1633435061,-995914678))"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
@@ -632,37 +632,37 @@ full shell command to launch a daemon, including the correctly specified
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/launch_local.html">launch_remote</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1]</span></span>
-<span><span class="co">#&gt; Rscript -e "mirai::daemon('wss://hostname:37955/1',tls=c('-----BEGIN CERTIFICATE-----</span></span>
+<span><span class="co">#&gt; Rscript -e "mirai::daemon('wss://hostname:45081/1',tls=c('-----BEGIN CERTIFICATE-----</span></span>
 <span><span class="co">#&gt; MIIFNzCCAx+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAzMREwDwYDVQQDDAhrdW1h</span></span>
 <span><span class="co">#&gt; bW90bzERMA8GA1UECgwITmFub25leHQxCzAJBgNVBAYTAkpQMB4XDTAxMDEwMTAw</span></span>
 <span><span class="co">#&gt; MDAwMFoXDTMwMTIzMTIzNTk1OVowMzERMA8GA1UEAwwIa3VtYW1vdG8xETAPBgNV</span></span>
 <span><span class="co">#&gt; BAoMCE5hbm9uZXh0MQswCQYDVQQGEwJKUDCCAiIwDQYJKoZIhvcNAQEBBQADggIP</span></span>
-<span><span class="co">#&gt; ADCCAgoCggIBAKiSowfPzkV2DNbwZu+4iQgg7R+c9d7LEOqNZDphXhcTv4IjT0gi</span></span>
-<span><span class="co">#&gt; xDX6tyZlrwwyEIwN3sRU/gDo2c9jBth5YA6WYMBlItlp22M9Q+d7ugFQ1LYrGH3b</span></span>
-<span><span class="co">#&gt; 782bXFukm2nJiqgFkReikJZfDs/qQ7FXfD7X1bL3cN5ypUPuIadt3uTid3e9lcI5</span></span>
-<span><span class="co">#&gt; IWbcJ7uLCeu5qPR2Rx1rJJtuyqXZKRbl2O0Xtw09DQLBpfp680X2EP0vBO8Z72yx</span></span>
-<span><span class="co">#&gt; tfg9kZAxeZXZBeK/9jWkTKGxAlZ8ZYfJUxLjSc52P43K99yGqJKI6QgP7j95OldR</span></span>
-<span><span class="co">#&gt; wlkvBA2gik+VROayhqzGFakSnvGUs1MpRJHy9mDpe2twOcPUUW2aSe5GUSg7X+eL</span></span>
-<span><span class="co">#&gt; qNYb+Svoi+UbVKGgZl/LFEwgorgOgPRpr82aY4S9425eRglORHGx2Ob/b7AKlzqA</span></span>
-<span><span class="co">#&gt; WVdcQJPsH4riDtTwAxDDEGAXVgAuIRkV3VwEjPXnuWEs5U2LSRXkOtGHFCvUvhQ9</span></span>
-<span><span class="co">#&gt; EffqGZmeQwjVFTIs4IF66gJlN7wm4vNnFy9d50aRxZx9Bqwv0y+8SjlQ9j40w2o3</span></span>
-<span><span class="co">#&gt; WOJLqOU2J54+CqrADjVyzhvMpzCHLGwwIAIdIogpUaErX5o3Hm5ZmfZ1EBHziSG/</span></span>
-<span><span class="co">#&gt; vzNEqewXpkIbimK/oyHRRdM3j5F0zo/F8+H9SB66PaiCeo3oVEq5Zre7AgMBAAGj</span></span>
-<span><span class="co">#&gt; VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFH9Y01GwFXgyLgKxwFSo</span></span>
-<span><span class="co">#&gt; +2GkVJ9oMB8GA1UdIwQYMBaAFH9Y01GwFXgyLgKxwFSo+2GkVJ9oMA0GCSqGSIb3</span></span>
-<span><span class="co">#&gt; DQEBCwUAA4ICAQAa0sDadI8w5Muq1I+peP0Quzss+hzpvLnF8jz5S+58EGe+SFzb</span></span>
-<span><span class="co">#&gt; e8i9/qTAufnW7jgAeQFjnHXuDjnlmdq9RuCFn9WOyrsGCDfFTMrpHOSjastio0tJ</span></span>
-<span><span class="co">#&gt; uKlWK+8Fyv3DEs5az8Ha8FTp0ze+K22lYpYFSwpq78dbuEx/n29c8X4GiY0CuJUy</span></span>
-<span><span class="co">#&gt; hu7fq3wtoVrIMMp5kUdXDSm4hTScq9zy88sTVaWSUzdHuxd9A7+35LLZHYC8lGh5</span></span>
-<span><span class="co">#&gt; 46Ysai4y9CGwdTdYRrYv12VOzq9oYKlkNw4mu3pJ8f9bK85oMKX1E4KlkQhQwQ2c</span></span>
-<span><span class="co">#&gt; wdritNDAk9BR8ilD5ZgU5LJ05UH63iHN3YHYiHlkP643/k3ZZMr5uRivZvMomgBA</span></span>
-<span><span class="co">#&gt; osAt3DP58+lk6Og1cUBJtwraGYv2doreDzeFF2m8OYoUx6pjHUKw52HC8c2nYaXI</span></span>
-<span><span class="co">#&gt; eF8rqkgG96xOhxbGJUUxBGwSO9AfnkMWHdxtWSg3S3OLR0eO+QWtQezdLiC+Pwam</span></span>
-<span><span class="co">#&gt; fnM642oYlAY6+K9SNMwGlMj6BhDPWpuYd6heatgl6YS7hOe9H+eCdEk8v95dPol2</span></span>
-<span><span class="co">#&gt; t2QU92mara2Xv8wd1B0S8A374htNWeDw1LrKGRCYspcNzp7kFWCZKshN/Mbh5Qmj</span></span>
-<span><span class="co">#&gt; Tjon9GFi1gIBjnLhfzyDYhByNBv5nSiE/M1zpxo/CNUywFLDbdvrjIS5mQ==</span></span>
+<span><span class="co">#&gt; ADCCAgoCggIBAIh1mB5x2VKWZj1TCOy/hNAVkgzwZEREH1pBQw/vmzqlA1YznnXV</span></span>
+<span><span class="co">#&gt; 2Loi+DIOEeA296mAnjKwYO/wjkCTGRKdg/B8g5MgDTQr3mhjwZxoNUjWWce/7CTl</span></span>
+<span><span class="co">#&gt; qsgv4xxTJi9x+dbGOFYUA1LJy/r247tvUUr9rmoj9+IH3GLQhacFfEhd9Q/zD4d/</span></span>
+<span><span class="co">#&gt; 5Y1O5vT34Rm4tu0+IbHfvZjQpyCAEnGXNFK15eRtQXRZyqVoX+wxeWHuWvxuVp70</span></span>
+<span><span class="co">#&gt; Un7W3hvn1YdtPdXro33/weaJq3FLwESRVB2Iv70sz2D9GeekvwRIruZdf86bwb4x</span></span>
+<span><span class="co">#&gt; C8cdZR7ybj6cm5mIWVn5G8nxBOX67dCALSzkvXYoionlRC+F5H/a+u5DROY2bXuf</span></span>
+<span><span class="co">#&gt; MwA2KQ9AULwtS/Y4IXF/ELOU44qApjSM9TspWY6Csd7YaKFSl41L1ZvsbSD0+sX5</span></span>
+<span><span class="co">#&gt; zBpdvXvKHCCpbnqrMlfDzgRyJlTV1k36gjjwsLPizMOd25LGni9ADZZzy3CfNbFh</span></span>
+<span><span class="co">#&gt; cVneu5C2jqDYVkd5DQJmDFhe68F3z8hfrJW3wtXFv2yPDbgBUlDFYlrSFBnSi6SH</span></span>
+<span><span class="co">#&gt; Va7ws/EVNEAU0Q/nfYyhIEwCQWKt8V3ihQLdOuCMdDepEbfkt1/HVGMLIW5dPb5U</span></span>
+<span><span class="co">#&gt; ny3mBSCGucJD0YbowZ82KNSie6WMnpyJVqDQw2XnUZiJNZP1hcqlvqkjAgMBAAGj</span></span>
+<span><span class="co">#&gt; VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFGdzqa3JXCQI5W911B5H</span></span>
+<span><span class="co">#&gt; j/qFfJ3PMB8GA1UdIwQYMBaAFGdzqa3JXCQI5W911B5Hj/qFfJ3PMA0GCSqGSIb3</span></span>
+<span><span class="co">#&gt; DQEBCwUAA4ICAQAFQpt3EjumNgsx2Qm/9lB5OHLM4OxPqCzA2ZzLxN5hE0f1itLm</span></span>
+<span><span class="co">#&gt; W8T516lbAz4wQI6zzCcBUnR7stuqcdeHW6FYk+TXrrRgyMiWGKb5PKQOhqiGX0cv</span></span>
+<span><span class="co">#&gt; mwO5oaVPd9ERA0Oqw7gUR2p6m8/PBGmwTT9EPONLtsErKYClUGXbxX3FU9MxU/Bk</span></span>
+<span><span class="co">#&gt; abduo+qF4V8DdRD3AmBkBn7/p+Cg3ORy3L7VLIogktSXXz4jAUrWW0jp8o2AyuMK</span></span>
+<span><span class="co">#&gt; Xe2Es1Q4xOtuNHB7Nej8AJ8F46Pr/CtjIvUUwOGjnyZMVtQJFvYlKYLZE0OnLS//</span></span>
+<span><span class="co">#&gt; G6asYyCjkQFwNrYhwmTooxjGSg5sBdsCWVz+m6dwcIOhWEN3cuXODjlSbT/VUc1F</span></span>
+<span><span class="co">#&gt; w6GNJR8xtwWZIcv81h6j4iXKp0j4MgWfBWMFkPS32HmuLFGEwrg/2doi+hgfyguO</span></span>
+<span><span class="co">#&gt; Tx4kWQqCBkLjOmmp3D3sm0jaSmst3yG0+E0o0XhGYFYI2GV2JNn2ZT/EoAeeLkef</span></span>
+<span><span class="co">#&gt; StLtWCaSZWCgnK7vLC1wqKpT8WYpT2XwjWlv2f2ceyy2/KQgypoKYu2I9k1i/5Z5</span></span>
+<span><span class="co">#&gt; EihPwnLXPAccdWe1Fxh50s74xIDSEcFzqxzmK2ir/HJXbo5U0iT/KgUiLUaMOKzx</span></span>
+<span><span class="co">#&gt; pHTiDLTRz4ebjMvlHojABnMGBuTNoSMS7QxKKMy+++RTeYCdOyDRIdaEjw==</span></span>
 <span><span class="co">#&gt; -----END CERTIFICATE-----</span></span>
-<span><span class="co">#&gt; ',''),rs=c(10407,-1453605998,42835435,-631806928,-1404982671,-257017474,-840077337))"</span></span></code></pre></div>
+<span><span class="co">#&gt; ',''),rs=c(10407,-1706828673,-687274828,-1406539739,-427964766,-1133491781,-479950400))"</span></span></code></pre></div>
 <p>The printed value may be deployed directly on a remote machine.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
@@ -800,16 +800,16 @@ accessible at <code>$stack.trace</code> on the error object.</p>
 <span><span class="co">#&gt; [[2]]</span></span>
 <span><span class="co">#&gt; [1] "f(1)"</span></span></code></pre></div>
 <p>If a daemon instance is sent a user interrupt, the mirai will resolve
-to an empty character string of class ‘miraiInterrupt’ and ‘errorValue’.
+to a ‘miraiInterrupt’ and ‘errorValue’ of 1L (interrupted).
 <code><a href="../reference/is_mirai_error.html">is_mirai_interrupt()</a></code> may be used to test for such
 interrupts.</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/is_mirai_error.html">is_mirai_interrupt</a></span><span class="op">(</span><span class="va">m2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
 <p>If execution of a mirai surpasses the timeout set via the ‘.timeout’
-argument, the mirai will resolve to an ‘errorValue’. This can, amongst
-other things, guard against mirai processes that have the potential to
-hang and never return.</p>
+argument, the mirai will resolve to an ‘errorValue’ of 5L (timed out).
+This can, amongst other things, guard against mirai processes that have
+the potential to hang and never return.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/msleep.html" class="external-link">msleep</a></span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span>, .timeout <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m4</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
