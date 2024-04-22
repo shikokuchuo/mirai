@@ -60,13 +60,13 @@ Upon completion, the 'mirai' resolves automatically to the evaluated result.
 
 ```r
 m$data |> str()
-#>  num [1:100000000] -0.6125 0.2175 -0.3631 -0.0703 1.4527 ...
+#>  num [1:100000000] 20.74 1.09 106.38 -0.26 -6.48 ...
 ```
 Alternatively, explicitly call and wait for the result using `call_mirai()`.
 
 ```r
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -0.6125 0.2175 -0.3631 -0.0703 1.4527 ...
+#>  num [1:100000000] 20.74 1.09 106.38 -0.26 -6.48 ...
 ```
 For easy programmatic use of `mirai()`, '.expr' accepts a pre-constructed language object, and also a list of named arguments passed via '.args'. So, the following would be equivalent to the above:
 
@@ -82,7 +82,7 @@ args <- list(m = runif(1), n = 1e8)
 m <- mirai(.expr = expr, .args = args)
 
 call_mirai(m)$data |> str()
-#>  num [1:100000000] -2.576 -1.226 0.442 1.026 2.407 ...
+#>  num [1:100000000] 3.254 0.523 2.401 1.036 0.767 ...
 ```
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -163,9 +163,9 @@ for (i in 1:10) {
 #> iteration 3 successful
 #> iteration 4 successful
 #> iteration 5 successful
+#> Error: random error
 #> iteration 6 successful
 #> iteration 7 successful
-#> Error: random error
 #> iteration 8 successful
 #> iteration 9 successful
 #> iteration 10 successful
@@ -200,12 +200,12 @@ status()
 #> 
 #> $daemons
 #>                                     i online instance assigned complete
-#> abstract://2a855252f33831795b6904fb 1      1        1        0        0
-#> abstract://3fd18debbff4c39a2d21d1e6 2      1        1        0        0
-#> abstract://628f6b5caf2f06476c33f538 3      1        1        0        0
-#> abstract://966eb0558285ea0b2b941c16 4      1        1        0        0
-#> abstract://8ebfa24c7bddd3e4c6ee45c1 5      1        1        0        0
-#> abstract://f5d9b5084749387aaccdb4a1 6      1        1        0        0
+#> abstract://6499e6c70cabc21226083e5c 1      1        1        0        0
+#> abstract://dbe4ef0cc797a79b55d97ecc 2      1        1        0        0
+#> abstract://0f9c6d5e29309f59aa1d79d7 3      1        1        0        0
+#> abstract://1f80e404c792642f01315df5 4      1        1        0        0
+#> abstract://51f7a0e43cc7d46ea27b6573 5      1        1        0        0
+#> abstract://3a26f8cc70dd9490d61216a3 6      1        1        0        0
 ```
 The default `dispatcher = TRUE` creates a `dispatcher()` background process that connects to individual daemon processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to daemons for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.
 
@@ -234,7 +234,7 @@ status()
 #> [1] 6
 #> 
 #> $daemons
-#> [1] "abstract://1912ec79ea656ae469aa5c2d"
+#> [1] "abstract://c0d8b8d22d0040fd830a4d3e"
 ```
 This implementation sends tasks immediately, and ensures that tasks are evenly-distributed amongst daemons. This means that optimal scheduling is not guaranteed as the duration of tasks cannot be known *a priori*. As an example, tasks could be queued at a daemon behind a long-running task, whilst other daemons are idle having already completed their tasks.
 
@@ -324,7 +324,7 @@ By specifying `dispatcher = FALSE`, remote daemons connect directly to the host 
 
 ```r
 daemons(url = host_url(), dispatcher = FALSE)
-#> [1] "tcp://hostname:40837"
+#> [1] "tcp://hostname:45645"
 ```
 Note that above, calling `host_url()` without a port value uses the default of '0'. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided in the return value of the call, or it may be queried at any time via `status()`.
 
@@ -338,7 +338,7 @@ status()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://hostname:40837"
+#> [1] "tcp://hostname:45645"
 ```
 To reset all connections and revert to default behaviour:
 
@@ -408,10 +408,10 @@ daemons(n = 2, url = host_url())
 
 launch_remote(1:2)
 #> [1]
-#> Rscript -e "mirai::daemon('tcp://hostname:42641',rs=c(10407,-1279712270,1980175051,-227976304,-745233839,-1667950626,225993415))"
+#> Rscript -e "mirai::daemon('tcp://hostname:44977',rs=c(10407,642033924,-896234443,1346893682,-391909301,-1899611376,-1597170735))"
 #> 
 #> [2]
-#> Rscript -e "mirai::daemon('tcp://hostname:32821',rs=c(10407,1708971168,748514514,974236642,-1140425817,-1873245315,-1748552424))"
+#> Rscript -e "mirai::daemon('tcp://hostname:42295',rs=c(10407,346413147,587461580,559275723,829030531,-1633435061,-995914678))"
 
 daemons(0)
 #> [1] 0
@@ -439,37 +439,37 @@ The generated self-signed certificate is available via `launch_remote()`. This f
 ```r
 launch_remote(1)
 #> [1]
-#> Rscript -e "mirai::daemon('wss://hostname:37955/1',tls=c('-----BEGIN CERTIFICATE-----
+#> Rscript -e "mirai::daemon('wss://hostname:45081/1',tls=c('-----BEGIN CERTIFICATE-----
 #> MIIFNzCCAx+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAzMREwDwYDVQQDDAhrdW1h
 #> bW90bzERMA8GA1UECgwITmFub25leHQxCzAJBgNVBAYTAkpQMB4XDTAxMDEwMTAw
 #> MDAwMFoXDTMwMTIzMTIzNTk1OVowMzERMA8GA1UEAwwIa3VtYW1vdG8xETAPBgNV
 #> BAoMCE5hbm9uZXh0MQswCQYDVQQGEwJKUDCCAiIwDQYJKoZIhvcNAQEBBQADggIP
-#> ADCCAgoCggIBAKiSowfPzkV2DNbwZu+4iQgg7R+c9d7LEOqNZDphXhcTv4IjT0gi
-#> xDX6tyZlrwwyEIwN3sRU/gDo2c9jBth5YA6WYMBlItlp22M9Q+d7ugFQ1LYrGH3b
-#> 782bXFukm2nJiqgFkReikJZfDs/qQ7FXfD7X1bL3cN5ypUPuIadt3uTid3e9lcI5
-#> IWbcJ7uLCeu5qPR2Rx1rJJtuyqXZKRbl2O0Xtw09DQLBpfp680X2EP0vBO8Z72yx
-#> tfg9kZAxeZXZBeK/9jWkTKGxAlZ8ZYfJUxLjSc52P43K99yGqJKI6QgP7j95OldR
-#> wlkvBA2gik+VROayhqzGFakSnvGUs1MpRJHy9mDpe2twOcPUUW2aSe5GUSg7X+eL
-#> qNYb+Svoi+UbVKGgZl/LFEwgorgOgPRpr82aY4S9425eRglORHGx2Ob/b7AKlzqA
-#> WVdcQJPsH4riDtTwAxDDEGAXVgAuIRkV3VwEjPXnuWEs5U2LSRXkOtGHFCvUvhQ9
-#> EffqGZmeQwjVFTIs4IF66gJlN7wm4vNnFy9d50aRxZx9Bqwv0y+8SjlQ9j40w2o3
-#> WOJLqOU2J54+CqrADjVyzhvMpzCHLGwwIAIdIogpUaErX5o3Hm5ZmfZ1EBHziSG/
-#> vzNEqewXpkIbimK/oyHRRdM3j5F0zo/F8+H9SB66PaiCeo3oVEq5Zre7AgMBAAGj
-#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFH9Y01GwFXgyLgKxwFSo
-#> +2GkVJ9oMB8GA1UdIwQYMBaAFH9Y01GwFXgyLgKxwFSo+2GkVJ9oMA0GCSqGSIb3
-#> DQEBCwUAA4ICAQAa0sDadI8w5Muq1I+peP0Quzss+hzpvLnF8jz5S+58EGe+SFzb
-#> e8i9/qTAufnW7jgAeQFjnHXuDjnlmdq9RuCFn9WOyrsGCDfFTMrpHOSjastio0tJ
-#> uKlWK+8Fyv3DEs5az8Ha8FTp0ze+K22lYpYFSwpq78dbuEx/n29c8X4GiY0CuJUy
-#> hu7fq3wtoVrIMMp5kUdXDSm4hTScq9zy88sTVaWSUzdHuxd9A7+35LLZHYC8lGh5
-#> 46Ysai4y9CGwdTdYRrYv12VOzq9oYKlkNw4mu3pJ8f9bK85oMKX1E4KlkQhQwQ2c
-#> wdritNDAk9BR8ilD5ZgU5LJ05UH63iHN3YHYiHlkP643/k3ZZMr5uRivZvMomgBA
-#> osAt3DP58+lk6Og1cUBJtwraGYv2doreDzeFF2m8OYoUx6pjHUKw52HC8c2nYaXI
-#> eF8rqkgG96xOhxbGJUUxBGwSO9AfnkMWHdxtWSg3S3OLR0eO+QWtQezdLiC+Pwam
-#> fnM642oYlAY6+K9SNMwGlMj6BhDPWpuYd6heatgl6YS7hOe9H+eCdEk8v95dPol2
-#> t2QU92mara2Xv8wd1B0S8A374htNWeDw1LrKGRCYspcNzp7kFWCZKshN/Mbh5Qmj
-#> Tjon9GFi1gIBjnLhfzyDYhByNBv5nSiE/M1zpxo/CNUywFLDbdvrjIS5mQ==
+#> ADCCAgoCggIBAIh1mB5x2VKWZj1TCOy/hNAVkgzwZEREH1pBQw/vmzqlA1YznnXV
+#> 2Loi+DIOEeA296mAnjKwYO/wjkCTGRKdg/B8g5MgDTQr3mhjwZxoNUjWWce/7CTl
+#> qsgv4xxTJi9x+dbGOFYUA1LJy/r247tvUUr9rmoj9+IH3GLQhacFfEhd9Q/zD4d/
+#> 5Y1O5vT34Rm4tu0+IbHfvZjQpyCAEnGXNFK15eRtQXRZyqVoX+wxeWHuWvxuVp70
+#> Un7W3hvn1YdtPdXro33/weaJq3FLwESRVB2Iv70sz2D9GeekvwRIruZdf86bwb4x
+#> C8cdZR7ybj6cm5mIWVn5G8nxBOX67dCALSzkvXYoionlRC+F5H/a+u5DROY2bXuf
+#> MwA2KQ9AULwtS/Y4IXF/ELOU44qApjSM9TspWY6Csd7YaKFSl41L1ZvsbSD0+sX5
+#> zBpdvXvKHCCpbnqrMlfDzgRyJlTV1k36gjjwsLPizMOd25LGni9ADZZzy3CfNbFh
+#> cVneu5C2jqDYVkd5DQJmDFhe68F3z8hfrJW3wtXFv2yPDbgBUlDFYlrSFBnSi6SH
+#> Va7ws/EVNEAU0Q/nfYyhIEwCQWKt8V3ihQLdOuCMdDepEbfkt1/HVGMLIW5dPb5U
+#> ny3mBSCGucJD0YbowZ82KNSie6WMnpyJVqDQw2XnUZiJNZP1hcqlvqkjAgMBAAGj
+#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFGdzqa3JXCQI5W911B5H
+#> j/qFfJ3PMB8GA1UdIwQYMBaAFGdzqa3JXCQI5W911B5Hj/qFfJ3PMA0GCSqGSIb3
+#> DQEBCwUAA4ICAQAFQpt3EjumNgsx2Qm/9lB5OHLM4OxPqCzA2ZzLxN5hE0f1itLm
+#> W8T516lbAz4wQI6zzCcBUnR7stuqcdeHW6FYk+TXrrRgyMiWGKb5PKQOhqiGX0cv
+#> mwO5oaVPd9ERA0Oqw7gUR2p6m8/PBGmwTT9EPONLtsErKYClUGXbxX3FU9MxU/Bk
+#> abduo+qF4V8DdRD3AmBkBn7/p+Cg3ORy3L7VLIogktSXXz4jAUrWW0jp8o2AyuMK
+#> Xe2Es1Q4xOtuNHB7Nej8AJ8F46Pr/CtjIvUUwOGjnyZMVtQJFvYlKYLZE0OnLS//
+#> G6asYyCjkQFwNrYhwmTooxjGSg5sBdsCWVz+m6dwcIOhWEN3cuXODjlSbT/VUc1F
+#> w6GNJR8xtwWZIcv81h6j4iXKp0j4MgWfBWMFkPS32HmuLFGEwrg/2doi+hgfyguO
+#> Tx4kWQqCBkLjOmmp3D3sm0jaSmst3yG0+E0o0XhGYFYI2GV2JNn2ZT/EoAeeLkef
+#> StLtWCaSZWCgnK7vLC1wqKpT8WYpT2XwjWlv2f2ceyy2/KQgypoKYu2I9k1i/5Z5
+#> EihPwnLXPAccdWe1Fxh50s74xIDSEcFzqxzmK2ir/HJXbo5U0iT/KgUiLUaMOKzx
+#> pHTiDLTRz4ebjMvlHojABnMGBuTNoSMS7QxKKMy+++RTeYCdOyDRIdaEjw==
 #> -----END CERTIFICATE-----
-#> ',''),rs=c(10407,-1453605998,42835435,-631806928,-1404982671,-257017474,-840077337))"
+#> ',''),rs=c(10407,-1706828673,-687274828,-1406539739,-427964766,-1133491781,-479950400))"
 ```
 The printed value may be deployed directly on a remote machine.
 
@@ -555,13 +555,13 @@ m3$data$stack.trace
 #> [1] "f(1)"
 ```
 
-If a daemon instance is sent a user interrupt, the mirai will resolve to an empty character string of class 'miraiInterrupt' and 'errorValue'. `is_mirai_interrupt()` may be used to test for such interrupts.
+If a daemon instance is sent a user interrupt, the mirai will resolve to a 'miraiInterrupt' and 'errorValue' of 1L (interrupted). `is_mirai_interrupt()` may be used to test for such interrupts.
 
 ```r
 is_mirai_interrupt(m2$data)
 #> [1] FALSE
 ```
-If execution of a mirai surpasses the timeout set via the '.timeout' argument, the mirai will resolve to an 'errorValue'. This can, amongst other things, guard against mirai processes that have the potential to hang and never return.
+If execution of a mirai surpasses the timeout set via the '.timeout' argument, the mirai will resolve to an 'errorValue' of 5L (timed out). This can, amongst other things, guard against mirai processes that have the potential to hang and never return.
 
 ```r
 m4 <- mirai(nanonext::msleep(1000), .timeout = 500)

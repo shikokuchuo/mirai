@@ -407,9 +407,8 @@ is_mirai <- function(x) inherits(x, "mirai")
 #'     \code{$stack.trace} on the error object.
 #'
 #'     Is the object a 'miraiInterrupt'. When an ongoing mirai is sent a user
-#'     interrupt or \code{\link{stop_mirai}} is called on it, the mirai will
-#'     resolve to an empty character string classed as 'miraiInterrupt' and
-#'     'errorValue'.
+#'     interrupt, it will resolve to an integer value of 1L classed as
+#'     'miraiInterrupt' and 'errorValue'.
 #'
 #'     Is the object an 'errorValue', such as a mirai timeout, a 'miraiError' or
 #'     a 'miraiInterrupt'. This is a catch-all condition that includes all
@@ -476,15 +475,6 @@ print.miraiError <- function(x, ...) {
 .DollarNames.miraiError <- function(x, pattern = "")
   grep(pattern, "stack.trace", value = TRUE, fixed = TRUE)
 
-#' @export
-#'
-print.miraiInterrupt <- function(x, ...) {
-
-  cat("'miraiInterrupt' chr \"\"\n", file = stdout())
-  invisible(x)
-
-}
-
 # internals --------------------------------------------------------------------
 
 ephemeral_daemon <- function(url) {
@@ -518,6 +508,6 @@ mk_mirai_error <- function(e, sc) {
   `class<-`(`attr<-`(msg, "stack.trace", sc), c("miraiError", "errorValue", "try-error"))
 }
 
-.miraiInterrupt <- `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))
+.miraiInterrupt <- `class<-`(1L, c("miraiInterrupt", "errorValue", "try-error"))
 .snapshot <- expression(mirai:::snapshot())
 .timedelay <- expression(nanonext::msleep(500L))

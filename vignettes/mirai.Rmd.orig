@@ -436,11 +436,11 @@ call_mirai(m3)$data
 m3$data$stack.trace
 ```
 
-If a daemon instance is sent a user interrupt, the mirai will resolve to an empty character string of class 'miraiInterrupt' and 'errorValue'. `is_mirai_interrupt()` may be used to test for such interrupts.
+If a daemon instance is sent a user interrupt, the mirai will resolve to a 'miraiInterrupt' and 'errorValue' of 1L (interrupted). `is_mirai_interrupt()` may be used to test for such interrupts.
 ```{r interruptexample}
 is_mirai_interrupt(m2$data)
 ```
-If execution of a mirai surpasses the timeout set via the '.timeout' argument, the mirai will resolve to an 'errorValue'. This can, amongst other things, guard against mirai processes that have the potential to hang and never return.
+If execution of a mirai surpasses the timeout set via the '.timeout' argument, the mirai will resolve to an 'errorValue' of 5L (timed out). This can, amongst other things, guard against mirai processes that have the potential to hang and never return.
 ```{r timeouts}
 m4 <- mirai(nanonext::msleep(1000), .timeout = 500)
 call_mirai(m4)$data

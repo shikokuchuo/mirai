@@ -4,6 +4,7 @@
 * Behavioural changes to `mirai()` and `everywhere()`:
   + (breaking change) no longer permits an unnamed list to be supplied to '.args'.
   + allows an environment e.g. `environment()` to be supplied to '.args' or as the only element of '...'.
+* A 'miraiInterrupt' is internally now an 'errorValue' of 1L rather than a blank string. `is_mirai_interrupt()` should continue to be used to test for one.
 * `stop_mirai()` now resolves to an 'errorValue' 20 (operation canceled) in the case the asynchronous task was still ongoing (thanks @jcheng5 #110).
 * Rejected promises now show the complete error code and message in the case of an 'errorValue'.
 * A 'miraiError' reverts to not including a trailing line break (as prior to mirai 0.13.2).
