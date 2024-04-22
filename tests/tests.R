@@ -54,7 +54,7 @@ if (connection) {
     Sys.sleep(0.1)
     q <- m + n() + 2L
     q / m
-  }, m = 2L, .args = list(n), .timeout = 2000L)
+  }, m = 2L, .args = environment(), .timeout = 2000L)
   nanotest(identical(call_mirai(m), m))
   nanotest(is_error_value(m$data) || m$data == 3L)
   Sys.sleep(2.5)
@@ -76,7 +76,7 @@ if (connection) {
   nanotestp(me)
   nanotestp(me$data)
   df <- data.frame(a = 1, b = 2)
-  dm <- mirai(as.matrix(df), .args = list(df), .timeout = 2000L)
+  dm <- mirai(as.matrix(df), .args = list(df = df), .timeout = 2000L)
   nanotest(is_mirai(call_mirai(dm)))
   nanotest(!unresolved(dm))
   nanotest(is_error_value(dm$data) || is.matrix(dm$data))
@@ -161,7 +161,7 @@ if (connection) {
   clusterExport(cl, "xx", environment())
   nanotesti(clusterCall(cl, function(y) xx + y, 2), list(3))
   nanotesti(clusterMap(cl, function(x, y) seq_len(x) + y, c(a =  1, b = 2, c = 3), c(A = 10, B = 0, C = -10)),
-            list (a = 11, b = c(1, 2), c = c(-9, -8, -7)))
+            list(a = 11, b = c(1, 2), c = c(-9, -8, -7)))
   nanotesti(parSapply(cl, 1:20, get("+"), 3), as.double(4:23))
   nanotestn(stopCluster(cl))
   nanotesterr(parLapply(cluster, 1:10, runif), "cluster is no longer active")

@@ -6,7 +6,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -93,14 +93,18 @@ High-frequency real-time data cannot be written to file/database synchronously w
 
 Cache data in memory and use `mirai()` to perform periodic write operations concurrently in a separate process.
 
-Below, '.args' is used to pass a list of objects already present in the calling environment to the mirai by name. This is an alternative use of '.args', and may be combined with `...` to also pass in `name = value` pairs.
+Below, '.args' is used to pass `environment()`, which is the calling environment. This provides a convenient method of passing in existing objects.
+
+```{r cleanglobalenv, include=FALSE}
+rm(list = ls())
+```
 ```{r exec2}
 library(mirai)
 
 x <- rnorm(1e6)
 file <- tempfile()
 
-m <- mirai(write.csv(x, file = file), .args = list(x, file))
+m <- mirai(write.csv(x, file = file), .args = environment())
 ```
 A 'mirai' object is returned immediately.
 
@@ -141,10 +145,10 @@ run_iteration <- function(i) {
 
 for (i in 1:10) {
 
-  m <- mirai(run_iteration(i), .args = list(run_iteration, i))
+  m <- mirai(run_iteration(i), environment())
   while (is_error_value(call_mirai(m)$data)) {
     cat(m$data)
-    m <- mirai(run_iteration(i), .args = list(run_iteration, i))
+    m <- mirai(run_iteration(i), environment())
   }
   cat(m$data)
 

@@ -8,19 +8,17 @@ mirai(.expr, ..., .args = list(), .timeout = NULL, .compute = "default")
 }
 \arguments{
 \item{.expr}{an expression to evaluate asynchronously (of arbitrary length,
-wrapped in \{ \} where necessary), \strong{or} a language object passed
-by \link{name}.}
+wrapped in \{ \} where necessary), \strong{or} a pre-constructed language
+object.}
 
-\item{...}{(optional) \strong{either} named arguments (name = value pairs)
-specifying objects referenced in '.expr' \strong{or else} an environment.
-These objects (taken from the environment if one was supplied) are placed
-in the global environment of the evaluation process, unlike those
-supplied to '.args' below.}
+\item{...}{(optional) named arguments (name = value pairs) specifying objects
+referenced in '.expr', \strong{or} an environment. These objects (taken
+from the environment if one was supplied) are placed in the global
+environment of the evaluation process.}
 
-\item{.args}{(optional) \strong{either} a list of name = value pairs, as in
-'...', \strong{or} an environment, \strong{or else} a list of objects
-passed by \link{name} (found in the current scope). These remain local to
-the evaluation environment.}
+\item{.args}{(optional) a list of name = value pairs, \strong{or} an
+environment, as in '...' above. Contrary to '...', these objects remain
+local to the evaluation environment.}
 
 \item{.timeout}{[default NULL] for no timeout, or an integer value in
 milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
@@ -55,7 +53,7 @@ This function will return a 'mirai' object immediately.
     The expression '.expr' will be evaluated in a separate R process in a
     clean environment (not the global environment), consisting only of the
     objects in the list / environment supplied to '.args', with the named
-    objects (from the environment if one was supplied) passed as '...'
+    objects passed as '...' (from the environment if one was supplied)
     assigned to the global environment of that process.
 
     Specify '.compute' to send the mirai using a specific compute profile (if

@@ -62,7 +62,7 @@ model <- nn_module(
 
 params <- list(in_size = 1, out_size = 20)
 
-m <- mirai(do.call(model, params), .args = list(model, params))
+m <- mirai(do.call(model, params), model = model, params = params)
 
 call_mirai(m)$data
 ```

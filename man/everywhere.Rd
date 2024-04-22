@@ -8,19 +8,17 @@ everywhere(.expr, ..., .args = list(), .compute = "default")
 }
 \arguments{
 \item{.expr}{an expression to evaluate asynchronously (of arbitrary length,
-wrapped in \{ \} where necessary), \strong{or} a language object passed
-by \link{name}.}
+wrapped in \{ \} where necessary), \strong{or} a pre-constructed language
+object.}
 
-\item{...}{(optional) \strong{either} named arguments (name = value pairs)
-specifying objects referenced in '.expr' \strong{or else} an environment.
-These objects (taken from the environment if one was supplied) are placed
-in the global environment of the evaluation process, unlike those
-supplied to '.args' below.}
+\item{...}{(optional) named arguments (name = value pairs) specifying objects
+referenced in '.expr', \strong{or} an environment. These objects (taken
+from the environment if one was supplied) are placed in the global
+environment of the evaluation process.}
 
-\item{.args}{(optional) \strong{either} a list of name = value pairs, as in
-'...', \strong{or} an environment, \strong{or else} a list of objects
-passed by \link{name} (found in the current scope). These remain local to
-the evaluation environment.}
+\item{.args}{(optional) a list of name = value pairs, \strong{or} an
+environment, as in '...' above. Contrary to '...', these objects remain
+local to the evaluation environment.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
