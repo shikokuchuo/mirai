@@ -158,23 +158,12 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   envir <- ..[[.compute]]
   if (is.null(envir)) {
     sock <- ephemeral_daemon(local_url())
-    aio <- request(
-      .context(sock),
-      data = data,
-      send_mode = 1L,
-      recv_mode = 1L,
-      timeout = .timeout
-    )
+    aio <- request(.context(sock), data = data, send_mode = 1L, recv_mode = 1L,
+                   timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
   } else {
-    aio <- request_signal(
-      .context(envir[["sock"]]),
-      data = data,
-      cv = envir[["cv"]],
-      send_mode = 3L,
-      recv_mode = 1L,
-      timeout = .timeout
-    )
+    aio <- request_signal(.context(envir[["sock"]]), data = data, cv = envir[["cv"]],
+                          send_mode = 3L, recv_mode = 1L, timeout = .timeout)
   }
 
   `class<-`(aio, c("mirai", "recvAio"))
@@ -488,8 +477,7 @@ deparse_safe <- function(x) if (length(x))
 
 deparse_call <- function(call) {
   srcref <- attr(call, "srcref")
-  if (is.null(srcref)) deparse_safe(call) else
-    as.character(srcref)
+  if (is.null(srcref)) deparse_safe(call) else as.character(srcref)
 }
 
 mk_interrupt_error <- function() .miraiInterrupt
