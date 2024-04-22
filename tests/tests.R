@@ -88,7 +88,7 @@ if (connection) {
   nanotest(is.character(nextget("urls", .compute = "new")))
   nanotest(is.integer(nextstream(.compute = "new")))
   Sys.sleep(1.5)
-  nanotestn(everywhere(list2env(df, envir = .GlobalEnv), .args = list(df), .compute = "new"))
+  nanotestn(everywhere({}, as.environment(df), .compute = "new"))
   mn <- mirai("test1", .compute = "new")
   mp <- mirai(b + 1, .compute = "new")
   Sys.sleep(1L)
