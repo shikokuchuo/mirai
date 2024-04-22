@@ -32,7 +32,8 @@
 #'     the global environment of the evaluation process.
 #' @param .args (optional) \strong{either} a list of name = value pairs,
 #'     \strong{or} an environment, as in '...' above. Contrary to '...', these
-#'     objects remain local to the evaluation environment.
+#'     objects (from the environment if one was supplied) remain local to the
+#'     evaluation environment.
 #' @param .timeout [default NULL] for no timeout, or an integer value in
 #'     milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
 #'     evaluation exceeds this limit.
@@ -85,10 +86,10 @@
 #' Sys.sleep(0.5)
 #' m$data
 #'
-#' # passing an environment to '.args'
+#' # passing the calling environment to '...'
 #' df1 <- data.frame(a = 1, b = 2)
 #' df2 <- data.frame(a = 3, b = 1)
-#' m <- mirai(as.matrix(rbind(df1, df2)), .args = environment(), .timeout = 1000)
+#' m <- mirai(as.matrix(rbind(df1, df2)), environment(), .timeout = 1000)
 #' call_mirai(m)$data
 #'
 #' # using unresolved()
@@ -105,19 +106,19 @@
 #' }
 #' str(m$data)
 #'
-#' # evaluating scripts using source(local = TRUE) in '.expr'
-#' n <- 10L
-#' file <- tempfile()
-#' cat("r <- rnorm(n)", file = file)
-#' m <- mirai({source(file, local = TRUE); r}, .args = list(file = file, n = n))
-#' call_mirai(m)[["data"]]
-#' unlink(file)
-#'
 #' # evaluating scripts using source() in '.expr'
 #' n <- 10L
 #' file <- tempfile()
 #' cat("r <- rnorm(n)", file = file)
 #' m <- mirai({source(file); r}, file = file, n = n)
+#' call_mirai(m)[["data"]]
+#' unlink(file)
+#'
+#' # use source(local = TRUE) when passing in local variables via '.args'
+#' n <- 10L
+#' file <- tempfile()
+#' cat("r <- rnorm(n)", file = file)
+#' m <- mirai({source(file, local = TRUE); r}, .args = list(file = file, n = n))
 #' call_mirai(m)[["data"]]
 #' unlink(file)
 #'

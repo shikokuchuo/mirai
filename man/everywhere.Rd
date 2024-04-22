@@ -18,7 +18,8 @@ the global environment of the evaluation process.}
 
 \item{.args}{(optional) \strong{either} a list of name = value pairs,
 \strong{or} an environment, as in '...' above. Contrary to '...', these
-objects remain local to the evaluation environment.}
+objects (from the environment if one was supplied) remain local to the
+evaluation environment.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
