@@ -21,7 +21,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9011</span>
       </span>
     </div>
 
@@ -99,23 +99,21 @@
     <h2>Arguments</h2>
     <dl><dt>.expr</dt>
 <dd><p>an expression to evaluate asynchronously (of arbitrary length,
-wrapped in { } where necessary), <strong>or</strong> a language object passed
-by <a href="https://rdrr.io/r/base/name.html" class="external-link">name</a>.</p></dd>
+wrapped in { } where necessary), <strong>or</strong> a pre-constructed language
+object.</p></dd>
 
 
 <dt>...</dt>
-<dd><p>(optional) <strong>either</strong> named arguments (name = value pairs)
-specifying objects referenced in '.expr' <strong>or else</strong> an environment.
-These objects (taken from the environment if one was supplied) are placed
-in the global environment of the evaluation process, unlike those
-supplied to '.args' below.</p></dd>
+<dd><p>(optional) named arguments (name = value pairs) specifying objects
+referenced in '.expr', <strong>or</strong> an environment. These objects (taken
+from the environment if one was supplied) are placed in the global
+environment of the evaluation process.</p></dd>
 
 
 <dt>.args</dt>
-<dd><p>(optional) <strong>either</strong> a list of name = value pairs, as in
-'...', <strong>or</strong> an environment, <strong>or else</strong> a list of objects
-passed by <a href="https://rdrr.io/r/base/name.html" class="external-link">name</a> (found in the current scope). These remain local to
-the evaluation environment.</p></dd>
+<dd><p>(optional) a list of name = value pairs, <strong>or</strong> an
+environment, as in '...' above. Contrary to '...', these objects remain
+local to the evaluation environment.</p></dd>
 
 
 <dt>.compute</dt>

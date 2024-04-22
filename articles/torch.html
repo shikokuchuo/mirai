@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9011</span>
       </span>
     </div>
 
@@ -172,7 +172,7 @@ initialized within a ‘mirai’.</p>
 <span></span>
 <span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>in_size <span class="op">=</span> <span class="fl">1</span>, out_size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">params</span><span class="op">)</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">params</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">params</span><span class="op">)</span>, model <span class="op">=</span> <span class="va">model</span>, params <span class="op">=</span> <span class="va">params</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; An `nn_module` containing 1,040 parameters.</span></span>
@@ -185,35 +185,35 @@ initialized within a ‘mirai’.</p>
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">conv1.weight</span></span>
 <span><span class="co">#&gt; torch_tensor</span></span>
 <span><span class="co">#&gt; (1,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.0485  0.0862 -0.0170 -0.1460  0.1034</span></span>
-<span><span class="co">#&gt;  -0.1670  0.1863  0.1790  0.0023 -0.1541</span></span>
-<span><span class="co">#&gt;  -0.1941  0.0238  0.0600  0.1481 -0.1249</span></span>
-<span><span class="co">#&gt;  -0.0752 -0.1696 -0.0441 -0.0970  0.0901</span></span>
-<span><span class="co">#&gt;  -0.0396  0.1583  0.1164  0.1512 -0.0156</span></span>
+<span><span class="co">#&gt;  -0.1196  0.1559 -0.0212  0.0140 -0.0787</span></span>
+<span><span class="co">#&gt;   0.1100  0.1774 -0.0593  0.0627  0.0117</span></span>
+<span><span class="co">#&gt;   0.1667 -0.0139 -0.0993  0.1091 -0.1227</span></span>
+<span><span class="co">#&gt;  -0.1142 -0.0439 -0.1376  0.0252  0.1501</span></span>
+<span><span class="co">#&gt;   0.0055 -0.0656 -0.0991 -0.0952 -0.0686</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (2,1,.,.) = </span></span>
-<span><span class="co">#&gt;  -0.0278  0.0867  0.1932 -0.0412  0.1001</span></span>
-<span><span class="co">#&gt;   0.0833 -0.1583 -0.0044  0.0877  0.1092</span></span>
-<span><span class="co">#&gt;  -0.0127 -0.1783  0.1340  0.1519 -0.0265</span></span>
-<span><span class="co">#&gt;  -0.0541  0.0382 -0.1442 -0.1959  0.1993</span></span>
-<span><span class="co">#&gt;   0.0435 -0.0355  0.0139 -0.0798 -0.0797</span></span>
+<span><span class="co">#&gt;  -0.0989  0.0575  0.0692  0.1024 -0.0078</span></span>
+<span><span class="co">#&gt;  -0.0911 -0.1030  0.0104  0.1177 -0.0083</span></span>
+<span><span class="co">#&gt;  -0.0638  0.1606  0.0528  0.0920 -0.0958</span></span>
+<span><span class="co">#&gt;   0.0667  0.0672  0.0642  0.0450  0.1796</span></span>
+<span><span class="co">#&gt;  -0.1445 -0.0755  0.1973 -0.0961  0.1017</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (3,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.1054 -0.0079  0.0942  0.0612  0.1845</span></span>
-<span><span class="co">#&gt;  -0.1437  0.0614 -0.1196  0.0126 -0.0547</span></span>
-<span><span class="co">#&gt;   0.0944 -0.1379 -0.1131 -0.1058 -0.1857</span></span>
-<span><span class="co">#&gt;   0.0472  0.0724  0.0144  0.1282  0.1734</span></span>
-<span><span class="co">#&gt;  -0.1580 -0.1150 -0.0244 -0.1984  0.1677</span></span>
+<span><span class="co">#&gt;   0.1813 -0.0337  0.1923  0.0747  0.1205</span></span>
+<span><span class="co">#&gt;   0.1879  0.1059  0.0944 -0.0888 -0.0202</span></span>
+<span><span class="co">#&gt;   0.1901  0.1758 -0.0801  0.1417 -0.0559</span></span>
+<span><span class="co">#&gt;  -0.0497  0.0390 -0.0177  0.0538 -0.1835</span></span>
+<span><span class="co">#&gt;  -0.1041 -0.0133  0.0808 -0.1594  0.1890</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (4,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.0737  0.0286  0.1114 -0.0252  0.1175</span></span>
-<span><span class="co">#&gt;  -0.1407 -0.0345 -0.1002  0.1377  0.0863</span></span>
-<span><span class="co">#&gt;   0.0757  0.1443  0.0347 -0.1822 -0.0175</span></span>
-<span><span class="co">#&gt;  -0.1672 -0.0619  0.0593 -0.0508  0.0033</span></span>
-<span><span class="co">#&gt;  -0.1127  0.1615  0.1790 -0.1054  0.0833</span></span>
+<span><span class="co">#&gt;   0.1759 -0.0181  0.0007  0.0052 -0.0026</span></span>
+<span><span class="co">#&gt;   0.1767  0.1281 -0.0077 -0.1438  0.1677</span></span>
+<span><span class="co">#&gt;  -0.0566  0.1038 -0.1956 -0.0490  0.1493</span></span>
+<span><span class="co">#&gt;   0.1112  0.0389  0.1229  0.1681  0.1956</span></span>
+<span><span class="co">#&gt;   0.1550  0.1753  0.0500 -0.0603 -0.1313</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (5,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.0696  0.1465 -0.0954 -0.0754  0.1770</span></span>
+<span><span class="co">#&gt;  -0.0235 -0.1409 -0.0469  0.0176  0.1700</span></span>
 <span><span class="co">#&gt; ... [the output was truncated (use n=-1 to disable)]</span></span>
 <span><span class="co">#&gt; [ CPUFloatType{20,1,5,5} ][ requires_grad = TRUE ]</span></span></code></pre></div>
 <p>It is usual for model parameters to then be passed to an
