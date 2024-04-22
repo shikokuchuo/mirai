@@ -82,13 +82,13 @@
 #' m <- mirai(x + y + 2, x = 2, y = n)
 #' m
 #' m$data
-#' Sys.sleep(0.2)
+#' Sys.sleep(0.5)
 #' m$data
 #'
-#' # passing existing objects by name via '.args'
+#' # passing an environment to '.args'
 #' df1 <- data.frame(a = 1, b = 2)
 #' df2 <- data.frame(a = 3, b = 1)
-#' m <- mirai(as.matrix(rbind(df1, df2)), .args = list(df1, df2), .timeout = 1000)
+#' m <- mirai(as.matrix(rbind(df1, df2)), .args = environment(), .timeout = 1000)
 #' call_mirai(m)$data
 #'
 #' # using unresolved()
@@ -109,7 +109,7 @@
 #' n <- 10L
 #' file <- tempfile()
 #' cat("r <- rnorm(n)", file = file)
-#' m <- mirai({source(file, local = TRUE); r}, .args = list(file, n))
+#' m <- mirai({source(file, local = TRUE); r}, .args = list(file = file, n = n))
 #' call_mirai(m)[["data"]]
 #' unlink(file)
 #'
@@ -276,15 +276,17 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #' # using call_mirai()
 #' df1 <- data.frame(a = 1, b = 2)
 #' df2 <- data.frame(a = 3, b = 1)
-#' m <- mirai(as.matrix(rbind(df1, df2)), .args = list(df1, df2), .timeout = 1000)
+#' m <- mirai(as.matrix(rbind(df1, df2)), df1 = df1, df2 = df2, .timeout = 1000)
 #' call_mirai(m)$data
 #'
 #' # using unresolved()
-#' m <- mirai({
-#'   res <- rnorm(n)
-#'   res / rev(res)
+#' m <- mirai(
+#'   {
+#'     res <- rnorm(n)
+#'     res / rev(res)
 #'   },
-#'   n = 1e6)
+#'   n = 1e6
+#' )
 #' while (unresolved(m)) {
 #'   cat("unresolved\n")
 #'   Sys.sleep(0.1)
@@ -382,7 +384,7 @@ unresolved <- unresolved
 #' # Only run examples in interactive R sessions
 #'
 #' df <- data.frame()
-#' m <- mirai(as.matrix(df), .args = list(df))
+#' m <- mirai(as.matrix(df), df = df)
 #' is_mirai(m)
 #' is_mirai(df)
 #'

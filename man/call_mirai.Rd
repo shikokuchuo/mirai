@@ -60,15 +60,17 @@ if (interactive()) {
 # using call_mirai()
 df1 <- data.frame(a = 1, b = 2)
 df2 <- data.frame(a = 3, b = 1)
-m <- mirai(as.matrix(rbind(df1, df2)), .args = list(df1, df2), .timeout = 1000)
+m <- mirai(as.matrix(rbind(df1, df2)), df1 = df1, df2 = df2, .timeout = 1000)
 call_mirai(m)$data
 
 # using unresolved()
-m <- mirai({
-  res <- rnorm(n)
-  res / rev(res)
+m <- mirai(
+  {
+    res <- rnorm(n)
+    res / rev(res)
   },
-  n = 1e6)
+  n = 1e6
+)
 while (unresolved(m)) {
   cat("unresolved\n")
   Sys.sleep(0.1)
