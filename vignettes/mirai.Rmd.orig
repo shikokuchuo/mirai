@@ -436,7 +436,7 @@ call_mirai(m3)$data
 m3$data$stack.trace
 ```
 
-If a daemon instance is sent a user interrupt, the mirai will resolve to a 'miraiInterrupt' and 'errorValue' of 1L (interrupted). `is_mirai_interrupt()` may be used to test for such interrupts.
+If a daemon instance is sent a user interrupt, the mirai will resolve to an object of class 'miraiInterrupt' and 'errorValue'. `is_mirai_interrupt()` may be used to test for such interrupts.
 ```{r interruptexample}
 is_mirai_interrupt(m2$data)
 ```
