@@ -19,6 +19,7 @@ The plumber router code is run in a daemon process itself so that it does not bl
 
 The /echo endpoint takes a GET request, sleeps for 1 second (simulating an expensive computation) and simply returns the 'msg' request header together with a timestamp and the process ID of the process it is run on.
 
+
 ```r
 library(mirai)
 
@@ -42,10 +43,10 @@ m <- mirai({
           {
             Sys.sleep(1L)
             list(status = 200L, body = list(time = format(Sys.time()),
-                                            msg = req[["HEADERS"]][["msg"]],
+                                            msg = msg,
                                             pid = Sys.getpid()))
           },
-          req = req
+          msg = req[["HEADERS"]][["msg"]]
         ) %...>% (function(x) {
           res$status <- x$status
           res$body <- x$body
@@ -67,14 +68,14 @@ res <- lapply(1:8,
                                     headers = c(msg = as.character(i))))
 res <- lapply(res, call_aio)
 for (r in res) print(r$data)
-#> [1] "{\"time\":[\"2024-04-07 20:10:30\"],\"msg\":[\"1\"],\"pid\":[19652]}"
-#> [1] "{\"time\":[\"2024-04-07 20:10:30\"],\"msg\":[\"2\"],\"pid\":[19657]}"
-#> [1] "{\"time\":[\"2024-04-07 20:10:30\"],\"msg\":[\"3\"],\"pid\":[19660]}"
-#> [1] "{\"time\":[\"2024-04-07 20:10:30\"],\"msg\":[\"4\"],\"pid\":[19654]}"
-#> [1] "{\"time\":[\"2024-04-07 20:10:31\"],\"msg\":[\"5\"],\"pid\":[19652]}"
-#> [1] "{\"time\":[\"2024-04-07 20:10:31\"],\"msg\":[\"6\"],\"pid\":[19657]}"
-#> [1] "{\"time\":[\"2024-04-07 20:10:31\"],\"msg\":[\"7\"],\"pid\":[19660]}"
-#> [1] "{\"time\":[\"2024-04-07 20:10:31\"],\"msg\":[\"8\"],\"pid\":[19654]}"
+#> [1] "{\"time\":[\"2024-04-23 17:15:11\"],\"msg\":[\"1\"],\"pid\":[36065]}"
+#> [1] "{\"time\":[\"2024-04-23 17:15:11\"],\"msg\":[\"2\"],\"pid\":[36062]}"
+#> [1] "{\"time\":[\"2024-04-23 17:15:11\"],\"msg\":[\"3\"],\"pid\":[36068]}"
+#> [1] "{\"time\":[\"2024-04-23 17:15:11\"],\"msg\":[\"4\"],\"pid\":[36060]}"
+#> [1] "{\"time\":[\"2024-04-23 17:15:12\"],\"msg\":[\"5\"],\"pid\":[36065]}"
+#> [1] "{\"time\":[\"2024-04-23 17:15:12\"],\"msg\":[\"6\"],\"pid\":[36062]}"
+#> [1] "{\"time\":[\"2024-04-23 17:15:12\"],\"msg\":[\"7\"],\"pid\":[36068]}"
+#> [1] "{\"time\":[\"2024-04-23 17:15:12\"],\"msg\":[\"8\"],\"pid\":[36060]}"
 
 daemons(0)
 #> [1] 0
@@ -84,7 +85,7 @@ daemons(0)
 
 Below is a demonstration of the equivalent using a POST endpoint, accepting a JSON instruction sent as request data.
 
-It is important to note in this case that `req$postBody` should be accessed in the router process and passed in as an argument to the 'mirai' as this is retrieved using a connection that is not serializable.
+Note that `req$postBody` should always be accessed in the router process and passed in as an argument to the 'mirai', as this is retrieved using a connection that is not serializable.
 
 ```r
 library(mirai)
@@ -134,14 +135,14 @@ res <- lapply(1:8,
                                     data = sprintf('{"msg":"%d"}', i)))
 res <- lapply(res, call_aio)
 for (r in res) print(r$data)
-#> [1] "{\"time\":[\"2024-04-07 20:10:35\"],\"msg\":[\"1\"],\"pid\":[19931]}"
-#> [1] "{\"time\":[\"2024-04-07 20:10:35\"],\"msg\":[\"2\"],\"pid\":[19937]}"
-#> [1] "{\"time\":[\"2024-04-07 20:10:35\"],\"msg\":[\"3\"],\"pid\":[19929]}"
-#> [1] "{\"time\":[\"2024-04-07 20:10:35\"],\"msg\":[\"4\"],\"pid\":[19934]}"
-#> [1] "{\"time\":[\"2024-04-07 20:10:36\"],\"msg\":[\"5\"],\"pid\":[19929]}"
-#> [1] "{\"time\":[\"2024-04-07 20:10:36\"],\"msg\":[\"6\"],\"pid\":[19931]}"
-#> [1] "{\"time\":[\"2024-04-07 20:10:36\"],\"msg\":[\"7\"],\"pid\":[19937]}"
-#> [1] "{\"time\":[\"2024-04-07 20:10:36\"],\"msg\":[\"8\"],\"pid\":[19934]}"
+#> [1] "{\"time\":[\"2024-04-23 17:15:15\"],\"msg\":[\"1\"],\"pid\":[36338]}"
+#> [1] "{\"time\":[\"2024-04-23 17:15:15\"],\"msg\":[\"2\"],\"pid\":[36343]}"
+#> [1] "{\"time\":[\"2024-04-23 17:15:15\"],\"msg\":[\"3\"],\"pid\":[36340]}"
+#> [1] "{\"time\":[\"2024-04-23 17:15:15\"],\"msg\":[\"4\"],\"pid\":[36346]}"
+#> [1] "{\"time\":[\"2024-04-23 17:15:16\"],\"msg\":[\"5\"],\"pid\":[36346]}"
+#> [1] "{\"time\":[\"2024-04-23 17:15:16\"],\"msg\":[\"6\"],\"pid\":[36338]}"
+#> [1] "{\"time\":[\"2024-04-23 17:15:16\"],\"msg\":[\"7\"],\"pid\":[36343]}"
+#> [1] "{\"time\":[\"2024-04-23 17:15:16\"],\"msg\":[\"8\"],\"pid\":[36340]}"
 
 daemons(0)
 #> [1] 0

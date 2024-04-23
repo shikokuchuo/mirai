@@ -24,6 +24,7 @@ Example usage is provided below for different types of endpoint.
 The plumber router code is run in a daemon process itself so that it does not block the interactive process.
 
 The /echo endpoint takes a GET request, sleeps for 1 second (simulating an expensive computation) and simply returns the 'msg' request header together with a timestamp and the process ID of the process it is run on.
+
 ```{r get}
 library(mirai)
 
@@ -46,10 +47,10 @@ m <- mirai({
           {
             Sys.sleep(1L)
             list(status = 200L, body = list(time = format(Sys.time()),
-                                            msg = req[["HEADERS"]][["msg"]],
+                                            msg = msg,
                                             pid = Sys.getpid()))
           },
-          req = req
+          msg = req[["HEADERS"]][["msg"]]
         ) %...>% (function(x) {
           res$status <- x$status
           res$body <- x$body
@@ -80,7 +81,7 @@ daemons(0)
 
 Below is a demonstration of the equivalent using a POST endpoint, accepting a JSON instruction sent as request data.
 
-It is important to note in this case that `req$postBody` should be accessed in the router process and passed in as an argument to the 'mirai' as this is retrieved using a connection that is not serializable.
+Note that `req$postBody` should always be accessed in the router process and passed in as an argument to the 'mirai', as this is retrieved using a connection that is not serializable.
 ```{r post}
 library(mirai)
 

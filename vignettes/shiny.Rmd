@@ -76,7 +76,7 @@ The key components to using ExtendedTask are:
 input_task_button("btn", "Plot uniform distribution")
 ```
 
-2. In the server, create an 'ExtendedTask' object by calling `ExtendedTask$new()` on a function passing '...' arguments to `mirai()`, and bind it to the button created in (1).
+2. In the server, create an ExtendedTask object by calling `ExtendedTask$new()` on a function passing `...` arguments to `mirai()`, and bind it to the button created in (1).
 
 ```{r shinystep2, eval=FALSE}
 extended_task <- ExtendedTask$new(
@@ -84,13 +84,13 @@ extended_task <- ExtendedTask$new(
   ) |> bind_task_button("btn")
 ```
 
-3. In the server, create an observer on the input button, which invokes the 'ExtendedTask' with the named parameters specified in the 'mirai' i.e. 'x' and 'y' in this example.
+3. In the server, create an observer on the input button, which invokes the ExtendedTask with the *named* parameters required by the 'mirai' i.e. 'x' and 'y' in this example.
 
 ```{r shinystep3, eval=FALSE}
 observeEvent(input$btn, extended_task$invoke(x = input$n, y = input$delay))
 ```
 
-4. In the server, create a render function for the output, which consumes the 'ExtendedTask' result.
+4. In the server, create a render function for the output, which consumes the result of the ExtendedTask.
 
 ```{r shinystep4, eval=FALSE}
 output$plot <- renderPlot(hist(extended_task$result()))
@@ -183,6 +183,33 @@ with(daemons(3), runApp(app))
 ```
 *The above example builds on original code by Joe Cheng, Daniel Woodie and William Landau.* 
 
+The key components to using this ExtendedTask example are:
+
+1. In the UI, use `bslib::input_task_button()`. This is a button which is disabled during computation to prevent additional clicks.
+
+```{r shinystep21, eval=FALSE}
+input_task_button(ns("resample"), "Resample")
+```
+
+2. In the server, create an ExtendedTask object by calling `ExtendedTask$new()` on a function passing arguments to `mirai()`, and bind it to the button created in (1). As not all variables are supplied by inputs in this case, we make use of `environment()` to conveniently pass in the calling environment of the ExtendedTask function.
+
+```{r shinystep22, eval=FALSE}
+extended_task <- ExtendedTask$new(
+  function(x, run = run_task) mirai(run(x), environment())
+) |> bind_task_button("resample")
+```
+
+3. In the server, create an observer on the input button, which invokes the ExtendedTask with the parameters required by the ExtendedTask function.
+
+```{r shinystep23, eval=FALSE}
+observeEvent(input$resample, extended_task$invoke(calc_time))
+```
+
+4. In the server, create a render function for the output, which consumes the result of the ExtendedTask.
+
+```{r shinystep24, eval=FALSE}
+output$plot <- renderPlot(plot_result(extended_task$result()))
+```
 
 #### Advanced Non-Promise Example: Generative Art
 
