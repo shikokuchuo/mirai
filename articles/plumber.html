@@ -156,10 +156,10 @@ process it is run on.</p>
 <span>          <span class="op">{</span></span>
 <span>            <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span></span>
 <span>            <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>status <span class="op">=</span> <span class="fl">200L</span>, body <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>                                            msg <span class="op">=</span> <span class="va">req</span><span class="op">[[</span><span class="st">"HEADERS"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"msg"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>                                            msg <span class="op">=</span> <span class="va">msg</span>,</span>
 <span>                                            pid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getpid.html" class="external-link">Sys.getpid</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>          <span class="op">}</span>,</span>
-<span>          req <span class="op">=</span> <span class="va">req</span></span>
+<span>          msg <span class="op">=</span> <span class="va">req</span><span class="op">[[</span><span class="st">"HEADERS"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"msg"</span><span class="op">]</span><span class="op">]</span></span>
 <span>        <span class="op">)</span> <span class="op"><a href="https://rstudio.github.io/promises/reference/pipes.html" class="external-link">%...&gt;%</a></span> <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>          <span class="va">res</span><span class="op">$</span><span class="va">status</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">$</span><span class="va">status</span></span>
 <span>          <span class="va">res</span><span class="op">$</span><span class="va">body</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">$</span><span class="va">body</span></span>
@@ -180,14 +180,14 @@ one time (limited by the number of daemons set).</p>
 <span>                                    headers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>msg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">call_aio</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">r</span> <span class="kw">in</span> <span class="va">res</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">r</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-07 20:10:30\"],\"msg\":[\"1\"],\"pid\":[19652]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-07 20:10:30\"],\"msg\":[\"2\"],\"pid\":[19657]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-07 20:10:30\"],\"msg\":[\"3\"],\"pid\":[19660]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-07 20:10:30\"],\"msg\":[\"4\"],\"pid\":[19654]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-07 20:10:31\"],\"msg\":[\"5\"],\"pid\":[19652]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-07 20:10:31\"],\"msg\":[\"6\"],\"pid\":[19657]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-07 20:10:31\"],\"msg\":[\"7\"],\"pid\":[19660]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-07 20:10:31\"],\"msg\":[\"8\"],\"pid\":[19654]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-23 17:15:11\"],\"msg\":[\"1\"],\"pid\":[36065]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-23 17:15:11\"],\"msg\":[\"2\"],\"pid\":[36062]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-23 17:15:11\"],\"msg\":[\"3\"],\"pid\":[36068]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-23 17:15:11\"],\"msg\":[\"4\"],\"pid\":[36060]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-23 17:15:12\"],\"msg\":[\"5\"],\"pid\":[36065]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-23 17:15:12\"],\"msg\":[\"6\"],\"pid\":[36062]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-23 17:15:12\"],\"msg\":[\"7\"],\"pid\":[36068]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-23 17:15:12\"],\"msg\":[\"8\"],\"pid\":[36060]}"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
@@ -197,10 +197,9 @@ one time (limited by the number of daemons set).</p>
 </h4>
 <p>Below is a demonstration of the equivalent using a POST endpoint,
 accepting a JSON instruction sent as request data.</p>
-<p>It is important to note in this case that <code>req$postBody</code>
-should be accessed in the router process and passed in as an argument to
-the ‘mirai’ as this is retrieved using a connection that is not
-serializable.</p>
+<p>Note that <code>req$postBody</code> should always be accessed in the
+router process and passed in as an argument to the ‘mirai’, as this is
+retrieved using a connection that is not serializable.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span></span>
@@ -247,14 +246,14 @@ previous example.</p>
 <span>                                    data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">'{"msg":"%d"}'</span>, <span class="va">i</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">res</span>, <span class="va">call_aio</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">r</span> <span class="kw">in</span> <span class="va">res</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">r</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-07 20:10:35\"],\"msg\":[\"1\"],\"pid\":[19931]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-07 20:10:35\"],\"msg\":[\"2\"],\"pid\":[19937]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-07 20:10:35\"],\"msg\":[\"3\"],\"pid\":[19929]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-07 20:10:35\"],\"msg\":[\"4\"],\"pid\":[19934]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-07 20:10:36\"],\"msg\":[\"5\"],\"pid\":[19929]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-07 20:10:36\"],\"msg\":[\"6\"],\"pid\":[19931]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-07 20:10:36\"],\"msg\":[\"7\"],\"pid\":[19937]}"</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-07 20:10:36\"],\"msg\":[\"8\"],\"pid\":[19934]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-23 17:15:15\"],\"msg\":[\"1\"],\"pid\":[36338]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-23 17:15:15\"],\"msg\":[\"2\"],\"pid\":[36343]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-23 17:15:15\"],\"msg\":[\"3\"],\"pid\":[36340]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-23 17:15:15\"],\"msg\":[\"4\"],\"pid\":[36346]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-23 17:15:16\"],\"msg\":[\"5\"],\"pid\":[36346]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-23 17:15:16\"],\"msg\":[\"6\"],\"pid\":[36338]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-23 17:15:16\"],\"msg\":[\"7\"],\"pid\":[36343]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-04-23 17:15:16\"],\"msg\":[\"8\"],\"pid\":[36340]}"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
