@@ -1,4 +1,4 @@
-# mirai 0.13.2.9013 (development)
+# mirai 0.13.2.9014 (development)
 
 * Implements completely event-driven (non-polling) promises (thanks @jcheng5 for prototyping).
 * Behavioural changes to `mirai()` and `everywhere()`:
@@ -7,7 +7,7 @@
 * `stop_mirai()` now resolves to an 'errorValue' 20 (operation canceled) in the case the asynchronous task was still ongoing (thanks @jcheng5 #110).
 * Rejected promises now show the complete error code and message in the case of an 'errorValue'.
 * A 'miraiError' reverts to not including a trailing line break (as prior to mirai 0.13.2).
-* Requires `nanonext` >= [0.13.6.9010].
+* Requires `nanonext` >= [0.13.6.9014].
 
 # mirai 0.13.2
 

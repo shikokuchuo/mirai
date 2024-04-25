@@ -220,7 +220,7 @@ if (connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") 
   nanotest(daemons(n = 2, "tcp://127.0.0.1:45555") == 2L)
   Sys.sleep(1L)
   nanotestn(launch_local(nextget("urls", .compute = "default")[1L], maxtasks = 1L))
-  Sys.sleep(1L)
+  Sys.sleep(2L)
   tstatus <- status()[["daemons"]]
   nanotest(is.matrix(tstatus))
   nanotest(is.character(tdn1 <- dimnames(tstatus)[[1L]]))
