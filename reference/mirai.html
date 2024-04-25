@@ -103,16 +103,16 @@ language object.</p></dd>
 
 <dt>...</dt>
 <dd><p>(optional) <strong>either</strong> named arguments (name = value pairs)
-specifying objects referenced in '.expr', <strong>or</strong> an environment.
-These objects (from the environment if one was supplied) are placed in
-the global environment of the evaluation process.</p></dd>
+specifying objects referenced, but not defined, in '.expr', <strong>or</strong>
+an environment containing such objects. See 'evaluation' section below.</p></dd>
 
 
 <dt>.args</dt>
-<dd><p>(optional) <strong>either</strong> a list of name = value pairs,
-<strong>or</strong> an environment, as in '...' above. Contrary to '...', these
-objects (from the environment if one was supplied) remain local to the
-evaluation environment.</p></dd>
+<dd><p>(optional) <strong>either</strong> a named list, specifying objects
+referenced, but not defined, in '.expr', <strong>or</strong> an environment
+containing such objects. These objects will remain local to the
+evaluation environment as opposed to those supplied in '...' above - see
+'evaluation' section below.</p></dd>
 
 
 <dt>.timeout</dt>
@@ -143,13 +143,28 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <p>Alternatively, to call (and wait for) the result, use
     <code><a href="call_mirai.html">call_mirai</a></code> on the returned mirai. This will block until the
     result is returned.</p>
-<p>The expression '.expr' will be evaluated in a separate R process in a
-    clean environment (not the global environment), consisting only of the
-    objects in the list / environment supplied to '.args', with the named
-    objects passed as '...' (from the environment if one was supplied)
-    assigned to the global environment of that process.</p>
 <p>Specify '.compute' to send the mirai using a specific compute profile (if
     previously created by <code><a href="daemons.html">daemons</a></code>), otherwise leave as 'default'.</p>
+    </div>
+    <div id="evaluation">
+    <h2>Evaluation</h2>
+    
+
+
+<p>The expression '.expr' will be evaluated in a separate R process in a
+    clean environment (not the global environment), consisting only of the
+    objects in the list or environment supplied to '.args', with the named
+    objects passed as '...' (from the environment if one was supplied)
+    assigned to the global environment of that process.</p>
+<p>For evaluation to occur 'as if' in your global environment, supply
+    objects to '...' rather than '.args'. For stricter scoping, use '.args',
+    which limits where variables not explicitly passed as arguments to
+    functions are found.</p>
+<p>As evaluation occurs in a clean environment, all undefined objects must
+    be supplied though '...' or '.args', including self-defined functions.
+    Functions from a package must use namespaced calls such as
+    <code>mirai::mirai()</code>, or else the package should be loaded beforehand
+    in '.expr'.</p>
     </div>
     <div id="errors">
     <h2>Errors</h2>
