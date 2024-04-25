@@ -12,14 +12,14 @@ wrapped in \{ \} where necessary), \strong{or else} a pre-constructed
 language object.}
 
 \item{...}{(optional) \strong{either} named arguments (name = value pairs)
-specifying objects referenced in '.expr', \strong{or} an environment.
-These objects (from the environment if one was supplied) are placed in
-the global environment of the evaluation process.}
+specifying objects referenced, but not defined, in '.expr', \strong{or}
+an environment containing such objects. See 'evaluation' section below.}
 
-\item{.args}{(optional) \strong{either} a list of name = value pairs,
-\strong{or} an environment, as in '...' above. Contrary to '...', these
-objects (from the environment if one was supplied) remain local to the
-evaluation environment.}
+\item{.args}{(optional) \strong{either} a named list, specifying objects
+referenced, but not defined, in '.expr', \strong{or} an environment
+containing such objects. These objects will remain local to the
+evaluation environment as opposed to those supplied in '...' above - see
+'evaluation' section below.}
 
 \item{.timeout}{[default NULL] for no timeout, or an integer value in
 milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
@@ -51,15 +51,30 @@ This function will return a 'mirai' object immediately.
     \code{\link{call_mirai}} on the returned mirai. This will block until the
     result is returned.
 
-    The expression '.expr' will be evaluated in a separate R process in a
-    clean environment (not the global environment), consisting only of the
-    objects in the list / environment supplied to '.args', with the named
-    objects passed as '...' (from the environment if one was supplied)
-    assigned to the global environment of that process.
-
     Specify '.compute' to send the mirai using a specific compute profile (if
     previously created by \code{\link{daemons}}), otherwise leave as 'default'.
 }
+\section{Evaluation}{
+
+
+    The expression '.expr' will be evaluated in a separate R process in a
+    clean environment (not the global environment), consisting only of the
+    objects in the list or environment supplied to '.args', with the named
+    objects passed as '...' (from the environment if one was supplied)
+    assigned to the global environment of that process.
+
+    For evaluation to occur 'as if' in your global environment, supply
+    objects to '...' rather than '.args'. For stricter scoping, use '.args',
+    which limits where variables not explicitly passed as arguments to
+    functions are found.
+
+    As evaluation occurs in a clean environment, all undefined objects must
+    be supplied though '...' or '.args', including self-defined functions.
+    Functions from a package must use namespaced calls such as
+    \code{mirai::mirai()}, or else the package should be loaded beforehand
+    in '.expr'.
+}
+
 \section{Errors}{
 
 

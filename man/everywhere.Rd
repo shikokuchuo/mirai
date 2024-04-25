@@ -12,14 +12,14 @@ wrapped in \{ \} where necessary), \strong{or else} a pre-constructed
 language object.}
 
 \item{...}{(optional) \strong{either} named arguments (name = value pairs)
-specifying objects referenced in '.expr', \strong{or} an environment.
-These objects (from the environment if one was supplied) are placed in
-the global environment of the evaluation process.}
+specifying objects referenced, but not defined, in '.expr', \strong{or}
+an environment containing such objects. See 'evaluation' section below.}
 
-\item{.args}{(optional) \strong{either} a list of name = value pairs,
-\strong{or} an environment, as in '...' above. Contrary to '...', these
-objects (from the environment if one was supplied) remain local to the
-evaluation environment.}
+\item{.args}{(optional) \strong{either} a named list, specifying objects
+referenced, but not defined, in '.expr', \strong{or} an environment
+containing such objects. These objects will remain local to the
+evaluation environment as opposed to those supplied in '...' above - see
+'evaluation' section below.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
@@ -34,6 +34,27 @@ Evaluate an expression 'everywhere' on all connected daemons for the
     environment, loaded packages or options are persisted regardless of a
     daemon's 'cleanup' setting.
 }
+\section{Evaluation}{
+
+
+    The expression '.expr' will be evaluated in a separate R process in a
+    clean environment (not the global environment), consisting only of the
+    objects in the list or environment supplied to '.args', with the named
+    objects passed as '...' (from the environment if one was supplied)
+    assigned to the global environment of that process.
+
+    For evaluation to occur 'as if' in your global environment, supply
+    objects to '...' rather than '.args'. For stricter scoping, use '.args',
+    which limits where variables not explicitly passed as arguments to
+    functions are found.
+
+    As evaluation occurs in a clean environment, all undefined objects must
+    be supplied though '...' or '.args', including self-defined functions.
+    Functions from a package must use namespaced calls such as
+    \code{mirai::mirai()}, or else the package should be loaded beforehand
+    in '.expr'.
+}
+
 \examples{
 if (interactive()) {
 # Only run examples in interactive R sessions
