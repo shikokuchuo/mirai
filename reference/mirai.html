@@ -108,7 +108,7 @@ an environment containing such objects. See 'evaluation' section below.</p></dd>
 
 
 <dt>.args</dt>
-<dd><p>(optional) <strong>either</strong> a named list, specifying objects
+<dd><p>(optional) <strong>either</strong> a named list specifying objects
 referenced, but not defined, in '.expr', <strong>or</strong> an environment
 containing such objects. These objects will remain local to the
 evaluation environment as opposed to those supplied in '...' above - see
@@ -161,8 +161,8 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
     which limits where variables not explicitly passed as arguments to
     functions are found.</p>
 <p>As evaluation occurs in a clean environment, all undefined objects must
-    be supplied though '...' or '.args', including self-defined functions.
-    Functions from a package must use namespaced calls such as
+    be supplied though '...' and/or '.args', including self-defined
+    functions. Functions from a package should use namespaced calls such as
     <code>mirai::mirai()</code>, or else the package should be loaded beforehand
     in '.expr'.</p>
     </div>
