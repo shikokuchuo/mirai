@@ -15,7 +15,7 @@ language object.}
 specifying objects referenced, but not defined, in '.expr', \strong{or}
 an environment containing such objects. See 'evaluation' section below.}
 
-\item{.args}{(optional) \strong{either} a named list, specifying objects
+\item{.args}{(optional) \strong{either} a named list specifying objects
 referenced, but not defined, in '.expr', \strong{or} an environment
 containing such objects. These objects will remain local to the
 evaluation environment as opposed to those supplied in '...' above - see
@@ -49,8 +49,8 @@ Evaluate an expression 'everywhere' on all connected daemons for the
     functions are found.
 
     As evaluation occurs in a clean environment, all undefined objects must
-    be supplied though '...' or '.args', including self-defined functions.
-    Functions from a package must use namespaced calls such as
+    be supplied though '...' and/or '.args', including self-defined
+    functions. Functions from a package should use namespaced calls such as
     \code{mirai::mirai()}, or else the package should be loaded beforehand
     in '.expr'.
 }
