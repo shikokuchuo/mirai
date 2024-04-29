@@ -20,7 +20,7 @@ nextget retrieves the specified item from the specified compute
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9014</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9015</span>
       </span>
     </div>
 
@@ -103,9 +103,9 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 
 
 <dt>x</dt>
-<dd><p>character value of item to retrieve. One of 'pid' (dispatcher
-process ID), 'urls' (URLs dispatcher is listening at) or 'tls' (the
-stored client TLS configuration for use by daemons).</p></dd>
+<dd><p>character value of item to retrieve. One of ‘pid’ (dispatcher
+process ID), ‘urls’ (URLs dispatcher is listening at) or
+‘tls’ (the stored client TLS configuration for use by daemons).</p></dd>
 
 </dl></div>
     <div id="value">
@@ -115,8 +115,8 @@ stored client TLS configuration for use by daemons).</p></dd>
 <p>For <code>nextstream</code>: a length 7 integer vector, as given by</p>
 <p></p>
 <p><code>.Random.seed</code> when the L'Ecuyer-CMRG RNG is in use (may be passed
-    directly to the 'rs' argument of <code><a href="daemon.html">daemon</a></code>), or else NULL if a
-    stream has not yet been created.</p>
+    directly to the ‘rs’ argument of <code><a href="daemon.html">daemon</a></code>), or else
+    NULL if a stream has not yet been created.</p>
 
 
 <p>For <code>nextget</code>: the requested item, or else NULL if not present.</p>

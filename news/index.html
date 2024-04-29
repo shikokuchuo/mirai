@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9014</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9015</span>
       </span>
     </div>
 
@@ -79,8 +79,10 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.13.2.9014" id="mirai-01329014-development">mirai 0.13.2.9014 (development)<a class="anchor" aria-label="anchor" href="#mirai-01329014-development"></a></h2>
-<ul><li>Implements completely event-driven (non-polling) promises (thanks <a href="https://github.com/jcheng5" class="external-link">@jcheng5</a> for prototyping).</li>
+<h2 class="page-header" data-toc-text="0.13.2.9015" id="mirai-01329015-development">mirai 0.13.2.9015 (development)<a class="anchor" aria-label="anchor" href="#mirai-01329015-development"></a></h2>
+<ul><li>Implements completely event-driven (non-polling) promises (thanks <a href="https://github.com/jcheng5" class="external-link">@jcheng5</a> for prototyping).
+<ul><li>This is an innovation which allows higher responsiveness and massive scalability for ‘mirai’ promises.</li>
+</ul></li>
 <li>Behavioural changes to <code><a href="../reference/mirai.html">mirai()</a></code> and <code><a href="../reference/everywhere.html">everywhere()</a></code>:
 <ul><li>(breaking change) no longer permits an unnamed list to be supplied to ‘.args’.</li>
 <li>allows an environment e.g. <code><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment()</a></code> to be supplied to ‘.args’ or as the only element of ‘…’.</li>
@@ -89,14 +91,16 @@
 <code><a href="../reference/stop_mirai.html">stop_mirai()</a></code> now resolves to an ‘errorValue’ 20 (operation canceled) in the case the asynchronous task was still ongoing (thanks <a href="https://github.com/jcheng5" class="external-link">@jcheng5</a> <a href="https://github.com/shikokuchuo/mirai/issues/110" class="external-link">#110</a>).</li>
 <li>Rejected promises now show the complete error code and message in the case of an ‘errorValue’.</li>
 <li>A ‘miraiError’ reverts to not including a trailing line break (as prior to mirai 0.13.2).</li>
-<li>Requires <code>nanonext</code> &gt;= [0.13.6.9014].</li>
+<li>Temporaily removes <code>register_cluster()</code> as <code>parallel::registerClusterType()</code> is currently only available in R-devel.</li>
+<li>Faster startup time as the <code>parallel</code> package is now only loaded if used.</li>
+<li>Requires <code>nanonext</code> &gt;= [0.13.6.9017].</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.13.2" id="mirai-0132">mirai 0.13.2<small>2024-04-11</small><a class="anchor" aria-label="anchor" href="#mirai-0132"></a></h2>
 <ul><li>
 <code><a href="../reference/mirai.html">mirai()</a></code> and <code><a href="../reference/everywhere.html">everywhere()</a></code> behaviour changed such that ‘…’ args are now assigned to the global environment of the daemon process.</li>
 <li>Adds <code><a href="https://rdrr.io/r/base/with.html" class="external-link">with()</a></code> method for mirai daemons, allowing for example: <code>with(daemons(4), {expr})</code>, where the daemons last for the duration of ‘expr’.</li>
-<li>Adds <code><a href="../reference/register_cluster.html">register_cluster()</a></code> for registering ‘miraiCluster’ as a parallel Cluster type (requires R &gt;= 4.4).</li>
+<li>Adds <code>register_cluster()</code> for registering ‘miraiCluster’ as a parallel Cluster type (requires R &gt;= 4.4).</li>
 <li>Adds <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">is.promising()</a></code> method for ‘mirai’ for the promises package.</li>
 <li>A ‘miraiError’ now includes the full call stack, which may be accessed at <code>$stack.trace</code>, and includes the trailing line break for consistency with ‘as.character.error()’.</li>
 <li>mirai promises now preserve deep stacks when a ‘miraiError’ occurs within a Shiny app (thanks <a href="https://github.com/jcheng5" class="external-link">@jcheng5</a> <a href="https://github.com/shikokuchuo/mirai/issues/104" class="external-link">#104</a>).</li>

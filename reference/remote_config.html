@@ -20,7 +20,7 @@ ssh_config generates a remote configuration for launching daemons over
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9014</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9015</span>
       </span>
     </div>
 
@@ -105,25 +105,26 @@ ssh_config generates a remote configuration for launching daemons over
     <h2>Arguments</h2>
     <dl><dt>command</dt>
 <dd><p>the command used to effect the daemon launch on the remote
-machine as a character string (e.g. <code>'ssh'</code>). Defaults to 'ssh' for
-<code>ssh_config</code>, although may be substituted for the full path to a
-specific SSH application. The default NULL for <code>remote_config</code> does
-not effect any launches, but causes <code><a href="launch_local.html">launch_remote</a></code> to return
-the shell commands for manual deployment on remote machines.</p></dd>
+machine as a character string (e.g. <code>'ssh'</code>). Defaults to
+‘ssh’ for <code>ssh_config</code>, although may be substituted for the
+full path to a specific SSH application. The default NULL for
+<code>remote_config</code> does not effect any launches, but causes
+<code><a href="launch_local.html">launch_remote</a></code> to return the shell commands for manual
+deployment on remote machines.</p></dd>
 
 
 <dt>args</dt>
-<dd><p>(optional) arguments passed to 'command', as a character vector
-that must include <code>"."</code> as an element, which will be substituted
-for the daemon launch command. Alternatively, a list of such character
-vectors to effect multiple launches (one for each list element).</p></dd>
+<dd><p>(optional) arguments passed to ‘command’, as a character
+vector that must include <code>"."</code> as an element, which will be
+substituted for the daemon launch command. Alternatively, a list of such
+character vectors to effect multiple launches (one for each list element).</p></dd>
 
 
 <dt>rscript</dt>
 <dd><p>(optional) name / path of the Rscript executable on the remote
-machine. The default assumes 'Rscript' is on the executable search path.
-Prepend the full path if necessary. If launching on Windows, 'Rscript'
-should be replaced with 'Rscript.exe'.</p></dd>
+machine. The default assumes ‘Rscript’ is on the executable search
+path. Prepend the full path if necessary. If launching on Windows,
+‘Rscript’ should be replaced with ‘Rscript.exe’.</p></dd>
 
 
 <dt>remotes</dt>
@@ -140,17 +141,21 @@ seconds.</p></dd>
 <dt>tunnel</dt>
 <dd><p>[default FALSE] logical value whether to use SSH reverse
 tunnelling. If TRUE, a tunnel is created between the same ports (as
-specified in 'url') on the local and remote machines. Setting to TRUE
-requires access to 'url' in the evaluation context and will error if not
-called from a relevant function.</p></dd>
+specified in ‘url’) on the local and remote machines. Setting to
+TRUE requires access to ‘url’ in the evaluation context and will
+error if not called from a relevant function.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     
 
-<p>A list in the required format to be supplied to the 'remote' argument
-    of <code><a href="launch_local.html">launch_remote</a></code>, <code><a href="daemons.html">daemons</a></code>, or <code><a href="make_cluster.html">make_cluster</a></code>.</p>
+<p>A list in the required format to be supplied to the ‘remote’</p>
+
+
+<p>argument of <code><a href="launch_local.html">launch_remote</a></code>, <code><a href="daemons.html">daemons</a></code>, or</p>
+<p></p>
+<p><code><a href="make_cluster.html">make_cluster</a></code>.</p>
     </div>
     <div id="ssh-direct-connections">
     <h2>SSH Direct Connections</h2>
@@ -177,12 +182,12 @@ called from a relevant function.</p></dd>
     implementation uses the same port on both the side of the host and that
     of the corresponding node. SSH key-based authentication must also already
     be in place.</p>
-<p>Tunnelling requires the hostname for 'url' specified when setting up
-    <code><a href="daemons.html">daemons</a></code> to be either '127.0.0.1' or 'localhost'. This is as
-    the tunnel is created between <code>127.0.0.1:port</code> or equivalently
-    <code>localhost:port</code> on each machine. The host listens to <code>port</code> on
-    its machine and the remotes each dial into <code>port</code> on their own
-    respective machines.</p>
+<p>Tunnelling requires the hostname for ‘url’ specified when setting
+    up <code><a href="daemons.html">daemons</a></code> to be either ‘127.0.0.1’ or
+    ‘localhost’. This is as the tunnel is created between
+    <code>127.0.0.1:port</code> or equivalently <code>localhost:port</code> on each
+    machine. The host listens to <code>port</code> on its machine and the remotes
+    each dial into <code>port</code> on their own respective machines.</p>
     </div>
 
     <div id="ref-examples">

@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9014</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9015</span>
       </span>
     </div>
 
@@ -117,21 +117,22 @@ e.g. 'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.</p></dd>
 listen at, including the port to connect to (and optionally for websockets,
 a path), e.g. 'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.
 Specify 'tls+tcp://' or 'wss://' to use secure TLS connections. Tasks are
-sent to daemons dialled into these URLs. If not supplied, 'n' local
-inter-process URLs will be assigned automatically.</p></dd>
+sent to daemons dialled into these URLs. If not supplied, ‘n’
+local inter-process URLs will be assigned automatically.</p></dd>
 
 
 <dt>n</dt>
 <dd><p>(optional) if specified, the integer number of daemons to listen for.
-Otherwise 'n' will be inferred from the number of URLs supplied in 'url'.
-Where a single URL is supplied and 'n' &gt; 1, 'n' unique URLs will be
-automatically assigned for daemons to dial into.</p></dd>
+Otherwise ‘n’ will be inferred from the number of URLs supplied in
+‘url’. Where a single URL is supplied and ‘n’ &gt; 1,
+‘n’ unique URLs will be automatically assigned for daemons to dial
+into.</p></dd>
 
 
 <dt>...</dt>
 <dd><p>(optional) additional arguments passed through to <code><a href="daemon.html">daemon</a></code>.
-These include 'autoexit', 'cleanup', 'maxtasks', 'idletime', 'walltime'
-and 'timerstart'.</p></dd>
+These include ‘autoexit’, ‘cleanup’, ‘maxtasks’,
+‘idletime’, ‘walltime’ and ‘timerstart’.</p></dd>
 
 
 <dt>asyncdial</dt>
@@ -159,9 +160,9 @@ certificate chain) and [ii] the associated private key.</p></dd>
 
 
 <dt>pass</dt>
-<dd><p>[default NULL] (required only if the private key supplied to 'tls'
-is encrypted with a password) For security, should be provided through a
-function that returns this value, rather than directly.</p></dd>
+<dd><p>[default NULL] (required only if the private key supplied to
+‘tls’ is encrypted with a password) For security, should be
+provided through a function that returns this value, rather than directly.</p></dd>
 
 
 <dt>rs</dt>

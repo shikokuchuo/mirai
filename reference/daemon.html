@@ -21,7 +21,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9014</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9015</span>
       </span>
     </div>
 
@@ -127,15 +127,15 @@ section below).</p></dd>
 <dd><p>[default TRUE] logical value, whether to perform cleanup of
 the global environment and restore loaded packages and options to an
 initial state after each evaluation. For more granular control, also
-accepts an integer value (see 'Cleanup Options' section below).</p></dd>
+accepts an integer value (see ‘Cleanup Options’ section below).</p></dd>
 
 
 <dt>output</dt>
 <dd><p>[default FALSE] logical value, to output generated stdout /
-stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'
-argument to <code><a href="daemons.html">daemons</a></code> or <code><a href="launch_local.html">launch_local</a></code> to provide
-redirection of output to the host process (applicable only for local
-daemons).</p></dd>
+stderr if TRUE, or else discard if FALSE. Specify as TRUE in the
+‘...’ argument to <code><a href="daemons.html">daemons</a></code> or
+<code><a href="launch_local.html">launch_local</a></code> to provide redirection of output to the host
+process (applicable only for local daemons).</p></dd>
 
 
 <dt>maxtasks</dt>
@@ -155,8 +155,8 @@ time taken (in milliseconds) before exiting.</p></dd>
 
 <dt>timerstart</dt>
 <dd><p>[default 0L] number of completed tasks after which to start
-the timer for 'idletime' and 'walltime'. 0L implies timers are started
-upon launch.</p></dd>
+the timer for ‘idletime’ and ‘walltime’. 0L implies timers
+are started upon launch.</p></dd>
 
 
 <dt>...</dt>
@@ -188,8 +188,8 @@ process and should not be independently supplied.</p></dd>
     <div id="details">
     <h2>Details</h2>
     <p>The network topology is such that daemons dial into the host or
-    dispatcher, which listens at the 'url' address. In this way, network
-    resources may be added or removed dynamically and the host or
+    dispatcher, which listens at the ‘url’ address. In this way,
+    network resources may be added or removed dynamically and the host or
     dispatcher automatically distributes tasks to all available daemons.</p>
     </div>
     <div id="persistence">
@@ -197,9 +197,9 @@ process and should not be independently supplied.</p></dd>
     
 
 
-<p>The 'autoexit' argument governs persistence settings for the daemon. The
-    default TRUE ensures that it will exit cleanly once its socket connection
-    has ended.</p>
+<p>The ‘autoexit’ argument governs persistence settings for the
+    daemon. The default TRUE ensures that it will exit cleanly once its
+    socket connection has ended.</p>
 <p>Instead of TRUE, supplying a signal from the <span class="pkg">tools</span> package, e.g.
     <code><a href="https://rdrr.io/r/tools/pskill.html" class="external-link">tools::SIGINT</a></code>, or an equivalent integer value, sets the signal to
     be raised when the socket connection ends. As an example, supplying
@@ -219,10 +219,10 @@ process and should not be independently supplied.</p></dd>
     
 
 
-<p>The 'cleanup' argument also accepts an integer value, which operates an
-    additive bitmask: perform cleanup of the global environment (1L), reset
-    loaded packages to an initial state (2L), restore options to an initial
-    state (4L), and perform garbage collection (8L).</p>
+<p>The ‘cleanup’ argument also accepts an integer value, which
+    operates an additive bitmask: perform cleanup of the global environment
+    (1L), reset loaded packages to an initial state (2L), restore options to
+    an initial state (4L), and perform garbage collection (8L).</p>
 <p>As an example, to perform cleanup of the global environment and garbage
     collection, specify 9L (1L + 8L). The default argument value of TRUE
     performs all actions apart from garbage collection and is equivalent to a
