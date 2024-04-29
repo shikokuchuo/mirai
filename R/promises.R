@@ -31,19 +31,19 @@
 
 #' Make Mirai Promise
 #'
-#' Creates a 'promise' from a 'mirai'.
+#' Creates a \sQuote{promise} from a \sQuote{mirai}.
 #'
-#' @param x an object of class 'mirai'.
+#' @param x an object of class \sQuote{mirai}.
 #'
-#' @return A 'promise' object.
+#' @return A \sQuote{promise} object.
 #'
 #' @details This function is an S3 method for the generic \code{as.promise} for
-#'     class 'mirai'.
+#'     class \sQuote{mirai}.
 #'
 #'     Requires the \CRANpkg{promises} package.
 #'
-#'     Allows a 'mirai' to be used with the promise pipe \code{\%...>\%}, which
-#'     schedules a function to run upon resolution of the 'mirai'.
+#'     Allows a \sQuote{mirai} to be used with the promise pipe \code{\%...>\%},
+#'     which schedules a function to run upon resolution of the \sQuote{mirai}.
 #'
 #' @examples
 #' if (interactive() && requireNamespace("promises", quietly = TRUE)) {

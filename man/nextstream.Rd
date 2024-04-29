@@ -13,15 +13,15 @@ nextget(x, .compute = "default")
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
 
-\item{x}{character value of item to retrieve. One of 'pid' (dispatcher
-process ID), 'urls' (URLs dispatcher is listening at) or 'tls' (the
-stored client TLS configuration for use by daemons).}
+\item{x}{character value of item to retrieve. One of \sQuote{pid} (dispatcher
+process ID), \sQuote{urls} (URLs dispatcher is listening at) or
+\sQuote{tls} (the stored client TLS configuration for use by daemons).}
 }
 \value{
 For \code{nextstream}: a length 7 integer vector, as given by
     \code{.Random.seed} when the L'Ecuyer-CMRG RNG is in use (may be passed
-    directly to the 'rs' argument of \code{\link{daemon}}), or else NULL if a
-    stream has not yet been created.
+    directly to the \sQuote{rs} argument of \code{\link{daemon}}), or else
+    NULL if a stream has not yet been created.
 
 For \code{nextget}: the requested item, or else NULL if not present.
 }

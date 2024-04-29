@@ -51,7 +51,7 @@ status(cl)
 #> [1] 4
 #> 
 #> $daemons
-#> [1] "abstract://bfdadd07dfad88c3149c2c97"
+#> [1] "abstract://8d92dc79b8502653025772d2"
 
 stop_cluster(cl)
 ```
@@ -62,29 +62,12 @@ cl <- make_cluster(n = 2, url = host_url())
 #> Shell commands for deployment on nodes:
 #> 
 #> [1]
-#> Rscript -e "mirai::daemon('tcp://hostname:40081',rs=c(10407,-712929287,487124838,-1548361041,936929572,516359637,-964658030))"
+#> Rscript -e "mirai::daemon('tcp://hostname:36969',rs=c(10407,-1830868639,456069038,942236759,2006238380,348797373,614192474))"
 #> 
 #> [2]
-#> Rscript -e "mirai::daemon('tcp://hostname:40081',rs=c(10407,716174157,753336392,1540784125,1343950952,-477221459,1025440810))"
+#> Rscript -e "mirai::daemon('tcp://hostname:36969',rs=c(10407,1467497647,1196809824,-1509589265,1329697192,346872819,1514753604))"
 
 stop_cluster(cl)
-```
-
-Starting with R 4.4, the `parallel` package has implemented a new function `registerClusterType()` for registering alternative communications backends.
-
-The function `mirai::register_cluster()` is a wrapper around this function to register 'miraiCluster' as a cluster type and also set it as the default. This only needs only to be inserted once at the top of a script and all subsequent calls to `parallel::makeCluster()` will default to 'miraiCluster'.
-
-
-```r
-library(parallel)
-
-mirai::register_cluster()
-
-cl <- makeCluster(2)
-cl
-#> < miraiCluster | ID: `2` nodes: 2 active: TRUE >
-
-stopCluster(cl)
 ```
 
 ### Foreach Integration
@@ -105,10 +88,10 @@ doParallel::registerDoParallel(cl)
 m <- matrix(rnorm(9), 3, 3)
 foreach(i = 1:nrow(m), .combine = rbind) %dopar%
   (m[i, ] / mean(m[i, ]))
-#>               [,1]        [,2]      [,3]
-#> result.1  4.127729   3.3741203 -4.501849
-#> result.2 -2.495306   0.9463084  4.548998
-#> result.3 17.117011 -11.4476759 -2.669335
+#>               [,1]     [,2]       [,3]
+#> result.1 2.5567043 7.649603 -7.2063077
+#> result.2 0.9524272 1.683378  0.3641949
+#> result.3 1.5169638 1.969899 -0.4868624
 
 # simple parallel matrix multiply
 a <- matrix(1:16, 4, 4)

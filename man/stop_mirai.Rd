@@ -7,23 +7,24 @@
 stop_mirai(aio)
 }
 \arguments{
-\item{aio}{a 'mirai' object.}
+\item{aio}{a \sQuote{mirai} object.}
 }
 \value{
 Invisible NULL.
 }
 \description{
-Stops a mirai if still in progress, causing it to resolve immediately to an
-    'errorValue' 20 (Operation canceled).
+Stops a \sQuote{mirai} if still in progress, causing it to resolve
+    immediately to an \sQuote{errorValue} 20 (Operation canceled).
 }
 \details{
-Forces the mirai to resolve immediately. Has no effect if the mirai
-    has already resolved.
+Forces the \sQuote{mirai} to resolve immediately. Has no effect if
+    the \sQuote{mirai} has already resolved.
 
     If cancellation was successful, the value at \code{$data} will be an
-    'errorValue' 20 (Operation canceled). Note that in such a case, the mirai
-    is aborted and the value not retrieved - but any ongoing evaluation in
-    the daemon process will continue and is not interrupted.
+    \sQuote{errorValue} 20 (Operation canceled). Note that in such a case,
+    the \sQuote{mirai} has been aborted and the value not retrieved - but any
+    ongoing evaluation in the daemon process will continue to completion and
+    is not interrupted.
 }
 \examples{
 if (interactive()) {

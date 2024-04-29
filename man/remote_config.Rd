@@ -17,21 +17,22 @@ ssh_config(
 }
 \arguments{
 \item{command}{the command used to effect the daemon launch on the remote
-machine as a character string (e.g. \code{'ssh'}). Defaults to 'ssh' for
-\code{ssh_config}, although may be substituted for the full path to a
-specific SSH application. The default NULL for \code{remote_config} does
-not effect any launches, but causes \code{\link{launch_remote}} to return
-the shell commands for manual deployment on remote machines.}
+machine as a character string (e.g. \code{'ssh'}). Defaults to
+\sQuote{ssh} for \code{ssh_config}, although may be substituted for the
+full path to a specific SSH application. The default NULL for
+\code{remote_config} does not effect any launches, but causes
+\code{\link{launch_remote}} to return the shell commands for manual
+deployment on remote machines.}
 
-\item{args}{(optional) arguments passed to 'command', as a character vector
-that must include \code{"."} as an element, which will be substituted
-for the daemon launch command. Alternatively, a list of such character
-vectors to effect multiple launches (one for each list element).}
+\item{args}{(optional) arguments passed to \sQuote{command}, as a character
+vector that must include \code{"."} as an element, which will be
+substituted for the daemon launch command. Alternatively, a list of such
+character vectors to effect multiple launches (one for each list element).}
 
 \item{rscript}{(optional) name / path of the Rscript executable on the remote
-machine. The default assumes 'Rscript' is on the executable search path.
-Prepend the full path if necessary. If launching on Windows, 'Rscript'
-should be replaced with 'Rscript.exe'.}
+machine. The default assumes \sQuote{Rscript} is on the executable search
+path. Prepend the full path if necessary. If launching on Windows,
+\sQuote{Rscript} should be replaced with \sQuote{Rscript.exe}.}
 
 \item{remotes}{the character URL or vector of URLs to SSH into, using the
 'ssh://' scheme and including the port open for SSH connections (defaults
@@ -42,13 +43,14 @@ seconds.}
 
 \item{tunnel}{[default FALSE] logical value whether to use SSH reverse
 tunnelling. If TRUE, a tunnel is created between the same ports (as
-specified in 'url') on the local and remote machines. Setting to TRUE
-requires access to 'url' in the evaluation context and will error if not
-called from a relevant function.}
+specified in \sQuote{url}) on the local and remote machines. Setting to
+TRUE requires access to \sQuote{url} in the evaluation context and will
+error if not called from a relevant function.}
 }
 \value{
-A list in the required format to be supplied to the 'remote' argument
-    of \code{\link{launch_remote}}, \code{\link{daemons}}, or \code{\link{make_cluster}}.
+A list in the required format to be supplied to the \sQuote{remote}
+    argument of \code{\link{launch_remote}}, \code{\link{daemons}}, or
+    \code{\link{make_cluster}}.
 }
 \description{
 \code{remote_config} provides a flexible generic framework for generating
@@ -82,12 +84,12 @@ A list in the required format to be supplied to the 'remote' argument
     of the corresponding node. SSH key-based authentication must also already
     be in place.
 
-    Tunnelling requires the hostname for 'url' specified when setting up
-    \code{\link{daemons}} to be either '127.0.0.1' or 'localhost'. This is as
-    the tunnel is created between \code{127.0.0.1:port} or equivalently
-    \code{localhost:port} on each machine. The host listens to \code{port} on
-    its machine and the remotes each dial into \code{port} on their own
-    respective machines.
+    Tunnelling requires the hostname for \sQuote{url} specified when setting
+    up \code{\link{daemons}} to be either \sQuote{127.0.0.1} or
+    \sQuote{localhost}. This is as the tunnel is created between
+    \code{127.0.0.1:port} or equivalently \code{localhost:port} on each
+    machine. The host listens to \code{port} on its machine and the remotes
+    each dial into \code{port} on their own respective machines.
 }
 
 \examples{

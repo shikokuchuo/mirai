@@ -88,8 +88,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  2.4181337  1.8674723  6.6228207 -1.0355541  0.8055614  1.2413703
-#>  [7] -0.9656666  0.1509931  0.5354832  0.4135421
+#>  [1] -0.3253679  1.3729833 -2.3759357 -1.0818986  7.5279398  0.1328385
+#>  [7] -0.9243010 -0.4208868  0.7283410 -3.0734437
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -97,8 +97,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  2.4181337  1.8674723  6.6228207 -1.0355541  0.8055614  1.2413703
-#>  [7] -0.9656666  0.1509931  0.5354832  0.4135421
+#>  [1] -0.3253679  1.3729833 -2.3759357 -1.0818986  7.5279398  0.1328385
+#>  [7] -0.9243010 -0.4208868  0.7283410 -3.0734437
 ```
 
 ### Daemons
@@ -184,8 +184,9 @@ for persistent daemons, through to orchestrating robustness testing for
 the high performance computing requirements of `crew` and `targets`.
 
 [Joe Cheng](https://github.com/jcheng5/), for optimising the `promises`
-method to make `mirai` work seamlessly within Shiny, prototyping
-non-polling promises and guidance on implementing error stack traces.
+method to make `mirai` work seamlessly within Shiny, and prototyping
+non-polling promises, which is implemented across `nanonext` and
+`mirai`.
 
 [Luke Tierney](https://github.com/ltierney/), R Core, for discussion on
 R’s implementation of L’Ecuyer-CMRG streams, used to ensure statistical

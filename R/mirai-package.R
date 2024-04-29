@@ -47,7 +47,6 @@
 #'     parse_url pipe_notify random reap recv recv_aio_signal request
 #'     request_signal send set_promise_context socket stat stop_aio strcat
 #'     tls_config unresolved until wait write_cert
-#' @importFrom parallel nextRNGStream
 #' @importFrom stats rexp
 #' @importFrom utils .DollarNames
 #'
@@ -96,7 +95,7 @@
     n_one = "'n' must be 1 or greater",
     n_zero = "the number of daemons must be zero or greater",
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
-    register_cluster = "this function requires R version 4.4 or newer",
+    register_cluster = "this function requires a newer version of R",
     requires_local = "SSH tunnelling requires 'url' hostname to be '127.0.0.1' or 'localhost'",
     refhook_invalid = "'refhook' must be a list of 2 functions or NULL",
     single_url = "only one 'url' should be specified",

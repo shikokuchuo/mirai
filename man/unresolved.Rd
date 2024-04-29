@@ -7,22 +7,24 @@
 unresolved(aio)
 }
 \arguments{
-\item{aio}{a 'mirai' object or 'mirai' value stored at \code{$data}.}
+\item{aio}{a \sQuote{mirai} object or \sQuote{mirai} value stored at
+\code{$data}.}
 }
 \value{
-Logical TRUE if 'aio' is an unresolved mirai or mirai value, or
-    FALSE otherwise.
+Logical TRUE if \sQuote{aio} is an unresolved \sQuote{mirai} or
+    \sQuote{mirai} value, or FALSE otherwise.
 }
 \description{
-Query whether a mirai or mirai value remains unresolved. Unlike
-    \code{\link{call_mirai}}, this function does not wait for completion.
+Query whether a \sQuote{mirai} or \sQuote{mirai} value remains unresolved.
+    Unlike \code{\link{call_mirai}}, this function does not wait for
+    completion.
 }
 \details{
 Suitable for use in control flow statements such as \code{while} or
     \code{if}.
 
-    Note: querying resolution may cause a previously unresolved 'mirai' to
-    resolve.
+    Note: querying resolution may cause a previously unresolved
+    \sQuote{mirai} to resolve.
 }
 \examples{
 if (interactive()) {

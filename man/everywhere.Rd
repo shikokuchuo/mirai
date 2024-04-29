@@ -12,14 +12,15 @@ wrapped in \{ \} where necessary), \strong{or else} a pre-constructed
 language object.}
 
 \item{...}{(optional) \strong{either} named arguments (name = value pairs)
-specifying objects referenced, but not defined, in '.expr', \strong{or}
-an environment containing such objects. See 'evaluation' section below.}
+specifying objects referenced, but not defined, in \sQuote{.expr},
+\strong{or} an environment containing such objects. See
+\sQuote{evaluation} section below.}
 
 \item{.args}{(optional) \strong{either} a named list specifying objects
-referenced, but not defined, in '.expr', \strong{or} an environment
-containing such objects. These objects will remain local to the
-evaluation environment as opposed to those supplied in '...' above - see
-'evaluation' section below.}
+referenced, but not defined, in \sQuote{.expr}, \strong{or} an
+environment containing such objects. These objects will remain local to
+the evaluation environment as opposed to those supplied in \sQuote{...}
+above - see \sQuote{evaluation} section below.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
@@ -28,31 +29,31 @@ to use (each compute profile has its own independent set of daemons).}
 Invisible NULL.
 }
 \description{
-Evaluate an expression 'everywhere' on all connected daemons for the
+Evaluate an expression \sQuote{everywhere} on all connected daemons for the
     specified compute profile. Designed for performing setup operations
     across daemons or exporting common data, resultant changes to the global
     environment, loaded packages or options are persisted regardless of a
-    daemon's 'cleanup' setting.
+    daemon's \sQuote{cleanup} setting.
 }
 \section{Evaluation}{
 
 
-    The expression '.expr' will be evaluated in a separate R process in a
-    clean environment (not the global environment), consisting only of the
-    objects in the list or environment supplied to '.args', with the named
-    objects passed as '...' (from the environment if one was supplied)
-    assigned to the global environment of that process.
+    The expression \sQuote{.expr} will be evaluated in a separate R process
+    in a clean environment (not the global environment), consisting only of
+    the objects in the list or environment supplied to \sQuote{.args}, with
+    the named objects passed as \sQuote{...} (from the environment if one was
+    supplied) assigned to the global environment of that process.
 
-    For evaluation to occur 'as if' in your global environment, supply
-    objects to '...' rather than '.args'. For stricter scoping, use '.args',
-    which limits where variables not explicitly passed as arguments to
-    functions are found.
+    For evaluation to occur \emph{as if} in your global environment, supply
+    objects to \sQuote{...} rather than \sQuote{.args}. For stricter scoping,
+    use \sQuote{.args}, which limits, for example, where variables not
+    explicitly passed as arguments to functions are found.
 
     As evaluation occurs in a clean environment, all undefined objects must
-    be supplied though '...' and/or '.args', including self-defined
-    functions. Functions from a package should use namespaced calls such as
-    \code{mirai::mirai()}, or else the package should be loaded beforehand
-    in '.expr'.
+    be supplied though \sQuote{...} and/or \sQuote{.args}, including
+    self-defined functions. Functions from a package should use namespaced
+    calls such as \code{mirai::mirai()}, or else the package should be loaded
+    beforehand as part of \sQuote{.expr}.
 }
 
 \examples{

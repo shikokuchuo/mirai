@@ -31,15 +31,16 @@
 #'     listen at, including the port to connect to (and optionally for websockets,
 #'     a path), e.g. 'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.
 #'     Specify 'tls+tcp://' or 'wss://' to use secure TLS connections. Tasks are
-#'     sent to daemons dialled into these URLs. If not supplied, 'n' local
-#'     inter-process URLs will be assigned automatically.
+#'     sent to daemons dialled into these URLs. If not supplied, \sQuote{n}
+#'     local inter-process URLs will be assigned automatically.
 #' @param n (optional) if specified, the integer number of daemons to listen for.
-#'     Otherwise 'n' will be inferred from the number of URLs supplied in 'url'.
-#'     Where a single URL is supplied and 'n' > 1, 'n' unique URLs will be
-#'     automatically assigned for daemons to dial into.
+#'     Otherwise \sQuote{n} will be inferred from the number of URLs supplied in
+#'     \sQuote{url}. Where a single URL is supplied and \sQuote{n} > 1,
+#'     \sQuote{n} unique URLs will be automatically assigned for daemons to dial
+#'     into.
 #' @param ... (optional) additional arguments passed through to \code{\link{daemon}}.
-#'     These include 'autoexit', 'cleanup', 'maxtasks', 'idletime', 'walltime'
-#'     and 'timerstart'.
+#'     These include \sQuote{autoexit}, \sQuote{cleanup}, \sQuote{maxtasks},
+#'     \sQuote{idletime}, \sQuote{walltime} and \sQuote{timerstart}.
 #' @param asyncdial [default FALSE] whether to perform dials asynchronously. The
 #'     default FALSE will error if a connection is not immediately possible
 #'     (e.g. \code{\link{daemons}} has yet to be called on the host, or the
@@ -55,9 +56,9 @@
 #'     to a validation chain, with the TLS certificate first), \strong{or} a
 #'     length 2 character vector comprising [i] the TLS certificate (optionally
 #'     certificate chain) and [ii] the associated private key.
-#' @param pass [default NULL] (required only if the private key supplied to 'tls'
-#'     is encrypted with a password) For security, should be provided through a
-#'     function that returns this value, rather than directly.
+#' @param pass [default NULL] (required only if the private key supplied to
+#'     \sQuote{tls} is encrypted with a password) For security, should be
+#'     provided through a function that returns this value, rather than directly.
 #' @param monitor (for package internal use only) do not set this parameter.
 #'
 #' @return Invisible NULL.

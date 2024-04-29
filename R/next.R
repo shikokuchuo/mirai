@@ -25,8 +25,8 @@
 #'
 #' @return For \code{nextstream}: a length 7 integer vector, as given by
 #'     \code{.Random.seed} when the L'Ecuyer-CMRG RNG is in use (may be passed
-#'     directly to the 'rs' argument of \code{\link{daemon}}), or else NULL if a
-#'     stream has not yet been created.
+#'     directly to the \sQuote{rs} argument of \code{\link{daemon}}), or else
+#'     NULL if a stream has not yet been created.
 #'
 #' @details These functions are exported for use by packages extending
 #'     \pkg{mirai} with alternative launchers of \code{\link{daemon}} processes.
@@ -61,9 +61,9 @@ nextstream <- function(.compute = "default") next_stream(..[[.compute]])
 #' \code{nextget} retrieves the specified item from the specified compute
 #'     profile.
 #'
-#' @param x character value of item to retrieve. One of 'pid' (dispatcher
-#'     process ID), 'urls' (URLs dispatcher is listening at) or 'tls' (the
-#'     stored client TLS configuration for use by daemons).
+#' @param x character value of item to retrieve. One of \sQuote{pid} (dispatcher
+#'     process ID), \sQuote{urls} (URLs dispatcher is listening at) or
+#'     \sQuote{tls} (the stored client TLS configuration for use by daemons).
 #'
 #' @return For \code{nextget}: the requested item, or else NULL if not present.
 #'
@@ -76,6 +76,6 @@ nextget <- function(x, .compute = "default") ..[[.compute]][[x]]
 
 next_stream <- function(envir) {
   stream <- envir[["stream"]]
-  if (length(stream)) `[[<-`(envir, "stream", nextRNGStream(stream))
+  if (length(stream)) `[[<-`(envir, "stream", parallel::nextRNGStream(stream))
   stream
 }

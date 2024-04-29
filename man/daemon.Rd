@@ -32,13 +32,13 @@ section below).}
 \item{cleanup}{[default TRUE] logical value, whether to perform cleanup of
 the global environment and restore loaded packages and options to an
 initial state after each evaluation. For more granular control, also
-accepts an integer value (see 'Cleanup Options' section below).}
+accepts an integer value (see \sQuote{Cleanup Options} section below).}
 
 \item{output}{[default FALSE] logical value, to output generated stdout /
-stderr if TRUE, or else discard if FALSE. Specify as TRUE in the '...'
-argument to \code{\link{daemons}} or \code{\link{launch_local}} to provide
-redirection of output to the host process (applicable only for local
-daemons).}
+stderr if TRUE, or else discard if FALSE. Specify as TRUE in the
+\sQuote{...} argument to \code{\link{daemons}} or
+\code{\link{launch_local}} to provide redirection of output to the host
+process (applicable only for local daemons).}
 
 \item{maxtasks}{[default Inf] the maximum number of tasks to execute (task
 limit) before exiting.}
@@ -50,8 +50,8 @@ task (in milliseconds) before exiting.}
 time taken (in milliseconds) before exiting.}
 
 \item{timerstart}{[default 0L] number of completed tasks after which to start
-the timer for 'idletime' and 'walltime'. 0L implies timers are started
-upon launch.}
+the timer for \sQuote{idletime} and \sQuote{walltime}. 0L implies timers
+are started upon launch.}
 
 \item{...}{reserved but not currently used.}
 
@@ -79,16 +79,16 @@ Starts up an execution daemon to receive \code{\link{mirai}} requests. Awaits
 }
 \details{
 The network topology is such that daemons dial into the host or
-    dispatcher, which listens at the 'url' address. In this way, network
-    resources may be added or removed dynamically and the host or
+    dispatcher, which listens at the \sQuote{url} address. In this way,
+    network resources may be added or removed dynamically and the host or
     dispatcher automatically distributes tasks to all available daemons.
 }
 \section{Persistence}{
 
 
-    The 'autoexit' argument governs persistence settings for the daemon. The
-    default TRUE ensures that it will exit cleanly once its socket connection
-    has ended.
+    The \sQuote{autoexit} argument governs persistence settings for the
+    daemon. The default TRUE ensures that it will exit cleanly once its
+    socket connection has ended.
 
     Instead of TRUE, supplying a signal from the \pkg{tools} package, e.g.
     \code{tools::SIGINT}, or an equivalent integer value, sets the signal to
@@ -110,10 +110,10 @@ The network topology is such that daemons dial into the host or
 \section{Cleanup Options}{
 
 
-    The 'cleanup' argument also accepts an integer value, which operates an
-    additive bitmask: perform cleanup of the global environment (1L), reset
-    loaded packages to an initial state (2L), restore options to an initial
-    state (4L), and perform garbage collection (8L).
+    The \sQuote{cleanup} argument also accepts an integer value, which
+    operates an additive bitmask: perform cleanup of the global environment
+    (1L), reset loaded packages to an initial state (2L), restore options to
+    an initial state (4L), and perform garbage collection (8L).
 
     As an example, to perform cleanup of the global environment and garbage
     collection, specify 9L (1L + 8L). The default argument value of TRUE

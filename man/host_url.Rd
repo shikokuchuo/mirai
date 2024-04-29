@@ -18,7 +18,8 @@ scheme used will be either 'wss://' or 'tls+tcp://' accordingly.}
 
 \item{port}{[default 0] numeric port to use. This should be open to
 connections from the network addresses the daemons are connecting from.
-'0' is a wildcard value that automatically assigns a free ephemeral port.}
+\sQuote{0} is a wildcard value that automatically assigns a free
+ephemeral port.}
 }
 \value{
 A character string comprising a valid URL.
@@ -26,7 +27,7 @@ A character string comprising a valid URL.
 \description{
 \code{host_url} constructs a valid host URL (at which daemons may connect)
     based on the computer's hostname. This may be supplied directly to the
-    'url' argument of \code{\link{daemons}}.
+    \sQuote{url} argument of \code{\link{daemons}}.
 
 \code{local_url} constructs a random URL suitable for local daemons.
 }

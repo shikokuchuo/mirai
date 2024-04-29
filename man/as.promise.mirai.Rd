@@ -7,22 +7,22 @@
 \method{as.promise}{mirai}(x)
 }
 \arguments{
-\item{x}{an object of class 'mirai'.}
+\item{x}{an object of class \sQuote{mirai}.}
 }
 \value{
-A 'promise' object.
+A \sQuote{promise} object.
 }
 \description{
-Creates a 'promise' from a 'mirai'.
+Creates a \sQuote{promise} from a \sQuote{mirai}.
 }
 \details{
 This function is an S3 method for the generic \code{as.promise} for
-    class 'mirai'.
+    class \sQuote{mirai}.
 
     Requires the \CRANpkg{promises} package.
 
-    Allows a 'mirai' to be used with the promise pipe \code{\%...>\%}, which
-    schedules a function to run upon resolution of the 'mirai'.
+    Allows a \sQuote{mirai} to be used with the promise pipe \code{\%...>\%},
+    which schedules a function to run upon resolution of the \sQuote{mirai}.
 }
 \examples{
 if (interactive() && requireNamespace("promises", quietly = TRUE)) {

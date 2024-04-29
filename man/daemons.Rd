@@ -39,21 +39,21 @@ below).}
 
 \item{...}{(optional) additional arguments passed through to
 \code{\link{dispatcher}} if using dispatcher and/or \code{\link{daemon}}
-if launching daemons. These include 'token' at dispatcher and 'autoexit,
-'cleanup', 'output', 'maxtasks', 'idletime', 'walltime' and 'timerstart'
-at daemon.}
+if launching daemons. These include \sQuote{token} at dispatcher and
+\sQuote{autoexit}, \sQuote{cleanup}, \sQuote{output}, \sQuote{maxtasks},
+\sQuote{idletime}, \sQuote{walltime} and \sQuote{timerstart} at daemon.}
 
 \item{resilience}{[default TRUE] (applicable when not using dispatcher)
 logical value whether to retry failed tasks on other daemons. If FALSE,
-an appropriate 'errorValue' will be returned in such cases.}
+an appropriate \sQuote{errorValue} will be returned in such cases.}
 
 \item{seed}{[default NULL] (optional) supply a random seed (single value,
 interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
 RNG streams sent to each daemon. Note that reproducible results can be
-expected only for 'dispatcher = FALSE', as the unpredictable timing of
-task completions would otherwise influence the tasks sent to each daemon.
-Even for 'dispatcher = FALSE', reproducibility is not guaranteed if the
-order in which tasks are sent is not deterministic.}
+expected only for \code{dispatcher = FALSE}, as the unpredictable timing
+of task completions would otherwise influence the tasks sent to each
+daemon. Even for \code{dispatcher = FALSE}, reproducibility is not
+guaranteed if the order in which tasks are sent is not deterministic.}
 
 \item{tls}{[default NULL] (optional for secure TLS connections) if not
 supplied, zero-configuration single-use keys and certificates are
@@ -64,9 +64,9 @@ chain, with the TLS certificate first), \strong{or} a length 2 character
 vector comprising [i] the TLS certificate (optionally certificate chain)
 and [ii] the associated private key.}
 
-\item{pass}{[default NULL] (required only if the private key supplied to 'tls'
-is encrypted with a password) For security, should be provided through a
-function that returns this value, rather than directly.}
+\item{pass}{[default NULL] (required only if the private key supplied to
+\sQuote{tls} is encrypted with a password) For security, should be
+provided through a function that returns this value, rather than directly.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
@@ -81,12 +81,12 @@ Depending on the arguments supplied:
     }
 }
 \description{
-Set 'daemons' or persistent background processes to receive \code{\link{mirai}}
-    requests. Specify 'n' to create daemons on the local machine. Specify
-    'url' for receiving connections from remote daemons (for distributed
-    computing across the network). Specify 'remote' to optionally launch
-    remote daemons via a remote configuration. By default, dispatcher ensures
-    optimal scheduling.
+Set \sQuote{daemons} or persistent background processes to receive
+    \code{\link{mirai}} requests. Specify \sQuote{n} to create daemons on the
+    local machine. Specify \sQuote{url} for receiving connections from remote
+    daemons (for distributed computing across the network). Specify
+    \sQuote{remote} to optionally launch remote daemons via a remote
+    configuration. By default, dispatcher ensures optimal scheduling.
 }
 \details{
 Use \code{daemons(0)} to reset daemon connections:
@@ -96,8 +96,8 @@ Use \code{daemons(0)} to reset daemon connections:
     \item All connected daemons and/or dispatchers exit automatically.
     \item \pkg{mirai} reverts to the default behaviour of creating a new
     background process for each request.
-    \item Any unresolved 'mirai' will return an 'errorValue' 7 (Object
-    closed) after a reset.
+    \item Any unresolved \sQuote{mirai} will return an \sQuote{errorValue} 7
+    (Object closed) after a reset.
     }
 
     If the host session ends, all connected dispatcher and daemon processes
@@ -119,10 +119,10 @@ Use \code{daemons(0)} to reset daemon connections:
     operations as new processes no longer need to be created on an \emph{ad
     hoc} basis.
 
-    Supply the argument 'n' to set the number of daemons. New background
-    \code{\link{daemon}} processes are automatically created on the local
-    machine connecting back to the host process, either directly or via
-    dispatcher.
+    Supply the argument \sQuote{n} to set the number of daemons. New
+    background \code{\link{daemon}} processes are automatically created on
+    the local machine connecting back to the host process, either directly or
+    via dispatcher.
 }
 
 \section{Dispatcher}{
@@ -148,14 +148,14 @@ Use \code{daemons(0)} to reset daemon connections:
 \section{Distributed Computing}{
 
 
-    Specifying 'url' allows tasks to be distributed across the network. This
-    should be a character string such as: 'tcp://10.75.32.70:5555' at which
-    daemon processes should connect to. Switching the URL scheme to
+    Specifying \sQuote{url} allows tasks to be distributed across the network.
+    This should be a character string such as: 'tcp://10.75.32.70:5555' at
+    which daemon processes should connect to. Switching the URL scheme to
     'tls+tcp://' or 'wss://' automatically upgrades the connection to use TLS.
     The auxiliary function \code{\link{host_url}} may be used to
     automatically construct a valid host URL based on the computer's hostname.
 
-    Specify 'remote' with a call to \code{\link{remote_config}} or
+    Specify \sQuote{remote} with a call to \code{\link{remote_config}} or
     \code{\link{ssh_config}} to launch daemons on remote machines. Otherwise,
     \code{\link{launch_remote}} may be used to generate the shell commands to
     deploy daemons manually on remote resources.
@@ -181,8 +181,8 @@ Use \code{daemons(0)} to reset daemon connections:
     to the URLs 'ws://10.75.32.70:5555/1' through 'ws://110.75.32.70:5555/6'.
 
     Alternatively, specify a vector of URLs to listen to arbitrary port
-    numbers / paths. In this case it is optional to supply 'n' as this can
-    be inferred by the length of vector supplied.
+    numbers / paths. In this case it is optional to supply \sQuote{n} as this
+    can be inferred by the length of vector supplied.
 
     Individual daemons then dial in to each of these host URLs. At most one
     daemon can be dialled into each URL at any given time.
@@ -194,7 +194,7 @@ Use \code{daemons(0)} to reset daemon connections:
 
     Alternatively, supplying a single TCP URL will listen at a block of URLs
     with ports starting from the supplied port number and incrementing by one
-    for 'n' specified e.g. the host URL 'tcp://10.75.32.70:5555' with
+    for \sQuote{n} specified e.g. the host URL 'tcp://10.75.32.70:5555' with
     \code{n = 6} listens to the contiguous block of ports 5555 through 5560.
 
     \strong{Without Dispatcher}
@@ -206,35 +206,39 @@ Use \code{daemons(0)} to reset daemon connections:
     or indeed dispatchers (started with \code{\link{dispatcher}}) dial into
     the same host URL.
 
-    'n' is not required in this case, and disregarded if supplied, as network
-    resources may be added or removed at any time. The host automatically
-    distributes tasks to all connected daemons and dispatchers in a
-    round-robin fashion.
+    \sQuote{n} is not required in this case, and disregarded if supplied, as
+    network resources may be added or removed at any time. The host
+    automatically distributes tasks to all connected daemons and dispatchers
+    in a round-robin fashion.
 }
 
 \section{Compute Profiles}{
 
 
-    By default, the 'default' compute profile is used. Providing a character
-    value for '.compute' creates a new compute profile with the name
-    specified. Each compute profile retains its own daemons settings, and may
-    be operated independently of each other. Some usage examples follow:
+    By default, the \sQuote{default} compute profile is used. Providing a
+    character value for \sQuote{.compute} creates a new compute profile with
+    the name specified. Each compute profile retains its own daemons
+    settings, and may be operated independently of each other. Some usage
+    examples follow:
 
     \strong{local / remote} daemons may be set with a host URL and specifying
-    '.compute' as 'remote', which creates a new compute profile. Subsequent
-    mirai calls may then be sent for local computation by not specifying the
-    '.compute' argument, or for remote computation to connected daemons by
-    specifying the '.compute' argument as 'remote'.
+    \sQuote{.compute} as \sQuote{remote}, which creates a new compute
+    profile. Subsequent \code{\link{mirai}} calls may then be sent for local
+    computation by not specifying the \sQuote{.compute} argument, or for
+    remote computation to connected daemons by specifying the
+    \sQuote{.compute} argument as \sQuote{remote}.
 
     \strong{cpu / gpu} some tasks may require access to different types of
     daemon, such as those with GPUs. In this case, \code{daemons()} may be
     called twice to set up host URLs for CPU-only daemons and for those
-    with GPUs, specifying the '.compute' argument as 'cpu' and 'gpu'
-    respectively. By supplying the '.compute' argument to subsequent mirai
-    calls, tasks may be sent to either 'cpu' or 'gpu' daemons as appropriate.
+    with GPUs, specifying the \sQuote{.compute} argument as \sQuote{cpu} and
+    \sQuote{gpu} respectively. By supplying the \sQuote{.compute} argument to
+    subsequent \code{\link{mirai}} calls, tasks may be sent to either
+    \sQuote{cpu} or \sQuote{gpu} daemons as appropriate.
 
     Note: further actions such as resetting daemons via \code{daemons(0)}
-    should be carried out with the desired '.compute' argument specified.
+    should be carried out with the desired \sQuote{.compute} argument
+    specified.
 }
 
 \examples{

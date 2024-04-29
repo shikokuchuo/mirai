@@ -10,14 +10,14 @@ call_mirai(aio)
 call_mirai_(aio)
 }
 \arguments{
-\item{aio}{a 'mirai' object.}
+\item{aio}{a \sQuote{mirai} object.}
 }
 \value{
-The passed mirai (invisibly). The retrieved value is stored at
-    \code{$data}.
+The passed \sQuote{mirai} (invisibly). The retrieved value is stored
+    at \code{$data}.
 }
 \description{
-\code{call_mirai} retrieves the value of a mirai, waiting for the the
+\code{call_mirai} retrieves the value of a \sQuote{mirai}, waiting for the
     asynchronous operation to resolve if it is still in progress.
 
 \code{call_mirai_} is a variant that allows user interrupts, suitable for
@@ -27,17 +27,18 @@ The passed mirai (invisibly). The retrieved value is stored at
 This function will wait for the async operation to complete if still
     in progress (blocking).
 
-    The mirai updates itself in place, so to access the value of a mirai
-    \code{x} directly, use \code{call_mirai(x)$data}.
+    The \sQuote{mirai} updates itself in place, so to access the value of a
+    \sQuote{mirai} \code{x} directly, use \code{call_mirai(x)$data}.
 }
 \section{Alternatively}{
 
 
-    The value of a mirai may be accessed at any time at \code{$data}, and
-    if yet to resolve, an 'unresolved' logical NA will be returned instead.
+    The value of a \sQuote{mirai} may be accessed at any time at
+    \code{$data}, and if yet to resolve, an \sQuote{unresolved} logical NA
+    will be returned instead.
 
-    Using \code{\link{unresolved}} on a mirai returns TRUE only if a mirai
-    has yet to resolve and FALSE otherwise. This is suitable for use in
+    Using \code{\link{unresolved}} on a \sQuote{mirai} returns TRUE only if
+    it has yet to resolve and FALSE otherwise. This is suitable for use in
     control flow statements such as \code{while} or \code{if}.
 }
 
@@ -45,12 +46,12 @@ This function will wait for the async operation to complete if still
 
 
     If an error occurs in evaluation, the error message is returned as a
-    character string of class 'miraiError' and 'errorValue' (the stack trace
-    is available at \code{$stack.trace} on the error object).
-    \code{\link{is_mirai_error}} may be used to test for this.
+    character string of class \sQuote{miraiError} and \sQuote{errorValue}
+    (the stack trace is available at \code{$stack.trace} on the error
+    object). \code{\link{is_mirai_error}} may be used to test for this.
 
     \code{\link{is_error_value}} tests for all error conditions including
-    'mirai' errors, interrupts, and timeouts.
+    \sQuote{mirai} errors, interrupts, and timeouts.
 }
 
 \examples{
