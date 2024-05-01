@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mirai</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9015</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.13.2.9016</span>
       </span>
     </div>
 
@@ -168,7 +168,7 @@ number of connected nodes at any time.</p>
 <span><span class="co">#&gt; [1] 4</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "abstract://8d92dc79b8502653025772d2"</span></span>
+<span><span class="co">#&gt; [1] "abstract://717bd47029c15a6c3421c3be"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/make_cluster.html">stop_cluster</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
 <p>Making a cluster specifying ‘url’ without ‘remote’ causes the shell
@@ -179,10 +179,10 @@ console.</p>
 <span><span class="co">#&gt; Shell commands for deployment on nodes:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [1]</span></span>
-<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:36969',rs=c(10407,-1830868639,456069038,942236759,2006238380,348797373,614192474))"</span></span>
+<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:41557',rs=c(10407,-649272372,-839924131,-596536966,-590434125,19895896,-199893895))"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [2]</span></span>
-<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:36969',rs=c(10407,1467497647,1196809824,-1509589265,1329697192,346872819,1514753604))"</span></span>
+<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:41557',rs=c(10407,276960266,-2035903300,-1874904835,1952875809,1359474491,-567028289))"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/make_cluster.html">stop_cluster</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -205,10 +205,10 @@ function:</p>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">9</span><span class="op">)</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu">foreach</span><span class="op">(</span>i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>, .combine <span class="op">=</span> <span class="va">rbind</span><span class="op">)</span> <span class="op">%dopar%</span></span>
 <span>  <span class="op">(</span><span class="va">m</span><span class="op">[</span><span class="va">i</span>, <span class="op">]</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">m</span><span class="op">[</span><span class="va">i</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;               [,1]     [,2]       [,3]</span></span>
-<span><span class="co">#&gt; result.1 2.5567043 7.649603 -7.2063077</span></span>
-<span><span class="co">#&gt; result.2 0.9524272 1.683378  0.3641949</span></span>
-<span><span class="co">#&gt; result.3 1.5169638 1.969899 -0.4868624</span></span>
+<span><span class="co">#&gt;               [,1]      [,2]      [,3]</span></span>
+<span><span class="co">#&gt; result.1  4.948511 -2.514537 0.5660261</span></span>
+<span><span class="co">#&gt; result.2 -1.880495  3.198433 1.6820612</span></span>
+<span><span class="co">#&gt; result.3 -1.015714  2.203200 1.8125144</span></span>
 <span></span>
 <span><span class="co"># simple parallel matrix multiply</span></span>
 <span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">16</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span></span>
