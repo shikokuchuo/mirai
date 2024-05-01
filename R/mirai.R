@@ -99,7 +99,7 @@
 #' m <- mirai(x + y + 2, x = 2, y = n)
 #' m
 #' m$data
-#' Sys.sleep(0.5)
+#' Sys.sleep(0.2)
 #' m$data
 #'
 #' # passing the calling environment to '...'
@@ -165,17 +165,17 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   }
   arglist <- list(
     ._mirai_globals_. = globals,
-    .expr = if (is.symbol(expr) && is.language(.expr)) .expr else expr
+    .expr = if (is.symbol(expr) && exists(expr, where = parent.frame()) && is.language(.expr)) .expr else expr
   )
   if (length(.args))
-    arglist <- c(if (is.environment(.args)) as.list(.args) else .args, arglist)
+    arglist <- c(if (is.environment(.args)) as.list.environment(.args) else .args, arglist)
   data <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
   envir <- ..[[.compute]]
   if (is.null(envir)) {
     sock <- ephemeral_daemon(local_url())
-    aio <- request(.context(sock), data = data, send_mode = 1L, recv_mode = 1L,
-                   timeout = .timeout)
+    aio <- request(.context(sock), data = data,
+                   send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
   } else {
     aio <- request_signal(.context(envir[["sock"]]), data = data, cv = envir[["cv"]],

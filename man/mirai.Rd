@@ -99,7 +99,7 @@ n <- 3
 m <- mirai(x + y + 2, x = 2, y = n)
 m
 m$data
-Sys.sleep(0.5)
+Sys.sleep(0.2)
 m$data
 
 # passing the calling environment to '...'

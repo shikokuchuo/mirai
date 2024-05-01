@@ -1,16 +1,17 @@
-# mirai 0.13.2.9015 (development)
+# mirai 0.13.2.9016 (development)
 
 * Implements completely event-driven (non-polling) promises (thanks @jcheng5 for prototyping).
   + This is an innovation which allows higher responsiveness and massive scalability for 'mirai' promises.
 * Behavioural changes to `mirai()` and `everywhere()`:
   + (breaking change) no longer permits an unnamed list to be supplied to '.args'.
   + allows an environment e.g. `environment()` to be supplied to '.args' or as the only element of '...'.
+  + allows evaluation of a symbol in the 'mirai' environment, e.g. `mirai(x, x = 1)`.
 * `stop_mirai()` now resolves to an 'errorValue' 20 (operation canceled) in the case the asynchronous task was still ongoing (thanks @jcheng5 #110).
 * Rejected promises now show the complete error code and message in the case of an 'errorValue'.
 * A 'miraiError' reverts to not including a trailing line break (as prior to mirai 0.13.2).
 * Temporaily removes `register_cluster()` as `parallel::registerClusterType()` is currently only available in R-devel.
 * Faster startup time as the `parallel` package is now only loaded if used.
-* Requires `nanonext` >= [0.13.6.9017].
+* Requires `nanonext` >= [0.13.6.9018].
 
 # mirai 0.13.2
 
