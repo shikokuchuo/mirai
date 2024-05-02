@@ -226,7 +226,7 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #' @param host (optional) only applicable for reverse tunnelling. Should be
 #'     specified if creating a standalone configuration object. If calling this
 #'     function directly as an argument to \code{\link{daemons}}, this is not
-#'     required and will be inferred from the \sQuote{url} supplied (see
+#'     required and can be inferred from the \sQuote{url} supplied (see
 #'     \sQuote{SSH Tunnelling} section below).
 #'
 #' @section SSH Direct Connections:

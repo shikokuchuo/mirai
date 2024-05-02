@@ -36,6 +36,7 @@ nanotest(substr(host_url(ws = TRUE, tls = TRUE), 1L, 3L) == "wss")
 nanotest(substr(host_url(tls = TRUE), 1L, 3L) == "tls")
 nanotest(grepl("5555", host_url(port = 5555), fixed = TRUE))
 nanotest(is.list(ssh_config("ssh://remotehost")))
+nanotest(is.list(ssh_config("ssh://remotehost", tunnel = TRUE, host = "tls+tcp://127.0.0.1:5555")))
 nanotesterr(ssh_config("ssh://remotehost", tunnel = TRUE), "'host' must be specified")
 nanotest(is_mirai_interrupt(r <- mirai:::mk_interrupt_error()))
 nanotestp(r)
@@ -165,6 +166,9 @@ if (connection) {
   nanotestn(stopCluster(cl))
   nanotesterr(parLapply(cluster, 1:10, runif), "cluster is no longer active")
   Sys.sleep(1L)
+}
+# additional parallel cluster tests
+if (connection && .Platform[["OS.type"]] != "windows") {
   nanotestp(cl <- make_cluster(url = local_url()))
   nanotestn(stopCluster(cl))
   Sys.sleep(1L)
