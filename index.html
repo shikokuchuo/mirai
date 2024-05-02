@@ -61,6 +61,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="articles/databases.html">mirai - Databases and Arrow</a>
+    </li>
+    <li>
       <a href="articles/parallel.html">mirai - Parallel Integration</a>
     </li>
     <li>
@@ -161,13 +164,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -0.3253679  1.3729833 -2.3759357 -1.0818986  7.5279398  0.1328385</span></span>
-<span><span class="co">#&gt;  [7] -0.9243010 -0.4208868  0.7283410 -3.0734437</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] -1.561517e+00 -5.554690e-04 -1.129355e+00 -4.251722e+00  7.105917e+00</span></span>
+<span><span class="co">#&gt;  [6]  1.407278e-01 -2.351988e-01 -8.854609e-01 -1.800280e+03 -6.404027e-01</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -0.3253679  1.3729833 -2.3759357 -1.0818986  7.5279398  0.1328385</span></span>
-<span><span class="co">#&gt;  [7] -0.9243010 -0.4208868  0.7283410 -3.0734437</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] -1.561517e+00 -5.554690e-04 -1.129355e+00 -4.251722e+00  7.105917e+00</span></span>
+<span><span class="co">#&gt;  [6]  1.407278e-01 -2.351988e-01 -8.854609e-01 -1.800280e+03 -6.404027e-01</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
@@ -186,7 +189,8 @@
 <h3 id="integrations">Integrations<a class="anchor" aria-label="anchor" href="#integrations"></a>
 </h3>
 <p>The following core integrations are documented, with usage examples in the linked vignettes:</p>
-<p><a href="https://shikokuchuo.net/mirai/articles/parallel.html"><code>parallel</code></a> - provides an alternative communications backend for R, implementing a low-level feature request by R-Core at R Project Sprint 2023.</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/databases.html"><code>arrow</code></a> - the custom serialization interface allows queries using the Apache Arrow format to be handled seamlessly over database connections hosted in daemon processes.</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/parallel.html"><code>parallel</code></a> - provides an alternative communications backend for R, implementing a low-level feature request by R-Core at R Project Sprint 2023. Also includes examples of using <code>foreach</code>, which is supported via <code>doParallel</code>.</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/promises.html"><code>promises</code></a> - ‘mirai’ may be used interchangeably with ‘promises’ by using the promise pipe <code>%...&gt;%</code> or the <code>as.promise()</code> method.</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/plumber.html"><code>plumber</code></a> - serves as an asynchronous / distributed backend, scaling applications via the use of promises.</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/shiny.html"><code>shiny</code></a> - serves as an asynchronous / distributed backend, plugging directly into the reactive framework or accepted anywhere that takes a ‘promise’.</p>
@@ -209,6 +213,7 @@
 <p><a href="https://github.com/ltierney/" class="external-link">Luke Tierney</a>, R Core, for discussion on R’s implementation of L’Ecuyer-CMRG streams, used to ensure statistical independence in parallel processing, and collaboration in ‘providing an alternative communications backend for R’.</p>
 <p><a href="https://github.com/HenrikBengtsson/" class="external-link">Henrik Bengtsson</a>, for valuable insights leading to the interface accepting broader usage patterns.</p>
 <p><a href="https://github.com/dfalbel/" class="external-link">Daniel Falbel</a>, for discussion around an efficient solution to serialization and transmission of <code>torch</code> tensors.</p>
+<p><a href="https://github.com/krlmlr/" class="external-link">Kirill Müller</a>, for discussion on using daemons to host Arrow database connections.</p>
 </div>
 <div class="section level3">
 <h3 id="links">Links<a class="anchor" aria-label="anchor" href="#links"></a>

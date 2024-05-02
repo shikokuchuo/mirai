@@ -2,13 +2,14 @@ pandoc: 3.1.11
 pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
+  databases: databases.html
   mirai: mirai.html
   parallel: parallel.html
   plumber: plumber.html
   promises: promises.html
   shiny: shiny.html
   torch: torch.html
-last_built: 2024-05-02T21:07Z
+last_built: 2024-05-02T23:31Z
 urls:
   reference: https://shikokuchuo.net/mirai/reference
   article: https://shikokuchuo.net/mirai/articles
