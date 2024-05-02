@@ -1,4 +1,4 @@
-# mirai 0.13.2.9017 (development)
+# mirai 0.13.2.9018 (development)
 
 * Implements completely event-driven (non-polling) promises (thanks @jcheng5 for prototyping).
   + This is an innovation which allows higher responsiveness and massive scalability for 'mirai' promises.
@@ -12,6 +12,7 @@
 * `stop_mirai()` now resolves to an 'errorValue' 20 (operation canceled) in the case the asynchronous task was still ongoing (thanks @jcheng5 #110).
 * Rejected promises now show the complete error code and message in the case of an 'errorValue'.
 * A 'miraiError' reverts to not including a trailing line break (as prior to mirai 0.13.2).
+* Non-dispatcher local daemons now synchronize with host in all cases (prevents use before connection).
 * Temporaily removes `register_cluster()` as `parallel::registerClusterType()` is currently only available in R-devel.
 * Faster startup time as the `parallel` package is now only loaded if used.
 * Requires `nanonext` >= 1.0.0.
