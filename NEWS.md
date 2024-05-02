@@ -6,6 +6,9 @@
   + (breaking change) no longer permits an unnamed list to be supplied to '.args'.
   + allows an environment e.g. `environment()` to be supplied to '.args' or as the only element of '...'.
   + allows evaluation of a symbol in the 'mirai' environment, e.g. `mirai(x, x = 1)`.
+* `ssh_config()` improvements:
+  + new argument 'host' allows specifying the localhost URL and port to create a standalone configuration object.
+  + order of arguments 'tunnel' and 'timeout' swapped.
 * `stop_mirai()` now resolves to an 'errorValue' 20 (operation canceled) in the case the asynchronous task was still ongoing (thanks @jcheng5 #110).
 * Rejected promises now show the complete error code and message in the case of an 'errorValue'.
 * A 'miraiError' reverts to not including a trailing line break (as prior to mirai 0.13.2).

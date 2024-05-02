@@ -217,13 +217,17 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #' @param remotes the character URL or vector of URLs to SSH into, using the
 #'     'ssh://' scheme and including the port open for SSH connections (defaults
 #'     to 22 if not specified), e.g. 'ssh://10.75.32.90:22' or 'ssh://nodename'.
+#' @param tunnel [default FALSE] logical value whether to use SSH reverse
+#'     tunnelling. If TRUE, a tunnel is created between the same ports on the
+#'     local and remote machines. See the \sQuote{SSH Tunnelling} section below
+#'     for how to correctly specify required settings.
 #' @param timeout [default 10] maximum time allowed for connection setup in
 #'     seconds.
-#' @param tunnel [default FALSE] logical value whether to use SSH reverse
-#'     tunnelling. If TRUE, a tunnel is created between the same ports (as
-#'     specified in \sQuote{url}) on the local and remote machines. Setting to
-#'     TRUE requires access to \sQuote{url} in the evaluation context and will
-#'     error if not called from a relevant function.
+#' @param host (optional) only applicable for reverse tunnelling. Should be
+#'     specified if creating a standalone configuration object, which can be
+#'     used later. If calling this function directly as an argument to
+#'     \code{\link{daemons}}, this is not required and will be inferred from
+#'     the \sQuote{url} supplied (see \sQuote{SSH Tunnelling} section below).
 #'
 #' @section SSH Direct Connections:
 #'
@@ -247,15 +251,25 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #'     of the corresponding node. SSH key-based authentication must also already
 #'     be in place.
 #'
-#'     Tunnelling requires the hostname for \sQuote{url} specified when setting
-#'     up \code{\link{daemons}} to be either \sQuote{127.0.0.1} or
-#'     \sQuote{localhost}. This is as the tunnel is created between
-#'     \code{127.0.0.1:port} or equivalently \code{localhost:port} on each
-#'     machine. The host listens to \code{port} on its machine and the remotes
-#'     each dial into \code{port} on their own respective machines.
+#'     Tunnelling requires the hostname for the \sQuote{host} argument (or the
+#'     \sQuote{url} argument to \code{\link{daemons}} if called directly in
+#'     that context) to be either \sQuote{127.0.0.1} or \sQuote{localhost}.
+#'     This is as the tunnel is created between \code{127.0.0.1:port} or
+#'     equivalently \code{localhost:port} on each machine. The host listens to
+#'     \code{port} on its machine and the remotes each dial into \code{port} on
+#'     their own respective machines.
 #'
 #' @examples
-#' ssh_config(remotes = c("ssh://10.75.32.90:222", "ssh://nodename"), timeout = 5)
+#' ssh_config(
+#'   remotes = c("ssh://10.75.32.90:222", "ssh://nodename"),
+#'   timeout = 5
+#' )
+#'
+#' ssh_config(
+#'   remotes = c("ssh://10.75.32.90:222", "ssh://nodename"),
+#'   tunnel = TRUE,
+#'   host = "tls+tcp://127.0.0.1:5555"
+#' )
 #'
 #' \dontrun{
 #'
@@ -277,8 +291,8 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #'   url = "tcp://localhost:5555",
 #'   remote = ssh_config(
 #'     remotes = c("ssh://10.75.32.90", "ssh://10.75.32.90"),
-#'     timeout = 1,
-#'     tunnel = TRUE
+#'     tunnel = TRUE,
+#'     timeout = 1
 #'   )
 #' )
 #' }
@@ -286,15 +300,16 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #' @rdname remote_config
 #' @export
 #'
-ssh_config <- function(remotes, timeout = 10, tunnel = FALSE, command = "ssh", rscript = "Rscript") {
+ssh_config <- function(remotes, tunnel = FALSE, timeout = 10, command = "ssh", rscript = "Rscript", host) {
 
   premotes <- lapply(remotes, parse_url)
   hostnames <- lapply(premotes, .subset2, "hostname")
   ports <- lapply(premotes, .subset2, "port")
 
   if (tunnel) {
-    url <- dynGet("url", ifnotfound = stop(._[["correct_context"]]))
-    purl <- lapply(url, parse_check_local_url)
+    if (missing(host))
+      host <- dynGet("url", ifnotfound = stop(._[["correct_context"]]))
+    purl <- lapply(host, parse_check_local_url)
     plen <- length(purl)
   }
 
