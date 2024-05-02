@@ -126,7 +126,9 @@ vignette("mirai", package = "mirai")
 
 The following core integrations are documented, with usage examples in the linked vignettes:
 
-[`parallel`](https://shikokuchuo.net/mirai/articles/parallel.html) - provides an alternative communications backend for R, implementing a low-level feature request by R-Core at R Project Sprint 2023.
+[`arrow`](https://shikokuchuo.net/mirai/articles/databases.html) - the custom serialization interface allows queries using the Apache Arrow format to be handled seamlessly over database connections hosted in daemon processes.
+
+[`parallel`](https://shikokuchuo.net/mirai/articles/parallel.html) - provides an alternative communications backend for R, implementing a low-level feature request by R-Core at R Project Sprint 2023. Also includes examples of using `foreach`, which is supported via `doParallel`.
 
 [`promises`](https://shikokuchuo.net/mirai/articles/promises.html) - 'mirai' may be used interchangeably with 'promises' by using the promise pipe `%...>%` or the `as.promise()` method.
 
@@ -159,6 +161,8 @@ We would like to thank in particular:
 [Henrik Bengtsson](https://github.com/HenrikBengtsson/), for valuable insights leading to the interface accepting broader usage patterns.
 
 [Daniel Falbel](https://github.com/dfalbel/), for discussion around an efficient solution to serialization and transmission of `torch` tensors.
+
+[Kirill Müller](https://github.com/krlmlr/), for discussion on using daemons to host Arrow database connections.
 
 ### Links
 

@@ -88,8 +88,8 @@ result.
 
 ``` r
 m$data
-#>  [1] -0.3253679  1.3729833 -2.3759357 -1.0818986  7.5279398  0.1328385
-#>  [7] -0.9243010 -0.4208868  0.7283410 -3.0734437
+#>  [1] -1.561517e+00 -5.554690e-04 -1.129355e+00 -4.251722e+00  7.105917e+00
+#>  [6]  1.407278e-01 -2.351988e-01 -8.854609e-01 -1.800280e+03 -6.404027e-01
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -97,8 +97,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] -0.3253679  1.3729833 -2.3759357 -1.0818986  7.5279398  0.1328385
-#>  [7] -0.9243010 -0.4208868  0.7283410 -3.0734437
+#>  [1] -1.561517e+00 -5.554690e-04 -1.129355e+00 -4.251722e+00  7.105917e+00
+#>  [6]  1.407278e-01 -2.351988e-01 -8.854609e-01 -1.800280e+03 -6.404027e-01
 ```
 
 ### Daemons
@@ -136,9 +136,16 @@ vignette("mirai", package = "mirai")
 The following core integrations are documented, with usage examples in
 the linked vignettes:
 
+[`arrow`](https://shikokuchuo.net/mirai/articles/databases.html) - the
+custom serialization interface allows queries using the Apache Arrow
+format to be handled seamlessly over database connections hosted in
+daemon processes.
+
 [`parallel`](https://shikokuchuo.net/mirai/articles/parallel.html) -
 provides an alternative communications backend for R, implementing a
-low-level feature request by R-Core at R Project Sprint 2023.
+low-level feature request by R-Core at R Project Sprint 2023. Also
+includes examples of using `foreach`, which is supported via
+`doParallel`.
 
 [`promises`](https://shikokuchuo.net/mirai/articles/promises.html) -
 ‘mirai’ may be used interchangeably with ‘promises’ by using the promise
@@ -198,6 +205,9 @@ insights leading to the interface accepting broader usage patterns.
 
 [Daniel Falbel](https://github.com/dfalbel/), for discussion around an
 efficient solution to serialization and transmission of `torch` tensors.
+
+[Kirill Müller](https://github.com/krlmlr/), for discussion on using
+daemons to host Arrow database connections.
 
 ### Links
 
