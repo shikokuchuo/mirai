@@ -123,9 +123,23 @@
 <p>{mirai} supplies its own <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code> method, allowing
 it to be used as a promise from the <a href="https://rstudio.github.io/promises/" class="external-link"><code>promises</code></a>
 package.</p>
+<p>These promises are innovative event-driven promises (developed in
+collaboration with Joe Cheng).</p>
+<ul>
+<li>Do not require each promise to be polled for completion by a
+<code>later</code> loop that re-runs every 0.1 seconds, which is how
+other types of promise are implemented.</li>
+<li>Instead, promise actions are automatically queued for execution as
+soon as each ‘mirai’ resolves.</li>
+<li>Allows for much higher responsiveness (lower latency) and massive
+scalability (situations with thousand of promises or more).</li>
+</ul>
 <p>A ‘mirai’ may be piped directly using the promise pipe
 <code>&amp;...&gt;%</code>, which implicitly calls
-<code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code> on the ‘mirai’.</p>
+<code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code> on the ‘mirai’. Similarly all promise-aware
+functions such as <code><a href="https://rstudio.github.io/promises/reference/then.html" class="external-link">promises::then()</a></code> or
+<code>shiny::ExtendedTask$new()</code> which take a promise can also
+take a ‘mirai’ (using <code>promises</code> &gt;= 1.3.0).</p>
 <p>Alternatively, it may be converted into a promise by
 <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code>, which then allows using the methods
 <code>$then()</code>, <code>$finally()</code> etc.</p>
@@ -143,27 +157,22 @@ and to use a promise for enacting a side effect (assigning the value to
 an environment in the example below).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/promises/" class="external-link">promises</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">env</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>; <span class="st">"hello"</span><span class="op">}</span><span class="op">)</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="fu">then</span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">env</span><span class="op">$</span><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span>  <span class="st">"hello"</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">promises</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/promises/reference/then.html" class="external-link">then</a></span><span class="op">(</span><span class="va">m</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">env</span><span class="op">$</span><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "hello"</span></span>
-<span></span>
-<span><span class="co"># after returning to the top level prompt:</span></span>
-<span><span class="va">env</span><span class="op">$</span><span class="va">res</span></span>
 <span><span class="co">#&gt; [1] "hello"</span></span></code></pre></div>
-<p>Used in combination with <code>promises</code> &gt;= 1.3.0,
-<code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">is.promising()</a></code> returns TRUE. This allows ‘mirai’ to be used
-seamlessly in places accepting promises, such as Shiny ExtendedTasks,
-without the need to explicitly convert using
-<code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code>.</p>
+<p>After returning to the top level prompt:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">is.promising</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">env</span><span class="op">$</span><span class="va">res</span></span>
+<span><span class="co">#&gt; [1] "hello"</span></span></code></pre></div>
 </div>
   </div>
 
