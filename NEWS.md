@@ -1,4 +1,4 @@
-# mirai 0.13.2.9016 (development)
+# mirai 0.13.2.9017 (development)
 
 * Implements completely event-driven (non-polling) promises (thanks @jcheng5 for prototyping).
   + This is an innovation which allows higher responsiveness and massive scalability for 'mirai' promises.
@@ -11,7 +11,7 @@
 * A 'miraiError' reverts to not including a trailing line break (as prior to mirai 0.13.2).
 * Temporaily removes `register_cluster()` as `parallel::registerClusterType()` is currently only available in R-devel.
 * Faster startup time as the `parallel` package is now only loaded if used.
-* Requires `nanonext` >= [0.13.6.9018].
+* Requires `nanonext` >= 1.0.0.
 
 # mirai 0.13.2
 
