@@ -86,7 +86,7 @@
   list(
     arglen = "'args' and/or 'url' must be of length 1 or the same length",
     cluster_inactive = "cluster is no longer active",
-    correct_context = "must be called in the correct context e.g. as a function argument",
+    correct_context = "'host' must be specified if not using directly in a function argument",
     daemons_unset = "a numeric value for 'url' requires daemons to be set",
     dot_required = "'.' must be an element of the character vector(s) supplied to 'args'",
     missing_expression = "missing expression, perhaps wrap in {}?",

@@ -224,10 +224,10 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #' @param timeout [default 10] maximum time allowed for connection setup in
 #'     seconds.
 #' @param host (optional) only applicable for reverse tunnelling. Should be
-#'     specified if creating a standalone configuration object, which can be
-#'     used later. If calling this function directly as an argument to
-#'     \code{\link{daemons}}, this is not required and will be inferred from
-#'     the \sQuote{url} supplied (see \sQuote{SSH Tunnelling} section below).
+#'     specified if creating a standalone configuration object. If calling this
+#'     function directly as an argument to \code{\link{daemons}}, this is not
+#'     required and will be inferred from the \sQuote{url} supplied (see
+#'     \sQuote{SSH Tunnelling} section below).
 #'
 #' @section SSH Direct Connections:
 #'
@@ -307,8 +307,10 @@ ssh_config <- function(remotes, tunnel = FALSE, timeout = 10, command = "ssh", r
   ports <- lapply(premotes, .subset2, "port")
 
   if (tunnel) {
-    if (missing(host))
-      host <- dynGet("url", ifnotfound = stop(._[["correct_context"]]))
+    if (missing(host)) {
+      host <- dynGet("url", ifnotfound = NULL)
+      is.null(host) && stop(._[["correct_context"]])
+    }
     purl <- lapply(host, parse_check_local_url)
     plen <- length(purl)
   }
