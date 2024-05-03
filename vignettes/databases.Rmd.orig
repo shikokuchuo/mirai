@@ -46,9 +46,9 @@ daemons(0)
 
 ### Database Hosting - Using Arrow Connections
 
-It is possible using the `DBI` interface to access and manipulate data in the Apache Arrow data format.
+It is possible using the `DBI` interface to access and manipulate data in the Apache Arrow data format efficiently through ABDC (Arrow Database Connectivity).
 
-The example below utilises the simplest in-memory database in a single background process.
+The example below creates an in-memory SQLite connection using the `adbcsqlite` backend.
 
 Serialization is set up with the relevant serialization and deserialization functions from the `arrow` package. Note that the format class is 'nanoarrow_array_stream' as `nanoarrow` is the backend for all queries made by the DBI `db*Arrow()` functions.
 
@@ -58,8 +58,8 @@ library(mirai)
 daemons(1)
 
 everywhere({
-  library(DBI)
-  con <<- dbConnect(RSQLite::SQLite())
+  library(DBI) # `adbi` and `adbcsqlite` packages must also be installed
+  con <<- dbConnect(adbi::adbi("adbcsqlite"), uri = ":memory:")
 })
 
 serialization(
@@ -83,7 +83,7 @@ m <- mirai(dbGetQueryArrow(con, 'SELECT * FROM iris WHERE "Sepal.Length" < 4.6')
 call_mirai(m)$data
 ```
 
-Due to the tight integration of the `mirai` serialization mechanism with R's 'refhook' system, we can easily return complex / nested objects containing multiple queries comprising Arrow tables:
+Due to the tight integration of the `mirai` serialization mechanism with R's 'refhook' system, we can easily return complex / nested objects containing multiple queries in the Arrow format:
 
 ```{r arrow3}
 m <- mirai({

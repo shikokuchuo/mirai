@@ -15,7 +15,7 @@
 * Non-dispatcher local daemons now synchronize with host in all cases (prevents use before all have connected).
 * `register_cluster()` is still available for use, but non-exported whilst `parallel::registerClusterType()` only remains available in R-devel.
 * `[` method for 'miraiCluster' no longer produces a 'miraiCluster' object (thanks @HenrikBengtsson #83).
-* Faster startup time as the `parallel` package is now only loaded if used.
+* Faster startup time as the `parallel` package is now only loaded when first used.
 * Requires `nanonext` >= 1.0.0.
 
 # mirai 0.13.2
