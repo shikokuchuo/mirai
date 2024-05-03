@@ -1,4 +1,4 @@
-# mirai 0.13.2.9018 (development)
+# mirai 1.0.0
 
 * Implements completely event-driven (non-polling) promises (thanks @jcheng5 for prototyping).
   + This is an innovation which allows higher responsiveness and massive scalability for 'mirai' promises.
