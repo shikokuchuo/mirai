@@ -28,7 +28,8 @@ The /echo endpoint takes a GET request, sleeps for 1 second (simulating an expen
 ```{r get}
 library(mirai)
 
-# important to supply SIGINT so the plumber server is interrupted and exits cleanly when torn down
+# important to supply SIGINT so the plumber server is interrupted and exits
+# cleanly when torn down
 daemons(1L, dispatcher = FALSE, autoexit = tools::SIGINT)
 
 m <- mirai({

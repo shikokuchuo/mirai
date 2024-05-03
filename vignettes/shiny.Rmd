@@ -155,7 +155,8 @@ plotServer <- function(id, calc_time) {
         function(...) mirai(run(x), ...)
       ) |> bind_task_button("resample")
       
-      observeEvent(input$resample, extended_task$invoke(x = calc_time, run = run_task))
+      observeEvent(input$resample,
+                   extended_task$invoke(x = calc_time, run = run_task))
       
       output$plot <- renderPlot(plot_result(extended_task$result()))
       
@@ -253,7 +254,8 @@ status_message <- function(tasks) {
   if (tasks == 0L) {
     "All tasks completed."
   } else {
-    sprintf("%d task%s in progress at %s", tasks, if (tasks > 1L) "s" else "", format.POSIXct(Sys.time()))
+    sprintf("%d task%s in progress at %s",
+            tasks, if (tasks > 1L) "s" else "", format.POSIXct(Sys.time()))
   }
 }
 
