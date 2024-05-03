@@ -1,4 +1,6 @@
 url: https://shikokuchuo.net/mirai/
+template:
+  bootstrap: 5
 navbar:
   right:
   - icon: fa-github

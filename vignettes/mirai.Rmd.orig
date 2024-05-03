@@ -15,8 +15,6 @@ knitr::opts_chunk$set(
 ```
 ### Table of Contents
 
-<a href="https://shikokuchuo.net/mirai/" alt="mirai"><img src="../man/figures/logo.png" alt="mirai logo" align="right" width="120"/></a>
-
 1. [Example 1: Compute-intensive Operations](#example-1-compute-intensive-operations)
 2. [Example 2: I/O-bound Operations](#example-2-io-bound-operations)
 3. [Example 3: Resilient Pipelines](#example-3-resilient-pipelines)
