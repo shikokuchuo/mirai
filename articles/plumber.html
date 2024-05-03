@@ -121,7 +121,8 @@ process it is run on.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># important to supply SIGINT so the plumber server is interrupted and exits cleanly when torn down</span></span>
+<span><span class="co"># important to supply SIGINT so the plumber server is interrupted and exits</span></span>
+<span><span class="co"># cleanly when torn down</span></span>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1L</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span>, autoexit <span class="op">=</span> <span class="fu">tools</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/tools/pskill.html" class="external-link">SIGINT</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span></span>
