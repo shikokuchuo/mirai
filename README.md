@@ -7,6 +7,8 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/mirai?color=112d4e)](https://CRAN.R-project.org/package=mirai)
+[![R-multiverse
+status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-multiverse.r-universe.dev%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=R-multiverse&color=112d4e)](https://r-multiverse.r-universe.dev/mirai)
 [![R-universe
 status](https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc)](https://shikokuchuo.r-universe.dev/mirai)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
@@ -88,8 +90,8 @@ result.
 
 ``` r
 m$data
-#>  [1] -1.561517e+00 -5.554690e-04 -1.129355e+00 -4.251722e+00  7.105917e+00
-#>  [6]  1.407278e-01 -2.351988e-01 -8.854609e-01 -1.800280e+03 -6.404027e-01
+#>  [1]  -4.51616573 -12.03324286   8.09160952   1.07777737  -0.05244827
+#>  [6] -19.06640705   0.92783540   0.12358481  -0.08310312  -0.22142677
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -97,8 +99,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] -1.561517e+00 -5.554690e-04 -1.129355e+00 -4.251722e+00  7.105917e+00
-#>  [6]  1.407278e-01 -2.351988e-01 -8.854609e-01 -1.800280e+03 -6.404027e-01
+#>  [1]  -4.51616573 -12.03324286   8.09160952   1.07777737  -0.05244827
+#>  [6] -19.06640705   0.92783540   0.12358481  -0.08310312  -0.22142677
 ```
 
 ### Daemons
@@ -207,7 +209,7 @@ insights leading to the interface accepting broader usage patterns.
 efficient solution to serialization and transmission of `torch` tensors.
 
 [Kirill Müller](https://github.com/krlmlr/), for discussion on using
-daemons to host Arrow database connections.
+‘daemons’ to host Arrow database connections.
 
 ### Links
 

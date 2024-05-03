@@ -11,9 +11,9 @@ vignette: >
 
 {mirai} supplies its own `as.promise()` method, allowing it to be used as a promise from the [`promises`](https://rstudio.github.io/promises/) package.
 
-These promises are innovative event-driven promises (developed in collaboration with Joe Cheng).
+These promises are innovative, event-driven promises, developed in collaboration with Joe Cheng.
 
-- Do not require each promise to be polled for completion by a `later` loop that re-runs every 0.1 seconds, which is how other types of promise are implemented.
+- Do not require each promise to be polled for completion by a `later` loop like other promises.
 - Instead, promise actions are automatically queued for execution as soon as each 'mirai' resolves.
 - Allows for much higher responsiveness (lower latency) and massive scalability (situations with thousand of promises or more).
 
