@@ -13,7 +13,6 @@
 * Rejected promises now show the complete error code and message in the case of an 'errorValue'.
 * A 'miraiError' reverts to not including a trailing line break (as prior to mirai 0.13.2).
 * Non-dispatcher local daemons now synchronize with host in all cases (prevents use before all have connected).
-* `register_cluster()` is still available for use, but non-exported whilst `parallel::registerClusterType()` only remains available in R-devel.
 * `[` method for 'miraiCluster' no longer produces a 'miraiCluster' object (thanks @HenrikBengtsson #83).
 * Faster startup time as the `parallel` package is now only loaded when first used.
 * Requires `nanonext` >= 1.0.0.

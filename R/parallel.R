@@ -211,14 +211,18 @@ print.miraiNode <- function(x, ...) {
 #'
 #' @return Invisible NULL
 #'
+#' @note The underlying implementation in the \pkg{parallel} package this
+#'     function relies on iis currently only available in R-devel (4.5).
+#'
 #' @examples
 #' tryCatch(
 #'
-#' mirai:::register_cluster()
+#' mirai::register_cluster()
 #'
 #' , error = identity)
 #'
 #' @keywords internal
+#' @export
 #'
 register_cluster <- function(default = TRUE) {
 
