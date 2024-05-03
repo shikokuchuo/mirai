@@ -77,7 +77,7 @@ daemons(0)
 ## [1] 0
 ```
 
-### Database Hosting - Using Arrow Connections
+### Database Hosting - Using Arrow Database Connectivity
 
 It is possible using the `DBI` interface to access and manipulate data in the Apache Arrow data format efficiently through ABDC (Arrow Database Connectivity).
 
