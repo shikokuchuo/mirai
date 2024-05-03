@@ -7,8 +7,6 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/mirai?color=112d4e)](https://CRAN.R-project.org/package=mirai)
-[![R-multiverse
-status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-multiverse.r-universe.dev%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=R-multiverse&color=112d4e)](https://r-multiverse.r-universe.dev/mirai)
 [![R-universe
 status](https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc)](https://shikokuchuo.r-universe.dev/mirai)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
@@ -90,8 +88,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  -4.51616573 -12.03324286   8.09160952   1.07777737  -0.05244827
-#>  [6] -19.06640705   0.92783540   0.12358481  -0.08310312  -0.22142677
+#>  [1]  0.3085845  1.7166279  1.4426081 -4.1935641  1.0418738  0.9598092
+#>  [7] -0.2384606  0.6931889  0.5825374  3.2406035
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -99,8 +97,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  -4.51616573 -12.03324286   8.09160952   1.07777737  -0.05244827
-#>  [6] -19.06640705   0.92783540   0.12358481  -0.08310312  -0.22142677
+#>  [1]  0.3085845  1.7166279  1.4426081 -4.1935641  1.0418738  0.9598092
+#>  [7] -0.2384606  0.6931889  0.5825374  3.2406035
 ```
 
 ### Daemons
