@@ -100,7 +100,9 @@
 <code><a href="../reference/stop_mirai.html">stop_mirai()</a></code> now resolves to an ‘errorValue’ 20 (operation canceled) in the case the asynchronous task was still ongoing (thanks <a href="https://github.com/jcheng5" class="external-link">@jcheng5</a> <a href="https://github.com/shikokuchuo/mirai/issues/110" class="external-link">#110</a>).</li>
 <li>Rejected promises now show the complete error code and message in the case of an ‘errorValue’.</li>
 <li>A ‘miraiError’ reverts to not including a trailing line break (as prior to mirai 0.13.2).</li>
-<li>Non-dispatcher local daemons now synchronize with host in all cases (prevents use before connection).</li>
+<li>Non-dispatcher local daemons now synchronize with host in all cases (prevents use before all have connected).</li>
+<li>
+<code>[</code> method for ‘miraiCluster’ no longer produces a ‘miraiCluster’ object (thanks <a href="https://github.com/HenrikBengtsson" class="external-link">@HenrikBengtsson</a> <a href="https://github.com/shikokuchuo/mirai/issues/83" class="external-link">#83</a>).</li>
 <li>Temporaily removes <code>register_cluster()</code> as <code>parallel::registerClusterType()</code> is currently only available in R-devel.</li>
 <li>Faster startup time as the <code>parallel</code> package is now only loaded if used.</li>
 <li>Requires <code>nanonext</code> &gt;= 1.0.0.</li>

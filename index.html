@@ -164,13 +164,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -1.561517e+00 -5.554690e-04 -1.129355e+00 -4.251722e+00  7.105917e+00</span></span>
-<span><span class="co">#&gt;  [6]  1.407278e-01 -2.351988e-01 -8.854609e-01 -1.800280e+03 -6.404027e-01</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  -4.51616573 -12.03324286   8.09160952   1.07777737  -0.05244827</span></span>
+<span><span class="co">#&gt;  [6] -19.06640705   0.92783540   0.12358481  -0.08310312  -0.22142677</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -1.561517e+00 -5.554690e-04 -1.129355e+00 -4.251722e+00  7.105917e+00</span></span>
-<span><span class="co">#&gt;  [6]  1.407278e-01 -2.351988e-01 -8.854609e-01 -1.800280e+03 -6.404027e-01</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  -4.51616573 -12.03324286   8.09160952   1.07777737  -0.05244827</span></span>
+<span><span class="co">#&gt;  [6] -19.06640705   0.92783540   0.12358481  -0.08310312  -0.22142677</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
@@ -213,7 +213,7 @@
 <p><a href="https://github.com/ltierney/" class="external-link">Luke Tierney</a>, R Core, for discussion on R’s implementation of L’Ecuyer-CMRG streams, used to ensure statistical independence in parallel processing, and collaboration in ‘providing an alternative communications backend for R’.</p>
 <p><a href="https://github.com/HenrikBengtsson/" class="external-link">Henrik Bengtsson</a>, for valuable insights leading to the interface accepting broader usage patterns.</p>
 <p><a href="https://github.com/dfalbel/" class="external-link">Daniel Falbel</a>, for discussion around an efficient solution to serialization and transmission of <code>torch</code> tensors.</p>
-<p><a href="https://github.com/krlmlr/" class="external-link">Kirill Müller</a>, for discussion on using daemons to host Arrow database connections.</p>
+<p><a href="https://github.com/krlmlr/" class="external-link">Kirill Müller</a>, for discussion on using ‘daemons’ to host Arrow database connections.</p>
 </div>
 <div class="section level3">
 <h3 id="links">Links<a class="anchor" aria-label="anchor" href="#links"></a>
@@ -272,6 +272,7 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://CRAN.R-project.org/package=mirai" class="external-link"><img src="https://www.r-pkg.org/badges/version/mirai?color=112d4e" alt="CRAN status"></a></li>
+<li><a href="https://r-multiverse.r-universe.dev/mirai" class="external-link"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fr-multiverse.r-universe.dev%2Fapi%2Fpackages%2Fmirai&amp;query=%24.Version&amp;label=R-multiverse&amp;color=112d4e" alt="R-multiverse status"></a></li>
 <li><a href="https://shikokuchuo.r-universe.dev/mirai" class="external-link"><img src="https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc" alt="R-universe status"></a></li>
 <li><a href="https://github.com/shikokuchuo/mirai/actions" class="external-link"><img src="https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://app.codecov.io/gh/shikokuchuo/mirai" class="external-link"><img src="https://codecov.io/gh/shikokuchuo/mirai/graph/badge.svg" alt="codecov"></a></li>

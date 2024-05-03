@@ -129,6 +129,16 @@ applications.</p>
 <p>Depending on the options suppled to <code><a href="../reference/daemons.html">daemons()</a></code>, mirai
 tasks may be distributed across local background processes or multiple
 networked servers in an efficient and performant manner.</p>
+<p>For use with Shiny, <code>mirai</code> implements innovative,
+event-driven promises, developed in collaboration with Joe Cheng.</p>
+<ul>
+<li>Do not require each promise to be polled for completion by a
+<code>later</code> loop like other promises.</li>
+<li>Instead, promise actions are automatically queued for execution as
+soon as each ‘mirai’ resolves.</li>
+<li>Allows for much higher responsiveness (lower latency) and massive
+scalability (situations with thousand of promises or more).</li>
+</ul>
 <div class="section level4">
 <h4 id="shiny-extendedtask-example-clock-and-plot">Shiny ExtendedTask Example: Clock and Plot<a class="anchor" aria-label="anchor" href="#shiny-extendedtask-example-clock-and-plot"></a>
 </h4>
@@ -167,10 +177,10 @@ duration of the app, exiting automatically when the app is stopped.</p>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="va">extended_task</span> <span class="op">&lt;-</span> <span class="va">ExtendedTask</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
-<span>    <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">}</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>    <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/bind_task_button.html" class="external-link">bind_task_button</a></span><span class="op">(</span><span class="st">"btn"</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">btn</span>, <span class="va">extended_task</span><span class="op">$</span><span class="fu">invoke</span><span class="op">(</span>x <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">n</span>, y <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">delay</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">btn</span>, <span class="va">extended_task</span><span class="op">$</span><span class="fu">invoke</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">n</span>, <span class="va">input</span><span class="op">$</span><span class="va">delay</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="va">output</span><span class="op">$</span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu">renderPlot</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">extended_task</span><span class="op">$</span><span class="fu">result</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>  </span>
@@ -192,21 +202,23 @@ clicks.</li>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/bslib/man/input_task_button.html" class="external-link">input_task_button</a></span><span class="op">(</span><span class="st">"btn"</span>, <span class="st">"Plot uniform distribution"</span><span class="op">)</span></span></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>In the server, create an ExtendedTask object by calling
-<code>ExtendedTask$new()</code> on a function passing <code>...</code>
-arguments to <code><a href="../reference/mirai.html">mirai()</a></code>, and bind it to the button created in
-(1).</li>
+<code>ExtendedTask$new()</code> on a function passing named arguments to
+<code><a href="../reference/mirai.html">mirai()</a></code>, and bind it to the button created in (1). The
+arguments are passed in through the use of <code><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment()</a></code>
+which captures the ‘x’ and ‘y’ contained in the environment of the
+anonymous function.</li>
 </ol>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">extended_task</span> <span class="op">&lt;-</span> <span class="va">ExtendedTask</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
-<span>    <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">}</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>    <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/bind_task_button.html" class="external-link">bind_task_button</a></span><span class="op">(</span><span class="st">"btn"</span><span class="op">)</span></span></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
 <li>In the server, create an observer on the input button, which invokes
-the ExtendedTask with the <em>named</em> parameters required by the
-‘mirai’ i.e. ‘x’ and ‘y’ in this example.</li>
+the ExtendedTask, supplying the arguments to the anonymous function
+above.</li>
 </ol>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">btn</span>, <span class="va">extended_task</span><span class="op">$</span><span class="fu">invoke</span><span class="op">(</span>x <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">n</span>, y <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">delay</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">btn</span>, <span class="va">extended_task</span><span class="op">$</span><span class="fu">invoke</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">n</span>, <span class="va">input</span><span class="op">$</span><span class="va">delay</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
 <li>In the server, create a render function for the output, which
 consumes the result of the ExtendedTask.</li>
@@ -301,6 +313,10 @@ start to be generated until one of the other plots has finished.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>, <span class="fu">runApp</span><span class="op">(</span><span class="va">app</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><em>The above example builds on original code by Joe Cheng, Daniel
 Woodie and William Landau.</em></p>
+<p>This example uses <code>...</code> to pass variables through to the
+<code><a href="../reference/mirai.html">mirai()</a></code> call. This is an alternative and equivalent way to
+using <code><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment()</a></code> and can be flexibly used to pass
+objects not defined there.</p>
 <p>The key components to using this ExtendedTask example are:</p>
 <ol style="list-style-type: decimal">
 <li>In the UI, use <code><a href="https://rdrr.io/pkg/bslib/man/input_task_button.html" class="external-link">bslib::input_task_button()</a></code>. This is a

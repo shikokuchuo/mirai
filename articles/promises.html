@@ -126,12 +126,11 @@
 <p>{mirai} supplies its own <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code> method, allowing
 it to be used as a promise from the <a href="https://rstudio.github.io/promises/" class="external-link"><code>promises</code></a>
 package.</p>
-<p>These promises are innovative event-driven promises (developed in
-collaboration with Joe Cheng).</p>
+<p>These promises are innovative, event-driven promises, developed in
+collaboration with Joe Cheng.</p>
 <ul>
 <li>Do not require each promise to be polled for completion by a
-<code>later</code> loop that re-runs every 0.1 seconds, which is how
-other types of promise are implemented.</li>
+<code>later</code> loop like other promises.</li>
 <li>Instead, promise actions are automatically queued for execution as
 soon as each ‘mirai’ resolves.</li>
 <li>Allows for much higher responsiveness (lower latency) and massive
