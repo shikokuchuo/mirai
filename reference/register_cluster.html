@@ -90,15 +90,20 @@
 
 <p>Invisible NULL</p>
     </div>
+    <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>The underlying implementation in the <span class="pkg">parallel</span> package this
+    function relies on iis currently only available in R-devel (4.5).</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">mirai</span><span class="fu">:::</span><span class="fu">register_cluster</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">mirai</span><span class="fu">::</span><span class="fu">register_cluster</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>, error <span class="op">=</span> <span class="va">identity</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;simpleError in mirai:::register_cluster(): this function requires a newer version of R&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;simpleError in mirai::register_cluster(): this function requires a more recent version of R&gt;</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

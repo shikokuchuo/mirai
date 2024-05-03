@@ -85,8 +85,6 @@
 <li>A ‘miraiError’ reverts to not including a trailing line break (as prior to mirai 0.13.2).</li>
 <li>Non-dispatcher local daemons now synchronize with host in all cases (prevents use before all have connected).</li>
 <li>
-<code><a href="../reference/register_cluster.html">register_cluster()</a></code> is still available for use, but non-exported whilst <code>parallel::registerClusterType()</code> only remains available in R-devel.</li>
-<li>
 <code>[</code> method for ‘miraiCluster’ no longer produces a ‘miraiCluster’ object (thanks <a href="https://github.com/HenrikBengtsson" class="external-link">@HenrikBengtsson</a> <a href="https://github.com/shikokuchuo/mirai/issues/83" class="external-link">#83</a>).</li>
 <li>Faster startup time as the <code>parallel</code> package is now only loaded when first used.</li>
 <li>Requires <code>nanonext</code> &gt;= 1.0.0.</li>
