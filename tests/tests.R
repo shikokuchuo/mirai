@@ -270,6 +270,4 @@ if (connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") 
   nanotest(test_tls(nanonext::write_cert(cn = "127.0.0.1")))
   Sys.sleep(1L)
 }
-rm(list = ls())
-gc()
 Sys.sleep(1L)

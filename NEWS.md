@@ -1,3 +1,5 @@
+# mirai 1.0.0.9000 (development)
+
 # mirai 1.0.0
 
 * Implements completely event-driven (non-polling) promises (thanks @jcheng5 for prototyping).

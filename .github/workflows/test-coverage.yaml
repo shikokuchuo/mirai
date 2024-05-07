@@ -25,7 +25,7 @@ jobs:
 
       - name: Add r-universe to repos
         run: |
-          cat("\noptions(repos=c(UNIV='https://r-multiverse.r-universe.dev',CRAN ='https://cloud.r-project.org'))\n", file = "~/.Rprofile", append = TRUE)
+          cat("\noptions(repos=c(UNIV='https://shikokuchuo.r-universe.dev',CRAN ='https://cloud.r-project.org'))\n", file = "~/.Rprofile", append = TRUE)
         shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
