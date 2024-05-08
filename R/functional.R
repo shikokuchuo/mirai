@@ -16,13 +16,14 @@
 
 # mirai functional -------------------------------------------------------------
 
-#' mirai lapply
+#' mirai map
 #'
 #' Apply a function over a list or vector using \pkg{mirai}.
 #'
-#' @param X a vector (atomic or list) or an expression object.
-#' @param FUN the function to be applied to each element of X.
-#' @param ... optional arguments to \code{FUN}.
+#' @param .x a vector (atomic or list) or an expression object.
+#' @param .f the function to be applied to each element of X.
+#' @param ... optional arguments to \code{.f}.
+#' @param .args optional arguments to \code{.f} provided as a list.
 #' @inheritParams mirai
 #'
 #' @return A list (the same length as X, preserving names).
@@ -34,25 +35,28 @@
 #' @examples
 #' with(
 #'   daemons(1, dispatcher = FALSE),
-#'   mlapply(1:3, rnorm, mean = 20)
+#'   mmap(1:3, rnorm, mean = 20, .args = list(sd = 2))
 #' )
 #'
 #' @export
 #'
-mlapply <- function(X, FUN, ..., .compute = "default") {
+mmap <- function(.x, .f, ..., .args = list(), .compute = "default") {
 
   is.null(..[[.compute]]) && stop(._[["requires_daemons"]])
-  x <- vector(mode = "list", length = length(X))
-  fun <- names(X)
+  vec <- vector(mode = "list", length = length(.x))
+  nm <- names(.x)
+  dots <- list(...)
+  length(dots) && !is.null(names(dots)) && all(nzchar(names(dots))) ||
+    stop(._[["named_args"]])
 
-  for (i in seq_along(X)) {
-    x[[i]] <- mirai(
-      .expr = do.call(fun, c(list(x), args), quote = TRUE),
-      .args = list(fun = FUN, x = .subset2(X, i), args = list(...)),
+  for (i in seq_along(.x)) {
+    vec[[i]] <- mirai(
+      .expr = do.call(.f, c(list(.x), .args), quote = TRUE),
+      .args = list(.f = .f, .x = .subset2(.x, i), .args = c(dots, .args)),
       .compute = .compute
     )
   }
 
-  `names<-`(lapply(lapply(x, call_mirai_), .subset2, "value"), fun)
+  `names<-`(lapply(lapply(vec, call_mirai_), .subset2, "value"), nm)
 
 }

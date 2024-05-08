@@ -113,9 +113,9 @@ if (connection && .Platform[["OS.type"]] != "windows") {
   nanotest(daemons(n = 2L, url = value <- "ws://:0", dispatcher = FALSE, remote = remote_config()) != value)
   nanotestz(daemons(0L))
   Sys.sleep(1L)
-  m <- with(daemons(1, dispatcher = FALSE, .compute = "ml"), mlapply(1:3, rnorm, mean = 20, .compute = "ml"))
+  m <- with(daemons(1, dispatcher = FALSE, .compute = "ml"), mmap(1:3, rnorm, mean = 20, .args = list(sd = 2), .compute = "ml"))
   nanotest(is.list(m) && length(m) == 3L && all(as.logical(lapply(m, is.numeric))))
-  nanotesterr(mlapply(1:3, rnorm, mean = 20), "daemons must be set")
+  nanotesterr(mmap(1:3, rnorm), "daemons must be set")
   Sys.sleep(1L)
 }
 # parallel cluster tests

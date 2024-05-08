@@ -1,6 +1,6 @@
 # mirai 1.0.0.9000 (development)
 
-* Adds `mlapply()` for lapply using mirai.
+* Adds `mmap()` for map using mirai.
 
 # mirai 1.0.0
 
