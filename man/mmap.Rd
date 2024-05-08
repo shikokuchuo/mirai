@@ -2,14 +2,14 @@
 % Please edit documentation in R/functional.R
 \name{mmap}
 \alias{mmap}
-\title{mirai map}
+\title{mirai Map}
 \usage{
 mmap(.x, .f, ..., .args = list(), .compute = "default")
 }
 \arguments{
-\item{.x}{a vector (atomic or list) or an expression object.}
+\item{.x}{a list, atomic vector, or an expression object.}
 
-\item{.f}{the function to be applied to each element of X.}
+\item{.f}{a function to be applied to each element of \code{.x}.}
 
 \item{...}{optional arguments to \code{.f}.}
 
@@ -19,10 +19,10 @@ mmap(.x, .f, ..., .args = list(), .compute = "default")
 to use (each compute profile has its own independent set of daemons).}
 }
 \value{
-A list (the same length as X, preserving names).
+A list (the same length as \code{.x}, preserving names).
 }
 \description{
-Apply a function over a list or vector using \pkg{mirai}.
+Map a function over a list or vector using \pkg{mirai}.
 }
 \details{
 This function is blocking and will wait for all results to be

@@ -16,17 +16,17 @@
 
 # mirai functional -------------------------------------------------------------
 
-#' mirai map
+#' mirai Map
 #'
-#' Apply a function over a list or vector using \pkg{mirai}.
+#' Map a function over a list or vector using \pkg{mirai}.
 #'
-#' @param .x a vector (atomic or list) or an expression object.
-#' @param .f the function to be applied to each element of X.
+#' @param .x a list, atomic vector, or an expression object.
+#' @param .f a function to be applied to each element of \code{.x}.
 #' @param ... optional arguments to \code{.f}.
 #' @param .args optional arguments to \code{.f} provided as a list.
 #' @inheritParams mirai
 #'
-#' @return A list (the same length as X, preserving names).
+#' @return A list (the same length as \code{.x}, preserving names).
 #'
 #' @details This function is blocking and will wait for all results to be
 #'     obtained. Daemons must also have been previously set with a call to
