@@ -45,7 +45,7 @@ mlapply <- function(X, FUN, ..., .compute = "default") {
 
   for (i in seq_along(X)) {
     x[[i]] <- mirai(
-      .expr = do.call(fun, c(list(x), args)),
+      .expr = do.call(fun, c(list(x), args), quote = TRUE),
       .args = list(fun = FUN, x = .subset2(X, i), args = list(...))
     )
   }
