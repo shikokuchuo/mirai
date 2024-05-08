@@ -24,7 +24,8 @@ Apply a function over a list or vector using \pkg{mirai}.
 }
 \details{
 This function is blocking and will wait for all results to be
-    obtained.
+    obtained. Daemons must also have been previously set with a call to
+    \code{\link{daemons}}.
 }
 \examples{
 with(

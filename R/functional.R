@@ -28,7 +28,8 @@
 #' @return A list (the same length as X, preserving names).
 #'
 #' @details This function is blocking and will wait for all results to be
-#'     obtained.
+#'     obtained. Daemons must also have been previously set with a call to
+#'     \code{\link{daemons}}.
 #'
 #' @examples
 #' with(
@@ -40,13 +41,15 @@
 #'
 mlapply <- function(X, FUN, ..., .compute = "default") {
 
+  is.null(..[[.compute]]) && stop(._[["requires_daemons"]])
   x <- vector(mode = "list", length = length(X))
   fun <- names(X)
 
   for (i in seq_along(X)) {
     x[[i]] <- mirai(
       .expr = do.call(fun, c(list(x), args), quote = TRUE),
-      .args = list(fun = FUN, x = .subset2(X, i), args = list(...))
+      .args = list(fun = FUN, x = .subset2(X, i), args = list(...)),
+      .compute = .compute
     )
   }
 
