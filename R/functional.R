@@ -46,8 +46,6 @@ mmap <- function(.x, .f, ..., .args = list(), .compute = "default") {
   vec <- vector(mode = "list", length = length(.x))
   nm <- names(.x)
   dots <- list(...)
-  length(dots) && !is.null(names(dots)) && all(nzchar(names(dots))) ||
-    stop(._[["named_args"]])
 
   for (i in seq_along(.x)) {
     vec[[i]] <- mirai(
