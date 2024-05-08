@@ -113,6 +113,9 @@ if (connection && .Platform[["OS.type"]] != "windows") {
   nanotest(daemons(n = 2L, url = value <- "ws://:0", dispatcher = FALSE, remote = remote_config()) != value)
   nanotestz(daemons(0L))
   Sys.sleep(1L)
+  m <- with(daemons(1, dispatcher = FALSE), mlapply(1:3, rnorm, mean = 20))
+  nanotest(is.list(m) && length(m) == 3L && all(as.logical(lapply(m, is.numeric))))
+  Sys.sleep(1L)
 }
 # parallel cluster tests
 nanotestn(tryCatch(mirai::register_cluster(), error = function(e) NULL))
