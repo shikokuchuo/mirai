@@ -44,17 +44,14 @@ mmap <- function(.x, .f, ..., .args = list(), .compute = "default") {
 
   is.null(..[[.compute]]) && stop(._[["requires_daemons"]])
   vec <- vector(mode = "list", length = length(.x))
-  nm <- names(.x)
-  dots <- list(...)
 
-  for (i in seq_along(.x)) {
+  for (i in seq_along(.x))
     vec[[i]] <- mirai(
       .expr = do.call(.f, c(list(.x), .args), quote = TRUE),
-      .args = list(.f = .f, .x = .subset2(.x, i), .args = c(dots, .args)),
+      .args = list(.f = .f, .x = .subset2(.x, i), .args = c(list(...), .args)),
       .compute = .compute
     )
-  }
 
-  `names<-`(lapply(lapply(vec, call_mirai_), .subset2, "value"), nm)
+  `names<-`(lapply(lapply(vec, call_mirai_), .subset2, "value"), names(.x))
 
 }
