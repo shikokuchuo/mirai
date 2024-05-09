@@ -28,8 +28,11 @@
 #'
 #' @return A list (the same length as \code{.x}, preserving names).
 #'
-#' @details This function is blocking and will wait for all results to be
-#'     obtained. Daemons must also have been previously set with a call to
+#' @details This function sends each application of \code{.f} on an element of
+#'     \code{.x} for computation in a separate \code{\link{mirai}} call, and
+#'     waits for completion.
+#'
+#'     Note: daemons must also have been previously set with a call to
 #'     \code{\link{daemons}}.
 #'
 #' @examples
