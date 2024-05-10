@@ -1,5 +1,4 @@
 library(mirai)
-library(parallel)
 
 nanotest <- function(x) invisible(x || stop("is not TRUE when expected to be TRUE"))
 nanotestn <- function(x) invisible(is.null(x) || stop("is not NULL when expected to be NULL"))
@@ -122,6 +121,7 @@ if (connection && .Platform[["OS.type"]] != "windows") {
   Sys.sleep(1L)
 }
 # parallel cluster tests
+library(parallel)
 nanotestn(tryCatch(mirai::register_cluster(), error = function(e) NULL))
 if (connection) {
   cluster <- make_cluster(1)
@@ -174,6 +174,8 @@ if (connection) {
   nanotestn(stopCluster(cl))
   nanotesterr(parLapply(cluster, 1:10, runif), "cluster is no longer active")
   Sys.sleep(1L)
+}
+if (connection && .Platform[["OS.type"]] != "windows") {
   nanotestp(cl <- make_cluster(url = local_url()))
   nanotestn(stopCluster(cl))
   Sys.sleep(1L)
@@ -182,7 +184,7 @@ if (connection) {
   Sys.sleep(1L)
 }
 # advanced daemons and dispatcher tests
-if (connection && Sys.getenv("NOT_CRAN") == "true") {
+if (connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "true") {
   nanotesto(daemons(url = local_url(), dispatcher = TRUE))
   nanotest(grepl("://", launch_remote(1L), fixed = TRUE))
   nanotestn(launch_local(nextget("urls")))
@@ -194,8 +196,6 @@ if (connection && Sys.getenv("NOT_CRAN") == "true") {
   Sys.sleep(1L)
   nanotestz(daemons(NULL))
   Sys.sleep(1L)
-}
-if (connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "true") {
   nanotesto(daemons(url = "ws://:0", token = TRUE))
   nanotestz(daemons(0L))
   Sys.sleep(1L)
