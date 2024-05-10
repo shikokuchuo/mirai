@@ -52,24 +52,25 @@
 mmap <- function(.x, .f, ..., .args = list(), .stop = TRUE, .compute = "default") {
 
   is.null(..[[.compute]]) && stop(._[["requires_daemons"]])
-  vec <- vector(mode = "list", length = length(.x))
+  xlen <- length(.x)
+  vec <- vector(mode = "list", length = xlen)
 
-  for (i in seq_along(.x))
+  for (i in seq_len(xlen))
     vec[[i]] <- mirai(
       .expr = do.call(.f, c(list(.x), .args), quote = TRUE),
       .args = list(.f = .f, .x = .subset2(.x, i), .args = c(list(...), .args)),
       .compute = .compute
     )
 
-  `names<-`(lapply(vec, call_check_value, .stop, vec), names(.x))
-
-}
-
-call_check_value <- function(x, .stop, vec) {
-  r <- .subset2(call_mirai_(x), "value")
-  .stop && is_error_value(r) && {
-    lapply(vec, stop_mirai)
-    stop(r)
+  for (i in seq_len(xlen)) {
+    r <- .subset2(call_mirai_(vec[[i]]), "value")
+    .stop && is_error_value(r) && {
+      lapply(vec, stop_mirai)
+      stop(r)
+    }
+    vec[[i]] <- r
   }
-  r
+
+  `names<-`(vec, names(.x))
+
 }
