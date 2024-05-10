@@ -113,7 +113,10 @@ if (connection && .Platform[["OS.type"]] != "windows") {
   nanotest(daemons(n = 2L, url = value <- "ws://:0", dispatcher = FALSE, remote = remote_config()) != value)
   nanotestz(daemons(0L))
   Sys.sleep(1L)
-  m <- with(daemons(1, dispatcher = FALSE, .compute = "ml"), mmap(1:3, rnorm, mean = 20, .args = list(2), .compute = "ml"))
+  m <- with(daemons(1, dispatcher = FALSE, .compute = "ml"), {
+    if (is.null(tryCatch(mmap(list(1, "a", 2), sum), error = function(e) NULL)))
+      mmap(1:3, rnorm, mean = 20, .args = list(2), .compute = "ml")
+  })
   nanotest(is.list(m) && length(m) == 3L && all(as.logical(lapply(m, is.numeric))))
   nanotesterr(mmap(1:3, rnorm), "daemons must be set")
   Sys.sleep(1L)

@@ -24,6 +24,9 @@
 #' @param .f a function to be applied to each element of \code{.x}.
 #' @param ... optional arguments to \code{.f}.
 #' @param .args optional arguments to \code{.f} provided as a list.
+#' @param .stop [default TRUE] whether to perform early stopping if an error is
+#'     returned. If FALSE, all errors are returned as 'miraiError' /
+#'     'errorValue' as the case may be.
 #' @inheritParams mirai
 #'
 #' @return A list (the same length as \code{.x}, preserving names).
@@ -31,6 +34,9 @@
 #' @details This function sends each application of \code{.f} on an element of
 #'     \code{.x} for computation in a separate \code{\link{mirai}} call, and
 #'     waits for completion.
+#'
+#'     Early stopping is performed, so if an 'errorValue' is returned, an error
+#'     is thrown without waiting for remaining computations to complete.
 #'
 #'     Note: daemons must also have been previously set with a call to
 #'     \code{\link{daemons}}.
@@ -43,7 +49,7 @@
 #'
 #' @export
 #'
-mmap <- function(.x, .f, ..., .args = list(), .compute = "default") {
+mmap <- function(.x, .f, ..., .args = list(), .stop = TRUE, .compute = "default") {
 
   is.null(..[[.compute]]) && stop(._[["requires_daemons"]])
   vec <- vector(mode = "list", length = length(.x))
@@ -55,6 +61,15 @@ mmap <- function(.x, .f, ..., .args = list(), .compute = "default") {
       .compute = .compute
     )
 
-  `names<-`(lapply(lapply(vec, call_mirai_), .subset2, "value"), names(.x))
+  `names<-`(lapply(vec, call_check_value, .stop, vec), names(.x))
 
+}
+
+call_check_value <- function(x, .stop, vec) {
+  r <- .subset2(call_mirai_(x), "value")
+  .stop && is_error_value(r) && {
+    lapply(vec, stop_mirai)
+    stop(r)
+  }
+  r
 }

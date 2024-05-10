@@ -4,7 +4,7 @@
 \alias{mmap}
 \title{mirai Map}
 \usage{
-mmap(.x, .f, ..., .args = list(), .compute = "default")
+mmap(.x, .f, ..., .args = list(), .stop = TRUE, .compute = "default")
 }
 \arguments{
 \item{.x}{a list, atomic vector, or an expression object.}
@@ -14,6 +14,10 @@ mmap(.x, .f, ..., .args = list(), .compute = "default")
 \item{...}{optional arguments to \code{.f}.}
 
 \item{.args}{optional arguments to \code{.f} provided as a list.}
+
+\item{.stop}{[default TRUE] whether to perform early stopping if an error is
+returned. If FALSE, all errors are returned as 'miraiError' /
+'errorValue' as the case may be.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
@@ -28,6 +32,9 @@ Map a function over a list or vector using \pkg{mirai}.
 This function sends each application of \code{.f} on an element of
     \code{.x} for computation in a separate \code{\link{mirai}} call, and
     waits for completion.
+
+    Early stopping is performed, so if an 'errorValue' is returned, an error
+    is thrown without waiting for remaining computations to complete.
 
     Note: daemons must also have been previously set with a call to
     \code{\link{daemons}}.
