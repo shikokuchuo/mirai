@@ -24,9 +24,10 @@
 #' @param .f a function to be applied to each element of \code{.x}.
 #' @param ... optional arguments to \code{.f}.
 #' @param .args optional arguments to \code{.f} provided as a list.
-#' @param .stop [default TRUE] whether to perform early stopping if an error is
-#'     returned. If FALSE, all errors are returned as 'miraiError' /
-#'     'errorValue' as the case may be.
+#' @param .stop [default FALSE] all errors are returned as \sQuote{miraiError} /
+#'     \sQuote{errorValue} as the case may be, allowing recovery from partial
+#'     failure. If TRUE, performs early stopping (with the error message) as
+#'     soon as an error is encountered (remaining computations are aborted).
 #' @inheritParams mirai
 #'
 #' @return A list (the same length as \code{.x}, preserving names).
@@ -35,10 +36,12 @@
 #'     \code{.x} for computation in a separate \code{\link{mirai}} call, and
 #'     waits for completion.
 #'
-#'     Early stopping is performed, so if an 'errorValue' is returned, an error
-#'     is thrown without waiting for remaining computations to complete.
+#'     Designed to facilitate recovery from partial failure by returning all
+#'     results by default, allowing only the failures to be re-run.
+#'     Alternatively, there is the option for early stopping, which stops at the
+#'     first failure and aborts all remaining computations.
 #'
-#'     Note: daemons must also have been previously set with a call to
+#'     Note: daemons must have been previously set with a call to
 #'     \code{\link{daemons}}.
 #'
 #' @examples
@@ -49,7 +52,7 @@
 #'
 #' @export
 #'
-mmap <- function(.x, .f, ..., .args = list(), .stop = TRUE, .compute = "default") {
+mmap <- function(.x, .f, ..., .args = list(), .stop = FALSE, .compute = "default") {
 
   is.null(..[[.compute]]) && stop(._[["requires_daemons"]])
   xlen <- length(.x)
@@ -65,7 +68,7 @@ mmap <- function(.x, .f, ..., .args = list(), .stop = TRUE, .compute = "default"
   for (i in seq_len(xlen)) {
     r <- .subset2(call_mirai_(vec[[i]]), "value")
     .stop && is_error_value(r) && {
-      lapply(vec, stop_mirai)
+      lapply(vec, stop_aio)
       stop(r)
     }
     vec[[i]] <- r
