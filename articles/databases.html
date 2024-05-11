@@ -285,7 +285,10 @@ a <code><a href="../reference/mirai.html">mirai()</a></code> call.</p>
 <span>  <span class="fu">hr</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="fu">h3</span><span class="op">(</span><span class="st">"Shiny / mirai / DBI / ADBC demonstration"</span><span class="op">)</span>,</span>
 <span>  <span class="fu">p</span><span class="op">(</span><span class="st">"Database connections hosted in 4 daemon processes"</span><span class="op">)</span>,</span>
-<span>  <span class="fu">sliderInput</span><span class="op">(</span><span class="st">"sl"</span>, <span class="st">"Query iris dataset based on Sepal Length"</span>, min <span class="op">=</span> <span class="va">slmin</span>, max <span class="op">=</span> <span class="va">slmax</span>, value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">slmin</span>, <span class="va">slmax</span><span class="op">)</span>, width <span class="op">=</span> <span class="st">"75%"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">sliderInput</span><span class="op">(</span></span>
+<span>    <span class="st">"sl"</span>, <span class="st">"Query iris dataset based on Sepal Length"</span>, min <span class="op">=</span> <span class="va">slmin</span>, max <span class="op">=</span> <span class="va">slmax</span>,</span>
+<span>    value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">slmin</span>, <span class="va">slmax</span><span class="op">)</span>, width <span class="op">=</span> <span class="st">"75%"</span></span>
+<span>  <span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/input_task_button.html" class="external-link">input_task_button</a></span><span class="op">(</span><span class="st">"btn"</span>, <span class="st">"Return query"</span><span class="op">)</span>,</span>
 <span>  <span class="fu">tableOutput</span><span class="op">(</span><span class="st">"table"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -299,7 +302,7 @@ a <code><a href="../reference/mirai.html">mirai()</a></code> call.</p>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="va">task</span> <span class="op">&lt;-</span> <span class="va">ExtendedTask</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
-<span>    <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span></span>
+<span>    \<span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span></span>
 <span>      <span class="fu">dbGetQueryArrow</span><span class="op">(</span></span>
 <span>        <span class="va">con</span>,</span>
 <span>        <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span></span>
@@ -339,7 +342,7 @@ a <code><a href="../reference/mirai.html">mirai()</a></code> call.</p>
 <span>    <span class="co"># serialization() specifies the native Arrow serialization functions</span></span>
 <span>    <span class="fu"><a href="../reference/serialization.html">serialization</a></span><span class="op">(</span></span>
 <span>      refhook <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">arrow</span><span class="fu">::</span><span class="va">write_to_raw</span>,</span>
-<span>                     <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu">read_ipc_stream</span><span class="op">(</span><span class="va">x</span>, as_data_frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                     \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu">read_ipc_stream</span><span class="op">(</span><span class="va">x</span>, as_data_frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>      class <span class="op">=</span> <span class="st">"nanoarrow_array_stream"</span></span>
 <span>    <span class="op">)</span></span>
 <span>    <span class="co"># write iris to the database (for this demonstration)</span></span>
