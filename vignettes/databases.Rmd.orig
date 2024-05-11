@@ -101,3 +101,95 @@ As before, `everywhere()` can be used again to cleanly tear down the databases, 
 everywhere(dbDisconnect(con))
 daemons(0)
 ```
+
+### Shiny / mirai / DBI / ADBC Integrated Example
+
+The following is an example of how database connections hosted in mirai daemons may be used to power a Shiny app.
+
+The database connections are set up to begin with in all daemons using `everywhere()`, and the one-time `serialization()` setup ensures seamless transport of Apache Arrow data. Shiny ExtendedTask is then used to perform each request via a `mirai()` call.
+
+```{r demo, eval=FALSE}
+library(shiny)
+library(mirai)
+library(bslib)
+
+# common input parameters
+slmin <- min(iris$Sepal.Length)
+slmax <- max(iris$Sepal.Length)
+
+ui <- page_fluid(
+  p("The time is ", textOutput("current_time", inline = TRUE)),
+  hr(),
+  h3("Shiny / mirai / DBI / ADBC demonstration"),
+  p("Database connections hosted in 4 daemon processes"),
+  sliderInput(
+    "sl", "Query iris dataset based on Sepal Length", min = slmin, max = slmax,
+    value = c(slmin, slmax), width = "75%"
+  ),
+  input_task_button("btn", "Return query"),
+  tableOutput("table")
+)
+
+# uses Shiny ExtendedTask with mirai
+server <- function(input, output, session) {
+
+  output$current_time <- renderText({
+    invalidateLater(1000)
+    format(Sys.time(), "%H:%M:%S %p")
+  })
+
+  task <- ExtendedTask$new(
+    \(...) mirai(
+      dbGetQueryArrow(
+        con,
+        sprintf(
+          "SELECT * FROM iris WHERE \"Sepal.Length\" BETWEEN %.2f AND %.2f",
+          sl[1L],
+          sl[2L]
+        )
+      ),
+      ...
+    )
+  ) |> bind_task_button("btn")
+
+  observeEvent(input$btn, task$invoke(sl = input$sl))
+
+  output$table <- renderTable(task$result())
+
+}
+
+# create Shiny app
+app <- shinyApp(ui, server)
+
+# use with() to automatically clean up resources when app exits
+with(
+  # use 4 local daemons
+  daemons(4),
+  {
+    # create temp database file (for this demonstration)
+    file <- tempfile()
+    # everywhere() loads DBI and creates ADBC connection in each daemon
+    everywhere(
+      {
+        library(DBI) # `adbi` and `adbcsqlite` packages must also be installed
+        con <<- dbConnect(adbi::adbi("adbcsqlite"), uri = file)
+      },
+      file = file
+    )
+    # serialization() specifies the native Arrow serialization functions
+    serialization(
+      refhook = list(arrow::write_to_raw,
+                     \(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)),
+      class = "nanoarrow_array_stream"
+    )
+    # write iris to the database (for this demonstration)
+    m <- mirai(dbWriteTableArrow(con, "iris", iris))
+    # run the Shiny app
+    runApp(app)
+    # disconnect from the database everywhere after app exits
+    everywhere(dbDisconnect(con))
+    # delete temp database file (for this demonstration)
+    unlink(file)
+  }
+)
+```

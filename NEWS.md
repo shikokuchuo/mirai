@@ -1,6 +1,6 @@
 # mirai 1.0.0.9000 (development)
 
-* Adds `mmap()` for parallel/distributed map functionality using mirai, with optional early stopping.
+* Adds `mmap()` for parallel/distributed map functionality using mirai, allowing either recovery from partial failure or early stopping.
 
 # mirai 1.0.0
 
