@@ -145,13 +145,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -0.2819560 -0.5967914  0.6349296  2.5009639 -3.9728956 -0.2517056</span></span>
-<span><span class="co">#&gt;  [7]  0.3998458  1.5749779 -1.6756273 -3.5466531</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  1.9822856 -5.1505469 -3.6232373 -1.1126624  0.6872442  1.4550869</span></span>
+<span><span class="co">#&gt;  [7] -0.8987452 -0.2759963 -0.1941541  0.5044682</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -0.2819560 -0.5967914  0.6349296  2.5009639 -3.9728956 -0.2517056</span></span>
-<span><span class="co">#&gt;  [7]  0.3998458  1.5749779 -1.6756273 -3.5466531</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  1.9822856 -5.1505469 -3.6232373 -1.1126624  0.6872442  1.4550869</span></span>
+<span><span class="co">#&gt;  [7] -0.8987452 -0.2759963 -0.1941541  0.5044682</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
@@ -191,7 +191,7 @@
 <p>We would like to thank in particular:</p>
 <p><a href="https://github.com/wlandau/" class="external-link">Will Landau</a>, for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of <code>crew</code> and <code>targets</code>.</p>
 <p><a href="https://github.com/jcheng5/" class="external-link">Joe Cheng</a>, for optimising the <code>promises</code> method to make <code>mirai</code> work seamlessly within Shiny, and prototyping non-polling promises, which is implemented across <code>nanonext</code> and <code>mirai</code>.</p>
-<p><a href="https://github.com/ltierney/" class="external-link">Luke Tierney</a>, R Core, for discussion on L’Ecuyer-CMRG streams, used to ensure statistical independence in parallel processing, and making it possible for <code>mirai</code> to be the first ‘alternative communications backend for R’.</p>
+<p><a href="https://github.com/ltierney/" class="external-link">Luke Tierney</a>, R Core, for discussion on L’Ecuyer-CMRG streams to ensure statistical independence in parallel processing, and making it possible for <code>mirai</code> to be the first ‘alternative communications backend for R’.</p>
 <p><a href="https://github.com/HenrikBengtsson/" class="external-link">Henrik Bengtsson</a>, for valuable insights leading to the interface accepting broader usage patterns.</p>
 <p><a href="https://github.com/dfalbel/" class="external-link">Daniel Falbel</a>, for discussion around an efficient solution to serialization and transmission of <code>torch</code> tensors.</p>
 <p><a href="https://github.com/krlmlr/" class="external-link">Kirill Müller</a>, for discussion on using ‘daemons’ to host Arrow database connections.</p>
