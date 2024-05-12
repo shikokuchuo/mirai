@@ -24,10 +24,12 @@
 #' @param .f a function to be applied to each element of \code{.x}.
 #' @param ... optional arguments to \code{.f}.
 #' @param .args optional arguments to \code{.f} provided as a list.
-#' @param .stop [default FALSE] all errors are returned as \sQuote{miraiError} /
+#' @param .progress [default FALSE] if TRUE, reports progress via updates to
+#'     \sQuote{stderr}.
+#' @param .stop [default FALSE] errors are returned as \sQuote{miraiError} /
 #'     \sQuote{errorValue} as the case may be, allowing recovery from partial
-#'     failure. If TRUE, performs early stopping (with the error message) as
-#'     soon as an error is encountered (remaining computations are aborted).
+#'     failure. If TRUE, performs early stopping as soon as an error is
+#'     encountered, with remaining computations aborted.
 #' @inheritParams mirai
 #'
 #' @return A list (the same length as \code{.x}, preserving names).
@@ -52,9 +54,11 @@
 #'   mmap(1:3, rnorm, mean = 20, .args = list(sd = 2))
 #' )
 #'
+#' mmap(seq(from = 0.1, to = 0.4, by = 0.1), Sys.sleep, .progress = TRUE)
+#'
 #' @export
 #'
-mmap <- function(.x, .f, ..., .args = list(), .stop = FALSE, .compute = "default") {
+mmap <- function(.x, .f, ..., .args = list(), .progress = FALSE, .stop = FALSE, .compute = "default") {
 
   is.null(..[[.compute]]) && {
     warning(._[["requires_daemons"]], immediate. = TRUE)
@@ -75,15 +79,29 @@ mmap <- function(.x, .f, ..., .args = list(), .stop = FALSE, .compute = "default
       .compute = .compute
     )
 
-  for (i in seq_len(xlen)) {
-    r <- .subset2(call_mirai_(vec[[i]]), "value")
-    .stop && is_error_value(r) && {
-      lapply(vec, stop_aio)
-      stop(r)
+  if (.stop) {
+    for (i in seq_len(xlen)) {
+      if (.progress)
+        cat(sprintf("\r[ %d / %d .... ]", i - 1L, xlen), file = stderr())
+      r <- .subset2(call_mirai_(vec[[i]]), "value")
+      is_error_value(r) && {
+        lapply(vec, stop_aio)
+        stop(r)
+      }
     }
-    vec[[i]] <- r
+    cat(sprintf("\r[ %d / %d done ]\n", xlen, xlen), file = stderr())
+
+  } else if (.progress) {
+    for (i in seq_len(xlen)) {
+      cat(sprintf("\r[ %d / %d .... ]", i - 1L, xlen), file = stderr())
+      call_mirai_(vec[[i]])
+    }
+    cat(sprintf("\r[ %d / %d done ]\n", xlen, xlen), file = stderr())
+
+  } else {
+    lapply(vec, call_mirai_)
   }
 
-  `names<-`(vec, names(.x))
+  `names<-`(lapply(vec, .subset2, "value"), names(.x))
 
 }

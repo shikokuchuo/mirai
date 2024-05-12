@@ -4,7 +4,15 @@
 \alias{mmap}
 \title{mirai Map}
 \usage{
-mmap(.x, .f, ..., .args = list(), .stop = FALSE, .compute = "default")
+mmap(
+  .x,
+  .f,
+  ...,
+  .args = list(),
+  .progress = FALSE,
+  .stop = FALSE,
+  .compute = "default"
+)
 }
 \arguments{
 \item{.x}{a list, atomic vector, or an expression object.}
@@ -15,10 +23,13 @@ mmap(.x, .f, ..., .args = list(), .stop = FALSE, .compute = "default")
 
 \item{.args}{optional arguments to \code{.f} provided as a list.}
 
-\item{.stop}{[default FALSE] all errors are returned as \sQuote{miraiError} /
+\item{.progress}{[default FALSE] if TRUE, reports progress via updates to
+\sQuote{stderr}.}
+
+\item{.stop}{[default FALSE] errors are returned as \sQuote{miraiError} /
 \sQuote{errorValue} as the case may be, allowing recovery from partial
-failure. If TRUE, performs early stopping (with the error message) as
-soon as an error is encountered (remaining computations are aborted).}
+failure. If TRUE, performs early stopping as soon as an error is
+encountered, with remaining computations aborted.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
@@ -49,5 +60,7 @@ with(
   daemons(1, dispatcher = FALSE),
   mmap(1:3, rnorm, mean = 20, .args = list(sd = 2))
 )
+
+mmap(seq(from = 0.1, to = 0.4, by = 0.1), Sys.sleep, .progress = TRUE)
 
 }

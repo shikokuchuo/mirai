@@ -118,7 +118,7 @@ if (connection && .Platform[["OS.type"]] != "windows") {
       mmap(1:3, rnorm, mean = 20, .args = list(2), .compute = "ml")
   })
   nanotest(is.list(m) && length(m) == 3L && all(as.logical(lapply(m, is.numeric))))
-  nanotestw(length(mmap(1:3, rnorm)) == 3L)
+  nanotestw(length(mmap(c(0.1, 0.2, 0.3), Sys.sleep, .progress = TRUE)) == 3L)
   Sys.sleep(1L)
 }
 # parallel cluster tests
