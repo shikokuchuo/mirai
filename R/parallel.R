@@ -139,7 +139,7 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
 #' @export
 #'
 stop_cluster <- function(cl)
-  daemons(0L, .compute = attr(cl, "id")) || return(invisible())
+  daemons(n = 0L, .compute = attr(cl, "id")) || return(invisible())
 
 #' @exportS3Method parallel::stopCluster
 #'

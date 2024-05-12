@@ -1,6 +1,7 @@
 library(mirai)
 
 nanotest <- function(x) invisible(x || stop("is not TRUE when expected to be TRUE"))
+nanotestw <- function(x) invisible(suppressWarnings(x) || stop("is not TRUE when expected to be TRUE"))
 nanotestn <- function(x) invisible(is.null(x) || stop("is not NULL when expected to be NULL"))
 nanotestz <- function(x) invisible(x == 0L || stop("does not equal 0L as expected"))
 nanotesto <- function(x) invisible(x == 1L || stop("does not equal 1L as expected"))
@@ -117,7 +118,7 @@ if (connection && .Platform[["OS.type"]] != "windows") {
       mmap(1:3, rnorm, mean = 20, .args = list(2), .compute = "ml")
   })
   nanotest(is.list(m) && length(m) == 3L && all(as.logical(lapply(m, is.numeric))))
-  nanotesterr(mmap(1:3, rnorm), "daemons must be set")
+  nanotestw(length(mmap(1:3, rnorm)) == 3L)
   Sys.sleep(1L)
 }
 # parallel cluster tests

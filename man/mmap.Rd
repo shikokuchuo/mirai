@@ -36,11 +36,13 @@ This function sends each application of \code{.f} on an element of
 
     Designed to facilitate recovery from partial failure by returning all
     results by default, allowing only the failures to be re-run.
+
     Alternatively, there is the option for early stopping, which stops at the
     first failure and aborts all remaining computations.
 
-    Note: daemons must have been previously set with a call to
-    \code{\link{daemons}}.
+    Daemons should have been previously set with a call to
+    \code{\link{daemons}}; if not then operations will be performed in a
+    single ephemeral daemon and a warning is output.
 }
 \examples{
 with(

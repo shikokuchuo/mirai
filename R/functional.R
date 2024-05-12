@@ -38,11 +38,13 @@
 #'
 #'     Designed to facilitate recovery from partial failure by returning all
 #'     results by default, allowing only the failures to be re-run.
+#'
 #'     Alternatively, there is the option for early stopping, which stops at the
 #'     first failure and aborts all remaining computations.
 #'
-#'     Note: daemons must have been previously set with a call to
-#'     \code{\link{daemons}}.
+#'     Daemons should have been previously set with a call to
+#'     \code{\link{daemons}}; if not then operations will be performed in a
+#'     single ephemeral daemon and a warning is output.
 #'
 #' @examples
 #' with(
@@ -54,7 +56,15 @@
 #'
 mmap <- function(.x, .f, ..., .args = list(), .stop = FALSE, .compute = "default") {
 
-  is.null(..[[.compute]]) && stop(._[["requires_daemons"]])
+  is.null(..[[.compute]]) && {
+    warning(._[["requires_daemons"]], immediate. = TRUE)
+    return(
+      with(
+        daemons(n = 1L, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, .compute = .compute),
+        eval(sys.call())
+      )
+    )
+  }
   xlen <- length(.x)
   vec <- vector(mode = "list", length = xlen)
 
