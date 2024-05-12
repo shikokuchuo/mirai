@@ -156,7 +156,7 @@ We would like to thank in particular:
 
 [Joe Cheng](https://github.com/jcheng5/), for optimising the `promises` method to make `mirai` work seamlessly within Shiny, and prototyping non-polling promises, which is implemented across `nanonext` and `mirai`.
 
-[Luke Tierney](https://github.com/ltierney/), R Core, for discussion on L'Ecuyer-CMRG streams, used to ensure statistical independence in parallel processing, and making it possible for `mirai` to be the first 'alternative communications backend for R'.
+[Luke Tierney](https://github.com/ltierney/), R Core, for discussion on L'Ecuyer-CMRG streams to ensure statistical independence in parallel processing, and making it possible for `mirai` to be the first 'alternative communications backend for R'.
 
 [Henrik Bengtsson](https://github.com/HenrikBengtsson/), for valuable insights leading to the interface accepting broader usage patterns.
 

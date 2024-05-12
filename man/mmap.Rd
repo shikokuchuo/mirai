@@ -23,8 +23,8 @@ mmap(
 
 \item{.args}{optional arguments to \code{.f} provided as a list.}
 
-\item{.progress}{[default FALSE] if TRUE, reports progress via updates to
-\sQuote{stderr}.}
+\item{.progress}{[default FALSE] if TRUE, reports progress via a simple text
+progress bar to \sQuote{stderr}.}
 
 \item{.stop}{[default FALSE] errors are returned as \sQuote{miraiError} /
 \sQuote{errorValue} as the case may be, allowing recovery from partial

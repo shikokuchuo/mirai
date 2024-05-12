@@ -88,8 +88,8 @@ result.
 
 ``` r
 m$data
-#>  [1] -0.2819560 -0.5967914  0.6349296  2.5009639 -3.9728956 -0.2517056
-#>  [7]  0.3998458  1.5749779 -1.6756273 -3.5466531
+#>  [1]  1.9822856 -5.1505469 -3.6232373 -1.1126624  0.6872442  1.4550869
+#>  [7] -0.8987452 -0.2759963 -0.1941541  0.5044682
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -97,8 +97,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1] -0.2819560 -0.5967914  0.6349296  2.5009639 -3.9728956 -0.2517056
-#>  [7]  0.3998458  1.5749779 -1.6756273 -3.5466531
+#>  [1]  1.9822856 -5.1505469 -3.6232373 -1.1126624  0.6872442  1.4550869
+#>  [7] -0.8987452 -0.2759963 -0.1941541  0.5044682
 ```
 
 ### Daemons
@@ -196,8 +196,8 @@ non-polling promises, which is implemented across `nanonext` and
 `mirai`.
 
 [Luke Tierney](https://github.com/ltierney/), R Core, for discussion on
-L’Ecuyer-CMRG streams, used to ensure statistical independence in
-parallel processing, and making it possible for `mirai` to be the first
+L’Ecuyer-CMRG streams to ensure statistical independence in parallel
+processing, and making it possible for `mirai` to be the first
 ‘alternative communications backend for R’.
 
 [Henrik Bengtsson](https://github.com/HenrikBengtsson/), for valuable
