@@ -221,13 +221,26 @@ daemons(0)
 
 The following is an example of how database connections hosted in mirai daemons may be used to power a Shiny app.
 
-The database connections are set up to begin with in all daemons using `everywhere()`, and the one-time `serialization()` setup ensures seamless transport of Apache Arrow data. Shiny ExtendedTask is then used to perform each request via a `mirai()` call.
+The one-time `serialization()` setup ensures seamless transport of Apache Arrow data, and occurs in the global environment outside of `server()`.
+
+A new database connection is created in a new daemon process for every new Shiny session. The resources are freed when a sesssion ends. This logic is all defined within `server()`. A unique ID is used to identify each session, and is specified as the 'compute profile' for daemons.
+
+Non-dispatcher daemons are created as scheduling is not required (all queries expected to take roughly the same time, and in this case each session uses only one daemon anyway).
+
+Shiny ExtendedTask is then used to perform each query via a `mirai()` call, using the session-specific compute profile.
 
 
 ```r
-library(shiny)
 library(mirai)
+library(secretbase)
+library(shiny)
 library(bslib)
+
+# write 'iris' dataset to temp database file (for this demonstration)
+file <- tempfile()
+con <- DBI::dbConnect(adbi::adbi("adbcsqlite"), uri = file)
+DBI::dbWriteTableArrow(con, "iris", iris)
+DBI::dbDisconnect(con)
 
 # common input parameters
 slmin <- min(iris$Sepal.Length)
@@ -249,13 +262,32 @@ ui <- page_fluid(
 # uses Shiny ExtendedTask with mirai
 server <- function(input, output, session) {
 
+  # create unique session id by hashing current time with a random key
+  id <- secretbase::siphash13(Sys.time(), key = nanonext::random(4L))
+
+  # create new daemon for each session (set dispatcher = FALSE)
+  daemons(1L, dispatcher = FALSE, .compute = id)
+
+  # tear down daemon when session ends
+  session$onEnded(function() daemons(0L, .compute = id))
+
+  # everywhere() loads DBI and creates ADBC connection in each daemon
+  everywhere(
+    {
+      library(DBI) # `adbi` and `adbcsqlite` packages must also be installed
+      con <<- dbConnect(adbi::adbi("adbcsqlite"), uri = file)
+    },
+    file = file,
+    .compute = id
+  )
+
   output$current_time <- renderText({
     invalidateLater(1000)
     format(Sys.time(), "%H:%M:%S %p")
   })
 
   task <- ExtendedTask$new(
-    \(...) mirai(
+    function(...) mirai(
       dbGetQueryArrow(
         con,
         sprintf(
@@ -264,7 +296,8 @@ server <- function(input, output, session) {
           sl[2L]
         )
       ),
-      ...
+      ...,
+      .compute = id
     )
   ) |> bind_task_button("btn")
 
@@ -274,38 +307,16 @@ server <- function(input, output, session) {
 
 }
 
-# create Shiny app
-app <- shinyApp(ui, server)
-
-# use with() to automatically clean up resources when app exits
-with(
-  # use 4 local daemons
-  daemons(4),
-  {
-    # create temp database file (for this demonstration)
-    file <- tempfile()
-    # everywhere() loads DBI and creates ADBC connection in each daemon
-    everywhere(
-      {
-        library(DBI) # `adbi` and `adbcsqlite` packages must also be installed
-        con <<- dbConnect(adbi::adbi("adbcsqlite"), uri = file)
-      },
-      file = file
-    )
-    # serialization() specifies the native Arrow serialization functions
-    serialization(
-      refhook = list(arrow::write_to_raw,
-                     \(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)),
-      class = "nanoarrow_array_stream"
-    )
-    # write iris to the database (for this demonstration)
-    m <- mirai(dbWriteTableArrow(con, "iris", iris))
-    # run the Shiny app
-    runApp(app)
-    # disconnect from the database everywhere after app exits
-    everywhere(dbDisconnect(con))
-    # delete temp database file (for this demonstration)
-    unlink(file)
-  }
+# serialization() specifies the native Arrow serialization functions
+serialization(
+  refhook = list(arrow::write_to_raw,
+                 function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)),
+  class = "nanoarrow_array_stream"
 )
+
+# run Shiny app
+shinyApp(ui = ui, server = server)
+
+# deletes temp database file (for this demonstration)
+unlink(file)
 ```
