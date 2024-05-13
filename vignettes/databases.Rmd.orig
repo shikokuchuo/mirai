@@ -134,7 +134,7 @@ ui <- page_fluid(
   p("The time is ", textOutput("current_time", inline = TRUE)),
   hr(),
   h3("Shiny / mirai / DBI / ADBC demonstration"),
-  p("Database connections hosted in 4 daemon processes"),
+  p("New daemon-hosted database connection is created for every Shiny session"),
   sliderInput(
     "sl", "Query iris dataset based on Sepal Length", min = slmin, max = slmax,
     value = c(slmin, slmax), width = "75%"
