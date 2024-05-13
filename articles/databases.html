@@ -266,15 +266,31 @@ tear down the databases, before resetting daemons.</p>
 </h3>
 <p>The following is an example of how database connections hosted in
 mirai daemons may be used to power a Shiny app.</p>
-<p>The database connections are set up to begin with in all daemons
-using <code><a href="../reference/everywhere.html">everywhere()</a></code>, and the one-time
-<code><a href="../reference/serialization.html">serialization()</a></code> setup ensures seamless transport of Apache
-Arrow data. Shiny ExtendedTask is then used to perform each request via
-a <code><a href="../reference/mirai.html">mirai()</a></code> call.</p>
+<p>The one-time <code><a href="../reference/serialization.html">serialization()</a></code> setup ensures seamless
+transport of Apache Arrow data, and occurs in the global environment
+outside of <code>server()</code>.</p>
+<p>A new database connection is created in a new daemon process for
+every new Shiny session. The resources are freed when a sesssion ends.
+This logic is all defined within <code>server()</code>. A unique ID is
+used to identify each session, and is specified as the ‘compute profile’
+for daemons.</p>
+<p>Non-dispatcher daemons are created as scheduling is not required (all
+queries expected to take roughly the same time, and in this case each
+session uses only one daemon anyway).</p>
+<p>Shiny ExtendedTask is then used to perform each query via a
+<code><a href="../reference/mirai.html">mirai()</a></code> call, using the session-specific compute
+profile.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/secretbase/" class="external-link">secretbase</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># write 'iris' dataset to temp database file (for this demonstration)</span></span>
+<span><span class="va">file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu">DBI</span><span class="fu">::</span><span class="fu">dbConnect</span><span class="op">(</span><span class="fu">adbi</span><span class="fu">::</span><span class="fu">adbi</span><span class="op">(</span><span class="st">"adbcsqlite"</span><span class="op">)</span>, uri <span class="op">=</span> <span class="va">file</span><span class="op">)</span></span>
+<span><span class="fu">DBI</span><span class="fu">::</span><span class="fu">dbWriteTableArrow</span><span class="op">(</span><span class="va">con</span>, <span class="st">"iris"</span>, <span class="va">iris</span><span class="op">)</span></span>
+<span><span class="fu">DBI</span><span class="fu">::</span><span class="fu">dbDisconnect</span><span class="op">(</span><span class="va">con</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># common input parameters</span></span>
 <span><span class="va">slmin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Length</span><span class="op">)</span></span>
@@ -296,13 +312,32 @@ a <code><a href="../reference/mirai.html">mirai()</a></code> call.</p>
 <span><span class="co"># uses Shiny ExtendedTask with mirai</span></span>
 <span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
 <span></span>
+<span>  <span class="co"># create unique session id by hashing current time with a random key</span></span>
+<span>  <span class="va">id</span> <span class="op">&lt;-</span> <span class="fu">secretbase</span><span class="fu">::</span><span class="fu">siphash13</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, key <span class="op">=</span> <span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/random.html" class="external-link">random</a></span><span class="op">(</span><span class="fl">4L</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># create new daemon for each session (set dispatcher = FALSE)</span></span>
+<span>  <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1L</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span>, .compute <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># tear down daemon when session ends</span></span>
+<span>  <span class="va">session</span><span class="op">$</span><span class="fu">onEnded</span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0L</span>, .compute <span class="op">=</span> <span class="va">id</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># everywhere() loads DBI and creates ADBC connection in each daemon</span></span>
+<span>  <span class="fu"><a href="../reference/everywhere.html">everywhere</a></span><span class="op">(</span></span>
+<span>    <span class="op">{</span></span>
+<span>      <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dbi.r-dbi.org" class="external-link">DBI</a></span><span class="op">)</span> <span class="co"># `adbi` and `adbcsqlite` packages must also be installed</span></span>
+<span>      <span class="va">con</span> <span class="op">&lt;&lt;-</span> <span class="fu">dbConnect</span><span class="op">(</span><span class="fu">adbi</span><span class="fu">::</span><span class="fu">adbi</span><span class="op">(</span><span class="st">"adbcsqlite"</span><span class="op">)</span>, uri <span class="op">=</span> <span class="va">file</span><span class="op">)</span></span>
+<span>    <span class="op">}</span>,</span>
+<span>    file <span class="op">=</span> <span class="va">file</span>,</span>
+<span>    .compute <span class="op">=</span> <span class="va">id</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
 <span>  <span class="va">output</span><span class="op">$</span><span class="va">current_time</span> <span class="op">&lt;-</span> <span class="fu">renderText</span><span class="op">(</span><span class="op">{</span></span>
 <span>    <span class="fu">invalidateLater</span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"%H:%M:%S %p"</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="va">task</span> <span class="op">&lt;-</span> <span class="va">ExtendedTask</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
-<span>    \<span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span></span>
+<span>    <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span></span>
 <span>      <span class="fu">dbGetQueryArrow</span><span class="op">(</span></span>
 <span>        <span class="va">con</span>,</span>
 <span>        <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span></span>
@@ -311,7 +346,8 @@ a <code><a href="../reference/mirai.html">mirai()</a></code> call.</p>
 <span>          <span class="va">sl</span><span class="op">[</span><span class="fl">2L</span><span class="op">]</span></span>
 <span>        <span class="op">)</span></span>
 <span>      <span class="op">)</span>,</span>
-<span>      <span class="va">...</span></span>
+<span>      <span class="va">...</span>,</span>
+<span>      .compute <span class="op">=</span> <span class="va">id</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/bind_task_button.html" class="external-link">bind_task_button</a></span><span class="op">(</span><span class="st">"btn"</span><span class="op">)</span></span>
 <span></span>
@@ -321,40 +357,18 @@ a <code><a href="../reference/mirai.html">mirai()</a></code> call.</p>
 <span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="co"># create Shiny app</span></span>
-<span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">shinyApp</span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span>
+<span><span class="co"># serialization() specifies the native Arrow serialization functions</span></span>
+<span><span class="fu"><a href="../reference/serialization.html">serialization</a></span><span class="op">(</span></span>
+<span>  refhook <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">arrow</span><span class="fu">::</span><span class="va">write_to_raw</span>,</span>
+<span>                 <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu">read_ipc_stream</span><span class="op">(</span><span class="va">x</span>, as_data_frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  class <span class="op">=</span> <span class="st">"nanoarrow_array_stream"</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># use with() to automatically clean up resources when app exits</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span></span>
-<span>  <span class="co"># use 4 local daemons</span></span>
-<span>  <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span>,</span>
-<span>  <span class="op">{</span></span>
-<span>    <span class="co"># create temp database file (for this demonstration)</span></span>
-<span>    <span class="va">file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
-<span>    <span class="co"># everywhere() loads DBI and creates ADBC connection in each daemon</span></span>
-<span>    <span class="fu"><a href="../reference/everywhere.html">everywhere</a></span><span class="op">(</span></span>
-<span>      <span class="op">{</span></span>
-<span>        <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dbi.r-dbi.org" class="external-link">DBI</a></span><span class="op">)</span> <span class="co"># `adbi` and `adbcsqlite` packages must also be installed</span></span>
-<span>        <span class="va">con</span> <span class="op">&lt;&lt;-</span> <span class="fu">dbConnect</span><span class="op">(</span><span class="fu">adbi</span><span class="fu">::</span><span class="fu">adbi</span><span class="op">(</span><span class="st">"adbcsqlite"</span><span class="op">)</span>, uri <span class="op">=</span> <span class="va">file</span><span class="op">)</span></span>
-<span>      <span class="op">}</span>,</span>
-<span>      file <span class="op">=</span> <span class="va">file</span></span>
-<span>    <span class="op">)</span></span>
-<span>    <span class="co"># serialization() specifies the native Arrow serialization functions</span></span>
-<span>    <span class="fu"><a href="../reference/serialization.html">serialization</a></span><span class="op">(</span></span>
-<span>      refhook <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">arrow</span><span class="fu">::</span><span class="va">write_to_raw</span>,</span>
-<span>                     \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu">read_ipc_stream</span><span class="op">(</span><span class="va">x</span>, as_data_frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>      class <span class="op">=</span> <span class="st">"nanoarrow_array_stream"</span></span>
-<span>    <span class="op">)</span></span>
-<span>    <span class="co"># write iris to the database (for this demonstration)</span></span>
-<span>    <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu">dbWriteTableArrow</span><span class="op">(</span><span class="va">con</span>, <span class="st">"iris"</span>, <span class="va">iris</span><span class="op">)</span><span class="op">)</span></span>
-<span>    <span class="co"># run the Shiny app</span></span>
-<span>    <span class="fu">runApp</span><span class="op">(</span><span class="va">app</span><span class="op">)</span></span>
-<span>    <span class="co"># disconnect from the database everywhere after app exits</span></span>
-<span>    <span class="fu"><a href="../reference/everywhere.html">everywhere</a></span><span class="op">(</span><span class="fu">dbDisconnect</span><span class="op">(</span><span class="va">con</span><span class="op">)</span><span class="op">)</span></span>
-<span>    <span class="co"># delete temp database file (for this demonstration)</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">file</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># run Shiny app</span></span>
+<span><span class="fu">shinyApp</span><span class="op">(</span>ui <span class="op">=</span> <span class="va">ui</span>, server <span class="op">=</span> <span class="va">server</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># deletes temp database file (for this demonstration)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">file</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
