@@ -15,7 +15,7 @@ mmap(
 )
 }
 \arguments{
-\item{.x}{a list, atomic vector, or an expression object.}
+\item{.x}{a list or atomic vector.}
 
 \item{.f}{a function to be applied to each element of \code{.x}.}
 

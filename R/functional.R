@@ -20,7 +20,7 @@
 #'
 #' Map a function over a list or vector using \pkg{mirai}.
 #'
-#' @param .x a list, atomic vector, or an expression object.
+#' @param .x a list or atomic vector.
 #' @param .f a function to be applied to each element of \code{.x}.
 #' @param ... optional arguments to \code{.f}.
 #' @param .args optional arguments to \code{.f} provided as a list.
@@ -74,7 +74,7 @@ mmap <- function(.x, .f, ..., .args = list(), .progress = FALSE, .stop = FALSE, 
 
   for (i in seq_len(xlen))
     vec[[i]] <- mirai(
-      .expr = do.call(.f, c(list(.x), .args), quote = TRUE),
+      .expr = do.call(.f, c(list(.x), .args)),
       .args = list(.f = .f, .x = .subset2(.x, i), .args = c(list(...), .args)),
       .compute = .compute
     )
@@ -86,7 +86,7 @@ mmap <- function(.x, .f, ..., .args = list(), .progress = FALSE, .stop = FALSE, 
       res <- call_mirai_(vec[[i]])
       .stop && is_error_value(.subset2(res, "value")) && {
         lapply(vec, stop_aio)
-        stop(res)
+        stop(.subset2(res, "value"))
       }
     }
     if (.progress)
