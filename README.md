@@ -6,9 +6,9 @@
 <!-- badges: start -->
 
 [![CRAN
-status](https://www.r-pkg.org/badges/version/mirai?color=112d4e)](https://CRAN.R-project.org/package=mirai)
+status](https://www.r-pkg.org/badges/version/mirai?color=005baa)](https://CRAN.R-project.org/package=mirai)
 [![R-universe
-status](https://shikokuchuo.r-universe.dev/badges/mirai?color=ddcacc)](https://shikokuchuo.r-universe.dev/mirai)
+status](https://shikokuchuo.r-universe.dev/badges/mirai?color=44ac19)](https://shikokuchuo.r-universe.dev/mirai)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
 [![codecov](https://codecov.io/gh/shikokuchuo/mirai/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/mirai)
 [![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)
@@ -88,8 +88,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  1.9822856 -5.1505469 -3.6232373 -1.1126624  0.6872442  1.4550869
-#>  [7] -0.8987452 -0.2759963 -0.1941541  0.5044682
+#>  [1] -1.0230903 -6.8652249 -0.1568005  0.7824384  0.7390472  1.3530936
+#>  [7]  1.2780560 -6.3775314 -0.1456617 -0.9774309
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -97,8 +97,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  1.9822856 -5.1505469 -3.6232373 -1.1126624  0.6872442  1.4550869
-#>  [7] -0.8987452 -0.2759963 -0.1941541  0.5044682
+#>  [1] -1.0230903 -6.8652249 -0.1568005  0.7824384  0.7390472  1.3530936
+#>  [7]  1.2780560 -6.3775314 -0.1456617 -0.9774309
 ```
 
 ### Daemons
