@@ -44,7 +44,7 @@
 #'     Alternatively, there is the option for early stopping, which stops at the
 #'     first failure and aborts all remaining computations.
 #'
-#'     Daemons should have been previously set with a call to
+#'     Daemons should have previously been set with a call to
 #'     \code{\link{daemons}}; if not then operations will be performed in a
 #'     single ephemeral daemon and a warning is output.
 #'
