@@ -79,24 +79,18 @@ mmap <- function(.x, .f, ..., .args = list(), .progress = FALSE, .stop = FALSE, 
       .compute = .compute
     )
 
-  if (.stop) {
+  if (.progress || .stop) {
     for (i in seq_len(xlen)) {
       if (.progress)
         cat(sprintf("\r[ %d / %d .... ]", i - 1L, xlen), file = stderr())
-      r <- .subset2(call_mirai_(vec[[i]]), "value")
-      is_error_value(r) && {
+      call_mirai_(vec[[i]])
+      .stop && is_error_value(.subset2(vec[[i]], "value")) && {
         lapply(vec, stop_aio)
-        stop(r)
+        stop(vec[[i]])
       }
     }
-    cat(sprintf("\r[ %d / %d done ]\n", xlen, xlen), file = stderr())
-
-  } else if (.progress) {
-    for (i in seq_len(xlen)) {
-      cat(sprintf("\r[ %d / %d .... ]", i - 1L, xlen), file = stderr())
-      call_mirai_(vec[[i]])
-    }
-    cat(sprintf("\r[ %d / %d done ]\n", xlen, xlen), file = stderr())
+    if (.progress)
+      cat(sprintf("\r[ %d / %d done ]\n", xlen, xlen), file = stderr())
 
   } else {
     lapply(vec, call_mirai_)
