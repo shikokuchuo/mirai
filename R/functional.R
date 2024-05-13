@@ -83,10 +83,10 @@ mmap <- function(.x, .f, ..., .args = list(), .progress = FALSE, .stop = FALSE, 
     for (i in seq_len(xlen)) {
       if (.progress)
         cat(sprintf("\r[ %d / %d .... ]", i - 1L, xlen), file = stderr())
-      call_mirai_(vec[[i]])
-      .stop && is_error_value(.subset2(vec[[i]], "value")) && {
+      res <- call_mirai_(vec[[i]])
+      .stop && is_error_value(.subset2(res, "value")) && {
         lapply(vec, stop_aio)
-        stop(vec[[i]])
+        stop(res)
       }
     }
     if (.progress)
