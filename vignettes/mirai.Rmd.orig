@@ -483,11 +483,29 @@ serialization(
 m <- mirai(list(a = head(x), b = "some text"), x = x)
 call_mirai(m)$data
 
-daemons(0)
 ```
 It can be seen that this time, the arrow table is seamlessly handled in the 'mirai' process. This is the case even when the object is deeply nested inside lists or other structures.
 
-To change registered serialization functions, just call `serialization()` again supplying the new functions, or else to cancel them entirely:
+To change registered serialization functions, just call `serialization()` again supplying the new functions. Here we switch to using [`polars`](https://pola-rs.github.io/r-polars/), a 'lightning fast' dataframe library written in Rust (requires `polars` >= 0.16.4).
+
+```{r polars}
+serialization(
+  refhook = list(
+    function(x) x$to_raw_ipc(),
+    polars::pl$read_ipc
+  ),
+  class = "RPolarsDataFrame"
+)
+
+x <- as_polars_df(iris)
+
+m <- mirai(list(a = head(x), b = "some text"), x = x)
+call_mirai(m)$data
+
+daemons(0)
+```
+
+To cancel serialization functions entirely:
 
 ```{r serialcancel}
 serialization(NULL)
