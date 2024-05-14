@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 7. [Distributed Computing: TLS Secure Connections](#distributed-computing-tls-secure-connections)
 8. [Compute Profiles](#compute-profiles)
 9. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
-10. [Serialization](#serialization)
+10. [Serialization - Arrow, polars and beyond](#serialization-arrow-polars-and-beyond)
 
 ### Example 1: Compute-intensive Operations
 
@@ -203,19 +203,39 @@ This implementation sends tasks immediately, and ensures that tasks are evenly-d
 
 The advantage of this approach is that it is low-level and does not require an additional dispatcher process. It is well-suited to working with similar-length tasks, or where the number of concurrent tasks typically does not exceed available daemons.
 
-`everywhere()` may be used to evaluate an expression on all connected daemons and persist the resultant state, regardless of a daemon's 'cleanup' setting.
-```{r everywhere}
-everywhere(library(parallel))
-```
-The above keeps the `parallel` package loaded for all evaluations. Other types of setup task may also be performed such as making a common resource available, etc.
-```{r daemons5}
-daemons(0)
-```
-Set the number of daemons to zero to reset.
-
 #### Everywhere
 
-`everywhere()` may be used to evaluate an expression on all connected daemons and persist the resultant state, regardless of a daemon's 'cleanup' setting. This may be used for performing setup of the evaluation environment, with particular packages loaded, or common resources made available, etc.
+`everywhere()` may be used to evaluate an expression on all connected daemons and persist the resultant state, regardless of a daemon's 'cleanup' setting.
+```{r everywhere}
+everywhere(library(DBI))
+```
+The above keeps the [`DBI`](https://dbi.r-dbi.org/) package loaded for all evaluations. Other types of setup task may also be performed, including making a common resource available, such as a database connection:
+
+```{r everywhere2}
+file <- tempfile()
+everywhere(con <<- dbConnect(RSQLite::SQLite(), file), file = file)
+```
+By super-assignment, the conenction 'con' will be available in the global environment of all daemon instances. Subsequent mirai calls may then make use of 'con'.
+
+```{r everywhere3}
+m <- mirai(capture.output(str(con)))
+call_mirai(m)$data
+```
+Disconnect from the database everywhere, and set the number of daemons to zero to reset.
+
+```{r daemons5}
+everywhere(dbDisconnect(con))
+daemons(0)
+```
+
+#### With
+
+`daemons()` has a `with()` method, which evaluates an expression with daemons created for the duration of the expression and automatically torn down upon completion. It was designed for the use case of running a Shiny app with the desired number of daemons.
+
+```{r withshiny, eval=FALSE}
+with(daemons(4), shiny::runApp(app))
+```
+Note: in the above case, it is assumed the app is already created. Wrapping a call to `shiny::shinyApp()` would not work as `runApp()` is implicitly called when the app is printed, however printing occurs only after `with()` has returned, hence the app would run outside of the scope of the `with()` statement.
 
 [&laquo; Back to ToC](#table-of-contents)
 
@@ -451,7 +471,7 @@ is_error_value(m4$data)
 
 [&laquo; Back to ToC](#table-of-contents)
 
-### Serialization
+### Serialization: Arrow, polars and beyond
 
 Native R serialization is used for sending data between host and daemons. Some R objects by their nature cannot be serialized, such as those accessed via an external pointer. In these cases, performing 'mirai' operations on them would normally error.
 
