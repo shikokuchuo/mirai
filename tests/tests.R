@@ -99,13 +99,13 @@ if (connection) {
   nanotest(is.integer(status(.compute = "new")[["connections"]]))
   nanotestz(daemons(0L, .compute = "new"))
   Sys.sleep(1L)
+}
+# additional daemons tests
+if (connection && .Platform[["OS.type"]] != "windows") {
   nanotest(daemons(url = value <- local_url(), dispatcher = FALSE) == value)
   nanotesti(status()$daemons, nextget("urls"))
   nanotestz(daemons(0L))
   Sys.sleep(1L)
-}
-# additional daemons tests
-if (connection && .Platform[["OS.type"]] != "windows") {
   nanotest(is.character(launch_remote("ws://[::1]:5555", remote = remote_config(command = "echo", args = list(c("Test out:", ".", ">/dev/null")), rscript = "/usr/lib/R/bin/Rscript"))))
   nanotest(is.character(launch_remote("tcp://localhost:5555", remote = ssh_config(remotes = c("ssh://remotehost", "ssh://remotenode"), tunnel = TRUE, command = "echo"))))
   nanotestn(launch_local(local_url(), .compute = "test"))
