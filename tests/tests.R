@@ -9,6 +9,7 @@ nanotesti <- function(a, b) invisible(identical(a, b) || stop("the arguments are
 nanotestp <- function(x) invisible(is.character(capture.output(print(x))) || stop("print output of expression cannot be captured as a character value"))
 nanotesterr <- function(x, e = "") invisible(grepl(e, tryCatch(x, error = identity)[["message"]], fixed = TRUE) || stop("expected error message '", e, "' not generated"))
 connection <- !is_error_value(call_mirai(mirai(TRUE, .timeout = 2000L))[["data"]])
+Sys.sleep(2L)
 
 # core tests
 nanotest(is.list(status()))
