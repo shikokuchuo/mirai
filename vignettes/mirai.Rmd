@@ -278,7 +278,7 @@ daemons(0)
 #> [1] 0
 ```
 
-#### With
+#### With Method
 
 `daemons()` has a `with()` method, which evaluates an expression with daemons created for the duration of the expression and automatically torn down upon completion. It was designed for the use case of running a Shiny app with the desired number of daemons.
 
