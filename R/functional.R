@@ -54,7 +54,11 @@
 #'   mmap(1:3, rnorm, mean = 20, .args = list(sd = 2))
 #' )
 #'
+#' if (interactive()) {
+#'
 #' mmap(seq(from = 0.1, to = 0.4, by = 0.1), Sys.sleep, .progress = TRUE)
+#'
+#' }
 #'
 #' @export
 #'

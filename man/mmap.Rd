@@ -24,7 +24,7 @@ mmap(
 \item{.args}{optional arguments to \code{.f} provided as a list.}
 
 \item{.progress}{[default FALSE] if TRUE, reports progress via a simple text
-progress bar to \sQuote{stderr}.}
+progress indicator to \sQuote{stderr}.}
 
 \item{.stop}{[default FALSE] errors are returned as \sQuote{miraiError} /
 \sQuote{errorValue} as the case may be, allowing recovery from partial
@@ -61,6 +61,10 @@ with(
   mmap(1:3, rnorm, mean = 20, .args = list(sd = 2))
 )
 
+if (interactive()) {
+
 mmap(seq(from = 0.1, to = 0.4, by = 0.1), Sys.sleep, .progress = TRUE)
+
+}
 
 }
