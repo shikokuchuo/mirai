@@ -25,7 +25,7 @@
 #' @param ... optional arguments to \code{.f}.
 #' @param .args optional arguments to \code{.f} provided as a list.
 #' @param .progress [default FALSE] if TRUE, reports progress via a simple text
-#'     progress bar to \sQuote{stderr}.
+#'     progress indicator to \sQuote{stderr}.
 #' @param .stop [default FALSE] errors are returned as \sQuote{miraiError} /
 #'     \sQuote{errorValue} as the case may be, allowing recovery from partial
 #'     failure. If TRUE, performs early stopping as soon as an error is

@@ -25,6 +25,7 @@ knitr::opts_chunk$set(
 8. [Compute Profiles](#compute-profiles)
 9. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
 10. [Serialization - Arrow, polars and beyond](#serialization-arrow-polars-and-beyond)
+11. [Functional Programming](#functional-programming)
 
 ### Example 1: Compute-intensive Operations
 
@@ -511,13 +512,13 @@ To change registered serialization functions, just call `serialization()` again 
 ```{r polars}
 serialization(
   refhook = list(
-    function(x) x$to_raw_ipc(),
+    function(x) polars::as_polars_df(x)$to_raw_ipc(),
     polars::pl$read_ipc
   ),
   class = "RPolarsDataFrame"
 )
 
-x <- as_polars_df(iris)
+x <- polars::as_polars_df(iris)
 
 m <- mirai(list(a = head(x), b = "some text"), x = x)
 call_mirai(m)$data
@@ -533,5 +534,29 @@ serialization(NULL)
 The 'vec' argument to `serialization()` may be specified as `TRUE` if the serialization functions are vectorized and take lists of objects, as is the case for [`safetensors`](https://mlverse.github.io/safetensors/), used for serialization in [`torch`](https://torch.mlverse.org/).
 
 Please refer to the [torch vignette](https://shikokuchuo.net/mirai/articles/torch.html) for further examples.
+
+[&laquo; Back to ToC](#table-of-contents)
+
+### Functional Programming
+
+`mmap()` is a function analogous to `purrr:map()`, that uses mirai to perform parallel/distributed map.
+
+It includes the same '.progress' argument to optionally show a simple text progress indicator.
+
+Whilst it borrows from the tried-and-tested interface of `purrr:map()`, it also includes the '.args' argument from `mirai()`, which allows conveniently supplying a list of arguments.
+
+The function itself is synchronous and will wait until all results are returned, and is user-interruptible. It also fields the following advantages over other implementations such as `parallel::parLapply()`:
+
+1. Returns evaluation errors as 'miraiError' or 'errorValue' as the case may be, rather than causing the entire operation to fail. This allows more efficient recovery from partial failure.
+
+2. Alternatively, implements early-stopping, which stops as soon as an error is encountered, rather than continuing to perform the entire operation.
+
+```{r mmap}
+with(
+  daemons(1, dispatcher = FALSE),
+  mmap(1:3, rnorm, mean = 20, .args = list(sd = 2))
+)
+```
+`mmap()` assumes that `daemons()` has previously been set. If not, the operation will warn and then proceed using one ephemeral daemon.
 
 [&laquo; Back to ToC](#table-of-contents)
