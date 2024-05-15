@@ -239,7 +239,7 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
       for (i in seq_len(max(stat(envir[["sock"]], "pipes"), envir[["n"]])))
         mirai(.expr = .expr, ..., .args = .args, .compute = .compute)
     } else {
-      .expr <- c(.expr, .timedelay)
+      .expr <- c(.expr, .block)
       for (i in seq_len(envir[["n"]]))
         mirai(.expr = .expr, ..., .args = .args, .compute = .compute)
     }
@@ -530,4 +530,4 @@ mk_mirai_error <- function(e, sc) {
 
 .miraiInterrupt <- `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))
 .snapshot <- expression(mirai:::snapshot())
-.timedelay <- expression(nanonext::msleep(500L))
+.block <- expression(mirai:::block())

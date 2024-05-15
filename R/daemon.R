@@ -228,3 +228,4 @@ perform_cleanup <- function(cleanup) {
 }
 
 snapshot <- function() `[[<-`(`[[<-`(`[[<-`(., "op", .Options), "se", search()), "vars", names(.GlobalEnv))
+block <- function() msleep(500L)
