@@ -53,11 +53,15 @@
 #' # Only run examples in interactive R sessions
 #'
 #' with(
-#'   daemons(1, dispatcher = FALSE),
+#'   daemons(3, dispatcher = FALSE),
 #'   mmap(1:3, rnorm, mean = 20, .args = list(sd = 2))
 #' )
 #'
-#' mmap(seq(from = 0.1, to = 0.4, by = 0.1), Sys.sleep, .progress = TRUE)
+#' # progress indicator counts up to 4 seconds
+#' with(daemons(4, dispatcher = FALSE), mmap(1:4, Sys.sleep, .progress = TRUE))
+#'
+#' # second element returns a 'miraiError', warns that daemons not set
+#' mmap(list(1, "a", 3), sum)
 #'
 #' }
 #'
