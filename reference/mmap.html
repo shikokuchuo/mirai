@@ -121,7 +121,7 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A list (the same length as <code>.x</code>, preserving names).</p>
+<p>A list, the same length as <code>.x</code>, preserving names.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -132,9 +132,8 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
     results by default, allowing only the failures to be re-run.</p>
 <p>Alternatively, there is the option for early stopping, which stops at the
     first failure and aborts all remaining computations.</p>
-<p>Daemons should have previously been set with a call to
-    <code><a href="daemons.html">daemons</a></code>; if not then operations will be performed in a
-    single ephemeral daemon and a warning is output.</p>
+<p>Daemons must have previously been set with a call to
+    <code><a href="daemons.html">daemons</a></code>.</p>
     </div>
 
     <div class="section level2">
@@ -151,7 +150,7 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="daemons.html">daemons</a></span><span class="op">(</span><span class="fl">4</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>, <span class="fu">mmap</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="va">Sys.sleep</span>, .progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># second element returns a 'miraiError', warns that daemons not set</span></span></span>
-<span class="r-in"><span><span class="fu">mmap</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span>, <span class="st">"a"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="va">sum</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="daemons.html">daemons</a></span><span class="op">(</span><span class="fl">3</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>, <span class="fu">mmap</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span>, <span class="st">"a"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="va">sum</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
