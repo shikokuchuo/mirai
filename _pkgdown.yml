@@ -3,6 +3,8 @@ template:
   bootstrap: 5
   bslib:
     primary: "#0043ce"
+    base_font: {google: {family: "Source Sans Pro", wght: [400, 600], ital: [0, 1]}}
+    code_font: {google: "Source Code Pro"}
 navbar:
   right:
   - icon: fa-github
