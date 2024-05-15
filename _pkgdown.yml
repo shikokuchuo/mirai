@@ -1,6 +1,8 @@
 url: https://shikokuchuo.net/mirai/
 template:
   bootstrap: 5
+  bslib:
+    primary: "#0043ce"
 navbar:
   right:
   - icon: fa-github
