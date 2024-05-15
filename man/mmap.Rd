@@ -56,12 +56,13 @@ This function sends each application of \code{.f} on an element of
     single ephemeral daemon and a warning is output.
 }
 \examples{
+if (interactive()) {
+# Only run examples in interactive R sessions
+
 with(
   daemons(1, dispatcher = FALSE),
   mmap(1:3, rnorm, mean = 20, .args = list(sd = 2))
 )
-
-if (interactive()) {
 
 mmap(seq(from = 0.1, to = 0.4, by = 0.1), Sys.sleep, .progress = TRUE)
 

@@ -173,10 +173,10 @@ if (connection) {
             list(a = 11, b = c(1, 2), c = c(-9, -8, -7)))
   nanotesti(parSapply(cl, 1:20, get("+"), 3), as.double(4:23))
   nanotestn(stopCluster(cl))
-  nanotesterr(parLapply(cluster, 1:10, runif), "cluster is no longer active")
   Sys.sleep(1L)
 }
 if (connection && .Platform[["OS.type"]] != "windows") {
+  nanotesterr(parLapply(cluster, 1:10, runif), "cluster is no longer active")
   nanotestp(cl <- make_cluster(url = local_url()))
   nanotestn(stopCluster(cl))
   Sys.sleep(1L)
