@@ -35,7 +35,7 @@ encountered, with remaining computations aborted.}
 to use (each compute profile has its own independent set of daemons).}
 }
 \value{
-A list (the same length as \code{.x}, preserving names).
+A list, the same length as \code{.x}, preserving names.
 }
 \description{
 Map a function over a list or vector using \pkg{mirai}.
@@ -51,9 +51,8 @@ This function sends each application of \code{.f} on an element of
     Alternatively, there is the option for early stopping, which stops at the
     first failure and aborts all remaining computations.
 
-    Daemons should have previously been set with a call to
-    \code{\link{daemons}}; if not then operations will be performed in a
-    single ephemeral daemon and a warning is output.
+    Daemons must have previously been set with a call to
+    \code{\link{daemons}}.
 }
 \examples{
 if (interactive()) {
@@ -68,7 +67,7 @@ with(
 with(daemons(4, dispatcher = FALSE), mmap(1:4, Sys.sleep, .progress = TRUE))
 
 # second element returns a 'miraiError', warns that daemons not set
-mmap(list(1, "a", 3), sum)
+with(daemons(3, dispatcher = FALSE), mmap(list(1, "a", 3), sum))
 
 }
 

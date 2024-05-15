@@ -1,6 +1,8 @@
 # mirai 1.0.0.9000 (development)
 
-* Adds `mmap()` for parallel/distributed map using mirai. This function allows recovery from partial failure or else early stopping, together with optional progress reporting.
+* Adds `mmap()` and `mwalk()` for parallel/distributed map using mirai:
+  + `mmap()` is a synchronous map function allowing recovery from partial failure or else early stopping, together with optional progress reporting.
+  + `mwalk()` is an asynchronous map function, used to enact side-effects, although returning 'mirai' such that their values may be collected later.
 
 # mirai 1.0.0
 

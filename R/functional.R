@@ -32,7 +32,7 @@
 #'     encountered, with remaining computations aborted.
 #' @inheritParams mirai
 #'
-#' @return A list (the same length as \code{.x}, preserving names).
+#' @return A list, the same length as \code{.x}, preserving names.
 #'
 #' @details This function sends each application of \code{.f} on an element of
 #'     \code{.x} for computation in a separate \code{\link{mirai}} call, and
@@ -44,9 +44,8 @@
 #'     Alternatively, there is the option for early stopping, which stops at the
 #'     first failure and aborts all remaining computations.
 #'
-#'     Daemons should have previously been set with a call to
-#'     \code{\link{daemons}}; if not then operations will be performed in a
-#'     single ephemeral daemon and a warning is output.
+#'     Daemons must have previously been set with a call to
+#'     \code{\link{daemons}}.
 #'
 #' @examples
 #' if (interactive()) {
@@ -61,7 +60,7 @@
 #' with(daemons(4, dispatcher = FALSE), mmap(1:4, Sys.sleep, .progress = TRUE))
 #'
 #' # second element returns a 'miraiError', warns that daemons not set
-#' mmap(list(1, "a", 3), sum)
+#' with(daemons(3, dispatcher = FALSE), mmap(list(1, "a", 3), sum))
 #'
 #' }
 #'
@@ -69,18 +68,10 @@
 #'
 mmap <- function(.x, .f, ..., .args = list(), .progress = FALSE, .stop = FALSE, .compute = "default") {
 
-  is.null(..[[.compute]]) && {
-    warning(._[["requires_daemons"]], immediate. = TRUE)
-    return(
-      with(
-        daemons(n = 1L, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, .compute = .compute),
-        eval(sys.call())
-      )
-    )
-  }
+  is.null(..[[.compute]]) && stop(._[["requires_daemons"]])
+
   xlen <- length(.x)
   vec <- vector(mode = "list", length = xlen)
-
   for (i in seq_len(xlen))
     vec[[i]] <- mirai(
       .expr = do.call(.f, c(list(.x), .args)),
@@ -106,5 +97,54 @@ mmap <- function(.x, .f, ..., .args = list(), .progress = FALSE, .stop = FALSE, 
   }
 
   `names<-`(lapply(vec, .subset2, "value"), names(.x))
+
+}
+
+#' mirai Walk
+#'
+#' Walk a function over a list or vector using \pkg{mirai} for the side-effects.
+#'
+#' @inheritParams mmap
+#'
+#' @return An unnamed list of mirai, the same length as \code{.x}.
+#'
+#' @details This function sends each application of \code{.f} on an element of
+#'     \code{.x} for computation in a separate \code{\link{mirai}} call. It does
+#'     not wait for completion.
+#'
+#'     Whilst this function is designed primarily to enact side effects, it can
+#'     also be used as an asynchronous map function as \sQuote{mirai} are
+#'     returned, and their values may be collected.
+#'
+#'     Daemons must have previously been set with a call to
+#'     \code{\link{daemons}}.
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' daemons(4, dispatcher = FALSE)
+#'
+#' ml <- mwalk(1:3, rnorm, mean = 20, .args = list(sd = 2))
+#' ml
+#'
+#' daemons(0)
+#'
+#' }
+#'
+#' @export
+#'
+mwalk <- function(.x, .f, ..., .args = list(), .compute = "default") {
+
+  is.null(..[[.compute]]) && stop(._[["requires_daemons"]])
+
+  vec <- vector(mode = "list", length = length(.x))
+  for (i in seq_along(vec))
+    vec[[i]] <- mirai(
+      .expr = do.call(.f, c(list(.x), .args)),
+      .args = list(.f = .f, .x = .subset2(.x, i), .args = c(list(...), .args)),
+      .compute = .compute
+    )
+  vec
 
 }
