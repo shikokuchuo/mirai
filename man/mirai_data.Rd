@@ -3,7 +3,7 @@
 \name{mirai_data}
 \alias{mirai_data}
 \alias{mirai_data_}
-\title{mirai (Data)}
+\title{mirai (Retrieve Data)}
 \usage{
 mirai_data(x)
 
@@ -17,11 +17,15 @@ Depending on the type of \sQuote{x} supplied, either an object or a
     list of objects (the same length as \sQuote{x}, preserving names).
 }
 \description{
-\code{mirai_data} retrieves the data of a single, or list of, \sQuote{mirai}
-    objects, waiting for their completion if still in progress.
+\code{mirai_data} retrieves the data value of a \sQuote{mirai}, or list of
+    \sQuote{mirai} objects, waiting for resolution if still in progress.
 
 \code{mirai_data_} is a variant that allows user interrupts, suitable for
     interactive use.
+}
+\details{
+This function will wait for the asynchronous operation(s) to
+    complete if still in progress (blocking).
 }
 \examples{
 if (interactive()) {

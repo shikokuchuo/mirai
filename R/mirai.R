@@ -250,16 +250,16 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 
 #' mirai (Call Value)
 #'
-#' \code{call_mirai} retrieves the value of a \sQuote{mirai}, waiting for the
-#'     asynchronous operation to resolve if it is still in progress.
+#' \code{call_mirai} waits for the \sQuote{mirai} to resolve if still in
+#'     progress, storing the value at \code{$data}.
 #'
 #' @param aio a \sQuote{mirai} object.
 #'
 #' @return The passed \sQuote{mirai} (invisibly). The retrieved value is stored
 #'     at \code{$data}.
 #'
-#' @details This function will wait for the async operation to complete if still
-#'     in progress (blocking).
+#' @details This function will wait for the asynchronous operation to complete
+#'     if still in progress (blocking).
 #'
 #'     The \sQuote{mirai} updates itself in place, so to access the value of a
 #'     \sQuote{mirai} \code{x} directly, use \code{call_mirai(x)$data}.
@@ -316,15 +316,18 @@ call_mirai <- call_aio
 #'
 call_mirai_ <- call_aio_
 
-#' mirai (Data)
+#' mirai (Retrieve Data)
 #'
-#' \code{mirai_data} retrieves the data of a single, or list of, \sQuote{mirai}
-#'     objects, waiting for their completion if still in progress.
+#' \code{mirai_data} retrieves the data value of a \sQuote{mirai}, or list of
+#'     \sQuote{mirai} objects, waiting for resolution if still in progress.
 #'
 #' @param x a \sQuote{mirai} object or list of \sQuote{mirai} objects.
 #'
 #' @return Depending on the type of \sQuote{x} supplied, either an object or a
 #'     list of objects (the same length as \sQuote{x}, preserving names).
+#'
+#' @details This function will wait for the asynchronous operation(s) to
+#'     complete if still in progress (blocking).
 #'
 #' @examples
 #' if (interactive()) {
@@ -344,7 +347,7 @@ call_mirai_ <- call_aio_
 #'
 mirai_data <- collect_aio
 
-#' mirai (Data)
+#' mirai (Retrieve Data)
 #'
 #' \code{mirai_data_} is a variant that allows user interrupts, suitable for
 #'     interactive use.

@@ -17,15 +17,15 @@ The passed \sQuote{mirai} (invisibly). The retrieved value is stored
     at \code{$data}.
 }
 \description{
-\code{call_mirai} retrieves the value of a \sQuote{mirai}, waiting for the
-    asynchronous operation to resolve if it is still in progress.
+\code{call_mirai} waits for the \sQuote{mirai} to resolve if still in
+    progress, storing the value at \code{$data}.
 
 \code{call_mirai_} is a variant that allows user interrupts, suitable for
     interactive use.
 }
 \details{
-This function will wait for the async operation to complete if still
-    in progress (blocking).
+This function will wait for the asynchronous operation to complete
+    if still in progress (blocking).
 
     The \sQuote{mirai} updates itself in place, so to access the value of a
     \sQuote{mirai} \code{x} directly, use \code{call_mirai(x)$data}.
