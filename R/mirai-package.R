@@ -42,7 +42,7 @@
 #' @author Charlie Gao \email{charlie.gao@@shikokuchuo.net}
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
-#' @importFrom nanonext call_aio call_aio_ collect_aio collect_aio_ .context cv
+#' @importFrom nanonext aio_data aio_data_ call_aio call_aio_ .context cv
 #'     cv_value dial is_error_value listen lock mclock msleep next_config
 #'     nng_error opt opt<- parse_url pipe_notify random reap recv
 #'     recv_aio_signal request request_signal send set_promise_context socket

@@ -318,7 +318,7 @@ call_mirai_ <- call_aio_
 
 #' mirai (Retrieve Data)
 #'
-#' \code{mirai_data} retrieves the data value of a \sQuote{mirai}, or list of
+#' \code{mirai_data} retrieves the data of a \sQuote{mirai}, or list of
 #'     \sQuote{mirai} objects, waiting for resolution if still in progress.
 #'
 #' @param x a \sQuote{mirai} object or list of \sQuote{mirai} objects.
@@ -345,7 +345,7 @@ call_mirai_ <- call_aio_
 #'
 #' @export
 #'
-mirai_data <- collect_aio
+mirai_data <- aio_data
 
 #' mirai (Retrieve Data)
 #'
@@ -355,7 +355,7 @@ mirai_data <- collect_aio
 #' @rdname mirai_data
 #' @export
 #'
-mirai_data_ <- collect_aio_
+mirai_data_ <- aio_data_
 
 #' mirai (Stop)
 #'

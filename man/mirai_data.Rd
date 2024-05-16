@@ -17,7 +17,7 @@ Depending on the type of \sQuote{x} supplied, either an object or a
     list of objects (the same length as \sQuote{x}, preserving names).
 }
 \description{
-\code{mirai_data} retrieves the data value of a \sQuote{mirai}, or list of
+\code{mirai_data} retrieves the data of a \sQuote{mirai}, or list of
     \sQuote{mirai} objects, waiting for resolution if still in progress.
 
 \code{mirai_data_} is a variant that allows user interrupts, suitable for

@@ -85,7 +85,7 @@
 mmap <- function(.x, .f, ..., .args = list(), .progress = FALSE, .stop = FALSE, .compute = "default") {
 
   .progress || .stop ||
-    return(collect_aio_(mwalk(.x = .x, .f = .f, ..., .args = .args, .compute = .compute)))
+    return(aio_data_(mwalk(.x = .x, .f = .f, ..., .args = .args, .compute = .compute)))
 
   xlen <- length(.x)
   vec <- vector(mode = "list", length = xlen)
@@ -98,7 +98,7 @@ mmap <- function(.x, .f, ..., .args = list(), .progress = FALSE, .stop = FALSE, 
   for (i in seq_len(xlen)) {
     if (.progress)
       cat(sprintf("\r[ %d / %d .... ]", i - 1L, xlen), file = stderr())
-    res <- collect_aio_(vec[[i]])
+    res <- aio_data_(vec[[i]])
     .stop && is_error_value(res) && {
       lapply(vec, stop_aio)
       stop(res)
