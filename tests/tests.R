@@ -118,7 +118,7 @@ if (connection && .Platform[["OS.type"]] != "windows") {
       mmap(1:3, rnorm, mean = 20, .args = list(2), .progress = TRUE, .compute = "ml")
   })
   nanotest(is.list(m) && length(m) == 3L && all(as.logical(lapply(m, is.numeric))))
-  nanotestn(collect_mirai(mwalk(c(x = 0.1), Sys.sleep))[["x"]])
+  nanotestn(mirai_data(mwalk(c(x = 0.1), Sys.sleep))[["x"]])
   Sys.sleep(1L)
 }
 # parallel cluster tests

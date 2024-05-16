@@ -316,10 +316,10 @@ call_mirai <- call_aio
 #'
 call_mirai_ <- call_aio_
 
-#' mirai (Collect Value)
+#' mirai (Data)
 #'
-#' \code{collect_mirai} retrieves the value of a single, or list of,
-#'     \sQuote{mirai} objects, waiting for their completion if still in progress.
+#' \code{mirai_data} retrieves the data of a single, or list of, \sQuote{mirai}
+#'     objects, waiting for their completion if still in progress.
 #'
 #' @param x a \sQuote{mirai} object or list of \sQuote{mirai} objects.
 #'
@@ -333,26 +333,26 @@ call_mirai_ <- call_aio_
 #' df1 <- data.frame(a = 1, b = 2)
 #' df2 <- data.frame(a = 3, b = 1)
 #' m <- mirai(as.matrix(rbind(df1, df2)), df1 = df1, df2 = df2, .timeout = 1000)
-#' collect_mirai(m)
+#' mirai_data(m)
 #'
 #' ml <- mwalk(c(a = 2, b = 3, c = 4), rnorm, mean = 20, .args = list(sd = 2))
-#' collect_mirai(ml)
+#' mirai_data(ml)
 #'
 #' }
 #'
 #' @export
 #'
-collect_mirai <- collect_aio
+mirai_data <- collect_aio
 
-#' mirai (Collect Value)
+#' mirai (Data)
 #'
-#' \code{collect_mirai_} is a variant that allows user interrupts, suitable for
+#' \code{mirai_data_} is a variant that allows user interrupts, suitable for
 #'     interactive use.
 #'
-#' @rdname collect_mirai
+#' @rdname mirai_data
 #' @export
 #'
-collect_mirai_ <- collect_aio_
+mirai_data_ <- collect_aio_
 
 #' mirai (Stop)
 #'

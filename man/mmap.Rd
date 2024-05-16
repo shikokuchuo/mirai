@@ -54,8 +54,8 @@ These functions send each application of function \code{.f} on an
 
     Chunking (processing multiple elements of \code{.x} in batches) is not
     performed. This approach is particularly suited to lengthy computations
-    or those for which compute times over the indices are variable or
-    unpredictable, where it can be optimal to rely on \pkg{mirai} scheduling.
+    or those with varying or unpredictable compute times over the indices,
+    where it can be optimal to rely on \pkg{mirai} scheduling.
 
     Note: daemons are assumed to have been previously set, otherwise new
     ephemeral daemons will be created for each computation.
@@ -78,8 +78,8 @@ These functions send each application of function \code{.f} on an
 
     Whilst this function is designed primarily to enact side effects, it may
     also be used as an asynchronous map function by returning a list of
-    \sQuote{mirai} objects. Their values may be subsequently collected using
-    \code{\link{collect_mirai}}.
+    \sQuote{mirai} objects. Their data values may be subsequently collected
+    using \code{\link{mirai_data}}.
 }
 
 \examples{
@@ -100,7 +100,7 @@ mmap(list(a = 1, b = "a", c = 3), sum)
 
 ml <- mwalk(c(a = 2, b = 3, c = 4), rnorm, mean = 20, .args = list(sd = 2))
 ml
-collect_mirai(ml)
+mirai_data(ml)
 
 }
 
