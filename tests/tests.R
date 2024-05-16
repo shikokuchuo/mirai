@@ -113,11 +113,11 @@ if (connection && .Platform[["OS.type"]] != "windows") {
   nanotestz(daemons(0L))
   Sys.sleep(1L)
   m <- with(daemons(1, dispatcher = FALSE, .compute = "ml"), {
-    if (is.null(tryCatch(mmap(list(1, "a", 2), sum, .progress = TRUE, .stop = TRUE, .compute = "ml"), error = function(e) NULL)))
-      mmap(1:3, rnorm, mean = 20, .args = list(2), .compute = "ml")
+    if (is.null(tryCatch(mmap(list(1, "a", 2), sum, .stop = TRUE, .compute = "ml"), error = function(e) NULL)))
+      mmap(1:3, rnorm, mean = 20, .args = list(2), .progress = TRUE, .compute = "ml")
   })
   nanotest(is.list(m) && length(m) == 3L && all(as.logical(lapply(m, is.numeric))))
-  nanotest(is_mirai(mwalk(0.1, Sys.sleep)[[1L]]))
+  nanotestn(mcollect(mwalk(c(x = 0.1), Sys.sleep))[["x"]])
   Sys.sleep(1L)
 }
 # parallel cluster tests
