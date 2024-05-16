@@ -158,9 +158,7 @@ if (connection) {
   nanotesterr(clusterEvalQ(cluster, elephant()), "Error in elephant(): could not find function \"elephant\"")
   nanotestn(stop_cluster(cluster))
   Sys.sleep(1L)
-}
-if (connection && .Platform[["OS.type"]] != "windows") {
-  nanotest(inherits(cl <- make_cluster(1), "miraiCluster"))
+  nanotest(inherits(cl <- make_cluster(1, seed = seed), "miraiCluster"))
   nanotest(attr(cl, "id") != attr(cluster, "id"))
   clusterSetRNGStream(cl, 123)
   k <- clusterEvalQ(cl, expr = .GlobalEnv[[".Random.seed"]])
