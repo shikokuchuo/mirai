@@ -18,7 +18,8 @@
 
 #' mirai Map Functions
 #'
-#' \code{mmap} maps a function over a list or vector using \pkg{mirai}.
+#' \code{mmap} maps a function over a list or vector using \pkg{mirai}, waiting
+#'     for completion.
 #'
 #' @param .x a list or atomic vector.
 #' @param .f a function to be applied to each element of \code{.x}.
@@ -32,29 +33,30 @@
 #'     encountered, with remaining computations aborted.
 #' @inheritParams mirai
 #'
-#' @return For \code{mmap} and \code{mwalk}: a list, the same length as
-#'     \code{.x}, preserving names.
+#' @return A list, the same length as \code{.x}, preserving names.
+#'
+#' @details These functions send each application of function \code{.f} on an
+#'     element of \code{.x} for computation in a separate \code{\link{mirai}}
+#'     call.
+#'
+#'     Chunking (processing multiple elements of \code{.x} in batches) is not
+#'     performed. This approach is particularly suited to lengthy computations
+#'     or those for which compute times over the indices are variable or
+#'     unpredictable, where it can be optimal to rely on \pkg{mirai} scheduling.
+#'
+#'     Note: daemons are assumed to have been previously set, otherwise new
+#'     ephemeral daemons will be created for each computation.
 #'
 #' @section mmap:
 #'
-#'     This function sends each application of \code{.f} on an element of
-#'     \code{.x} for computation in a separate \code{\link{mirai}} call, and
-#'     waits for completion.
+#'     Offers the option to show a simple text progress indicator.
 #'
 #'     Designed to facilitate recovery from partial failure by returning all
-#'     results by default, allowing only the failures to be re-run.
+#'     \sQuote{miraiError} / \sQuote{errorValue} as the case may be by default,
+#'     thus allowing only the failures to be re-run.
 #'
 #'     Alternatively, there is the option for early stopping, which stops at the
 #'     first failure and aborts all remaining computations.
-#'
-#'     This function does not perform chunking (assigning multiple elements of
-#'     \code{.x} in batches), and is hence particularly suited to lengthy
-#'     computations or those which have variable or unpredicatable compute times
-#'     over the indices, where it can be optimal to rely on \pkg{mirai}
-#'     scheduling.
-#'
-#'     Note: daemons should generally be set prior to calling this function,
-#'     otherwise ephemeral daemons will be created for each computation.
 #'
 #' @examples
 #' if (interactive()) {
@@ -74,7 +76,7 @@
 #'
 #' ml <- mwalk(c(a = 2, b = 3, c = 4), rnorm, mean = 20, .args = list(sd = 2))
 #' ml
-#' mcollect(ml)
+#' collect_mirai(ml)
 #'
 #' }
 #'
@@ -83,7 +85,7 @@
 mmap <- function(.x, .f, ..., .args = list(), .progress = FALSE, .stop = FALSE, .compute = "default") {
 
   .progress || .stop ||
-    return(mcollect(mwalk(.x = .x, .f = .f, ..., .args = .args, .compute = .compute)))
+    return(collect_aio_(mwalk(.x = .x, .f = .f, ..., .args = .args, .compute = .compute)))
 
   xlen <- length(.x)
   vec <- vector(mode = "list", length = xlen)
@@ -96,10 +98,10 @@ mmap <- function(.x, .f, ..., .args = list(), .progress = FALSE, .stop = FALSE, 
   for (i in seq_len(xlen)) {
     if (.progress)
       cat(sprintf("\r[ %d / %d .... ]", i - 1L, xlen), file = stderr())
-    res <- call_mirai_(vec[[i]])
-    .stop && is_error_value(.subset2(res, "value")) && {
+    res <- collect_aio_(vec[[i]])
+    .stop && is_error_value(res) && {
       lapply(vec, stop_aio)
-      stop(.subset2(res, "value"))
+      stop(res)
     }
   }
   if (.progress)
@@ -111,27 +113,15 @@ mmap <- function(.x, .f, ..., .args = list(), .progress = FALSE, .stop = FALSE, 
 
 #' mirai Walk
 #'
-#' \code{mwalk} walk a function over a list or vector using \pkg{mirai} for the
-#'     side-effects.
+#' \code{mwalk} walks a function over a list or vector using \pkg{mirai} for the
+#'     side-effects, not waiting for completion.
 #'
 #' @section mwalk:
 #'
-#'     This function sends each application of \code{.f} on an element of
-#'     \code{.x} for computation in a separate \code{\link{mirai}} call. It does
-#'     not wait for completion.
-#'
 #'     Whilst this function is designed primarily to enact side effects, it may
 #'     also be used as an asynchronous map function by returning a list of
-#'     \sQuote{mirai}, and their values may be collected using \code{mcollect}.
-#'
-#'     This function does not perform chunking (assigning multiple elements of
-#'     \code{.x} in batches), and is hence particularly suited to lengthy
-#'     computations or those which have variable or unpredicatable compute times
-#'     over the indices, where it can be optimal to rely on \pkg{mirai}
-#'     scheduling.
-#'
-#'     Note: daemons should generally be set prior to calling this function,
-#'     otherwise ephemeral daemons will be created for each computation.
+#'     \sQuote{mirai} objects. Their values may be subsequently collected using
+#'     \code{\link{collect_mirai}}.
 #'
 #' @rdname mmap
 #' @export
@@ -148,18 +138,3 @@ mwalk <- function(.x, .f, ..., .args = list(), .compute = "default") {
   `names<-`(vec, names(.x))
 
 }
-
-#' mirai Collect
-#'
-#' \code{mcollect} waits for and collects the data from \code{mwalk} or a list
-#'     of \sQuote{mirai} objects.
-#'
-#' @param x a list of \sQuote{mirai} objects.
-#'
-#' @return For \code{mcollect}: a list, the same length as \code{x}, preserving
-#'     names.
-#'
-#' @rdname mmap
-#' @export
-#'
-mcollect <- function(x) lapply(lapply(x, call_mirai_), .subset2, "value")

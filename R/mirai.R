@@ -316,6 +316,44 @@ call_mirai <- call_aio
 #'
 call_mirai_ <- call_aio_
 
+#' mirai (Collect Value)
+#'
+#' \code{collect_mirai} retrieves the value of a single, or list of,
+#'     \sQuote{mirai} objects, waiting for their completion if still in progress.
+#'
+#' @param x a \sQuote{mirai} object or list of \sQuote{mirai} objects.
+#'
+#' @return Depending on the type of \sQuote{x} supplied, either an object or a
+#'     list of objects (the same length as \sQuote{x}, preserving names).
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' df1 <- data.frame(a = 1, b = 2)
+#' df2 <- data.frame(a = 3, b = 1)
+#' m <- mirai(as.matrix(rbind(df1, df2)), df1 = df1, df2 = df2, .timeout = 1000)
+#' collect_mirai(m)
+#'
+#' ml <- mwalk(c(a = 2, b = 3, c = 4), rnorm, mean = 20, .args = list(sd = 2))
+#' collect_mirai(ml)
+#'
+#' }
+#'
+#' @export
+#'
+collect_mirai <- collect_aio
+
+#' mirai (Collect Value)
+#'
+#' \code{collect_mirai_} is a variant that allows user interrupts, suitable for
+#'     interactive use.
+#'
+#' @rdname collect_mirai
+#' @export
+#'
+collect_mirai_ <- collect_aio_
+
 #' mirai (Stop)
 #'
 #' Stops a \sQuote{mirai} if still in progress, causing it to resolve
