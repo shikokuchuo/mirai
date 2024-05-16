@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,15 +65,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.0.0.9000" id="mirai-1009000-development">mirai 1.0.0.9000 (development)<a class="anchor" aria-label="anchor" href="#mirai-1009000-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.0.0.9001" id="mirai-1009001-development">mirai 1.0.0.9001 (development)<a class="anchor" aria-label="anchor" href="#mirai-1009001-development"></a></h2>
 <ul><li>Adds functions for parallel/distributed map using mirai:
 <ul><li>
 <code><a href="../reference/mmap.html">mmap()</a></code> is a synchronous map function allowing recovery from partial failure or else early stopping, together with optional progress reporting.</li>
 <li>
 <code><a href="../reference/mmap.html">mwalk()</a></code> is an asynchronous map function, used to enact side-effects, returning a list of ‘mirai’ objects.</li>
-<li>
-<code><a href="../reference/mmap.html">mcollect()</a></code> waits for and collects the data from <code><a href="../reference/mmap.html">mwalk()</a></code>.</li>
 </ul></li>
+<li>
+<code><a href="../reference/collect_mirai.html">collect_mirai()</a></code> waits for and collects the value of a ‘mirai’ or list of ‘mirai’ such as that returned by <code><a href="../reference/mmap.html">mwalk()</a></code>.</li>
+<li>Requires <code>nanonext</code> &gt;= [1.0.0.9001].</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.0" id="mirai-100">mirai 1.0.0<a class="anchor" aria-label="anchor" href="#mirai-100"></a></h2><p class="text-muted">CRAN release: 2024-05-03</p>

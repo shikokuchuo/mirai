@@ -35,7 +35,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -968,7 +968,7 @@ vignette</a> for further examples.</p>
 <p><code><a href="../reference/mmap.html">mwalk()</a></code>, short for ‘mirai walk’, is analogous to
 <code><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">purrr::walk()</a></code>, although completely asynchronous and
 returning a list of ‘mirai’ objects.</p>
-<p><code><a href="../reference/mmap.html">mcollect()</a></code> can then be used to return the values from
+<p><code>mcollect()</code> can then be used to return the values from
 <code><a href="../reference/mmap.html">mwalk()</a></code> or indeed any list of ‘mirai’ objects.</p>
 <p>For <code><a href="../reference/mmap.html">mmap()</a></code>:</p>
 <p>The function itself is synchronous and will wait until all results
@@ -1005,7 +1005,7 @@ relying on <code>mirai</code> scheduling can be optimal.</li>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mmap.html">mwalk</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="va">rnorm</span>, mean <span class="op">=</span> <span class="fl">20</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/mmap.html">mcollect</a></span><span class="op">(</span><span class="va">ml</span><span class="op">)</span></span>
+<span><span class="fu">mcollect</span><span class="op">(</span><span class="va">ml</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; [1] 17.6142</span></span>
 <span><span class="co">#&gt; </span></span>
