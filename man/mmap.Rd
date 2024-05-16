@@ -51,8 +51,14 @@ This function sends each application of \code{.f} on an element of
     Alternatively, there is the option for early stopping, which stops at the
     first failure and aborts all remaining computations.
 
-    Daemons must have previously been set with a call to
-    \code{\link{daemons}}.
+    This function does not perform chunking (assigning multiple elements of
+    \code{.x} in batches), and is hence particularly suited to lengthy
+    computations or those which have variable or unpredicatable compute times
+    over the indices, where it can be optimal to rely on \pkg{mirai}
+    scheduling.
+
+    Note: daemons should generally be set prior to calling this function,
+    otherwise ephemeral daemons will be created for each computation.
 }
 \examples{
 if (interactive()) {
@@ -66,8 +72,9 @@ with(
 # progress indicator counts up to 4 seconds
 with(daemons(4, dispatcher = FALSE), mmap(1:4, Sys.sleep, .progress = TRUE))
 
-# second element returns a 'miraiError', warns that daemons not set
-with(daemons(3, dispatcher = FALSE), mmap(list(1, "a", 3), sum))
+# creates 3 ephemeral daemons as daemons not set
+# second element returns a 'miraiError'
+mmap(list(1, "a", 3), sum)
 
 }
 

@@ -19,7 +19,7 @@ mwalk(.x, .f, ..., .args = list(), .compute = "default")
 to use (each compute profile has its own independent set of daemons).}
 }
 \value{
-An unnamed list of mirai, the same length as \code{.x}.
+An unnamed list of \sQuote{mirai}, the same length as \code{.x}.
 }
 \description{
 Walk a function over a list or vector using \pkg{mirai} for the side-effects.
@@ -29,23 +29,25 @@ This function sends each application of \code{.f} on an element of
     \code{.x} for computation in a separate \code{\link{mirai}} call. It does
     not wait for completion.
 
-    Whilst this function is designed primarily to enact side effects, it can
+    Whilst this function is designed primarily to enact side effects, it may
     also be used as an asynchronous map function as \sQuote{mirai} are
     returned, and their values may be collected.
 
-    Daemons must have previously been set with a call to
-    \code{\link{daemons}}.
+    This function does not perform chunking (assigning multiple elements of
+    \code{.x} in batches), and is hence particularly suited to lengthy
+    computations or those which have variable or unpredicatable compute times
+    over the indices, where it can be optimal to rely on \pkg{mirai}
+    scheduling.
+
+    Note: daemons should generally be set prior to calling this function,
+    otherwise ephemeral daemons will be created for each computation.
 }
 \examples{
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-daemons(4, dispatcher = FALSE)
-
 ml <- mwalk(1:3, rnorm, mean = 20, .args = list(sd = 2))
 ml
-
-daemons(0)
 
 }
 
