@@ -132,8 +132,13 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
     results by default, allowing only the failures to be re-run.</p>
 <p>Alternatively, there is the option for early stopping, which stops at the
     first failure and aborts all remaining computations.</p>
-<p>Daemons must have previously been set with a call to
-    <code><a href="daemons.html">daemons</a></code>.</p>
+<p>This function does not perform chunking (assigning multiple elements of
+    <code>.x</code> in batches), and is hence particularly suited to lengthy
+    computations or those which have variable or unpredicatable compute times
+    over the indices, where it can be optimal to rely on <span class="pkg">mirai</span>
+    scheduling.</p>
+<p>Note: daemons should generally be set prior to calling this function,
+    otherwise ephemeral daemons will be created for each computation.</p>
     </div>
 
     <div class="section level2">
@@ -149,8 +154,9 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <span class="r-in"><span><span class="co"># progress indicator counts up to 4 seconds</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="daemons.html">daemons</a></span><span class="op">(</span><span class="fl">4</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>, <span class="fu">mmap</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="va">Sys.sleep</span>, .progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># second element returns a 'miraiError', warns that daemons not set</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="daemons.html">daemons</a></span><span class="op">(</span><span class="fl">3</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>, <span class="fu">mmap</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span>, <span class="st">"a"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="va">sum</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># creates 3 ephemeral daemons as daemons not set</span></span></span>
+<span class="r-in"><span><span class="co"># second element returns a 'miraiError'</span></span></span>
+<span class="r-in"><span><span class="fu">mmap</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span>, <span class="st">"a"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="va">sum</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>

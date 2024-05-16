@@ -101,18 +101,23 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>An unnamed list of mirai, the same length as <code>.x</code>.</p>
+<p>An unnamed list of ‘mirai’, the same length as <code>.x</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function sends each application of <code>.f</code> on an element of
     <code>.x</code> for computation in a separate <code><a href="mirai.html">mirai</a></code> call. It does
     not wait for completion.</p>
-<p>Whilst this function is designed primarily to enact side effects, it can
+<p>Whilst this function is designed primarily to enact side effects, it may
     also be used as an asynchronous map function as ‘mirai’ are
     returned, and their values may be collected.</p>
-<p>Daemons must have previously been set with a call to
-    <code><a href="daemons.html">daemons</a></code>.</p>
+<p>This function does not perform chunking (assigning multiple elements of
+    <code>.x</code> in batches), and is hence particularly suited to lengthy
+    computations or those which have variable or unpredicatable compute times
+    over the indices, where it can be optimal to rely on <span class="pkg">mirai</span>
+    scheduling.</p>
+<p>Note: daemons should generally be set prior to calling this function,
+    otherwise ephemeral daemons will be created for each computation.</p>
     </div>
 
     <div class="section level2">
@@ -120,12 +125,8 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="co"># Only run examples in interactive R sessions</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="daemons.html">daemons</a></span><span class="op">(</span><span class="fl">4</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu">mwalk</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="va">rnorm</span>, mean <span class="op">=</span> <span class="fl">20</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ml</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
