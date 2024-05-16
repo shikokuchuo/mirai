@@ -8,6 +8,7 @@ nanotesti <- function(a, b) invisible(identical(a, b) || stop("the arguments are
 nanotestp <- function(x) invisible(is.character(capture.output(print(x))) || stop("print output of expression cannot be captured as a character value"))
 nanotesterr <- function(x, e = "") invisible(grepl(e, tryCatch(x, error = identity)[["message"]], fixed = TRUE) || stop("expected error message '", e, "' not generated"))
 connection <- !is_error_value(call_mirai(mirai(TRUE, .timeout = 2000L))[["data"]])
+seed <- if (.Platform[["OS.type"]] == "windows") raw() else 1546
 
 # core tests
 nanotest(is.list(status()))
@@ -67,7 +68,7 @@ if (connection) {
 }
 # daemons tests
 if (connection) {
-  nanotesto(d <- daemons(1L, dispatcher = FALSE))
+  nanotesto(d <- daemons(1L, dispatcher = FALSE, seed = seed))
   nanotestp(d)
   me <- mirai(mirai::mirai(), .timeout = 2000L)
   nanotest(is_mirai_error(call_mirai(me)$data) || is_error_value(me$data))
@@ -84,7 +85,7 @@ if (connection) {
   nanotest(is.character(status()[["daemons"]]))
   nanotestz(daemons(0L))
   Sys.sleep(1L)
-  nanotesto(daemons(1L, dispatcher = FALSE, idletime = 500L, timerstart = 1L, cleanup = FALSE, output = TRUE, seed = 1546, .compute = "new"))
+  nanotesto(daemons(1L, dispatcher = FALSE, idletime = 500L, timerstart = 1L, cleanup = FALSE, output = TRUE, seed = seed, .compute = "new"))
   nanotest(is.character(nextget("urls", .compute = "new")))
   nanotest(is.integer(nextstream(.compute = "new")))
   Sys.sleep(1.5)
@@ -124,7 +125,7 @@ if (connection && .Platform[["OS.type"]] != "windows") {
 library(parallel)
 nanotestn(tryCatch(mirai::register_cluster(), error = function(e) NULL))
 if (connection) {
-  cluster <- make_cluster(1)
+  cluster <- make_cluster(1, seed = seed)
   nanotest(inherits(cluster, "miraiCluster"))
   nanotest(inherits(cluster, "cluster"))
   nanotest(length(cluster) == 1L)
@@ -157,7 +158,7 @@ if (connection) {
   nanotesterr(clusterEvalQ(cluster, elephant()), "Error in elephant(): could not find function \"elephant\"")
   nanotestn(stop_cluster(cluster))
   Sys.sleep(1L)
-  nanotest(inherits(cl <- make_cluster(1), "miraiCluster"))
+  nanotest(inherits(cl <- make_cluster(1, seed = seed), "miraiCluster"))
   nanotest(attr(cl, "id") != attr(cluster, "id"))
   clusterSetRNGStream(cl, 123)
   k <- clusterEvalQ(cl, expr = .GlobalEnv[[".Random.seed"]])
