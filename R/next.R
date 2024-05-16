@@ -52,6 +52,7 @@
 #'
 #' }
 #'
+#' @keywords internal
 #' @export
 #'
 nextstream <- function(.compute = "default") next_stream(..[[.compute]])
@@ -67,6 +68,7 @@ nextstream <- function(.compute = "default") next_stream(..[[.compute]])
 #'
 #' @return For \code{nextget}: the requested item, or else NULL if not present.
 #'
+#' @keywords internal
 #' @rdname nextstream
 #' @export
 #'
