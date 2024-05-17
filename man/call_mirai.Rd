@@ -5,12 +5,12 @@
 \alias{call_mirai_}
 \title{mirai (Call Value)}
 \usage{
-call_mirai(x)
+call_mirai(aio)
 
-call_mirai_(x)
+call_mirai_(aio)
 }
 \arguments{
-\item{x}{a \sQuote{mirai} object.}
+\item{aio}{a \sQuote{mirai} object.}
 }
 \value{
 The passed \sQuote{mirai} (invisibly). The retrieved value is stored

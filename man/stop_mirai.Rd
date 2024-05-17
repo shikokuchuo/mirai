@@ -4,10 +4,10 @@
 \alias{stop_mirai}
 \title{mirai (Stop)}
 \usage{
-stop_mirai(x)
+stop_mirai(aio)
 }
 \arguments{
-\item{x}{a \sQuote{mirai} object.}
+\item{aio}{a \sQuote{mirai} object.}
 }
 \value{
 Invisible NULL.
