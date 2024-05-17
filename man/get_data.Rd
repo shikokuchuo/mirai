@@ -29,6 +29,9 @@ This function will wait for the asynchronous operation(s) to
 
     \code{get_data(x)} is a more efficient version of, and equivalent to
     \code{call_mirai(x)$data}.
+
+    For \sQuote{mirai} objects, \code{x[]} is equivalent to
+    \code{get_data_(x)} and is syntactic sugar.
 }
 \examples{
 if (interactive()) {
@@ -37,7 +40,7 @@ if (interactive()) {
 df1 <- data.frame(a = 1, b = 2)
 df2 <- data.frame(a = 3, b = 1)
 m <- mirai(as.matrix(rbind(df1, df2)), df1 = df1, df2 = df2, .timeout = 1000)
-get_data(m)
+m[]
 
 ml <- mirai_walk(
   c(a = 2, b = 3, c = 4), rnorm, mean = 20, .args = list(sd = 2)
