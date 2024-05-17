@@ -18,8 +18,8 @@
 
 #' mirai Map Functions
 #'
-#' \code{mmap} maps a function over a list or vector using \pkg{mirai}, waiting
-#'     for completion.
+#' \code{mirai_map} maps a function over a list or vector using \pkg{mirai},
+#'     waiting for completion.
 #'
 #' @param .x a list or atomic vector.
 #' @param .f a function to be applied to each element of \code{.x}.
@@ -47,7 +47,7 @@
 #'     Note: daemons are assumed to have been previously set, otherwise new
 #'     ephemeral daemons will be created for each computation.
 #'
-#' @section mmap:
+#' @section mirai_map:
 #'
 #'     Offers the option to show a simple text progress indicator.
 #'
@@ -64,28 +64,34 @@
 #'
 #' with(
 #'   daemons(3, dispatcher = FALSE),
-#'   mmap(1:3, rnorm, mean = 20, .args = list(sd = 2))
+#'   mirai_map(1:3, rnorm, mean = 20, .args = list(sd = 2))
 #' )
 #'
 #' # progress indicator counts up to 4 seconds
-#' with(daemons(4, dispatcher = FALSE), mmap(1:4, Sys.sleep, .progress = TRUE))
+#' with(
+#'   daemons(4, dispatcher = FALSE),
+#'   mirai_map(1:4, Sys.sleep, .progress = TRUE)
+#' )
 #'
 #' # creates 3 ephemeral daemons as daemons not set
 #' # second element returns a 'miraiError'
-#' mmap(list(a = 1, b = "a", c = 3), sum)
+#' mirai_map(list(a = 1, b = "a", c = 3), sum)
 #'
-#' ml <- mwalk(c(a = 2, b = 3, c = 4), rnorm, mean = 20, .args = list(sd = 2))
+#' ml <- mirai_walk(
+#'   c(a = 2, b = 3, c = 4), rnorm, mean = 20, .args = list(sd = 2)
+#' )
 #' ml
-#' mirai_data(ml)
+#'
+#' get_data(ml)
 #'
 #' }
 #'
 #' @export
 #'
-mmap <- function(.x, .f, ..., .args = list(), .progress = FALSE, .stop = FALSE, .compute = "default") {
+mirai_map <- function(.x, .f, ..., .args = list(), .progress = FALSE, .stop = FALSE, .compute = "default") {
 
   .progress || .stop ||
-    return(aio_data_(mwalk(.x = .x, .f = .f, ..., .args = .args, .compute = .compute)))
+    return(aio_data_(mirai_walk(.x = .x, .f = .f, ..., .args = .args, .compute = .compute)))
 
   xlen <- length(.x)
   vec <- vector(mode = "list", length = xlen)
@@ -113,22 +119,22 @@ mmap <- function(.x, .f, ..., .args = list(), .progress = FALSE, .stop = FALSE, 
 
 #' mirai Walk
 #'
-#' \code{mwalk} walks a function over a list or vector using \pkg{mirai}, not
-#'     waiting for completion.
+#' \code{mirai_walk} walks a function over a list or vector using \pkg{mirai},
+#'     not waiting for completion.
 #'
-#' @section mwalk:
+#' @section mirai_walk:
 #'
 #'     As this function does not wait for completion, it may be used purely to
 #'     enact side effects.
 #'
 #'     Alternatively, it may be used as an asynchronous map function as it
 #'     returns a list of \sQuote{mirai} objects. Their data values may be
-#'     subsequently retrieved using \code{\link{mirai_data}}.
+#'     subsequently retrieved using \code{\link{get_data}}.
 #'
-#' @rdname mmap
+#' @rdname mirai_map
 #' @export
 #'
-mwalk <- function(.x, .f, ..., .args = list(), .compute = "default") {
+mirai_walk <- function(.x, .f, ..., .args = list(), .compute = "default") {
 
   vec <- vector(mode = "list", length = length(.x))
   for (i in seq_along(vec))
