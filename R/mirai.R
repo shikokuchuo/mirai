@@ -182,7 +182,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
                           send_mode = 3L, recv_mode = 1L, timeout = .timeout)
   }
 
-  `class<-`(aio, c("mirai", "recvAio"))
+  aio
 
 }
 

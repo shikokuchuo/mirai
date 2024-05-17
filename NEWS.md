@@ -1,10 +1,11 @@
-# mirai 1.0.0.9004 (development)
+# mirai 1.0.0.9005 (development)
 
 * Adds functions for parallel/distributed map using mirai:
   + `mirai_map()` is a synchronous map function, allowing recovery from partial failure or else early stopping, together with optional progress reporting.
   + `mirai_walk()` is an asynchronous map function, returning a list of 'mirai' objects.
 * Adds `get_data()` to wait for an retrieve the data of a 'mirai' or list of 'mirai' such as that returned by `mirai_walk()`.
-* Requires `nanonext` >= [1.0.0.9004].
+* Internal efficiency enhancements.
+* Requires `nanonext` >= [1.0.0.9005].
 
 # mirai 1.0.0
 
