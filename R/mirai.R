@@ -519,10 +519,6 @@ print.mirai <- function(x, ...) {
 
 #' @export
 #'
-`[.mirai` <- function(x, i) get_data_(x)
-
-#' @export
-#'
 print.miraiError <- function(x, ...) {
 
   cat(strcat("'miraiError' chr ", x), file = stdout())
