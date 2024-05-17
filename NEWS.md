@@ -1,10 +1,11 @@
-# mirai 1.0.0.9002 (development)
+# mirai 1.0.0.9003 (development)
 
 * Adds functions for parallel/distributed map using mirai:
   + `mmap()` is a synchronous map function allowing recovery from partial failure or else early stopping, together with optional progress reporting.
   + `mwalk()` is an asynchronous map function, used to enact side-effects, returning a list of 'mirai' objects.
-* `mirai_data()` waits for and retrieves the data of a 'mirai' or list of 'mirai' such as that returned by `mwalk()`.
-* Requires `nanonext` >= [1.0.0.9002].
+* Adds `mirai_data()` to wait for an retrieve the data of a 'mirai' or list of 'mirai' such as that returned by `mwalk()`.
+* Name of single argument to `call_mirai()`, `call_mirai_()`, `stop_mirai()` and `unresolved()` changed from 'aio' to 'x'.
+* Requires `nanonext` >= [1.0.0.9003].
 
 # mirai 1.0.0
 
