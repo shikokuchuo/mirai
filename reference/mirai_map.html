@@ -104,11 +104,11 @@ mirai_walk walks a function over a list or vector using mirai,
 
 
 <dt>...</dt>
-<dd><p>optional arguments to <code>.f</code>.</p></dd>
+<dd><p>optional constant arguments to <code>.f</code>.</p></dd>
 
 
 <dt>.args</dt>
-<dd><p>optional arguments to <code>.f</code> provided as a list.</p></dd>
+<dd><p>optional constant arguments to <code>.f</code>, provided as a list.</p></dd>
 
 
 <dt>.progress</dt>
@@ -140,9 +140,9 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
     element of <code>.x</code> for computation in a separate <code><a href="mirai.html">mirai</a></code>
     call.</p>
 <p>Chunking (processing multiple elements of <code>.x</code> in batches) is not
-    performed. This approach is particularly suited to lengthy computations
-    or those with varying or unpredictable compute times over the indices,
-    where it can be optimal to rely on <span class="pkg">mirai</span> scheduling.</p>
+    performed. For lengthy computations, or those with varying or
+    unpredictable compute times over the indices, it can be optimal to rely
+    on <span class="pkg">mirai</span> scheduling instead.</p>
 <p>Note: daemons are assumed to have been previously set, otherwise new
     ephemeral daemons will be created for each computation.</p>
     </div>
