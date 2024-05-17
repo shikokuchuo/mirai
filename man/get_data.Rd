@@ -31,7 +31,7 @@ This function will wait for the asynchronous operation(s) to
     \code{call_mirai(x)$data}.
 
     For \sQuote{mirai} objects, \code{x[]} is equivalent to
-    \code{get_data_(x)} and is syntactic sugar.
+    \code{get_data_(x)}.
 }
 \examples{
 if (interactive()) {

@@ -22,9 +22,9 @@ mirai_walk(.x, .f, ..., .args = list(), .compute = "default")
 
 \item{.f}{a function to be applied to each element of \code{.x}.}
 
-\item{...}{optional arguments to \code{.f}.}
+\item{...}{optional constant arguments to \code{.f}.}
 
-\item{.args}{optional arguments to \code{.f} provided as a list.}
+\item{.args}{optional constant arguments to \code{.f}, provided as a list.}
 
 \item{.progress}{[default FALSE] if TRUE, reports progress via a simple text
 progress indicator to \sQuote{stderr}.}
@@ -53,9 +53,9 @@ These functions send each application of function \code{.f} on an
     call.
 
     Chunking (processing multiple elements of \code{.x} in batches) is not
-    performed. This approach is particularly suited to lengthy computations
-    or those with varying or unpredictable compute times over the indices,
-    where it can be optimal to rely on \pkg{mirai} scheduling.
+    performed. For lengthy computations, or those with varying or
+    unpredictable compute times over the indices, it can be optimal to rely
+    on \pkg{mirai} scheduling instead.
 
     Note: daemons are assumed to have been previously set, otherwise new
     ephemeral daemons will be created for each computation.

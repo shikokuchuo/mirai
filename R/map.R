@@ -23,8 +23,8 @@
 #'
 #' @param .x a list or atomic vector.
 #' @param .f a function to be applied to each element of \code{.x}.
-#' @param ... optional arguments to \code{.f}.
-#' @param .args optional arguments to \code{.f} provided as a list.
+#' @param ... optional constant arguments to \code{.f}.
+#' @param .args optional constant arguments to \code{.f}, provided as a list.
 #' @param .progress [default FALSE] if TRUE, reports progress via a simple text
 #'     progress indicator to \sQuote{stderr}.
 #' @param .stop [default FALSE] errors are returned as \sQuote{miraiError} /
@@ -40,9 +40,9 @@
 #'     call.
 #'
 #'     Chunking (processing multiple elements of \code{.x} in batches) is not
-#'     performed. This approach is particularly suited to lengthy computations
-#'     or those with varying or unpredictable compute times over the indices,
-#'     where it can be optimal to rely on \pkg{mirai} scheduling.
+#'     performed. For lengthy computations, or those with varying or
+#'     unpredictable compute times over the indices, it can be optimal to rely
+#'     on \pkg{mirai} scheduling instead.
 #'
 #'     Note: daemons are assumed to have been previously set, otherwise new
 #'     ephemeral daemons will be created for each computation.

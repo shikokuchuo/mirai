@@ -333,7 +333,7 @@ call_mirai_ <- call_aio_
 #'     \code{call_mirai(x)$data}.
 #'
 #'     For \sQuote{mirai} objects, \code{x[]} is equivalent to
-#'     \code{get_data_(x)} and is syntactic sugar.
+#'     \code{get_data_(x)}.
 #'
 #' @examples
 #' if (interactive()) {
@@ -507,6 +507,10 @@ is_mirai_interrupt <- function(x) inherits(x, "miraiInterrupt")
 #' @export
 #'
 is_error_value <- is_error_value
+
+#' @export
+#'
+`[.mirai` <- function(x, i) aio_data_(x)
 
 #' @export
 #'
