@@ -519,7 +519,7 @@ print.mirai <- function(x, ...) {
 
 #' @export
 #'
-`[.mirai` <- function(x, i) aio_data_(x)
+`[.mirai` <- function(x, i) get_data_(x)
 
 #' @export
 #'
