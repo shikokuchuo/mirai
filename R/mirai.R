@@ -329,6 +329,9 @@ call_mirai_ <- call_aio_
 #' @details This function will wait for the asynchronous operation(s) to
 #'     complete if still in progress (blocking).
 #'
+#'     \code{mirai_data(x)} is a more efficient version of, and equivalent to
+#'     \code{call_mirai(x)$data}.
+#'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions

@@ -113,15 +113,17 @@ mmap <- function(.x, .f, ..., .args = list(), .progress = FALSE, .stop = FALSE, 
 
 #' mirai Walk
 #'
-#' \code{mwalk} walks a function over a list or vector using \pkg{mirai} for the
-#'     side-effects, not waiting for completion.
+#' \code{mwalk} walks a function over a list or vector using \pkg{mirai}, not
+#'     waiting for completion.
 #'
 #' @section mwalk:
 #'
-#'     Whilst this function is designed primarily to enact side effects, it may
-#'     also be used as an asynchronous map function by returning a list of
-#'     \sQuote{mirai} objects. Their data values may be subsequently collected
-#'     using \code{\link{mirai_data}}.
+#'     As this function does not wait for completion, it may be used purely to
+#'     enact side effects.
+#'
+#'     Alternatively, it may be used as an asynchronous map function as it
+#'     returns a list of \sQuote{mirai} objects. Their data values may be
+#'     subsequently retrieved using \code{\link{mirai_data}}.
 #'
 #' @rdname mmap
 #' @export

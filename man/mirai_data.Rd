@@ -26,6 +26,9 @@ Depending on the type of \sQuote{x} supplied, either an object or a
 \details{
 This function will wait for the asynchronous operation(s) to
     complete if still in progress (blocking).
+
+    \code{mirai_data(x)} is a more efficient version of, and equivalent to
+    \code{call_mirai(x)$data}.
 }
 \examples{
 if (interactive()) {
