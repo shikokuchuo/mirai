@@ -82,7 +82,7 @@
 #' )
 #' ml
 #'
-#' get_data(ml)
+#' mdata(ml)
 #'
 #' }
 #'
@@ -91,7 +91,7 @@
 mirai_map <- function(.x, .f, ..., .args = list(), .progress = FALSE, .stop = FALSE, .compute = "default") {
 
   .progress || .stop ||
-    return(aio_data_(mirai_walk(.x = .x, .f = .f, ..., .args = .args, .compute = .compute)))
+    return(aio_collect_(mirai_walk(.x = .x, .f = .f, ..., .args = .args, .compute = .compute)))
 
   xlen <- length(.x)
   vec <- vector(mode = "list", length = xlen)
@@ -129,7 +129,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .progress = FALSE, .stop = FA
 #'
 #'     Alternatively, it may be used as an asynchronous map function as it
 #'     returns a list of \sQuote{mirai} objects. Their data values may be
-#'     subsequently retrieved using \code{\link{get_data}}.
+#'     subsequently retrieved using \code{\link{mdata}}.
 #'
 #' @rdname mirai_map
 #' @export
@@ -146,3 +146,40 @@ mirai_walk <- function(.x, .f, ..., .args = list(), .compute = "default") {
   `names<-`(vec, names(.x))
 
 }
+
+#' mirai (Data)
+#'
+#' \code{mdata} retrieves the data of a list of \sQuote{mirai} objects, waiting
+#'     for resolution if still in progress.
+#'
+#' @param x a list of \sQuote{mirai} objects.
+#'
+#' @return An list, the same length as \sQuote{x}, preserving names.
+#'
+#' @details This function will wait for all asynchronous operation(s) to
+#'     complete if still in progress (blocking).
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' ml <- mirai_walk(
+#'   c(a = 2, b = 3, c = 4), rnorm, mean = 20, .args = list(sd = 2)
+#' )
+#' mdata(ml)
+#'
+#' }
+#'
+#' @export
+#'
+mdata <- aio_collect
+
+#' mirai (Data)
+#'
+#' \code{mdata_} is a variant that allows user interrupts, suitable for
+#'     interactive use.
+#'
+#' @rdname mdata
+#' @export
+#'
+mdata_ <- aio_collect_

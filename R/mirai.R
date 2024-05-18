@@ -316,55 +316,6 @@ call_mirai <- call_aio
 #'
 call_mirai_ <- call_aio_
 
-#' mirai (Get Data)
-#'
-#' \code{get_data} retrieves the data of a \sQuote{mirai}, or list of
-#'     \sQuote{mirai} objects, waiting for resolution if still in progress.
-#'
-#' @param x a \sQuote{mirai} object or list of \sQuote{mirai} objects.
-#'
-#' @return Depending on the type of \sQuote{x} supplied, either an object or a
-#'     list of objects (the same length as \sQuote{x}, preserving names).
-#'
-#' @details This function will wait for the asynchronous operation(s) to
-#'     complete if still in progress (blocking).
-#'
-#'     \code{get_data(x)} is a more efficient version of, and equivalent to
-#'     \code{call_mirai(x)$data}.
-#'
-#'     For \sQuote{mirai} objects, \code{x[]} is equivalent to
-#'     \code{get_data_(x)}.
-#'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
-#' df1 <- data.frame(a = 1, b = 2)
-#' df2 <- data.frame(a = 3, b = 1)
-#' m <- mirai(as.matrix(rbind(df1, df2)), df1 = df1, df2 = df2, .timeout = 1000)
-#' m[]
-#'
-#' ml <- mirai_walk(
-#'   c(a = 2, b = 3, c = 4), rnorm, mean = 20, .args = list(sd = 2)
-#' )
-#' get_data(ml)
-#'
-#' }
-#'
-#' @export
-#'
-get_data <- aio_data
-
-#' mirai (Get Data)
-#'
-#' \code{get_data_} is a variant that allows user interrupts, suitable for
-#'     interactive use.
-#'
-#' @rdname get_data
-#' @export
-#'
-get_data_ <- aio_data_
-
 #' mirai (Stop)
 #'
 #' Stops a \sQuote{mirai} if still in progress, causing it to resolve

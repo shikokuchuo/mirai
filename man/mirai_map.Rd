@@ -81,7 +81,7 @@ These functions send each application of function \code{.f} on an
 
     Alternatively, it may be used as an asynchronous map function as it
     returns a list of \sQuote{mirai} objects. Their data values may be
-    subsequently retrieved using \code{\link{get_data}}.
+    subsequently retrieved using \code{\link{mdata}}.
 }
 
 \examples{
@@ -108,7 +108,7 @@ ml <- mirai_walk(
 )
 ml
 
-get_data(ml)
+mdata(ml)
 
 }
 

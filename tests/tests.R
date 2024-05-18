@@ -118,7 +118,7 @@ if (connection && .Platform[["OS.type"]] != "windows") {
       mirai_map(1:3, rnorm, mean = 20, .args = list(2), .progress = TRUE, .compute = "ml")
   })
   nanotest(is.list(m) && length(m) == 3L && all(as.logical(lapply(m, is.numeric))))
-  nanotestn(get_data(mirai_walk(c(x = 0.1), Sys.sleep))[["x"]])
+  nanotestn(mdata(mirai_walk(c(x = 0.1), Sys.sleep))[["x"]])
   Sys.sleep(1L)
 }
 # parallel cluster tests
@@ -250,7 +250,7 @@ if (connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") 
   q <- quote(list2env(list(b = 2), envir = .GlobalEnv))
   nanotestn(everywhere(q))
   m <- mirai(b, .timeout = 1000)
-  nanotest(m[] == 2L || is_error_value(get_data(m)))
+  nanotest(m[] == 2L || is_error_value(m[]))
   nanotestn(saisei(1))
   nanotesterr(launch_local(0:1), "out of bounds")
   nanotesterr(launch_remote(1:2), "out of bounds")
