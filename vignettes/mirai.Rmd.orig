@@ -539,31 +539,32 @@ Please refer to the [torch vignette](https://shikokuchuo.net/mirai/articles/torc
 
 ### Map Functions
 
-Functions are included that implement parallel/distributed map using 'mirai'.
+`mirai` implements asynchronous parallel/distributed map functions.
 
-`mirai_map()` is analogous to `purrr:map()`.
+`mmap()` (mirai map) is analogous to `purrr:map()`, but returns a list of 'mirai' objects.
 
-`mirai_walk()` is analogous to `purrr::walk()`, although completely asynchronous and returning a list of 'mirai' objects. `mdata()` can then be used to return their values.
+Combine with `mcollect()` to use their return values.
 
-For `mirai_map()`:
+For `mmap()`:
 
-The function itself is synchronous and will wait until all results are returned, and is user-interruptible.
-
-- Includes the same '.progress' argument to optionally show a simple text progress indicator.
-- Includes the '.args' argument from `mirai()`, which allows conveniently supplying a list of arguments.
+- Includes the '.args' argument from `mirai()`, which allows conveniently supplying a list of constant arguments.
 - Returns evaluation errors as 'miraiError' or 'errorValue' as the case may be, rather than causing the entire operation to fail. This allows more efficient recovery from partial failure.
-- Alternatively, implements early-stopping, which stops as soon as an error is encountered, rather than continuing to perform the entire operation.
 - Does not apply chunking (processing multiple elements in batches). For lengthy computations, or those with varying or unpredictable compute times over the indices, relying on `mirai` scheduling can be optimal.
+
+For `mcollect()`:
+- Includes a 'progress' argument to optionally show a simple text progress indicator.
+- Option to apply early-stopping, which stops as soon as an error is encountered, rather than continuing to perform the entire operation.
 
 ```{r mmap}
 with(
   daemons(1, dispatcher = FALSE),
-  mirai_map(1:3, rnorm, mean = 20, .args = list(sd = 2))
+  mcollect(mmap(1:3, rnorm, mean = 20, .args = list(sd = 2)))
 )
 
-ml <- mirai_walk(1:3, rnorm, mean = 20, .args = list(sd = 2))
-mdata(ml)
+ml <- mmap(c(a = 1, b = 2, c = 3), rnorm, mean = 20, .args = list(sd = 2))
+ml
+mcollect(ml)
 ```
-`mirai_map()` and `mirai_walk()` assume that `daemons()` have previously been set. Please be aware that if not, each computation will be run in a newly-created ephemeral daemon.
+Use of `mmap()` assumes that `daemons()` have previously been set. Please be aware that if not, each computation will be run in a newly-created ephemeral daemon.
 
 [&laquo; Back to ToC](#table-of-contents)

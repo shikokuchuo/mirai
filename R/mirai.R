@@ -461,7 +461,7 @@ is_error_value <- is_error_value
 
 #' @export
 #'
-`[.mirai` <- function(x, i) aio_data_(x)
+`[.mirai` <- function(x, i) aio_collect_(x)
 
 #' @export
 #'

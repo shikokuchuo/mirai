@@ -18,8 +18,9 @@
 
 #' mirai Map / Collect
 #'
-#' Asynchronous map functions. \cr \cr \code{mmap} maps a function over a list
-#'     or vector, returning a list of \sQuote{mirai} objects.
+#' Asynchronous parallel / distributed map functions. \cr \cr \code{mmap} maps
+#'     a function over a list or vector, returning a list of \sQuote{mirai}
+#'     objects.
 #'
 #' @param .x a list or atomic vector.
 #' @param .f a function to be applied to each element of \code{.x}.
@@ -41,8 +42,8 @@
 #'     on \pkg{mirai} scheduling instead.
 #'
 #'     Designed to facilitate recovery from partial failure by returning all
-#'     \sQuote{miraiError} / \sQuote{errorValue} as the case may be by default,
-#'     thus allowing only the failures to be re-run.
+#'     \sQuote{miraiError} / \sQuote{errorValue} as the case may be, thus
+#'     allowing only the failures to be re-run.
 #'
 #'     Note: daemons are assumed to have been previously set, otherwise new
 #'     ephemeral daemons will be created for each computation.
@@ -101,7 +102,7 @@ mmap <- function(.x, .f, ..., .args = list(), .compute = "default") {
 #' @param stop [default FALSE] errors are returned as \sQuote{miraiError} /
 #'     \sQuote{errorValue} as the case may be, allowing recovery from partial
 #'     failure. If TRUE, performs early stopping as soon as an error is
-#'     encountered, with remaining computations aborted.
+#'     encountered, with remaining in-progress computations aborted.
 #'
 #' @return For \code{mcollect}: a list, the same length as \sQuote{x},
 #'     preserving names.
@@ -114,21 +115,21 @@ mmap <- function(.x, .f, ..., .args = list(), .compute = "default") {
 #'     Optionally shows a simple text progress indicator.
 #'
 #'     Allows for early stopping, which stops at the first failure and aborts
-#'     all remaining computations.
+#'     all remaining in-progress computations.
 #'
 #' @rdname mmap
 #' @export
 #'
 mcollect <- function(x, interrupt = TRUE, progress = FALSE, stop = FALSE) {
 
-  progress || stop ||
-    return(if (interrupt) aio_collect(x) else aio_collect_(x))
+  progress || stop || interrupt &&
+    return(aio_collect(x)) || return(aio_collect_(x))
 
   xlen <- length(x)
   for (i in seq_len(xlen)) {
     if (progress)
       cat(sprintf("\r[ %d / %d .... ]", i - 1L, xlen), file = stderr())
-    res <- aio_data_(x[[i]])
+    res <- aio_collect_(x[[i]])
     stop && is_error_value(res) && {
       lapply(x, stop_aio)
       stop(res)

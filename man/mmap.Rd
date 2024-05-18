@@ -32,7 +32,7 @@ progress indicator.}
 \item{stop}{[default FALSE] errors are returned as \sQuote{miraiError} /
 \sQuote{errorValue} as the case may be, allowing recovery from partial
 failure. If TRUE, performs early stopping as soon as an error is
-encountered, with remaining computations aborted.}
+encountered, with remaining in-progress computations aborted.}
 }
 \value{
 For \code{mmap}: a list of \sQuote{mirai} objects, the same length as
@@ -42,8 +42,9 @@ For \code{mcollect}: a list, the same length as \sQuote{x},
     preserving names.
 }
 \description{
-Asynchronous map functions. \cr \cr \code{mmap} maps a function over a list
-    or vector, returning a list of \sQuote{mirai} objects.
+Asynchronous parallel / distributed map functions. \cr \cr \code{mmap} maps
+    a function over a list or vector, returning a list of \sQuote{mirai}
+    objects.
 
 \code{mcollect} collects the results from \code{mmap} or any list of
     \sQuote{mirai} objects, waiting for resolution if still in progress.
@@ -60,8 +61,8 @@ Asynchronous map functions. \cr \cr \code{mmap} maps a function over a list
     on \pkg{mirai} scheduling instead.
 
     Designed to facilitate recovery from partial failure by returning all
-    \sQuote{miraiError} / \sQuote{errorValue} as the case may be by default,
-    thus allowing only the failures to be re-run.
+    \sQuote{miraiError} / \sQuote{errorValue} as the case may be, thus
+    allowing only the failures to be re-run.
 
     Note: daemons are assumed to have been previously set, otherwise new
     ephemeral daemons will be created for each computation.
@@ -76,7 +77,7 @@ Asynchronous map functions. \cr \cr \code{mmap} maps a function over a list
     Optionally shows a simple text progress indicator.
 
     Allows for early stopping, which stops at the first failure and aborts
-    all remaining computations.
+    all remaining in-progress computations.
 }
 
 \examples{
