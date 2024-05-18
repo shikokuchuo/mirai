@@ -35,7 +35,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9007</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -164,12 +164,12 @@ operation is ongoing.</p>
 result.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.347 0.884 0.188 3.722 0.515 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.67 5.127 4.347 0.216 0.267 ...</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using
 <code><a href="../reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.347 0.884 0.188 3.722 0.515 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] -0.67 5.127 4.347 0.216 0.267 ...</span></span></code></pre></div>
 <p>For easy programmatic use of <code><a href="../reference/mirai.html">mirai()</a></code>, ‘.expr’ accepts a
 pre-constructed language object, and also a list of named arguments
 passed via ‘.args’. So, the following would be equivalent to the
@@ -185,7 +185,7 @@ above:</p>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span>.expr <span class="op">=</span> <span class="va">expr</span>, .args <span class="op">=</span> <span class="va">args</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  num [1:100000000] 0.235 -0.532 0.298 -1.042 -0.459 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  num [1:100000000] 0.167 -2.785 0.591 4.022 -0.291 ...</span></span></code></pre></div>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
 <div class="section level3">
@@ -265,11 +265,11 @@ bring down the entire pipeline.</p>
 <span><span class="co">#&gt; iteration 2 successful</span></span>
 <span><span class="co">#&gt; iteration 3 successful</span></span>
 <span><span class="co">#&gt; iteration 4 successful</span></span>
-<span><span class="co">#&gt; Error: random error</span></span>
 <span><span class="co">#&gt; iteration 5 successful</span></span>
 <span><span class="co">#&gt; iteration 6 successful</span></span>
 <span><span class="co">#&gt; iteration 7 successful</span></span>
 <span><span class="co">#&gt; iteration 8 successful</span></span>
+<span><span class="co">#&gt; Error: random error</span></span>
 <span><span class="co">#&gt; iteration 9 successful</span></span>
 <span><span class="co">#&gt; iteration 10 successful</span></span></code></pre></div>
 <p>Further, by testing the return value of each ‘mirai’ for errors,
@@ -305,12 +305,12 @@ daemon.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
 <span><span class="co">#&gt;                                     i online instance assigned complete</span></span>
-<span><span class="co">#&gt; abstract://42d014057d44c33496cc6637 1      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://63fe3a7c04bca9f3719766ed 2      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://eab29f0d414168a821099102 3      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://83bdcd9b03c017f5b08660c8 4      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://51d43b9b2dbeb739f1b69ab2 5      1        1        0        0</span></span>
-<span><span class="co">#&gt; abstract://82fc36012f0a20afe3bd3bff 6      1        1        0        0</span></span></code></pre></div>
+<span><span class="co">#&gt; abstract://6d18224e82c2089ac6ed7e43 1      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://102d76a703c8acc9798cde6c 2      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://d70f268de2c7c0694e7841b9 3      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://bcfe4016a2870afebf7c5fb3 4      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://41a1725d62980d878d8cb853 5      1        1        0        0</span></span>
+<span><span class="co">#&gt; abstract://5d643a3f7d67b91faf84912e 6      1        1        0        0</span></span></code></pre></div>
 <p>The default <code>dispatcher = TRUE</code> creates a
 <code><a href="../reference/dispatcher.html">dispatcher()</a></code> background process that connects to individual
 daemon processes on the local machine. This ensures that tasks are
@@ -344,7 +344,7 @@ URL at <code>$daemons</code>.</p>
 <span><span class="co">#&gt; [1] 6</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "abstract://6d677ad07565edf99b31465c"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "abstract://3a96339b0fbc7109b691acde"</span></span></code></pre></div>
 <p>This implementation sends tasks immediately, and ensures that tasks
 are evenly-distributed amongst daemons. This means that optimal
 scheduling is not guaranteed as the duration of tasks cannot be known
@@ -377,14 +377,14 @@ then make use of ‘con’.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/capture.output.html" class="external-link">capture.output</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">con</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] "Formal class 'SQLiteConnection' [package \"RSQLite\"] with 8 slots"  </span></span>
-<span><span class="co">#&gt; [2] "  ..@ ptr                :&lt;externalptr&gt; "                            </span></span>
-<span><span class="co">#&gt; [3] "  ..@ dbname             : chr \"/tmp/RtmpdtH68b/file13ba02cb042c7\""</span></span>
-<span><span class="co">#&gt; [4] "  ..@ loadable.extensions: logi TRUE"                                </span></span>
-<span><span class="co">#&gt; [5] "  ..@ flags              : int 70"                                   </span></span>
-<span><span class="co">#&gt; [6] "  ..@ vfs                : chr \"\""                                 </span></span>
-<span><span class="co">#&gt; [7] "  ..@ ref                :&lt;environment: 0x5c9d51caf860&gt; "            </span></span>
-<span><span class="co">#&gt; [8] "  ..@ bigint             : chr \"integer64\""                        </span></span>
+<span><span class="co">#&gt; [1] "Formal class 'SQLiteConnection' [package \"RSQLite\"] with 8 slots" </span></span>
+<span><span class="co">#&gt; [2] "  ..@ ptr                :&lt;externalptr&gt; "                           </span></span>
+<span><span class="co">#&gt; [3] "  ..@ dbname             : chr \"/tmp/RtmpdekhKN/file61347e0e28d2\""</span></span>
+<span><span class="co">#&gt; [4] "  ..@ loadable.extensions: logi TRUE"                               </span></span>
+<span><span class="co">#&gt; [5] "  ..@ flags              : int 70"                                  </span></span>
+<span><span class="co">#&gt; [6] "  ..@ vfs                : chr \"\""                                </span></span>
+<span><span class="co">#&gt; [7] "  ..@ ref                :&lt;environment: 0x63fb24fe6d58&gt; "           </span></span>
+<span><span class="co">#&gt; [8] "  ..@ bigint             : chr \"integer64\""                       </span></span>
 <span><span class="co">#&gt; [9] "  ..@ extended_types     : logi FALSE"</span></span></code></pre></div>
 <p>Disconnect from the database everywhere, and set the number of
 daemons to zero to reset.</p>
@@ -509,7 +509,7 @@ directly to the host process. The host listens at a single URL, and
 distributes tasks to all connected daemons.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span>url <span class="op">=</span> <span class="fu"><a href="../reference/host_url.html">host_url</a></span><span class="op">(</span><span class="op">)</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tcp://hostname:33787"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://hostname:44821"</span></span></code></pre></div>
 <p>Note that above, calling <code><a href="../reference/host_url.html">host_url()</a></code> without a port value
 uses the default of ‘0’. This is a wildcard value that will
 automatically cause a free ephemeral port to be assigned. The actual
@@ -526,7 +526,7 @@ daemons.</p>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "tcp://hostname:33787"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tcp://hostname:44821"</span></span></code></pre></div>
 <p>To reset all connections and revert to default behaviour:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
@@ -612,10 +612,10 @@ return values may be copy / pasted directly to a remote machine.</p>
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/launch_local.html">launch_remote</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1]</span></span>
-<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:44175',rs=c(10407,683113424,1745335697,1744159262,2093348871,-265881444,1114702061))"</span></span>
+<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:41997',rs=c(10407,957846585,2124519078,850530543,-1268600220,679210517,-1536575534))"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [2]</span></span>
-<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:43793',rs=c(10407,1649340946,1641141402,651281758,-1657989904,286693077,-133541396))"</span></span></code></pre></div>
+<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:43401',rs=c(10407,1674303749,-492646836,164795359,1845027286,240206104,859292186))"</span></span></code></pre></div>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
@@ -654,37 +654,37 @@ full shell command to launch a daemon, including the correctly specified
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/launch_local.html">launch_remote</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1]</span></span>
-<span><span class="co">#&gt; Rscript -e "mirai::daemon('wss://hostname:46369/1',tls=c('-----BEGIN CERTIFICATE-----</span></span>
+<span><span class="co">#&gt; Rscript -e "mirai::daemon('wss://hostname:41653/1',tls=c('-----BEGIN CERTIFICATE-----</span></span>
 <span><span class="co">#&gt; MIIFNzCCAx+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAzMREwDwYDVQQDDAhrdW1h</span></span>
 <span><span class="co">#&gt; bW90bzERMA8GA1UECgwITmFub25leHQxCzAJBgNVBAYTAkpQMB4XDTAxMDEwMTAw</span></span>
 <span><span class="co">#&gt; MDAwMFoXDTMwMTIzMTIzNTk1OVowMzERMA8GA1UEAwwIa3VtYW1vdG8xETAPBgNV</span></span>
 <span><span class="co">#&gt; BAoMCE5hbm9uZXh0MQswCQYDVQQGEwJKUDCCAiIwDQYJKoZIhvcNAQEBBQADggIP</span></span>
-<span><span class="co">#&gt; ADCCAgoCggIBAMlDdPPTroUeWUCTO7nRU034CDXXRXPjavSFpNRr7OYYtquVlbTy</span></span>
-<span><span class="co">#&gt; h97NPISa4sjbnil8QPmujVAkH2bLMC5irANXCcJn8tDa694Kb+rF58utEYjqwZ40</span></span>
-<span><span class="co">#&gt; 0tj8XIcph0shwNRhwNjEu4STLtLWF7K9KBy5I8ZpeeUVFRkJPKAiAC0CwpLJnNSn</span></span>
-<span><span class="co">#&gt; icCC7pil5gC1hCYeRvf951ePdea+02c5hbItmIM/dmnPn40vSW6yJ2e2rYMCOtm3</span></span>
-<span><span class="co">#&gt; I77wMPw4b+X881lIKwObfEqrT5BY1ohQ+PAaSe4ACmKqDLw18bXl/t+24L6s9Zgq</span></span>
-<span><span class="co">#&gt; YRSdAbJZjHu/6blZ6hKzXjZJIsjxi8Fz2o4NpLiTN4Y0TQHpWlHVW+v8sRTb390Z</span></span>
-<span><span class="co">#&gt; 9WXOXM/5b3Jbq9UjVFDJfYLp5C5g/kUEM0XsgmhBMfvAGIsCMDhPtSLU4vlRAacl</span></span>
-<span><span class="co">#&gt; E7Pei2RSECw9+I3L9a71Ww5iK5i1GghSm69qbg+UouGzyC1HTOKjH/sTjZILSB+X</span></span>
-<span><span class="co">#&gt; pwDkXMzG9RqD6Dg0JSCbaLECYfE+rKOthlseXmIpWzvKBv4/i7BWWRdRO6yM11Gk</span></span>
-<span><span class="co">#&gt; caLeGN3SsyaAvjP8WF8gx8Ms6DPE4SkPtLbW9M/blko7bW1LWktolUiDvVdCvMh/</span></span>
-<span><span class="co">#&gt; 4npw4zMKbw1qsGuwNTwcmECSK3QLG86E+RmJAL8iS8kti8u1zHduhFu5AgMBAAGj</span></span>
-<span><span class="co">#&gt; VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFE9EBt4Wip2LxvYq1Dzp</span></span>
-<span><span class="co">#&gt; UmuP/1W2MB8GA1UdIwQYMBaAFE9EBt4Wip2LxvYq1DzpUmuP/1W2MA0GCSqGSIb3</span></span>
-<span><span class="co">#&gt; DQEBCwUAA4ICAQAw9Nl84ZVk8heR0gZafzSIJ5mXNsjdZBfPxaXooaCHvlssWRQv</span></span>
-<span><span class="co">#&gt; RejUfMWxVjFG0Kac6XeIvFG4VMIeq21Cg3yQrnMhqKMs5AiXSLZz3U268I8Qy0eq</span></span>
-<span><span class="co">#&gt; N7gLfTY5vQWTZQEAIQGU2IROlMNa26m6yXeSLNIAe3iXvZ81gHTwG2IbGo6/VPdF</span></span>
-<span><span class="co">#&gt; RQuDgBBo+FMwcFHCf9GwMnEjdUYJoM7Zav4lfiI8t0t2ZZnyjZrCpyXZafO7PHPc</span></span>
-<span><span class="co">#&gt; wB7LZa+LnqKIa9zznzumoxqx7oZzSM7UJC6dcmk0Zr6m9z+q+Dh8/rorL/NPEfIF</span></span>
-<span><span class="co">#&gt; HSwfMT6upnz0ibNkihLt5swBKyBy8mGmKayrAZ/TZiwEqbfOBRO6KY3WNYIawKyb</span></span>
-<span><span class="co">#&gt; zoT8l03qN2HdWgcMsk1Sxw0G9pE+euX51vC0Ex0C9EKUMAkGRtBIXZZnpGxFBuZ4</span></span>
-<span><span class="co">#&gt; cYcZAE7FMrfz9hlxB07HQkJCQOm/WMlspr1zOuWY/7R35tvTB220JJxb+tWcIJhv</span></span>
-<span><span class="co">#&gt; nNN4wr2cSUs9L9wAcS3Pbc2aMBDcvmVhTPGAd17vTjUyGcqQRHrgk4swdrLvDmUn</span></span>
-<span><span class="co">#&gt; gj8dEBMv6uocoaPA7P9hILUARg73Cpacd0bEX9rXvUE/xiUaIumMGYuIHqUFlFyC</span></span>
-<span><span class="co">#&gt; cIFI9ISchyAQWGGhC9WsH4vqmxJ0D5jV6bpqUlYFBXpVTs9oXUs7HrRXmQ==</span></span>
+<span><span class="co">#&gt; ADCCAgoCggIBAK3OkhWvXX7e+dvTKDgdUbYqJQ2Wzn/NvxaOuy2RZLsTwOPqzDl/</span></span>
+<span><span class="co">#&gt; Pt8Sr6pVs7bGyrkcL1woPU4OVBpSumifer6aQ5KUCRusChbBhCwztuk2yBost4XX</span></span>
+<span><span class="co">#&gt; wxHgGFD0YbQ17qJETWmmj5qptOgwEGl1/8ZC0jXkGZNf21oVi8iwPj9Tr12lsQR0</span></span>
+<span><span class="co">#&gt; 04pCmwWOSrDhGt3WXzuFHBaLX7GysYhsy6issQhJrKFbnJaZU0IQQ7HzHm6V+F6D</span></span>
+<span><span class="co">#&gt; bkmziLe33c8Q7Np9JrmZKPp4TqLg9FjdcqOvKNpwtpQz5XVkVspL1cnDQZQHae0o</span></span>
+<span><span class="co">#&gt; cJXaO4IpOLvKpN7OWuaaARYeHBUXG25BXIHyuMbOQslLsg29BeREtEI0RTWAKBmS</span></span>
+<span><span class="co">#&gt; +iJZbPdhoiAg9AqkG0hLfU60XmAIuRdxb/urt6K2kBlDcIA7CQWLomjdPHeRzv5/</span></span>
+<span><span class="co">#&gt; IKVMLA8JMAxg+OwLDCjEwNLLxpkRncog8TdnkxUBH4+DFC/vbNvkBbvUvGUytjFp</span></span>
+<span><span class="co">#&gt; CZTgLVEnvpuiZJ9D6k7pruv1Wdp00Q0ZhDUQbf51olcL+o3/4IxyjW0Z392dOFZX</span></span>
+<span><span class="co">#&gt; 1mcihtxDrXJSRa519azMgk4Op8VUrzR1fml9W/1OX5BnsrNO+z4ziqvj8Ibx8KZP</span></span>
+<span><span class="co">#&gt; IAWgIOW45GQtZEMyHh3897jKjx8zBIU3AfL2TyNT7Lzm0Ye/JzCCBxybAgMBAAGj</span></span>
+<span><span class="co">#&gt; VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFAO2RJwuhcHpt6vYxHvA</span></span>
+<span><span class="co">#&gt; 1shq7CyZMB8GA1UdIwQYMBaAFAO2RJwuhcHpt6vYxHvA1shq7CyZMA0GCSqGSIb3</span></span>
+<span><span class="co">#&gt; DQEBCwUAA4ICAQBf79aFQAjvMQH0bxOUuLPC3uLh4B6X4LSGV8ACfThjyaV/AEf6</span></span>
+<span><span class="co">#&gt; 0Dvm32RyOYV5ToHe+6wPZZQ8tlWLEfM7GSJf3MpHzVGrRWDtTYsUaswDT/eyYi/s</span></span>
+<span><span class="co">#&gt; mhOdYeW3A9eWiLuFDc0nz0h6gWfKrU6y4+MUTtPuwFwNIG50kO/gYCPVoFMAok8R</span></span>
+<span><span class="co">#&gt; /EgPKevfbilStrmw+onN/iT+htuzpZllwY6ru1Dmjq6u3r0n/afNrOmubtND0aEP</span></span>
+<span><span class="co">#&gt; Y6DNZwhcIDaud9w6rWVt7u909Y6WBtWhWvU0QSSYy3pQrN+8xo4JUrkHhssm7/7S</span></span>
+<span><span class="co">#&gt; YjLIds2aTN/4/cL2p8b9JGmj71qpCT8jjxnOzFlkOq/LYNe++Wu3cH5yYhQoA44f</span></span>
+<span><span class="co">#&gt; emx4YuBPbOc4UENFRKNKhTf8HqLg3L1M57pghk/vuLPnj3cDRBjfc1PUfldgApx+</span></span>
+<span><span class="co">#&gt; oC76YIsDVgM8YYdtnq67FgV5BfLs3sXBYx76sJ1LozcdtwGdC2zVaJy5VOtjxsVP</span></span>
+<span><span class="co">#&gt; sjj3+a8ll95F03+CCDLcRLjOEnRuRj4oMI2ILjEMaLn5KFaEjzCG+2FW/HXyQgWy</span></span>
+<span><span class="co">#&gt; zF3XL4C8ZP/T/o0s3miRO2ah6B0zo5yqTO9eo8cSok8it/IlejyTn/6xI49oUcDo</span></span>
+<span><span class="co">#&gt; WWpLqm83ogQ7zrwsgStGIBLITtP5s6uQT10OLp5tC1xWNgBeufoPPddKlQ==</span></span>
 <span><span class="co">#&gt; -----END CERTIFICATE-----</span></span>
-<span><span class="co">#&gt; ',''),rs=c(10407,1034242706,213393643,-1442231504,-311253647,-1666828162,444048103))"</span></span></code></pre></div>
+<span><span class="co">#&gt; ',''),rs=c(10407,-446972972,248720581,-987374910,-1506932901,1888912096,1342975329))"</span></span></code></pre></div>
 <p>The printed value may be deployed directly on a remote machine.</p>
 <p><a href="#table-of-contents">« Back to ToC</a></p>
 </div>
@@ -967,7 +967,7 @@ vignette</a> for further examples.</p>
 <code>purrr:map()</code>.</p>
 <p><code><a href="../reference/mirai_map.html">mirai_walk()</a></code> is analogous to <code><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">purrr::walk()</a></code>,
 although completely asynchronous and returning a list of ‘mirai’
-objects. <code><a href="../reference/get_data.html">get_data()</a></code> can then be used to return their
+objects. <code><a href="../reference/mdata.html">mdata()</a></code> can then be used to return their
 values.</p>
 <p>For <code><a href="../reference/mirai_map.html">mirai_map()</a></code>:</p>
 <p>The function itself is synchronous and will wait until all results
@@ -983,10 +983,10 @@ allows more efficient recovery from partial failure.</li>
 <li>Alternatively, implements early-stopping, which stops as soon as an
 error is encountered, rather than continuing to perform the entire
 operation.</li>
-<li>Does not apply chunking (processing multiple elements in batches),
-hence suited to lengthy computations, or those with varying or
-unpredictable compute times over the indices. In these cases relying on
-<code>mirai</code> scheduling can be optimal.</li>
+<li>Does not apply chunking (processing multiple elements in batches).
+For lengthy computations, or those with varying or unpredictable compute
+times over the indices, relying on <code>mirai</code> scheduling can be
+optimal.</li>
 </ul>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span></span>
@@ -994,25 +994,25 @@ unpredictable compute times over the indices. In these cases relying on
 <span>  <span class="fu"><a href="../reference/mirai_map.html">mirai_map</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="va">rnorm</span>, mean <span class="op">=</span> <span class="fl">20</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [1] 21.70405</span></span>
+<span><span class="co">#&gt; [1] 17.57691</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [1] 20.03468 20.41598</span></span>
+<span><span class="co">#&gt; [1] 19.05724 22.10115</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]</span></span>
-<span><span class="co">#&gt; [1] 19.41161 17.28276 16.57100</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 25.02891 21.36451 18.88848</span></span></code></pre></div>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai_map.html">mirai_walk</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="va">rnorm</span>, mean <span class="op">=</span> <span class="fl">20</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/get_data.html">get_data</a></span><span class="op">(</span><span class="va">ml</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mdata.html">mdata</a></span><span class="op">(</span><span class="va">ml</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [1] 19.0213</span></span>
+<span><span class="co">#&gt; [1] 18.80957</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [1] 18.19612 20.37955</span></span>
+<span><span class="co">#&gt; [1] 17.82812 23.88570</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]</span></span>
-<span><span class="co">#&gt; [1] 20.23520 23.57244 21.49373</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 15.73107 14.86056 17.98947</span></span></code></pre></div>
 <p><code><a href="../reference/mirai_map.html">mirai_map()</a></code> and <code><a href="../reference/mirai_map.html">mirai_walk()</a></code> assume that
 <code><a href="../reference/daemons.html">daemons()</a></code> have previously been set. Please be aware that if
 not, each computation will be run in a newly-created ephemeral
