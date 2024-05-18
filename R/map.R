@@ -18,8 +18,8 @@
 
 #' mirai Map / Collect
 #'
-#' Asynchronous parallel / distributed map functions. \cr \cr \code{mmap} maps
-#'     a function over a list or vector, returning a list of \sQuote{mirai}
+#' \code{mmap} is an asynchronous parallel / distributed map function. Maps a
+#'     function over a list or vector, returning a list of \sQuote{mirai}
 #'     objects.
 #'
 #' @param .x a list or atomic vector.
@@ -36,12 +36,10 @@
 #'     Sends each application of function \code{.f} on an element of \code{.x}
 #'     for computation in a separate \code{\link{mirai}} call.
 #'
-#'     Chunking (processing multiple elements of \code{.x} in batches) is not
-#'     performed. For lengthy computations, or those with varying or
-#'     unpredictable compute times over the indices, it can be optimal to rely
-#'     on \pkg{mirai} scheduling instead.
+#'     This simple and transparent behaviour is designed to make full use of
+#'     \pkg{mirai} scheduling to optimise overall execution time.
 #'
-#'     Designed to facilitate recovery from partial failure by returning all
+#'     Facilitates recovery from partial failure by returning all
 #'     \sQuote{miraiError} / \sQuote{errorValue} as the case may be, thus
 #'     allowing only the failures to be re-run.
 #'
@@ -95,8 +93,6 @@ mmap <- function(.x, .f, ..., .args = list(), .compute = "default") {
 #'     \sQuote{mirai} objects, waiting for resolution if still in progress.
 #'
 #' @param x a list of \sQuote{mirai} objects.
-#' @param interrupt [default TRUE] logical value, whether or not to allow
-#'     user interrupts.
 #' @param progress [default FALSE] if TRUE, reports progress via a simple text
 #'     progress indicator.
 #' @param stop [default FALSE] errors are returned as \sQuote{miraiError} /
@@ -110,7 +106,7 @@ mmap <- function(.x, .f, ..., .args = list(), .compute = "default") {
 #' @section mcollect:
 #'
 #'     This function will wait for all asynchronous operation(s) to
-#'     complete if still in progress (blocking).
+#'     complete if still in progress (blocking, although user-interruptible).
 #'
 #'     Optionally shows a simple text progress indicator.
 #'
@@ -120,10 +116,9 @@ mmap <- function(.x, .f, ..., .args = list(), .compute = "default") {
 #' @rdname mmap
 #' @export
 #'
-mcollect <- function(x, interrupt = TRUE, progress = FALSE, stop = FALSE) {
+mcollect <- function(x, progress = FALSE, stop = FALSE) {
 
-  progress || stop || interrupt &&
-    return(aio_collect(x)) || return(aio_collect_(x))
+  progress || stop || return(aio_collect_(x))
 
   xlen <- length(x)
   for (i in seq_len(xlen)) {

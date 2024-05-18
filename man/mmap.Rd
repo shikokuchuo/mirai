@@ -7,7 +7,7 @@
 \usage{
 mmap(.x, .f, ..., .args = list(), .compute = "default")
 
-mcollect(x, interrupt = TRUE, progress = FALSE, stop = FALSE)
+mcollect(x, progress = FALSE, stop = FALSE)
 }
 \arguments{
 \item{.x}{a list or atomic vector.}
@@ -22,9 +22,6 @@ mcollect(x, interrupt = TRUE, progress = FALSE, stop = FALSE)
 to use (each compute profile has its own independent set of daemons).}
 
 \item{x}{a list of \sQuote{mirai} objects.}
-
-\item{interrupt}{[default TRUE] logical value, whether or not to allow
-user interrupts.}
 
 \item{progress}{[default FALSE] if TRUE, reports progress via a simple text
 progress indicator.}
@@ -42,8 +39,8 @@ For \code{mcollect}: a list, the same length as \sQuote{x},
     preserving names.
 }
 \description{
-Asynchronous parallel / distributed map functions. \cr \cr \code{mmap} maps
-    a function over a list or vector, returning a list of \sQuote{mirai}
+\code{mmap} is an asynchronous parallel / distributed map function. Maps a
+    function over a list or vector, returning a list of \sQuote{mirai}
     objects.
 
 \code{mcollect} collects the results from \code{mmap} or any list of
@@ -55,12 +52,10 @@ Asynchronous parallel / distributed map functions. \cr \cr \code{mmap} maps
     Sends each application of function \code{.f} on an element of \code{.x}
     for computation in a separate \code{\link{mirai}} call.
 
-    Chunking (processing multiple elements of \code{.x} in batches) is not
-    performed. For lengthy computations, or those with varying or
-    unpredictable compute times over the indices, it can be optimal to rely
-    on \pkg{mirai} scheduling instead.
+    This simple and transparent behaviour is designed to make full use of
+    \pkg{mirai} scheduling to optimise overall execution time.
 
-    Designed to facilitate recovery from partial failure by returning all
+    Facilitates recovery from partial failure by returning all
     \sQuote{miraiError} / \sQuote{errorValue} as the case may be, thus
     allowing only the failures to be re-run.
 
@@ -72,7 +67,7 @@ Asynchronous parallel / distributed map functions. \cr \cr \code{mmap} maps
 
 
     This function will wait for all asynchronous operation(s) to
-    complete if still in progress (blocking).
+    complete if still in progress (blocking, although user-interruptible).
 
     Optionally shows a simple text progress indicator.
 
