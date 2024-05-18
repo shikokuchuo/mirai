@@ -1,10 +1,9 @@
 # mirai 1.0.0.9007 (development)
 
 * Adds `x[]` as a more efficient equivalent of `call_mirai_(x)$data`.
-* Adds functions for parallel/distributed map using mirai:
-  + `mirai_map()` is a synchronous map function, allowing recovery from partial failure or else early stopping, together with optional progress reporting.
-  + `mirai_walk()` is an asynchronous map function, returning a list of 'mirai' objects.
-  + `mdata()` to wait for and retrieve the data of a list of 'mirai' objects such as that returned by `mirai_walk()`.
+* Adds functions for parallel/distributed map using mirai. These allow recovery from partial failure or else early stopping, together with optional progress reporting:
+  + `mmap()` is an asynchronous map function, returning a list of 'mirai' object.
+  + `mcollect()` waits for and collects the results from `mmap()` or any list of 'mirai' objects.
 * Internal efficiency enhancements.
 * Requires `nanonext` >= [1.0.0.9007].
 
