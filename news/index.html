@@ -67,13 +67,11 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.0.9007" id="mirai-1009007-development">mirai 1.0.0.9007 (development)<a class="anchor" aria-label="anchor" href="#mirai-1009007-development"></a></h2>
 <ul><li>Adds <code>x[]</code> as a more efficient equivalent of <code>call_mirai_(x)$data</code>.</li>
-<li>Adds functions for parallel/distributed map using mirai:
+<li>Adds functions for parallel/distributed map using mirai. These allow recovery from partial failure or else early stopping, together with optional progress reporting:
 <ul><li>
-<code><a href="../reference/mirai_map.html">mirai_map()</a></code> is a synchronous map function, allowing recovery from partial failure or else early stopping, together with optional progress reporting.</li>
+<code><a href="../reference/mmap.html">mmap()</a></code> is an asynchronous map function, returning a list of ‘mirai’ object.</li>
 <li>
-<code><a href="../reference/mirai_map.html">mirai_walk()</a></code> is an asynchronous map function, returning a list of ‘mirai’ objects.</li>
-<li>
-<code><a href="../reference/mdata.html">mdata()</a></code> to wait for and retrieve the data of a list of ‘mirai’ objects such as that returned by <code><a href="../reference/mirai_map.html">mirai_walk()</a></code>.</li>
+<code><a href="../reference/mmap.html">mcollect()</a></code> waits for and collects the results from <code><a href="../reference/mmap.html">mmap()</a></code> or any list of ‘mirai’ objects.</li>
 </ul></li>
 <li>Internal efficiency enhancements.</li>
 <li>Requires <code>nanonext</code> &gt;= [1.0.0.9007].</li>

@@ -963,13 +963,13 @@ vignette</a> for further examples.</p>
 </h3>
 <p>Functions are included that implement parallel/distributed map using
 ‘mirai’.</p>
-<p><code><a href="../reference/mirai_map.html">mirai_map()</a></code> is analogous to
+<p><code>mirai_map()</code> is analogous to
 <code>purrr:map()</code>.</p>
-<p><code><a href="../reference/mirai_map.html">mirai_walk()</a></code> is analogous to <code><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">purrr::walk()</a></code>,
+<p><code>mirai_walk()</code> is analogous to <code><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">purrr::walk()</a></code>,
 although completely asynchronous and returning a list of ‘mirai’
-objects. <code><a href="../reference/mdata.html">mdata()</a></code> can then be used to return their
+objects. <code>mdata()</code> can then be used to return their
 values.</p>
-<p>For <code><a href="../reference/mirai_map.html">mirai_map()</a></code>:</p>
+<p>For <code>mirai_map()</code>:</p>
 <p>The function itself is synchronous and will wait until all results
 are returned, and is user-interruptible.</p>
 <ul>
@@ -991,7 +991,7 @@ optimal.</li>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="../reference/mirai_map.html">mirai_map</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="va">rnorm</span>, mean <span class="op">=</span> <span class="fl">20</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu">mirai_map</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="va">rnorm</span>, mean <span class="op">=</span> <span class="fl">20</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; [1] 17.57691</span></span>
@@ -1003,8 +1003,8 @@ optimal.</li>
 <span><span class="co">#&gt; [1] 25.02891 21.36451 18.88848</span></span></code></pre></div>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai_map.html">mirai_walk</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="va">rnorm</span>, mean <span class="op">=</span> <span class="fl">20</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/mdata.html">mdata</a></span><span class="op">(</span><span class="va">ml</span><span class="op">)</span></span>
+<span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu">mirai_walk</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="va">rnorm</span>, mean <span class="op">=</span> <span class="fl">20</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">mdata</span><span class="op">(</span><span class="va">ml</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; [1] 18.80957</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1013,7 +1013,7 @@ optimal.</li>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]</span></span>
 <span><span class="co">#&gt; [1] 15.73107 14.86056 17.98947</span></span></code></pre></div>
-<p><code><a href="../reference/mirai_map.html">mirai_map()</a></code> and <code><a href="../reference/mirai_map.html">mirai_walk()</a></code> assume that
+<p><code>mirai_map()</code> and <code>mirai_walk()</code> assume that
 <code><a href="../reference/daemons.html">daemons()</a></code> have previously been set. Please be aware that if
 not, each computation will be run in a newly-created ephemeral
 daemon.</p>
