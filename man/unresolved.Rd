@@ -4,10 +4,10 @@
 \alias{unresolved}
 \title{Query if a mirai is Unresolved}
 \usage{
-unresolved(aio)
+unresolved(x)
 }
 \arguments{
-\item{aio}{a \sQuote{mirai} object or \sQuote{mirai} value stored at
+\item{x}{a \sQuote{mirai} object or \sQuote{mirai} value stored at
 \code{$data}.}
 }
 \value{

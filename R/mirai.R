@@ -253,7 +253,7 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #' \code{call_mirai} waits for the \sQuote{mirai} to resolve if still in
 #'     progress, storing the value at \code{$data}.
 #'
-#' @param aio a \sQuote{mirai} object.
+#' @param x a \sQuote{mirai} object.
 #'
 #' @return The passed \sQuote{mirai} (invisibly). The retrieved value is stored
 #'     at \code{$data}.
@@ -304,7 +304,7 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #'
 #' @export
 #'
-call_mirai <- call_aio
+call_mirai <- function(x) call_aio(x)
 
 #' mirai (Call Value)
 #'
@@ -314,14 +314,14 @@ call_mirai <- call_aio
 #' @rdname call_mirai
 #' @export
 #'
-call_mirai_ <- call_aio_
+call_mirai_ <- function(x) call_aio_(x)
 
 #' mirai (Stop)
 #'
 #' Stops a \sQuote{mirai} if still in progress, causing it to resolve
 #'     immediately to an \sQuote{errorValue} 20 (Operation canceled).
 #'
-#' @param aio a \sQuote{mirai} object.
+#' @param x a \sQuote{mirai} object.
 #'
 #' @return Invisible NULL.
 #'
@@ -346,7 +346,7 @@ call_mirai_ <- call_aio_
 #'
 #' @export
 #'
-stop_mirai <- stop_aio
+stop_mirai <- function(x) stop_aio(x)
 
 #' Query if a mirai is Unresolved
 #'
@@ -354,7 +354,7 @@ stop_mirai <- stop_aio
 #'     Unlike \code{\link{call_mirai}}, this function does not wait for
 #'     completion.
 #'
-#' @param aio a \sQuote{mirai} object or \sQuote{mirai} value stored at
+#' @param x a \sQuote{mirai} object or \sQuote{mirai} value stored at
 #'     \code{$data}.
 #'
 #' @return Logical TRUE if \sQuote{aio} is an unresolved \sQuote{mirai} or
@@ -379,7 +379,9 @@ stop_mirai <- stop_aio
 #'
 #' @export
 #'
-unresolved <- unresolved
+unresolved <- function(x) .unresolved(x)
+
+.unresolved <- nanonext::unresolved
 
 #' Is mirai
 #'
