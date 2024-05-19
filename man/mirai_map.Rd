@@ -42,17 +42,17 @@ Sends each application of function \code{.f} on an element of
 \section{Results}{
 
 
-    To collect the results of the map operation, use \code{x[]} on a
-    mirai_map \code{x}. This will wait for all asynchronous
-    operations to complete if still in progress (blocking, although
-    user-interruptible).
+    \code{x[]} collects the results of a mirai_map \code{x}. This will wait
+    for all asynchronous operations to complete if still in progress
+    (blocking).
 
-    To collect the results whilst showing a text progress indicator, use
-    \code{x[.progress]}.
+    \code{x[.progress]} collects the results whilst showing a text progress
+    indicator.
 
-    To collect the results with early stopping, which stops at the first
-    failure and aborts all remaining in-progress operations, use
-    \code{x[.stop]}.
+    \code{x[.stop]} collects the results applying early stopping, which stops
+    at the first failure and aborts all remaining in-progress operations.
+
+    All functions above are user-interruptible.
 }
 
 \examples{
