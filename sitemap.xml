@@ -49,6 +49,9 @@
     <loc>https://shikokuchuo.net/mirai/reference/call_mirai.html</loc>
   </url>
   <url>
+    <loc>https://shikokuchuo.net/mirai/reference/collect.html</loc>
+  </url>
+  <url>
     <loc>https://shikokuchuo.net/mirai/reference/daemon.html</loc>
   </url>
   <url>
@@ -88,7 +91,7 @@
     <loc>https://shikokuchuo.net/mirai/reference/mirai.html</loc>
   </url>
   <url>
-    <loc>https://shikokuchuo.net/mirai/reference/mmap.html</loc>
+    <loc>https://shikokuchuo.net/mirai/reference/mirai_map.html</loc>
   </url>
   <url>
     <loc>https://shikokuchuo.net/mirai/reference/nextstream.html</loc>
