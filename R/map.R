@@ -16,11 +16,10 @@
 
 # mirai map functions ----------------------------------------------------------
 
-#' mirai Map / Collect
+#' mirai Map
 #'
-#' \code{mmap} is an asynchronous parallel / distributed map function. Maps a
-#'     function over a list or vector, returning a list of \sQuote{mirai}
-#'     objects.
+#' Asynchronous parallel / distributed map of a function over a list or vector
+#'     using \pkg{mirai}.
 #'
 #' @param .x a list or atomic vector.
 #' @param .f a function to be applied to each element of \code{.x}.
@@ -28,16 +27,20 @@
 #' @param .args optional constant arguments to \code{.f}, provided as a list.
 #' @inheritParams mirai
 #'
-#' @return For \code{mmap}: a list of \sQuote{mirai} objects, the same length as
-#'     \code{.x}, preserving names.
+#' @return A \sQuote{mirai_map} object.
 #'
-#' @section mmap:
+#' @section Results:
 #'
-#'     Sends each application of function \code{.f} on an element of \code{.x}
-#'     for computation in a separate \code{\link{mirai}} call.
+#'     To collect the results of the map operation, use \code{x[]} on a
+#'     mirai_map \sQuote{x}. This will wait for all asynchronous
+#'     operations to complete if still in progress (blocking, although
+#'     user-interruptible).
+#'
+#' @details Sends each application of function \code{.f} on an element of
+#'     \code{.x} for computation in a separate \code{\link{mirai}} call.
 #'
 #'     This simple and transparent behaviour is designed to make full use of
-#'     \pkg{mirai} scheduling to optimise overall execution time.
+#'     \pkg{mirai} scheduling to minimise overall execution time.
 #'
 #'     Facilitates recovery from partial failure by returning all
 #'     \sQuote{miraiError} / \sQuote{errorValue} as the case may be, thus
@@ -52,29 +55,28 @@
 #'
 #' with(
 #'   daemons(3, dispatcher = FALSE),
-#'   mcollect(mmap(1:3, rnorm, mean = 20, .args = list(sd = 2)))
+#'   mirai_map(1:3, rnorm, mean = 20, .args = list(sd = 2))[]
 #' )
 #'
 #' # progress indicator counts up to 4 seconds
 #' with(
 #'   daemons(4, dispatcher = FALSE),
-#'   mcollect(mmap(1:4, Sys.sleep), progress = TRUE)
+#'   mirai_map(1:4, Sys.sleep)[]
 #' )
 #'
 #' # creates 3 ephemeral daemons as daemons not set
 #' # second element returns a 'miraiError'
-#' mcollect(mmap(list(a = 1, b = "a", c = 3), sum))
+#' mirai_map(list(a = 1, b = "a", c = 3), sum)[]
 #'
-#' ml <- mmap(c(a = 2, b = 3, c = 4), rnorm, mean = 20, .args = list(sd = 2))
+#' ml <- mirai_map(c(a = 2, b = 3, c = 4), rnorm)
 #' ml
-#'
-#' mcollect(ml)
+#' ml[]
 #'
 #' }
 #'
 #' @export
 #'
-mmap <- function(.x, .f, ..., .args = list(), .compute = "default") {
+mirai_map <- function(.x, .f, ..., .args = list(), .compute = "default") {
 
   vec <- vector(mode = "list", length = length(.x))
   for (i in seq_along(vec))
@@ -83,14 +85,14 @@ mmap <- function(.x, .f, ..., .args = list(), .compute = "default") {
       .args = list(.f = .f, .x = .subset2(.x, i), .args = c(list(...), .args)),
       .compute = .compute
     )
-  `names<-`(vec, names(.x))
+  `class<-`(`names<-`(vec, names(.x)), "mirai_map")
 
 }
 
-#' mirai Map / Collect
+#' mirai Collect
 #'
-#' \code{mcollect} collects the results from \code{mmap} or any list of
-#'     \sQuote{mirai} objects, waiting for resolution if still in progress.
+#' Collects the results from \code{mirai_map} or any list of \sQuote{mirai}
+#'     objects, waiting for resolution if still in progress.
 #'
 #' @param x a list of \sQuote{mirai} objects.
 #' @param progress [default FALSE] if TRUE, reports progress via a simple text
@@ -100,12 +102,9 @@ mmap <- function(.x, .f, ..., .args = list(), .compute = "default") {
 #'     failure. If TRUE, performs early stopping as soon as an error is
 #'     encountered, with remaining in-progress computations aborted.
 #'
-#' @return For \code{mcollect}: a list, the same length as \sQuote{x},
-#'     preserving names.
+#' @return A list, the same length as \sQuote{x}, preserving names.
 #'
-#' @section mcollect:
-#'
-#'     This function will wait for all asynchronous operation(s) to
+#' @details This function will wait for all asynchronous operations to
 #'     complete if still in progress (blocking, although user-interruptible).
 #'
 #'     Optionally shows a simple text progress indicator.
@@ -113,10 +112,9 @@ mmap <- function(.x, .f, ..., .args = list(), .compute = "default") {
 #'     Allows for early stopping, which stops at the first failure and aborts
 #'     all remaining in-progress computations.
 #'
-#' @rdname mmap
-#' @export
+#' @keywords internal
 #'
-mcollect <- function(x, progress = FALSE, stop = FALSE) {
+collect <- function(x, progress = FALSE, stop = FALSE) {
 
   progress || stop || return(aio_collect_(x))
 
@@ -134,5 +132,18 @@ mcollect <- function(x, progress = FALSE, stop = FALSE) {
     cat(sprintf("\r[ %d / %d done ]\n", xlen, xlen), file = stderr())
 
   lapply(x, .subset2, "value")
+
+}
+
+#' @export
+#'
+`[.mirai_map` <- function(x, i) aio_collect_(x)
+
+#' @export
+#'
+print.mirai_map <- function(x, ...) {
+
+  cat(sprintf("< mirai map >\n - items: %d\n", length(x)), file = stdout())
+  invisible(x)
 
 }

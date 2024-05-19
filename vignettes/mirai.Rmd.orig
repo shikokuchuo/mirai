@@ -539,11 +539,9 @@ Please refer to the [torch vignette](https://shikokuchuo.net/mirai/articles/torc
 
 ### Map Functions
 
-`mirai` implements asynchronous parallel/distributed map functions.
+`mirai_map` performs asynchronous parallel/distributed map using `mirai`.
 
-`mmap()` (mirai map) is analogous to `purrr:map()`, but returns a list of 'mirai' objects.
-
-Combine with `mcollect()` to use their return values.
+Analogous to `purrr:map()`, but returning a 'mirai_map' object. The return values may be collected using `x[]` for a mirai_map 'x'. This waits for all asynchronous operations to complete if still in progress.
 
 For `mmap()`:
 
@@ -551,20 +549,16 @@ For `mmap()`:
 - Returns evaluation errors as 'miraiError' or 'errorValue' as the case may be, rather than causing the entire operation to fail. This allows more efficient recovery from partial failure.
 - Does not rely on a 'chunking' algorithm that attempts to split work into batches according to the number of available daemons, as implemented for example in the `parallel` package. Chunking cannot take into account varying or unpredictable compute times over the indices, and any saving in communications overhead is not as great for a package such as `mirai` where this is already low.
 
-For `mcollect()`:
-- Includes a 'progress' argument to optionally show a simple text progress indicator.
-- Option to apply early-stopping, which stops as soon as an error is encountered, rather than continuing to perform the entire operation.
-
 ```{r mmap}
 with(
   daemons(1, dispatcher = FALSE),
-  mcollect(mmap(1:3, rnorm, mean = 20, .args = list(sd = 2)))
+  mirai_map(1:3, rnorm, mean = 20, .args = list(sd = 2))[]
 )
 
-ml <- mmap(c(a = 1, b = 2, c = 3), rnorm, mean = 20, .args = list(sd = 2))
+ml <- mirai_map(c(a = 1, b = 2, c = 3), rnorm, mean = 20, .args = list(sd = 2))
 ml
-mcollect(ml)
+ml[]
 ```
-Use of `mmap()` assumes that `daemons()` have previously been set. Please be aware that if not, each computation will be run in a newly-created ephemeral daemon.
+Use of `mirai_map()` assumes that `daemons()` have previously been set. Please be aware that if not, each computation will be run in a newly-created ephemeral daemon.
 
 [&laquo; Back to ToC](#table-of-contents)
