@@ -43,9 +43,16 @@ Sends each application of function \code{.f} on an element of
 
 
     To collect the results of the map operation, use \code{x[]} on a
-    mirai_map \sQuote{x}. This will wait for all asynchronous
+    mirai_map \code{x}. This will wait for all asynchronous
     operations to complete if still in progress (blocking, although
     user-interruptible).
+
+    To collect the results whilst showing a text progress indicator, use
+    \code{x[.progress]}.
+
+    To collect the results with early stopping, which stops at the first
+    failure and aborts all remaining in-progress operations, use
+    \code{x[.stop]}.
 }
 
 \examples{
@@ -60,12 +67,15 @@ with(
 # progress indicator counts up to 4 seconds
 with(
   daemons(4, dispatcher = FALSE),
-  mirai_map(1:4, Sys.sleep)[]
+  mirai_map(1:4, Sys.sleep)[.progress]
 )
 
 # creates 3 ephemeral daemons as daemons not set
-# second element returns a 'miraiError'
-mirai_map(list(a = 1, b = "a", c = 3), sum)[]
+# stops early when second element returns an error
+tryCatch(
+  mirai_map(list(a = 1, b = "a", c = 3), sum)[.stop],
+  error = identity
+)
 
 ml <- mirai_map(c(a = 2, b = 3, c = 4), rnorm)
 ml
