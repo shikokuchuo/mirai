@@ -2,12 +2,9 @@
 % Please edit documentation in R/mirai.R
 \name{call_mirai}
 \alias{call_mirai}
-\alias{call_mirai_}
 \title{mirai (Call Value)}
 \usage{
 call_mirai(x)
-
-call_mirai_(x)
 }
 \arguments{
 \item{x}{a \sQuote{mirai} object.}
@@ -19,9 +16,6 @@ The passed \sQuote{mirai} (invisibly). The retrieved value is stored
 \description{
 \code{call_mirai} waits for the \sQuote{mirai} to resolve if still in
     progress, storing the value at \code{$data}.
-
-\code{call_mirai_} is a variant that allows user interrupts, suitable for
-    interactive use.
 }
 \details{
 This function will wait for the asynchronous operation to complete

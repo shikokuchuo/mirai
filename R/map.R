@@ -103,14 +103,14 @@ mirai_map <- function(.x, .f, ..., .args = list(), .compute = "default") {
 #'
 `[.mirai_map` <- function(x, i) {
 
-  missing(i) && return(aio_collect_(x))
+  missing(i) && return(collect_aio_(x))
 
   .expr <- i
   xi <- i <- 0L
   xlen <- length(x)
   eval(.expr)
   for (i in seq_len(xlen)) {
-    xi <- aio_collect_(x[[i]])
+    xi <- collect_aio_(x[[i]])
     eval(.expr)
   }
 

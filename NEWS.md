@@ -1,11 +1,11 @@
-# mirai 1.0.0.9008 (development)
+# mirai 1.0.0.9010 (development)
 
 * Adds `x[]` as a more efficient equivalent of `call_mirai_(x)$data`.
 * Adds `mirai_map()` for asynchronous parallel/distributed map using mirai. Allows recovery from partial failure or else early stopping, together with optional progress reporting.
   + `x[]` collects the results of a mirai_map `x`, waiting for all asynchronous operations to complete.
   + `x[.progress]` collects the results whilst showing a text progress bar.
   + `x[.stop]` collects the results applying early-stopping, which stops at the first error, and aborts remaining in-progress operations.
-* Requires `nanonext` >= [1.0.0.9008].
+* Requires `nanonext` >= [1.0.0.9010].
 
 # mirai 1.0.0
 

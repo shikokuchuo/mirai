@@ -308,10 +308,15 @@ call_mirai <- function(x) call_aio(x)
 
 #' mirai (Call Value)
 #'
-#' \code{call_mirai_} is a variant that allows user interrupts, suitable for
-#'     interactive use.
+#' \code{call_mirai_} is a variant of \code{call_mirai} that allows user
+#'     interrupts, suitable for interactive use.
 #'
-#' @rdname call_mirai
+#' @note Usage is deprecated in favour of \code{x[]}, which also allows user
+#'     interrupts.
+#'
+#' @param x a \sQuote{mirai} object.
+#'
+#' @keywords internal
 #' @export
 #'
 call_mirai_ <- function(x) call_aio_(x)
@@ -463,7 +468,7 @@ is_error_value <- is_error_value
 
 #' @export
 #'
-`[.mirai` <- function(x, i) aio_collect_(x)
+`[.mirai` <- function(x, i) collect_aio_(x)
 
 #' @export
 #'
