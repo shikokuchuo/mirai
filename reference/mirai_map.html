@@ -127,13 +127,14 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 
 
 <p><code>x[]</code> collects the results of a mirai_map <code>x</code>. This will wait
-    for all asynchronous operations to complete if still in progress
-    (blocking).</p>
+    for all asynchronous operations to complete if still in progress,
+    blocking but user-interruptible.</p>
 <p><code>x[.progress]</code> collects the results whilst showing a text progress
     indicator.</p>
 <p><code>x[.stop]</code> collects the results applying early stopping, which stops
     at the first failure and aborts all remaining in-progress operations.</p>
-<p>All functions above are user-interruptible.</p>
+<p><code>x[c(.stop, .progress)]</code> combines early stopping with a progress
+    indicator.</p>
     </div>
 
     <div class="section level2">
