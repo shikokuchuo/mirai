@@ -88,11 +88,14 @@
 
 
 <dt>...</dt>
-<dd><p>optional constant arguments to <code>.f</code>.</p></dd>
+<dd><p>(optional) named arguments (name = value pairs) specifying objects
+referenced, but not defined, in <code>.f</code>, or an environment containing
+such objects.</p></dd>
 
 
 <dt>.args</dt>
-<dd><p>optional constant arguments to <code>.f</code>, provided as a list.</p></dd>
+<dd><p>(optional) further constant arguments to <code>.f</code>, provided as
+a list.</p></dd>
 
 
 <dt>.compute</dt>
@@ -140,7 +143,7 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="daemons.html">daemons</a></span><span class="op">(</span><span class="fl">3</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  <span class="fu">mirai_map</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="va">rnorm</span>, mean <span class="op">=</span> <span class="fl">20</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="op">]</span></span></span>
+<span class="r-in"><span>  <span class="fu">mirai_map</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="va">rnorm</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fl">20</span>, sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># progress indicator counts up to 4 seconds</span></span></span>
@@ -156,7 +159,11 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <span class="r-in"><span>  error <span class="op">=</span> <span class="va">identity</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu">mirai_map</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">2</span>, b <span class="op">=</span> <span class="fl">3</span>, c <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>, <span class="va">rnorm</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu">mirai_map</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">2</span>, b <span class="op">=</span> <span class="fl">3</span>, c <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">do</span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">as.logical</a></span><span class="op">(</span><span class="va">x</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  do <span class="op">=</span> <span class="fu">nanonext</span><span class="fu">::</span><span class="va"><a href="https://shikokuchuo.net/nanonext/reference/random.html" class="external-link">random</a></span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ml</span></span></span>
 <span class="r-in"><span><span class="va">ml</span><span class="op">[</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
