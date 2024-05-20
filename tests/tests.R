@@ -119,7 +119,7 @@ if (connection && .Platform[["OS.type"]] != "windows") {
   })
   nanotest(is.list(m) && length(m) == 3L && all(as.logical(lapply(m, is.numeric))))
   nanotestp(ml <- mirai_map(c(x = 0.1), Sys.sleep))
-  nanotestn(ml[][["x"]])
+  nanotestn(collect_mirai(ml)[["x"]])
   Sys.sleep(1L)
 }
 # parallel cluster tests

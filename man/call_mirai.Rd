@@ -2,28 +2,44 @@
 % Please edit documentation in R/mirai.R
 \name{call_mirai}
 \alias{call_mirai}
+\alias{collect_mirai}
 \title{mirai (Call Value)}
 \usage{
 call_mirai(x)
+
+collect_mirai(x)
 }
 \arguments{
 \item{x}{a \sQuote{mirai} object.}
 }
 \value{
-The passed \sQuote{mirai} (invisibly). The retrieved value is stored
-    at \code{$data}.
+For \code{call_mirai}: the passed \sQuote{mirai} (invisibly). The
+    retrieved value is stored at \code{$data}.
+
+    For \code{collect_mirai}: an object (the return value of the
+    \sQuote{mirai}).
 }
 \description{
 \code{call_mirai} waits for the \sQuote{mirai} to resolve if still in
-    progress, storing the value at \code{$data}.
-}
-\details{
-This function will wait for the asynchronous operation to complete
-    if still in progress (blocking).
+    progress, storing the value at \code{$data}, and returns the
+    \sQuote{mirai} object.
 
-    The \sQuote{mirai} updates itself in place, so to access the value of a
-    \sQuote{mirai} \code{x} directly, use \code{call_mirai(x)$data}.
+\code{collect_mirai} waits for the \sQuote{mirai} to resolve if still in
+    progress, and returns its value directly. It is a more efifcient version
+    of and equivalent to \code{call_mirai(x)$data}.
 }
+\section{User Interrupts}{
+
+
+    These functions will wait for the asynchronous operation to complete if
+    still in progress (blocking). Designed for production usage, they are not
+    user-interruptible.
+
+    \code{x[]} may be used to wait for and return the value of a mirai
+    \code{x}, and is a user-interruptible equivalent to
+    \code{collect_mirai(x)}.
+}
+
 \section{Alternatively}{
 
 
@@ -52,11 +68,16 @@ This function will wait for the asynchronous operation to complete
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-# using call_mirai()
+# using call_mirai() / collect_mirai()
 df1 <- data.frame(a = 1, b = 2)
 df2 <- data.frame(a = 3, b = 1)
 m <- mirai(as.matrix(rbind(df1, df2)), df1 = df1, df2 = df2, .timeout = 1000)
 call_mirai(m)$data
+
+collect_mirai(m)
+
+# using x[]
+m[]
 
 # using unresolved()
 m <- mirai(
