@@ -35,8 +35,8 @@
 #' @section Results:
 #'
 #'     \code{x[]} collects the results of a mirai_map \code{x}. This will wait
-#'     for all asynchronous operations to complete if still in progress
-#'     (blocking).
+#'     for all asynchronous operations to complete if still in progress,
+#'     blocking but user-interruptible.
 #'
 #'     \code{x[.progress]} collects the results whilst showing a text progress
 #'     indicator.
@@ -44,7 +44,8 @@
 #'     \code{x[.stop]} collects the results applying early stopping, which stops
 #'     at the first failure and aborts all remaining in-progress operations.
 #'
-#'     All functions above are user-interruptible.
+#'     \code{x[c(.stop, .progress)]} combines early stopping with a progress
+#'     indicator.
 #'
 #' @details Sends each application of function \code{.f} on an element of
 #'     \code{.x} for computation in a separate \code{\link{mirai}} call.
@@ -139,8 +140,8 @@ print.mirai_map <- function(x, ...) {
 
 #' @export
 #'
-.progress <- quote(cat(if (i < xlen) sprintf("\r[ %d / %d .... ]", i, xlen) else sprintf("\r[ %d / %d done ]\n", i, xlen), file = stderr()))
+.progress <- expression(cat(if (i < xlen) sprintf("\r[ %d / %d .... ]", i, xlen) else sprintf("\r[ %d / %d done ]\n", i, xlen), file = stderr()))
 
 #' @export
 #'
-.stop <- quote(if (is_error_value(xi)) { lapply(x, stop_mirai); stop(xi, call. = FALSE) })
+.stop <- expression(if (is_error_value(xi)) { lapply(x, stop_mirai); stop(xi, call. = FALSE) })
