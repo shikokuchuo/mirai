@@ -23,8 +23,11 @@
 #'
 #' @param .x a list or atomic vector.
 #' @param .f a function to be applied to each element of \code{.x}.
-#' @param ... optional constant arguments to \code{.f}.
-#' @param .args optional constant arguments to \code{.f}, provided as a list.
+#' @param ... (optional) named arguments (name = value pairs) specifying objects
+#'     referenced, but not defined, in \code{.f}, or an environment containing
+#'     such objects.
+#' @param .args (optional) further constant arguments to \code{.f}, provided as
+#'     a list.
 #' @inheritParams mirai
 #'
 #' @return A \sQuote{mirai_map} object.
@@ -62,7 +65,7 @@
 #'
 #' with(
 #'   daemons(3, dispatcher = FALSE),
-#'   mirai_map(1:3, rnorm, mean = 20, .args = list(sd = 2))[]
+#'   mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
 #' )
 #'
 #' # progress indicator counts up to 4 seconds
@@ -78,7 +81,11 @@
 #'   error = identity
 #' )
 #'
-#' ml <- mirai_map(c(a = 2, b = 3, c = 4), rnorm)
+#' ml <- mirai_map(
+#'   c(a = 2, b = 3, c = 4),
+#'   function(x) do(x, as.logical(x %% 2)),
+#'   do = nanonext::random
+#' )
 #' ml
 #' ml[]
 #'
@@ -92,7 +99,10 @@ mirai_map <- function(.x, .f, ..., .args = list(), .compute = "default") {
   for (i in seq_along(vec))
     vec[[i]] <- mirai(
       .expr = do.call(.f, c(list(.x), .args)),
-      .args = list(.f = .f, .x = .subset2(.x, i), .args = c(list(...), .args)),
+      .f = .f,
+      .x = .subset2(.x, i),
+      ...,
+      .args = list(.args = .args),
       .compute = .compute
     )
   `class<-`(`names<-`(vec, names(.x)), "mirai_map")

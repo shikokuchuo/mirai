@@ -545,19 +545,27 @@ This function is analogous to `purrr:map()`, but returns a 'mirai_map' object.
 
 The results of a mirai_map `x` may be collected using `x[]`. This waits for all asynchronous operations to complete if still in progress.
 
-For `mirai_map()`:
+Key advantages of `mirai_map()`:
 
-- Includes the '.args' argument from `mirai()`, which allows conveniently supplying a list of constant arguments.
 - Returns evaluation errors as 'miraiError' or 'errorValue' as the case may be, rather than causing the entire operation to fail. This allows more efficient recovery from partial failure.
 - Does not rely on a 'chunking' algorithm that attempts to split work into batches according to the number of available daemons, as implemented for example in the `parallel` package. Chunking cannot take into account varying or unpredictable compute times over the indices, and any saving in communications overhead is not as great for a package such as `mirai` where this is already low.
 
+`.args` is used to specify further constant arguments to `.f` - the 'mean' and 'sd' in the example below:
+
 ```{r mmap}
 with(
-  daemons(1, dispatcher = FALSE),
-  mirai_map(1:3, rnorm, mean = 20, .args = list(sd = 2))[]
+  daemons(3, dispatcher = FALSE),
+  mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
 )
+```
+Use `...` to further specify objects referenced but not defined in `.f` - the 'do' in the anonymous function below:
 
-ml <- mirai_map(c(a = 1, b = 2, c = 3), rnorm, mean = 20, .args = list(sd = 2))
+```{r mmap2}
+ml <- mirai_map(
+  c(a = 1, b = 2, c = 3),
+  function(x) do(x, as.logical(x %% 2)),
+  do = nanonext::random
+)
 ml
 ml[]
 ```

@@ -11,9 +11,12 @@ mirai_map(.x, .f, ..., .args = list(), .compute = "default")
 
 \item{.f}{a function to be applied to each element of \code{.x}.}
 
-\item{...}{optional constant arguments to \code{.f}.}
+\item{...}{(optional) named arguments (name = value pairs) specifying objects
+referenced, but not defined, in \code{.f}, or an environment containing
+such objects.}
 
-\item{.args}{optional constant arguments to \code{.f}, provided as a list.}
+\item{.args}{(optional) further constant arguments to \code{.f}, provided as
+a list.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
@@ -61,7 +64,7 @@ if (interactive()) {
 
 with(
   daemons(3, dispatcher = FALSE),
-  mirai_map(1:3, rnorm, mean = 20, .args = list(sd = 2))[]
+  mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
 )
 
 # progress indicator counts up to 4 seconds
@@ -77,7 +80,11 @@ tryCatch(
   error = identity
 )
 
-ml <- mirai_map(c(a = 2, b = 3, c = 4), rnorm)
+ml <- mirai_map(
+  c(a = 2, b = 3, c = 4),
+  function(x) do(x, as.logical(x \%\% 2)),
+  do = nanonext::random
+)
 ml
 ml[]
 
