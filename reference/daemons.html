@@ -20,7 +20,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9010</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9012</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,7 +92,6 @@
 <span>  remote <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dispatcher <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  resilience <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pass <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -135,12 +134,6 @@ below).</p></dd>
 if launching daemons. These include ‘token’ at dispatcher and
 ‘autoexit’, ‘cleanup’, ‘output’, ‘maxtasks’,
 ‘idletime’, ‘walltime’ and ‘timerstart’ at daemon.</p></dd>
-
-
-<dt>resilience</dt>
-<dd><p>[default TRUE] (applicable when not using dispatcher)
-logical value whether to retry failed tasks on other daemons. If FALSE,
-an appropriate ‘errorValue’ will be returned in such cases.</p></dd>
 
 
 <dt>seed</dt>
