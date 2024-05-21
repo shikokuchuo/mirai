@@ -299,12 +299,14 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         sockc <- req_socket(urlc, resend = 0L)
         launch_and_sync_daemon(sock, cv, wa5(urld, dots, n, urlc, url), output, tls, pass) || stop(._[["sync_timeout"]])
         init_monitor(sockc = sockc, envir = envir)
+        `[[<-`(envir, "cv", cv)
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass), resend = 0L)
         store_urls(sock = sock, envir = envir)
+        `[[<-`(envir, "cv2", cv)
         n <- 0L
       }
-      `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv))
+      `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
       remotes <- substitute(remote)
       if (!is.symbol(remotes)) remote <- remotes
       if (length(remote))
@@ -353,9 +355,9 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
           for (i in seq_len(n))
             launch_and_sync_daemon(sock, cv, wa3(urld, dots, next_stream(envir)), output)
         }
-        `[[<-`(envir, "urls", urld)
+        `[[<-`(`[[<-`(envir, "urls", urld), "cv2", cv)
       }
-      `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "cv", cv))
+      `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
       serialization_refhook()
     }
 

@@ -99,7 +99,7 @@
 make_cluster <- function(n, url = NULL, remote = NULL, ...) {
 
   id <- sprintf("`%d`", length(..))
-  cv2 <- cv()
+  cvs <- cv()
 
   if (is.character(url)) {
 
@@ -122,7 +122,7 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
     daemons(n = n, dispatcher = FALSE, resilience = FALSE, cleanup = FALSE, ..., .compute = id)
   }
 
-  `[[<-`(`[[<-`(..[[id]], "cv2", cv2), "swapped", FALSE)
+  `[[<-`(..[[id]], "cvs", cvs)
 
   cl <- lapply(seq_len(n), create_node, id = id)
   `attributes<-`(cl, list(class = c("miraiCluster", "cluster"), id = id))
@@ -155,7 +155,7 @@ sendData.miraiNode <- function(node, data) {
 
   value <- data[["data"]]
   tagged <- !is.null(value[["tag"]])
-  tagged && (envir[["swapped"]] || cv_swap(envir, TRUE)) || (envir[["swapped"]] && cv_swap(envir, FALSE))
+  if (tagged) set_cv(envir) else unset_cv(envir)
 
   m <- mirai(do.call(node, data, quote = TRUE), node = value[["fun"]], data = value[["args"]], .compute = id)
   if (tagged) assign("tag", value[["tag"]], m)
@@ -240,12 +240,9 @@ create_node <- function(node, id)
     list(class = "miraiNode", node = node, id = id)
   )
 
-cv_swap <- function(envir, state) {
-  cv <- envir[["cv"]]
-  envir[["cv"]] <- envir[["cv2"]]
-  envir[["cv2"]] <- cv
-  envir[["swapped"]] <- state
-}
+set_cv <- function(envir) envir[["cv"]] <- envir[["cvs"]]
+
+unset_cv <- function(envir) envir[["cv"]] <- NULL
 
 node_unresolved <- function(node) {
   m <- .subset2(node, "mirai")
