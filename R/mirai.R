@@ -87,6 +87,13 @@
 #'     (the stack trace is available at \code{$stack.trace} on the error
 #'     object). \code{\link{is_mirai_error}} may be used to test for this.
 #'
+#'     When not using dispatcher, if a daemon crashes or terminates unexpectedly
+#'     during evaluation, an \sQuote{errorValue} 19 (Connection reset) is
+#'     returned. If using dispatcher, the mirai will remain unresolved and it
+#'     will be automatically re-tried on the next daemon to connect to the
+#'     particular instance. To cancel the task instead, use
+#'     \code{saisei(force = TRUE)} (see \code{\link{saisei}}).
+#'
 #'     \code{\link{is_error_value}} tests for all error conditions including
 #'     \sQuote{mirai} errors, interrupts, and timeouts.
 #'
@@ -174,12 +181,11 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   envir <- ..[[.compute]]
   if (is.null(envir)) {
     sock <- ephemeral_daemon(local_url())
-    aio <- request(.context(sock), data = data,
-                   send_mode = 1L, recv_mode = 1L, timeout = .timeout)
+    aio <- request(.context(sock), data = data, send_mode = 1L, recv_mode = 1L, timeout = .timeout)
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
   } else {
-    aio <- request_signal(.context(envir[["sock"]]), data = data, cv = envir[["cv"]],
-                          send_mode = 3L, recv_mode = 1L, timeout = .timeout)
+    aio <- request(.context(envir[["sock"]]), data = data, send_mode = 3L,
+                   recv_mode = 1L, timeout = .timeout, cv = envir[["cv"]])
   }
 
   aio

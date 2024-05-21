@@ -139,7 +139,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
   repeat {
 
     ctx <- .context(sock)
-    aio <- recv_aio_signal(ctx, cv = cv, mode = 1L, timeout = idletime)
+    aio <- recv_aio(ctx, mode = 1L, timeout = idletime, cv = cv)
     wait(cv) || break
     m <- .subset2(aio, "data")
     is.environment(m) || {
@@ -155,7 +155,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
     (count >= maxtasks || count > timerstart && mclock() - start >= walltime) && {
       next_config(mark = TRUE)
       send(ctx, data = data, mode = 3L, block = TRUE)
-      aio <- recv_aio_signal(ctx, cv = cv, mode = 8L)
+      aio <- recv_aio(ctx, mode = 8L, cv = cv)
       wait(cv)
       break
     }

@@ -146,7 +146,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
     recv(sockc, mode = 6L, block = .limit_long) && stop(._[["sync_timeout"]])
     send(sockc, c(Sys.getpid(), servernames), mode = 2L)
-    cmessage <- recv_aio_signal(sockc, cv = cv, mode = 5L)
+    cmessage <- recv_aio(sockc, mode = 5L, cv = cv)
   }
 
   suspendInterrupts(
@@ -191,7 +191,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           data <- as.integer(c(seq_n, activevec, instance, assigned, complete))
         }
         send(sockc, data = data, mode = 2L)
-        cmessage <- recv_aio_signal(sockc, cv = cv, mode = 5L)
+        cmessage <- recv_aio(sockc, mode = 5L, cv = cv)
         next
       }
 
@@ -218,7 +218,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           for (i in seq_n) {
             if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
               queue[[i]][["rctx"]] <- .context(servers[[q]])
-              queue[[i]][["req"]] <- request_signal(queue[[i]][["rctx"]], data = .subset2(queue[[i]][["req"]], "value"), cv = cv, send_mode = 2L, recv_mode = 8L)
+              queue[[i]][["req"]] <- request(queue[[i]][["rctx"]], data = .subset2(queue[[i]][["req"]], "value"), send_mode = 2L, recv_mode = 8L, cv = cv)
               queue[[i]][["daemon"]] <- q
               serverfree[q] <- FALSE
               assigned[q] <- assigned[q] + 1L
@@ -330,4 +330,4 @@ query_dispatcher <- function(sock, command, mode, block = .limit_short)
     recv(sock, mode = mode, block = block)
 
 create_req <- function(ctx, cv)
-  list(ctx = ctx, req = recv_aio_signal(ctx, cv = cv, mode = 8L))
+  list(ctx = ctx, req = recv_aio(ctx, mode = 8L, cv = cv))

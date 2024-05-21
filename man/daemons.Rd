@@ -10,7 +10,6 @@ daemons(
   remote = NULL,
   dispatcher = TRUE,
   ...,
-  resilience = TRUE,
   seed = NULL,
   tls = NULL,
   pass = NULL,
@@ -42,10 +41,6 @@ below).}
 if launching daemons. These include \sQuote{token} at dispatcher and
 \sQuote{autoexit}, \sQuote{cleanup}, \sQuote{output}, \sQuote{maxtasks},
 \sQuote{idletime}, \sQuote{walltime} and \sQuote{timerstart} at daemon.}
-
-\item{resilience}{[default TRUE] (applicable when not using dispatcher)
-logical value whether to retry failed tasks on other daemons. If FALSE,
-an appropriate \sQuote{errorValue} will be returned in such cases.}
 
 \item{seed}{[default NULL] (optional) supply a random seed (single value,
 interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG

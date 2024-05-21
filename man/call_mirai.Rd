@@ -60,6 +60,13 @@ For \code{call_mirai}: the passed \sQuote{mirai} (invisibly). The
     (the stack trace is available at \code{$stack.trace} on the error
     object). \code{\link{is_mirai_error}} may be used to test for this.
 
+    When not using dispatcher, if a daemon crashes or terminates unexpectedly
+    during evaluation, an \sQuote{errorValue} 19 (Connection reset) is
+    returned. If using dispatcher, the mirai will remain unresolved and it
+    will be automatically re-tried on the next daemon to connect to the
+    particular instance. To cancel the task instead, use
+    \code{saisei(force = TRUE)} (see \code{\link{saisei}}).
+
     \code{\link{is_error_value}} tests for all error conditions including
     \sQuote{mirai} errors, interrupts, and timeouts.
 }

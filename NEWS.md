@@ -1,4 +1,4 @@
-# mirai 1.0.0.9010 (development)
+# mirai 1.0.0.9012 (development)
 
 * Adds `x[]` as a more efficient equivalent of `call_mirai_(x)$data`.
   + Use of `call_mirai_()` is consequently deprecated.
@@ -7,7 +7,9 @@
   + `x[]` collects the results of a mirai_map `x`, waiting for all asynchronous operations to complete.
   + `x[.progress]` collects the results whilst showing a text progress bar.
   + `x[.stop]` collects the results applying early-stopping, which stops at the first error, and aborts remaining in-progress operations.
-* Requires `nanonext` >= [1.0.0.9010].
+* Argument 'resilience' retired at `daemons()`. Now all non-dispatcher daemons will return an 'errorValue' 19 (Connection reset) if a daemon crashes or other unexpectedly terminates during evaluation, instead of being re-tried on other daemons.
+* Fixes bug that could cause a hang or crash in the non-dispatcher case when launching additional daemons.
+* Requires `nanonext` >= [1.0.0.9012].
 
 # mirai 1.0.0
 

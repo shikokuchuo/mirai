@@ -47,9 +47,6 @@
 #'     if launching daemons. These include \sQuote{token} at dispatcher and
 #'     \sQuote{autoexit}, \sQuote{cleanup}, \sQuote{output}, \sQuote{maxtasks},
 #'     \sQuote{idletime}, \sQuote{walltime} and \sQuote{timerstart} at daemon.
-#' @param resilience [default TRUE] (applicable when not using dispatcher)
-#'     logical value whether to retry failed tasks on other daemons. If FALSE,
-#'     an appropriate \sQuote{errorValue} will be returned in such cases.
 #' @param seed [default NULL] (optional) supply a random seed (single value,
 #'     interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
 #'     RNG streams sent to each daemon. Note that reproducible results can be
@@ -278,8 +275,7 @@
 #' @export
 #'
 daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
-                    resilience = TRUE, seed = NULL, tls = NULL, pass = NULL,
-                    .compute = "default") {
+                    seed = NULL, tls = NULL, pass = NULL, .compute = "default") {
 
   missing(n) && missing(url) && return(status(.compute))
 
@@ -301,10 +297,10 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld, resend = 0L)
         sockc <- req_socket(urlc, resend = 0L)
-        launch_and_sync_daemon(sock, wa5(urld, dots, n, urlc, url), output, tls, pass) || stop(._[["sync_timeout"]])
+        launch_and_sync_daemon(sock, cv, wa5(urld, dots, n, urlc, url), output, tls, pass) || stop(._[["sync_timeout"]])
         init_monitor(sockc = sockc, envir = envir)
       } else {
-        sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass), resend = resilience * .intmax)
+        sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass), resend = 0L)
         store_urls(sock = sock, envir = envir)
         n <- 0L
       }
@@ -344,17 +340,18 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         sock <- req_socket(urld, resend = 0L)
         urlc <- strcat(urld, "c")
         sockc <- req_socket(urlc, resend = 0L)
-        launch_and_sync_daemon(sock, wa4(urld, dots, envir[["stream"]], n, urlc), output) || stop(._[["sync_timeout"]])
+        launch_and_sync_daemon(sock, cv, wa4(urld, dots, envir[["stream"]], n, urlc), output) || stop(._[["sync_timeout"]])
         for (i in seq_len(n)) next_stream(envir)
         init_monitor(sockc = sockc, envir = envir)
+        `[[<-`(envir, "cv", cv)
       } else {
-        sock <- req_socket(urld, resend = resilience * .intmax)
+        sock <- req_socket(urld, resend = 0L)
         if (is.raw(seed)) {
           for (i in seq_len(n))
             launch_daemon(wa3(urld, dots, next_stream(envir)), output)
         } else {
           for (i in seq_len(n))
-            launch_and_sync_daemon(sock, wa3(urld, dots, next_stream(envir)), output)
+            launch_and_sync_daemon(sock, cv, wa3(urld, dots, next_stream(envir)), output)
         }
         `[[<-`(envir, "urls", urld)
       }
@@ -597,8 +594,7 @@ wa5 <- function(urld, dots, n, urlc, url)
 launch_daemon <- function(args, output)
   system2(command = .command, args = c("-e", args), stdout = output, stderr = output, wait = FALSE)
 
-launch_and_sync_daemon <- function(sock, args, output, tls = NULL, pass = NULL) {
-  cv <- cv()
+launch_and_sync_daemon <- function(sock, cv, args, output, tls = NULL, pass = NULL) {
   pipe_notify(sock, cv = cv, add = TRUE)
   if (is.character(tls)) {
     switch(
