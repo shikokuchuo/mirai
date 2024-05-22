@@ -88,8 +88,8 @@ result.
 
 ``` r
 m$data
-#>  [1]  0.5460549 -0.1803435 -2.0474875 -0.4431847 -0.2124114 -4.7078454
-#>  [7] -2.2563953 -0.4884035 -5.5449724  1.8313178
+#>  [1] -0.5767602  1.6767432  2.5189824  1.8092596  5.9579094  0.1678441
+#>  [7]  0.5527123  0.3969857  0.5963942 -1.7338229
 ```
 
 Alternatively, explicitly call and wait for the result using
@@ -97,8 +97,8 @@ Alternatively, explicitly call and wait for the result using
 
 ``` r
 call_mirai(m)$data
-#>  [1]  0.5460549 -0.1803435 -2.0474875 -0.4431847 -0.2124114 -4.7078454
-#>  [7] -2.2563953 -0.4884035 -5.5449724  1.8313178
+#>  [1] -0.5767602  1.6767432  2.5189824  1.8092596  5.9579094  0.1678441
+#>  [7]  0.5527123  0.3969857  0.5963942 -1.7338229
 ```
 
 ### Daemons
@@ -212,7 +212,7 @@ efficient solution to serialization and transmission of `torch` tensors.
 [Kirill Müller](https://github.com/krlmlr/) for discussion on using
 ‘daemons’ to host Arrow database connections.
 
-[<img alt="R Consortium" src="https://github.com/shikokuchuo/nanonext/blob/main/man/figures/RConsortium.png?raw=true" width="84" />](https://www.r-consortium.org/) 
+[<img alt="R Consortium" src="https://www.r-consortium.org/wp-content/uploads/sites/13/2016/09/RConsortium_Horizontal_Pantone.png" width="100" />](https://www.r-consortium.org/) 
 for funding work on the TLS implementation in `nanonext`, used to
 provide secure connections in `mirai`.
 
