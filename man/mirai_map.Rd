@@ -4,7 +4,7 @@
 \alias{mirai_map}
 \title{mirai Map}
 \usage{
-mirai_map(.x, .f, ..., .args = list(), .compute = "default")
+mirai_map(.x, .f, ..., .args = list(), .promise = NULL, .compute = "default")
 }
 \arguments{
 \item{.x}{a list or atomic vector.}
@@ -18,6 +18,13 @@ such objects.}
 \item{.args}{(optional) further constant arguments to \code{.f}, provided as
 a list.}
 
+\item{.promise}{(optional) if supplied, registers a promise against each
+mirai. Either a function, supplied to the \sQuote{onFulfilled} argument
+of \code{promises::then()} or a list of 2 functions, supplied
+respectively to \sQuote{onFulfilled} and \sQuote{onRejected} for
+\code{promises::then()}. Using this argument requires the
+\CRANpkg{promises} package.}
+
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
 }
@@ -26,7 +33,7 @@ A \sQuote{mirai_map} object.
 }
 \description{
 Asynchronous parallel / distributed map of a function over a list or vector
-    using \pkg{mirai}.
+    using \pkg{mirai}, with optional \pkg{promises} integration.
 }
 \details{
 Sends each application of function \code{.f} on an element of
@@ -63,16 +70,23 @@ Sends each application of function \code{.f} on an element of
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-with(
-  daemons(3, dispatcher = FALSE),
-  mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
+daemons(4, dispatcher = FALSE)
+
+res <- mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
+res
+
+mp <- mirai_map(
+  c(a = 2, b = 3, c = 4),
+  function(x) do(x, as.logical(x \%\% 2)),
+  do = nanonext::random
 )
+mp
+mp[]
 
 # progress indicator counts up to 4 seconds
-with(
-  daemons(4, dispatcher = FALSE),
-  mirai_map(1:4, Sys.sleep)[.progress]
-)
+res <- mirai_map(1:4, Sys.sleep)[.progress]
+
+daemons(0)
 
 # creates 3 ephemeral daemons as daemons not set
 # stops early when second element returns an error
@@ -81,13 +95,18 @@ tryCatch(
   error = identity
 )
 
+# promises example that outputs the results, including errors, to the console
+if (requireNamespace("promises", quietly = TRUE)) {
+daemons(1)
 ml <- mirai_map(
-  c(a = 2, b = 3, c = 4),
-  function(x) do(x, as.logical(x \%\% 2)),
-  do = nanonext::random
+  1:30,
+  function(x) {Sys.sleep(0.1); if (x == 30) stop(x) else x},
+  .promise = list(
+    function(x) cat(paste(x, "")),
+    function(x) { cat(conditionMessage(x), "\n"); daemons(0) }
+  )
 )
-ml
-ml[]
+}
 
 }
 

@@ -118,9 +118,9 @@ if (connection && .Platform[["OS.type"]] != "windows") {
       mirai_map(1:3, rnorm, .args = list(mean = 20, 2), .compute = "ml")[.progress]
   })
   nanotest(is.list(m) && length(m) == 3L && all(as.logical(lapply(m, is.numeric))))
-  nanotestp(ml <- mirai_map(c(x = 0.1), Sys.sleep))
-  nanotestn(collect_mirai(ml)[["x"]])
-  Sys.sleep(1L)
+  nanotestp(mp <- mirai_map(list(x = "a"), function(...) do(...), do = nanonext::strcat, .args = list("b")))
+  nanotesti(collect_mirai(mp)[["x"]], "ab")
+  Sys.sleep(2.5)
 }
 # parallel cluster tests
 library(parallel)
@@ -188,10 +188,14 @@ if (connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") 
   nanotesto(daemons(url = local_url(), dispatcher = TRUE))
   nanotest(grepl("://", launch_remote(1L), fixed = TRUE))
   nanotestn(launch_local(nextget("urls")))
+  Sys.sleep(1L)
   if (requireNamespace("promises", quietly = TRUE)) {
     nanotest(promises::is.promise(p1 <- promises::as.promise(mirai("completed"))))
     nanotest(promises::is.promise(p2 <- promises::`%...>%`(mirai("completed"), identity())))
     nanotest(promises::is.promise(p3 <- promises::as.promise(call_mirai(mirai("completed")))))
+    nanotestz(mirai_map(0:1, function(x) x, .promise = identity)[][[1L]])
+    nanotesto(mirai_map(1, function(x) x, .promise = list(identity))[][[1L]])
+    nanotest(is_error_value(mirai_map(1, function(x) stop(x), .promise = list(identity, identity))[][[1L]]))
   }
   Sys.sleep(1L)
   nanotestz(daemons(NULL))
