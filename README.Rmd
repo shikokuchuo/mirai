@@ -126,43 +126,45 @@ vignette("mirai", package = "mirai")
 
 The following core integrations are documented, with usage examples in the linked vignettes:
 
-[`arrow`](https://shikokuchuo.net/mirai/articles/databases.html) - the custom serialization interface allows queries using the Apache Arrow format to be handled seamlessly over database connections hosted in daemon processes.
+[<img alt="R parallel" src="https://www.r-project.org/logo/Rlogo.png" width="40" />](https://shikokuchuo.net/mirai/articles/parallel.html) &nbsp; Provides an alternative communications backend for R, implementing a low-level feature request by R-Core at R Project Sprint 2023. 'miraiCluster' may also be used with `foreach`, which is supported via `doParallel`.
 
-[`parallel`](https://shikokuchuo.net/mirai/articles/parallel.html) - provides an alternative communications backend for R, implementing a low-level feature request by R-Core at R Project Sprint 2023. Also includes examples of using `foreach`, which is supported via `doParallel`.
+[<img alt="promises" src="https://docs.posit.co/images/posit-ball.png" width="40" />](https://shikokuchuo.net/mirai/articles/promises.html) &nbsp; Implements the next generation of completely event-driven, non-polling promises. 'mirai' may be used interchageably with 'promises', including with the promise pipe `%...>%`.
 
-[`promises`](https://shikokuchuo.net/mirai/articles/promises.html) - 'mirai' may be used interchangeably with 'promises' by using the promise pipe `%...>%` or the `as.promise()` method.
+[<img alt="Shiny" src="https://github.com/rstudio/shiny/raw/main/man/figures/logo.png" width="40" />](https://shikokuchuo.net/mirai/articles/shiny.html) &nbsp; Asynchronous parallel / distributed backend, supporting the next level of responsiveness and scalability for Shiny. Launches ExtendedTasks, or plugs directly into the reactive framework for advanced uses.
 
-[`plumber`](https://shikokuchuo.net/mirai/articles/plumber.html) - serves as an asynchronous / distributed backend, scaling applications via the use of promises.
+[<img alt="Plumber" src="https://rstudio.github.io/cheatsheets/html/images/logo-plumber.png" width="40" />](https://shikokuchuo.net/mirai/articles/plumber.html) &nbsp; Asynchronous parallel / distributed backend, capable of scaling Plumber applications in production usage.
 
-[`shiny`](https://shikokuchuo.net/mirai/articles/shiny.html) - serves as an asynchronous / distributed backend, plugging directly into the reactive framework or accepted anywhere that takes a 'promise'.
+[<img alt="Arrow" src="https://arrow.apache.org/img/arrow-logo_hex_black-txt_white-bg.png" width="40" />](https://shikokuchuo.net/mirai/articles/databases.html) &nbsp; Allows queries using the Apache Arrow format to be handled seamlessly over ADBC database connections hosted in daemon processes.
 
-[`torch`](https://shikokuchuo.net/mirai/articles/torch.html) - the custom serialization interface allows tensors and complex objects such as models and optimizers to be used seamlessly across parallel processes.
+[<img alt="torch" src="https://torch.mlverse.org/css/images/hex/torch.png" width="40" />](https://shikokuchuo.net/mirai/articles/torch.html) &nbsp; Allows Torch tensors and complex objects such as models and optimizers to be used seamlessly across parallel processes.
 
 ### Powering Crew and Targets High Performance Computing
 
-[`targets`](https://docs.ropensci.org/targets/), a Make-like pipeline tool for statistics and data science, has integrated and adopted `crew` as its default high-performance computing backend.
+[<img alt="targets" src="https://github.com/ropensci/targets/raw/main/man/figures/logo.png" width="40" />](https://docs.ropensci.org/targets/) &nbsp; Targets, a Make-like pipeline tool for statistics and data science, has integrated and adopted `crew` as its default high-performance computing backend.
 
-[`crew`](https://wlandau.github.io/crew/) is a distributed worker-launcher extending `mirai` to different distributed computing platforms, from traditional clusters to cloud services.
+[<img alt="crew" src="https://github.com/wlandau/crew/raw/main/man/figures/logo.png" width="40" />](https://wlandau.github.io/crew/) &nbsp; Crew is a distributed worker-launcher extending `mirai` to different distributed computing platforms, from traditional clusters to cloud services.
 
-[`crew.cluster`](https://wlandau.github.io/crew.cluster/) enables mirai-based workflows on traditional high-performance computing clusters using LFS, PBS/TORQUE, SGE and SLURM.
+[<img alt="crew.cluster" src="https://github.com/wlandau/crew.cluster/raw/main/man/figures/logo.png" width="40" />](https://wlandau.github.io/crew.cluster/) &nbsp; `crew.cluster` enables mirai-based workflows on traditional high-performance computing clusters using LFS, PBS/TORQUE, SGE and SLURM.
 
-[`crew.aws.batch`](https://wlandau.github.io/crew.aws.batch/) extends `mirai` to cloud computing using AWS Batch.
+[<img alt="crew.aws.batch" src="https://github.com/wlandau/crew.aws.batch/raw/main/man/figures/logo.png" width="40" />](https://wlandau.github.io/crew.aws.batch/) &nbsp; `crew.aws.batch` extends `mirai` to cloud computing using AWS Batch.
 
 ### Thanks
 
 We would like to thank in particular:
 
-[Will Landau](https://github.com/wlandau/), for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of `crew` and `targets`.
+[Will Landau](https://github.com/wlandau/) for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of `crew` and `targets`.
 
-[Joe Cheng](https://github.com/jcheng5/), for optimising the `promises` method to make `mirai` work seamlessly within Shiny, and prototyping non-polling promises, which is implemented across `nanonext` and `mirai`.
+[Joe Cheng](https://github.com/jcheng5/) for optimising the `promises` method to make `mirai` work seamlessly within Shiny, and prototyping non-polling promises, which is implemented across `nanonext` and `mirai`.
 
-[Luke Tierney](https://github.com/ltierney/), R Core, for discussion on L'Ecuyer-CMRG streams to ensure statistical independence in parallel processing, and making it possible for `mirai` to be the first 'alternative communications backend for R'.
+[Luke Tierney](https://github.com/ltierney/) of R Core, for discussion on L'Ecuyer-CMRG streams to ensure statistical independence in parallel processing, and making it possible for `mirai` to be the first 'alternative communications backend for R'.
 
-[Henrik Bengtsson](https://github.com/HenrikBengtsson/), for valuable insights leading to the interface accepting broader usage patterns.
+[Henrik Bengtsson](https://github.com/HenrikBengtsson/) for valuable insights leading to the interface accepting broader usage patterns.
 
-[Daniel Falbel](https://github.com/dfalbel/), for discussion around an efficient solution to serialization and transmission of `torch` tensors.
+[Daniel Falbel](https://github.com/dfalbel/) for discussion around an efficient solution to serialization and transmission of `torch` tensors.
 
-[Kirill Müller](https://github.com/krlmlr/), for discussion on using 'daemons' to host Arrow database connections.
+[Kirill Müller](https://github.com/krlmlr/) for discussion on using 'daemons' to host Arrow database connections.
+
+[<img alt="R Consortium" src="https://github.com/shikokuchuo/nanonext/blob/main/man/figures/RConsortium.png?raw=true" width="84" />](https://www.r-consortium.org/)&nbsp; for funding work on the TLS implementation in `nanonext`, used to provide secure connections in `mirai`.
 
 ### Links
 
