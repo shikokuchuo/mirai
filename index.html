@@ -146,13 +146,13 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -1.0230903 -6.8652249 -0.1568005  0.7824384  0.7390472  1.3530936</span></span>
-<span><span class="co">#&gt;  [7]  1.2780560 -6.3775314 -0.1456617 -0.9774309</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  0.5460549 -0.1803435 -2.0474875 -0.4431847 -0.2124114 -4.7078454</span></span>
+<span><span class="co">#&gt;  [7] -2.2563953 -0.4884035 -5.5449724  1.8313178</span></span></code></pre></div>
 <p>Alternatively, explicitly call and wait for the result using <code><a href="reference/call_mirai.html">call_mirai()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/call_mirai.html">call_mirai</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt;  [1] -1.0230903 -6.8652249 -0.1568005  0.7824384  0.7390472  1.3530936</span></span>
-<span><span class="co">#&gt;  [7]  1.2780560 -6.3775314 -0.1456617 -0.9774309</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  0.5460549 -0.1803435 -2.0474875 -0.4431847 -0.2124114 -4.7078454</span></span>
+<span><span class="co">#&gt;  [7] -2.2563953 -0.4884035 -5.5449724  1.8313178</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
@@ -171,31 +171,32 @@
 <h3 id="integrations">Integrations<a class="anchor" aria-label="anchor" href="#integrations"></a>
 </h3>
 <p>The following core integrations are documented, with usage examples in the linked vignettes:</p>
-<p><a href="https://shikokuchuo.net/mirai/articles/databases.html"><code>arrow</code></a> - the custom serialization interface allows queries using the Apache Arrow format to be handled seamlessly over database connections hosted in daemon processes.</p>
-<p><a href="https://shikokuchuo.net/mirai/articles/parallel.html"><code>parallel</code></a> - provides an alternative communications backend for R, implementing a low-level feature request by R-Core at R Project Sprint 2023. Also includes examples of using <code>foreach</code>, which is supported via <code>doParallel</code>.</p>
-<p><a href="https://shikokuchuo.net/mirai/articles/promises.html"><code>promises</code></a> - ‘mirai’ may be used interchangeably with ‘promises’ by using the promise pipe <code>%...&gt;%</code> or the <code>as.promise()</code> method.</p>
-<p><a href="https://shikokuchuo.net/mirai/articles/plumber.html"><code>plumber</code></a> - serves as an asynchronous / distributed backend, scaling applications via the use of promises.</p>
-<p><a href="https://shikokuchuo.net/mirai/articles/shiny.html"><code>shiny</code></a> - serves as an asynchronous / distributed backend, plugging directly into the reactive framework or accepted anywhere that takes a ‘promise’.</p>
-<p><a href="https://shikokuchuo.net/mirai/articles/torch.html"><code>torch</code></a> - the custom serialization interface allows tensors and complex objects such as models and optimizers to be used seamlessly across parallel processes.</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/parallel.html"><img alt="R parallel" src="https://www.r-project.org/logo/Rlogo.png" width="40"></a>   Provides an alternative communications backend for R, implementing a low-level feature request by R-Core at R Project Sprint 2023. ‘miraiCluster’ may also be used with <code>foreach</code>, which is supported via <code>doParallel</code>.</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/promises.html"><img alt="promises" src="https://docs.posit.co/images/posit-ball.png" width="40"></a>   Implements the next generation of completely event-driven, non-polling promises. ‘mirai’ may be used interchageably with ‘promises’, including with the promise pipe <code>%...&gt;%</code>.</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/shiny.html"><img alt="Shiny" src="https://github.com/rstudio/shiny/raw/main/man/figures/logo.png" width="40"></a>   Asynchronous parallel / distributed backend, supporting the next level of responsiveness and scalability for Shiny. Launches ExtendedTasks, or plugs directly into the reactive framework for advanced uses.</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/plumber.html"><img alt="Plumber" src="https://rstudio.github.io/cheatsheets/html/images/logo-plumber.png" width="40"></a>   Asynchronous parallel / distributed backend, capable of scaling Plumber applications in production usage.</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/databases.html"><img alt="Arrow" src="https://arrow.apache.org/img/arrow-logo_hex_black-txt_white-bg.png" width="40"></a>   Allows queries using the Apache Arrow format to be handled seamlessly over ADBC database connections hosted in daemon processes.</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/torch.html"><img alt="torch" src="https://torch.mlverse.org/css/images/hex/torch.png" width="40"></a>   Allows Torch tensors and complex objects such as models and optimizers to be used seamlessly across parallel processes.</p>
 </div>
 <div class="section level3">
 <h3 id="powering-crew-and-targets-high-performance-computing">Powering Crew and Targets High Performance Computing<a class="anchor" aria-label="anchor" href="#powering-crew-and-targets-high-performance-computing"></a>
 </h3>
-<p><a href="https://docs.ropensci.org/targets/" class="external-link"><code>targets</code></a>, a Make-like pipeline tool for statistics and data science, has integrated and adopted <code>crew</code> as its default high-performance computing backend.</p>
-<p><a href="https://wlandau.github.io/crew/" class="external-link"><code>crew</code></a> is a distributed worker-launcher extending <code>mirai</code> to different distributed computing platforms, from traditional clusters to cloud services.</p>
-<p><a href="https://wlandau.github.io/crew.cluster/" class="external-link"><code>crew.cluster</code></a> enables mirai-based workflows on traditional high-performance computing clusters using LFS, PBS/TORQUE, SGE and SLURM.</p>
-<p><a href="https://wlandau.github.io/crew.aws.batch/" class="external-link"><code>crew.aws.batch</code></a> extends <code>mirai</code> to cloud computing using AWS Batch.</p>
+<p><a href="https://docs.ropensci.org/targets/" class="external-link"><img alt="targets" src="https://github.com/ropensci/targets/raw/main/man/figures/logo.png" width="40"></a>   Targets, a Make-like pipeline tool for statistics and data science, has integrated and adopted <code>crew</code> as its default high-performance computing backend.</p>
+<p><a href="https://wlandau.github.io/crew/" class="external-link"><img alt="crew" src="https://github.com/wlandau/crew/raw/main/man/figures/logo.png" width="40"></a>   Crew is a distributed worker-launcher extending <code>mirai</code> to different distributed computing platforms, from traditional clusters to cloud services.</p>
+<p><a href="https://wlandau.github.io/crew.cluster/" class="external-link"><img alt="crew.cluster" src="https://github.com/wlandau/crew.cluster/raw/main/man/figures/logo.png" width="40"></a>   <code>crew.cluster</code> enables mirai-based workflows on traditional high-performance computing clusters using LFS, PBS/TORQUE, SGE and SLURM.</p>
+<p><a href="https://wlandau.github.io/crew.aws.batch/" class="external-link"><img alt="crew.aws.batch" src="https://github.com/wlandau/crew.aws.batch/raw/main/man/figures/logo.png" width="40"></a>   <code>crew.aws.batch</code> extends <code>mirai</code> to cloud computing using AWS Batch.</p>
 </div>
 <div class="section level3">
 <h3 id="thanks">Thanks<a class="anchor" aria-label="anchor" href="#thanks"></a>
 </h3>
 <p>We would like to thank in particular:</p>
-<p><a href="https://github.com/wlandau/" class="external-link">Will Landau</a>, for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of <code>crew</code> and <code>targets</code>.</p>
-<p><a href="https://github.com/jcheng5/" class="external-link">Joe Cheng</a>, for optimising the <code>promises</code> method to make <code>mirai</code> work seamlessly within Shiny, and prototyping non-polling promises, which is implemented across <code>nanonext</code> and <code>mirai</code>.</p>
-<p><a href="https://github.com/ltierney/" class="external-link">Luke Tierney</a>, R Core, for discussion on L’Ecuyer-CMRG streams to ensure statistical independence in parallel processing, and making it possible for <code>mirai</code> to be the first ‘alternative communications backend for R’.</p>
-<p><a href="https://github.com/HenrikBengtsson/" class="external-link">Henrik Bengtsson</a>, for valuable insights leading to the interface accepting broader usage patterns.</p>
-<p><a href="https://github.com/dfalbel/" class="external-link">Daniel Falbel</a>, for discussion around an efficient solution to serialization and transmission of <code>torch</code> tensors.</p>
-<p><a href="https://github.com/krlmlr/" class="external-link">Kirill Müller</a>, for discussion on using ‘daemons’ to host Arrow database connections.</p>
+<p><a href="https://github.com/wlandau/" class="external-link">Will Landau</a> for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of <code>crew</code> and <code>targets</code>.</p>
+<p><a href="https://github.com/jcheng5/" class="external-link">Joe Cheng</a> for optimising the <code>promises</code> method to make <code>mirai</code> work seamlessly within Shiny, and prototyping non-polling promises, which is implemented across <code>nanonext</code> and <code>mirai</code>.</p>
+<p><a href="https://github.com/ltierney/" class="external-link">Luke Tierney</a> of R Core, for discussion on L’Ecuyer-CMRG streams to ensure statistical independence in parallel processing, and making it possible for <code>mirai</code> to be the first ‘alternative communications backend for R’.</p>
+<p><a href="https://github.com/HenrikBengtsson/" class="external-link">Henrik Bengtsson</a> for valuable insights leading to the interface accepting broader usage patterns.</p>
+<p><a href="https://github.com/dfalbel/" class="external-link">Daniel Falbel</a> for discussion around an efficient solution to serialization and transmission of <code>torch</code> tensors.</p>
+<p><a href="https://github.com/krlmlr/" class="external-link">Kirill Müller</a> for discussion on using ‘daemons’ to host Arrow database connections.</p>
+<p><a href="https://www.r-consortium.org/" class="external-link"><img alt="R Consortium" src="https://github.com/shikokuchuo/nanonext/blob/main/man/figures/RConsortium.png?raw=true" width="84"></a>  for funding work on the TLS implementation in <code>nanonext</code>, used to provide secure connections in <code>mirai</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="links">Links<a class="anchor" aria-label="anchor" href="#links"></a>
