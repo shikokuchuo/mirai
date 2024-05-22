@@ -129,7 +129,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
     if (is.list(.promise)) {
       if (length(.promise) > 1L)
         lapply(vec, promises::then, .promise[[1L]], .promise[[2L]]) else
-          lapply(vec, promises::then, unlist(.promise))
+          lapply(vec, promises::then, .promise[[1L]])
     } else {
       lapply(vec, promises::then, .promise)
     }
