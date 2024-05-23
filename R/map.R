@@ -117,7 +117,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
   envir <- ..[[.compute]]
   is.null(envir) && {
     warning(._[["requires_daemons"]], immediate. = TRUE)
-    daemons(n = 1L, .compute = .compute)
+    daemons(n = 1L, dispatcher = FALSE, .compute = .compute)
     return(mirai_map(.x = .x, .f = .f, ..., .args = .args, .promise = .promise, .compute = .compute))
   }
   vec <- vector(mode = "list", length = length(.x))
