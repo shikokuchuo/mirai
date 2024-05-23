@@ -319,7 +319,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       serialization_refhook()
     } else {
       daemons(n = 0L, .compute = .compute)
-      return(eval(sys.call()))
+      return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ..., seed = seed, tls = tls, pass = pass, .compute = .compute))
     }
 
   } else {
@@ -369,7 +369,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       serialization_refhook()
     } else {
       daemons(n = 0L, .compute = .compute)
-      return(eval(sys.call()))
+      return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ..., seed = seed, tls = tls, pass = pass, .compute = .compute))
     }
 
   }
