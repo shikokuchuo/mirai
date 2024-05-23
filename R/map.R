@@ -63,8 +63,8 @@
 #'     \sQuote{miraiError} / \sQuote{errorValue} as the case may be, thus
 #'     allowing only the failures to be re-run.
 #'
-#'     Note: daemons are assumed to have been previously set, otherwise new
-#'     ephemeral daemons will be created for each computation.
+#'     Note: requires daemons to have previously been set. If not, then one
+#'     local daemon is set before the function propceeds.
 #'
 #' @examples
 #' if (interactive()) {
@@ -88,7 +88,7 @@
 #'
 #' daemons(0)
 #'
-#' # creates 3 ephemeral daemons as daemons not set
+#' # generates warning as daemons not set
 #' # stops early when second element returns an error
 #' tryCatch(
 #'   mirai_map(list(a = 1, b = "a", c = 3), sum)[.stop],
@@ -114,6 +114,12 @@
 #'
 mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "default") {
 
+  envir <- ..[[.compute]]
+  is.null(envir) && {
+    warning(._[["requires_daemons"]], immediate. = TRUE)
+    daemons(n = 1L, .compute = .compute)
+    return(mirai_map(.x = .x, .f = .f, ..., .args = .args, .promise = .promise, .compute = .compute))
+  }
   vec <- vector(mode = "list", length = length(.x))
   for (i in seq_along(vec))
     vec[[i]] <- mirai(
