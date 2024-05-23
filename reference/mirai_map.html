@@ -127,8 +127,8 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <p>Facilitates recovery from partial failure by returning all
     ‘miraiError’ / ‘errorValue’ as the case may be, thus
     allowing only the failures to be re-run.</p>
-<p>Note: daemons are assumed to have been previously set, otherwise new
-    ephemeral daemons will be created for each computation.</p>
+<p>Note: requires daemons to have previously been set. If not, then one
+    local daemon is set before the function propceeds.</p>
     </div>
     <div class="section level2">
     <h2 id="results">Results<a class="anchor" aria-label="anchor" href="#results"></a></h2>
@@ -169,7 +169,7 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># creates 3 ephemeral daemons as daemons not set</span></span></span>
+<span class="r-in"><span><span class="co"># generates warning as daemons not set</span></span></span>
 <span class="r-in"><span><span class="co"># stops early when second element returns an error</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu">mirai_map</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="st">"a"</span>, c <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, <span class="va">sum</span><span class="op">)</span><span class="op">[</span><span class="va">.stop</span><span class="op">]</span>,</span></span>
