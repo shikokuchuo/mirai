@@ -20,7 +20,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9014</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9015</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -180,13 +180,14 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Use <code>daemons(0)</code> to reset daemon connections:</p><ul><li><p>A reset is required before revising settings for the same compute
-    profile, otherwise changes are not registered.</p></li>
-<li><p>All connected daemons and/or dispatchers exit automatically.</p></li>
+    <p>Use <code>daemons(0)</code> to reset daemon connections:</p><ul><li><p>All connected daemons and/or dispatchers exit automatically.</p></li>
 <li><p><span class="pkg">mirai</span> reverts to the default behaviour of creating a new
     background process for each request.</p></li>
-<li><p>Any unresolved ‘mirai’ will return an ‘errorValue’ 7
-    (Object closed) after a reset.</p></li>
+<li><p>Any unresolved ‘mirai’ will return an ‘errorValue’ 19
+    (Connection reset) after a reset.</p></li>
+<li><p>Calling <code>daemons</code> with revised (or even the same) settings for
+    the same compute profile implicitly resets daemons before applying the
+    new settings.</p></li>
 </ul><p>If the host session ends, all connected dispatcher and daemon processes
     automatically exit as soon as their connections are dropped (unless
     the daemons were started with <code>autoexit = FALSE</code>). If a daemon is
@@ -223,12 +224,12 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
     event-driven (having no latency).</p>
 <p>By specifying <code>dispatcher = FALSE</code>, daemons connect to the host
     directly rather than through dispatcher. The host sends tasks to
-    connected daemons immediately in an evenly-distributed fashion. However,
-    optimal scheduling is not guaranteed as the duration of tasks cannot be
-    known <em>a priori</em>, such that tasks can be queued at one daemon while
-    other daemons remain idle. Nevertheless, this provides a resource-light
-    approach suited to working with similar-length tasks, or where concurrent
-    tasks typically do not exceed available daemons.</p>
+    connected daemons immediately in a round-robin fashion. Optimal
+    scheduling is not guaranteed as the duration of tasks cannot be known
+    <em>a priori</em>, hence tasks can be queued at one daemon while other
+    daemons remain idle. However, this provides a resource-light approach
+    suited to working with similar-length tasks, or where concurrent tasks
+    typically do not exceed available daemons.</p>
     </div>
     <div class="section level2">
     <h2 id="distributed-computing">Distributed Computing<a class="anchor" aria-label="anchor" href="#distributed-computing"></a></h2>
@@ -236,11 +237,12 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 
 
 <p>Specifying ‘url’ allows tasks to be distributed across the network.
-    This should be a character string such as: 'tcp://10.75.32.70:5555' at
-    which daemon processes should connect to. Switching the URL scheme to
-    'tls+tcp://' or 'wss://' automatically upgrades the connection to use TLS.
-    The auxiliary function <code><a href="host_url.html">host_url</a></code> may be used to
-    automatically construct a valid host URL based on the computer's hostname.</p>
+    This should be a character string such as ‘tcp://10.75.32.70:5555’
+    at which daemon processes should connect to. Switching the URL scheme to
+    ‘tls+tcp://’ or ‘wss://’ automatically upgrades the
+    connection to use TLS. The auxiliary function <code><a href="host_url.html">host_url</a></code> may
+    be used to automatically construct a valid host URL based on the
+    computer's hostname.</p>
 <p>Specify ‘remote’ with a call to <code><a href="remote_config.html">remote_config</a></code> or
     <code><a href="remote_config.html">ssh_config</a></code> to launch daemons on remote machines. Otherwise,
     <code><a href="launch_local.html">launch_remote</a></code> may be used to generate the shell commands to
@@ -248,18 +250,20 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <p>IPv6 addresses are also supported and must be enclosed in square brackets
     [ ] to avoid confusion with the final colon separating the port. For
     example, port 5555 on the IPv6 loopback address ::1 would be specified
-    as 'tcp://[::1]:5555'.</p>
-<p>Specifying the wildcard value zero for the port number e.g. 'tcp://[::1]:0'
-    or 'ws://[::1]:0' will automatically assign a free ephemeral port. Use
-    <code><a href="status.html">status</a></code> to inspect the actual assigned port at any time.</p>
+    as ‘tcp://[::1]:5555’.</p>
+<p>Specifying the wildcard value zero for the port number e.g.
+    ‘tcp://[::1]:0’ or ‘ws://[::1]:0’ will automatically assign
+    a free ephemeral port. Use <code><a href="status.html">status</a></code> to inspect the actual
+    assigned port at any time.</p>
 <p><strong>With Dispatcher</strong></p>
 <p>When using dispatcher, it is recommended to use a websocket URL rather
     than TCP, as this requires only one port to connect to all daemons: a
     websocket URL supports a path after the port number, which can be made
     unique for each daemon.</p>
-<p>Specifying a single host URL such as 'ws://10.75.32.70:5555' with
+<p>Specifying a single host URL such as ‘ws://10.75.32.70:5555’ with
     <code>n = 6</code> will automatically append a sequence to the path, listening
-    to the URLs 'ws://10.75.32.70:5555/1' through 'ws://110.75.32.70:5555/6'.</p>
+    to the URLs ‘ws://10.75.32.70:5555/1’ through
+    ‘ws://110.75.32.70:5555/6’.</p>
 <p>Alternatively, specify a vector of URLs to listen to arbitrary port
     numbers / paths. In this case it is optional to supply ‘n’ as this
     can be inferred by the length of vector supplied.</p>
@@ -271,14 +275,15 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
     specified.</p>
 <p>Alternatively, supplying a single TCP URL will listen at a block of URLs
     with ports starting from the supplied port number and incrementing by one
-    for ‘n’ specified e.g. the host URL 'tcp://10.75.32.70:5555' with
-    <code>n = 6</code> listens to the contiguous block of ports 5555 through 5560.</p>
+    for ‘n’ specified e.g. the host URL
+    ‘tcp://10.75.32.70:5555’ with <code>n = 6</code> listens to the
+    contiguous block of ports 5555 through 5560.</p>
 <p><strong>Without Dispatcher</strong></p>
 <p>A TCP URL may be used in this case as the host listens at only one
     address, utilising a single port.</p>
-<p>The network topology is such that daemons (started with <code><a href="daemon.html">daemon</a></code>)
-    or indeed dispatchers (started with <code><a href="dispatcher.html">dispatcher</a></code>) dial into
-    the same host URL.</p>
+<p>The network topology is such that daemons (started with
+    <code><a href="daemon.html">daemon</a></code>) or indeed dispatchers (started with
+    <code><a href="dispatcher.html">dispatcher</a></code>) dial into the same host URL.</p>
 <p>‘n’ is not required in this case, and disregarded if supplied, as
     network resources may be added or removed at any time. The host
     automatically distributes tasks to all connected daemons and dispatchers
