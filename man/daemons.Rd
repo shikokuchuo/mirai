@@ -86,13 +86,14 @@ Set \sQuote{daemons} or persistent background processes to receive
 \details{
 Use \code{daemons(0)} to reset daemon connections:
     \itemize{
-    \item A reset is required before revising settings for the same compute
-    profile, otherwise changes are not registered.
     \item All connected daemons and/or dispatchers exit automatically.
     \item \pkg{mirai} reverts to the default behaviour of creating a new
     background process for each request.
-    \item Any unresolved \sQuote{mirai} will return an \sQuote{errorValue} 7
-    (Object closed) after a reset.
+    \item Any unresolved \sQuote{mirai} will return an \sQuote{errorValue} 19
+    (Connection reset) after a reset.
+    \item Calling \code{daemons} with revised (or even the same) settings for
+    the same compute profile implicitly resets daemons before applying the
+    new settings.
     }
 
     If the host session ends, all connected dispatcher and daemon processes
@@ -132,23 +133,24 @@ Use \code{daemons(0)} to reset daemon connections:
 
     By specifying \code{dispatcher = FALSE}, daemons connect to the host
     directly rather than through dispatcher. The host sends tasks to
-    connected daemons immediately in an evenly-distributed fashion. However,
-    optimal scheduling is not guaranteed as the duration of tasks cannot be
-    known \emph{a priori}, such that tasks can be queued at one daemon while
-    other daemons remain idle. Nevertheless, this provides a resource-light
-    approach suited to working with similar-length tasks, or where concurrent
-    tasks typically do not exceed available daemons.
+    connected daemons immediately in a round-robin fashion. Optimal
+    scheduling is not guaranteed as the duration of tasks cannot be known
+    \emph{a priori}, hence tasks can be queued at one daemon while other
+    daemons remain idle. However, this provides a resource-light approach
+    suited to working with similar-length tasks, or where concurrent tasks
+    typically do not exceed available daemons.
 }
 
 \section{Distributed Computing}{
 
 
     Specifying \sQuote{url} allows tasks to be distributed across the network.
-    This should be a character string such as: 'tcp://10.75.32.70:5555' at
-    which daemon processes should connect to. Switching the URL scheme to
-    'tls+tcp://' or 'wss://' automatically upgrades the connection to use TLS.
-    The auxiliary function \code{\link{host_url}} may be used to
-    automatically construct a valid host URL based on the computer's hostname.
+    This should be a character string such as \sQuote{tcp://10.75.32.70:5555}
+    at which daemon processes should connect to. Switching the URL scheme to
+    \sQuote{tls+tcp://} or \sQuote{wss://} automatically upgrades the
+    connection to use TLS. The auxiliary function \code{\link{host_url}} may
+    be used to automatically construct a valid host URL based on the
+    computer's hostname.
 
     Specify \sQuote{remote} with a call to \code{\link{remote_config}} or
     \code{\link{ssh_config}} to launch daemons on remote machines. Otherwise,
@@ -158,11 +160,12 @@ Use \code{daemons(0)} to reset daemon connections:
     IPv6 addresses are also supported and must be enclosed in square brackets
     [ ] to avoid confusion with the final colon separating the port. For
     example, port 5555 on the IPv6 loopback address ::1 would be specified
-    as 'tcp://[::1]:5555'.
+    as \sQuote{tcp://[::1]:5555}.
 
-    Specifying the wildcard value zero for the port number e.g. 'tcp://[::1]:0'
-    or 'ws://[::1]:0' will automatically assign a free ephemeral port. Use
-    \code{\link{status}} to inspect the actual assigned port at any time.
+    Specifying the wildcard value zero for the port number e.g.
+    \sQuote{tcp://[::1]:0} or \sQuote{ws://[::1]:0} will automatically assign
+    a free ephemeral port. Use \code{\link{status}} to inspect the actual
+    assigned port at any time.
 
     \strong{With Dispatcher}
 
@@ -171,9 +174,10 @@ Use \code{daemons(0)} to reset daemon connections:
     websocket URL supports a path after the port number, which can be made
     unique for each daemon.
 
-    Specifying a single host URL such as 'ws://10.75.32.70:5555' with
+    Specifying a single host URL such as \sQuote{ws://10.75.32.70:5555} with
     \code{n = 6} will automatically append a sequence to the path, listening
-    to the URLs 'ws://10.75.32.70:5555/1' through 'ws://110.75.32.70:5555/6'.
+    to the URLs \sQuote{ws://10.75.32.70:5555/1} through
+    \sQuote{ws://110.75.32.70:5555/6}.
 
     Alternatively, specify a vector of URLs to listen to arbitrary port
     numbers / paths. In this case it is optional to supply \sQuote{n} as this
@@ -189,17 +193,18 @@ Use \code{daemons(0)} to reset daemon connections:
 
     Alternatively, supplying a single TCP URL will listen at a block of URLs
     with ports starting from the supplied port number and incrementing by one
-    for \sQuote{n} specified e.g. the host URL 'tcp://10.75.32.70:5555' with
-    \code{n = 6} listens to the contiguous block of ports 5555 through 5560.
+    for \sQuote{n} specified e.g. the host URL
+    \sQuote{tcp://10.75.32.70:5555} with \code{n = 6} listens to the
+    contiguous block of ports 5555 through 5560.
 
     \strong{Without Dispatcher}
 
     A TCP URL may be used in this case as the host listens at only one
     address, utilising a single port.
 
-    The network topology is such that daemons (started with \code{\link{daemon}})
-    or indeed dispatchers (started with \code{\link{dispatcher}}) dial into
-    the same host URL.
+    The network topology is such that daemons (started with
+    \code{\link{daemon}}) or indeed dispatchers (started with
+    \code{\link{dispatcher}}) dial into the same host URL.
 
     \sQuote{n} is not required in this case, and disregarded if supplied, as
     network resources may be added or removed at any time. The host

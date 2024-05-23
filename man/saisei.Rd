@@ -26,13 +26,14 @@ When using daemons with dispatcher, regenerates the token for the URL a
 When a URL is regenerated, the listener at the specified socket is
     closed and replaced immediately, hence this function will only be
     successful if there are no existing connections at the socket (i.e.
-    'online' status shows 0), unless the argument 'force' is specified as TRUE.
+    'online' status shows 0), unless the argument \sQuote{force} is specified
+    as TRUE.
 
-    If 'force' is specified as TRUE, the socket is immediately closed and
-    regenerated. If this happens while a mirai is still ongoing, it will be
-    returned as an errorValue 7 'Object closed'. This may be used to cancel a
-    task that consistently hangs or crashes to prevent it from failing
-    repeatedly when new daemons connect.
+    If \sQuote{force} is specified as TRUE, the socket is immediately closed
+    and regenerated. If this happens while a mirai task is still ongoing, it
+    will be returned as an \sQuote{errorValue} 7 (Object closed). This may be
+    used to cancel a task that consistently hangs or crashes to prevent it
+    from failing repeatedly when new daemons connect.
 }
 \section{Timeouts}{
 
