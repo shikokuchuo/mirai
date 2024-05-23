@@ -318,9 +318,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         launch_remote(url = envir[["urls"]], remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
       serialization_refhook()
     } else {
-      reap(envir[["sock"]])
-      is.null(envir[["sockc"]]) || reap(envir[["sockc"]])
-      ..[[.compute]] <- NULL -> envir
+      daemons(n = 0L, .compute = .compute)
       return(eval(sys.call()))
     }
 
@@ -370,9 +368,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
       serialization_refhook()
     } else {
-      reap(envir[["sock"]])
-      is.null(envir[["sockc"]]) || reap(envir[["sockc"]])
-      ..[[.compute]] <- NULL -> envir
+      daemons(n = 0L, .compute = .compute)
       return(eval(sys.call()))
     }
 
