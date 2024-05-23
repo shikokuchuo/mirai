@@ -547,8 +547,9 @@ The results of a mirai_map `x` may be collected using `x[]`. This waits for all 
 
 Key advantages of `mirai_map()`:
 
+- The '.promise' argument allows a promise to registered against each mirai, which can be used to perform side-effects.
 - Returns evaluation errors as 'miraiError' or 'errorValue' as the case may be, rather than causing the entire operation to fail. This allows more efficient recovery from partial failure.
-- Does not rely on a 'chunking' algorithm that attempts to split work into batches according to the number of available daemons, as implemented for example in the `parallel` package. Chunking cannot take into account varying or unpredictable compute times over the indices, and any saving in communications overhead is not as great for a package such as `mirai` where this is already low.
+- Does not rely on a 'chunking' algorithm that attempts to split work into batches according to the number of available daemons, as implemented for example in the `parallel` package. Chunking cannot take into account varying or unpredictable compute times over the indices. It can be optimal to rely on `mirai` for scheduling instead.
 
 `.args` is used to specify further constant arguments to `.f` - the 'mean' and 'sd' in the example below:
 
@@ -569,7 +570,7 @@ ml <- mirai_map(
 ml
 ml[]
 ```
-Use of `mirai_map()` assumes that `daemons()` have previously been set. Please be aware that if not, each computation will be run in a newly-created ephemeral daemon.
+Use of `mirai_map()` assumes that `daemons()` have previously been set. If not then one (non-dispatcher) daemon is set to allow the function to proceed. This ensures safe behaviour, but is unlikely to be optimal, so please ensure daemons are set beforehand.
 
 When collecting the results, optionally specify `.progress` or `.stop` to `[]`:
 
