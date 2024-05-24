@@ -173,10 +173,19 @@ print.mirai_map <- function(x, ...) {
 
 }
 
+#' mirai Map Options
+#'
+#' Expressions to insert into the \code{[]} method for \sQuote{mirai_map}
+#'     objects.
+#'
+#' @inheritSection mirai_map Results
+#'
+#' @keywords internal
 #' @export
 #'
 .progress <- expression(cat(if (i < xlen) sprintf("\r[ %d / %d .... ]", i, xlen) else sprintf("\r[ %d / %d done ]\n", i, xlen), file = stderr()))
 
+#' @rdname dot-progress
 #' @export
 #'
 .stop <- expression(if (is_error_value(xi)) { lapply(x, stop_mirai); stop(xi, call. = FALSE) })
