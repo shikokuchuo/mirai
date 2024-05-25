@@ -113,11 +113,12 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
                    ..., tls = NULL, rs = NULL) {
 
   cv <- cv()
+  cva <- cv()
   sock <- socket(protocol = "rep")
   on.exit(reap(sock))
   autoexit && pipe_notify(sock, cv = cv, remove = TRUE, flag = as.integer(autoexit))
   if (length(tls)) tls <- tls_config(client = tls)
-  dial_and_sync_socket(sock = sock, url = url, asyncdial = !autoexit, tls = tls)
+  dial_and_sync_socket(sock = sock, cv = cva, url = url, asyncdial = !autoexit, tls = tls)
 
   if (is.numeric(rs)) `[[<-`(.GlobalEnv, ".Random.seed", as.integer(rs))
   if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
@@ -208,8 +209,7 @@ eval_mirai <- function(._mirai_.) {
   )
 }
 
-dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
-  cv <- cv()
+dial_and_sync_socket <- function(sock, cv, url, asyncdial, tls = NULL) {
   pipe_notify(sock, cv = cv, add = TRUE)
   dial(sock, url = url, autostart = asyncdial || NA, tls = tls, error = TRUE)
   wait(cv)

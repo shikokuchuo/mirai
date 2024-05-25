@@ -79,10 +79,11 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
   n > 0L || stop(._[["missing_url"]])
 
   cv <- cv()
+  cva <- cv()
   sock <- socket(protocol = "rep")
   on.exit(reap(sock))
   pipe_notify(sock, cv = cv, remove = TRUE, flag = TRUE)
-  dial_and_sync_socket(sock = sock, url = host, asyncdial = asyncdial)
+  dial_and_sync_socket(sock = sock, cv = cva, url = host, asyncdial = asyncdial)
 
   auto <- is.null(url)
   vectorised <- length(url) == n
@@ -143,7 +144,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
     sockc <- socket(protocol = "rep")
     on.exit(reap(sockc), add = TRUE, after = FALSE)
     pipe_notify(sockc, cv = cv, remove = TRUE, flag = TRUE)
-    dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
+    dial_and_sync_socket(sock = sockc, cv = cva, url = monitor, asyncdial = asyncdial)
     recv(sockc, mode = 6L, block = .limit_long) && stop(._[["sync_timeout"]])
     send(sockc, c(Sys.getpid(), servernames), mode = 2L)
     cmessage <- recv_aio(sockc, mode = 5L, cv = cv)
