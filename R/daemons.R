@@ -300,13 +300,13 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         output <- attr(dots, "output")
         urld <- local_url()
         urlc <- strcat(urld, "c")
-        sock <- req_socket(urld, resend = 0L)
-        sockc <- req_socket(urlc, resend = 0L)
+        sock <- req_socket(urld)
+        sockc <- req_socket(urlc)
         launch_and_sync_daemon(sock, cv, wa5(urld, dots, n, urlc, url), output, tls, pass) || stop(._[["sync_timeout"]])
         init_monitor(sockc = sockc, envir = envir)
         `[[<-`(envir, "cv", cv)
       } else {
-        sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass), resend = 0L)
+        sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass))
         store_urls(sock = sock, envir = envir)
         `[[<-`(envir, "cv2", cv)
         n <- 0L
@@ -347,15 +347,15 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       dots <- parse_dots(...)
       output <- attr(dots, "output")
       if (dispatcher) {
-        sock <- req_socket(urld, resend = 0L)
+        sock <- req_socket(urld)
         urlc <- strcat(urld, "c")
-        sockc <- req_socket(urlc, resend = 0L)
+        sockc <- req_socket(urlc)
         launch_and_sync_daemon(sock, cv, wa4(urld, dots, envir[["stream"]], n, urlc), output) || stop(._[["sync_timeout"]])
         for (i in seq_len(n)) next_stream(envir)
         init_monitor(sockc = sockc, envir = envir)
         `[[<-`(envir, "cv", cv)
       } else {
-        sock <- req_socket(urld, resend = 0L)
+        sock <- req_socket(urld)
         if (is.raw(seed)) {
           for (i in seq_len(n))
             launch_daemon(wa3(urld, dots, next_stream(envir)), output)
@@ -573,8 +573,8 @@ create_stream <- function(n, seed, envir) {
 
 tokenized_url <- function(url) sprintf("%s/%s", url, random(12L))
 
-req_socket <- function(url, tls = NULL, resend = .intmax)
-  `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", resend)
+req_socket <- function(url, tls = NULL)
+  `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", 0L)
 
 parse_dots <- function(...) {
   missing(...) && return("")
