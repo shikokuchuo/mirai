@@ -12,7 +12,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9016</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9017</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,8 +109,7 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <p>If ‘force’ is specified as TRUE, the socket is immediately closed
     and regenerated. If this happens while a mirai task is still ongoing, it
     will be returned as an ‘errorValue’ 7 (Object closed). This may be
-    used to cancel a task that consistently hangs or crashes to prevent it
-    from failing repeatedly when new daemons connect.</p>
+    used to cancel a task that hangs and does not return.</p>
     </div>
     <div class="section level2">
     <h2 id="timeouts">Timeouts<a class="anchor" aria-label="anchor" href="#timeouts"></a></h2>
