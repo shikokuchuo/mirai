@@ -6,6 +6,14 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  out.width = "100%"
+)
+```
+
 ### Database Hosting - The Basics
 
 `mirai` supports the hosting of multiple database connections across processes on the local machine or a remote server. `everywhere()` easily sets up identical database connections in each daemon process.
@@ -29,13 +37,13 @@ everywhere({
 
 ```{r db2}
 m <- mirai(dbWriteTable(con, "iris", iris))
-call_mirai(m)$data
+m[]
 
 m <- mirai(dbListTables(con))
-call_mirai(m)$data
+m[]
 
 m <- mirai(dbGetQuery(con, 'SELECT * FROM iris WHERE "Sepal.Length" < 4.6'))
-call_mirai(m)$data
+m[]
 ```
 
 `everywhere()` can be used again to cleanly tear down the databases, before resetting daemons.
@@ -74,13 +82,13 @@ serialization(
 
 ```{r arrow2}
 m <- mirai(dbWriteTableArrow(con, "iris", iris))
-call_mirai(m)$data
+m[]
 
 m <- mirai(dbReadTableArrow(con, "iris"))
-call_mirai(m)$data
+m[]
 
 m <- mirai(dbGetQueryArrow(con, 'SELECT * FROM iris WHERE "Sepal.Length" < 4.6'))
-call_mirai(m)$data
+m[]
 ```
 
 Due to the tight integration of the `mirai` serialization mechanism with R's 'refhook' system, we can easily return complex / nested objects containing multiple queries in the Arrow format:
@@ -93,7 +101,7 @@ m <- mirai({
   y <- dbGetQueryArrow(con, 'SELECT * FROM iris WHERE "Petal.Width" < 0.2')
   list(sepal = list(length = a, width = b), petal = list(length = x, width = y))
 })
-call_mirai(m)$data
+m[]
 ```
 
 As before, `everywhere()` can be used again to cleanly tear down the databases, before resetting daemons.
@@ -193,8 +201,7 @@ server <- function(input, output, session) {
 
 # serialization() specifies the native Arrow serialization functions
 serialization(
-  refhook = list(arrow::write_to_raw,
-                 function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)),
+  refhook = list(arrow::write_to_raw, nanoarrow::read_nanoarrow),
   class = "nanoarrow_array_stream"
 )
 

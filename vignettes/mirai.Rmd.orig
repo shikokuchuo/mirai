@@ -39,13 +39,15 @@ A 'mirai' object is returned immediately.
 ```{r exec}
 library(mirai)
 
+input <- list(x = 2, y = 5, z = double(1e8))
+
 m <- mirai(
   {
-    res <- rnorm(n) + m
-    res / rev(res)
+    res <- rnorm(1e8, mean = mean, sd = sd)
+    max(res) - min(res)
   },
-  m = runif(1),
-  n = 1e8
+  mean = input$x,
+  sd = input$y
 )
 
 m
@@ -61,25 +63,25 @@ call_mirai(m)
 ```
 Upon completion, the 'mirai' resolves automatically to the evaluated result.
 ```{r resolv}
-m$data |> str()
+m$data
 ```
-Alternatively, explicitly call and wait for the result using `call_mirai()`.
+Alternatively, to wait for and collect the result, use the `[]` method:
 ```{r call}
-call_mirai(m)$data |> str()
+m[]
 ```
 For easy programmatic use of `mirai()`, '.expr' accepts a pre-constructed language object, and also a list of named arguments passed via '.args'. So, the following would be equivalent to the above:
 
 ```{r equiv}
 expr <- quote({
-  res <- rnorm(n) + m
-  res / rev(res)
+  res <- rnorm(1e8, mean = mean, sd = sd)
+  max(res) - min(res)
 })
 
-args <- list(m = runif(1), n = 1e8)
+args <- list(mean = input$x, sd = input$y)
 
 m <- mirai(.expr = expr, .args = args)
 
-call_mirai(m)$data |> str()
+m[]
 ```
 
 [&laquo; Back to ToC](#table-of-contents)

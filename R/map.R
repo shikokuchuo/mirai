@@ -36,7 +36,7 @@
 #'     \CRANpkg{promises} package.
 #' @inheritParams mirai
 #'
-#' @return A \sQuote{mirai_map} object.
+#' @return A \sQuote{mirai_map} object (list of \sQuote{mirai} objects).
 #'
 #' @section Results:
 #'

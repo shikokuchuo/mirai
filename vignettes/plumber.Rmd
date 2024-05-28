@@ -20,7 +20,7 @@ The plumber router code is run in a daemon process itself so that it does not bl
 The /echo endpoint takes a GET request, sleeps for 1 second (simulating an expensive computation) and simply returns the 'msg' request header together with a timestamp and the process ID of the process it is run on.
 
 
-```r
+``` r
 library(mirai)
 
 # important to supply SIGINT so the plumber server is interrupted and exits
@@ -62,21 +62,35 @@ The API can be queried using an async HTTP client such as `nanonext::ncurl_aio()
 
 Here, all 8 requests are submitted at once, but we note that that responses have differing timestamps as only 4 can be processed at any one time (limited by the number of daemons set).
 
-```r
+``` r
 library(nanonext)
 res <- lapply(1:8,
               function(i) ncurl_aio("http://127.0.0.1:8985/echo",
                                     headers = c(msg = as.character(i))))
-res <- lapply(res, call_aio)
-for (r in res) print(r$data)
-#> [1] "{\"time\":[\"2024-04-23 17:15:11\"],\"msg\":[\"1\"],\"pid\":[36065]}"
-#> [1] "{\"time\":[\"2024-04-23 17:15:11\"],\"msg\":[\"2\"],\"pid\":[36062]}"
-#> [1] "{\"time\":[\"2024-04-23 17:15:11\"],\"msg\":[\"3\"],\"pid\":[36068]}"
-#> [1] "{\"time\":[\"2024-04-23 17:15:11\"],\"msg\":[\"4\"],\"pid\":[36060]}"
-#> [1] "{\"time\":[\"2024-04-23 17:15:12\"],\"msg\":[\"5\"],\"pid\":[36065]}"
-#> [1] "{\"time\":[\"2024-04-23 17:15:12\"],\"msg\":[\"6\"],\"pid\":[36062]}"
-#> [1] "{\"time\":[\"2024-04-23 17:15:12\"],\"msg\":[\"7\"],\"pid\":[36068]}"
-#> [1] "{\"time\":[\"2024-04-23 17:15:12\"],\"msg\":[\"8\"],\"pid\":[36060]}"
+collect_aio(res)
+#> [[1]]
+#> [1] "{\"time\":[\"2024-05-28 09:21:40\"],\"msg\":[\"1\"],\"pid\":[20466]}"
+#> 
+#> [[2]]
+#> [1] "{\"time\":[\"2024-05-28 09:21:40\"],\"msg\":[\"2\"],\"pid\":[20511]}"
+#> 
+#> [[3]]
+#> [1] "{\"time\":[\"2024-05-28 09:21:40\"],\"msg\":[\"3\"],\"pid\":[20556]}"
+#> 
+#> [[4]]
+#> [1] "{\"time\":[\"2024-05-28 09:21:40\"],\"msg\":[\"4\"],\"pid\":[20601]}"
+#> 
+#> [[5]]
+#> [1] "{\"time\":[\"2024-05-28 09:21:41\"],\"msg\":[\"5\"],\"pid\":[20511]}"
+#> 
+#> [[6]]
+#> [1] "{\"time\":[\"2024-05-28 09:21:41\"],\"msg\":[\"6\"],\"pid\":[20466]}"
+#> 
+#> [[7]]
+#> [1] "{\"time\":[\"2024-05-28 09:21:41\"],\"msg\":[\"7\"],\"pid\":[20601]}"
+#> 
+#> [[8]]
+#> [1] "{\"time\":[\"2024-05-28 09:21:41\"],\"msg\":[\"8\"],\"pid\":[20556]}"
 
 daemons(0)
 #> [1] 0
@@ -88,7 +102,7 @@ Below is a demonstration of the equivalent using a POST endpoint, accepting a JS
 
 Note that `req$postBody` should always be accessed in the router process and passed in as an argument to the 'mirai', as this is retrieved using a connection that is not serializable.
 
-```r
+``` r
 library(mirai)
 
 # important to supply SIGINT so the plumber server is interrupted and exits cleanly when torn down
@@ -128,22 +142,36 @@ m <- mirai({
 
 Querying the endpoint produces the same set of outputs as the previous example.
 
-```r
+``` r
 library(nanonext)
 res <- lapply(1:8,
               function(i) ncurl_aio("http://127.0.0.1:8986/echo",
                                     method = "POST",
                                     data = sprintf('{"msg":"%d"}', i)))
-res <- lapply(res, call_aio)
-for (r in res) print(r$data)
-#> [1] "{\"time\":[\"2024-04-23 17:15:15\"],\"msg\":[\"1\"],\"pid\":[36338]}"
-#> [1] "{\"time\":[\"2024-04-23 17:15:15\"],\"msg\":[\"2\"],\"pid\":[36343]}"
-#> [1] "{\"time\":[\"2024-04-23 17:15:15\"],\"msg\":[\"3\"],\"pid\":[36340]}"
-#> [1] "{\"time\":[\"2024-04-23 17:15:15\"],\"msg\":[\"4\"],\"pid\":[36346]}"
-#> [1] "{\"time\":[\"2024-04-23 17:15:16\"],\"msg\":[\"5\"],\"pid\":[36346]}"
-#> [1] "{\"time\":[\"2024-04-23 17:15:16\"],\"msg\":[\"6\"],\"pid\":[36338]}"
-#> [1] "{\"time\":[\"2024-04-23 17:15:16\"],\"msg\":[\"7\"],\"pid\":[36343]}"
-#> [1] "{\"time\":[\"2024-04-23 17:15:16\"],\"msg\":[\"8\"],\"pid\":[36340]}"
+collect_aio(res)
+#> [[1]]
+#> [1] "{\"time\":[\"2024-05-28 09:21:45\"],\"msg\":[\"1\"],\"pid\":[20739]}"
+#> 
+#> [[2]]
+#> [1] "{\"time\":[\"2024-05-28 09:21:45\"],\"msg\":[\"2\"],\"pid\":[20742]}"
+#> 
+#> [[3]]
+#> [1] "{\"time\":[\"2024-05-28 09:21:45\"],\"msg\":[\"3\"],\"pid\":[20751]}"
+#> 
+#> [[4]]
+#> [1] "{\"time\":[\"2024-05-28 09:21:45\"],\"msg\":[\"4\"],\"pid\":[20744]}"
+#> 
+#> [[5]]
+#> [1] "{\"time\":[\"2024-05-28 09:21:46\"],\"msg\":[\"5\"],\"pid\":[20742]}"
+#> 
+#> [[6]]
+#> [1] "{\"time\":[\"2024-05-28 09:21:46\"],\"msg\":[\"6\"],\"pid\":[20744]}"
+#> 
+#> [[7]]
+#> [1] "{\"time\":[\"2024-05-28 09:21:46\"],\"msg\":[\"7\"],\"pid\":[20739]}"
+#> 
+#> [[8]]
+#> [1] "{\"time\":[\"2024-05-28 09:21:46\"],\"msg\":[\"8\"],\"pid\":[20751]}"
 
 daemons(0)
 #> [1] 0

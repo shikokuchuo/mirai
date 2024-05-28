@@ -22,7 +22,7 @@ This allows tensors from the [`torch`](https://torch.mlverse.org/) package to be
 3. Use `everywhere()` to make the `torch` package available on all daemons for convenience (optional).
 
 
-```r
+``` r
 library(mirai)
 library(torch)
 
@@ -31,6 +31,7 @@ serialization(refhook = list(torch:::torch_serialize, torch::torch_load),
               vec = TRUE)
 daemons(1)
 #> [1] 1
+
 everywhere(library(torch))
 ```
 #### Example Usage
@@ -42,7 +43,7 @@ A set of model parameters is also specified.
 The model specification and parameters are then passed to and initialized within a 'mirai'.
 
 
-```r
+``` r
 model <- nn_module(
   initialize = function(in_size, out_size) {
     self$conv1 <- nn_conv2d(in_size, out_size, 5)
@@ -61,7 +62,7 @@ params <- list(in_size = 1, out_size = 20)
 
 m <- mirai(do.call(model, params), model = model, params = params)
 
-call_mirai(m)$data
+m[]
 #> An `nn_module` containing 1,040 parameters.
 #> 
 #> ── Modules ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -70,39 +71,39 @@ call_mirai(m)$data
 ```
 The returned model is an object containing many tensor elements.
 
-```r
+``` r
 m$data$parameters$conv1.weight
 #> torch_tensor
 #> (1,1,.,.) = 
-#>   0.1682  0.1571  0.0880  0.1221 -0.0901
-#>   0.1598  0.0815  0.1215  0.0138 -0.1608
-#>  -0.0636  0.1779 -0.0090 -0.0544  0.0573
-#>   0.0618 -0.1297  0.1649 -0.0272 -0.1092
-#>  -0.1108  0.0749 -0.1585 -0.1256  0.1463
+#>   0.1108  0.0557  0.1301  0.1483  0.0700
+#>   0.0776  0.1193  0.0478 -0.1178  0.0867
+#>  -0.1285 -0.1452  0.1144  0.0938 -0.1858
+#>  -0.1745 -0.0583 -0.1397  0.0468 -0.0102
+#>   0.1318  0.1193  0.0632  0.1390 -0.0962
 #> 
 #> (2,1,.,.) = 
-#>   0.1313 -0.1575 -0.0257  0.1861 -0.0727
-#>  -0.1925  0.1271  0.0439 -0.0086 -0.1037
-#>   0.0715  0.0691  0.1181 -0.1048  0.0228
-#>   0.0806  0.1871 -0.0866 -0.1398  0.1804
-#>   0.1763 -0.1477 -0.1943  0.1088 -0.1668
+#>   0.1058  0.0616 -0.1454  0.1871 -0.0563
+#>   0.0045  0.1103  0.1261 -0.1120 -0.1907
+#>   0.1103 -0.0197  0.0097  0.1295  0.1538
+#>  -0.0503  0.0225 -0.0276  0.1605 -0.0369
+#>  -0.1926  0.0820 -0.1952  0.0279  0.0863
 #> 
 #> (3,1,.,.) = 
-#>   0.1692  0.1886  0.0159 -0.0523 -0.1667
-#>  -0.0769  0.1226 -0.1706  0.0817 -0.1353
-#>  -0.1113 -0.0852  0.0073 -0.0749 -0.1621
-#>   0.0164 -0.0800  0.1728 -0.1919  0.1623
-#>   0.0064 -0.0127  0.0406  0.1909 -0.0757
+#>   0.0799  0.1729 -0.0177 -0.1268  0.1645
+#>   0.1083 -0.1924 -0.0994  0.1934 -0.1171
+#>   0.1530  0.0710  0.0445 -0.0757 -0.1950
+#>  -0.1513 -0.1626  0.1537 -0.0338 -0.1013
+#>  -0.1312 -0.0565 -0.1210 -0.1199  0.0896
 #> 
 #> (4,1,.,.) = 
-#>   0.1336 -0.0816 -0.1282 -0.0812  0.0911
-#>  -0.1254 -0.1583 -0.1503 -0.1723  0.0713
-#>  -0.0995  0.0038  0.1080 -0.0095 -0.1887
-#>   0.0842  0.0617 -0.0039 -0.0643 -0.0611
-#>  -0.1795  0.0070 -0.0341 -0.0909 -0.1070
+#>  -0.0208  0.1269  0.0917 -0.1425  0.0446
+#>   0.0951 -0.0030  0.1021 -0.1577  0.1216
+#>   0.0220 -0.0354 -0.1250 -0.0593 -0.0948
+#>   0.0504  0.0609  0.1961 -0.0304 -0.1709
+#>   0.0073 -0.0609 -0.0624  0.0887  0.1296
 #> 
 #> (5,1,.,.) = 
-#>   0.0207 -0.0057 -0.1417 -0.0102  0.1322
+#>  -0.0362 -0.1815 -0.1903  0.1062  0.1075
 #> ... [the output was truncated (use n=-1 to disable)]
 #> [ CPUFloatType{20,1,5,5} ][ requires_grad = TRUE ]
 ```
@@ -110,10 +111,10 @@ It is usual for model parameters to then be passed to an optimiser.
 
 This can also be initialized within a 'mirai' process.
 
-```r
+``` r
 optim <- mirai(optim_rmsprop(params = params), params = m$data$parameters)
 
-call_mirai(optim)$data
+optim[]
 #> <optim_rmsprop>
 #>   Inherits from: <torch_optimizer>
 #>   Public:

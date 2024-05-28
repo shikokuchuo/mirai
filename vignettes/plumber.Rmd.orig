@@ -72,8 +72,7 @@ library(nanonext)
 res <- lapply(1:8,
               function(i) ncurl_aio("http://127.0.0.1:8985/echo",
                                     headers = c(msg = as.character(i))))
-res <- lapply(res, call_aio)
-for (r in res) print(r$data)
+collect_aio(res)
 
 daemons(0)
 ```
@@ -129,8 +128,7 @@ res <- lapply(1:8,
               function(i) ncurl_aio("http://127.0.0.1:8986/echo",
                                     method = "POST",
                                     data = sprintf('{"msg":"%d"}', i)))
-res <- lapply(res, call_aio)
-for (r in res) print(r$data)
+collect_aio(res)
 
 daemons(0)
 ```

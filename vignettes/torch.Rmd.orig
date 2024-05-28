@@ -64,7 +64,7 @@ params <- list(in_size = 1, out_size = 20)
 
 m <- mirai(do.call(model, params), model = model, params = params)
 
-call_mirai(m)$data
+m[]
 ```
 The returned model is an object containing many tensor elements.
 ```{r tensors3}
@@ -76,7 +76,7 @@ This can also be initialized within a 'mirai' process.
 ```{r tensors4}
 optim <- mirai(optim_rmsprop(params = params), params = m$data$parameters)
 
-call_mirai(optim)$data
+optim[]
 
 daemons(0)
 ```

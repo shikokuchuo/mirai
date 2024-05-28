@@ -18,10 +18,10 @@
 #'
 #' Lightweight parallel code execution and distributed computing. Designed for
 #'     simplicity, a 'mirai' evaluates an R expression asynchronously, on local
-#'     or network resources, resolving automatically upon completion. State of
-#'     the art networking and concurrency via 'nanonext' and 'NNG' (Nanomsg Next
-#'     Gen) offers reliable and efficient scheduling over fast inter-process
-#'     communications or TCP/IP secured by TLS.
+#'     or network resources, resolving automatically upon completion. Modern,
+#'     high performance networking and concurrency via 'nanonext' and 'NNG'
+#'     (Nanomsg Next Gen) offers reliable and efficient scheduling over fast
+#'     inter-process communications or TCP/IP secured by TLS.
 #'
 #' @section Notes:
 #'
@@ -96,7 +96,7 @@
     n_zero = "the number of daemons must be zero or greater",
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
     register_cluster = "this function requires a more recent version of R",
-    requires_daemons = "requires daemons to be set - setting one local daemon",
+    requires_daemons = "launching one local daemon as none previously set",
     requires_local = "SSH tunnelling requires 'url' hostname to be '127.0.0.1' or 'localhost'",
     refhook_invalid = "'refhook' must be a list of 2 functions or NULL",
     single_url = "only one 'url' should be specified",

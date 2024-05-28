@@ -1,19 +1,20 @@
 # mirai 1.0.0.9017 (development)
 
-* Adds `x[]` as a more efficient equivalent of `call_mirai_(x)$data`.
-  + Use of `call_mirai_()` is consequently deprecated.
-* Adds `collect_mirai()` as a more efficient equivalent of `call_mirai(x)$data`.
 * Adds `mirai_map()` for asynchronous parallel/distributed map using `mirai`, with `promises` integration. Allows recovery from partial failure or else early stopping, together with optional progress reporting.
   + `x[]` collects the results of a mirai_map `x`, waiting for all asynchronous operations to complete.
   + `x[.progress]` collects the results whilst showing a text progress bar.
   + `x[.stop]` collects the results applying early-stopping, which stops at the first error, and aborts remaining in-progress operations.
-* Calling `daemons(<settings>)` when the compute profile is already set now implicitly resets daemons before applying the new settings instead of silently doing nothing.
-* No longer performs automatic re-tries for both dispatcher and non-dispatcher daemons.
-  + An 'errorValue' 19 (Connection reset) will now be returned if a daemon crashes or otherwise terminates during evaluation, instead of being re-tried on other daemons.
+* Adds the 'mirai' method `x[]` as a more efficient equivalent of the interruptible `call_mirai_(x)$data`.
+  + Use of `call_mirai_()` is consequently deprecated.
+* Adds `collect_mirai()` as a more efficient equivalent of non-interruptible `call_mirai(x)$data`.
+* Both `call_mirai()` and `collect_mirai()` now accept a list of 'mirai' such as that returned by `mirai_map()`.
+* Calling `daemons()` with new settings when the compute profile is already set now implicitly resets daemons before applying the new settings instead of silently doing nothing.
+* 'mirai' automatic re-tries are no longer performed for both dispatcher and non-dispatcher daemons.
+  + An 'errorValue' 19 (Connection reset) will be returned if a daemon crashes or otherwise terminates during evaluation, rather than being re-tried on other daemons.
   + Argument 'resilience' retired at `daemons()`.
-* Fixes bug in the promises method that could cause crashes when launching large numbers of very short-lived mirai.
-* Fixes bug that could cause a hang or crash in the non-dispatcher case when launching additional daemons.
-* Requires `nanonext` >= [1.0.0.9016].
+* Fixes promises method for potential crashes when launching improbably short-lived mirai.
+* Fixes bug that could cause a hang or crash when launching additional non-dispatcher daemons.
+* Requires `nanonext` >= [1.0.0.9017].
 
 # mirai 1.0.0
 

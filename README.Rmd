@@ -31,9 +31,9 @@ Minimalist Async Evaluation Framework for R
 <br /><br />
 Lightweight parallel code execution and distributed computing.
 <br /><br />
-`mirai()` returns a 'mirai' object immediately. Designed for simplicity, a 'mirai' evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion.
+Designed for simplicity, a 'mirai' evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion.
 <br /><br />
-State of the art networking and concurrency via [nanonext](https://doi.org/10.5281/zenodo.7903429) offers reliable and efficient scheduling over fast inter-process communications or TCP/IP secured by TLS.
+Modern, high performance networking and concurrency via [nanonext](https://doi.org/10.5281/zenodo.7903429) offers reliable and efficient scheduling over fast inter-process communications or TCP/IP secured by TLS.
 <br /><br />
 
 > *mirai パッケージを試してみたところ、かなり速くて驚きました*
@@ -61,13 +61,15 @@ A 'mirai' object is returned immediately.
 ```{r exec}
 library(mirai)
 
+input <- list(x = 2, y = 5, z = double(1e8))
+
 m <- mirai(
   {
-    res <- rnorm(x) + y ^ 2
-    res / rev(res)
+    res <- rnorm(1e8, mean = mean, sd = sd)
+    max(res) - min(res)
   },
-  x = 10,
-  y = runif(1)
+  mean = input$x,
+  sd = input$y
 )
 
 m
@@ -96,10 +98,10 @@ Upon completion, the 'mirai' resolves automatically to the evaluated result.
 m$data
 ```
 
-Alternatively, explicitly call and wait for the result using `call_mirai()`.
+Alternatively, to wait for and collect the result, use the `[]` method:
 
 ```{r call}
-call_mirai(m)$data
+m[]
 ```
 
 ### Daemons

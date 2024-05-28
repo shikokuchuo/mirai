@@ -18,13 +18,13 @@ status](https://shikokuchuo.r-universe.dev/badges/mirai?color=44ac19)](https://s
 
 <br /> ( 未来 ) <br /><br /> Minimalist Async Evaluation Framework for R
 <br /><br /> Lightweight parallel code execution and distributed
-computing. <br /><br /> `mirai()` returns a ‘mirai’ object immediately.
-Designed for simplicity, a ‘mirai’ evaluates an R expression
-asynchronously, on local or network resources, resolving automatically
-upon completion. <br /><br /> State of the art networking and
-concurrency via [nanonext](https://doi.org/10.5281/zenodo.7903429)
-offers reliable and efficient scheduling over fast inter-process
-communications or TCP/IP secured by TLS. <br /><br />
+computing. <br /><br /> Designed for simplicity, a ‘mirai’ evaluates an
+R expression asynchronously, on local or network resources, resolving
+automatically upon completion. <br /><br /> Modern, high performance
+networking and concurrency via
+[nanonext](https://doi.org/10.5281/zenodo.7903429) offers reliable and
+efficient scheduling over fast inter-process communications or TCP/IP
+secured by TLS. <br /><br />
 
 > *mirai パッケージを試してみたところ、かなり速くて驚きました*
 
@@ -52,13 +52,15 @@ A ‘mirai’ object is returned immediately.
 ``` r
 library(mirai)
 
+input <- list(x = 2, y = 5, z = double(1e8))
+
 m <- mirai(
   {
-    res <- rnorm(x) + y ^ 2
-    res / rev(res)
+    res <- rnorm(1e8, mean = mean, sd = sd)
+    max(res) - min(res)
   },
-  x = 10,
-  y = runif(1)
+  mean = input$x,
+  sd = input$y
 )
 
 m
@@ -88,17 +90,14 @@ result.
 
 ``` r
 m$data
-#>  [1] -0.5767602  1.6767432  2.5189824  1.8092596  5.9579094  0.1678441
-#>  [7]  0.5527123  0.3969857  0.5963942 -1.7338229
+#> [1] 57.99381
 ```
 
-Alternatively, explicitly call and wait for the result using
-`call_mirai()`.
+Alternatively, to wait for and collect the result, use the `[]` method:
 
 ``` r
-call_mirai(m)$data
-#>  [1] -0.5767602  1.6767432  2.5189824  1.8092596  5.9579094  0.1678441
-#>  [7]  0.5527123  0.3969857  0.5963942 -1.7338229
+m[]
+#> [1] 57.99381
 ```
 
 ### Daemons

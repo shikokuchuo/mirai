@@ -29,7 +29,7 @@ respectively to \sQuote{onFulfilled} and \sQuote{onRejected} for
 to use (each compute profile has its own independent set of daemons).}
 }
 \value{
-A \sQuote{mirai_map} object.
+A \sQuote{mirai_map} object (list of \sQuote{mirai} objects).
 }
 \description{
 Asynchronous parallel / distributed map of a function over a list or vector

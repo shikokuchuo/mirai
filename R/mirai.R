@@ -260,19 +260,23 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #'     progress, storing the value at \code{$data}, and returns the
 #'     \sQuote{mirai} object.
 #'
-#' @param x a \sQuote{mirai} object.
+#' @param x a \sQuote{mirai} object, or list of \sQuote{mirai} objects.
 #'
-#' @return For \code{call_mirai}: the passed \sQuote{mirai} (invisibly). The
-#'     retrieved value is stored at \code{$data}.
+#' @return For \code{call_mirai}: the passed object (invisibly). For a
+#'     \sQuote{mirai}, the retrieved value is stored at \code{$data}.
 #'
 #'     For \code{collect_mirai}: an object (the return value of the
-#'     \sQuote{mirai}).
+#'     \sQuote{mirai}), or a list of such objects (the same length as
+#'     \sQuote{x}, preserving names).
+#'
+#' @details Both functions accept a list of \sQuote{mirai} objects, such as that
+#'     returned by \code{\link{mirai_map}} as well as individual \sQuote{mirai}.
 #'
 #' @section User Interrupts:
 #'
-#'     These functions will wait for the asynchronous operation to complete if
-#'     still in progress (blocking). Designed for production usage, they are not
-#'     user-interruptible.
+#'     These functions will wait for the asynchronous operation(s) to complete
+#'     if still in progress (blocking). Designed for production usage, they are
+#'     not user-interruptible.
 #'
 #'     \code{x[]} may be used to wait for and return the value of a mirai
 #'     \code{x}, and is a user-interruptible equivalent to

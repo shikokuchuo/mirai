@@ -37,8 +37,6 @@ p
 ```
 It is possible to both access a 'mirai' value at `$data` and to use a promise for enacting a side effect (assigning the value to an environment in the example below).
 ```{r promisesalt}
-library(mirai)
-
 env <- new.env()
 
 m <- mirai({
@@ -48,10 +46,29 @@ m <- mirai({
 
 promises::then(m, function(x) env$res <- x)
 
-call_mirai(m)$data
+m[]
 ```
 After returning to the top level prompt:
 
 ```{r promisesaltcont}
 env$res
 ```
+### The One Million Promises Challenge
+
+The code below is taken from the challenge to launch and collect one million promises. For illustration, the example is scaled down to one thousand.
+
+```{r promiseschallenge}
+library(mirai)
+daemons(8, dispatcher = FALSE)
+
+r <- 0
+start <- Sys.time()
+m <- mirai_map(1:1000, \(x) x, .promise = \(x) r <<- r + x)
+Sys.time() - start
+
+later::run_now()
+r
+
+daemons(0)
+```
+The one million promises challenge took 6 mins 25 secs to complete using an Intel i7 11th gen mobile processor with 16GB RAM.

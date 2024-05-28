@@ -6,6 +6,8 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
+
 ### Database Hosting - The Basics
 
 `mirai` supports the hosting of multiple database connections across processes on the local machine or a remote server. `everywhere()` easily sets up identical database connections in each daemon process.
@@ -13,18 +15,13 @@ vignette: >
 The following represents a simple example, which sets up 2 local daemons, and then opens a connection to the same SQLite file database in each daemon.
 
 
-```r
+``` r
 file <- tempfile()
 library(mirai)
 
 daemons(2)
-```
+#> [1] 2
 
-```
-## [1] 2
-```
-
-```r
 everywhere({
   library(DBI)
   con <<- dbConnect(RSQLite::SQLite(), file)
@@ -34,47 +31,31 @@ everywhere({
 `mirai()` calls may then be used to write to or query the database, and may be executed on either daemon.
 
 
-```r
+``` r
 m <- mirai(dbWriteTable(con, "iris", iris))
-call_mirai(m)$data
-```
+m[]
+#> [1] TRUE
 
-```
-## [1] TRUE
-```
-
-```r
 m <- mirai(dbListTables(con))
-call_mirai(m)$data
-```
+m[]
+#> [1] "iris"
 
-```
-## [1] "iris"
-```
-
-```r
 m <- mirai(dbGetQuery(con, 'SELECT * FROM iris WHERE "Sepal.Length" < 4.6'))
-call_mirai(m)$data
-```
-
-```
-##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
-## 1          4.4         2.9          1.4         0.2  setosa
-## 2          4.3         3.0          1.1         0.1  setosa
-## 3          4.4         3.0          1.3         0.2  setosa
-## 4          4.5         2.3          1.3         0.3  setosa
-## 5          4.4         3.2          1.3         0.2  setosa
+m[]
+#>   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+#> 1          4.4         2.9          1.4         0.2  setosa
+#> 2          4.3         3.0          1.1         0.1  setosa
+#> 3          4.4         3.0          1.3         0.2  setosa
+#> 4          4.5         2.3          1.3         0.3  setosa
+#> 5          4.4         3.2          1.3         0.2  setosa
 ```
 
 `everywhere()` can be used again to cleanly tear down the databases, before resetting daemons.
 
-```r
+``` r
 everywhere(dbDisconnect(con))
 daemons(0)
-```
-
-```
-## [1] 0
+#> [1] 0
 ```
 
 ### Database Hosting - Using Arrow Database Connectivity
@@ -86,17 +67,12 @@ The example below creates an in-memory SQLite connection using the `adbcsqlite` 
 Serialization is set up with the relevant serialization and deserialization functions from the `arrow` package. Note that the format class is 'nanoarrow_array_stream' as `nanoarrow` is the backend for all queries made by the DBI `db*Arrow()` functions.
 
 
-```r
+``` r
 library(mirai)
 
 daemons(1)
-```
+#> [1] 1
 
-```
-## [1] 1
-```
-
-```r
 everywhere({
   library(DBI) # `adbi` and `adbcsqlite` packages must also be installed
   con <<- dbConnect(adbi::adbi("adbcsqlite"), uri = ":memory:")
@@ -112,49 +88,36 @@ serialization(
 `mirai()` calls may then be used to write to or query the database all in the Arrow format.
 
 
-```r
+``` r
 m <- mirai(dbWriteTableArrow(con, "iris", iris))
-call_mirai(m)$data
-```
+m[]
+#> [1] TRUE
 
-```
-## [1] TRUE
-```
-
-```r
 m <- mirai(dbReadTableArrow(con, "iris"))
-call_mirai(m)$data
-```
+m[]
+#> Table
+#> 150 rows x 5 columns
+#> $Sepal.Length <double>
+#> $Sepal.Width <double>
+#> $Petal.Length <double>
+#> $Petal.Width <double>
+#> $Species <string>
 
-```
-## Table
-## 150 rows x 5 columns
-## $Sepal.Length <double>
-## $Sepal.Width <double>
-## $Petal.Length <double>
-## $Petal.Width <double>
-## $Species <string>
-```
-
-```r
 m <- mirai(dbGetQueryArrow(con, 'SELECT * FROM iris WHERE "Sepal.Length" < 4.6'))
-call_mirai(m)$data
-```
-
-```
-## Table
-## 5 rows x 5 columns
-## $Sepal.Length <double>
-## $Sepal.Width <double>
-## $Petal.Length <double>
-## $Petal.Width <double>
-## $Species <string>
+m[]
+#> Table
+#> 5 rows x 5 columns
+#> $Sepal.Length <double>
+#> $Sepal.Width <double>
+#> $Petal.Length <double>
+#> $Petal.Width <double>
+#> $Species <string>
 ```
 
 Due to the tight integration of the `mirai` serialization mechanism with R's 'refhook' system, we can easily return complex / nested objects containing multiple queries in the Arrow format:
 
 
-```r
+``` r
 m <- mirai({
   a <- dbGetQueryArrow(con, 'SELECT * FROM iris WHERE "Sepal.Length" < 4.6')
   b <- dbGetQueryArrow(con, 'SELECT * FROM iris WHERE "Sepal.Width" < 2.6')
@@ -162,59 +125,53 @@ m <- mirai({
   y <- dbGetQueryArrow(con, 'SELECT * FROM iris WHERE "Petal.Width" < 0.2')
   list(sepal = list(length = a, width = b), petal = list(length = x, width = y))
 })
-call_mirai(m)$data
-```
-
-```
-## $sepal
-## $sepal$length
-## Table
-## 5 rows x 5 columns
-## $Sepal.Length <double>
-## $Sepal.Width <double>
-## $Petal.Length <double>
-## $Petal.Width <double>
-## $Species <string>
-## 
-## $sepal$width
-## Table
-## 19 rows x 5 columns
-## $Sepal.Length <double>
-## $Sepal.Width <double>
-## $Petal.Length <double>
-## $Petal.Width <double>
-## $Species <string>
-## 
-## 
-## $petal
-## $petal$length
-## Table
-## 24 rows x 5 columns
-## $Sepal.Length <double>
-## $Sepal.Width <double>
-## $Petal.Length <double>
-## $Petal.Width <double>
-## $Species <string>
-## 
-## $petal$width
-## Table
-## 5 rows x 5 columns
-## $Sepal.Length <double>
-## $Sepal.Width <double>
-## $Petal.Length <double>
-## $Petal.Width <double>
-## $Species <string>
+m[]
+#> $sepal
+#> $sepal$length
+#> Table
+#> 5 rows x 5 columns
+#> $Sepal.Length <double>
+#> $Sepal.Width <double>
+#> $Petal.Length <double>
+#> $Petal.Width <double>
+#> $Species <string>
+#> 
+#> $sepal$width
+#> Table
+#> 19 rows x 5 columns
+#> $Sepal.Length <double>
+#> $Sepal.Width <double>
+#> $Petal.Length <double>
+#> $Petal.Width <double>
+#> $Species <string>
+#> 
+#> 
+#> $petal
+#> $petal$length
+#> Table
+#> 24 rows x 5 columns
+#> $Sepal.Length <double>
+#> $Sepal.Width <double>
+#> $Petal.Length <double>
+#> $Petal.Width <double>
+#> $Species <string>
+#> 
+#> $petal$width
+#> Table
+#> 5 rows x 5 columns
+#> $Sepal.Length <double>
+#> $Sepal.Width <double>
+#> $Petal.Length <double>
+#> $Petal.Width <double>
+#> $Species <string>
 ```
 
 As before, `everywhere()` can be used again to cleanly tear down the databases, before resetting daemons.
 
-```r
+``` r
 everywhere(dbDisconnect(con))
 daemons(0)
-```
-
-```
-## [1] 0
+#> [1] 0
 ```
 
 ### Shiny / mirai / DBI / ADBC Integrated Example
@@ -230,7 +187,7 @@ Non-dispatcher daemons are created as scheduling is not required (all queries ex
 Shiny ExtendedTask is then used to perform each query via a `mirai()` call, using the session-specific compute profile.
 
 
-```r
+``` r
 library(mirai)
 library(secretbase)
 library(shiny)
@@ -309,8 +266,7 @@ server <- function(input, output, session) {
 
 # serialization() specifies the native Arrow serialization functions
 serialization(
-  refhook = list(arrow::write_to_raw,
-                 function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)),
+  refhook = list(arrow::write_to_raw, nanoarrow::read_nanoarrow),
   class = "nanoarrow_array_stream"
 )
 
