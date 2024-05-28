@@ -47,10 +47,13 @@
 #'     specified port is not open etc.). Specifying TRUE continues retrying
 #'     (indefinitely) if not immediately successful, which is more resilient but
 #'     can mask potential connection issues.
-#' @param retry [default TRUE] if TRUE, then a failed task will be automatically
-#'     re-tried on the next daemon to connect to that instance. To cancel a task
-#'     in such a case, use \code{saisei(force = TRUE)}. If FALSE, it will be
-#'     returned as an \sQuote{errorValue} 19 (Connection reset).
+#' @param retry [default TRUE] if TRUE, then a task where the daemon crashes or
+#'     terminates unexpectedly will be automatically re-tried on the next daemon
+#'     instance to connect. In such a case, the mirai will remain unresolved but
+#'     \code{\link{status}} will show \sQuote{online} as 0 and \sQuote{assigned}
+#'     > \sQuote{complete}. To cancel a task in such a case, use
+#'     \code{saisei(force = TRUE)}. If FALSE, such tasks will be returned as
+#'     \sQuote{errorValue} 19 (Connection reset).
 #' @param token [default FALSE] if TRUE, appends a unique 24-character token
 #'     to each URL path the dispatcher listens at (not applicable for TCP URLs
 #'     which do not accept a path).
