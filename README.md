@@ -21,10 +21,10 @@ status](https://shikokuchuo.r-universe.dev/badges/mirai?color=44ac19)](https://s
 computing. <br /><br /> Designed for simplicity, a ‘mirai’ evaluates an
 R expression asynchronously, on local or network resources, resolving
 automatically upon completion. <br /><br /> Modern, high performance
-networking and concurrency via
-[nanonext](https://doi.org/10.5281/zenodo.7903429) offers reliable and
-efficient scheduling over fast inter-process communications or TCP/IP
-secured by TLS. <br /><br />
+networking and concurrency built on
+[nanonext](https://doi.org/10.5281/zenodo.7903429) and NNG (Nanomsg Next
+Gen) ensures reliable and efficient scheduling over fast inter-process
+communications or TCP/IP secured by TLS. <br /><br />
 
 > *mirai パッケージを試してみたところ、かなり速くて驚きました*
 
@@ -90,14 +90,14 @@ result.
 
 ``` r
 m$data
-#> [1] 57.99381
+#> [1] 55.88768
 ```
 
 Alternatively, to wait for and collect the result, use the `[]` method:
 
 ``` r
 m[]
-#> [1] 57.99381
+#> [1] 55.88768
 ```
 
 ### Daemons
