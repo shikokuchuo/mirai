@@ -109,7 +109,8 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <p>If ‘force’ is specified as TRUE, the socket is immediately closed
     and regenerated. If this happens while a mirai task is still ongoing, it
     will be returned as an ‘errorValue’ 7 (Object closed). This may be
-    used to cancel a task that hangs and does not return.</p>
+    used to cancel a task that consistently hangs or crashes to prevent it
+    from failing repeatedly when new daemons connect.</p>
     </div>
     <div class="section level2">
     <h2 id="timeouts">Timeouts<a class="anchor" aria-label="anchor" href="#timeouts"></a></h2>

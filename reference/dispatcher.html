@@ -86,6 +86,7 @@
 <span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  asyncdial <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  retry <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  token <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pass <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -132,6 +133,13 @@ default FALSE will error if a connection is not immediately possible
 specified port is not open etc.). Specifying TRUE continues retrying
 (indefinitely) if not immediately successful, which is more resilient but
 can mask potential connection issues.</p></dd>
+
+
+<dt>retry</dt>
+<dd><p>[default TRUE] if TRUE, then a failed task will be automatically
+re-tried on the next daemon to connect to that instance. To cancel a task
+in such a case, use <code>saisei(force = TRUE)</code>. If FALSE, it will be
+returned as an ‘errorValue’ 19 (Connection reset).</p></dd>
 
 
 <dt>token</dt>

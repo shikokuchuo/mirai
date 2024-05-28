@@ -126,7 +126,9 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
     <span class="pkg">mirai</span> scheduling to minimise overall execution time.</p>
 <p>Facilitates recovery from partial failure by returning all
     ‘miraiError’ / ‘errorValue’ as the case may be, thus
-    allowing only the failures to be re-run.</p>
+    allowing only the failures to be re-run. If using dispatcher,
+    ‘retry’ should be specified as FALSE to ensure crashes are
+    returned as errors.</p>
 <p>Note: requires daemons to have previously been set. If not, then one
     local daemon is set before the function propceeds.</p>
     </div>
@@ -178,7 +180,7 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># promises example that outputs the results, including errors, to the console</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"promises"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu">mirai_map</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>,</span></span>
 <span class="r-in"><span>  <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.1</span><span class="op">)</span>; <span class="kw">if</span> <span class="op">(</span><span class="va">x</span> <span class="op">==</span> <span class="fl">30</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="kw">else</span> <span class="va">x</span><span class="op">}</span>,</span></span>

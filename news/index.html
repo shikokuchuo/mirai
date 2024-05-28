@@ -80,10 +80,8 @@
 <li>Adds <code><a href="../reference/call_mirai.html">collect_mirai()</a></code> as a more efficient equivalent of non-interruptible <code>call_mirai(x)$data</code>.</li>
 <li>Both <code><a href="../reference/call_mirai.html">call_mirai()</a></code> and <code><a href="../reference/call_mirai.html">collect_mirai()</a></code> now accept a list of ‘mirai’ such as that returned by <code><a href="../reference/mirai_map.html">mirai_map()</a></code>.</li>
 <li>Calling <code><a href="../reference/daemons.html">daemons()</a></code> with new settings when the compute profile is already set now implicitly resets daemons before applying the new settings instead of silently doing nothing.</li>
-<li>‘mirai’ automatic re-tries are no longer performed for both dispatcher and non-dispatcher daemons.
-<ul><li>An ‘errorValue’ 19 (Connection reset) will be returned if a daemon crashes or otherwise terminates during evaluation, rather than being re-tried on other daemons.</li>
-<li>Argument ‘resilience’ retired at <code><a href="../reference/daemons.html">daemons()</a></code>.</li>
-</ul></li>
+<li>Argument ‘resilience’ retired at <code><a href="../reference/daemons.html">daemons()</a></code> as automatic re-tries are no longer performed for non-dispatcher daemons.</li>
+<li>New argument ‘retry’ at <code><a href="../reference/dispatcher.html">dispatcher()</a></code> governs whether to automatically retry in the dispatcher case.</li>
 <li>Fixes promises method for potential crashes when launching improbably short-lived mirai.</li>
 <li>Fixes bug that could cause a hang or crash when launching additional non-dispatcher daemons.</li>
 <li>Requires <code>nanonext</code> &gt;= [1.0.0.9017].</li>
