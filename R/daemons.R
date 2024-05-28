@@ -44,9 +44,10 @@
 #'     below).
 #' @param ... (optional) additional arguments passed through to
 #'     \code{\link{dispatcher}} if using dispatcher and/or \code{\link{daemon}}
-#'     if launching daemons. These include \sQuote{token} at dispatcher and
-#'     \sQuote{autoexit}, \sQuote{cleanup}, \sQuote{output}, \sQuote{maxtasks},
-#'     \sQuote{idletime}, \sQuote{walltime} and \sQuote{timerstart} at daemon.
+#'     if launching daemons. These include \sQuote{retry} and \sQuote{token} at
+#'     dispatcher and \sQuote{autoexit}, \sQuote{cleanup}, \sQuote{output},
+#'     \sQuote{maxtasks}, \sQuote{idletime}, \sQuote{walltime} and
+#'     \sQuote{timerstart} at daemon.
 #' @param seed [default NULL] (optional) supply a random seed (single value,
 #'     interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
 #'     RNG streams sent to each daemon. Note that reproducible results can be
@@ -573,8 +574,8 @@ create_stream <- function(n, seed, envir) {
 
 tokenized_url <- function(url) sprintf("%s/%s", url, random(12L))
 
-req_socket <- function(url, tls = NULL)
-  `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", 0L)
+req_socket <- function(url, tls = NULL, resend = 0L)
+  `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", resend)
 
 parse_dots <- function(...) {
   missing(...) && return("")

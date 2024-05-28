@@ -9,9 +9,8 @@
 * Adds `collect_mirai()` as a more efficient equivalent of non-interruptible `call_mirai(x)$data`.
 * Both `call_mirai()` and `collect_mirai()` now accept a list of 'mirai' such as that returned by `mirai_map()`.
 * Calling `daemons()` with new settings when the compute profile is already set now implicitly resets daemons before applying the new settings instead of silently doing nothing.
-* 'mirai' automatic re-tries are no longer performed for both dispatcher and non-dispatcher daemons.
-  + An 'errorValue' 19 (Connection reset) will be returned if a daemon crashes or otherwise terminates during evaluation, rather than being re-tried on other daemons.
-  + Argument 'resilience' retired at `daemons()`.
+* Argument 'resilience' retired at `daemons()` as automatic re-tries are no longer performed for non-dispatcher daemons.
+* New argument 'retry' at `dispatcher()` governs whether to automatically retry in the dispatcher case.
 * Fixes promises method for potential crashes when launching improbably short-lived mirai.
 * Fixes bug that could cause a hang or crash when launching additional non-dispatcher daemons.
 * Requires `nanonext` >= [1.0.0.9017].

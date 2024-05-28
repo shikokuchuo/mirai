@@ -47,6 +47,10 @@
 #'     specified port is not open etc.). Specifying TRUE continues retrying
 #'     (indefinitely) if not immediately successful, which is more resilient but
 #'     can mask potential connection issues.
+#' @param retry [default TRUE] if TRUE, then a failed task will be automatically
+#'     re-tried on the next daemon to connect to that instance. To cancel a task
+#'     in such a case, use \code{saisei(force = TRUE)}. If FALSE, it will be
+#'     returned as an \sQuote{errorValue} 19 (Connection reset).
 #' @param token [default FALSE] if TRUE, appends a unique 24-character token
 #'     to each URL path the dispatcher listens at (not applicable for TCP URLs
 #'     which do not accept a path).
@@ -72,8 +76,8 @@
 #' @export
 #'
 dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
-                       token = FALSE, tls = NULL, pass = NULL, rs = NULL,
-                       monitor = NULL) {
+                       retry = TRUE, token = FALSE, tls = NULL, pass = NULL,
+                       rs = NULL, monitor = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(._[["missing_url"]])
@@ -113,7 +117,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           sub(ports[1L], ports[i], url, fixed = TRUE)
     nurl <- if (auto) local_url() else if (token) tokenized_url(burl) else burl
     ncv <- cv()
-    nsock <- req_socket(NULL)
+    nsock <- req_socket(NULL, resend = retry * .intmax)
     pipe_notify(nsock, cv = ncv, cv2 = cv, add = TRUE, remove = TRUE)
     lock(nsock, cv = ncv)
     listen(nsock, url = nurl, tls = tls, error = TRUE)
@@ -177,7 +181,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           } else if (i < 0L) {
             i <- -i
             reap(servers[[i]])
-            servers[[i]] <- nsock <- req_socket(NULL)
+            servers[[i]] <- nsock <- req_socket(NULL, resend = retry * .intmax)
             pipe_notify(nsock, cv = active[[i]], cv2 = cv, add = TRUE, remove = TRUE)
             lock(nsock, cv = active[[i]])
             data <- servernames[i] <- if (auto) local_url() else tokenized_url(basenames[i])
@@ -254,7 +258,8 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
 #'     If \sQuote{force} is specified as TRUE, the socket is immediately closed
 #'     and regenerated. If this happens while a mirai task is still ongoing, it
 #'     will be returned as an \sQuote{errorValue} 7 (Object closed). This may be
-#'     used to cancel a task that hangs and does not return.
+#'     used to cancel a task that consistently hangs or crashes to prevent it
+#'     from failing repeatedly when new daemons connect.
 #'
 #' @section Timeouts:
 #'

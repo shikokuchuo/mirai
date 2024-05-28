@@ -10,6 +10,7 @@ dispatcher(
   n = NULL,
   ...,
   asyncdial = FALSE,
+  retry = TRUE,
   token = FALSE,
   tls = NULL,
   pass = NULL,
@@ -45,6 +46,11 @@ default FALSE will error if a connection is not immediately possible
 specified port is not open etc.). Specifying TRUE continues retrying
 (indefinitely) if not immediately successful, which is more resilient but
 can mask potential connection issues.}
+
+\item{retry}{[default TRUE] if TRUE, then a failed task will be automatically
+re-tried on the next daemon to connect to that instance. To cancel a task
+in such a case, use \code{saisei(force = TRUE)}. If FALSE, it will be
+returned as an \sQuote{errorValue} 19 (Connection reset).}
 
 \item{token}{[default FALSE] if TRUE, appends a unique 24-character token
 to each URL path the dispatcher listens at (not applicable for TCP URLs

@@ -32,7 +32,8 @@ When a URL is regenerated, the listener at the specified socket is
     If \sQuote{force} is specified as TRUE, the socket is immediately closed
     and regenerated. If this happens while a mirai task is still ongoing, it
     will be returned as an \sQuote{errorValue} 7 (Object closed). This may be
-    used to cancel a task that hangs and does not return.
+    used to cancel a task that consistently hangs or crashes to prevent it
+    from failing repeatedly when new daemons connect.
 }
 \section{Timeouts}{
 

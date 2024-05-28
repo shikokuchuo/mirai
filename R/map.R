@@ -61,7 +61,9 @@
 #'
 #'     Facilitates recovery from partial failure by returning all
 #'     \sQuote{miraiError} / \sQuote{errorValue} as the case may be, thus
-#'     allowing only the failures to be re-run.
+#'     allowing only the failures to be re-run. If using dispatcher,
+#'     \sQuote{retry} should be specified as FALSE to ensure crashes are
+#'     returned as errors.
 #'
 #'     Note: requires daemons to have previously been set. If not, then one
 #'     local daemon is set before the function propceeds.
@@ -97,7 +99,7 @@
 #'
 #' # promises example that outputs the results, including errors, to the console
 #' if (requireNamespace("promises", quietly = TRUE)) {
-#' daemons(1)
+#' daemons(1, dispatcher = FALSE)
 #' ml <- mirai_map(
 #'   1:30,
 #'   function(x) {Sys.sleep(0.1); if (x == 30) stop(x) else x},
@@ -117,7 +119,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
   envir <- ..[[.compute]]
   is.null(envir) && {
     warning(._[["requires_daemons"]], immediate. = TRUE)
-    daemons(n = 1L, dispatcher = FALSE, .compute = .compute)
+    daemons(n = 1L, dispatcher = FALSE, retry = FALSE, .compute = .compute)
     return(mirai_map(.x = .x, .f = .f, ..., .args = .args, .promise = .promise, .compute = .compute))
   }
   vec <- vector(mode = "list", length = length(.x))
