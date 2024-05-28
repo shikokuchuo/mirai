@@ -136,10 +136,13 @@ can mask potential connection issues.</p></dd>
 
 
 <dt>retry</dt>
-<dd><p>[default TRUE] if TRUE, then a failed task will be automatically
-re-tried on the next daemon to connect to that instance. To cancel a task
-in such a case, use <code>saisei(force = TRUE)</code>. If FALSE, it will be
-returned as an ‘errorValue’ 19 (Connection reset).</p></dd>
+<dd><p>[default TRUE] if TRUE, then a task where the daemon crashes or
+terminates unexpectedly will be automatically re-tried on the next daemon
+instance to connect. In such a case, the mirai will remain unresolved but
+<code><a href="status.html">status</a></code> will show ‘online’ as 0 and ‘assigned’
+&gt; ‘complete’. To cancel a task in such a case, use
+<code>saisei(force = TRUE)</code>. If FALSE, such tasks will be returned as
+‘errorValue’ 19 (Connection reset).</p></dd>
 
 
 <dt>token</dt>
