@@ -94,29 +94,37 @@ collect_mirai waits for the &amp;#8216;mirai&amp;#8217; to resolve if still in
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>a ‘mirai’ object.</p></dd>
+<dd><p>a ‘mirai’ object, or list of ‘mirai’ objects.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>For <code>call_mirai</code>: the passed ‘mirai’ (invisibly). The
-    retrieved value is stored at <code>$data</code>.</p>
+<p>For <code>call_mirai</code>: the passed object (invisibly). For a</p>
+<p></p>
+<p>‘mirai’, the retrieved value is stored at <code>$data</code>.</p>
 
 
 <p>For <code>collect_mirai</code>: an object (the return value of the</p>
 <p></p>
-<p>‘mirai’).</p>
+<p>‘mirai’), or a list of such objects (the same length as</p>
+<p></p>
+<p>‘x’, preserving names).</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Both functions accept a list of ‘mirai’ objects, such as that
+    returned by <code><a href="mirai_map.html">mirai_map</a></code> as well as individual ‘mirai’.</p>
     </div>
     <div class="section level2">
     <h2 id="user-interrupts">User Interrupts<a class="anchor" aria-label="anchor" href="#user-interrupts"></a></h2>
     
 
 
-<p>These functions will wait for the asynchronous operation to complete if
-    still in progress (blocking). Designed for production usage, they are not
-    user-interruptible.</p>
+<p>These functions will wait for the asynchronous operation(s) to complete
+    if still in progress (blocking). Designed for production usage, they are
+    not user-interruptible.</p>
 <p><code>x[]</code> may be used to wait for and return the value of a mirai
     <code>x</code>, and is a user-interruptible equivalent to
     <code>collect_mirai(x)</code>.</p>
