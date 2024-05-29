@@ -292,24 +292,23 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
     if (is.null(envir)) {
       envir <- new.env(hash = FALSE, parent = ..)
       tls <- check_create_tls(url = url, tls = tls, envir = envir)
-      cv <- cv()
       create_stream(n = n, seed = seed, envir = envir)
       if (dispatcher) {
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
         if (length(tls)) tls_config(server = tls, pass = pass)
+        cv <- cv()
         dots <- parse_dots(...)
         output <- attr(dots, "output")
         urld <- local_url()
         urlc <- strcat(urld, "c")
         sock <- req_socket(urld)
         sockc <- req_socket(urlc)
-        launch_and_sync_daemon(sock, cv, wa5(urld, dots, n, urlc, url), output, tls, pass) || stop(._[["sync_timeout"]])
+        launch_and_sync_daemon(sock, wa5(urld, dots, n, urlc, url), output, tls, pass) || stop(._[["sync_timeout"]])
         init_monitor(sockc = sockc, envir = envir)
         `[[<-`(envir, "cv", cv)
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass))
         store_urls(sock = sock, envir = envir)
-        `[[<-`(envir, "cv2", cv)
         n <- 0L
       }
       `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
@@ -343,23 +342,23 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       n > 0L || stop(._[["n_zero"]])
       envir <- new.env(hash = FALSE, parent = ..)
       urld <- local_url()
-      cv <- cv()
       create_stream(n = n, seed = seed, envir = envir)
       dots <- parse_dots(...)
       output <- attr(dots, "output")
       if (dispatcher) {
+        cv <- cv()
         sock <- req_socket(urld)
         urlc <- strcat(urld, "c")
         sockc <- req_socket(urlc)
-        launch_and_sync_daemon(sock, cv, wa4(urld, dots, envir[["stream"]], n, urlc), output) || stop(._[["sync_timeout"]])
+        launch_and_sync_daemon(sock, wa4(urld, dots, envir[["stream"]], n, urlc), output) || stop(._[["sync_timeout"]])
         for (i in seq_len(n)) next_stream(envir)
         init_monitor(sockc = sockc, envir = envir)
         `[[<-`(envir, "cv", cv)
       } else {
         sock <- req_socket(urld)
         for (i in seq_len(n))
-          launch_and_sync_daemon(sock, cv, wa3(urld, dots, next_stream(envir)), output)
-        `[[<-`(`[[<-`(envir, "urls", urld), "cv2", cv)
+          launch_and_sync_daemon(sock, wa3(urld, dots, next_stream(envir)), output)
+        `[[<-`(envir, "urls", urld)
       }
       `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
       serialization_refhook()
@@ -604,7 +603,8 @@ wa5 <- function(urld, dots, n, urlc, url)
 launch_daemon <- function(args, output)
   system2(command = .command, args = c("-e", args), stdout = output, stderr = output, wait = FALSE)
 
-launch_and_sync_daemon <- function(sock, cv, args, output, tls = NULL, pass = NULL) {
+launch_and_sync_daemon <- function(sock, args, output, tls = NULL, pass = NULL) {
+  cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE)
   if (is.character(tls)) {
     switch(
@@ -626,7 +626,9 @@ launch_and_sync_daemon <- function(sock, cv, args, output, tls = NULL, pass = NU
     }
   }
   launch_daemon(args, output)
-  until(cv, .limit_long)
+  res <- until(cv, .limit_long)
+  pipe_notify(sock, cv = NULL, add = TRUE)
+  res
 }
 
 init_monitor <- function(sockc, envir) {
