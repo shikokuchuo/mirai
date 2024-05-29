@@ -47,8 +47,8 @@ nanotest(mirai:::is.promising.mirai())
 nanotestn(nextstream())
 nanotestn(nextget("pid"))
 Sys.sleep(2.5)
-# mirai tests
-if (connection) {
+# mirai and daemons tests
+connection && {
   n <- function() m
   m <- mirai({
     Sys.sleep(0.1)
@@ -64,9 +64,6 @@ if (connection) {
   nanotest(is_error_value(call_mirai_(m)$data) || m$data == 8L)
   nanotestn(stop_mirai(m))
   Sys.sleep(2.5)
-}
-# daemons tests
-if (connection) {
   nanotesto(d <- daemons(1L, dispatcher = FALSE, seed = 1546L))
   nanotestp(d)
   me <- mirai(mirai::mirai(), .timeout = 2000L)
@@ -98,9 +95,10 @@ if (connection) {
   nanotest(is.integer(status(.compute = "new")[["connections"]]))
   nanotestz(daemons(0L, .compute = "new"))
   Sys.sleep(1L)
+  NA
 }
 # additional daemons tests
-if (connection && .Platform[["OS.type"]] != "windows") {
+connection && .Platform[["OS.type"]] != "windows" && {
   nanotest(daemons(url = value <- local_url(), dispatcher = FALSE) == value)
   nanotesti(status()$daemons, nextget("urls"))
   nanotestz(daemons(0L))
@@ -121,11 +119,12 @@ if (connection && .Platform[["OS.type"]] != "windows") {
   nanotesti(collect_mirai(mp)[["x"]], "ab")
   nanotesti(call_mirai(mp)[["x"]][["data"]], "ab")
   Sys.sleep(2.5)
+  NA
 }
 # parallel cluster tests
 library(parallel)
 nanotestn(tryCatch(mirai::register_cluster(), error = function(e) NULL))
-if (connection) {
+connection && {
   cluster <- make_cluster(1)
   nanotest(inherits(cluster, "miraiCluster"))
   nanotest(inherits(cluster, "cluster"))
@@ -182,9 +181,10 @@ if (connection) {
   nanotestp(cl <- make_cluster(n = 1, url = local_url(), remote = remote_config()))
   nanotestn(stopCluster(cl))
   Sys.sleep(1L)
+  NA
 }
 # advanced daemons and dispatcher tests
-if (connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "true") {
+connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "true" && {
   nanotesto(daemons(url = local_url(), dispatcher = TRUE))
   nanotest(grepl("://", launch_remote(1L), fixed = TRUE))
   nanotestn(launch_local(nextget("urls")))
@@ -199,12 +199,9 @@ if (connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") 
   }
   Sys.sleep(1L)
   nanotestz(daemons(NULL))
-  Sys.sleep(1L)
   nanotesto(daemons(url = "ws://:0", token = TRUE))
   nanotestz(daemons(0L))
-  Sys.sleep(1L)
   nanotestz(with(daemons(url = "tcp://:0", token = TRUE), {8L - 9L + 1L}))
-  Sys.sleep(1L)
   nanotest(daemons(n = 2, "ws://:0") == 2L)
   nanotest(is.integer(nextget("pid")))
   nanotest(length(nextget("urls")) == 2L)
@@ -226,9 +223,7 @@ if (connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") 
   nanotestn(saisei(i = 0L))
   nanotest(is.character(saisei(i = 1L, force = TRUE)))
   nanotestn(saisei(i = 10L))
-  Sys.sleep(1L)
   nanotestz(daemons(0))
-  Sys.sleep(1L)
   nanotest(daemons(n = 2, "tcp://127.0.0.1:45555") == 2L)
   Sys.sleep(1L)
   nanotestn(launch_local(nextget("urls", .compute = "default")[1L], maxtasks = 1L))
@@ -245,7 +240,6 @@ if (connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") 
   nanotestz(sum(tstatus[, "assigned"]))
   nanotestz(sum(tstatus[, "complete"]))
   nanotestz(daemons(0))
-  Sys.sleep(1L)
   nanotest(is.list(serialization(list(function(x) serialize(x, NULL), unserialize))))
   nanotest(is.function(serialization()[[1L]]))
   nanotesto(daemons(url = "wss://127.0.0.1:0", token = TRUE, pass = "test"))
@@ -259,9 +253,7 @@ if (connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") 
   nanotestn(saisei(1))
   nanotesterr(launch_local(0:1), "out of bounds")
   nanotesterr(launch_remote(1:2), "out of bounds")
-  nanotestz(daemons(0L))
   nanotestn(unlist(serialization(NULL)))
-  Sys.sleep(1L)
   option <- 15L
   nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 1000L, seed = 1546, token = TRUE, cleanup = option, autoexit = tools::SIGCONT))
   Sys.sleep(1L)
@@ -280,5 +272,5 @@ if (connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") 
   }
   nanotest(test_tls(nanonext::write_cert(cn = "127.0.0.1")))
   Sys.sleep(1L)
+  NA
 }
-Sys.sleep(1L)
