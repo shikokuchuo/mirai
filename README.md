@@ -28,20 +28,6 @@ communications or TCP/IP secured by TLS. <br /><br />
 
 > *mirai パッケージを試してみたところ、かなり速くて驚きました*
 
-### Installation
-
-Install the latest release from CRAN:
-
-``` r
-install.packages("mirai")
-```
-
-Or the development version from R-universe:
-
-``` r
-install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
-```
-
 ### Quick Start
 
 Use `mirai()` to evaluate an expression asynchronously in a separate,
@@ -56,7 +42,7 @@ input <- list(x = 2, y = 5, z = double(1e8))
 
 m <- mirai(
   {
-    res <- rnorm(1e8, mean = mean, sd = sd)
+    res <- rnorm(1e6, mean = mean, sd = sd)
     max(res) - min(res)
   },
   mean = input$x,
@@ -90,15 +76,20 @@ result.
 
 ``` r
 m$data
-#> [1] 55.88768
+#> [1] 48.92354
 ```
 
 Alternatively, to wait for and collect the result, use the `[]` method:
 
 ``` r
 m[]
-#> [1] 55.88768
+#> [1] 48.92354
 ```
+
+### Videos
+
+[<img alt="Joe Cheng on mirai with Shiny" src="https://img.youtube.com/vi/GhX0PcEm3CY/hqdefault.jpg" width = "300" />](https://youtu.be/GhX0PcEm3CY?t=1742)
+[<img alt="Will Landau on mirai in clinical trials" src="https://img.youtube.com/vi/cyF2dzloVLo/hqdefault.jpg" width = "300" />](https://youtu.be/cyF2dzloVLo?t=5129)
 
 ### Daemons
 
@@ -214,6 +205,20 @@ efficient solution to serialization and transmission of `torch` tensors.
 [<img alt="R Consortium" src="https://www.r-consortium.org/wp-content/uploads/sites/13/2016/09/RConsortium_Horizontal_Pantone.png" width="100" />](https://www.r-consortium.org/) 
 for funding work on the TLS implementation in `nanonext`, used to
 provide secure connections in `mirai`.
+
+### Installation
+
+Install the latest release from CRAN:
+
+``` r
+install.packages("mirai")
+```
+
+Or the development version from R-universe:
+
+``` r
+install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
+```
 
 ### Links
 

@@ -38,20 +38,6 @@ Modern, high performance networking and concurrency built on [nanonext](https://
 
 > *mirai パッケージを試してみたところ、かなり速くて驚きました*
 
-### Installation
-
-Install the latest release from CRAN:
-
-```{r cran, eval=FALSE}
-install.packages("mirai")
-```
-
-Or the development version from R-universe:
-
-```{r universe, eval=FALSE}
-install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
-```
-
 ### Quick Start
 
 Use `mirai()` to evaluate an expression asynchronously in a separate, clean R process.
@@ -65,7 +51,7 @@ input <- list(x = 2, y = 5, z = double(1e8))
 
 m <- mirai(
   {
-    res <- rnorm(1e8, mean = mean, sd = sd)
+    res <- rnorm(1e6, mean = mean, sd = sd)
     max(res) - min(res)
   },
   mean = input$x,
@@ -103,6 +89,11 @@ Alternatively, to wait for and collect the result, use the `[]` method:
 ```{r call}
 m[]
 ```
+
+### Videos
+
+[<img alt="Joe Cheng on mirai with Shiny" src="https://img.youtube.com/vi/GhX0PcEm3CY/hqdefault.jpg" width = "300" />](https://youtu.be/GhX0PcEm3CY?t=1742)
+[<img alt="Will Landau on mirai in clinical trials" src="https://img.youtube.com/vi/cyF2dzloVLo/hqdefault.jpg" width = "300" />](https://youtu.be/cyF2dzloVLo?t=5129)
 
 ### Daemons
 
@@ -167,6 +158,20 @@ We would like to thank in particular:
 [Kirill Müller](https://github.com/krlmlr/) for discussion on using 'daemons' to host Arrow database connections.
 
 [<img alt="R Consortium" src="https://www.r-consortium.org/wp-content/uploads/sites/13/2016/09/RConsortium_Horizontal_Pantone.png" width="100" />](https://www.r-consortium.org/)&nbsp; for funding work on the TLS implementation in `nanonext`, used to provide secure connections in `mirai`.
+
+### Installation
+
+Install the latest release from CRAN:
+
+```{r cran, eval=FALSE}
+install.packages("mirai")
+```
+
+Or the development version from R-universe:
+
+```{r universe, eval=FALSE}
+install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
+```
 
 ### Links
 
