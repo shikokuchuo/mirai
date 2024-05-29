@@ -240,9 +240,9 @@ create_node <- function(node, id)
     list(class = "miraiNode", node = node, id = id)
   )
 
-set_cv <- function(envir) envir[["cv"]] <- envir[["cvs"]]
+set_cv <- function(envir) `[[<-`(envir, "cv", envir[["cvs"]])
 
-unset_cv <- function(envir) envir[["cv"]] <- NULL
+unset_cv <- function(envir) `[[<-`(envir, "cv", NULL)
 
 node_unresolved <- function(node) {
   m <- .subset2(node, "mirai")

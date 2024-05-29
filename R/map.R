@@ -36,7 +36,7 @@
 #'     \CRANpkg{promises} package.
 #' @inheritParams mirai
 #'
-#' @return A \sQuote{mirai_map} object (list of \sQuote{mirai} objects).
+#' @return A \sQuote{mirai_map} (list of \sQuote{mirai} objects).
 #'
 #' @section Results:
 #'
@@ -82,8 +82,10 @@
 #'   function(x) do(x, as.logical(x %% 2)),
 #'   do = nanonext::random
 #' )
+#' unresolved(mp)
 #' mp
 #' mp[]
+#' unresolved(mp)
 #'
 #' # progress indicator counts up to 4 seconds
 #' res <- mirai_map(1:4, Sys.sleep)[.progress]

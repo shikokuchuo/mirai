@@ -360,7 +360,7 @@ call_mirai_ <- function(x) call_aio_(x)
 #' Stops a \sQuote{mirai} if still in progress, causing it to resolve
 #'     immediately to an \sQuote{errorValue} 20 (Operation canceled).
 #'
-#' @param x a \sQuote{mirai} object.
+#' @inheritParams call_mirai
 #'
 #' @return Invisible NULL.
 #'
@@ -389,15 +389,16 @@ stop_mirai <- function(x) stop_aio(x)
 
 #' Query if a mirai is Unresolved
 #'
-#' Query whether a \sQuote{mirai} or \sQuote{mirai} value remains unresolved.
-#'     Unlike \code{\link{call_mirai}}, this function does not wait for
-#'     completion.
+#' Query whether a \sQuote{mirai}, \sQuote{mirai} value or list of \sQuote{mirai}
+#'     remains unresolved. Unlike \code{\link{call_mirai}}, this function does
+#'     not wait for completion.
 #'
-#' @param x a \sQuote{mirai} object or \sQuote{mirai} value stored at
-#'     \code{$data}.
+#' @param x a \sQuote{mirai} object or list of \sQuote{mirai} objects, or a
+#'     \sQuote{mirai} value stored at \code{$data}.
 #'
 #' @return Logical TRUE if \sQuote{aio} is an unresolved \sQuote{mirai} or
-#'     \sQuote{mirai} value, or FALSE otherwise.
+#'     \sQuote{mirai} value or the list contains at least one unresolved
+#'     \sQuote{mirai}, or FALSE otherwise.
 #'
 #' @details Suitable for use in control flow statements such as \code{while} or
 #'     \code{if}.

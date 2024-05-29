@@ -7,7 +7,7 @@
 stop_mirai(x)
 }
 \arguments{
-\item{x}{a \sQuote{mirai} object.}
+\item{x}{a \sQuote{mirai} object, or list of \sQuote{mirai} objects.}
 }
 \value{
 Invisible NULL.

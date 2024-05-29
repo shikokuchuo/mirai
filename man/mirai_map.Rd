@@ -29,7 +29,7 @@ respectively to \sQuote{onFulfilled} and \sQuote{onRejected} for
 to use (each compute profile has its own independent set of daemons).}
 }
 \value{
-A \sQuote{mirai_map} object (list of \sQuote{mirai} objects).
+A \sQuote{mirai_map} (list of \sQuote{mirai} objects).
 }
 \description{
 Asynchronous parallel / distributed map of a function over a list or vector
@@ -82,8 +82,10 @@ mp <- mirai_map(
   function(x) do(x, as.logical(x \%\% 2)),
   do = nanonext::random
 )
+unresolved(mp)
 mp
 mp[]
+unresolved(mp)
 
 # progress indicator counts up to 4 seconds
 res <- mirai_map(1:4, Sys.sleep)[.progress]
