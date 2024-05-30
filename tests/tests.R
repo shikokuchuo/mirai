@@ -115,7 +115,7 @@ connection && .Platform[["OS.type"]] != "windows" && {
       mirai_map(1:3, rnorm, .args = list(mean = 20, 2), .compute = "ml")[.progress]
   })
   nanotest(is.list(m) && length(m) == 3L && all(as.logical(lapply(m, is.numeric))))
-  nanotestp(mp <- mirai_map(list(x = "a"), function(...) do(...), do = nanonext::strcat, .args = list("b")))
+  nanotestp(mp <- mirai_map(list(x = "a"), function(...) do(...), do = function(x, y) sprintf("%s%s", x, y), .args = list("b")))
   nanotesti(collect_mirai(mp)[["x"]], "ab")
   nanotesti(call_mirai(mp)[["x"]][["data"]], "ab")
   Sys.sleep(2.5)

@@ -215,11 +215,7 @@ print.miraiNode <- function(x, ...) {
 #'     function relies on iis currently only available in R-devel (4.5).
 #'
 #' @examples
-#' tryCatch(
-#'
-#' mirai::register_cluster()
-#'
-#' , error = identity)
+#' tryCatch(mirai::register_cluster(), error = identity)
 #'
 #' @keywords internal
 #' @export

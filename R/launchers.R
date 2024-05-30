@@ -384,7 +384,7 @@ host_url <- function(ws = FALSE, tls = FALSE, port = 0)
 #' @rdname host_url
 #' @export
 #'
-local_url <- function() strcat(.urlscheme, random(12L))
+local_url <- function() sprintf("%s%s", .urlscheme, random(12L))
 
 #' @export
 #'

@@ -300,7 +300,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         dots <- parse_dots(...)
         output <- attr(dots, "output")
         urld <- local_url()
-        urlc <- strcat(urld, "c")
+        urlc <- sprintf("%s%s", urld, "c")
         sock <- req_socket(urld)
         sockc <- req_socket(urlc)
         launch_and_sync_daemon(sock, wa5(urld, dots, n, urlc, url), output, tls, pass) || stop(._[["sync_timeout"]])
@@ -348,7 +348,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       if (dispatcher) {
         cv <- cv()
         sock <- req_socket(urld)
-        urlc <- strcat(urld, "c")
+        urlc <- sprintf("%s%s", urld, "c")
         sockc <- req_socket(urlc)
         launch_and_sync_daemon(sock, wa4(urld, dots, envir[["stream"]], n, urlc), output) || stop(._[["sync_timeout"]])
         for (i in seq_len(n)) next_stream(envir)
@@ -577,7 +577,7 @@ parse_dots <- function(...) {
   for (dot in dots)
     is.numeric(dot) || is.logical(dot) || stop(._[["wrong_dots"]])
   dnames <- names(dots)
-  out <- strcat(",", paste(dnames, dots, sep = "=", collapse = ","))
+  out <- sprintf(",%s", paste(dnames, dots, sep = "=", collapse = ","))
   pos <- dnames == "output"
   any(pos) && as.logical(dots[pos])[1L] && return(`attr<-`(out, "output", ""))
   out
