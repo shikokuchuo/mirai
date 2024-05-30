@@ -14,7 +14,7 @@ status](https://shikokuchuo.r-universe.dev/badges/mirai?color=44ac19)](https://s
 [![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)
 <!-- badges: end -->
 
-### みらい
+### ミライ
 
 <br /> ( 未来 ) <br /><br /> Minimalist Async Evaluation Framework for R
 <br /><br /> Lightweight parallel code execution and distributed
@@ -76,14 +76,14 @@ result.
 
 ``` r
 m$data
-#> [1] 44.99985
+#> [1] 47.47632
 ```
 
 Alternatively, to wait for and collect the result, use the `[]` method:
 
 ``` r
 m[]
-#> [1] 44.99985
+#> [1] 47.47632
 ```
 
 ### Videos
