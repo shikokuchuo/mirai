@@ -17,14 +17,14 @@ status](https://shikokuchuo.r-universe.dev/badges/mirai?color=44ac19)](https://s
 ### ミライ
 
 <br /> ( 未来 ) <br /><br /> Minimalist Async Evaluation Framework for R
-<br /><br /> Lightweight parallel code execution and distributed
+<br /><br /> High performance parallel code execution and distributed
 computing. <br /><br /> Designed for simplicity, a ‘mirai’ evaluates an
 R expression asynchronously, on local or network resources, resolving
-automatically upon completion. <br /><br /> Modern, high performance
-networking and concurrency built on
-[nanonext](https://doi.org/10.5281/zenodo.7903429) and NNG (Nanomsg Next
-Gen) ensures reliable and efficient scheduling over fast inter-process
-communications or TCP/IP secured by TLS. <br /><br />
+automatically upon completion. <br /><br /> Modern networking and
+concurrency built on [nanonext](https://doi.org/10.5281/zenodo.7903429)
+and NNG (Nanomsg Next Gen) ensures reliable and efficient scheduling,
+over fast inter-process communications or TCP/IP secured by TLS.
+<br /><br />
 
 > *mirai パッケージを試してみたところ、かなり速くて驚きました*
 
@@ -76,14 +76,14 @@ result.
 
 ``` r
 m$data
-#> [1] 47.47632
+#> [1] 45.60523
 ```
 
 Alternatively, to wait for and collect the result, use the `[]` method:
 
 ``` r
 m[]
-#> [1] 47.47632
+#> [1] 45.60523
 ```
 
 ### Videos

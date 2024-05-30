@@ -16,11 +16,11 @@
 
 #' mirai: Minimalist Async Evaluation Framework for R
 #'
-#' Lightweight parallel code execution and distributed computing. Designed for
-#'     simplicity, a 'mirai' evaluates an R expression asynchronously, on local
-#'     or network resources, resolving automatically upon completion. Modern,
-#'     high performance networking and concurrency built on 'nanonext' and 'NNG'
-#'     (Nanomsg Next Gen) ensures reliable and efficient scheduling over fast
+#' High performance parallel code execution and distributed computing. Designed
+#'     for simplicity, a 'mirai' evaluates an R expression asynchronously, on
+#'     local or network resources, resolving automatically upon completion.
+#'     Modern networking and concurrency built on 'nanonext' and 'NNG' (Nanomsg
+#'     Next Gen) ensures reliable and efficient scheduling, over fast
 #'     inter-process communications or TCP/IP secured by TLS.
 #'
 #' @section Notes:
