@@ -183,6 +183,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
 .daemon <- function(url) {
 
   sock <- socket(protocol = "rep", dial = url, autostart = NA)
+  on.exit(reap(sock))
   data <- eval_mirai(recv(sock, mode = 1L, block = TRUE))
   send(sock, data = data, mode = 1L, block = TRUE)
   msleep(2000L)

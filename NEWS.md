@@ -1,4 +1,4 @@
-# mirai 1.0.0.9020 (development)
+# mirai 1.0.0.9021 (development)
 
 * Adds `mirai_map()` for asynchronous parallel/distributed map using `mirai`, with `promises` integration. Allows recovery from partial failure or else early stopping, together with optional progress reporting.
   + `x[]` collects the results of a mirai_map `x`, waiting for all asynchronous operations to complete.
@@ -13,7 +13,7 @@
 * New argument 'retry' at `dispatcher()` governs whether to auto-retry in the dispatcher case.
 * Fixes promises method for potential crashes when launching improbably short-lived mirai.
 * Fixes bug that could cause a hang or crash when launching additional non-dispatcher daemons.
-* Requires `nanonext` >= [1.0.0.9020].
+* Requires `nanonext` >= [1.0.0.9021].
 
 # mirai 1.0.0
 
