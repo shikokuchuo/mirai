@@ -419,9 +419,9 @@ stop_mirai <- function(x) stop_aio(x)
 #'
 #' @export
 #'
-unresolved <- function(x) .unresolved(x)
+unresolved <- function(x) unresolved_impl(x)
 
-.unresolved <- nanonext::unresolved
+unresolved_impl <- nanonext::unresolved
 
 #' Is mirai
 #'
@@ -509,7 +509,7 @@ is_error_value <- is_error_value
 #'
 print.mirai <- function(x, ...) {
 
-  cat("< mirai | $data >\n", file = stdout())
+  cat(if (.unresolved(x)) "< mirai [] >\n" else "< mirai [ $data ] >\n", file = stdout())
   invisible(x)
 
 }

@@ -50,7 +50,7 @@ m <- mirai(
 )
 
 m
-#> < mirai | $data >
+#> < mirai [] >
 ```
 
 Above, all specified `name = value` pairs are passed through to the
@@ -76,14 +76,14 @@ result.
 
 ``` r
 m$data
-#> [1] 47.6056
+#> [1] 47.00301
 ```
 
 Alternatively, to wait for and collect the result, use the `[]` method:
 
 ``` r
 m[]
-#> [1] 47.6056
+#> [1] 47.00301
 ```
 
 ### Production Usage

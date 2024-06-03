@@ -1,4 +1,4 @@
-# mirai 1.0.0.9021 (development)
+# mirai 1.0.0.9022 (development)
 
 * Adds `mirai_map()` for asynchronous parallel/distributed map using `mirai`, with `promises` integration. Allows recovery from partial failure or else early stopping, together with optional progress reporting.
   + `x[]` collects the results of a mirai_map `x`, waiting for all asynchronous operations to complete.
@@ -6,6 +6,7 @@
   + `x[.stop]` collects the results applying early-stopping, which stops at the first error, and aborts remaining in-progress operations.
 * Adds the 'mirai' method `x[]` as a more efficient equivalent of the interruptible `call_mirai_(x)$data`.
   + Use of `call_mirai_()` is consequently deprecated.
+* Improved mirai print method indicates whether a mirai has resolved.
 * Adds `collect_mirai()` as a more efficient equivalent of non-interruptible `call_mirai(x)$data`.
 * `unresolved()`, `call_mirai()`, `collect_mirai()` and `stop_mirai()` now accept a list of 'mirai' such as that returned by `mirai_map()`.
 * Calling `daemons()` with new settings when the compute profile is already set now implicitly resets daemons before applying the new settings instead of silently doing nothing.
@@ -13,7 +14,7 @@
 * New argument 'retry' at `dispatcher()` governs whether to auto-retry in the dispatcher case.
 * Fixes promises method for potential crashes when launching improbably short-lived mirai.
 * Fixes bug that could cause a hang or crash when launching additional non-dispatcher daemons.
-* Requires `nanonext` >= [1.0.0.9021].
+* Requires `nanonext` >= [1.0.0.9022].
 
 # mirai 1.0.0
 

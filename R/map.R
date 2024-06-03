@@ -172,7 +172,8 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
 #'
 print.mirai_map <- function(x, ...) {
 
-  cat(sprintf("< mirai map | %d items >\n", length(x)), file = stdout())
+  xlen <- length(x)
+  cat(sprintf("< mirai map [ %d / %d ] >\n", xlen - .unresolved(x), xlen), file = stdout())
   invisible(x)
 
 }
