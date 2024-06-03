@@ -14,7 +14,7 @@
 * New argument 'retry' at `dispatcher()` governs whether to auto-retry in the dispatcher case.
 * Fixes promises method for potential crashes when launching improbably short-lived mirai.
 * Fixes bug that could cause a hang or crash when launching additional non-dispatcher daemons.
-* Requires `nanonext` >= [1.0.0.9022].
+* Requires `nanonext` >= 1.1.0.
 
 # mirai 1.0.0
 
