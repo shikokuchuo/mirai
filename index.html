@@ -35,7 +35,7 @@
     
     <a class="navbar-brand me-2" href="index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9021</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9022</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -125,7 +125,7 @@
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">m</span></span>
-<span><span class="co">#&gt; &lt; mirai | $data &gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt; mirai [] &gt;</span></span></code></pre></div>
 <p>Above, all specified <code>name = value</code> pairs are passed through to the ‘mirai’.</p>
 <p>The ‘mirai’ yields an ‘unresolved’ logical NA whilst the async operation is ongoing.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -138,11 +138,11 @@
 <p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] 47.6056</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 47.00301</span></span></code></pre></div>
 <p>Alternatively, to wait for and collect the result, use the <code>[]</code> method:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 47.6056</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 47.00301</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="production-usage">Production Usage<a class="anchor" aria-label="anchor" href="#production-usage"></a>
