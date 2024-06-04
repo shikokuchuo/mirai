@@ -23,29 +23,21 @@ The following represents a simple example, which sets up 2 local daemons, and th
 ```{r db1}
 file <- tempfile()
 library(mirai)
-
 daemons(2)
-
 everywhere({
   library(DBI)
   con <<- dbConnect(RSQLite::SQLite(), file)
 }, file = file)
-
 ```
-
 `mirai()` calls may then be used to write to or query the database, and may be executed on either daemon.
-
 ```{r db2}
 m <- mirai(dbWriteTable(con, "iris", iris))
 m[]
-
 m <- mirai(dbListTables(con))
 m[]
-
 m <- mirai(dbGetQuery(con, 'SELECT * FROM iris WHERE "Sepal.Length" < 4.6'))
 m[]
 ```
-
 `everywhere()` can be used again to cleanly tear down the databases, before resetting daemons.
 ```{r db3}
 everywhere(dbDisconnect(con))
@@ -62,37 +54,27 @@ Serialization is set up with the relevant serialization and deserialization func
 
 ```{r arrow1}
 library(mirai)
-
 daemons(1)
-
 everywhere({
   library(DBI) # `adbi` and `adbcsqlite` packages must also be installed
   con <<- dbConnect(adbi::adbi("adbcsqlite"), uri = ":memory:")
 })
-
 serialization(
   refhook = list(arrow::write_to_raw,
                  function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)),
   class = "nanoarrow_array_stream"
 )
-
 ```
-
 `mirai()` calls may then be used to write to or query the database all in the Arrow format.
-
 ```{r arrow2}
 m <- mirai(dbWriteTableArrow(con, "iris", iris))
 m[]
-
 m <- mirai(dbReadTableArrow(con, "iris"))
 m[]
-
 m <- mirai(dbGetQueryArrow(con, 'SELECT * FROM iris WHERE "Sepal.Length" < 4.6'))
 m[]
 ```
-
 Due to the tight integration of the `mirai` serialization mechanism with R's 'refhook' system, we can easily return complex / nested objects containing multiple queries in the Arrow format:
-
 ```{r arrow3}
 m <- mirai({
   a <- dbGetQueryArrow(con, 'SELECT * FROM iris WHERE "Sepal.Length" < 4.6')
@@ -103,7 +85,6 @@ m <- mirai({
 })
 m[]
 ```
-
 As before, `everywhere()` can be used again to cleanly tear down the databases, before resetting daemons.
 ```{r arrow4}
 everywhere(dbDisconnect(con))

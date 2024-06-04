@@ -29,7 +29,6 @@ library(mirai)
 
 cl <- make_cluster(4)
 cl
-
 parallel::parLapply(cl, iris, mean)
 ```
 ```{r sleep, echo=FALSE}
@@ -38,13 +37,11 @@ Sys.sleep(1L)
 `status()` may be called on a 'miraiCluster` to query the number of connected nodes at any time.
 ```{r cluster2}
 status(cl)
-
 stop_cluster(cl)
 ```
 Making a cluster specifying 'url' without 'remote' causes the shell commands for manual deployment of nodes to be printed to the console.
 ```{r cluster3}
 cl <- make_cluster(n = 2, url = host_url())
-
 stop_cluster(cl)
 ```
 
@@ -65,7 +62,6 @@ doParallel::registerDoParallel(cl)
 m <- matrix(rnorm(9), 3, 3)
 foreach(i = 1:nrow(m), .combine = rbind) %dopar%
   (m[i, ] / mean(m[i, ]))
-
 # simple parallel matrix multiply
 a <- matrix(1:16, 4, 4)
 b <- t(a)

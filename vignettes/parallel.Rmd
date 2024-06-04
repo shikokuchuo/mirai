@@ -19,13 +19,15 @@ vignette: >
 
 Created clusters may be used for any function in the `parallel` base package such as `parallel::clusterApply()` or `parallel::parLapply()`, or the load-balanced versions such as `parallel::parLapplyLB()`.
 
-```r
+``` r
 library(mirai)
 
 cl <- make_cluster(4)
 cl
-#> < miraiCluster | ID: `0` nodes: 4 active: TRUE >
+#> < miraiCluster | ID: `4` nodes: 4 active: TRUE >
+```
 
+``` r
 parallel::parLapply(cl, iris, mean)
 #> $Sepal.Length
 #> [1] 5.843333
@@ -45,28 +47,32 @@ parallel::parLapply(cl, iris, mean)
 
 `status()` may be called on a 'miraiCluster` to query the number of connected nodes at any time.
 
-```r
+``` r
 status(cl)
 #> $connections
 #> [1] 4
 #> 
 #> $daemons
-#> [1] "abstract://717bd47029c15a6c3421c3be"
+#> [1] "abstract://72c96e3b8c531fe9d5c32bfa"
+```
 
+``` r
 stop_cluster(cl)
 ```
 Making a cluster specifying 'url' without 'remote' causes the shell commands for manual deployment of nodes to be printed to the console.
 
-```r
+``` r
 cl <- make_cluster(n = 2, url = host_url())
 #> Shell commands for deployment on nodes:
 #> 
 #> [1]
-#> Rscript -e "mirai::daemon('tcp://hostname:41557',rs=c(10407,-649272372,-839924131,-596536966,-590434125,19895896,-199893895))"
+#> Rscript -e "mirai::daemon('tcp://hostname:45985',rs=c(10407,-409141256,1907397017,-1822270330,1627186511,1735893828,-1856229003))"
 #> 
 #> [2]
-#> Rscript -e "mirai::daemon('tcp://hostname:41557',rs=c(10407,276960266,-2035903300,-1874904835,1952875809,1359474491,-567028289))"
+#> Rscript -e "mirai::daemon('tcp://hostname:45985',rs=c(10407,1184372690,-983753352,952506510,543524672,1744308145,-1294231923))"
+```
 
+``` r
 stop_cluster(cl)
 ```
 
@@ -77,7 +83,7 @@ A 'miraiCluster' may also be registered by [`doParallel`](https://cran.r-project
 Running some parallel examples for the `foreach()` function:
 
 
-```r
+``` r
 library(foreach)
 library(iterators)
 
@@ -88,11 +94,13 @@ doParallel::registerDoParallel(cl)
 m <- matrix(rnorm(9), 3, 3)
 foreach(i = 1:nrow(m), .combine = rbind) %dopar%
   (m[i, ] / mean(m[i, ]))
-#>               [,1]      [,2]      [,3]
-#> result.1  4.948511 -2.514537 0.5660261
-#> result.2 -1.880495  3.198433 1.6820612
-#> result.3 -1.015714  2.203200 1.8125144
+#>               [,1]       [,2]      [,3]
+#> result.1 1.5236796  0.6250741 0.8512463
+#> result.2 1.4332458  0.1446897 1.4220646
+#> result.3 0.4319478 -0.2369253 2.8049775
+```
 
+``` r
 # simple parallel matrix multiply
 a <- matrix(1:16, 4, 4)
 b <- t(a)

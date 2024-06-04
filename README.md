@@ -22,11 +22,17 @@ computing. <br /><br /> Designed for simplicity, a ‘mirai’ evaluates an
 R expression asynchronously, on local or network resources, resolving
 automatically upon completion. <br /><br /> Modern networking and
 concurrency built on [nanonext](https://doi.org/10.5281/zenodo.7903429)
-and NNG (Nanomsg Next Gen) ensures reliable and efficient scheduling,
-over fast inter-process communications or TCP/IP secured by TLS.
-<br /><br />
+and [NNG (Nanomsg Next Gen)](https://nng.nanomsg.org/) ensures reliable
+and efficient scheduling, over fast inter-process communications or
+TCP/IP secured by TLS. <br /><br />
 
 > *mirai パッケージを試してみたところ、かなり速くて驚きました*
+
+### Production-Grade Compute
+
+[<img alt="Joe Cheng on mirai with Shiny" src="https://img.youtube.com/vi/GhX0PcEm3CY/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/GhX0PcEm3CY?t=1740)
+ 
+[<img alt="Will Landau on mirai in clinical trials" src="https://img.youtube.com/vi/cyF2dzloVLo/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/cyF2dzloVLo?t=5127)
 
 ### Quick Start
 
@@ -48,16 +54,18 @@ m <- mirai(
   mean = input$x,
   sd = input$y
 )
-
-m
-#> < mirai [] >
 ```
 
-Above, all specified `name = value` pairs are passed through to the
-‘mirai’.
+Above, all `name = value` pairs are passed through to the mirai via the
+`...` argument.
 
-The ‘mirai’ yields an ‘unresolved’ logical NA whilst the async operation
-is ongoing.
+The mirai prints ‘unresolved’ whilst the async operation is ongoing, and
+attempting to access the data yields an ‘unresolved’ logical NA.
+
+``` r
+m
+#> < mirai [ unresolved ] >
+```
 
 ``` r
 m$data
@@ -68,29 +76,30 @@ To check whether a mirai has resolved:
 
 ``` r
 unresolved(m)
-#> [1] FALSE
+#> [1] TRUE
 ```
 
-Upon completion, the ‘mirai’ resolves automatically to the evaluated
-result.
-
-``` r
-m$data
-#> [1] 47.00301
-```
-
-Alternatively, to wait for and collect the result, use the `[]` method:
+To wait for and collect the evaluated result, use the mirai’s `[]`
+method:
 
 ``` r
 m[]
-#> [1] 47.00301
+#> [1] 49.52368
 ```
 
-### Production Usage
+It is not necessary to wait, as the mirai resolves automatically
+whenever the async operation completes, the evaluated result then
+available at `$data`.
 
-[<img alt="Joe Cheng on mirai with Shiny" src="https://img.youtube.com/vi/GhX0PcEm3CY/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/GhX0PcEm3CY?t=1740)
- 
-[<img alt="Will Landau on mirai in clinical trials" src="https://img.youtube.com/vi/cyF2dzloVLo/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/cyF2dzloVLo?t=5127)
+``` r
+m
+#> < mirai [ $data ] >
+```
+
+``` r
+m$data
+#> [1] 49.52368
+```
 
 ### Daemons
 
@@ -114,9 +123,7 @@ connections](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-compu
 can be automatically-configured on-the-fly for remote daemon
 connections.
 
-Refer to the [{mirai}
-vignette](https://shikokuchuo.net/mirai/articles/mirai.html) for full
-package functionality. This may be accessed within R by:
+The mirai vignette may be accessed within R by:
 
 ``` r
 vignette("mirai", package = "mirai")
@@ -223,14 +230,11 @@ install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
 
 ### Links
 
-◈ mirai R package: <https://shikokuchuo.net/mirai/>
+◈ mirai R package: <https://shikokuchuo.net/mirai/> <br /> ◈ nanonext R
+package: <https://shikokuchuo.net/nanonext/>
 
-mirai is listed in CRAN Task View: <br /> - High Performance Computing:
+mirai is listed in CRAN High Performance Computing Task View: <br />
 <https://cran.r-project.org/view=HighPerformanceComputing>
-
-◈ nanonext R package: <https://shikokuchuo.net/nanonext/>
-
-NNG website: <https://nng.nanomsg.org/><br />
 
 –
 
