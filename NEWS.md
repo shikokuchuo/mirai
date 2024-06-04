@@ -1,4 +1,4 @@
-# mirai 1.0.0.9023 (development)
+# mirai 1.0.0.9024 (development)
 
 * Adds `mirai_map()` for asynchronous parallel/distributed map using `mirai`, with `promises` integration. Allows recovery from partial failure or else early stopping, together with optional progress reporting.
   + `x[]` collects the results of a mirai_map `x`, waiting for all asynchronous operations to complete.

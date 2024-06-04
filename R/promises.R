@@ -64,7 +64,7 @@
 #'
 as.promise.mirai <- function(x) {
 
-  promise <- attr(x, "promise")
+  promise <- .subset2(x, "promise")
 
   if (is.null(promise)) {
 
@@ -86,7 +86,7 @@ as.promise.mirai <- function(x) {
           promises::promise_resolve(value)
     }
 
-    `attr<-`(x, "promise", promise)
+    assign("promise", promise, x)
 
   }
 
