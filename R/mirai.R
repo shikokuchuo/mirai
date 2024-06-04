@@ -509,7 +509,7 @@ is_error_value <- is_error_value
 #'
 print.mirai <- function(x, ...) {
 
-  cat(if (.unresolved(x)) "< mirai [ unresolved ] >\n" else "< mirai [ $data ] >\n", file = stdout())
+  cat(if (.unresolved(x)) "< mirai [unresolved] >\n" else "< mirai [$data] >\n", file = stdout())
   invisible(x)
 
 }

@@ -64,7 +64,7 @@ attempting to access the data yields an ‘unresolved’ logical NA.
 
 ``` r
 m
-#> < mirai [ unresolved ] >
+#> < mirai [unresolved] >
 ```
 
 ``` r
@@ -84,7 +84,7 @@ method:
 
 ``` r
 m[]
-#> [1] 49.52368
+#> [1] 50.52193
 ```
 
 It is not necessary to wait, as the mirai resolves automatically
@@ -93,12 +93,12 @@ available at `$data`.
 
 ``` r
 m
-#> < mirai [ $data ] >
+#> < mirai [$data] >
 ```
 
 ``` r
 m$data
-#> [1] 49.52368
+#> [1] 50.52193
 ```
 
 ### Daemons
