@@ -35,7 +35,7 @@
     
     <a class="navbar-brand me-2" href="index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9022</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9023</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,10 +100,15 @@
 <div class="section level3">
 <h3 id="ミライ">ミライ<a class="anchor" aria-label="anchor" href="#%E3%83%9F%E3%83%A9%E3%82%A4"></a>
 </h3>
-<p><br> ( 未来 ) <br><br> Minimalist Async Evaluation Framework for R <br><br> High performance parallel code execution and distributed computing. <br><br> Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion. <br><br> Modern networking and concurrency built on <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link">nanonext</a> and NNG (Nanomsg Next Gen) ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS. <br><br></p>
+<p><br> ( 未来 ) <br><br> Minimalist Async Evaluation Framework for R <br><br> High performance parallel code execution and distributed computing. <br><br> Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion. <br><br> Modern networking and concurrency built on <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link">nanonext</a> and <a href="https://nng.nanomsg.org/" class="external-link">NNG (Nanomsg Next Gen)</a> ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS. <br><br></p>
 <blockquote>
 <p><em>mirai パッケージを試してみたところ、かなり速くて驚きました</em></p>
 </blockquote>
+</div>
+<div class="section level3">
+<h3 id="production-grade-compute">Production-Grade Compute<a class="anchor" aria-label="anchor" href="#production-grade-compute"></a>
+</h3>
+<p><a href="https://youtu.be/GhX0PcEm3CY?t=1740" class="external-link"><img alt="Joe Cheng on mirai with Shiny" src="https://img.youtube.com/vi/GhX0PcEm3CY/hqdefault.jpg" width="300" height="225"></a>   <a href="https://youtu.be/cyF2dzloVLo?t=5127" class="external-link"><img alt="Will Landau on mirai in clinical trials" src="https://img.youtube.com/vi/cyF2dzloVLo/hqdefault.jpg" width="300" height="225"></a></p>
 </div>
 <div class="section level3">
 <h3 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
@@ -122,32 +127,30 @@
 <span>  <span class="op">}</span>,</span>
 <span>  mean <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">x</span>,</span>
 <span>  sd <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">y</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">m</span></span>
-<span><span class="co">#&gt; &lt; mirai [] &gt;</span></span></code></pre></div>
-<p>Above, all specified <code>name = value</code> pairs are passed through to the ‘mirai’.</p>
-<p>The ‘mirai’ yields an ‘unresolved’ logical NA whilst the async operation is ongoing.</p>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Above, all <code>name = value</code> pairs are passed through to the mirai via the <code>...</code> argument.</p>
+<p>The mirai prints ‘unresolved’ whilst the async operation is ongoing, and attempting to access the data yields an ‘unresolved’ logical NA.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m</span></span>
+<span><span class="co">#&gt; &lt; mirai [ unresolved ] &gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; 'unresolved' logi NA</span></span></code></pre></div>
 <p>To check whether a mirai has resolved:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/unresolved.html">unresolved</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
-<p>Upon completion, the ‘mirai’ resolves automatically to the evaluated result.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] 47.00301</span></span></code></pre></div>
-<p>Alternatively, to wait for and collect the result, use the <code>[]</code> method:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/unresolved.html">unresolved</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p>To wait for and collect the evaluated result, use the mirai’s <code>[]</code> method:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 47.00301</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="production-usage">Production Usage<a class="anchor" aria-label="anchor" href="#production-usage"></a>
-</h3>
-<p><a href="https://youtu.be/GhX0PcEm3CY?t=1740" class="external-link"><img alt="Joe Cheng on mirai with Shiny" src="https://img.youtube.com/vi/GhX0PcEm3CY/hqdefault.jpg" width="300" height="225"></a>   <a href="https://youtu.be/cyF2dzloVLo?t=5127" class="external-link"><img alt="Will Landau on mirai in clinical trials" src="https://img.youtube.com/vi/cyF2dzloVLo/hqdefault.jpg" width="300" height="225"></a></p>
+<span><span class="co">#&gt; [1] 49.52368</span></span></code></pre></div>
+<p>It is not necessary to wait, as the mirai resolves automatically whenever the async operation completes, the evaluated result then available at <code>$data</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m</span></span>
+<span><span class="co">#&gt; &lt; mirai [ $data ] &gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
+<span><span class="co">#&gt; [1] 49.52368</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
@@ -158,8 +161,8 @@
 <p><a href="https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-remote-daemons">Remote</a> network distributed computing.</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-launching-daemons">Launchers</a> allow daemons to be started both on the local machine and across the network via SSH etc.</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-tls-secure-connections">Secure TLS connections</a> can be automatically-configured on-the-fly for remote daemon connections.</p>
-<p>Refer to the <a href="https://shikokuchuo.net/mirai/articles/mirai.html">{mirai} vignette</a> for full package functionality. This may be accessed within R by:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p>The mirai vignette may be accessed within R by:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"mirai"</span>, package <span class="op">=</span> <span class="st">"mirai"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -197,19 +200,17 @@
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
 <p>Install the latest release from CRAN:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span><span class="op">)</span></span></code></pre></div>
 <p>Or the development version from R-universe:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span>, repos <span class="op">=</span> <span class="st">"https://shikokuchuo.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="links">Links<a class="anchor" aria-label="anchor" href="#links"></a>
 </h3>
-<p>◈ mirai R package: <a href="https://shikokuchuo.net/mirai/" class="uri">https://shikokuchuo.net/mirai/</a></p>
-<p>mirai is listed in CRAN Task View: <br> - High Performance Computing: <a href="https://cran.r-project.org/view=HighPerformanceComputing" class="external-link uri">https://cran.r-project.org/view=HighPerformanceComputing</a></p>
-<p>◈ nanonext R package: <a href="https://shikokuchuo.net/nanonext/" class="external-link uri">https://shikokuchuo.net/nanonext/</a></p>
-<p>NNG website: <a href="https://nng.nanomsg.org/" class="external-link uri">https://nng.nanomsg.org/</a><br></p>
+<p>◈ mirai R package: <a href="https://shikokuchuo.net/mirai/" class="uri">https://shikokuchuo.net/mirai/</a> <br> ◈ nanonext R package: <a href="https://shikokuchuo.net/nanonext/" class="external-link uri">https://shikokuchuo.net/nanonext/</a></p>
+<p>mirai is listed in CRAN High Performance Computing Task View: <br><a href="https://cran.r-project.org/view=HighPerformanceComputing" class="external-link uri">https://cran.r-project.org/view=HighPerformanceComputing</a></p>
 <p>–</p>
 <p>Please note that this project is released with a <a href="https://shikokuchuo.net/mirai/CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
 </div>
