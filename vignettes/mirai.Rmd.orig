@@ -539,10 +539,10 @@ The results of a mirai_map `x` may be collected using `x[]`. This waits for all 
 
 Key advantages of `mirai_map()`:
 
-- Returns immediately with all evaluations taking place asynchronously. Printing a 'mirai map' object shows the current completion progress.
-- The '.promise' argument allows a promise to registered against each mirai, which can be used to perform side-effects.
-- Returns evaluation errors as 'miraiError' or 'errorValue' as the case may be, rather than causing the entire operation to fail. This allows more efficient recovery from partial failure.
-- Does not rely on a 'chunking' algorithm that attempts to split work into batches according to the number of available daemons, as implemented for example in the `parallel` package. Chunking cannot take into account varying or unpredictable compute times over the indices. It can be optimal to rely on `mirai` for scheduling instead. This is demonstrated in the example below.
+1. Returns immediately with all evaluations taking place asynchronously. Printing a 'mirai map' object shows the current completion progress.
+1. The '.promise' argument allows a promise to registered against each mirai, which can be used to perform side-effects.
+1. Returns evaluation errors as 'miraiError' or 'errorValue' as the case may be, rather than causing the entire operation to fail. This allows more efficient recovery from partial failure.
+1. Does not rely on a 'chunking' algorithm that attempts to split work into batches according to the number of available daemons, as implemented for example in the `parallel` package. Chunking cannot take into account varying or unpredictable compute times over the indices. It can be optimal to rely on `mirai` for scheduling instead. This is demonstrated in the example below.
 ```{r chunk}
 library(mirai)
 library(parallel)
