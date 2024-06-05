@@ -129,10 +129,10 @@
 <span>  sd <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">y</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Above, all <code>name = value</code> pairs are passed through to the mirai via the <code>...</code> argument.</p>
-<p>The mirai prints ‘unresolved’ whilst the async operation is ongoing, and attempting to access the data yields an ‘unresolved’ logical NA.</p>
+<p>Whilst the async operation is ongoing, attempting to access the data yields an ‘unresolved’ logical NA.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span></span>
-<span><span class="co">#&gt; &lt; mirai [unresolved] &gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt; mirai [] &gt;</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; 'unresolved' logi NA</span></span></code></pre></div>
@@ -143,14 +143,14 @@
 <p>To wait for and collect the evaluated result, use the mirai’s <code>[]</code> method:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 50.52193</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 47.60447</span></span></code></pre></div>
 <p>It is not necessary to wait, as the mirai resolves automatically whenever the async operation completes, the evaluated result then available at <code>$data</code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span></span>
 <span><span class="co">#&gt; &lt; mirai [$data] &gt;</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] 50.52193</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 47.60447</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
