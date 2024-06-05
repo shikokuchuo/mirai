@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9024</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9025</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.0.0.9024" id="mirai-1009024-development">mirai 1.0.0.9024 (development)<a class="anchor" aria-label="anchor" href="#mirai-1009024-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.0.0.9025" id="mirai-1009025-development">mirai 1.0.0.9025 (development)<a class="anchor" aria-label="anchor" href="#mirai-1009025-development"></a></h2>
 <ul><li>Adds <code><a href="../reference/mirai_map.html">mirai_map()</a></code> for asynchronous parallel/distributed map using <code>mirai</code>, with <code>promises</code> integration. Allows recovery from partial failure or else early stopping, together with optional progress reporting.
 <ul><li>
 <code>x[]</code> collects the results of a mirai_map <code>x</code>, waiting for all asynchronous operations to complete.</li>
@@ -74,13 +74,11 @@
 <li>
 <code>x[.stop]</code> collects the results applying early-stopping, which stops at the first error, and aborts remaining in-progress operations.</li>
 </ul></li>
-<li>Adds the ‘mirai’ method <code>x[]</code> as a more efficient equivalent of the interruptible <code>call_mirai_(x)$data</code>.
-<ul><li>Use of <code><a href="../reference/call_mirai_.html">call_mirai_()</a></code> is consequently deprecated.</li>
-</ul></li>
-<li>Improved mirai print method indicates whether a mirai has resolved.</li>
-<li>Adds <code><a href="../reference/call_mirai.html">collect_mirai()</a></code> as a more efficient equivalent of non-interruptible <code>call_mirai(x)$data</code>.</li>
+<li>Adds the ‘mirai’ method <code>x[]</code> as a more efficient equivalent of the interruptible <code>call_mirai_(x)$data</code>.</li>
+<li>Adds <code><a href="../reference/collect_mirai.html">collect_mirai()</a></code> as a more efficient equivalent of the non-interruptible <code>call_mirai(x)$data</code>.</li>
 <li>
-<code><a href="../reference/unresolved.html">unresolved()</a></code>, <code><a href="../reference/call_mirai.html">call_mirai()</a></code>, <code><a href="../reference/call_mirai.html">collect_mirai()</a></code> and <code><a href="../reference/stop_mirai.html">stop_mirai()</a></code> now accept a list of ‘mirai’ such as that returned by <code><a href="../reference/mirai_map.html">mirai_map()</a></code>.</li>
+<code><a href="../reference/unresolved.html">unresolved()</a></code>, <code><a href="../reference/call_mirai.html">call_mirai()</a></code>, <code><a href="../reference/collect_mirai.html">collect_mirai()</a></code> and <code><a href="../reference/stop_mirai.html">stop_mirai()</a></code> now accept a list of ‘mirai’ such as that returned by <code><a href="../reference/mirai_map.html">mirai_map()</a></code>.</li>
+<li>Improved mirai print method indicates whether a mirai has resolved.</li>
 <li>Calling <code><a href="../reference/daemons.html">daemons()</a></code> with new settings when the compute profile is already set now implicitly resets daemons before applying the new settings instead of silently doing nothing.</li>
 <li>Argument ‘resilience’ retired at <code><a href="../reference/daemons.html">daemons()</a></code> as automatic re-tries are no longer performed for non-dispatcher daemons.</li>
 <li>New argument ‘retry’ at <code><a href="../reference/dispatcher.html">dispatcher()</a></code> governs whether to auto-retry in the dispatcher case.</li>
@@ -160,7 +158,7 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.11.3" id="mirai-0113">mirai 0.11.3<a class="anchor" aria-label="anchor" href="#mirai-0113"></a></h2><p class="text-muted">CRAN release: 2023-12-07</p>
 <ul><li>Implements <code><a href="../reference/serialization.html">serialization()</a></code> for registering custom serialization and unserialization functions when using daemons.</li>
-<li>Introduces <code><a href="../reference/call_mirai_.html">call_mirai_()</a></code>, a user-interruptible version of <code><a href="../reference/call_mirai.html">call_mirai()</a></code> suitable for interactive use.</li>
+<li>Introduces <code><a href="../reference/call_mirai.html">call_mirai_()</a></code>, a user-interruptible version of <code><a href="../reference/call_mirai.html">call_mirai()</a></code> suitable for interactive use.</li>
 <li>Simplification of <code><a href="../reference/mirai.html">mirai()</a></code> interface:
 <ul><li>‘.args’ will now coerce to a list if an object other than a list is supplied, rather than error.</li>
 <li>‘.signal’ argument removed - now all ‘mirai’ signal if daemons are set up.</li>
