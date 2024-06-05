@@ -59,12 +59,12 @@ m <- mirai(
 Above, all `name = value` pairs are passed through to the mirai via the
 `...` argument.
 
-The mirai prints ‘unresolved’ whilst the async operation is ongoing, and
-attempting to access the data yields an ‘unresolved’ logical NA.
+Whilst the async operation is ongoing, attempting to access the data
+yields an ‘unresolved’ logical NA.
 
 ``` r
 m
-#> < mirai [unresolved] >
+#> < mirai [] >
 ```
 
 ``` r
@@ -84,7 +84,7 @@ method:
 
 ``` r
 m[]
-#> [1] 50.52193
+#> [1] 47.60447
 ```
 
 It is not necessary to wait, as the mirai resolves automatically
@@ -98,7 +98,7 @@ m
 
 ``` r
 m$data
-#> [1] 50.52193
+#> [1] 47.60447
 ```
 
 ### Daemons

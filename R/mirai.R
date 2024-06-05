@@ -269,12 +269,10 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #' @details Both functions accept a list of \sQuote{mirai} objects, such as that
 #'     returned by \code{\link{mirai_map}} as well as individual \sQuote{mirai}.
 #'
-#' @section User Interrupts:
+#'     They will wait for the asynchronous operation(s) to complete if still in
+#'     progress (blocking).
 #'
-#'     These functions will wait for the asynchronous operation(s) to complete
-#'     if still in progress (blocking).
-#'
-#'     \code{x[]} may be used to wait for and return the value of a mirai
+#'     \code{x[]} may also be used to wait for and return the value of a mirai
 #'     \code{x}, and is the equivalent of \code{call_mirai_(x)$data}.
 #'
 #' @section Alternatively:
@@ -340,10 +338,8 @@ call_mirai_ <- function(x) call_aio_(x)
 #' @return An object (the return value of the \sQuote{mirai}), or a list of such
 #'     objects (the same length as \sQuote{x}, preserving names).
 #'
-#' @section User Interrupts:
-#'
-#'     This function will wait for the asynchronous operation(s) to complete if
-#'     still in progress (blocking), and is not interruptible.
+#' @details This function will wait for the asynchronous operation(s) to
+#'     complete if still in progress (blocking), and is not interruptible.
 #'
 #'     \code{x[]} may be used to wait for and return the value of a mirai
 #'     \code{x}, and is the user-interruptible counterpart to
@@ -525,7 +521,7 @@ is_error_value <- is_error_value
 #'
 print.mirai <- function(x, ...) {
 
-  cat(if (.unresolved(x)) "< mirai [unresolved] >\n" else "< mirai [$data] >\n", file = stdout())
+  cat(if (.unresolved(x)) "< mirai [] >\n" else "< mirai [$data] >\n", file = stdout())
   invisible(x)
 
 }

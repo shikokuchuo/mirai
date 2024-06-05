@@ -65,7 +65,7 @@ m <- mirai(
 ```
 Above, all `name = value` pairs are passed through to the mirai via the `...` argument.
 
-The mirai prints 'unresolved' whilst the async operation is ongoing, and attempting to access the data yields an 'unresolved' logical NA.
+Whilst the async operation is ongoing, attempting to access the data yields an 'unresolved' logical NA.
 ```{r do}
 m
 m$data

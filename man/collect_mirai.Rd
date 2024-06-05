@@ -18,17 +18,14 @@ An object (the return value of the \sQuote{mirai}), or a list of such
     progress, and returns its value directly. It is a more efifcient version
     of and equivalent to \code{call_mirai(x)$data}.
 }
-\section{User Interrupts}{
-
-
-    This function will wait for the asynchronous operation(s) to complete if
-    still in progress (blocking), and is not interruptible.
+\details{
+This function will wait for the asynchronous operation(s) to
+    complete if still in progress (blocking), and is not interruptible.
 
     \code{x[]} may be used to wait for and return the value of a mirai
     \code{x}, and is the user-interruptible counterpart to
     \code{collect_mirai(x)}.
 }
-
 \section{Alternatively}{
 
 

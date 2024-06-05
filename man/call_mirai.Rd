@@ -27,17 +27,13 @@ The passed object (invisibly). For a \sQuote{mirai}, the retrieved
 \details{
 Both functions accept a list of \sQuote{mirai} objects, such as that
     returned by \code{\link{mirai_map}} as well as individual \sQuote{mirai}.
-}
-\section{User Interrupts}{
 
+    They will wait for the asynchronous operation(s) to complete if still in
+    progress (blocking).
 
-    These functions will wait for the asynchronous operation(s) to complete
-    if still in progress (blocking).
-
-    \code{x[]} may be used to wait for and return the value of a mirai
+    \code{x[]} may also be used to wait for and return the value of a mirai
     \code{x}, and is the equivalent of \code{call_mirai_(x)$data}.
 }
-
 \section{Alternatively}{
 
 
