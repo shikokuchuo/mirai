@@ -336,6 +336,68 @@ consumes the result of the ExtendedTask.</li>
 <code class="sourceCode R"><span><span class="va">output</span><span class="op">$</span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu">renderPlot</span><span class="op">(</span><span class="fu">plot_result</span><span class="op">(</span><span class="va">extended_task</span><span class="op">$</span><span class="fu">result</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
+<h4 id="advanced-promises-example-coin-flips">Advanced Promises Example: Coin Flips<a class="anchor" aria-label="anchor" href="#advanced-promises-example-coin-flips"></a>
+</h4>
+<p>The below example demonstrates how to integrate a
+<code><a href="../reference/mirai_map.html">mirai_map()</a></code> operation into a Shiny app.</p>
+<p>By specifying the ‘.promise’ argument, this registers a promise
+action against each mapped operation. These can then be used to update
+reactive values or otherwise interact with the Shiny app.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">flip_coin</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.1</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1</span>, size <span class="op">=</span> <span class="fl">1</span>, prob <span class="op">=</span> <span class="fl">0.501</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu">fluidPage</span><span class="op">(</span></span>
+<span>  <span class="fu">div</span><span class="op">(</span><span class="st">"Is the coin fair?"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">actionButton</span><span class="op">(</span><span class="st">"task"</span>, <span class="st">"Flip 1000 coins"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">textOutput</span><span class="op">(</span><span class="st">"status"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">textOutput</span><span class="op">(</span><span class="st">"outcomes"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  </span>
+<span>  <span class="co"># Keep running totals of heads, tails, and task errors</span></span>
+<span>  <span class="va">flips</span> <span class="op">&lt;-</span> <span class="fu">reactiveValues</span><span class="op">(</span>heads <span class="op">=</span> <span class="fl">0</span>, tails <span class="op">=</span> <span class="fl">0</span>, flips <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># Button to submit a batch of coin flips</span></span>
+<span>  <span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">task</span>, <span class="op">{</span></span>
+<span>    <span class="va">flips</span><span class="op">$</span><span class="va">flips</span> <span class="op">&lt;-</span> <span class="va">flips</span><span class="op">$</span><span class="va">flips</span> <span class="op">+</span> <span class="fl">1000</span></span>
+<span>    <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai_map.html">mirai_map</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">1000</span>, <span class="va">flip_coin</span>, .promise <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span>      <span class="kw">if</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">flips</span><span class="op">$</span><span class="va">heads</span> <span class="op">&lt;-</span> <span class="va">flips</span><span class="op">$</span><span class="va">heads</span> <span class="op">+</span> <span class="fl">1</span> <span class="kw">else</span> <span class="va">flips</span><span class="op">$</span><span class="va">tails</span> <span class="op">&lt;-</span> <span class="va">flips</span><span class="op">$</span><span class="va">tails</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># Print time and task status</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">status</span> <span class="op">&lt;-</span> <span class="fu">renderText</span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="va">input</span><span class="op">$</span><span class="va">task</span></span>
+<span>    <span class="fu">invalidateLater</span><span class="op">(</span>millis <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span>    <span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"%H:%M:%S"</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%s %s flips submitted"</span>, <span class="va">time</span>, <span class="va">flips</span><span class="op">$</span><span class="va">flips</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># Print number of heads and tails</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">outcomes</span> <span class="op">&lt;-</span> <span class="fu">renderText</span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%s heads %s tails"</span>, <span class="va">flips</span><span class="op">$</span><span class="va">heads</span>, <span class="va">flips</span><span class="op">$</span><span class="va">tails</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">shinyApp</span><span class="op">(</span>ui <span class="op">=</span> <span class="va">ui</span>, server <span class="op">=</span> <span class="va">server</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># run app using 8 local daemons, without dispatcher as tasks are the same length</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">8</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>, <span class="op">{</span></span>
+<span>  <span class="co"># pre-load flip_coin function on all daemons for efficiency</span></span>
+<span>  <span class="fu"><a href="../reference/everywhere.html">everywhere</a></span><span class="op">(</span><span class="op">{</span><span class="op">}</span>, flip_coin <span class="op">=</span> <span class="va">flip_coin</span><span class="op">)</span></span>
+<span>  <span class="fu">runApp</span><span class="op">(</span><span class="va">app</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<p><em>This is an adaptation of an original example provided by Will
+Landau for use of <code>crew</code> with Shiny. Please see <a href="https://wlandau.github.io/crew/articles/shiny.html" class="external-link uri">https://wlandau.github.io/crew/articles/shiny.html</a>.</em></p>
+</div>
+<div class="section level4">
 <h4 id="advanced-non-promise-example-generative-art">Advanced Non-Promise Example: Generative Art<a class="anchor" aria-label="anchor" href="#advanced-non-promise-example-generative-art"></a>
 </h4>
 <p>Whilst it is generally recommended to use the ExtendedTask framework,
@@ -352,7 +414,7 @@ upon completion. If more than 3 tasks are submitted at once, the chart
 updates 3 at a time, limited by the number of available daemons.</p>
 <p>It requires more boilerplate code to manage the mirai tasks, but
 otherwise functions similarly to the ExtendedTask example.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
