@@ -1,14 +1,13 @@
-# mirai 1.0.0.9024 (development)
+# mirai 1.0.0.9025 (development)
 
 * Adds `mirai_map()` for asynchronous parallel/distributed map using `mirai`, with `promises` integration. Allows recovery from partial failure or else early stopping, together with optional progress reporting.
   + `x[]` collects the results of a mirai_map `x`, waiting for all asynchronous operations to complete.
   + `x[.progress]` collects the results whilst showing a text progress bar.
   + `x[.stop]` collects the results applying early-stopping, which stops at the first error, and aborts remaining in-progress operations.
 * Adds the 'mirai' method `x[]` as a more efficient equivalent of the interruptible `call_mirai_(x)$data`.
-  + Use of `call_mirai_()` is consequently deprecated.
-* Improved mirai print method indicates whether a mirai has resolved.
-* Adds `collect_mirai()` as a more efficient equivalent of non-interruptible `call_mirai(x)$data`.
+* Adds `collect_mirai()` as a more efficient equivalent of the non-interruptible `call_mirai(x)$data`.
 * `unresolved()`, `call_mirai()`, `collect_mirai()` and `stop_mirai()` now accept a list of 'mirai' such as that returned by `mirai_map()`.
+* Improved mirai print method indicates whether a mirai has resolved.
 * Calling `daemons()` with new settings when the compute profile is already set now implicitly resets daemons before applying the new settings instead of silently doing nothing.
 * Argument 'resilience' retired at `daemons()` as automatic re-tries are no longer performed for non-dispatcher daemons.
 * New argument 'retry' at `dispatcher()` governs whether to auto-retry in the dispatcher case.

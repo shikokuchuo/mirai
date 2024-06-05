@@ -87,11 +87,12 @@
 #'     (the stack trace is available at \code{$stack.trace} on the error
 #'     object). \code{\link{is_mirai_error}} may be used to test for this.
 #'
-#'     When not using dispatcher, if a daemon crashes or terminates unexpectedly
-#'     during evaluation, an \sQuote{errorValue} 19 (Connection reset) is
-#'     returned. If using dispatcher, the mirai will remain unresolved and it
-#'     will be automatically re-tried on the next daemon to connect to the
-#'     particular instance. To cancel the task instead, use
+#'     If a daemon crashes or terminates unexpectedly during evaluation, an
+#'     \sQuote{errorValue} 19 (Connection reset) is returned (when not using
+#'     dispatcher or using dispatcher with \code{retry = FALSE}). Otherwise,
+#'     using dispatcher with \code{retry = TRUE}, the mirai will remain
+#'     unresolved and is automatically re-tried on the next daemon to connect to
+#'     the particular instance. To cancel the task instead, use
 #'     \code{saisei(force = TRUE)} (see \code{\link{saisei}}).
 #'
 #'     \code{\link{is_error_value}} tests for all error conditions including
@@ -262,12 +263,8 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #'
 #' @param x a \sQuote{mirai} object, or list of \sQuote{mirai} objects.
 #'
-#' @return For \code{call_mirai}: the passed object (invisibly). For a
-#'     \sQuote{mirai}, the retrieved value is stored at \code{$data}.
-#'
-#'     For \code{collect_mirai}: an object (the return value of the
-#'     \sQuote{mirai}), or a list of such objects (the same length as
-#'     \sQuote{x}, preserving names).
+#' @return The passed object (invisibly). For a \sQuote{mirai}, the retrieved
+#'     value is stored at \code{$data}.
 #'
 #' @details Both functions accept a list of \sQuote{mirai} objects, such as that
 #'     returned by \code{\link{mirai_map}} as well as individual \sQuote{mirai}.
@@ -275,12 +272,10 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #' @section User Interrupts:
 #'
 #'     These functions will wait for the asynchronous operation(s) to complete
-#'     if still in progress (blocking). Designed for production usage, they are
-#'     not user-interruptible.
+#'     if still in progress (blocking).
 #'
 #'     \code{x[]} may be used to wait for and return the value of a mirai
-#'     \code{x}, and is a user-interruptible equivalent to
-#'     \code{collect_mirai(x)}.
+#'     \code{x}, and is the equivalent of \code{call_mirai_(x)$data}.
 #'
 #' @section Alternatively:
 #'
@@ -298,16 +293,11 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' # using call_mirai() / collect_mirai()
+#' # using call_mirai()
 #' df1 <- data.frame(a = 1, b = 2)
 #' df2 <- data.frame(a = 3, b = 1)
 #' m <- mirai(as.matrix(rbind(df1, df2)), df1 = df1, df2 = df2, .timeout = 1000)
 #' call_mirai(m)$data
-#'
-#' collect_mirai(m)
-#'
-#' # using x[]
-#' m[]
 #'
 #' # using unresolved()
 #' m <- mirai(
@@ -329,31 +319,57 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #'
 call_mirai <- function(x) call_aio(x)
 
+#' mirai (Call Value)
+#'
+#' \code{call_mirai_} is a variant of \code{call_mirai} that allows user
+#'     interrupts, suitable for interactive use.
+#'
+#' @rdname call_mirai
+#' @export
+#'
+call_mirai_ <- function(x) call_aio_(x)
+
 #' mirai (Collect Value)
 #'
 #' \code{collect_mirai} waits for the \sQuote{mirai} to resolve if still in
 #'     progress, and returns its value directly. It is a more efifcient version
 #'     of and equivalent to \code{call_mirai(x)$data}.
 #'
-#' @rdname call_mirai
+#' @inheritParams call_mirai
+#'
+#' @return An object (the return value of the \sQuote{mirai}), or a list of such
+#'     objects (the same length as \sQuote{x}, preserving names).
+#'
+#' @section User Interrupts:
+#'
+#'     This function will wait for the asynchronous operation(s) to complete if
+#'     still in progress (blocking), and is not interruptible.
+#'
+#'     \code{x[]} may be used to wait for and return the value of a mirai
+#'     \code{x}, and is the user-interruptible counterpart to
+#'     \code{collect_mirai(x)}.
+#'
+#' @inheritSection call_mirai Alternatively
+#' @inheritSection mirai Errors
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' # using collect_mirai()
+#' df1 <- data.frame(a = 1, b = 2)
+#' df2 <- data.frame(a = 3, b = 1)
+#' m <- mirai(as.matrix(rbind(df1, df2)), df1 = df1, df2 = df2, .timeout = 1000)
+#' collect_mirai(m)
+#'
+#' # using x[]
+#' m[]
+#'
+#' }
+#'
 #' @export
 #'
 collect_mirai <- collect_aio
-
-#' mirai (Call Value)
-#'
-#' \code{call_mirai_} is a variant of \code{call_mirai} that allows user
-#'     interrupts, suitable for interactive use.
-#'
-#' @note Usage is deprecated in favour of \code{x[]}, which also allows user
-#'     interrupts.
-#'
-#' @param x a \sQuote{mirai} object.
-#'
-#' @keywords internal
-#' @export
-#'
-call_mirai_ <- function(x) call_aio_(x)
 
 #' mirai (Stop)
 #'
