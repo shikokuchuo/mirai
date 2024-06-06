@@ -1,3 +1,7 @@
+# mirai 1.1.0.9000 (development)
+
+* Requires `nanonext` >= [1.1.0.9000].
+
 # mirai 1.1.0
 
 * Adds `mirai_map()` for asynchronous parallel/distributed map using `mirai`, with `promises` integration. Allows recovery from partial failure or else early stopping, together with optional progress reporting.

@@ -315,7 +315,7 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #'
 #' @export
 #'
-call_mirai <- function(x) call_aio(x)
+call_mirai <- call_aio
 
 #' mirai (Call Value)
 #'
@@ -325,7 +325,7 @@ call_mirai <- function(x) call_aio(x)
 #' @rdname call_mirai
 #' @export
 #'
-call_mirai_ <- function(x) call_aio_(x)
+call_mirai_ <- call_aio_
 
 #' mirai (Collect Value)
 #'
@@ -397,7 +397,7 @@ collect_mirai <- collect_aio
 #'
 #' @export
 #'
-stop_mirai <- function(x) stop_aio(x)
+stop_mirai <- stop_aio
 
 #' Query if a mirai is Unresolved
 #'
@@ -431,9 +431,7 @@ stop_mirai <- function(x) stop_aio(x)
 #'
 #' @export
 #'
-unresolved <- function(x) unresolved_impl(x)
-
-unresolved_impl <- nanonext::unresolved
+unresolved <- unresolved
 
 #' Is mirai
 #'
