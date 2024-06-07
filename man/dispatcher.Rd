@@ -10,7 +10,7 @@ dispatcher(
   n = NULL,
   ...,
   asyncdial = FALSE,
-  retry = TRUE,
+  retry = FALSE,
   token = FALSE,
   tls = NULL,
   pass = NULL,
@@ -47,7 +47,7 @@ specified port is not open etc.). Specifying TRUE continues retrying
 (indefinitely) if not immediately successful, which is more resilient but
 can mask potential connection issues.}
 
-\item{retry}{[default TRUE] if TRUE, then a task where the daemon crashes or
+\item{retry}{[default FALSE] if TRUE, a task where the daemon crashes or
 terminates unexpectedly will be automatically re-tried on the next daemon
 instance to connect. In such a case, the mirai will remain unresolved but
 \code{\link{status}} will show \sQuote{online} as 0 and \sQuote{assigned}

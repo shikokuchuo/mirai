@@ -103,7 +103,7 @@ rm(list = ls())
 ```{r exec2}
 library(mirai)
 
-x <- rnorm(1e6)
+x <- rnorm(2e5)
 file <- tempfile()
 
 m <- mirai(write.csv(x, file = file), .args = environment())
@@ -545,7 +545,7 @@ Key advantages of `mirai_map()`:
 library(mirai)
 library(parallel)
 cl <- make_cluster(4)
-daemons(4, retry = FALSE)
+daemons(4)
 vec <- c(1, 1, 4, 4, 1, 1, 1, 1)
 system.time(mirai_map(vec, Sys.sleep)[])
 system.time(parLapplyLB(cl, vec, Sys.sleep))
