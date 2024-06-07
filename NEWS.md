@@ -1,5 +1,6 @@
 # mirai 1.1.0.9000 (development)
 
+* Ephemeral daemons now exit as soon as permissible, eiliminating the 2s linger period.
 * Requires `nanonext` >= [1.1.0.9000].
 
 # mirai 1.1.0

@@ -46,7 +46,7 @@ nanotest(mirai:::.DollarNames.miraiError(NULL, "s") == "stack.trace")
 nanotest(mirai:::is.promising.mirai())
 nanotestn(nextstream())
 nanotestn(nextget("pid"))
-Sys.sleep(2.5)
+Sys.sleep(1L)
 # mirai and daemons tests
 connection && {
   n <- function() m
@@ -57,13 +57,13 @@ connection && {
   }, m = 2L, .args = environment(), .timeout = 2000L)
   nanotest(identical(call_mirai(m), m))
   nanotest(is_error_value(m$data) || m$data == 3L)
-  Sys.sleep(2.5)
+  Sys.sleep(1L)
   `lang obj` <- quote(m + n + 2L)
   args <- c(m = 2L, n = 4L)
   m <- mirai(.expr = `lang obj`, .args = args, .timeout = 2000L)
   nanotest(is_error_value(call_mirai_(m)$data) || m$data == 8L)
   nanotestn(stop_mirai(m))
-  Sys.sleep(2.5)
+  Sys.sleep(1L)
   nanotesto(d <- daemons(1L, dispatcher = FALSE, seed = 1546L))
   nanotestp(d)
   me <- mirai(mirai::mirai(), .timeout = 2000L)
@@ -118,7 +118,7 @@ connection && .Platform[["OS.type"]] != "windows" && {
   nanotestp(mp <- mirai_map(list(x = "a"), function(...) do(...), do = function(x, y) sprintf("%s%s", x, y), .args = list("b")))
   nanotesti(collect_mirai(mp)[["x"]], "ab")
   nanotesti(call_mirai(mp)[["x"]][["data"]], "ab")
-  Sys.sleep(2.5)
+  Sys.sleep(1L)
   NA
 }
 # parallel cluster tests
