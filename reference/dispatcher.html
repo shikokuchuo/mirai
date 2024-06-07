@@ -86,7 +86,7 @@
 <span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  asyncdial <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  retry <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  retry <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  token <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pass <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -136,7 +136,7 @@ can mask potential connection issues.</p></dd>
 
 
 <dt>retry</dt>
-<dd><p>[default TRUE] if TRUE, then a task where the daemon crashes or
+<dd><p>[default FALSE] if TRUE, a task where the daemon crashes or
 terminates unexpectedly will be automatically re-tried on the next daemon
 instance to connect. In such a case, the mirai will remain unresolved but
 <code><a href="status.html">status</a></code> will show ‘online’ as 0 and ‘assigned’
