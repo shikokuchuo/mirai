@@ -62,23 +62,14 @@ The code below is taken from the challenge to launch and collect one million pro
 library(mirai)
 daemons(8, dispatcher = FALSE)
 #> [1] 8
-```
-
-``` r
 r <- 0
 start <- Sys.time()
 m <- mirai_map(1:1000, \(x) x, .promise = \(x) r <<- r + x)
 Sys.time() - start
-#> Time difference of 0.3151205 secs
-```
-
-``` r
+#> Time difference of 0.2646537 secs
 later::run_now()
 r
 #> [1] 500500
-```
-
-``` r
 daemons(0)
 #> [1] 0
 ```

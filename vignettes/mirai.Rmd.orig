@@ -82,7 +82,6 @@ expr <- quote({
 args <- list(mean = input$x, sd = input$y)
 
 m <- mirai(.expr = expr, .args = args)
-
 m[]
 ```
 
@@ -103,7 +102,7 @@ rm(list = ls())
 ```{r exec2}
 library(mirai)
 
-x <- rnorm(2e5)
+x <- rnorm(1e6)
 file <- tempfile()
 
 m <- mirai(write.csv(x, file = file), .args = environment())
@@ -119,6 +118,7 @@ while (unresolved(m)) {
   cat("while unresolved\n")
   Sys.sleep(0.5)
 }
+
 cat("Write complete:", is.null(m$data))
 
 ```
@@ -153,7 +153,6 @@ for (i in 1:10) {
   cat(m$data)
 
 }
-
 ```
 Further, by testing the return value of each 'mirai' for errors, error-handling code is then able to automate recovery and re-attempts, as in the above example. Further details on [error handling](#errors-interrupts-and-timeouts) can be found in the section below.
 
@@ -227,6 +226,7 @@ Disconnect from the database everywhere, and set the number of daemons to zero t
 
 ```{r daemons5}
 everywhere(dbDisconnect(con))
+
 daemons(0)
 ```
 
@@ -437,16 +437,20 @@ If execution in a mirai fails, the error message is returned as a character stri
 ```{r errorexample}
 m1 <- mirai(stop("occurred with a custom message", call. = FALSE))
 m1[]
+
 m2 <- mirai(mirai::mirai())
 m2[]
+
 is_mirai_error(m2$data)
 is_error_value(m2$data)
 ```
 A full stack trace of evaluation within the mirai is recorded and accessible at `$stack.trace` on the error object.
 ```{r stackexample}
 f <- function(x) if (x > 0) stop("positive")
+
 m3 <- mirai({f(-1); f(1)}, f = f)
 m3[]
+
 m3$data$stack.trace
 ```
 If a daemon instance is sent a user interrupt, the mirai will resolve to an object of class 'miraiInterrupt' and 'errorValue'. `is_mirai_interrupt()` may be used to test for such interrupts.
@@ -457,6 +461,7 @@ If execution of a mirai surpasses the timeout set via the '.timeout' argument, t
 ```{r timeouts}
 m4 <- mirai(nanonext::msleep(1000), .timeout = 500)
 m4[]
+
 is_mirai_error(m4$data)
 is_mirai_interrupt(m4$data)
 is_error_value(m4$data)
@@ -517,8 +522,7 @@ m[]
 To cancel serialization functions entirely:
 ```{r serialcancel}
 serialization(NULL)
-```
-```{r serialcancelclose}
+
 daemons(0)
 ```
 The 'vec' argument to `serialization()` may be specified as `TRUE` if the serialization functions are vectorized and take lists of objects, as is the case for [`safetensors`](https://mlverse.github.io/safetensors/), used for serialization in [`torch`](https://torch.mlverse.org/).
@@ -548,7 +552,6 @@ cl <- make_cluster(4)
 daemons(4)
 vec <- c(1, 1, 4, 4, 1, 1, 1, 1)
 system.time(mirai_map(vec, Sys.sleep)[])
-system.time(parLapplyLB(cl, vec, Sys.sleep))
 system.time(parLapply(cl, vec, Sys.sleep))
 ```
 `.args` is used to specify further constant arguments to `.f` - the 'mean' and 'sd' in the example below:
@@ -579,10 +582,12 @@ tryCatch(
   mirai_map(list(a = 1, b = "a", c = 3), sum)[.stop],
   error = identity
 )
+
 with(
   daemons(4, dispatcher = FALSE),
   mirai_map(c(0.1, 0.2, 0.3), Sys.sleep)[.progress]
 )
+
 daemons(0)
 ```
 

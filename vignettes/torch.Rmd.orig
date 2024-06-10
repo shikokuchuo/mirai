@@ -77,8 +77,7 @@ This can also be initialized within a 'mirai' process.
 optim <- mirai(optim_rmsprop(params = params), params = m$data$parameters)
 
 optim[]
-```
-```{r tensors5}
+
 daemons(0)
 ```
 Above, tensors and complex objects containing tensors were passed seamlessly between host and daemon processes, in the same way as any other R object.

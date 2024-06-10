@@ -65,9 +65,6 @@ yields an ‘unresolved’ logical NA.
 ``` r
 m
 #> < mirai [] >
-```
-
-``` r
 m$data
 #> 'unresolved' logi NA
 ```
@@ -84,7 +81,7 @@ method:
 
 ``` r
 m[]
-#> [1] 47.60447
+#> [1] 46.83368
 ```
 
 It is not necessary to wait, as the mirai resolves automatically
@@ -94,11 +91,8 @@ available at `$data`.
 ``` r
 m
 #> < mirai [$data] >
-```
-
-``` r
 m$data
-#> [1] 47.60447
+#> [1] 46.83368
 ```
 
 ### Daemons

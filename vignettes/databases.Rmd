@@ -20,9 +20,6 @@ file <- tempfile()
 library(mirai)
 daemons(2)
 #> [1] 2
-```
-
-``` r
 everywhere({
   library(DBI)
   con <<- dbConnect(RSQLite::SQLite(), file)
@@ -34,15 +31,9 @@ everywhere({
 m <- mirai(dbWriteTable(con, "iris", iris))
 m[]
 #> [1] TRUE
-```
-
-``` r
 m <- mirai(dbListTables(con))
 m[]
 #> [1] "iris"
-```
-
-``` r
 m <- mirai(dbGetQuery(con, 'SELECT * FROM iris WHERE "Sepal.Length" < 4.6'))
 m[]
 #>   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
@@ -73,9 +64,6 @@ Serialization is set up with the relevant serialization and deserialization func
 library(mirai)
 daemons(1)
 #> [1] 1
-```
-
-``` r
 everywhere({
   library(DBI) # `adbi` and `adbcsqlite` packages must also be installed
   con <<- dbConnect(adbi::adbi("adbcsqlite"), uri = ":memory:")
@@ -92,9 +80,6 @@ serialization(
 m <- mirai(dbWriteTableArrow(con, "iris", iris))
 m[]
 #> [1] TRUE
-```
-
-``` r
 m <- mirai(dbReadTableArrow(con, "iris"))
 m[]
 #> Table
@@ -104,9 +89,6 @@ m[]
 #> $Petal.Length <double>
 #> $Petal.Width <double>
 #> $Species <string>
-```
-
-``` r
 m <- mirai(dbGetQueryArrow(con, 'SELECT * FROM iris WHERE "Sepal.Length" < 4.6'))
 m[]
 #> Table
