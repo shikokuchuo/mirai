@@ -130,9 +130,8 @@ package available on all daemons for convenience (optional).</p></li>
 <span>              class <span class="op">=</span> <span class="st">"torch_tensor"</span>,</span>
 <span>              vec <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/everywhere.html">everywhere</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://torch.mlverse.org/docs" class="external-link">torch</a></span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 1</span></span>
+<span><span class="fu"><a href="../reference/everywhere.html">everywhere</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://torch.mlverse.org/docs" class="external-link">torch</a></span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="example-usage">Example Usage<a class="anchor" aria-label="anchor" href="#example-usage"></a>
@@ -142,7 +141,7 @@ package available on all daemons for convenience (optional).</p></li>
 <p>A set of model parameters is also specified.</p>
 <p>The model specification and parameters are then passed to and
 initialized within a ‘mirai’.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">nn_module</span><span class="op">(</span></span>
 <span>  initialize <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">in_size</span>, <span class="va">out_size</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">self</span><span class="op">$</span><span class="va">conv1</span> <span class="op">&lt;-</span> <span class="fu">nn_conv2d</span><span class="op">(</span><span class="va">in_size</span>, <span class="va">out_size</span>, <span class="fl">5</span><span class="op">)</span></span>
@@ -168,45 +167,45 @@ initialized within a ‘mirai’.</p>
 <span><span class="co">#&gt; • conv1: &lt;nn_conv2d&gt; #520 parameters</span></span>
 <span><span class="co">#&gt; • conv2: &lt;nn_conv2d&gt; #520 parameters</span></span></code></pre></div>
 <p>The returned model is an object containing many tensor elements.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">conv1.weight</span></span>
 <span><span class="co">#&gt; torch_tensor</span></span>
 <span><span class="co">#&gt; (1,1,.,.) = </span></span>
-<span><span class="co">#&gt;  -0.0945  0.0226 -0.1813  0.1295 -0.1442</span></span>
-<span><span class="co">#&gt;  -0.1914  0.0034  0.1511  0.1644  0.1639</span></span>
-<span><span class="co">#&gt;   0.0129  0.1884  0.1502  0.0261  0.0552</span></span>
-<span><span class="co">#&gt;   0.0741 -0.1159 -0.1532 -0.0110  0.0023</span></span>
-<span><span class="co">#&gt;   0.0925 -0.0683  0.0620  0.0462  0.0830</span></span>
+<span><span class="co">#&gt;   0.1834 -0.0978  0.1241  0.0670  0.0583</span></span>
+<span><span class="co">#&gt;  -0.1103  0.0940 -0.1931  0.0615 -0.1021</span></span>
+<span><span class="co">#&gt;   0.0430 -0.1712  0.1788  0.0128 -0.0998</span></span>
+<span><span class="co">#&gt;   0.0978  0.0404 -0.0497 -0.0498 -0.1174</span></span>
+<span><span class="co">#&gt;  -0.1930  0.0595 -0.1920  0.1906  0.1783</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (2,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.1528 -0.1687 -0.1547  0.1126  0.0340</span></span>
-<span><span class="co">#&gt;  -0.0250  0.1119  0.1786 -0.0537  0.1692</span></span>
-<span><span class="co">#&gt;  -0.0587  0.0618 -0.1933  0.1068 -0.0147</span></span>
-<span><span class="co">#&gt;  -0.0443  0.0896  0.0535  0.0343 -0.0055</span></span>
-<span><span class="co">#&gt;  -0.1542 -0.1680 -0.0273 -0.1850 -0.0300</span></span>
+<span><span class="co">#&gt;  -0.0895  0.1851  0.1197  0.0810 -0.1069</span></span>
+<span><span class="co">#&gt;   0.0060 -0.0741 -0.0257  0.0970  0.0494</span></span>
+<span><span class="co">#&gt;  -0.1378 -0.1034 -0.0027 -0.1515 -0.1498</span></span>
+<span><span class="co">#&gt;   0.0445  0.1863  0.1034 -0.1737  0.1627</span></span>
+<span><span class="co">#&gt;  -0.0879  0.1363 -0.0700  0.1801  0.0170</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (3,1,.,.) = </span></span>
-<span><span class="co">#&gt;  -0.0961  0.0569  0.0227 -0.0650  0.1230</span></span>
-<span><span class="co">#&gt;  -0.0851 -0.1994  0.1873  0.0622 -0.1484</span></span>
-<span><span class="co">#&gt;   0.0607 -0.0312 -0.1399  0.0159  0.0106</span></span>
-<span><span class="co">#&gt;   0.0358  0.1184 -0.1026 -0.1897 -0.1235</span></span>
-<span><span class="co">#&gt;  -0.0728  0.0687  0.1972  0.1805  0.1983</span></span>
+<span><span class="co">#&gt;   0.0631  0.0985  0.1794 -0.1612 -0.1750</span></span>
+<span><span class="co">#&gt;   0.0065 -0.1621  0.1176  0.0051 -0.0221</span></span>
+<span><span class="co">#&gt;   0.0081 -0.1509 -0.0126 -0.0206  0.1657</span></span>
+<span><span class="co">#&gt;   0.1094  0.0173  0.1251 -0.0929  0.1897</span></span>
+<span><span class="co">#&gt;  -0.0037  0.1830 -0.1635  0.0060  0.0214</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (4,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.0907 -0.1105  0.0089 -0.0638 -0.1214</span></span>
-<span><span class="co">#&gt;   0.0885  0.1434  0.1329 -0.1567  0.0805</span></span>
-<span><span class="co">#&gt;  -0.0676  0.1120  0.1550 -0.0961 -0.0334</span></span>
-<span><span class="co">#&gt;  -0.0973 -0.1493  0.0574 -0.1552 -0.1457</span></span>
-<span><span class="co">#&gt;   0.0700  0.0073  0.1351 -0.1444 -0.0336</span></span>
+<span><span class="co">#&gt;   0.1337  0.1822 -0.1793  0.1134 -0.0449</span></span>
+<span><span class="co">#&gt;  -0.1520  0.1102  0.0764 -0.0930  0.0744</span></span>
+<span><span class="co">#&gt;  -0.1336  0.0247 -0.1532  0.1843  0.1074</span></span>
+<span><span class="co">#&gt;   0.0357  0.0769 -0.1593  0.1807 -0.0785</span></span>
+<span><span class="co">#&gt;   0.1167 -0.1727 -0.0633  0.1073  0.1877</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (5,1,.,.) = </span></span>
-<span><span class="co">#&gt;  -0.0821 -0.1285 -0.1629 -0.1830 -0.1660</span></span>
+<span><span class="co">#&gt;   0.1286  0.1524  0.0582 -0.1423 -0.1971</span></span>
 <span><span class="co">#&gt; ... [the output was truncated (use n=-1 to disable)]</span></span>
 <span><span class="co">#&gt; [ CPUFloatType{20,1,5,5} ][ requires_grad = TRUE ]</span></span></code></pre></div>
 <p>It is usual for model parameters to then be passed to an
 optimiser.</p>
 <p>This can also be initialized within a ‘mirai’ process.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">optim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu">optim_rmsprop</span><span class="op">(</span>params <span class="op">=</span> <span class="va">params</span><span class="op">)</span>, params <span class="op">=</span> <span class="va">m</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">optim</span><span class="op">[</span><span class="op">]</span></span>
@@ -224,9 +223,9 @@ optimiser.</p>
 <span><span class="co">#&gt;     step: function (closure = NULL) </span></span>
 <span><span class="co">#&gt;     zero_grad: function () </span></span>
 <span><span class="co">#&gt;   Private:</span></span>
-<span><span class="co">#&gt;     step_helper: function (closure, loop_fun)</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     step_helper: function (closure, loop_fun)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <p>Above, tensors and complex objects containing tensors were passed
 seamlessly between host and daemon processes, in the same way as any

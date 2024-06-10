@@ -129,9 +129,8 @@ as <code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-
 <span></span>
 <span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_cluster.html">make_cluster</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">cl</span></span>
-<span><span class="co">#&gt; &lt; miraiCluster | ID: `4` nodes: 4 active: TRUE &gt;</span></span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parLapply</a></span><span class="op">(</span><span class="va">cl</span>, <span class="va">iris</span>, <span class="va">mean</span><span class="op">)</span></span>
+<span><span class="co">#&gt; &lt; miraiCluster | ID: `4` nodes: 4 active: TRUE &gt;</span></span>
+<span><span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parLapply</a></span><span class="op">(</span><span class="va">cl</span>, <span class="va">iris</span>, <span class="va">mean</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $Sepal.Length</span></span>
 <span><span class="co">#&gt; [1] 5.843333</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -148,29 +147,27 @@ as <code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-
 <span><span class="co">#&gt; [1] NA</span></span></code></pre></div>
 <p><code><a href="../reference/status.html">status()</a></code> may be called on a ’miraiCluster` to query the
 number of connected nodes at any time.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/status.html">status</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $connections</span></span>
 <span><span class="co">#&gt; [1] 4</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "abstract://72c96e3b8c531fe9d5c32bfa"</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/make_cluster.html">stop_cluster</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "abstract://1af7af3881982aa3a528ee0e"</span></span>
+<span><span class="fu"><a href="../reference/make_cluster.html">stop_cluster</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
 <p>Making a cluster specifying ‘url’ without ‘remote’ causes the shell
 commands for manual deployment of nodes to be printed to the
 console.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_cluster.html">make_cluster</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">2</span>, url <span class="op">=</span> <span class="fu"><a href="../reference/host_url.html">host_url</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Shell commands for deployment on nodes:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [1]</span></span>
-<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:45985',rs=c(10407,-409141256,1907397017,-1822270330,1627186511,1735893828,-1856229003))"</span></span>
+<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:39081',rs=c(10407,399751828,-1885737851,-1144379518,-865780453,239553952,1537886497))"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [2]</span></span>
-<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:45985',rs=c(10407,1184372690,-983753352,952506510,543524672,1744308145,-1294231923))"</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/make_cluster.html">stop_cluster</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:39081',rs=c(10407,1247122786,1508345779,-1660073377,1594894979,-1919945611,-1646144461))"</span></span>
+<span><span class="fu"><a href="../reference/make_cluster.html">stop_cluster</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="foreach-integration">Foreach Integration<a class="anchor" aria-label="anchor" href="#foreach-integration"></a>
@@ -180,7 +177,7 @@ for use with the <a href="https://cran.r-project.org/package=foreach" class="ext
 package.</p>
 <p>Running some parallel examples for the <code>foreach()</code>
 function:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RevolutionAnalytics/foreach" class="external-link">foreach</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RevolutionAnalytics/iterators" class="external-link">iterators</a></span><span class="op">)</span></span>
 <span></span>
@@ -191,12 +188,11 @@ function:</p>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">9</span><span class="op">)</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu">foreach</span><span class="op">(</span>i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>, .combine <span class="op">=</span> <span class="va">rbind</span><span class="op">)</span> <span class="op">%dopar%</span></span>
 <span>  <span class="op">(</span><span class="va">m</span><span class="op">[</span><span class="va">i</span>, <span class="op">]</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">m</span><span class="op">[</span><span class="va">i</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;               [,1]       [,2]      [,3]</span></span>
-<span><span class="co">#&gt; result.1 1.5236796  0.6250741 0.8512463</span></span>
-<span><span class="co">#&gt; result.2 1.4332458  0.1446897 1.4220646</span></span>
-<span><span class="co">#&gt; result.3 0.4319478 -0.2369253 2.8049775</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># simple parallel matrix multiply</span></span>
+<span><span class="co">#&gt;                [,1]       [,2]      [,3]</span></span>
+<span><span class="co">#&gt; result.1  1.1086890  3.6172602 -1.725949</span></span>
+<span><span class="co">#&gt; result.2 -4.1152027  4.8586848  2.256518</span></span>
+<span><span class="co">#&gt; result.3  0.8223401 -0.6849304  2.862590</span></span>
+<span><span class="co"># simple parallel matrix multiply</span></span>
 <span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">16</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span>
 <span><span class="fu">foreach</span><span class="op">(</span>b <span class="op">=</span> <span class="fu">iter</span><span class="op">(</span><span class="va">b</span>, by<span class="op">=</span><span class="st">'col'</span><span class="op">)</span>, .combine <span class="op">=</span> <span class="va">cbind</span><span class="op">)</span> <span class="op">%dopar%</span></span>
