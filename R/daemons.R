@@ -343,7 +343,13 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       create_stream(n = n, seed = seed, envir = envir)
       dots <- parse_dots(...)
       output <- attr(dots, "output")
-      if (dispatcher) {
+      if (is.na(dispatcher)) {
+        cv <- cv()
+        sock <- dispatcher_socket(cv = cv, n = n, host = inproc_url(), url = urld)
+        for (i in seq_len(n))
+          launch_daemon(wa3(sprintf("%s/%d", urld, i), dots, next_stream(envir)), output)
+        `[[<-`(envir, "cv2", cv)
+      } else if (dispatcher) {
         cv <- cv()
         sock <- req_socket(urld)
         urlc <- sprintf("%s%s", urld, "c")
@@ -550,6 +556,8 @@ serialization <- function(fns, class, vec = FALSE) {
 }
 
 # internals --------------------------------------------------------------------
+
+inproc_url <- function() sprintf("inproc://%s", random(12L))
 
 check_create_tls <- function(url, tls, envir) {
   purl <- parse_url(url)
