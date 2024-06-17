@@ -188,7 +188,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
   pipe_notify(sock, cv = cv, remove = TRUE)
   data <- eval_mirai(recv(sock, mode = 1L, block = TRUE))
   send(sock, data = data, mode = 1L, block = TRUE)
-  wait(cv)
+  until(cv, .limit_long)
 
 }
 
