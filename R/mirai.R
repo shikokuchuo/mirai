@@ -556,7 +556,7 @@ print.miraiInterrupt <- function(x, ...) {
 
 ephemeral_daemon <- function(url) {
   sock <- req_socket(url)
-  system2(command = .command, args = c("-e", shQuote(sprintf("mirai::.daemon('%s')", url))), stdout = FALSE, stderr = FALSE, wait = FALSE)
+  system2(command = .command, args = c("-e", shQuote(sprintf("mirai::.daemon(\"%s\")", url))), stdout = FALSE, stderr = FALSE, wait = FALSE)
   sock
 }
 
