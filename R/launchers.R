@@ -144,8 +144,13 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
         arglen <- length(args)
         cmds <- character(arglen)
         for (i in seq_along(args))
-          cmds[i] <- sprintf("%s -e %s", rscript, if (is.null(envir[["stream"]]))
-            wa2(url[min(i, ulen)], dots, tls) else wa3(url[min(i, ulen)], dots, next_stream(envir), tls))
+          cmds[i] <- sprintf(
+            "%s -e %s",
+            rscript,
+            shQuote(
+              if (is.null(envir[["stream"]])) wa2(url[min(i, ulen)], dots, tls) else wa3(url[min(i, ulen)], dots, next_stream(envir), tls)
+            )
+          )
 
         for (i in seq_along(args))
           system2(command = command, args = `[<-`(args[[i]], find_dot(args[[i]]), cmds[i]), wait = FALSE)
@@ -161,8 +166,13 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
 
   cmds <- character(ulen)
   for (i in seq_along(url))
-    cmds[i] <- sprintf("%s -e %s", rscript, if (is.null(envir[["stream"]]))
-      wa2(url[i], dots, tls) else wa3(url[i], dots, next_stream(envir), tls))
+    cmds[i] <- sprintf(
+      "%s -e %s",
+      rscript,
+      shQuote(
+        if (is.null(envir[["stream"]])) wa2(url[i], dots, tls) else wa3(url[i], dots, next_stream(envir), tls)
+      )
+    )
 
   if (length(command))
     for (cmd in cmds)

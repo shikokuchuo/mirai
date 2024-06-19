@@ -1,8 +1,8 @@
-# mirai 1.1.0.9002 (development)
+# mirai 1.1.0.9003 (development)
 
 * Ephemeral daemons now exit as soon as permissible, eiliminating the 2s linger period.
 * `dispatcher()` argument 'retry' now defaults to FALSE for consistency with non-dispatcher behaviour.
-* Updates shell quoting of daemon launch commands.
+* `remote_config()` now works with the SLURM `srun` command (thanks @michaelmayer2 #119).
 * Requires `nanonext` >= [1.1.0.9000].
 
 # mirai 1.1.0
