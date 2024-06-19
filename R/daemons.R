@@ -346,9 +346,10 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       if (is.na(dispatcher)) {
         cv <- cv()
         sock <- dispatcher_socket(cv = cv, n = n, host = inproc_url(), url = urld)
+        urls <- as.character(lapply(seq_len(n), function(x) sprintf("%s/%d", urld, x)))
         for (i in seq_len(n))
-          launch_daemon(wa3(sprintf("%s/%d", urld, i), dots, next_stream(envir)), output)
-        `[[<-`(envir, "cv2", cv)
+          launch_daemon(wa3(urls[i], dots, next_stream(envir)), output)
+        `[[<-`(`[[<-`(envir, "cv2", cv), "urls", urls)
       } else if (dispatcher) {
         cv <- cv()
         sock <- req_socket(urld)
