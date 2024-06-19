@@ -148,7 +148,7 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
             wa2(url[min(i, ulen)], dots, tls) else wa3(url[min(i, ulen)], dots, next_stream(envir), tls))
 
         for (i in seq_along(args))
-          system2(command = command, args = `[<-`(args[[i]], find_dot(args[[i]]), shQuote(cmds[i])), wait = FALSE)
+          system2(command = command, args = `[<-`(args[[i]], find_dot(args[[i]]), cmds[i]), wait = FALSE)
 
         return(`class<-`(cmds, "miraiLaunchCmd"))
 
@@ -166,7 +166,7 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
 
   if (length(command))
     for (cmd in cmds)
-      system2(command = command, args = `[<-`(args, find_dot(args), shQuote(cmd)), wait = FALSE)
+      system2(command = command, args = `[<-`(args, find_dot(args), cmd), wait = FALSE)
 
   `class<-`(cmds, "miraiLaunchCmd")
 
