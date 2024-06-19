@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9003</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,11 +65,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.1.0.9002" id="mirai-1109002-development">mirai 1.1.0.9002 (development)<a class="anchor" aria-label="anchor" href="#mirai-1109002-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.1.0.9003" id="mirai-1109003-development">mirai 1.1.0.9003 (development)<a class="anchor" aria-label="anchor" href="#mirai-1109003-development"></a></h2>
 <ul><li>Ephemeral daemons now exit as soon as permissible, eiliminating the 2s linger period.</li>
 <li>
 <code><a href="../reference/dispatcher.html">dispatcher()</a></code> argument ‘retry’ now defaults to FALSE for consistency with non-dispatcher behaviour.</li>
-<li>Updates shell quoting of daemon launch commands.</li>
+<li>
+<code><a href="../reference/remote_config.html">remote_config()</a></code> now works with the SLURM <code>srun</code> command (thanks <a href="https://github.com/michaelmayer2" class="external-link">@michaelmayer2</a> <a href="https://github.com/shikokuchuo/mirai/issues/119" class="external-link">#119</a>).</li>
 <li>Requires <code>nanonext</code> &gt;= [1.1.0.9000].</li>
 </ul></div>
     <div class="section level2">
