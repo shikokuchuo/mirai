@@ -312,8 +312,6 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         n <- 0L
       }
       `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
-      remotes <- substitute(remote)
-      if (!is.symbol(remotes)) remote <- remotes
       if (length(remote))
         launch_remote(url = envir[["urls"]], remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
       serialization_refhook()
