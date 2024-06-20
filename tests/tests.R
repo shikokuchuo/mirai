@@ -107,7 +107,7 @@ connection && .Platform[["OS.type"]] != "windows" && {
   nanotest(is.character(launch_remote("tcp://localhost:5555", remote = ssh_config(remotes = c("ssh://remotehost", "ssh://remotenode"), tunnel = TRUE, command = "echo"))))
   nanotestn(launch_local(local_url(), .compute = "test"))
   Sys.sleep(1L)
-  nanotest(daemons(n = 2L, url = value <- "ws://:0", dispatcher = FALSE, remote = remote_config()) != value)
+  nanotest(daemons(n = 2L, url = value <- "ws://:0", dispatcher = FALSE, remote = remote_config(quote = TRUE)) != value)
   nanotestz(daemons(0L))
   Sys.sleep(1L)
   m <- with(daemons(1, dispatcher = FALSE, .compute = "ml"), {

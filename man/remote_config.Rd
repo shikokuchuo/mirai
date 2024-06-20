@@ -5,7 +5,12 @@
 \alias{ssh_config}
 \title{Generic and SSH Remote Launch Configuration}
 \usage{
-remote_config(command = NULL, args = c("", "."), rscript = "Rscript")
+remote_config(
+  command = NULL,
+  args = c("", "."),
+  rscript = "Rscript",
+  quote = FALSE
+)
 
 ssh_config(
   remotes,
@@ -34,6 +39,10 @@ character vectors to effect multiple launches (one for each list element).}
 machine. The default assumes \sQuote{Rscript} is on the executable search
 path. Prepend the full path if necessary. If launching on Windows,
 \sQuote{Rscript} should be replaced with \sQuote{Rscript.exe}.}
+
+\item{quote}{[default FALSE] logical value whether or not to quote the daemon
+launch command (not required for SLURM \sQuote{srun} for example, but
+required for \sQuote{ssh}).}
 
 \item{remotes}{the character URL or vector of URLs to SSH into, using the
 'ssh://' scheme and including the port open for SSH connections (defaults
@@ -100,7 +109,19 @@ A list in the required format to be supplied to the \sQuote{remote}
 }
 
 \examples{
-remote_config(command = "ssh", args = c("-fTp 22 10.75.32.90", "."))
+# for SLURM
+remote_config(
+  command = "srun",
+  args = c("--mem 512", "-n 1", "."),
+  rscript = file.path(R.home("bin"), "Rscript")
+)
+
+# commands like SSH require quoting of the daemon launch command
+remote_config(
+  command = "/usr/bin/ssh",
+  args = c("-fTp 22 10.75.32.90", "."),
+  quote = TRUE
+)
 
 ssh_config(
   remotes = c("ssh://10.75.32.90:222", "ssh://nodename"),
