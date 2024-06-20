@@ -126,7 +126,6 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
   url <- process_url(url, .compute = .compute)
 
   ulen <- length(url)
-  if (is.language(remote)) remote <- eval(remote)
   command <- remote[["command"]]
   rscript <- remote[["rscript"]]
 
