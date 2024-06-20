@@ -146,9 +146,7 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
           cmds[i] <- sprintf(
             "%s -e %s",
             rscript,
-            shQuote(
-              if (is.null(envir[["stream"]])) wa2(url[min(i, ulen)], dots, tls) else wa3(url[min(i, ulen)], dots, next_stream(envir), tls)
-            )
+            if (is.null(envir[["stream"]])) wa2(url[min(i, ulen)], dots, tls) else wa3(url[min(i, ulen)], dots, next_stream(envir), tls)
           )
 
         for (i in seq_along(args))
@@ -168,9 +166,7 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
     cmds[i] <- sprintf(
       "%s -e %s",
       rscript,
-      shQuote(
-        if (is.null(envir[["stream"]])) wa2(url[i], dots, tls) else wa3(url[i], dots, next_stream(envir), tls)
-      )
+      if (is.null(envir[["stream"]])) wa2(url[i], dots, tls) else wa3(url[i], dots, next_stream(envir), tls)
     )
 
   if (length(command))
