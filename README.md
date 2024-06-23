@@ -7,9 +7,10 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/mirai?color=171d41)](https://CRAN.R-project.org/package=mirai)
+[![R-multiverse
+status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcommunity.r-multiverse.org%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=r-multiverse)](https://community.r-multiverse.org/mirai)
 [![R-universe
 status](https://shikokuchuo.r-universe.dev/badges/mirai?color=2dab18)](https://shikokuchuo.r-universe.dev/mirai)
-[![diffify](https://diffify.com/diffify-badge.svg)](https://diffify.com/R/mirai)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
 [![codecov](https://codecov.io/gh/shikokuchuo/mirai/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/mirai)
 [![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)
@@ -82,7 +83,7 @@ method:
 
 ``` r
 m[]
-#> [1] 47.4314
+#> [1] 46.02985
 ```
 
 It is not necessary to wait, as the mirai resolves automatically
@@ -93,7 +94,7 @@ available at `$data`.
 m
 #> < mirai [$data] >
 m$data
-#> [1] 47.4314
+#> [1] 46.02985
 ```
 
 ### Daemons
@@ -211,13 +212,13 @@ provide secure connections in `mirai`.
 
 ### Installation
 
-Install the latest release from CRAN:
+Install the latest release from CRAN or R-multiverse:
 
 ``` r
 install.packages("mirai")
 ```
 
-Or the development version from R-universe:
+The current development version is available from R-universe:
 
 ``` r
 install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
