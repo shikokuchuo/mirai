@@ -56,6 +56,10 @@ jobs:
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
+      - name: Add r-universe to repos
+        run: |
+          cat("\noptions(repos=c(RMV='https://shikokuchuo.r-universe.dev',CRAN ='https://cloud.r-project.org'))\n", file = "~/.Rprofile", append = TRUE)
+        shell: Rscript {0}
       - uses: r-hub/actions/setup-deps@v1
         with:
           token: ${{ secrets.RHUB_TOKEN }}
@@ -81,6 +85,10 @@ jobs:
         with:
           job-config: ${{ matrix.config.job-config }}
           token: ${{ secrets.RHUB_TOKEN }}
+      - name: Add r-universe to repos
+        run: |
+          cat("\noptions(repos=c(RMV='https://shikokuchuo.r-universe.dev',CRAN ='https://cloud.r-project.org'))\n", file = "~/.Rprofile", append = TRUE)
+        shell: Rscript {0}
       - uses: r-hub/actions/platform-info@v1
         with:
           token: ${{ secrets.RHUB_TOKEN }}
