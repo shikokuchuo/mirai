@@ -1,4 +1,4 @@
-# mirai 1.1.0.9005 (development)
+# mirai 1.1.0.9006 (development)
 
 * Ephemeral daemons now exit as soon as permissible, eiliminating the 2s linger period.
 * `dispatcher()` argument 'retry' now defaults to FALSE for consistency with non-dispatcher behaviour.

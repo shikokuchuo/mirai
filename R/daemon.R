@@ -183,12 +183,13 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
 .daemon <- function(url) {
 
   cv <- cv()
-  sock <- socket(protocol = "rep", dial = url, autostart = NA)
+  sock <- socket(protocol = "rep")
   on.exit(reap(sock))
   pipe_notify(sock, cv = cv, remove = TRUE)
-  data <- eval_mirai(recv(sock, mode = 1L, block = TRUE))
-  send(sock, data = data, mode = 1L, block = TRUE)
-  until(cv, .limit_long)
+  dial(sock, url = url, autostart = NA, error = TRUE)
+  data <- eval_mirai(recv(sock, mode = 1L))
+  send(sock, data = data, mode = 1L)
+  wait(cv)
 
 }
 
