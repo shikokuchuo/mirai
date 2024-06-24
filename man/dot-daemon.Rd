@@ -12,7 +12,7 @@ port to connect to (and optionally for websockets, a path), e.g.
 'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.}
 }
 \value{
-Invisible NULL.
+Invisible TRUE.
 }
 \description{
 Ephemeral executor for the remote process. User code must not call this.

@@ -141,7 +141,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
     ctx <- .context(sock)
     aio <- recv_aio(ctx, mode = 1L, timeout = idletime, cv = cv)
     wait(cv) || break
-    m <- .subset2(aio, "data")
+    m <- collect_aio(aio)
     is.environment(m) || {
       count < timerstart && {
         start <- mclock()
@@ -175,7 +175,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
 #'
 #' @inheritParams daemon
 #'
-#' @return Invisible NULL.
+#' @return Invisible TRUE.
 #'
 #' @keywords internal
 #' @export
@@ -188,8 +188,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
   pipe_notify(sock, cv = cv, remove = TRUE)
   dial(sock, url = url, autostart = NA, error = TRUE)
   data <- eval_mirai(recv(sock, mode = 1L, block = TRUE))
-  send(sock, data = data, mode = 1L)
-  wait(cv)
+  send(sock, data = data, mode = 1L) || wait(cv)
 
 }
 
