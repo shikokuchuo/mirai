@@ -30,7 +30,7 @@ knitr::opts_chunk$set(
 <br /><br />
 Minimalist Async Evaluation Framework for R
 <br /><br />
-High performance parallel code execution and distributed computing.
+High-performance parallel code execution and distributed computing.
 <br /><br />
 Designed for simplicity, a 'mirai' evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion.
 <br /><br />

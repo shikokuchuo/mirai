@@ -19,7 +19,7 @@ status](https://shikokuchuo.r-universe.dev/badges/mirai?color=2dab18)](https://s
 ### ミライ
 
 <br /> ( 未来 ) <br /><br /> Minimalist Async Evaluation Framework for R
-<br /><br /> High performance parallel code execution and distributed
+<br /><br /> High-performance parallel code execution and distributed
 computing. <br /><br /> Designed for simplicity, a ‘mirai’ evaluates an
 R expression asynchronously, on local or network resources, resolving
 automatically upon completion. <br /><br /> Modern networking and
@@ -83,7 +83,7 @@ method:
 
 ``` r
 m[]
-#> [1] 46.02985
+#> [1] 49.67902
 ```
 
 It is not necessary to wait, as the mirai resolves automatically
@@ -94,7 +94,7 @@ available at `$data`.
 m
 #> < mirai [$data] >
 m$data
-#> [1] 46.02985
+#> [1] 49.67902
 ```
 
 ### Daemons

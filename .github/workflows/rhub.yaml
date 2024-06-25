@@ -85,10 +85,6 @@ jobs:
         with:
           job-config: ${{ matrix.config.job-config }}
           token: ${{ secrets.RHUB_TOKEN }}
-      - name: Add r-universe to repos
-        run: |
-          cat("\noptions(repos=c(RMV='https://community.r-multiverse.org',CRAN ='https://cloud.r-project.org'))\n", file = "~/.Rprofile", append = TRUE)
-        shell: Rscript {0}
       - uses: r-hub/actions/platform-info@v1
         with:
           token: ${{ secrets.RHUB_TOKEN }}
