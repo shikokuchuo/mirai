@@ -199,7 +199,7 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
 #'     path. Prepend the full path if necessary. If launching on Windows,
 #'     \sQuote{Rscript} should be replaced with \sQuote{Rscript.exe}.
 #' @param quote [default FALSE] logical value whether or not to quote the daemon
-#'     launch command (not required for SLURM \sQuote{srun} for example, but
+#'     launch command (not required for Slurm \sQuote{srun} for example, but
 #'     required for \sQuote{ssh}).
 #'
 #' @return A list in the required format to be supplied to the \sQuote{remote}
@@ -207,7 +207,7 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
 #'     \code{\link{make_cluster}}.
 #'
 #' @examples
-#' # for SLURM
+#' # for Slurm
 #' remote_config(
 #'   command = "srun",
 #'   args = c("--mem 512", "-n 1", "."),

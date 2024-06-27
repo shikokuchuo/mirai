@@ -41,7 +41,7 @@ path. Prepend the full path if necessary. If launching on Windows,
 \sQuote{Rscript} should be replaced with \sQuote{Rscript.exe}.}
 
 \item{quote}{[default FALSE] logical value whether or not to quote the daemon
-launch command (not required for SLURM \sQuote{srun} for example, but
+launch command (not required for Slurm \sQuote{srun} for example, but
 required for \sQuote{ssh}).}
 
 \item{remotes}{the character URL or vector of URLs to SSH into, using the
@@ -109,7 +109,7 @@ A list in the required format to be supplied to the \sQuote{remote}
 }
 
 \examples{
-# for SLURM
+# for Slurm
 remote_config(
   command = "srun",
   args = c("--mem 512", "-n 1", "."),

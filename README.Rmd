@@ -128,7 +128,7 @@ The following core integrations are documented, with usage examples in the linke
 
 [<img alt="crew" src="https://github.com/wlandau/crew/raw/main/man/figures/logo.png" width="40" height="46" />](https://wlandau.github.io/crew/) &nbsp; Crew is a distributed worker-launcher extending `mirai` to different distributed computing platforms, from traditional clusters to cloud services.
 
-[<img alt="crew.cluster" src="https://github.com/wlandau/crew.cluster/raw/main/man/figures/logo.png" width="40" height="46" />](https://wlandau.github.io/crew.cluster/) &nbsp; `crew.cluster` enables mirai-based workflows on traditional high-performance computing clusters using LFS, PBS/TORQUE, SGE and SLURM.
+[<img alt="crew.cluster" src="https://github.com/wlandau/crew.cluster/raw/main/man/figures/logo.png" width="40" height="46" />](https://wlandau.github.io/crew.cluster/) &nbsp; `crew.cluster` enables mirai-based workflows on traditional high-performance computing clusters using LFS, PBS/TORQUE, SGE and Slurm.
 
 [<img alt="crew.aws.batch" src="https://github.com/wlandau/crew.aws.batch/raw/main/man/figures/logo.png" width="40" height="46" />](https://wlandau.github.io/crew.aws.batch/) &nbsp; `crew.aws.batch` extends `mirai` to cloud computing using AWS Batch.
 

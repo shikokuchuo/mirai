@@ -355,7 +355,7 @@ daemons(
 
 `remote_config()` may be used to run a command to deploy daemons using a resource manager.
 
-Taking SLURM as an example, the following uses `srun` to launch 2 daemons on the cluster, with some additional arguments to `srun` specifying the resource allocation:
+Taking Slurm as an example, the following uses `srun` to launch 2 daemons on the cluster, with some additional arguments to `srun` specifying the resource allocation:
 
 ```{r remotecfg, eval=FALSE}
 daemons(

@@ -2,7 +2,7 @@
 
 * Ephemeral daemons now exit as soon as permissible, eiliminating the 2s linger period.
 * `dispatcher()` argument 'retry' now defaults to FALSE for consistency with non-dispatcher behaviour.
-* `remote_config()` gains argument 'quote' to control whether or not to quote the daemon launch commmand, and now works for the SLURM `srun` command (thanks @michaelmayer2 #119).
+* `remote_config()` gains argument 'quote' to control whether or not to quote the daemon launch commmand, and now works with Slurm (thanks @michaelmayer2 #119).
 * Requires `nanonext` >= 1.1.1.
 
 # mirai 1.1.0

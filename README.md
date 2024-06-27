@@ -83,7 +83,7 @@ method:
 
 ``` r
 m[]
-#> [1] 49.67902
+#> [1] 50.10154
 ```
 
 It is not necessary to wait, as the mirai resolves automatically
@@ -94,7 +94,7 @@ available at `$data`.
 m
 #> < mirai [$data] >
 m$data
-#> [1] 49.67902
+#> [1] 50.10154
 ```
 
 ### Daemons
@@ -173,7 +173,7 @@ services.
 [<img alt="crew.cluster" src="https://github.com/wlandau/crew.cluster/raw/main/man/figures/logo.png" width="40" height="46" />](https://wlandau.github.io/crew.cluster/)
   `crew.cluster` enables mirai-based workflows on traditional
 high-performance computing clusters using LFS, PBS/TORQUE, SGE and
-SLURM.
+Slurm.
 
 [<img alt="crew.aws.batch" src="https://github.com/wlandau/crew.aws.batch/raw/main/man/figures/logo.png" width="40" height="46" />](https://wlandau.github.io/crew.aws.batch/)
   `crew.aws.batch` extends `mirai` to cloud computing using AWS Batch.
