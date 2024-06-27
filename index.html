@@ -142,13 +142,13 @@
 <p>To wait for and collect the evaluated result, use the mirai’s <code>[]</code> method:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 49.67902</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 50.10154</span></span></code></pre></div>
 <p>It is not necessary to wait, as the mirai resolves automatically whenever the async operation completes, the evaluated result then available at <code>$data</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span></span>
 <span><span class="co">#&gt; &lt; mirai [$data] &gt;</span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] 49.67902</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 50.10154</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
@@ -179,7 +179,7 @@
 </h3>
 <p><a href="https://docs.ropensci.org/targets/" class="external-link"><img alt="targets" src="https://github.com/ropensci/targets/raw/main/man/figures/logo.png" width="40" height="46"></a>   Targets, a Make-like pipeline tool for statistics and data science, has integrated and adopted <code>crew</code> as its default high-performance computing backend.</p>
 <p><a href="https://wlandau.github.io/crew/" class="external-link"><img alt="crew" src="https://github.com/wlandau/crew/raw/main/man/figures/logo.png" width="40" height="46"></a>   Crew is a distributed worker-launcher extending <code>mirai</code> to different distributed computing platforms, from traditional clusters to cloud services.</p>
-<p><a href="https://wlandau.github.io/crew.cluster/" class="external-link"><img alt="crew.cluster" src="https://github.com/wlandau/crew.cluster/raw/main/man/figures/logo.png" width="40" height="46"></a>   <code>crew.cluster</code> enables mirai-based workflows on traditional high-performance computing clusters using LFS, PBS/TORQUE, SGE and SLURM.</p>
+<p><a href="https://wlandau.github.io/crew.cluster/" class="external-link"><img alt="crew.cluster" src="https://github.com/wlandau/crew.cluster/raw/main/man/figures/logo.png" width="40" height="46"></a>   <code>crew.cluster</code> enables mirai-based workflows on traditional high-performance computing clusters using LFS, PBS/TORQUE, SGE and Slurm.</p>
 <p><a href="https://wlandau.github.io/crew.aws.batch/" class="external-link"><img alt="crew.aws.batch" src="https://github.com/wlandau/crew.aws.batch/raw/main/man/figures/logo.png" width="40" height="46"></a>   <code>crew.aws.batch</code> extends <code>mirai</code> to cloud computing using AWS Batch.</p>
 </div>
 <div class="section level3">

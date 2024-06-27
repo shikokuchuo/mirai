@@ -125,7 +125,7 @@ path. Prepend the full path if necessary. If launching on Windows,
 
 <dt>quote</dt>
 <dd><p>[default FALSE] logical value whether or not to quote the daemon
-launch command (not required for SLURM ‘srun’ for example, but
+launch command (not required for Slurm ‘srun’ for example, but
 required for ‘ssh’).</p></dd>
 
 
@@ -202,7 +202,7 @@ required and can be inferred from the ‘url’ supplied (see
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># for SLURM</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># for Slurm</span></span></span>
 <span class="r-in"><span><span class="fu">remote_config</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  command <span class="op">=</span> <span class="st">"srun"</span>,</span></span>
 <span class="r-in"><span>  args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"--mem 512"</span>, <span class="st">"-n 1"</span>, <span class="st">"."</span><span class="op">)</span>,</span></span>
