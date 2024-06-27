@@ -175,7 +175,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
 #'
 #' @inheritParams daemon
 #'
-#' @return Invisible TRUE.
+#' @return Logical TRUE or FALSE.
 #'
 #' @keywords internal
 #' @export
@@ -188,7 +188,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
   pipe_notify(sock, cv = cv, remove = TRUE)
   dial(sock, url = url, autostart = NA, error = TRUE)
   data <- eval_mirai(recv(sock, mode = 1L, block = TRUE))
-  send(sock, data = data, mode = 1L) || wait(cv)
+  send(sock, data = data, mode = 1L) || until(cv, .limit_short)
 
 }
 
