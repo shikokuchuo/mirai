@@ -562,6 +562,10 @@ serialization <- function(refhook = list(), class = "", vec = FALSE) {
 #'     of \code{\link{daemons}}, \code{\link{daemon}}, \code{\link{launch_local}},
 #'     \code{\link{launch_remote}} etc.
 #'
+#' @note The current implementation only supports using one configuration per
+#'     host R session, not per compute profile. This is a limitation that is
+#'     likely to be relaxed in a future package version.
+#'
 #' @examples
 #' cfg <- serial_config(
 #'   class = "torch_tensor",

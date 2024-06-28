@@ -523,7 +523,7 @@ m[]
 ```
 It can be seen that this time, the arrow table is seamlessly handled in the 'mirai' process. This is the case even when the object is deeply nested inside lists or other structures.
 
-To change registered serialization functions, just call `serialization()` again supplying the new functions. Here we switch to using [`polars`](https://pola-rs.github.io/r-polars/), a 'lightning fast' dataframe library written in Rust (requires `polars` >= 0.16.4).
+The serialization functions may be switched by calling `daemons()` again supplying a new configuration. We can for example switch to using [`polars`](https://pola-rs.github.io/r-polars/), a 'lightning fast' dataframe library written in Rust (requires `polars` >= 0.16.4).
 ```{r polars}
 serial <- serial_config(
   class = "RPolarsDataFrame",
@@ -537,16 +537,14 @@ x <- polars::as_polars_df(iris)
 
 m <- mirai(list(a = head(x), b = "some text"), x = x)
 m[]
-```
-To cancel serialization functions entirely:
-```{r serialcancel}
-serialization(NULL)
 
 daemons(0)
 ```
 The 'vec' argument to `serialization()` may be specified as `TRUE` if the serialization functions are vectorized and take lists of objects, as is the case for [`safetensors`](https://mlverse.github.io/safetensors/), used for serialization in [`torch`](https://torch.mlverse.org/).
 
 Please refer to the [torch vignette](https://shikokuchuo.net/mirai/articles/torch.html) for further examples.
+
+Note: the current implementation only supports using one configuration per host R session, not per compute profile. This is a limitation that is likely to be relaxed in a future package version.
 
 [&laquo; Back to ToC](#table-of-contents)
 

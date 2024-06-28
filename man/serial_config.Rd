@@ -31,6 +31,11 @@ A list in the required format to be supplied to the ‘serial’ argument
 Registers custom serialization and unserialization functions for sending and
     receiving reference objects.
 }
+\note{
+The current implementation only supports using one configuration per
+    host R session, not per compute profile. This is a limitation that is
+    likely to be relaxed in a future package version.
+}
 \examples{
 cfg <- serial_config(
   class = "torch_tensor",
