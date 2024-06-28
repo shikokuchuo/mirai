@@ -355,7 +355,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       } else {
         sock <- req_socket(urld)
         for (i in seq_len(n))
-          launch_and_sync_daemon(sock, wa3(urld, dots, next_stream(envir)), output)
+          launch_and_sync_daemon(sock, wa3(urld, dots, next_stream(envir)), output) || stop(._[["sync_timeout"]])
         `[[<-`(envir, "urls", urld)
       }
       `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
