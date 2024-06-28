@@ -22,6 +22,7 @@
 #'     \code{\link{daemon}} with the specified arguments.
 #'
 #' @inheritParams mirai
+#' @inheritParams daemon
 #' @param url the character host URL or vector of host URLs, including the port
 #'     to connect to (and optionally for websockets, a path), e.g.
 #'     tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'
@@ -78,7 +79,7 @@
 #'
 #' @export
 #'
-launch_local <- function(url, ..., tls = NULL, .compute = "default") {
+launch_local <- function(url, ..., serial = NULL, tls = NULL, .compute = "default") {
 
   envir <- ..[[.compute]]
   dots <- parse_dots(...)
@@ -87,10 +88,10 @@ launch_local <- function(url, ..., tls = NULL, .compute = "default") {
   url <- process_url(url, .compute = .compute)
   if (is.null(envir[["stream"]])) {
     for (u in url)
-      launch_daemon(wa2(u, dots, tls), output)
+      launch_daemon(wa2(u, dots, serial, tls), output)
   } else {
     for (u in url)
-      launch_daemon(wa3(u, dots, next_stream(envir), tls), output)
+      launch_daemon(wa3(u, dots, next_stream(envir), serial, tls), output)
   }
 
 }
@@ -114,7 +115,8 @@ launch_local <- function(url, ..., tls = NULL, .compute = "default") {
 #' @rdname launch_local
 #' @export
 #'
-launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compute = "default") {
+launch_remote <- function(url, remote = remote_config(), ..., serial = NULL,
+                          tls = NULL, .compute = "default") {
 
   if (!is.character(url) && inherits(url, c("miraiCluster", "miraiNode"))) {
     .compute <- attr(url, "id")
@@ -147,11 +149,17 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
           cmds[i] <- sprintf(
             "%s -e %s",
             rscript,
-            if (is.null(envir[["stream"]])) wa2(url[min(i, ulen)], dots, tls) else wa3(url[min(i, ulen)], dots, next_stream(envir), tls)
+            if (is.null(envir[["stream"]]))
+              wa2(url[min(i, ulen)], dots, serial, tls) else
+                wa3(url[min(i, ulen)], dots, next_stream(envir), serial, tls)
           )
 
         for (i in seq_along(args))
-          system2(command = command, args = `[<-`(args[[i]], find_dot(args[[i]]), if (quote) shQuote(cmds[i]) else cmds[i]), wait = FALSE)
+          system2(
+            command = command,
+            args = `[<-`(args[[i]], find_dot(args[[i]]), if (quote) shQuote(cmds[i]) else cmds[i]),
+            wait = FALSE
+          )
 
         return(`class<-`(cmds, "miraiLaunchCmd"))
 
@@ -167,12 +175,18 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
     cmds[i] <- sprintf(
       "%s -e %s",
       rscript,
-      if (is.null(envir[["stream"]])) wa2(url[i], dots, tls) else wa3(url[i], dots, next_stream(envir), tls)
+      if (is.null(envir[["stream"]]))
+        wa2(url[i], dots, serial, tls) else
+          wa3(url[i], dots, next_stream(envir), serial, tls)
     )
 
   if (length(command))
     for (cmd in cmds)
-      system2(command = command, args = `[<-`(args, find_dot(args), if (quote) shQuote(cmd) else cmd), wait = FALSE)
+      system2(
+        command = command,
+        args = `[<-`(args, find_dot(args), if (quote) shQuote(cmd) else cmd),
+        wait = FALSE
+      )
 
   `class<-`(cmds, "miraiLaunchCmd")
 

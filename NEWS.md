@@ -1,5 +1,6 @@
-# mirai 1.1.0.9008 (development)
+# mirai 1.1.0.9009 (development)
 
+* Adds `serial_config()` to generate custom serialization functions for use with daemons, to be passed to the new 'serial' argument of `daemons()`, `daemon()`, `launch_local()`, and `launch_remote()` etc.
 * Ephemeral daemons now exit as soon as permissible, eiliminating the 2s linger period.
 * `dispatcher()` argument 'retry' now defaults to FALSE for consistency with non-dispatcher behaviour.
 * `remote_config()` gains argument 'quote' to control whether or not to quote the daemon launch commmand, and now works with Slurm (thanks @michaelmayer2 #119).

@@ -79,8 +79,8 @@
 #' @export
 #'
 dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
-                       retry = FALSE, token = FALSE, tls = NULL, pass = NULL,
-                       rs = NULL, monitor = NULL) {
+                       retry = FALSE, token = FALSE, serial = NULL, tls = NULL,
+                       pass = NULL, rs = NULL, monitor = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(._[["missing_url"]])
@@ -134,7 +134,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
       }
     }
 
-    auto && launch_daemon(wa3(nurl, dots, next_stream(envir)), output)
+    auto && launch_daemon(wa3(nurl, dots, next_stream(envir), serial), output)
 
     basenames[i] <- burl
     servernames[i] <- listurl
