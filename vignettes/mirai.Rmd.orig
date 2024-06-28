@@ -503,17 +503,19 @@ x <- as_arrow_table(iris)
 m <- mirai(list(a = head(x), b = "some text"), x = x)
 m[]
 ```
-However it is possible to register custom serialization and unserialization functions as 'refhooks' or hooks into R's native serialization mechanism for reference objects.
+However it is possible to specify custom serialization and unserialization functions that hook into R's native serialization mechanism for reference objects ('refhooks').
 
-It is only required to specify them once upfront, as a list of functions. The argument 'class' must also be specified to register them for this class of object only.
+`serial_config()` can be used to conveniently generate the required configuration to be passed to the 'serial' argument of a `daemons()`, `launch_local()` or `launch_remote()` call.
+
 ```{r arrowpass}
-serialization(
-  refhook = list(
-    arrow::write_to_raw,
-    function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)
-  ),
-  class = "ArrowTabular"
+serial <- serial_config(
+  class = "ArrowTabular",
+  sfunc = arrow::write_to_raw,
+  ufunc = function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)
 )
+
+daemons(2, serial = serial)
+everywhere(library(arrow))
 
 m <- mirai(list(a = head(x), b = "some text"), x = x)
 m[]
@@ -523,13 +525,13 @@ It can be seen that this time, the arrow table is seamlessly handled in the 'mir
 
 To change registered serialization functions, just call `serialization()` again supplying the new functions. Here we switch to using [`polars`](https://pola-rs.github.io/r-polars/), a 'lightning fast' dataframe library written in Rust (requires `polars` >= 0.16.4).
 ```{r polars}
-serialization(
-  refhook = list(
-    function(x) polars::as_polars_df(x)$to_raw_ipc(),
-    polars::pl$read_ipc
-  ),
-  class = "RPolarsDataFrame"
+serial <- serial_config(
+  class = "RPolarsDataFrame",
+  sfunc = function(x) polars::as_polars_df(x)$to_raw_ipc(),
+  ufunc = polars::pl$read_ipc
 )
+
+daemons(2, serial = serial)
 
 x <- polars::as_polars_df(iris)
 
