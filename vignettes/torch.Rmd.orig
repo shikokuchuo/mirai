@@ -31,9 +31,12 @@ This allows tensors from the [`torch`](https://torch.mlverse.org/) package to be
 library(mirai)
 library(torch)
 
-serialization(refhook = list(torch:::torch_serialize, torch::torch_load),
-              class = "torch_tensor",
-              vec = TRUE)
+serialization(
+  class = "torch_tensor",
+  sfunc = torch:::torch_serialize,
+  ufunc = torch::torch_load,
+  vec = TRUE
+)
 daemons(1)
 everywhere(library(torch))
 ```

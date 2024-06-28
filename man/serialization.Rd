@@ -4,45 +4,55 @@
 \alias{serialization}
 \title{Custom Serialization Functions}
 \usage{
-serialization(refhook = list(), class = "", vec = FALSE)
+serialization(class, sfunc, ufunc, vec = FALSE)
 }
 \arguments{
-\item{refhook}{\strong{either} a list or pairlist of two functions: the
-signature for the first must accept a reference object inheriting from
-'class' (or a list of such objects) and return a raw vector, and the
-second must accept a raw vector and return reference objects (or a list
-of such objects), \cr \strong{or else} NULL to reset.}
+\item{class}{the class of reference object (as a character string) that these
+functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor',
+\strong{or else} NULL to cancel registered functions.}
 
-\item{class}{[default ""] a character string representing the class of object
-that these serialization function will be applied to, e.g. 'ArrowTabular'
-or 'torch_tensor'.}
+\item{sfunc}{serialization function: must accept a reference object (or list
+of objects) inheriting from \sQuote{class} and return a raw vector.}
 
-\item{vec}{[default FALSE] the serialization functions accept and return
-reference object individually e.g. \code{arrow::write_to_raw} and
-\code{arrow::read_ipc_stream}. If TRUE, the serialization functions are
-vectorized and accept and return a list of reference objects, e.g.
+\item{ufunc}{unserialization function: must accept a raw vector and return
+a reference object (or list of reference objects).}
+
+\item{vec}{[default FALSE] if FALSE the functions must accept and return
+reference objects individually e.g. \code{arrow::write_to_raw} and
+\code{arrow::read_ipc_stream}. If TRUE, the functions are vectorized and
+must accept and return a list of reference objects, e.g.
 \code{torch::torch_serialize} and \code{torch::torch_load}.}
 }
 \value{
-Invisibly, the pairlist of currently-registered 'refhook' functions.
-    A message is printed to the console when functions are successfully
+Invisibly, a list comprising the currently-registered values for
+    'class', 'sfunc', 'ufunc' and 'vec', or else NULL if unregistered. A
+    message is printed to the console when functions are successfully
     registered or reset.
 }
 \description{
 Registers custom serialization and unserialization functions for sending and
-    receiving external pointer reference objects.
+    receiving reference objects.
 }
 \details{
-Calling without any arguments returns the pairlist of
-    currently-registered 'refhook' functions.
+Registering new functions replaces any existing registered
+    functions.
+
+    To cancel registered functions, specify 'class' as NULL, without the
+    need to supply 'sfunc' or 'ufunc'.
+
+    Calling without any arguments returns the pairlist of
+    currently-registered serialization functions.
 
     This function may be called prior to or after setting daemons, with the
     registered functions applying across all compute profiles.
 }
 \examples{
-r <- serialization(list(function(x) serialize(x, NULL), unserialize))
-print(serialization())
-serialization(r)
+reg <- serialization(
+  class = "",
+  sfunc = function(x) serialize(x, NULL),
+  ufunc = base::unserialize
+)
+reg
 
 serialization(NULL)
 print(serialization())

@@ -503,16 +503,15 @@ x <- as_arrow_table(iris)
 m <- mirai(list(a = head(x), b = "some text"), x = x)
 m[]
 ```
-However it is possible to register custom serialization and unserialization functions as 'refhooks' or hooks into R's native serialization mechanism for reference objects.
+However it is possible to register custom serialization and unserialization functions that hook into R's native serialization mechanism for reference objects ('refhooks').
 
-It is only required to specify them once upfront, as a list of functions. The argument 'class' must also be specified to register them for this class of object only.
+`serialization()` registers these for the rest of the R session, or until cancelled or new functions are registered.
+
 ```{r arrowpass}
 serialization(
-  refhook = list(
-    arrow::write_to_raw,
-    function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)
-  ),
-  class = "ArrowTabular"
+  class = "ArrowTabular",
+  sfunc = arrow::write_to_raw,
+  ufunc = function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)
 )
 
 m <- mirai(list(a = head(x), b = "some text"), x = x)
@@ -521,14 +520,12 @@ m[]
 ```
 It can be seen that this time, the arrow table is seamlessly handled in the 'mirai' process. This is the case even when the object is deeply nested inside lists or other structures.
 
-To change registered serialization functions, just call `serialization()` again supplying the new functions. Here we switch to using [`polars`](https://pola-rs.github.io/r-polars/), a 'lightning fast' dataframe library written in Rust (requires `polars` >= 0.16.4).
+To change registered serialization functions, just call `serialization()` again supplying the new functions. As an example, we can switch to using [`polars`](https://pola-rs.github.io/r-polars/), a 'lightning fast' dataframe library written in Rust (requires `polars` >= 0.16.4).
 ```{r polars}
 serialization(
-  refhook = list(
-    function(x) polars::as_polars_df(x)$to_raw_ipc(),
-    polars::pl$read_ipc
-  ),
-  class = "RPolarsDataFrame"
+  class = "RPolarsDataFrame",
+  sfunc = function(x) polars::as_polars_df(x)$to_raw_ipc(),
+  ufunc = polars::pl$read_ipc
 )
 
 x <- polars::as_polars_df(iris)

@@ -98,7 +98,7 @@
     register_cluster = "this function requires a more recent version of R",
     requires_daemons = "launching one local daemon as none previously set",
     requires_local = "SSH tunnelling requires 'url' hostname to be '127.0.0.1' or 'localhost'",
-    refhook_invalid = "'refhook' must be a list of 2 functions or NULL",
+    serial_invalid = "'class' must be a character value or NULL, 'sfunc' and 'ufunc' must be functions",
     single_url = "only one 'url' should be specified",
     sync_timeout = "initial sync with dispatcher/daemon timed out after 10s",
     url_spec = "numeric value for 'url' is out of bounds",
