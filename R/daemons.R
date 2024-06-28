@@ -281,7 +281,7 @@
 #' @export
 #'
 daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
-                    seed = NULL, tls = NULL, pass = NULL, .compute = "default") {
+                    seed = NULL, serial = NULL, tls = NULL, pass = NULL, .compute = "default") {
 
   missing(n) && missing(url) && return(status(.compute))
 
@@ -291,6 +291,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
 
     if (is.null(envir)) {
       envir <- new.env(hash = FALSE, parent = ..)
+      activate_serial(serial)
       tls <- check_create_tls(url = url, tls = tls, envir = envir)
       create_stream(n = n, seed = seed, envir = envir)
       if (dispatcher) {
@@ -303,7 +304,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         urlc <- sprintf("%s%s", urld, "c")
         sock <- req_socket(urld)
         sockc <- req_socket(urlc)
-        launch_and_sync_daemon(sock, wa5(urld, dots, n, urlc, url), output, tls, pass) || stop(._[["sync_timeout"]])
+        launch_and_sync_daemon(sock, wa5(urld, dots, n, urlc, url, serial), output, tls, pass) || stop(._[["sync_timeout"]])
         init_monitor(sockc = sockc, envir = envir)
         `[[<-`(envir, "cv", cv)
       } else {
@@ -313,11 +314,10 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       }
       `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
       if (length(remote))
-        launch_remote(url = envir[["urls"]], remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
-      serialization_refhook()
+        launch_remote(url = envir[["urls"]], remote = remote, serial = serial, tls = envir[["tls"]], ..., .compute = .compute)
     } else {
       daemons(n = 0L, .compute = .compute)
-      return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ..., seed = seed, tls = tls, pass = pass, .compute = .compute))
+      return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ..., seed = seed, serial = serial, tls = tls, pass = pass, .compute = .compute))
     }
 
   } else {
@@ -339,6 +339,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
 
       n > 0L || stop(._[["n_zero"]])
       envir <- new.env(hash = FALSE, parent = ..)
+      activate_serial(serial)
       urld <- local_url()
       create_stream(n = n, seed = seed, envir = envir)
       dots <- parse_dots(...)
@@ -348,21 +349,20 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         sock <- req_socket(urld)
         urlc <- sprintf("%s%s", urld, "c")
         sockc <- req_socket(urlc)
-        launch_and_sync_daemon(sock, wa4(urld, dots, envir[["stream"]], n, urlc), output) || stop(._[["sync_timeout"]])
+        launch_and_sync_daemon(sock, wa4(urld, dots, envir[["stream"]], n, urlc, serial), output) || stop(._[["sync_timeout"]])
         for (i in seq_len(n)) next_stream(envir)
         init_monitor(sockc = sockc, envir = envir)
         `[[<-`(envir, "cv", cv)
       } else {
         sock <- req_socket(urld)
         for (i in seq_len(n))
-          launch_and_sync_daemon(sock, wa3(urld, dots, next_stream(envir)), output) || stop(._[["sync_timeout"]])
+          launch_and_sync_daemon(sock, wa3(urld, dots, next_stream(envir), serial), output) || stop(._[["sync_timeout"]])
         `[[<-`(envir, "urls", urld)
       }
       `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
-      serialization_refhook()
     } else {
       daemons(n = 0L, .compute = .compute)
-      return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ..., seed = seed, tls = tls, pass = pass, .compute = .compute))
+      return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ..., seed = seed, serial = serial, tls = tls, pass = pass, .compute = .compute))
     }
 
   }
@@ -535,12 +535,50 @@ serialization <- function(refhook = list(), class = "", vec = FALSE) {
           cat("mirai serialization functions cancelled\n", file = stderr()) else
             stop(._[["refhook_invalid"]])
     `[[<-`(., "refhook", list(refhook, class, vec))
-    register_everywhere(refhook = refhook, class = class, vec = vec)
   }
 
   invisible(cfg)
 
 }
+
+#' Serialization Configuration
+#'
+#' Registers custom serialization and unserialization functions for sending and
+#'     receiving reference objects.
+#'
+#' @param class the class of reference object (as a character string) that these
+#'     functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor'.
+#' @param sfunc serialization function: must accept a reference object (or list
+#'     of objects) inheriting from \sQuote{class} and return a raw vector.
+#' @param ufunc unserialization function: must accept a raw vector and return
+#'     a reference object (or list of reference objects).
+#' @param vec [default FALSE] if FALSE the functions must accept and return
+#'     reference objects individually e.g. \code{arrow::write_to_raw} and
+#'     \code{arrow::read_ipc_stream}. If TRUE, the functions are vectorized and
+#'     must accept and return a list of reference objects, e.g.
+#'     \code{torch::torch_serialize} and \code{torch::torch_load}.
+#'
+#' @return A list in the required format to be supplied to the ‘serial’ argument
+#'     of \code{\link{daemons}}, \code{\link{daemon}}, \code{\link{launch_local}},
+#'     \code{\link{launch_remote}} etc.
+#'
+#' @examples
+#' cfg <- serial_config(
+#'   class = "torch_tensor",
+#'   sfunc = function(x) serialize(x, NULL),
+#'   ufunc = base::unserialize,
+#'   vec = TRUE
+#' )
+#' cfg
+#'
+#' @export
+#'
+serial_config <- function(class, sfunc, ufunc, vec = FALSE)
+  list(
+    refhook = deparse_safe(list(substitute(sfunc), substitute(ufunc))),
+    class = class,
+    vec = vec
+  )
 
 # internals --------------------------------------------------------------------
 
@@ -581,22 +619,25 @@ parse_dots <- function(...) {
   out
 }
 
-parse_tls <- function(tls)
-  switch(length(tls) + 1L, "", sprintf(",tls=\"%s\"", tls), sprintf(",tls=c(\"%s\",\"%s\")", tls[1L], tls[2L]))
+parse_serial <- function(x)
+  if (length(x)) sprintf(",serial=list(\"%s\",\"%s\",%dL)", x[[1L]], x[[2L]], x[[3]]) else ""
+
+parse_tls <- function(x)
+  switch(length(x) + 1L, "", sprintf(",tls=\"%s\"", x), sprintf(",tls=c(\"%s\",\"%s\")", x[1L], x[2L]))
 
 libp <- function(lp = .libPaths()) lp[file.exists(file.path(lp, "mirai"))][1L]
 
-wa2 <- function(url, dots, tls = NULL)
-  shQuote(sprintf("mirai::daemon(\"%s\"%s%s)", url, dots, parse_tls(tls)))
+wa2 <- function(url, dots, serial, tls = NULL)
+  shQuote(sprintf("mirai::daemon(\"%s\"%s%s%s)", url, dots, parse_serial(serial), parse_tls(tls)))
 
-wa3 <- function(url, dots, rs, tls = NULL)
-  shQuote(sprintf("mirai::daemon(\"%s\"%s%s,rs=c(%s))", url, dots, parse_tls(tls), paste0(rs, collapse = ",")))
+wa3 <- function(url, dots, rs, serial, tls = NULL)
+  shQuote(sprintf("mirai::daemon(\"%s\"%s%s%s,rs=c(%s))", url, dots, parse_serial(serial), parse_tls(tls), paste0(rs, collapse = ",")))
 
-wa4 <- function(urld, dots, rs, n, urlc)
-  shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher(\"%s\",n=%d,rs=c(%s),monitor=\"%s\"%s)", libp(), urld, n, paste0(rs, collapse= ","), urlc, dots))
+wa4 <- function(urld, dots, rs, n, urlc, serial)
+  shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher(\"%s\",n=%d,rs=c(%s),monitor=\"%s\"%s%s)", libp(), urld, n, paste0(rs, collapse= ","), urlc, dots, parse_serial(serial)))
 
-wa5 <- function(urld, dots, n, urlc, url)
-  shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher(\"%s\",c(\"%s\"),n=%d,monitor=\"%s\"%s)", libp(), urld, paste0(url, collapse = "','"), n, urlc, dots))
+wa5 <- function(urld, dots, n, urlc, url, serial)
+  shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher(\"%s\",c(\"%s\"),n=%d,monitor=\"%s\"%s%s)", libp(), urld, paste0(url, collapse = "','"), n, urlc, dots, parse_serial(serial)))
 
 launch_daemon <- function(args, output)
   system2(command = .command, args = c("-e", args), stdout = output, stderr = output, wait = FALSE)
