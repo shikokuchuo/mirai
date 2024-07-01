@@ -26,11 +26,11 @@ automatically upon completion. <br /><br /> Modern networking and
 concurrency built on [nanonext](https://doi.org/10.5281/zenodo.7903429)
 and [NNG (Nanomsg Next Gen)](https://nng.nanomsg.org/) ensures reliable
 and efficient scheduling, over fast inter-process communications or
-TCP/IP secured by TLS. <br /><br />
+TCP/IP secured by TLS.
+
+### Scale Up in Production
 
 > *mirai パッケージを試してみたところ、かなり速くて驚きました*
-
-### Production-Grade Compute
 
 [<img alt="Joe Cheng on mirai with Shiny" src="https://img.youtube.com/vi/GhX0PcEm3CY/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/GhX0PcEm3CY?t=1740)
  
@@ -83,7 +83,7 @@ method:
 
 ``` r
 m[]
-#> [1] 47.76782
+#> [1] 48.09123
 ```
 
 It is not necessary to wait, as the mirai resolves automatically
@@ -94,7 +94,7 @@ available at `$data`.
 m
 #> < mirai [$data] >
 m$data
-#> [1] 47.76782
+#> [1] 48.09123
 ```
 
 ### Daemons
