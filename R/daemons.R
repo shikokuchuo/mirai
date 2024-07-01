@@ -489,41 +489,34 @@ status <- function(.compute = "default") {
 #' Registers custom serialization and unserialization functions for sending and
 #'     receiving reference objects.
 #'
+#' @param fns \strong{either} a list comprising 2 functions: \cr serialization
+#'     function: must accept a reference object (or list of objects) inheriting
+#'     from \sQuote{class} and return a raw vector.\cr unserialization function:
+#'     must accept a raw vector and return a reference object (or list of
+#'     reference objects).\cr \strong{or else} NULL to reset.
 #' @param class the class of reference object (as a character string) that these
-#'     functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor',
-#'     \strong{or else} NULL to cancel registered functions.
-#' @param sfunc serialization function: must accept a reference object (or list
-#'     of objects) inheriting from \sQuote{class} and return a raw vector.
-#' @param ufunc unserialization function: must accept a raw vector and return
-#'     a reference object (or list of reference objects).
+#'     functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor'.
 #' @param vec [default FALSE] if FALSE the functions must accept and return
 #'     reference objects individually e.g. \code{arrow::write_to_raw} and
 #'     \code{arrow::read_ipc_stream}. If TRUE, the functions are vectorized and
 #'     must accept and return a list of reference objects, e.g.
 #'     \code{torch::torch_serialize} and \code{torch::torch_load}.
 #'
-#' @return Invisibly, a list comprising the currently-registered values for
-#'     'class', 'sfunc', 'ufunc' and 'vec', or else NULL if unregistered. A
-#'     message is printed to the console when functions are successfully
-#'     registered or reset.
+#' @return Invisibly, a list comprising 'fns', class', and 'vec', or else NULL
+#'     if supplied to 'fns'.
 #'
-#' @details Registering new functions replaces any existing registered
-#'     functions.
-#'
-#'     To cancel registered functions, specify 'class' as NULL, without the
-#'     need to supply 'sfunc' or 'ufunc'.
-#'
-#'     Calling without any arguments returns the pairlist of
-#'     currently-registered serialization functions.
+#' @details Registering new functions replaces any existing registered functions.
 #'
 #'     This function may be called prior to or after setting daemons, with the
 #'     registered functions applying across all compute profiles.
 #'
+#'     Calling without any arguments returns a list comprising the registered
+#'     values for 'fns', class', and 'vec', or else NULL if not registered.
+#'
 #' @examples
 #' reg <- serialization(
-#'   class = "",
-#'   sfunc = function(x) serialize(x, NULL),
-#'   ufunc = base::unserialize
+#'   list(function(x) serialize(x, NULL), base::unserialize),
+#'   class = "example_class"
 #' )
 #' reg
 #'
@@ -532,24 +525,23 @@ status <- function(.compute = "default") {
 #'
 #' @export
 #'
-serialization <- function(class, sfunc, ufunc, vec = FALSE) {
+serialization <- function(fns, class, vec = FALSE) {
 
-  missing(class) && return(.[["serial"]])
+  missing(fns) && return(.[["serial"]])
 
-  if (is.null(class)) {
+  if (is.null(fns)) {
     serial <- NULL
     next_config(NULL)
-    cat("mirai serialization functions cancelled\n", file = stderr())
-  } else if (is.character(class) && is.function(sfunc) && is.function(ufunc)) {
-    serial <- list(class, sfunc, ufunc, vec)
-    next_config(refhook = list(sfunc, ufunc), class = class, vec = vec)
-    cat("mirai serialization functions registered\n", file = stderr())
+  } else if (length(fns) == 2L && is.function(fns[[1L]]) && is.function(fns[[2L]])) {
+    is.character(class) || stop(._[["character_class"]])
+    serial <- list(fns, class, vec)
+    next_config(fns, class = class, vec = vec)
   } else {
     stop(._[["serial_invalid"]])
   }
 
   `[[<-`(., "serial", serial)
-  register_everywhere(serial = serial)
+  register_everywhere(serial)
   invisible(serial)
 
 }
@@ -673,12 +665,12 @@ query_status <- function(envir) {
 register_everywhere <- function(serial)
   for (.compute in names(..))
     everywhere(
-      mirai::serialization(class = serial[[1L]], sfunc = serial[[2L]], ufunc = serial[[3L]], vec = serial[[4L]]),
+      mirai::serialization(serial[[1L]], class = serial[[2L]], vec = serial[[3L]]),
       .args = list(serial = serial),
       .compute = .compute
     )
 
 check_register_everywhere <- function(serial = .[["serial"]])
-  if (length(serial[[1L]])) register_everywhere(serial = serial)
+  if (length(serial[[1L]])) register_everywhere(serial)
 
 ._scm_. <- as.raw(c(0x07, 0x00, 0x00, 0x00, 0x42, 0x0a, 0x03, 0x00, 0x00, 0x00, 0x02, 0x03, 0x04, 0x00, 0x00, 0x05, 0x03, 0x00, 0x05, 0x00, 0x00, 0x00, 0x55, 0x54, 0x46, 0x2d, 0x38, 0xfc, 0x00, 0x00, 0x00))

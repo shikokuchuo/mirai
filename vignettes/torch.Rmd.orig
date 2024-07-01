@@ -32,9 +32,8 @@ library(mirai)
 library(torch)
 
 serialization(
+  fns = list(torch:::torch_serialize, torch::torch_load),
   class = "torch_tensor",
-  sfunc = torch:::torch_serialize,
-  ufunc = torch::torch_load,
   vec = TRUE
 )
 daemons(1)

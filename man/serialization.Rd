@@ -4,18 +4,17 @@
 \alias{serialization}
 \title{Custom Serialization Functions}
 \usage{
-serialization(class, sfunc, ufunc, vec = FALSE)
+serialization(fns, class, vec = FALSE)
 }
 \arguments{
+\item{fns}{\strong{either} a list comprising 2 functions: \cr serialization
+function: must accept a reference object (or list of objects) inheriting
+from \sQuote{class} and return a raw vector.\cr unserialization function:
+must accept a raw vector and return a reference object (or list of
+reference objects).\cr \strong{or else} NULL to reset.}
+
 \item{class}{the class of reference object (as a character string) that these
-functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor',
-\strong{or else} NULL to cancel registered functions.}
-
-\item{sfunc}{serialization function: must accept a reference object (or list
-of objects) inheriting from \sQuote{class} and return a raw vector.}
-
-\item{ufunc}{unserialization function: must accept a raw vector and return
-a reference object (or list of reference objects).}
+functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor'.}
 
 \item{vec}{[default FALSE] if FALSE the functions must accept and return
 reference objects individually e.g. \code{arrow::write_to_raw} and
@@ -24,33 +23,26 @@ must accept and return a list of reference objects, e.g.
 \code{torch::torch_serialize} and \code{torch::torch_load}.}
 }
 \value{
-Invisibly, a list comprising the currently-registered values for
-    'class', 'sfunc', 'ufunc' and 'vec', or else NULL if unregistered. A
-    message is printed to the console when functions are successfully
-    registered or reset.
+Invisibly, a list comprising 'fns', class', and 'vec', or else NULL
+    if supplied to 'fns'.
 }
 \description{
 Registers custom serialization and unserialization functions for sending and
     receiving reference objects.
 }
 \details{
-Registering new functions replaces any existing registered
-    functions.
-
-    To cancel registered functions, specify 'class' as NULL, without the
-    need to supply 'sfunc' or 'ufunc'.
-
-    Calling without any arguments returns the pairlist of
-    currently-registered serialization functions.
+Registering new functions replaces any existing registered functions.
 
     This function may be called prior to or after setting daemons, with the
     registered functions applying across all compute profiles.
+
+    Calling without any arguments returns a list comprising the registered
+    values for 'fns', class', and 'vec', or else NULL if not registered.
 }
 \examples{
 reg <- serialization(
-  class = "",
-  sfunc = function(x) serialize(x, NULL),
-  ufunc = base::unserialize
+  list(function(x) serialize(x, NULL), base::unserialize),
+  class = "example_class"
 )
 reg
 

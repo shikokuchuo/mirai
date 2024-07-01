@@ -83,7 +83,7 @@ method:
 
 ``` r
 m[]
-#> [1] 50.10154
+#> [1] 47.76782
 ```
 
 It is not necessary to wait, as the mirai resolves automatically
@@ -94,7 +94,7 @@ available at `$data`.
 m
 #> < mirai [$data] >
 m$data
-#> [1] 50.10154
+#> [1] 47.76782
 ```
 
 ### Daemons

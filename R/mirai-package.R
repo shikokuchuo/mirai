@@ -85,6 +85,7 @@
 ._ <- list2env(
   list(
     arglen = "'args' and/or 'url' must be of length 1 or the same length",
+    character_class = "'class' must be a character string",
     cluster_inactive = "cluster is no longer active",
     correct_context = "'host' must be specified if not using directly in a function argument",
     daemons_unset = "a numeric value for 'url' requires daemons to be set",
@@ -98,7 +99,7 @@
     register_cluster = "this function requires a more recent version of R",
     requires_daemons = "launching one local daemon as none previously set",
     requires_local = "SSH tunnelling requires 'url' hostname to be '127.0.0.1' or 'localhost'",
-    serial_invalid = "'class' must be a character value or NULL, 'sfunc' and 'ufunc' must be functions",
+    serial_invalid = "'fns' must be a list of 2 functions or NULL",
     single_url = "only one 'url' should be specified",
     sync_timeout = "initial sync with dispatcher/daemon timed out after 10s",
     url_spec = "numeric value for 'url' is out of bounds",
