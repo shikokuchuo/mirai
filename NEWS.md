@@ -2,10 +2,10 @@
 
 # mirai 1.1.1
 
-* `serialization()` function signature and return value slightly modified for clarity. Successful registration / cancellation mesasges are no longer printed to the console.
+* `serialization()` function signature and return value slightly modified for clarity. Successful registration / cancellation messages are no longer printed to the console.
 * `dispatcher()` argument 'retry' now defaults to FALSE for consistency with non-dispatcher behaviour.
-* `remote_config()` gains argument 'quote' to control whether or not to quote the daemon launch commmand, and now works with Slurm (thanks @michaelmayer2 #119).
-* Ephemeral daemons now exit as soon as permissible, eiliminating the 2s linger period.
+* `remote_config()` gains argument 'quote' to control whether or not to quote the daemon launch command, and now works with Slurm (thanks @michaelmayer2 #119).
+* Ephemeral daemons now exit as soon as permissible, eliminating the 2s linger period.
 * Requires `nanonext` >= 1.1.1.
 
 # mirai 1.1.0
