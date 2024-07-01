@@ -6,9 +6,9 @@
 <!-- badges: start -->
 
 [![CRAN
-status](https://www.r-pkg.org/badges/version/mirai?color=171d41)](https://CRAN.R-project.org/package=mirai)
+status](https://www.r-pkg.org/badges/version/mirai?color=00184a)](https://CRAN.R-project.org/package=mirai)
 [![R-multiverse
-status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcommunity.r-multiverse.org%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=r-multiverse)](https://community.r-multiverse.org/mirai)
+status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcommunity.r-multiverse.org%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=r-multiverse&color=00184a)](https://community.r-multiverse.org/mirai)
 [![R-universe
 status](https://shikokuchuo.r-universe.dev/badges/mirai?color=2dab18)](https://shikokuchuo.r-universe.dev/mirai)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
@@ -84,7 +84,7 @@ method:
 
 ``` r
 m[]
-#> [1] 46.58164
+#> [1] 47.93367
 ```
 
 It is not necessary to wait, as the mirai resolves automatically
@@ -95,7 +95,7 @@ available at `$data`.
 m
 #> < mirai [$data] >
 m$data
-#> [1] 46.58164
+#> [1] 47.93367
 ```
 
 ### Daemons
