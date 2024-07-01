@@ -35,7 +35,7 @@
     
     <a class="navbar-brand me-2" href="index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9010</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,14 +100,14 @@
 <div class="section level3">
 <h3 id="ミライ">ミライ<a class="anchor" aria-label="anchor" href="#%E3%83%9F%E3%83%A9%E3%82%A4"></a>
 </h3>
-<p><br> ( 未来 ) <br><br> Minimalist Async Evaluation Framework for R <br><br> High-performance parallel code execution and distributed computing. <br><br> Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion. <br><br> Modern networking and concurrency built on <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link">nanonext</a> and <a href="https://nng.nanomsg.org/" class="external-link">NNG (Nanomsg Next Gen)</a> ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS. <br><br></p>
+<p><br> ( 未来 ) <br><br> Minimalist Async Evaluation Framework for R <br><br> High-performance parallel code execution and distributed computing. <br><br> Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion. <br><br> Modern networking and concurrency built on <a href="https://doi.org/10.5281/zenodo.7903429" class="external-link">nanonext</a> and <a href="https://nng.nanomsg.org/" class="external-link">NNG (Nanomsg Next Gen)</a> ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS.</p>
+</div>
+<div class="section level3">
+<h3 id="scale-up-in-production">Scale Up in Production<a class="anchor" aria-label="anchor" href="#scale-up-in-production"></a>
+</h3>
 <blockquote>
 <p><em>mirai パッケージを試してみたところ、かなり速くて驚きました</em></p>
 </blockquote>
-</div>
-<div class="section level3">
-<h3 id="production-grade-compute">Production-Grade Compute<a class="anchor" aria-label="anchor" href="#production-grade-compute"></a>
-</h3>
 <p><a href="https://youtu.be/GhX0PcEm3CY?t=1740" class="external-link"><img alt="Joe Cheng on mirai with Shiny" src="https://img.youtube.com/vi/GhX0PcEm3CY/hqdefault.jpg" width="300" height="225"></a>   <a href="https://youtu.be/cyF2dzloVLo?t=5127" class="external-link"><img alt="Will Landau on mirai in clinical trials" src="https://img.youtube.com/vi/cyF2dzloVLo/hqdefault.jpg" width="300" height="225"></a></p>
 </div>
 <div class="section level3">
@@ -142,13 +142,13 @@
 <p>To wait for and collect the evaluated result, use the mirai’s <code>[]</code> method:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 47.76782</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 48.09123</span></span></code></pre></div>
 <p>It is not necessary to wait, as the mirai resolves automatically whenever the async operation completes, the evaluated result then available at <code>$data</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span></span>
 <span><span class="co">#&gt; &lt; mirai [$data] &gt;</span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] 47.76782</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 48.09123</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
