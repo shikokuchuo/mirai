@@ -1,3 +1,5 @@
+# mirai 1.1.1.9000 (development)
+
 # mirai 1.1.1
 
 * `serialization()` function signature and return value slightly modified for clarity. Successful registration / cancellation mesasges are no longer printed to the console.

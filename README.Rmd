@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 
 ### ミライ
 <br />
-( 未来 )
+(<span style="color:#ff4534"> 未来 </span>)
 <br /><br />
 Minimalist Async Evaluation Framework for R
 <br /><br />
@@ -34,7 +34,7 @@ High-performance parallel code execution and distributed computing.
 <br /><br />
 Designed for simplicity, a 'mirai' evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion.
 <br /><br />
-Modern networking and concurrency built on [nanonext](https://doi.org/10.5281/zenodo.7903429) and [NNG (Nanomsg Next Gen)](https://nng.nanomsg.org/) ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS.
+Modern networking and concurrency built on [nanonext](https://doi.org/10.5281/zenodo.7903429) and [NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen) ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS.
 
 ### Scale Up in Production
 

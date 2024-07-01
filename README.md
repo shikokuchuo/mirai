@@ -18,13 +18,14 @@ status](https://shikokuchuo.r-universe.dev/badges/mirai?color=2dab18)](https://s
 
 ### ミライ
 
-<br /> ( 未来 ) <br /><br /> Minimalist Async Evaluation Framework for R
-<br /><br /> High-performance parallel code execution and distributed
-computing. <br /><br /> Designed for simplicity, a ‘mirai’ evaluates an
-R expression asynchronously, on local or network resources, resolving
+<br /> (<span style="color:#ff4534"> 未来 </span>) <br /><br />
+Minimalist Async Evaluation Framework for R <br /><br />
+High-performance parallel code execution and distributed computing.
+<br /><br /> Designed for simplicity, a ‘mirai’ evaluates an R
+expression asynchronously, on local or network resources, resolving
 automatically upon completion. <br /><br /> Modern networking and
 concurrency built on [nanonext](https://doi.org/10.5281/zenodo.7903429)
-and [NNG (Nanomsg Next Gen)](https://nng.nanomsg.org/) ensures reliable
+and [NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen) ensures reliable
 and efficient scheduling, over fast inter-process communications or
 TCP/IP secured by TLS.
 
@@ -83,7 +84,7 @@ method:
 
 ``` r
 m[]
-#> [1] 48.09123
+#> [1] 46.58164
 ```
 
 It is not necessary to wait, as the mirai resolves automatically
@@ -94,7 +95,7 @@ available at `$data`.
 m
 #> < mirai [$data] >
 m$data
-#> [1] 48.09123
+#> [1] 46.58164
 ```
 
 ### Daemons
