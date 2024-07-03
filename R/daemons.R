@@ -293,7 +293,13 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       envir <- new.env(hash = FALSE, parent = ..)
       tls <- check_create_tls(url = url, tls = tls, envir = envir)
       create_stream(n = n, seed = seed, envir = envir)
-      if (dispatcher) {
+      if (is.na(dispatcher)) {
+        n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
+        cv <- cv()
+        sock <- dispatcher_socket(cv = cv, n = n, host = inproc_url(), url = url, tls = if (length(tls)) tls_config(server = tls, pass = pass))
+        urls <- as.character(lapply(seq_len(n), function(x) sprintf("%s/%d", url, x)))
+        `[[<-`(`[[<-`(envir, "cv", cv), "urls", urls)
+      } else if (dispatcher) {
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
         if (length(tls)) tls_config(server = tls, pass = pass)
         cv <- cv()
