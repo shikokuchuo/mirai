@@ -162,11 +162,10 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 
   expr <- substitute(.expr)
   globals <- list(...)
-  glen <- length(globals)
-  if (glen) {
+  length(globals) && {
     gn <- names(globals)
     if (is.null(gn)) {
-      glen == 1L && is.environment(globals[[1L]]) || stop(._[["named_args"]])
+      is.environment(globals[[1L]]) || stop(._[["named_args"]])
       globals <- as.list.environment(globals[[1L]])
     }
     all(nzchar(gn)) || stop(._[["named_args"]])
