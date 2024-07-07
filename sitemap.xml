@@ -1,126 +1,44 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://shikokuchuo.net/mirai/404.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/articles/databases.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/articles/mirai.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/articles/parallel.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/articles/plumber.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/articles/promises.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/articles/shiny.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/articles/torch.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/index.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/as.promise.mirai.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/call_mirai.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/collect_mirai.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/daemon.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/daemons.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/dispatcher.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/dot-daemon.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/dot-progress.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/everywhere.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/host_url.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/is_mirai.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/is_mirai_error.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/launch_local.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/make_cluster.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/mirai-package.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/mirai.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/mirai_map.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/nextstream.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/register_cluster.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/remote_config.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/saisei.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/serialization.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/status.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/stop_mirai.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/unresolved.html</loc>
-  </url>
-  <url>
-    <loc>https://shikokuchuo.net/mirai/reference/with.miraiDaemons.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://shikokuchuo.net/mirai/404.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/LICENSE.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/articles/databases.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/articles/index.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/articles/mirai.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/articles/parallel.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/articles/plumber.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/articles/promises.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/articles/shiny.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/articles/torch.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/authors.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/index.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/news/index.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/as.promise.mirai.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/call_mirai.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/collect_mirai.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/daemon.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/daemons.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/dispatcher.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/dot-daemon.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/dot-progress.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/everywhere.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/host_url.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/index.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/is_mirai.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/is_mirai_error.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/launch_local.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/make_cluster.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/mirai-package.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/mirai.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/mirai_map.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/nextstream.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/register_cluster.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/remote_config.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/saisei.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/serialization.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/status.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/stop_mirai.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/unresolved.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/with.miraiDaemons.html</loc></url>
 </urlset>
+
