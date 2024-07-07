@@ -18,24 +18,40 @@ status](https://shikokuchuo.r-universe.dev/badges/mirai?color=2dab18)](https://s
 
 ### ミライ
 
-<br /> (<span style="color:#ff4534"> 未来 </span>) <br /><br />
-Minimalist Async Evaluation Framework for R <br /><br />
-High-performance parallel code execution and distributed computing.
-<br /><br /> Designed for simplicity, a ‘mirai’ evaluates an R
-expression asynchronously, on local or network resources, resolving
+<br /> ( 未来 ) <br /><br /> Minimalist Async Evaluation Framework for R
+<br /><br /> High-performance parallel code execution and distributed
+computing. <br /><br /> Designed for simplicity, a ‘mirai’ evaluates an
+R expression asynchronously, on local or network resources, resolving
 automatically upon completion. <br /><br /> Modern networking and
 concurrency built on [nanonext](https://doi.org/10.5281/zenodo.7903429)
 and [NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen) ensures reliable
 and efficient scheduling, over fast inter-process communications or
 TCP/IP secured by TLS.
 
-### Scale Up in Production
+### Design Concepts
 
-> *mirai パッケージを試してみたところ、かなり速くて驚きました*
+`mirai` is designed from the ground up to provide a production-grade
+experience.
+
+- Fast
+  - More than 100x faster than common alternatives <sup>\[1\]</sup>
+  - Built for low-latency applications such as real time inference or
+    responsive Shiny apps
+- Reliable
+  - Prioritises consistent behaviour with no use of global options or
+    environment variables
+  - Each mirai call is evaluated exactly as provided - no reliance on
+    guesswork, hence no surprises
+- Scalable
+  - Enables workflows with thousands of nodes and millions of tasks
+  - Verified by heavy-duty scientiifc workloads in the life sciences
+    industry
 
 [<img alt="Joe Cheng on mirai with Shiny" src="https://img.youtube.com/vi/GhX0PcEm3CY/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/GhX0PcEm3CY?t=1740)
  
 [<img alt="Will Landau on mirai in clinical trials" src="https://img.youtube.com/vi/cyF2dzloVLo/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/cyF2dzloVLo?t=5127)
+
+> *mirai パッケージを試してみたところ、かなり速くて驚きました*
 
 ### Quick Start
 
@@ -84,7 +100,7 @@ method:
 
 ``` r
 m[]
-#> [1] 47.93367
+#> [1] 46.86152
 ```
 
 It is not necessary to wait, as the mirai resolves automatically
@@ -95,36 +111,51 @@ available at `$data`.
 m
 #> < mirai [$data] >
 m$data
-#> [1] 47.93367
+#> [1] 46.86152
 ```
 
 ### Daemons
 
-Daemons are persistent background processes created to receive ‘mirai’
-requests.
+Daemons are persistent background processes for receiving mirai
+requests, and are created as easily as:
 
-They may be deployed for:
+``` r
+daemons(4)
+#> [1] 4
+```
 
-[Local](https://shikokuchuo.net/mirai/articles/mirai.html#daemons-local-persistent-processes)
-parallel processing; or
-
-[Remote](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-remote-daemons)
-network distributed computing.
+They may be deployed
+[locally](https://shikokuchuo.net/mirai/articles/mirai.html#daemons-local-persistent-processes)
+for parallel processing, or
+[remotely](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-remote-daemons)
+for distributed computing.
 
 [Launchers](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-launching-daemons)
-allow daemons to be started both on the local machine and across the
-network via SSH etc.
+can start daemons across the network via SSH or a cluster resource
+manager.
 
 [Secure TLS
 connections](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-tls-secure-connections)
-can be automatically-configured on-the-fly for remote daemon
-connections.
+can be used for remote daemon connections, with zero configuration
+required.
 
-The mirai vignette may be accessed within R by:
+### Map
+
+`mirai_map()` implements asynchronous map over a list or vector. This
+function is designed to facilitate recovery from partial failure, or
+alternatively provides the option for early stopping.
 
 ``` r
-vignette("mirai", package = "mirai")
+m <- mirai_map(1:1000, rnorm)
+m
+#> < mirai map [0/1000] >
+m[][[10]]
+#>  [1] -0.1802609 -0.2524830 -0.3156858  0.4935976  0.7972051  0.2589921
+#>  [7] -0.3478039  0.3895220  0.5797805 -0.9807949
 ```
+
+Querying progress is as simple as printing the object, or it is also
+possible to wait for completion with a progress indicator.
 
 ### Integrations
 
@@ -133,8 +164,8 @@ the linked vignettes:
 
 [<img alt="R parallel" src="https://www.r-project.org/logo/Rlogo.png" width="40" height="31" />](https://shikokuchuo.net/mirai/articles/parallel.html)
   Provides an alternative communications backend for R, implementing a
-low-level feature request by R-Core at R Project Sprint 2023.
-‘miraiCluster’ may also be used with `foreach`, which is supported via
+new parallel cluster type, a feature request by R-Core at R Project
+Sprint 2023. ‘miraiCluster’ may also be used with `foreach` via
 `doParallel`.
 
 [<img alt="promises" src="https://docs.posit.co/images/posit-ball.png" width="40" height="36" />](https://shikokuchuo.net/mirai/articles/promises.html)
@@ -153,7 +184,7 @@ Plumber applications in production usage.
 
 [<img alt="Arrow" src="https://arrow.apache.org/img/arrow-logo_hex_black-txt_white-bg.png" width="40" height="46" />](https://shikokuchuo.net/mirai/articles/databases.html)
   Allows queries using the Apache Arrow format to be handled seamlessly
-over ADBC database connections hosted in daemon processes.
+over ADBC database connections hosted in background processes.
 
 [<img alt="torch" src="https://torch.mlverse.org/css/images/hex/torch.png" width="40" height="46" />](https://shikokuchuo.net/mirai/articles/torch.html)
   Allows Torch tensors and complex objects such as models and optimizers
@@ -225,13 +256,16 @@ The current development version is available from R-universe:
 install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
 ```
 
-### Links
+### Links & References
 
 ◈ mirai R package: <https://shikokuchuo.net/mirai/> <br /> ◈ nanonext R
 package: <https://shikokuchuo.net/nanonext/>
 
 mirai is listed in CRAN High Performance Computing Task View: <br />
 <https://cran.r-project.org/view=HighPerformanceComputing>
+
+\[1\] Benchmark available in appendix of:
+<https://shikokuchuo.net/user2024-conference/>
 
 –
 
