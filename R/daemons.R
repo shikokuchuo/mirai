@@ -298,7 +298,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         cv <- cv()
         sock <- dispatcher_socket(cv = cv, n = n, host = inproc_url(), url = url, tls = if (length(tls)) tls_config(server = tls, pass = pass))
         urls <- as.character(lapply(seq_len(n), function(x) sprintf("%s/%d", url, x)))
-        `[[<-`(`[[<-`(`[[<-`(envir, "cv", cv), "urls", urls), "dispatcher", TRUE)
+        `[[<-`(`[[<-`(`[[<-`(envir, "cv", cv), "urls", urls), "dispatcher", url)
       } else if (dispatcher) {
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
         if (length(tls)) tls_config(server = tls, pass = pass)
@@ -355,7 +355,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         urls <- as.character(lapply(seq_len(n), function(x) sprintf("%s/%d", urld, x)))
         for (i in seq_len(n))
           launch_daemon(wa3(urls[i], dots, next_stream(envir)), output)
-        `[[<-`(`[[<-`(`[[<-`(envir, "cv", cv), "urls", urls), "dispatcher", TRUE)
+        `[[<-`(`[[<-`(`[[<-`(envir, "cv", cv), "urls", urls), "dispatcher", urld)
       } else if (dispatcher) {
         cv <- cv()
         sock <- req_socket(urld)
@@ -492,7 +492,7 @@ status <- function(.compute = "default") {
   if (is.null(envir[["dispatcher"]]))
     list(connections = as.integer(stat(envir[["sock"]], "pipes")),
          daemons = if (is.null(envir[["sockc"]])) envir[["urls"]] else query_status(envir)) else
-           list(connections = cv_flag(envir[["cv"]]), daemons = envir[["urls"]])
+           list(connections = cv_flag(envir[["cv"]]), daemons = envir[["dispatcher"]])
 
 }
 
