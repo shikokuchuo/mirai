@@ -549,7 +549,7 @@ print.miraiInterrupt <- function(x, ...) {
 #' @export
 #'
 .DollarNames.miraiError <- function(x, pattern = "")
-  grep(pattern, "stack.trace", value = TRUE, fixed = TRUE)
+  if (startsWith("stack.trace", pattern)) "stack.trace" else character()
 
 # internals --------------------------------------------------------------------
 
