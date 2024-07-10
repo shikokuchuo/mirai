@@ -5,12 +5,15 @@ template:
     primary: "#0043ce"
     base_font: {google: {family: "Source Sans Pro", wght: [400, 600], ital: [0, 1]}}
     code_font: {google: "Source Code Pro"}
+  light-switch: true
 navbar:
-  right:
-  - icon: fa-github
-    href: https://github.com/shikokuchuo/mirai/
-  - icon: fa-cube
-    href: https://shikokuchuo.net/
+  structure:
+    right: [search, github, home, lightswitch]
+  components:
+    home:
+      icon: fa-cube
+      href: https://shikokuchuo.net/
+      aria-label: shikokuchuo
 reference:
 - contents:
   - mirai-package
