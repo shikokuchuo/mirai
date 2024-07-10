@@ -553,7 +553,7 @@ Please refer to the [torch vignette](https://shikokuchuo.net/mirai/articles/torc
 
 `mirai_map()` performs asynchronous parallel/distributed map using `mirai`.
 
-This function is analogous to `purrr:map()`, but returns a 'mirai_map' object.
+This function is analogous to `purrr::map()`, but returns a 'mirai_map' object.
 
 The results of a mirai_map `x` may be collected using `x[]`. This waits for all asynchronous operations to complete if still in progress.
 
