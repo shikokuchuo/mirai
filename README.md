@@ -44,7 +44,7 @@ experience.
     guesswork, hence no surprises
 - Scalable
   - Enables workflows with thousands of nodes and millions of tasks
-  - Verified by heavy-duty scientiifc workloads in the life sciences
+  - Verified by heavy-duty scientific workloads in the life sciences
     industry
 
 [<img alt="Joe Cheng on mirai with Shiny" src="https://img.youtube.com/vi/GhX0PcEm3CY/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/GhX0PcEm3CY?t=1740)
