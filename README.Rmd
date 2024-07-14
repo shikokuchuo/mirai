@@ -34,7 +34,7 @@ High-performance parallel code execution and distributed computing.
 <br /><br />
 Designed for simplicity, a 'mirai' evaluates an R expression asynchronously, on local or network resources, resolving automatically upon completion.
 <br /><br />
-Modern networking and concurrency built on [nanonext](https://doi.org/10.5281/zenodo.7903429) and [NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen) ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS.
+Modern networking and concurrency built on [nanonext](https://github.com/shikokuchuo/nanonext/) and [NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen) ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS.
 
 ### Design Concepts
 
@@ -45,12 +45,12 @@ Modern networking and concurrency built on [nanonext](https://doi.org/10.5281/ze
   + Built for low-latency applications such as real time inference or responsive Shiny apps
 
 - Reliable
-  + Prioritises consistent behaviour with no use of global options or environment variables
-  + Each mirai call is evaluated exactly as provided - no reliance on guesswork, hence no surprises
+  + Prioritises consistent behaviour, with no reliance on global options or variables
+  + Each mirai call is evaluated exactly as provided for predictable results
 
 - Scalable
-  + Enables workflows with thousands of nodes and millions of tasks
-  + Verified by heavy-duty scientific workloads in the life sciences industry
+  + Enables applications involving thousands of nodes and millions of tasks
+  + Verified by usage in heavy-duty workloads in the life sciences industry
 
 [<img alt="Joe Cheng on mirai with Shiny" src="https://img.youtube.com/vi/GhX0PcEm3CY/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/GhX0PcEm3CY?t=1740) &nbsp;
 [<img alt="Will Landau on mirai in clinical trials" src="https://img.youtube.com/vi/cyF2dzloVLo/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/cyF2dzloVLo?t=5127)

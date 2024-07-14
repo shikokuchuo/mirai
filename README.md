@@ -23,10 +23,11 @@ status](https://shikokuchuo.r-universe.dev/badges/mirai?color=2dab18)](https://s
 computing. <br /><br /> Designed for simplicity, a ‘mirai’ evaluates an
 R expression asynchronously, on local or network resources, resolving
 automatically upon completion. <br /><br /> Modern networking and
-concurrency built on [nanonext](https://doi.org/10.5281/zenodo.7903429)
-and [NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen) ensures reliable
-and efficient scheduling, over fast inter-process communications or
-TCP/IP secured by TLS.
+concurrency built on
+[nanonext](https://github.com/shikokuchuo/nanonext/) and
+[NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen) ensures reliable and
+efficient scheduling, over fast inter-process communications or TCP/IP
+secured by TLS.
 
 ### Design Concepts
 
@@ -38,13 +39,14 @@ experience.
   - Built for low-latency applications such as real time inference or
     responsive Shiny apps
 - Reliable
-  - Prioritises consistent behaviour with no use of global options or
-    environment variables
-  - Each mirai call is evaluated exactly as provided - no reliance on
-    guesswork, hence no surprises
+  - Prioritises consistent behaviour, with no reliance on global options
+    or variables
+  - Each mirai call is evaluated exactly as provided for predictable
+    results
 - Scalable
-  - Enables workflows with thousands of nodes and millions of tasks
-  - Verified by heavy-duty scientific workloads in the life sciences
+  - Enables applications involving thousands of nodes and millions of
+    tasks
+  - Verified by usage in heavy-duty workloads in the life sciences
     industry
 
 [<img alt="Joe Cheng on mirai with Shiny" src="https://img.youtube.com/vi/GhX0PcEm3CY/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/GhX0PcEm3CY?t=1740)
@@ -100,7 +102,7 @@ method:
 
 ``` r
 m[]
-#> [1] 46.86152
+#> [1] 48.49145
 ```
 
 It is not necessary to wait, as the mirai resolves automatically
@@ -111,7 +113,7 @@ available at `$data`.
 m
 #> < mirai [$data] >
 m$data
-#> [1] 46.86152
+#> [1] 48.49145
 ```
 
 ### Daemons
@@ -150,8 +152,8 @@ m <- mirai_map(1:1000, rnorm)
 m
 #> < mirai map [0/1000] >
 m[][[10]]
-#>  [1] -0.1802609 -0.2524830 -0.3156858  0.4935976  0.7972051  0.2589921
-#>  [7] -0.3478039  0.3895220  0.5797805 -0.9807949
+#>  [1]  0.48960442  1.47839157 -0.79487457 -0.28950379  0.59830489 -0.14453080
+#>  [7] -0.04135081  1.88559807 -0.57081535 -0.30987366
 ```
 
 Querying progress is as simple as printing the object, or it is also
