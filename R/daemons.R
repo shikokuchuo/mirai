@@ -303,7 +303,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         urlc <- sprintf("%s%s", urld, "c")
         sock <- req_socket(urld)
         sockc <- req_socket(urlc)
-        launch_and_sync_daemon(sock, wa5(urld, dots, n, urlc, url), output, tls, pass) || stop(._[["sync_timeout"]])
+        launch_sync_dispatcher(sock, wa5(urld, dots, n, urlc, url), output, tls, pass) || stop(._[["sync_timeout"]])
         init_monitor(sockc = sockc, envir = envir)
         `[[<-`(envir, "cv", cv)
       } else {
@@ -348,13 +348,13 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         sock <- req_socket(urld)
         urlc <- sprintf("%s%s", urld, "c")
         sockc <- req_socket(urlc)
-        launch_and_sync_daemon(sock, wa4(urld, dots, envir[["stream"]], n, urlc), output) || stop(._[["sync_timeout"]])
+        launch_sync_dispatcher(sock, wa4(urld, dots, envir[["stream"]], n, urlc), output) || stop(._[["sync_timeout"]])
         for (i in seq_len(n)) next_stream(envir)
         init_monitor(sockc = sockc, envir = envir)
         `[[<-`(envir, "cv", cv)
       } else {
         sock <- req_socket(urld)
-        launch_sync_local_daemon(seq_len(n), sock, wa3(urld, dots, next_stream(envir)), output) || stop(._[["sync_timeout"]])
+        launch_sync_daemons(seq_len(n), sock, wa3(urld, dots, next_stream(envir)), output) || stop(._[["sync_timeout"]])
         `[[<-`(envir, "urls", urld)
       }
       `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
@@ -604,7 +604,7 @@ wa5 <- function(urld, dots, n, urlc, url)
 launch_daemon <- function(args, output)
   system2(command = .command, args = c("-e", args), stdout = output, stderr = output, wait = FALSE)
 
-launch_and_sync_daemon <- function(sock, args, output, tls = NULL, pass = NULL) {
+launch_sync_dispatcher <- function(sock, args, output, tls = NULL, pass = NULL) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE)
   if (is.character(tls)) {
@@ -632,7 +632,7 @@ launch_and_sync_daemon <- function(sock, args, output, tls = NULL, pass = NULL) 
   res
 }
 
-launch_sync_local_daemon <- function(seq, sock, args, output) {
+launch_sync_daemons <- function(seq, sock, args, output) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE)
   for (i in seq)
@@ -667,8 +667,13 @@ send_signal <- function(envir) {
 query_status <- function(envir) {
   res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L)
   is.object(res) && return(res)
-  `attributes<-`(res, list(dim = c(envir[["n"]], 5L),
-                           dimnames = list(envir[["urls"]], c("i", "online", "instance", "assigned", "complete"))))
+  `attributes<-`(
+    res,
+    list(
+      dim = c(envir[["n"]], 5L),
+      dimnames = list(envir[["urls"]], c("i", "online", "instance", "assigned", "complete"))
+    )
+  )
 }
 
 register_everywhere <- function(serial)
