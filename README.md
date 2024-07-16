@@ -21,9 +21,9 @@ status](https://shikokuchuo.r-universe.dev/badges/mirai?color=2dab18)](https://s
 <br /> ( 未来 ) <br /><br /> Minimalist Async Evaluation Framework for R
 <br /><br /> High-performance parallel code execution and distributed
 computing. <br /><br /> Designed for simplicity, a ‘mirai’ evaluates an
-R expression asynchronously, on local or network resources, resolving
-automatically upon completion. <br /><br /> Modern networking and
-concurrency built on
+R expression asynchronously in a separate process, on the local machine
+or over the network, returning the result automatically upon completion.
+<br /><br /> Modern networking and concurrency built on
 [nanonext](https://github.com/shikokuchuo/nanonext/) and
 [NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen) ensures reliable and
 efficient scheduling, over fast inter-process communications or TCP/IP
@@ -35,19 +35,19 @@ secured by TLS.
 experience.
 
 - Fast
-  - More than 100x faster than common alternatives <sup>\[1\]</sup>
-  - Built for low-latency applications such as real time inference or
-    responsive Shiny apps
+  - More than 100x faster (lower overhead) than common alternatives
+    <sup>\[1\]</sup>
+  - Built for low-latency applications such as real time inference and
+    Shiny apps
 - Reliable
-  - Prioritises consistent behaviour, with no reliance on global options
-    or variables
-  - Each mirai call is evaluated exactly as provided for predictable
-    results
+  - Consistent behaviour with no reliance on global options or variables
+  - Each mirai call is evaluated explicitly for transparent and
+    predictable results
 - Scalable
-  - Enables applications involving thousands of nodes and millions of
-    tasks
-  - Verified by usage in heavy-duty workloads in the life sciences
-    industry
+  - Allows launching millions of tasks simultaneously over thousands of
+    connections
+  - Proven track record handling heavy-duty workloads in the life
+    sciences industry
 
 [<img alt="Joe Cheng on mirai with Shiny" src="https://img.youtube.com/vi/GhX0PcEm3CY/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/GhX0PcEm3CY?t=1740)
  
@@ -60,28 +60,23 @@ experience.
 Use `mirai()` to evaluate an expression asynchronously in a separate,
 clean R process.
 
-A ‘mirai’ object is returned immediately.
+The following expression mimics an expensive calculation that eventually
+returns a random value.
 
 ``` r
 library(mirai)
 
-input <- list(x = 2, y = 5, z = double(1e8))
+x <- list(time = 2, mean = 4)
 
-m <- mirai(
-  {
-    res <- rnorm(1e6, mean = mean, sd = sd)
-    max(res) - min(res)
-  },
-  mean = input$x,
-  sd = input$y
-)
+m <- mirai({Sys.sleep(time); rnorm(1, mean)}, time = x$time, mean = x$mean)
 ```
 
-Above, all `name = value` pairs are passed through to the mirai via the
-`...` argument.
+Above, the variables `time` and `mean` in the mirai expression are
+defined by `name = value` pairs passed through via the `...` argument.
 
-Whilst the async operation is ongoing, attempting to access the data
-yields an ‘unresolved’ logical NA.
+A ‘mirai’ object is returned immediately. Whilst the async operation is
+ongoing, attempting to access the data yields an ‘unresolved’ logical
+NA.
 
 ``` r
 m
@@ -90,7 +85,7 @@ m$data
 #> 'unresolved' logi NA
 ```
 
-To check whether a mirai has resolved:
+To check whether a mirai has yet to resolve (complete):
 
 ``` r
 unresolved(m)
@@ -102,7 +97,7 @@ method:
 
 ``` r
 m[]
-#> [1] 48.49145
+#> [1] 2.761576
 ```
 
 It is not necessary to wait, as the mirai resolves automatically
@@ -113,10 +108,10 @@ available at `$data`.
 m
 #> < mirai [$data] >
 m$data
-#> [1] 48.49145
+#> [1] 2.761576
 ```
 
-### Daemons
+#### Daemons
 
 Daemons are persistent background processes for receiving mirai
 requests, and are created as easily as:
@@ -126,38 +121,54 @@ daemons(4)
 #> [1] 4
 ```
 
-They may be deployed
-[locally](https://shikokuchuo.net/mirai/articles/mirai.html#daemons-local-persistent-processes)
-for parallel processing, or
+Daemons may also be deployed
 [remotely](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-remote-daemons)
-for distributed computing.
-
-[Launchers](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-launching-daemons)
-can start daemons across the network via SSH or a cluster resource
-manager.
+for distributed computing and
+[launchers](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-launching-daemons)
+can start daemons across the network via (tunnelled) SSH or a cluster
+resource manager.
 
 [Secure TLS
 connections](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-tls-secure-connections)
 can be used for remote daemon connections, with zero configuration
 required.
 
-### Map
+#### Async Map
 
-`mirai_map()` implements asynchronous map over a list or vector. This
-function is designed to facilitate recovery from partial failure, or
-alternatively provides the option for early stopping.
+`mirai_map()` maps a function over a list or vector, with each element
+processed in parallel in a daemon process.
 
 ``` r
-m <- mirai_map(1:1000, rnorm)
-m
-#> < mirai map [0/1000] >
-m[][[10]]
-#>  [1]  0.48960442  1.47839157 -0.79487457 -0.28950379  0.59830489 -0.14453080
-#>  [7] -0.04135081  1.88559807 -0.57081535 -0.30987366
+m <- mirai_map(
+  1:4,
+  \(x) {res <- rnorm(1e8, mean = x, sd = x + 3) + z; max(res) - min(res)},
+  z = rnorm(1e7)
+)
 ```
 
-Querying progress is as simple as printing the object, or it is also
-possible to wait for completion with a progress indicator.
+A ‘mirai_map’ object is returned immediately, and its value may be
+retrieved using its `[]` method to return a list, just like
+`purrr::map()` or `base::lapply()`.
+
+``` r
+m
+#> < mirai map [0/4] >
+m[]
+#> [[1]]
+#> [1] 47.36616
+#> 
+#> [[2]]
+#> [1] 54.93616
+#> 
+#> [[3]]
+#> [1] 68.39934
+#> 
+#> [[4]]
+#> [1] 76.60662
+```
+
+`mirai_map()` is designed to facilitate recovery from partial failure,
+and also provides options for early stopping and/or progress indicators.
 
 ### Integrations
 
