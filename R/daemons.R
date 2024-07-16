@@ -638,7 +638,7 @@ launch_sync_local_daemon <- function(seq, sock, args, output) {
   for (i in seq)
     launch_daemon(args, output)
   for (i in seq)
-    until(cv, .limit_long) || return(FALSE)
+    until(cv, .limit_long) || return(pipe_notify(sock, cv = NULL, add = TRUE))
   !pipe_notify(sock, cv = NULL, add = TRUE)
 }
 
