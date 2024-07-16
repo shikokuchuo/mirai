@@ -1,4 +1,6 @@
-# mirai 1.1.1.9000 (development)
+# mirai 1.1.1.9001 (development)
+
+* Faster local `daemons(dispatcher = FALSE)` and `make_cluster()` by using asynchronous launches (thanks @mtmorgan #123).
 
 # mirai 1.1.1
 
