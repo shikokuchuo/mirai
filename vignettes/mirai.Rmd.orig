@@ -35,24 +35,18 @@ Multiple long computes (model fits etc.) can be performed in parallel on availab
 
 Use `mirai()` to evaluate an expression asynchronously in a separate, clean R process.
 
-A 'mirai' object is returned immediately.
+The following expression mimics an expensive calculation that eventually returns a random value.
+
 ```{r exec}
 library(mirai)
 
-input <- list(x = 2, y = 5, z = double(1e8))
+x <- list(time = 2, mean = 4)
 
-m <- mirai(
-  {
-    res <- rnorm(1e8, mean = mean, sd = sd)
-    max(res) - min(res)
-  },
-  mean = input$x,
-  sd = input$y
-)
+m <- mirai({Sys.sleep(time); rnorm(1, mean)}, time = x$time, mean = x$mean)
 ```
-Above, all `name = value` pairs are passed through to the mirai via the `...` argument.
+Above, the variables `time` and `mean` in the mirai expression are defined by `name = value` pairs passed through via the `...` argument.
 
-Whilst the async operation is ongoing, attempting to access the data yields an 'unresolved' logical NA.
+A 'mirai' object is returned immediately. Whilst the async operation is ongoing, attempting to access the data yields an 'unresolved' logical NA.
 ```{r do}
 m
 m$data
@@ -74,12 +68,9 @@ m$data
 For easy programmatic use of `mirai()`, '.expr' accepts a pre-constructed language object, and also a list of named arguments passed via '.args'. So, the following would be equivalent to the above:
 
 ```{r equiv}
-expr <- quote({
-  res <- rnorm(1e8, mean = mean, sd = sd)
-  max(res) - min(res)
-})
+expr <- quote({Sys.sleep(time); rnorm(1, mean)})
 
-args <- list(mean = input$x, sd = input$y)
+args <- list(time = x$time, mean = x$mean)
 
 m <- mirai(.expr = expr, .args = args)
 m[]

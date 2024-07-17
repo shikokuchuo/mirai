@@ -49,7 +49,7 @@ Modern networking and concurrency built on [nanonext](https://github.com/shikoku
   + Each mirai call is evaluated explicitly for transparent and predictable results
 
 - Scalable
-  + Allows launching millions of tasks simultaneously over thousands of connections
+  + Launch millions of tasks simultaneously over thousands of connections
   + Proven track record handling heavy-duty workloads in the life sciences industry
 
 [<img alt="Joe Cheng on mirai with Shiny" src="https://img.youtube.com/vi/GhX0PcEm3CY/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/GhX0PcEm3CY?t=1740) &nbsp;

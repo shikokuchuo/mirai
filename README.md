@@ -44,7 +44,7 @@ experience.
   - Each mirai call is evaluated explicitly for transparent and
     predictable results
 - Scalable
-  - Allows launching millions of tasks simultaneously over thousands of
+  - Launch millions of tasks simultaneously over thousands of
     connections
   - Proven track record handling heavy-duty workloads in the life
     sciences industry
@@ -97,7 +97,7 @@ method:
 
 ``` r
 m[]
-#> [1] 2.761576
+#> [1] 3.501309
 ```
 
 It is not necessary to wait, as the mirai resolves automatically
@@ -108,7 +108,7 @@ available at `$data`.
 m
 #> < mirai [$data] >
 m$data
-#> [1] 2.761576
+#> [1] 3.501309
 ```
 
 #### Daemons
@@ -155,16 +155,16 @@ m
 #> < mirai map [0/4] >
 m[]
 #> [[1]]
-#> [1] 47.36616
+#> [1] 47.54711
 #> 
 #> [[2]]
-#> [1] 54.93616
+#> [1] 57.65795
 #> 
 #> [[3]]
-#> [1] 68.39934
+#> [1] 69.33334
 #> 
 #> [[4]]
-#> [1] 76.60662
+#> [1] 82.16383
 ```
 
 `mirai_map()` is designed to facilitate recovery from partial failure,
