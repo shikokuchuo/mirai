@@ -109,7 +109,7 @@
 </li>
 <li>Scalable
 <ul>
-<li>Allows launching millions of tasks simultaneously over thousands of connections</li>
+<li>Launch millions of tasks simultaneously over thousands of connections</li>
 <li>Proven track record handling heavy-duty workloads in the life sciences industry</li>
 </ul>
 </li>
@@ -144,13 +144,13 @@
 <p>To wait for and collect the evaluated result, use the mirai’s <code>[]</code> method:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 2.761576</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 3.501309</span></span></code></pre></div>
 <p>It is not necessary to wait, as the mirai resolves automatically whenever the async operation completes, the evaluated result then available at <code>$data</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span></span>
 <span><span class="co">#&gt; &lt; mirai [$data] &gt;</span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] 2.761576</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 3.501309</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
 </h4>
@@ -177,16 +177,16 @@
 <span><span class="co">#&gt; &lt; mirai map [0/4] &gt;</span></span>
 <span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [1] 47.36616</span></span>
+<span><span class="co">#&gt; [1] 47.54711</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [1] 54.93616</span></span>
+<span><span class="co">#&gt; [1] 57.65795</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]</span></span>
-<span><span class="co">#&gt; [1] 68.39934</span></span>
+<span><span class="co">#&gt; [1] 69.33334</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[4]]</span></span>
-<span><span class="co">#&gt; [1] 76.60662</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 82.16383</span></span></code></pre></div>
 <p><code><a href="reference/mirai_map.html">mirai_map()</a></code> is designed to facilitate recovery from partial failure, and also provides options for early stopping and/or progress indicators.</p>
 </div>
 </div>
