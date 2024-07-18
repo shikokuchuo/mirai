@@ -27,33 +27,12 @@ or over the network, returning the result automatically upon completion.
 [nanonext](https://github.com/shikokuchuo/nanonext/) and
 [NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen) ensures reliable and
 efficient scheduling, over fast inter-process communications or TCP/IP
-secured by TLS.
-
-### Design Concepts
-
-`mirai` is designed from the ground up to provide a production-grade
-experience.
-
-- Fast
-  - More than 100x faster (lower overhead) than common alternatives
-    <sup>\[1\]</sup>
-  - Built for low-latency applications such as real time inference and
-    Shiny apps
-- Reliable
-  - Consistent behaviour with no reliance on global options or variables
-  - Each mirai call is evaluated explicitly for transparent and
-    predictable results
-- Scalable
-  - Launch millions of tasks simultaneously over thousands of
-    connections
-  - Proven track record handling heavy-duty workloads in the life
-    sciences industry
-
-[<img alt="Joe Cheng on mirai with Shiny" src="https://img.youtube.com/vi/GhX0PcEm3CY/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/GhX0PcEm3CY?t=1740)
- 
-[<img alt="Will Landau on mirai in clinical trials" src="https://img.youtube.com/vi/cyF2dzloVLo/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/cyF2dzloVLo?t=5127)
-
-> *mirai パッケージを試してみたところ、かなり速くて驚きました*
+secured by TLS. <br /><br /> Advantages include being inherently queued,
+allowing the sending of many more tasks than available connections, no
+arbitrary connection limits, no storage on the filesystem, support for
+otherwise non-exportable reference objects, an event-driven ‘promises’
+implementation, and very low overhead. A parallel map function is
+included.
 
 ### Quick Start
 
@@ -97,7 +76,7 @@ method:
 
 ``` r
 m[]
-#> [1] 3.501309
+#> [1] 3.493612
 ```
 
 It is not necessary to wait, as the mirai resolves automatically
@@ -108,7 +87,7 @@ available at `$data`.
 m
 #> < mirai [$data] >
 m$data
-#> [1] 3.501309
+#> [1] 3.493612
 ```
 
 #### Daemons
@@ -133,7 +112,7 @@ connections](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-compu
 can be used for remote daemon connections, with zero configuration
 required.
 
-#### Async Map
+#### Async Parallel Map
 
 `mirai_map()` maps a function over a list or vector, with each element
 processed in parallel in a daemon process.
@@ -155,20 +134,46 @@ m
 #> < mirai map [0/4] >
 m[]
 #> [[1]]
-#> [1] 47.54711
+#> [1] 46.87634
 #> 
 #> [[2]]
-#> [1] 57.65795
+#> [1] 57.89123
 #> 
 #> [[3]]
-#> [1] 69.33334
+#> [1] 67.9691
 #> 
 #> [[4]]
-#> [1] 82.16383
+#> [1] 79.03872
 ```
 
 `mirai_map()` is designed to facilitate recovery from partial failure,
 and also provides options for early stopping and/or progress indicators.
+
+### Design Concepts
+
+`mirai` is designed from the ground up to provide a production-grade
+experience.
+
+- Fast
+  - More than 100x faster (lower overhead) than common alternatives
+    <sup>\[1\]</sup>
+  - Built for low-latency applications such as real time inference and
+    Shiny apps
+- Reliable
+  - Consistent behaviour with no reliance on global options or variables
+  - Each mirai call is evaluated explicitly for transparent and
+    predictable results
+- Scalable
+  - Launch millions of tasks simultaneously over thousands of
+    connections
+  - Proven track record handling heavy-duty workloads in the life
+    sciences industry
+
+[<img alt="Joe Cheng on mirai with Shiny" src="https://img.youtube.com/vi/GhX0PcEm3CY/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/GhX0PcEm3CY?t=1740)
+ 
+[<img alt="Will Landau on mirai in clinical trials" src="https://img.youtube.com/vi/cyF2dzloVLo/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/cyF2dzloVLo?t=5127)
+
+> *mirai パッケージを試してみたところ、かなり速くて驚きました*
 
 ### Integrations
 

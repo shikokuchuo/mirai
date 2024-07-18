@@ -35,27 +35,8 @@ High-performance parallel code execution and distributed computing.
 Designed for simplicity, a 'mirai' evaluates an R expression asynchronously in a separate process, on the local machine or over the network, returning the result automatically upon completion.
 <br /><br />
 Modern networking and concurrency built on [nanonext](https://github.com/shikokuchuo/nanonext/) and [NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen) ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS.
-
-### Design Concepts
-
-`mirai` is designed from the ground up to provide a production-grade experience.
-
-- Fast
-  + More than 100x faster (lower overhead) than common alternatives <sup>[1]</sup>
-  + Built for low-latency applications such as real time inference and Shiny apps
-
-- Reliable
-  + Consistent behaviour with no reliance on global options or variables
-  + Each mirai call is evaluated explicitly for transparent and predictable results
-
-- Scalable
-  + Launch millions of tasks simultaneously over thousands of connections
-  + Proven track record handling heavy-duty workloads in the life sciences industry
-
-[<img alt="Joe Cheng on mirai with Shiny" src="https://img.youtube.com/vi/GhX0PcEm3CY/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/GhX0PcEm3CY?t=1740) &nbsp;
-[<img alt="Will Landau on mirai in clinical trials" src="https://img.youtube.com/vi/cyF2dzloVLo/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/cyF2dzloVLo?t=5127)
-
-> *mirai パッケージを試してみたところ、かなり速くて驚きました*
+<br /><br />
+Advantages include being inherently queued, allowing the sending of many more tasks than available connections, no arbitrary connection limits, no storage on the filesystem, support for otherwise non-exportable reference objects, an event-driven 'promises' implementation, and very low overhead. A parallel map function is included.
 
 ### Quick Start
 
@@ -102,7 +83,7 @@ Daemons may also be deployed [remotely](https://shikokuchuo.net/mirai/articles/m
 
 [Secure TLS connections](https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-tls-secure-connections) can be used for remote daemon connections, with zero configuration required.
 
-#### Async Map
+#### Async Parallel Map
 
 `mirai_map()` maps a function over a list or vector, with each element processed in parallel in a daemon process.
 
@@ -119,6 +100,28 @@ m
 m[]
 ```
 `mirai_map()` is designed to facilitate recovery from partial failure, and also provides options for early stopping and/or progress indicators.
+
+
+### Design Concepts
+
+`mirai` is designed from the ground up to provide a production-grade experience.
+
+- Fast
+  + More than 100x faster (lower overhead) than common alternatives <sup>[1]</sup>
+  + Built for low-latency applications such as real time inference and Shiny apps
+
+- Reliable
+  + Consistent behaviour with no reliance on global options or variables
+  + Each mirai call is evaluated explicitly for transparent and predictable results
+
+- Scalable
+  + Launch millions of tasks simultaneously over thousands of connections
+  + Proven track record handling heavy-duty workloads in the life sciences industry
+
+[<img alt="Joe Cheng on mirai with Shiny" src="https://img.youtube.com/vi/GhX0PcEm3CY/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/GhX0PcEm3CY?t=1740) &nbsp;
+[<img alt="Will Landau on mirai in clinical trials" src="https://img.youtube.com/vi/cyF2dzloVLo/hqdefault.jpg" width = "300" height="225" />](https://youtu.be/cyF2dzloVLo?t=5127)
+
+> *mirai パッケージを試してみたところ、かなり速くて驚きました*
 
 ### Integrations
 

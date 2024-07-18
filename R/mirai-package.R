@@ -22,7 +22,12 @@
 #'     result automatically upon completion. Modern networking and concurrency
 #'     built on 'nanonext' and 'NNG' (Nanomsg Next Gen) ensures reliable and
 #'     efficient scheduling, over fast inter-process communications or TCP/IP
-#'     secured by TLS.
+#'     secured by TLS. Advantages include being inherently queued, allowing the
+#'     sending of many more tasks than available connections, no arbitrary
+#'     connection limits, no storage on the filesystem, support for otherwise
+#'     non-exportable reference objects, an event-driven 'promises'
+#'     implementation, and very low overhead. A parallel map function is
+#'     included.
 #'
 #' @section Notes:
 #'
