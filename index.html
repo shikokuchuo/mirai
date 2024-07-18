@@ -114,13 +114,13 @@
 <p>To wait for and collect the evaluated result, use the mirai’s <code>[]</code> method:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 4.393546</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 3.493612</span></span></code></pre></div>
 <p>It is not necessary to wait, as the mirai resolves automatically whenever the async operation completes, the evaluated result then available at <code>$data</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span></span>
 <span><span class="co">#&gt; &lt; mirai [$data] &gt;</span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] 4.393546</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 3.493612</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
 </h4>
@@ -132,7 +132,7 @@
 <p><a href="https://shikokuchuo.net/mirai/articles/mirai.html#distributed-computing-tls-secure-connections">Secure TLS connections</a> can be used for remote daemon connections, with zero configuration required.</p>
 </div>
 <div class="section level4">
-<h4 id="async-map">Async Map<a class="anchor" aria-label="anchor" href="#async-map"></a>
+<h4 id="async-parallel-map">Async Parallel Map<a class="anchor" aria-label="anchor" href="#async-parallel-map"></a>
 </h4>
 <p><code><a href="reference/mirai_map.html">mirai_map()</a></code> maps a function over a list or vector, with each element processed in parallel in a daemon process.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -147,16 +147,16 @@
 <span><span class="co">#&gt; &lt; mirai map [0/4] &gt;</span></span>
 <span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [1] 47.69129</span></span>
+<span><span class="co">#&gt; [1] 46.87634</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [1] 58.91163</span></span>
+<span><span class="co">#&gt; [1] 57.89123</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]</span></span>
-<span><span class="co">#&gt; [1] 69.08072</span></span>
+<span><span class="co">#&gt; [1] 67.9691</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[4]]</span></span>
-<span><span class="co">#&gt; [1] 81.88598</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 79.03872</span></span></code></pre></div>
 <p><code><a href="reference/mirai_map.html">mirai_map()</a></code> is designed to facilitate recovery from partial failure, and also provides options for early stopping and/or progress indicators.</p>
 </div>
 </div>
