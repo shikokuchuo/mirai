@@ -44,23 +44,24 @@ x <- list(time = 2, mean = 4)
 
 m <- mirai({Sys.sleep(time); rnorm(1, mean)}, time = x$time, mean = x$mean)
 ```
-Above, the variables `time` and `mean` in the mirai expression are defined by `name = value` pairs passed through via the `...` argument.
+Above, the variables `time` and `mean` in the mirai expression are defined by `name = value` pairs passed as part of the `mirai()` call.
 
-A 'mirai' object is returned immediately. Whilst the async operation is ongoing, attempting to access the data yields an 'unresolved' logical NA.
+A 'mirai' object is returned immediately - creating a mirai never blocks the session.
+
+Whilst the async operation is ongoing, attempting to access a mirai's data yields an 'unresolved' logical NA.
 ```{r do}
 m
 m$data
 ```
-To check whether a mirai has resolved:
+To check whether a mirai remains unresolved i.e. its async operation is still ongoing:
 ```{r unres}
 unresolved(m)
 ```
-To wait for and collect the evaluated result, use the mirai's `[]` method:
+To wait for and collect the return value, use the mirai's `[]` method:
 ```{r call}
 m[]
 ```
-It is not necessary to wait, as the mirai resolves automatically whenever the async operation completes, the evaluated result then available at `$data`.
-
+As a mirai represents an async operation, it is never necessary to wait for it. Other code can continue to be run. Once it completes, the return value automatically becomes available at `$data`.
 ```{r resolv}
 m
 m$data

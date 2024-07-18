@@ -24,7 +24,7 @@
 #'     efficient scheduling, over fast inter-process communications or TCP/IP
 #'     secured by TLS. Advantages include being inherently queued, allowing the
 #'     sending of many more tasks than available connections, no arbitrary
-#'     connection limits, no storage on the filesystem, support for otherwise
+#'     connection limits, no storage on the file system, support for otherwise
 #'     non-exportable reference objects, an event-driven 'promises'
 #'     implementation, and very low overhead. A parallel map function is
 #'     included.

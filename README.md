@@ -29,7 +29,7 @@ or over the network, returning the result automatically upon completion.
 efficient scheduling, over fast inter-process communications or TCP/IP
 secured by TLS. <br /><br /> Advantages include being inherently queued,
 allowing the sending of many more tasks than available connections, no
-arbitrary connection limits, no storage on the filesystem, support for
+arbitrary connection limits, no storage on the file system, support for
 otherwise non-exportable reference objects, an event-driven ‘promises’
 implementation, and very low overhead. A parallel map function is
 included.
@@ -51,11 +51,13 @@ m <- mirai({Sys.sleep(time); rnorm(1, mean)}, time = x$time, mean = x$mean)
 ```
 
 Above, the variables `time` and `mean` in the mirai expression are
-defined by `name = value` pairs passed through via the `...` argument.
+defined by `name = value` pairs passed as part of the `mirai()` call.
 
-A ‘mirai’ object is returned immediately. Whilst the async operation is
-ongoing, attempting to access the data yields an ‘unresolved’ logical
-NA.
+A ‘mirai’ object is returned immediately - creating a mirai never blocks
+the session.
+
+Whilst the async operation is ongoing, attempting to access a mirai’s
+data yields an ‘unresolved’ NA.
 
 ``` r
 m
@@ -64,30 +66,33 @@ m$data
 #> 'unresolved' logi NA
 ```
 
-To check whether a mirai has yet to resolve (complete):
+To check whether a mirai remains unresolved i.e. its async operation is
+still ongoing:
 
 ``` r
 unresolved(m)
 #> [1] TRUE
 ```
 
-To wait for and collect the evaluated result, use the mirai’s `[]`
-method:
+To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 3.493612
+#> [1] 4.427699
 ```
 
-It is not necessary to wait, as the mirai resolves automatically
-whenever the async operation completes, the evaluated result then
-available at `$data`.
+As a mirai represents an async operation, it is never necessary to wait
+for it. Other code can continue to be run. Once it completes, the return
+value automatically becomes available at `$data`.
 
 ``` r
+while (unresolved(m)) {
+  # do work here that does not depend on 'm'
+}
 m
 #> < mirai [$data] >
 m$data
-#> [1] 3.493612
+#> [1] 4.427699
 ```
 
 #### Daemons
@@ -115,7 +120,7 @@ required.
 #### Async Parallel Map
 
 `mirai_map()` maps a function over a list or vector, with each element
-processed in parallel in a daemon process.
+processed in a separate parallel process.
 
 ``` r
 m <- mirai_map(
@@ -134,20 +139,23 @@ m
 #> < mirai map [0/4] >
 m[]
 #> [[1]]
-#> [1] 46.87634
+#> [1] 47.48996
 #> 
 #> [[2]]
-#> [1] 57.89123
+#> [1] 62.31523
 #> 
 #> [[3]]
-#> [1] 67.9691
+#> [1] 72.25278
 #> 
 #> [[4]]
-#> [1] 79.03872
+#> [1] 82.90248
 ```
 
 `mirai_map()` is designed to facilitate recovery from partial failure,
 and also provides options for early stopping and/or progress indicators.
+It also has some other
+[advantages](https://shikokuchuo.net/mirai/articles/mirai.html#map-functions)
+over alternative implementations.
 
 ### Design Concepts
 
