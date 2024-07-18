@@ -28,7 +28,7 @@ or over the network, returning the result automatically upon completion.
 [NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen) ensures reliable and
 efficient scheduling, over fast inter-process communications or TCP/IP
 secured by TLS. <br /><br /> Advantages include being inherently queued,
-allowing the sending of many more tasks than available connections, no
+allowing the sending of many more tasks than available processes, no
 arbitrary connection limits, no storage on the file system, support for
 otherwise non-exportable reference objects, an event-driven ‘promises’
 implementation, and very low overhead. A parallel map function is
@@ -57,7 +57,7 @@ A ‘mirai’ object is returned immediately - creating a mirai never blocks
 the session.
 
 Whilst the async operation is ongoing, attempting to access a mirai’s
-data yields an ‘unresolved’ NA.
+data yields an ‘unresolved’ logical NA.
 
 ``` r
 m
@@ -78,7 +78,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 4.427699
+#> [1] 2.830677
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -92,7 +92,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 4.427699
+#> [1] 2.830677
 ```
 
 #### Daemons
@@ -139,16 +139,16 @@ m
 #> < mirai map [0/4] >
 m[]
 #> [[1]]
-#> [1] 47.48996
+#> [1] 46.04084
 #> 
 #> [[2]]
-#> [1] 62.31523
+#> [1] 58.94985
 #> 
 #> [[3]]
-#> [1] 72.25278
+#> [1] 73.72524
 #> 
 #> [[4]]
-#> [1] 82.90248
+#> [1] 86.44085
 ```
 
 `mirai_map()` is designed to facilitate recovery from partial failure,
