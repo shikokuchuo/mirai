@@ -77,7 +77,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 3.289944
+#> [1] 4.552345
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -91,7 +91,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 3.289944
+#> [1] 4.552345
 ```
 
 #### Daemons
@@ -129,25 +129,25 @@ m <- mirai_map(
 )
 ```
 
-A ‘mirai_map’ object is returned immediately, and its value may be
-retrieved using its `[]` method to return a list, just like
-`purrr::map()` or `base::lapply()`.
+A ‘mirai_map’ object is returned immediately. Other code can continue to
+run at this point. Its value may be retrieved at any time using its `[]`
+method to return a list, just like `purrr::map()` or `base::lapply()`.
 
 ``` r
 m
 #> < mirai map [0/4] >
 m[]
 #> [[1]]
-#> [1] 45.47632
+#> [1] 47.65248
 #> 
 #> [[2]]
-#> [1] 58.2199
+#> [1] 57.00294
 #> 
 #> [[3]]
-#> [1] 67.38269
+#> [1] 72.46313
 #> 
 #> [[4]]
-#> [1] 81.19544
+#> [1] 82.07732
 ```
 
 `mirai_map()` is designed to facilitate recovery from partial failure,

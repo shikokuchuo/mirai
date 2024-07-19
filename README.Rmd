@@ -99,7 +99,7 @@ m <- mirai_map(
   z = rnorm(1e7)
 )
 ```
-A 'mirai_map' object is returned immediately, and its value may be retrieved using its `[]` method to return a list, just like `purrr::map()` or `base::lapply()`.
+A 'mirai_map' object is returned immediately. Other code can continue to run at this point. Its value may be retrieved at any time using its `[]` method to return a list, just like `purrr::map()` or `base::lapply()`.
 ```{r mapvalue}
 m
 m[]
