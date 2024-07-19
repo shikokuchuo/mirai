@@ -208,7 +208,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           if (is.object(req)) req <- serialize(req, NULL)
           send(queue[[i]][["ctx"]], data = req, mode = 2L, block = TRUE)
           q <- queue[[i]][["daemon"]]
-          if (req[3L]) {
+          if (req[4L]) {
             send(queue[[i]][["rctx"]], NULL, mode = 2L, block = TRUE)
             reap(queue[[i]][["rctx"]])
           } else {
