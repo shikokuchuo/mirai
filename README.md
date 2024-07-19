@@ -19,11 +19,10 @@ status](https://shikokuchuo.r-universe.dev/badges/mirai?color=2dab18)](https://s
 ### ミライ
 
 <br /> ( 未来 ) <br /><br /> Minimalist Async Evaluation Framework for R
-<br /><br /> High-performance parallel code execution and distributed
-computing. <br /><br /> Designed for simplicity, a ‘mirai’ evaluates an
-R expression asynchronously in a separate process, on the local machine
-or over the network, returning the result automatically upon completion.
-<br /><br /> Modern networking and concurrency built on
+<br /><br /> Designed for simplicity, a ‘mirai’ evaluates an R
+expression asynchronously in a parallel process, on the local machine or
+distributed over the network, with the result automatically available
+upon completion. <br /><br /> Modern networking and concurrency built on
 [nanonext](https://github.com/shikokuchuo/nanonext/) and
 [NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen) ensures reliable and
 efficient scheduling, over fast inter-process communications or TCP/IP
@@ -31,8 +30,8 @@ secured by TLS. <br /><br /> Advantages include being inherently queued,
 allowing the sending of many more tasks than available processes, no
 arbitrary connection limits, no storage on the file system, support for
 otherwise non-exportable reference objects, an event-driven ‘promises’
-implementation, and very low overhead. A parallel map function is
-included.
+implementation, and very low overhead. <br /><br /> Asynchronous
+parallel map functionality is included.
 
 ### Quick Start
 
@@ -78,7 +77,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 2.830677
+#> [1] 3.289944
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -92,7 +91,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 2.830677
+#> [1] 3.289944
 ```
 
 #### Daemons
@@ -139,16 +138,16 @@ m
 #> < mirai map [0/4] >
 m[]
 #> [[1]]
-#> [1] 46.04084
+#> [1] 45.47632
 #> 
 #> [[2]]
-#> [1] 58.94985
+#> [1] 58.2199
 #> 
 #> [[3]]
-#> [1] 73.72524
+#> [1] 67.38269
 #> 
 #> [[4]]
-#> [1] 86.44085
+#> [1] 81.19544
 ```
 
 `mirai_map()` is designed to facilitate recovery from partial failure,
