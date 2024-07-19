@@ -25,8 +25,8 @@
 #'     inherently queued, allowing the sending of many more tasks than available
 #'     processes, no arbitrary connection limits, no storage on the file system,
 #'     support for otherwise non-exportable reference objects, an event-driven
-#'     'promises' implementation, and very low overhead. Asynchronous parallel
-#'     map functionality is included.
+#'     'promises' implementation, and very low overhead. Incorporates
+#'     asynchronous parallel map functionality.
 #'
 #' @section Notes:
 #'

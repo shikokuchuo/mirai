@@ -30,8 +30,8 @@ secured by TLS. <br /><br /> Advantages include being inherently queued,
 allowing the sending of many more tasks than available processes, no
 arbitrary connection limits, no storage on the file system, support for
 otherwise non-exportable reference objects, an event-driven ‘promises’
-implementation, and very low overhead. <br /><br /> Asynchronous
-parallel map functionality is included.
+implementation, and very low overhead. <br /><br /> Incorporates
+asynchronous parallel map functionality.
 
 ### Quick Start
 
@@ -77,7 +77,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 4.552345
+#> [1] 5.096552
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -91,7 +91,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 4.552345
+#> [1] 5.096552
 ```
 
 #### Daemons
@@ -138,16 +138,16 @@ m
 #> < mirai map [0/4] >
 m[]
 #> [[1]]
-#> [1] 47.65248
+#> [1] 45.88406
 #> 
 #> [[2]]
-#> [1] 57.00294
+#> [1] 55.90965
 #> 
 #> [[3]]
-#> [1] 72.46313
+#> [1] 67.60735
 #> 
 #> [[4]]
-#> [1] 82.07732
+#> [1] 77.51701
 ```
 
 `mirai_map()` is designed to facilitate recovery from partial failure,
