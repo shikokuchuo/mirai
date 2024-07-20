@@ -1,7 +1,7 @@
-# mirai 1.1.1.9002 (development)
+# mirai 1.1.1.9003 (development)
 
 * Faster local `daemons(dispatcher = FALSE)` and `make_cluster()` by using asynchronous launches (thanks @mtmorgan #123).
-* Requires `nanonext` >= [1.1.1.9003].
+* Requires `nanonext` >= [1.1.1.9005].
 
 # mirai 1.1.1
 
