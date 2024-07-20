@@ -51,7 +51,7 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.1.9004" id="mirai-1119004-development">mirai 1.1.1.9004 (development)<a class="anchor" aria-label="anchor" href="#mirai-1119004-development"></a></h2>
 <ul><li>Faster local <code>daemons(dispatcher = FALSE)</code> and <code><a href="../reference/make_cluster.html">make_cluster()</a></code> by using asynchronous launches (thanks <a href="https://github.com/mtmorgan" class="external-link">@mtmorgan</a> <a href="https://github.com/shikokuchuo/mirai/issues/123" class="external-link">#123</a>).</li>
-<li>More efficient dispatcher by only loading the base package at startup, as well as with ‘–vanilla’ flags (thanks <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a>).</li>
+<li>More efficient dispatcher startup by only loading the base package, as well as not reading startup configurations (thanks <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a>).</li>
 <li>Removes hard dependency on <code>stats</code> and <code>utils</code> base packages.</li>
 <li>Requires <code>nanonext</code> &gt;= [1.1.1.9005].</li>
 </ul></div>

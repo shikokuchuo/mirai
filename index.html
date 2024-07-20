@@ -115,7 +115,7 @@
 <p>To wait for and collect the return value, use the mirai’s <code>[]</code> method:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 3.407049</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 4.983207</span></span></code></pre></div>
 <p>As a mirai represents an async operation, it is never necessary to wait for it. Other code can continue to be run. Once it completes, the return value automatically becomes available at <code>$data</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="reference/unresolved.html">unresolved</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -124,7 +124,7 @@
 <span><span class="va">m</span></span>
 <span><span class="co">#&gt; &lt; mirai [$data] &gt;</span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] 3.407049</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 4.983207</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
 </h4>
@@ -151,16 +151,16 @@
 <span><span class="co">#&gt; &lt; mirai map [0/4] &gt;</span></span>
 <span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [1] 47.58723</span></span>
+<span><span class="co">#&gt; [1] 46.98116</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [1] 57.0402</span></span>
+<span><span class="co">#&gt; [1] 58.23877</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]</span></span>
-<span><span class="co">#&gt; [1] 72.64973</span></span>
+<span><span class="co">#&gt; [1] 70.20797</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[4]]</span></span>
-<span><span class="co">#&gt; [1] 82.59517</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 81.99365</span></span></code></pre></div>
 <p><code><a href="reference/mirai_map.html">mirai_map()</a></code> is designed to facilitate recovery from partial failure, and also provides options for early stopping and/or progress indicators. It also has some other <a href="https://shikokuchuo.net/mirai/articles/mirai.html#map-functions">advantages</a> over alternative implementations.</p>
 </div>
 </div>
@@ -171,7 +171,7 @@
 <ul>
 <li>Fast
 <ul>
-<li>More than 100x more responsive over alternatives <sup>[1]</sup>
+<li>Over 100x more responsive than common alternatives <sup>[1]</sup>
 </li>
 <li>Built for low-latency applications such as real time inference and Shiny apps</li>
 </ul>
@@ -218,7 +218,7 @@
 </h3>
 <p>We would like to thank in particular:</p>
 <p><a href="https://github.com/wlandau/" class="external-link">Will Landau</a> for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of <code>crew</code> and <code>targets</code>.</p>
-<p><a href="https://github.com/jcheng5/" class="external-link">Joe Cheng</a> for optimising the <code>promises</code> method to make <code>mirai</code> work seamlessly within Shiny, and prototyping non-polling promises, which is implemented across <code>nanonext</code> and <code>mirai</code>.</p>
+<p><a href="https://github.com/jcheng5/" class="external-link">Joe Cheng</a> for optimising the <code>promises</code> method to work seamlessly within Shiny, and prototyping event-driven promises, which is implemented across <code>nanonext</code> and <code>mirai</code>.</p>
 <p><a href="https://github.com/ltierney/" class="external-link">Luke Tierney</a> of R Core, for discussion on L’Ecuyer-CMRG streams to ensure statistical independence in parallel processing, and making it possible for <code>mirai</code> to be the first ‘alternative communications backend for R’.</p>
 <p><a href="https://github.com/HenrikBengtsson/" class="external-link">Henrik Bengtsson</a> for valuable insights leading to the interface accepting broader usage patterns.</p>
 <p><a href="https://github.com/dfalbel/" class="external-link">Daniel Falbel</a> for discussion around an efficient solution to serialization and transmission of <code>torch</code> tensors.</p>
