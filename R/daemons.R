@@ -626,9 +626,7 @@ launch_sync_dispatcher <- function(sock, args, output, tls = NULL, pass = NULL) 
       Sys.setenv(MIRAI_TEMP_VAR = pass)
     }
   }
-  on.exit(Sys.unsetenv("R_DEFAULT_PACKAGES"), add = TRUE)
-  Sys.setenv(R_DEFAULT_PACKAGES = "NULL")
-  system2(command = .command, args = c("--vanilla", "-e", args), stdout = output, stderr = output, wait = FALSE)
+  system2(command = .command, args = c("--default-packages=NULL", "--vanilla", "-e", args), stdout = output, stderr = output, wait = FALSE)
   res <- until(cv, .limit_long)
   pipe_notify(sock, cv = NULL, add = TRUE)
   res

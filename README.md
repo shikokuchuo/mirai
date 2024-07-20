@@ -77,7 +77,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 3.407049
+#> [1] 4.983207
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -91,7 +91,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 3.407049
+#> [1] 4.983207
 ```
 
 #### Daemons
@@ -138,16 +138,16 @@ m
 #> < mirai map [0/4] >
 m[]
 #> [[1]]
-#> [1] 47.58723
+#> [1] 46.98116
 #> 
 #> [[2]]
-#> [1] 57.0402
+#> [1] 58.23877
 #> 
 #> [[3]]
-#> [1] 72.64973
+#> [1] 70.20797
 #> 
 #> [[4]]
-#> [1] 82.59517
+#> [1] 81.99365
 ```
 
 `mirai_map()` is designed to facilitate recovery from partial failure,
@@ -162,7 +162,7 @@ over alternative implementations.
 experience.
 
 - Fast
-  - More than 100x more responsive over alternatives <sup>\[1\]</sup>
+  - Over 100x more responsive than common alternatives <sup>\[1\]</sup>
   - Built for low-latency applications such as real time inference and
     Shiny apps
 - Reliable
@@ -244,9 +244,8 @@ for persistent daemons, through to orchestrating robustness testing for
 the high performance computing requirements of `crew` and `targets`.
 
 [Joe Cheng](https://github.com/jcheng5/) for optimising the `promises`
-method to make `mirai` work seamlessly within Shiny, and prototyping
-non-polling promises, which is implemented across `nanonext` and
-`mirai`.
+method to work seamlessly within Shiny, and prototyping event-driven
+promises, which is implemented across `nanonext` and `mirai`.
 
 [Luke Tierney](https://github.com/ltierney/) of R Core, for discussion
 on L’Ecuyer-CMRG streams to ensure statistical independence in parallel

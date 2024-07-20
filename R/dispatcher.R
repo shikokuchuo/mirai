@@ -91,6 +91,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
   pipe_notify(sock, cv = cv, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock = sock, url = host, asyncdial = asyncdial)
 
+  Sys.unsetenv("R_DEFAULT_PACKAGES")
   auto <- is.null(url)
   vectorised <- length(url) == n
   seq_n <- seq_len(n)
@@ -111,7 +112,6 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
 
   envir <- new.env(hash = FALSE)
   if (is.numeric(rs)) `[[<-`(envir, "stream", as.integer(rs))
-  Sys.unsetenv("R_DEFAULT_PACKAGES")
 
   for (i in seq_n) {
     burl <- if (auto) .urlscheme else
