@@ -52,7 +52,6 @@
 #'     nng_error opt opt<- parse_url pipe_notify random reap recv recv_aio
 #'     request .rng_adv send set_promise_context socket stat stop_aio tls_config
 #'     unresolved .unresolved until wait write_cert
-#' @importFrom utils .DollarNames
 #'
 "_PACKAGE"
 

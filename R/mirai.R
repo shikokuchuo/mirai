@@ -546,7 +546,7 @@ print.miraiInterrupt <- function(x, ...) {
 `$.miraiError` <- function(x, name)
   attr(x, name, exact = FALSE)
 
-#' @export
+#' @exportS3Method utils::.DollarNames
 #'
 .DollarNames.miraiError <- function(x, pattern = "")
   if (startsWith("stack.trace", pattern)) "stack.trace" else character()
