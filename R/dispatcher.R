@@ -85,13 +85,15 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(._[["missing_url"]])
 
+  pkgs <- Sys.getenv("MIRAI_DEF_PKGS")
+  Sys.unsetenv("MIRAI_DEF_PKGS")
+  if (nzchar(pkgs)) Sys.setenv(R_DEFAULT_PACKAGES = pkgs) else Sys.unsetenv("R_DEFAULT_PACKAGES")
   cv <- cv()
   sock <- socket(protocol = "rep")
   on.exit(reap(sock))
   pipe_notify(sock, cv = cv, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock = sock, url = host, asyncdial = asyncdial)
 
-  Sys.unsetenv("R_DEFAULT_PACKAGES")
   auto <- is.null(url)
   vectorised <- length(url) == n
   seq_n <- seq_len(n)

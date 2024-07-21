@@ -1,4 +1,4 @@
-# mirai 1.1.1.9004 (development)
+# mirai 1.1.1.9005 (development)
 
 * Faster local `daemons(dispatcher = FALSE)` and `make_cluster()` by using asynchronous launches (thanks @mtmorgan #123).
 * More efficient dispatcher startup by only loading the base package, as well as not reading startup configurations (thanks @krlmlr).
