@@ -291,8 +291,8 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
     ‘.compute’ argument as ‘remote’.</p>
 <p><strong>cpu / gpu</strong> some tasks may require access to different types of
     daemon, such as those with GPUs. In this case, <code>daemons()</code> may be
-    called twice to set up host URLs for CPU-only daemons and for those
-    with GPUs, specifying the ‘.compute’ argument as ‘cpu’ and
+    called to set up host URLs for CPU-only daemons and for those with GPUs,
+    specifying the ‘.compute’ argument as ‘cpu’ and
     ‘gpu’ respectively. By supplying the ‘.compute’ argument to
     subsequent <code><a href="mirai.html">mirai</a></code> calls, tasks may be sent to either
     ‘cpu’ or ‘gpu’ daemons as appropriate.</p>

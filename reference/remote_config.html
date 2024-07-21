@@ -163,15 +163,15 @@ required and can be inferred from the ‘url’ supplied (see
 
 
 
-<p>Use of SSH tunnelling provides a convenient way to launch remote nodes
+<p>Use of SSH tunnelling provides a convenient way to launch remote daemons
     without requiring the remote machine to be able to access the host.
     Often firewall configurations or security policies may prevent opening a
     port to accept outside connections.</p>
 <p>In these cases SSH tunnelling offers a solution by creating a tunnel once
     the initial SSH connection is made. For simplicity, this SSH tunnelling
     implementation uses the same port on both the side of the host and that
-    of the corresponding node. SSH key-based authentication must also already
-    be in place.</p>
+    of the daemon. SSH key-based authentication must also already be in
+    place.</p>
 <p>Tunnelling requires the hostname for the ‘host’ argument (or the
     ‘url’ argument to <code><a href="daemons.html">daemons</a></code> if called directly in
     that context) to be either ‘127.0.0.1’ or ‘localhost’.
@@ -183,7 +183,7 @@ required and can be inferred from the ‘url’ supplied (see
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># for Slurm</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># example for Slurm</span></span></span>
 <span class="r-in"><span><span class="fu">remote_config</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  command <span class="op">=</span> <span class="st">"srun"</span>,</span></span>
 <span class="r-in"><span>  args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"--mem 512"</span>, <span class="st">"-n 1"</span>, <span class="st">"."</span><span class="op">)</span>,</span></span>
@@ -221,6 +221,25 @@ required and can be inferred from the ‘url’ supplied (see
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># can be used to start local dameons with special configurations</span></span></span>
+<span class="r-in"><span><span class="fu">remote_config</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  command <span class="op">=</span> <span class="st">"Rscript"</span>,</span></span>
+<span class="r-in"><span>  rscript <span class="op">=</span> <span class="st">"--default-packages=NULL --vanilla"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $command</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Rscript"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $args</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] ""  "."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $rscript</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--default-packages=NULL --vanilla"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $quote</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># simple SSH example</span></span></span>
 <span class="r-in"><span><span class="fu">ssh_config</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  remotes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ssh://10.75.32.90:222"</span>, <span class="st">"ssh://nodename"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  timeout <span class="op">=</span> <span class="fl">5</span></span></span>
@@ -245,6 +264,7 @@ required and can be inferred from the ‘url’ supplied (see
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># SSH tunnelling example</span></span></span>
 <span class="r-in"><span><span class="fu">ssh_config</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  remotes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ssh://10.75.32.90:222"</span>, <span class="st">"ssh://nodename"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  tunnel <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
