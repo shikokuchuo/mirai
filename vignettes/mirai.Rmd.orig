@@ -158,6 +158,8 @@ Daemons, or persistent background processes, may be set to receive 'mirai' reque
 
 This is potentially more efficient as new processes no longer need to be created on an *ad hoc* basis.
 
+Daemons inherit the default system configuration and read in the relevant '.Renviron' and '.Rprofile' etc. on startup. They also load the default packages. To instead only load the `base` package (which cuts out more than half of R's startup time), the environment variable `R_SCRIPT_DEFAULT_PACKAGES=NULL` may be set prior to launching daemons.
+
 #### With Dispatcher (default)
 
 Call `daemons()` specifying the number of daemons to launch.

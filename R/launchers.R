@@ -207,7 +207,7 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
 #'     \code{\link{make_cluster}}.
 #'
 #' @examples
-#' # for Slurm
+#' # example for Slurm
 #' remote_config(
 #'   command = "srun",
 #'   args = c("--mem 512", "-n 1", "."),
@@ -219,6 +219,12 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
 #'   command = "/usr/bin/ssh",
 #'   args = c("-fTp 22 10.75.32.90", "."),
 #'   quote = TRUE
+#' )
+#'
+#' # can be used to start local dameons with special configurations
+#' remote_config(
+#'   command = "Rscript",
+#'   rscript = "--default-packages=NULL --vanilla"
 #' )
 #'
 #' @export
@@ -261,7 +267,7 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #'
 #' @section SSH Tunnelling:
 #'
-#'     Use of SSH tunnelling provides a convenient way to launch remote nodes
+#'     Use of SSH tunnelling provides a convenient way to launch remote daemons
 #'     without requiring the remote machine to be able to access the host.
 #'     Often firewall configurations or security policies may prevent opening a
 #'     port to accept outside connections.
@@ -269,8 +275,8 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #'     In these cases SSH tunnelling offers a solution by creating a tunnel once
 #'     the initial SSH connection is made. For simplicity, this SSH tunnelling
 #'     implementation uses the same port on both the side of the host and that
-#'     of the corresponding node. SSH key-based authentication must also already
-#'     be in place.
+#'     of the daemon. SSH key-based authentication must also already be in
+#'     place.
 #'
 #'     Tunnelling requires the hostname for the \sQuote{host} argument (or the
 #'     \sQuote{url} argument to \code{\link{daemons}} if called directly in
@@ -281,11 +287,13 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #'     their own respective machines.
 #'
 #' @examples
+#' # simple SSH example
 #' ssh_config(
 #'   remotes = c("ssh://10.75.32.90:222", "ssh://nodename"),
 #'   timeout = 5
 #' )
 #'
+#' # SSH tunnelling example
 #' ssh_config(
 #'   remotes = c("ssh://10.75.32.90:222", "ssh://nodename"),
 #'   tunnel = TRUE,

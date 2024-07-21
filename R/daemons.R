@@ -211,8 +211,8 @@
 #'
 #'     \strong{cpu / gpu} some tasks may require access to different types of
 #'     daemon, such as those with GPUs. In this case, \code{daemons()} may be
-#'     called twice to set up host URLs for CPU-only daemons and for those
-#'     with GPUs, specifying the \sQuote{.compute} argument as \sQuote{cpu} and
+#'     called to set up host URLs for CPU-only daemons and for those with GPUs,
+#'     specifying the \sQuote{.compute} argument as \sQuote{cpu} and
 #'     \sQuote{gpu} respectively. By supplying the \sQuote{.compute} argument to
 #'     subsequent \code{\link{mirai}} calls, tasks may be sent to either
 #'     \sQuote{cpu} or \sQuote{gpu} daemons as appropriate.
