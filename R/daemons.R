@@ -314,7 +314,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
       if (length(remote))
         launch_remote(url = envir[["urls"]], remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
-      check_register_everywhere()
+      check_register_everywhere(envir = envir, .compute = .compute)
     } else {
       daemons(n = 0L, .compute = .compute)
       return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ..., seed = seed, tls = tls, pass = pass, .compute = .compute))
@@ -358,7 +358,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         `[[<-`(envir, "urls", urld)
       }
       `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
-      check_register_everywhere()
+      check_register_everywhere(envir = envir, .compute = .compute)
     } else {
       daemons(n = 0L, .compute = .compute)
       return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ..., seed = seed, tls = tls, pass = pass, .compute = .compute))
@@ -488,18 +488,18 @@ status <- function(.compute = "default") {
 #' Registers custom serialization and unserialization functions for sending and
 #'     receiving reference objects.
 #'
-#' @param fns \strong{either} a list comprising 2 functions: \cr serialization
-#'     function: must accept a reference object (or list of objects) inheriting
-#'     from \sQuote{class} and return a raw vector.\cr unserialization function:
-#'     must accept a raw vector and return a reference object (or list of
-#'     reference objects).\cr \strong{or else} NULL to reset.
+#' @inheritParams mirai
 #' @param class the class of reference object (as a character string) that these
 #'     functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor'.
-#' @param vec [default FALSE] if FALSE the functions must accept and return
-#'     reference objects individually e.g. \code{arrow::write_to_raw} and
-#'     \code{arrow::read_ipc_stream}. If TRUE, the functions are vectorized and
-#'     must accept and return a list of reference objects, e.g.
-#'     \code{torch::torch_serialize} and \code{torch::torch_load}.
+#' @param sfunc a function that accepts a reference object inheriting from
+#'     \sQuote{class} (or a list of such objects) and returns a raw vector.
+#' @param ufunc a function that accepts a raw vector and returns a reference
+#'     object (or list of such objects).
+#' @param vec [default FALSE] whether or not the serialization functions are
+#'     vectorized and accept and return a list of reference objects, e.g.
+#'     \code{torch::torch_serialize} and \code{torch::torch_load}, or if FALSE
+#'     return reference objects individually e.g. \code{arrow::write_to_raw} and
+#'     \code{arrow::read_ipc_stream}.
 #'
 #' @return Invisibly, a list comprising 'fns', class', and 'vec', or else NULL
 #'     if supplied to 'fns'.
@@ -513,34 +513,24 @@ status <- function(.compute = "default") {
 #'     values for 'fns', class', and 'vec', or else NULL if not registered.
 #'
 #' @examples
-#' reg <- serialization(
-#'   list(function(x) serialize(x, NULL), base::unserialize),
-#'   class = "example_class"
-#' )
+#' # requires setting daemons first
+#' reg <- serialization("test_cls", function(x) serialize(x, NULL), unserialize)
 #' reg
 #'
-#' serialization(NULL)
-#' print(serialization())
+#' reg <- serialization(NULL)
+#' reg
 #'
 #' @export
 #'
-serialization <- function(fns, class, vec = FALSE) {
+serialization <- function(class, sfunc = NULL, ufunc = NULL, vec = FALSE, .compute = "default") {
 
-  missing(fns) && return(.[["serial"]])
+  envir <- ..[[.compute]]
+  is.null(envir) && return(invisible())
 
-  if (is.null(fns)) {
-    serial <- NULL
-    next_config(NULL)
-  } else if (length(fns) == 2L && is.function(fns[[1L]]) && is.function(fns[[2L]])) {
-    is.character(class) || stop(._[["character_class"]])
-    serial <- list(fns, class, vec)
-    next_config(fns, class = class, vec = vec)
-  } else {
-    stop(._[["serial_invalid"]])
-  }
+  serial <- serial_config(envir[["sock"]], class, sfunc, ufunc, vec)
+  `[[<-`(envir, "serial", serial)
 
-  `[[<-`(., "serial", serial)
-  register_everywhere(serial)
+  register_everywhere(serial = serial, .compute = .compute)
   invisible(serial)
 
 }
@@ -678,15 +668,19 @@ query_status <- function(envir) {
   )
 }
 
-register_everywhere <- function(serial)
-  for (.compute in names(..))
-    everywhere(
-      mirai::serialization(serial[[1L]], class = serial[[2L]], vec = serial[[3L]]),
-      .args = list(serial = serial),
-      .compute = .compute
-    )
+register_everywhere <- function(serial, .compute)
+  everywhere(
+    mirai::serialization(
+      getNamespace("mirai")[["."]][["sock"]],
+      serial[[1L]], serial[[2L]], serial[[3L]], serial[[4L]]
+    ),
+    .args = list(serial = serial),
+    .compute = .compute
+  )
 
-check_register_everywhere <- function(serial = .[["serial"]])
-  if (length(serial[[1L]])) register_everywhere(serial)
+check_register_everywhere <- function(envir, .compute) {
+  serial <- envir[["serial"]]
+  if (length(serial)) register_everywhere(serial, .compute)
+}
 
 ._scm_. <- as.raw(c(0x42, 0x0a, 0x03, 0x00, 0x00, 0x00, 0x02, 0x03, 0x04, 0x00, 0x00, 0x05, 0x03, 0x00, 0x05, 0x00, 0x00, 0x00, 0x55, 0x54, 0x46, 0x2d, 0x38, 0xfc, 0x00, 0x00, 0x00))

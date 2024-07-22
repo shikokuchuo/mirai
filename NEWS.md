@@ -1,9 +1,10 @@
-# mirai 1.1.1.9005 (development)
+# mirai 1.1.1.9006 (development)
 
+* Brand new `serialization()` with a revamped function signature, and '.compute' argument to apply to specific compute profiles.
 * Faster local `daemons(dispatcher = FALSE)` and `make_cluster()` by using asynchronous launches (thanks @mtmorgan #123).
 * More efficient dispatcher startup by only loading the base package, as well as not reading startup configurations (thanks @krlmlr).
 * Removes hard dependency on `stats` and `utils` base packages.
-* Requires `nanonext` >= [1.1.1.9005].
+* Requires `nanonext` >= [1.1.1.9006].
 
 # mirai 1.1.1
 

@@ -115,6 +115,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
   cv <- cv()
   sock <- socket(protocol = "rep")
   on.exit(reap(sock))
+  `[[<-`(., "sock", sock)
   autoexit && pipe_notify(sock, cv = cv, remove = TRUE, flag = as.integer(autoexit))
   if (length(tls)) tls <- tls_config(client = tls)
   dial_and_sync_socket(sock = sock, url = url, asyncdial = !autoexit, tls = tls)
