@@ -670,7 +670,7 @@ query_status <- function(envir) {
 
 register_everywhere <- function(serial, .compute)
   everywhere(
-    mirai::serialization(
+    nanonext::serial_config(
       getNamespace("mirai")[["."]][["sock"]],
       serial[[1L]], serial[[2L]], serial[[3L]], serial[[4L]]
     ),
