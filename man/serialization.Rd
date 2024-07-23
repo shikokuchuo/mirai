@@ -4,17 +4,12 @@
 \alias{serialization}
 \title{Custom Serialization Functions}
 \usage{
-serialization(
-  class,
-  sfunc = NULL,
-  ufunc = NULL,
-  vec = FALSE,
-  .compute = "default"
-)
+serialization(class, sfunc, ufunc, vec = FALSE, .compute = "default")
 }
 \arguments{
 \item{class}{the class of reference object (as a character string) that these
-functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor'.}
+functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor', or else
+NULL to cancel registered functions.}
 
 \item{sfunc}{a function that accepts a reference object inheriting from
 \sQuote{class} (or a list of such objects) and returns a raw vector.}
@@ -34,7 +29,7 @@ to use (each compute profile has its own independent set of daemons).}
 \value{
 Invisibly, a pairlist comprising the currently registered
     serialization configuration for the specified compute profile, or else
-    NULL if not applicable.
+    NULL if not registered.
 }
 \description{
 Registers custom serialization and unserialization functions for sending and
@@ -42,7 +37,8 @@ Registers custom serialization and unserialization functions for sending and
     profile, and daemons must have been set beforehand.
 }
 \details{
-Registering new functions replaces any existing registered functions.
+Registering new functions replaces any existing registered
+    functions.
 }
 \examples{
 daemons(url = local_url())

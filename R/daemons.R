@@ -491,7 +491,8 @@ status <- function(.compute = "default") {
 #'
 #' @inheritParams mirai
 #' @param class the class of reference object (as a character string) that these
-#'     functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor'.
+#'     functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor', or else
+#'     NULL to cancel registered functions.
 #' @param sfunc a function that accepts a reference object inheriting from
 #'     \sQuote{class} (or a list of such objects) and returns a raw vector.
 #' @param ufunc a function that accepts a raw vector and returns a reference
@@ -504,9 +505,10 @@ status <- function(.compute = "default") {
 #'
 #' @return Invisibly, a pairlist comprising the currently registered
 #'     serialization configuration for the specified compute profile, or else
-#'     NULL if not applicable.
+#'     NULL if not registered.
 #'
-#' @details Registering new functions replaces any existing registered functions.
+#' @details Registering new functions replaces any existing registered
+#'     functions.
 #'
 #' @examples
 #' daemons(url = local_url())
@@ -521,12 +523,14 @@ status <- function(.compute = "default") {
 #'
 #' @export
 #'
-serialization <- function(class, sfunc = NULL, ufunc = NULL, vec = FALSE, .compute = "default") {
+serialization <- function(class, sfunc, ufunc, vec = FALSE, .compute = "default") {
 
   envir <- ..[[.compute]]
   is.null(envir) && return(invisible())
 
-  serial <- serial_config(envir[["sock"]], class, sfunc, ufunc, vec)
+  serial <- if (is.null(class))
+    serial_config(envir[["sock"]], NULL) else
+      serial_config(envir[["sock"]], class, sfunc, ufunc, vec)
   `[[<-`(envir, "serial", serial)
 
   register_everywhere(serial = serial, .compute = .compute)
