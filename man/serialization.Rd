@@ -32,28 +32,27 @@ return reference objects individually e.g. \code{arrow::write_to_raw} and
 to use (each compute profile has its own independent set of daemons).}
 }
 \value{
-Invisibly, a list comprising 'fns', class', and 'vec', or else NULL
-    if supplied to 'fns'.
+Invisibly, a pairlist comprising the currently registered
+    serialization configuration for the specified compute profile, or else
+    NULL if not applicable.
 }
 \description{
 Registers custom serialization and unserialization functions for sending and
-    receiving reference objects.
+    receiving reference objects. Settings apply to an individual compute
+    profile, and daemons must have been set beforehand.
 }
 \details{
 Registering new functions replaces any existing registered functions.
-
-    This function may be called prior to or after setting daemons, with the
-    registered functions applying across all compute profiles.
-
-    Calling without any arguments returns a list comprising the registered
-    values for 'fns', class', and 'vec', or else NULL if not registered.
 }
 \examples{
-# requires setting daemons first
+daemons(url = local_url())
+
 reg <- serialization("test_cls", function(x) serialize(x, NULL), unserialize)
 reg
 
 reg <- serialization(NULL)
 reg
+
+daemons(0)
 
 }
