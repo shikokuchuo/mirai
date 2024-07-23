@@ -251,7 +251,9 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
   nanotesterr(launch_remote(1:2), "out of bounds")
   nanotestn(serialization(NULL))
   option <- 15L
+  Sys.setenv(R_DEFAULT_PACKAGES = "stats,utils")
   nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 1000L, seed = 1546, token = TRUE, cleanup = option, autoexit = tools::SIGCONT))
+  Sys.unsetenv("R_DEFAULT_PACKAGES")
   Sys.sleep(1L)
   mq <- mirai("daemon", .timeout = 1000)
   nanotest(call_mirai(mq)$data == "daemon" || is_error_value(mq$data))
