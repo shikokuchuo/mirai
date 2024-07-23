@@ -15,9 +15,9 @@ This allows tensors from the [`torch`](https://torch.mlverse.org/) package to be
 
 #### Setup Steps
 
-1. Register the serialization and unserialization functions as a list supplied to `serialization()`, specifying 'class' as 'torch_tensor' and 'vec' as TRUE.
+1. Set up dameons - this must be done before setting `serialization()`.
 
-2. Set up dameons - this may be done before or after setting `serialization()`.
+2. Register the serialization and unserialization functions, specifying 'class' as 'torch_tensor' and 'vec' as TRUE.
 
 3. Use `everywhere()` to make the `torch` package available on all daemons for convenience (optional).
 
@@ -26,13 +26,14 @@ This allows tensors from the [`torch`](https://torch.mlverse.org/) package to be
 library(mirai)
 library(torch)
 
-serialization(
-  fns = list(torch:::torch_serialize, torch::torch_load),
-  class = "torch_tensor",
-  vec = TRUE
-)
 daemons(1)
 #> [1] 1
+serialization(
+  class = "torch_tensor",
+  sfunc = torch:::torch_serialize,
+  ufunc = torch::torch_load,
+  vec = TRUE
+)
 everywhere(library(torch))
 ```
 #### Example Usage
@@ -76,35 +77,35 @@ The returned model is an object containing many tensor elements.
 m$data$parameters$conv1.weight
 #> torch_tensor
 #> (1,1,.,.) = 
-#>   0.0698 -0.0203  0.1445  0.1499 -0.1502
-#>   0.1068 -0.1117 -0.1862 -0.0649 -0.1692
-#>  -0.0897  0.0700 -0.0964 -0.1804  0.0758
-#>  -0.1614 -0.1444  0.1225 -0.0249 -0.1051
-#>  -0.1992  0.1945 -0.1247  0.0517 -0.1459
+#>  -0.1718 -0.1697 -0.0461  0.1948 -0.0403
+#>   0.1979 -0.1704 -0.0085 -0.0101 -0.0916
+#>  -0.1336  0.0355  0.1161  0.1896 -0.1096
+#>  -0.1554 -0.1792  0.1945  0.1928 -0.1632
+#>  -0.0955  0.0131  0.0477 -0.0752 -0.0526
 #> 
 #> (2,1,.,.) = 
-#>   0.0689  0.0901 -0.0405  0.1025  0.0056
-#>   0.0273  0.1011 -0.0610  0.0955 -0.0825
-#>  -0.0736 -0.1652 -0.0787  0.0996  0.1347
-#>  -0.0779 -0.1071 -0.0106 -0.0474 -0.0848
-#>   0.1048 -0.0506 -0.1580 -0.1043  0.1768
+#>  -0.0126 -0.0590  0.1399 -0.1167  0.0577
+#>  -0.1190  0.1845  0.1289  0.0016 -0.1822
+#>   0.0884  0.0950  0.0428  0.1454 -0.0519
+#>  -0.1459  0.1915 -0.1549 -0.1060  0.1188
+#>  -0.1514  0.1105  0.0657 -0.1310 -0.0309
 #> 
 #> (3,1,.,.) = 
-#>  -0.1468  0.0246 -0.1877 -0.0688 -0.1645
-#>  -0.0425  0.1730  0.1121  0.1862 -0.0078
-#>   0.1199  0.0673 -0.0137 -0.1991 -0.0860
-#>   0.0886  0.0654 -0.0243 -0.1140  0.1854
-#>   0.0510  0.0315 -0.0855  0.0416 -0.1788
+#>   0.0435 -0.1955  0.0157 -0.0943  0.0303
+#>   0.1902  0.0639  0.0471  0.1923 -0.1171
+#>   0.1940 -0.1985 -0.0527  0.0873  0.0575
+#>  -0.1752 -0.1132  0.0013  0.0251  0.1695
+#>  -0.1967  0.0938 -0.0537 -0.0926 -0.0244
 #> 
 #> (4,1,.,.) = 
-#>   0.0968  0.0934  0.1101 -0.1055 -0.1195
-#>  -0.0698  0.0046  0.0333  0.1537 -0.1505
-#>  -0.1361  0.1639 -0.1222 -0.0420 -0.1147
-#>   0.0592  0.1092 -0.0596  0.1248 -0.1537
-#>   0.1629  0.1394 -0.1665 -0.1618  0.1218
+#>   0.1290 -0.1514  0.0512 -0.1238 -0.1704
+#>  -0.0960  0.0621 -0.0633 -0.1071 -0.0062
+#>  -0.1063  0.1029  0.0112 -0.1565  0.1464
+#>   0.1785  0.0788  0.1766 -0.1479 -0.1305
+#>   0.1513 -0.1040 -0.0569  0.0627  0.1085
 #> 
 #> (5,1,.,.) = 
-#>  -0.0416  0.1967 -0.1308  0.1698 -0.1237
+#>  -0.0619 -0.1139 -0.0678 -0.1275  0.1832
 #> ... [the output was truncated (use n=-1 to disable)]
 #> [ CPUFloatType{20,1,5,5} ][ requires_grad = TRUE ]
 ```

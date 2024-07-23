@@ -47,11 +47,11 @@
 #' @author Charlie Gao \email{charlie.gao@@shikokuchuo.net}
 #'     (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
-#' @importFrom nanonext collect_aio collect_aio_ call_aio call_aio_ .context cv
-#'     cv_value dial is_error_value listen lock mclock msleep next_config
+#' @importFrom nanonext .advance collect_aio collect_aio_ call_aio call_aio_
+#'     .context cv cv_value dial is_error_value listen lock .mark mclock msleep
 #'     nng_error opt opt<- parse_url pipe_notify random reap recv recv_aio
-#'     request .rng_adv send set_promise_context socket stat stop_aio tls_config
-#'     unresolved .unresolved until wait write_cert
+#'     request send serial_config set_promise_context socket stat stop_aio
+#'     tls_config unresolved .unresolved until wait write_cert
 #'
 "_PACKAGE"
 
@@ -88,7 +88,6 @@
 ._ <- list2env(
   list(
     arglen = "'args' and/or 'url' must be of length 1 or the same length",
-    character_class = "'class' must be a character string",
     cluster_inactive = "cluster is no longer active",
     correct_context = "'host' must be specified if not using directly in a function argument",
     daemons_unset = "a numeric value for 'url' requires daemons to be set",
@@ -102,7 +101,6 @@
     register_cluster = "this function requires a more recent version of R",
     requires_daemons = "launching one local daemon as none previously set",
     requires_local = "SSH tunnelling requires 'url' hostname to be '127.0.0.1' or 'localhost'",
-    serial_invalid = "'fns' must be a list of 2 functions or NULL",
     single_url = "only one 'url' should be specified",
     sync_timeout = "initial sync with dispatcher/daemon timed out after 10s",
     url_spec = "numeric value for 'url' is out of bounds",
