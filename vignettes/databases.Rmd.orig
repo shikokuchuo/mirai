@@ -60,11 +60,9 @@ everywhere({
   con <<- dbConnect(adbi::adbi("adbcsqlite"), uri = ":memory:")
 })
 serialization(
-  list(
-    arrow::write_to_raw,
-    function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)
-  ),
-  class = "nanoarrow_array_stream"
+  class = "nanoarrow_array_stream",
+  sfunc = arrow::write_to_raw,
+  ufunc = function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)
 )
 ```
 `mirai()` calls may then be used to write to or query the database all in the Arrow format.
@@ -146,6 +144,14 @@ server <- function(input, output, session) {
   # tear down daemon when session ends
   session$onEnded(function() daemons(0L, .compute = id))
 
+  # serialization() specifies the native Arrow serialization functions
+  serialization(
+    class = "nanoarrow_array_stream",
+    sfunc = arrow::write_to_raw,
+    ufunc = nanoarrow::read_nanoarrow,
+    .compute = id
+  )
+
   # everywhere() loads DBI and creates ADBC connection in each daemon
   everywhere(
     {
@@ -181,12 +187,6 @@ server <- function(input, output, session) {
   output$table <- renderTable(task$result())
 
 }
-
-# serialization() specifies the native Arrow serialization functions
-serialization(
-  list(arrow::write_to_raw, nanoarrow::read_nanoarrow),
-  class = "nanoarrow_array_stream"
-)
 
 # run Shiny app
 shinyApp(ui = ui, server = server)

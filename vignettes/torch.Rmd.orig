@@ -21,9 +21,9 @@ This allows tensors from the [`torch`](https://torch.mlverse.org/) package to be
 
 #### Setup Steps
 
-1. Register the serialization and unserialization functions as a list supplied to `serialization()`, specifying 'class' as 'torch_tensor' and 'vec' as TRUE.
+1. Set up dameons - this must be done before setting `serialization()`.
 
-2. Set up dameons - this may be done before or after setting `serialization()`.
+2. Register the serialization and unserialization functions, specifying 'class' as 'torch_tensor' and 'vec' as TRUE.
 
 3. Use `everywhere()` to make the `torch` package available on all daemons for convenience (optional).
 
@@ -31,12 +31,13 @@ This allows tensors from the [`torch`](https://torch.mlverse.org/) package to be
 library(mirai)
 library(torch)
 
+daemons(1)
 serialization(
-  fns = list(torch:::torch_serialize, torch::torch_load),
   class = "torch_tensor",
+  sfunc = torch:::torch_serialize,
+  ufunc = torch::torch_load,
   vec = TRUE
 )
-daemons(1)
 everywhere(library(torch))
 ```
 #### Example Usage
