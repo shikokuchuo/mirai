@@ -77,7 +77,6 @@
 <span>  dispatcher <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  serial <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pass <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  .compute <span class="op">=</span> <span class="st">"default"</span></span>
@@ -132,13 +131,6 @@ expected only for <code>dispatcher = FALSE</code>, as the unpredictable timing
 of task completions would otherwise influence the tasks sent to each
 daemon. Even for <code>dispatcher = FALSE</code>, reproducibility is not
 guaranteed if the order in which tasks are sent is not deterministic.</p></dd>
-
-
-<dt id="arg-serial">serial<a class="anchor" aria-label="anchor" href="#arg-serial"></a></dt>
-<dd><p>[default NULL] (optional) a configuration created by
-<code><a href="https://shikokuchuo.net/nanonext/reference/serial_config.html" class="external-link">serial_config</a></code> to register serialization and unserialization
-functions for sending and receiving reference objects that are normally
-non-exportable, such as Arrow Tables or torch tensors.</p></dd>
 
 
 <dt id="arg-tls">tls<a class="anchor" aria-label="anchor" href="#arg-tls"></a></dt>
@@ -334,14 +326,6 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Set host URL for remote daemons to dial into</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span>url <span class="op">=</span> <span class="fu"><a href="host_url.html">host_url</a></span><span class="op">(</span><span class="op">)</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="status.html">status</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># Reset to zero</span></span></span>
-<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Setting serialization configuration using serial_config()</span></span></span>
-<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">2</span>, serial <span class="op">=</span> <span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/serial_config.html" class="external-link">serial_config</a></span><span class="op">(</span>class <span class="op">=</span> <span class="st">"reference_class"</span>,</span></span>
-<span class="r-in"><span>                                  sfunc <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">serialize</span>,</span></span>
-<span class="r-in"><span>                                  ufunc <span class="op">=</span> <span class="va">unserialize</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="status.html">status</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Reset to zero</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>

@@ -99,15 +99,19 @@ used seamlessly in ‘mirai’ computations.</p>
 <h4 id="setup-steps">Setup Steps<a class="anchor" aria-label="anchor" href="#setup-steps"></a>
 </h4>
 <ol style="list-style-type: decimal">
+<li><p>Set up dameons.</p></li>
 <li><p>Create the serialization configuration, specifying ‘class’ as
 ‘torch_tensor’ and ‘vec’ as TRUE.</p></li>
-<li><p>Set up dameons, supplying the configuration to ‘serial’.</p></li>
-<li><p>Use <code><a href="../reference/everywhere.html">everywhere()</a></code> to make the <code>torch</code>
-package available on all daemons for convenience (optional).</p></li>
+<li><p>Use <code><a href="../reference/everywhere.html">everywhere()</a></code>, supplying the configuration to the
+‘.serial’ argument, and (optionally) making the <code>torch</code>
+package available on all daemons for convenience.</p></li>
 </ol>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://torch.mlverse.org/docs" class="external-link">torch</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
 <span></span>
 <span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/serial_config.html" class="external-link">serial_config</a></span><span class="op">(</span></span>
 <span>  class <span class="op">=</span> <span class="st">"torch_tensor"</span>,</span>
@@ -116,9 +120,7 @@ package available on all daemons for convenience (optional).</p></li>
 <span>  vec <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1</span>, serial <span class="op">=</span> <span class="va">cfg</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
-<span><span class="fu"><a href="../reference/everywhere.html">everywhere</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://torch.mlverse.org/docs" class="external-link">torch</a></span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/everywhere.html">everywhere</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://torch.mlverse.org/docs" class="external-link">torch</a></span><span class="op">)</span>, .serial <span class="op">=</span> <span class="va">cfg</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="example-usage">Example Usage<a class="anchor" aria-label="anchor" href="#example-usage"></a>
@@ -158,35 +160,35 @@ initialized within a ‘mirai’.</p>
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">conv1.weight</span></span>
 <span><span class="co">#&gt; torch_tensor</span></span>
 <span><span class="co">#&gt; (1,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.0058 -0.0754 -0.1664  0.0805 -0.0526</span></span>
-<span><span class="co">#&gt;  -0.0591 -0.0656 -0.0031  0.0169 -0.0143</span></span>
-<span><span class="co">#&gt;   0.1046  0.1344  0.1653  0.1734  0.1621</span></span>
-<span><span class="co">#&gt;  -0.1281 -0.0240 -0.1348 -0.0033  0.0418</span></span>
-<span><span class="co">#&gt;  -0.0632  0.0905 -0.0796  0.0607  0.0713</span></span>
+<span><span class="co">#&gt;   0.1517  0.1048 -0.1953 -0.1519  0.1933</span></span>
+<span><span class="co">#&gt;   0.1093 -0.0900  0.0092 -0.1544  0.1474</span></span>
+<span><span class="co">#&gt;   0.1333 -0.1249 -0.0680  0.1734 -0.0111</span></span>
+<span><span class="co">#&gt;  -0.0861  0.0271 -0.0792  0.0554 -0.1303</span></span>
+<span><span class="co">#&gt;  -0.0491 -0.0146 -0.0388  0.1229 -0.0181</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (2,1,.,.) = </span></span>
-<span><span class="co">#&gt;  -0.0164  0.0387 -0.0079 -0.1018 -0.0380</span></span>
-<span><span class="co">#&gt;   0.0190  0.1952  0.1547 -0.1665  0.1595</span></span>
-<span><span class="co">#&gt;   0.1317  0.0334 -0.1557 -0.0783 -0.0862</span></span>
-<span><span class="co">#&gt;  -0.1247  0.0579 -0.0329  0.0976  0.0696</span></span>
-<span><span class="co">#&gt;  -0.0212  0.1146 -0.1872 -0.0627 -0.1723</span></span>
+<span><span class="co">#&gt;   0.0586  0.1548 -0.0830 -0.1554  0.1101</span></span>
+<span><span class="co">#&gt;   0.1020  0.1071 -0.1509 -0.1210 -0.0406</span></span>
+<span><span class="co">#&gt;  -0.1965 -0.1561 -0.0310 -0.0228  0.0470</span></span>
+<span><span class="co">#&gt;   0.1981  0.0939 -0.0631 -0.0760 -0.1241</span></span>
+<span><span class="co">#&gt;  -0.0555 -0.0045  0.1178 -0.1963  0.1235</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (3,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.0987  0.0540 -0.0374  0.1275 -0.0765</span></span>
-<span><span class="co">#&gt;  -0.1227 -0.1358 -0.0913  0.0327  0.0226</span></span>
-<span><span class="co">#&gt;  -0.1266 -0.1044 -0.0339 -0.1262  0.1355</span></span>
-<span><span class="co">#&gt;   0.0027 -0.0898 -0.0937  0.0174 -0.1853</span></span>
-<span><span class="co">#&gt;  -0.1647  0.0292  0.0066  0.1547  0.0145</span></span>
+<span><span class="co">#&gt;   0.0491  0.1796 -0.1870 -0.1048  0.1357</span></span>
+<span><span class="co">#&gt;   0.0789 -0.1266  0.1657 -0.1483 -0.0999</span></span>
+<span><span class="co">#&gt;  -0.1123 -0.1950  0.0476  0.0701 -0.1829</span></span>
+<span><span class="co">#&gt;  -0.1264 -0.1387 -0.1295  0.1470  0.0694</span></span>
+<span><span class="co">#&gt;   0.0144 -0.0096  0.0216 -0.1082 -0.0092</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (4,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.0624  0.1372 -0.1753 -0.1508 -0.0980</span></span>
-<span><span class="co">#&gt;   0.1603 -0.1136 -0.0563  0.1304 -0.1739</span></span>
-<span><span class="co">#&gt;   0.1873 -0.0275 -0.1564 -0.1276  0.1392</span></span>
-<span><span class="co">#&gt;  -0.1178 -0.0367  0.0191 -0.0070  0.1822</span></span>
-<span><span class="co">#&gt;   0.1219 -0.1276 -0.1120 -0.0739 -0.0283</span></span>
+<span><span class="co">#&gt;  -0.0179  0.0405  0.1386  0.0067 -0.1427</span></span>
+<span><span class="co">#&gt;   0.1844  0.1732 -0.0523 -0.0038  0.1535</span></span>
+<span><span class="co">#&gt;   0.0966  0.1360 -0.1539  0.0003  0.1769</span></span>
+<span><span class="co">#&gt;  -0.0406 -0.0688  0.0115 -0.1017  0.1435</span></span>
+<span><span class="co">#&gt;   0.0183  0.1216  0.1083 -0.0556 -0.0712</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (5,1,.,.) = </span></span>
-<span><span class="co">#&gt;   0.1867 -0.1692  0.1944  0.0264 -0.1710</span></span>
+<span><span class="co">#&gt;   0.0872  0.0149  0.0271  0.0624  0.0619</span></span>
 <span><span class="co">#&gt; ... [the output was truncated (use n=-1 to disable)]</span></span>
 <span><span class="co">#&gt; [ CPUFloatType{20,1,5,5} ][ requires_grad = TRUE ]</span></span></code></pre></div>
 <p>It is usual for model parameters to then be passed to an
