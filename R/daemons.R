@@ -57,7 +57,8 @@
 #'     guaranteed if the order in which tasks are sent is not deterministic.
 #' @param serial [default NULL] (optional) a configuration created by
 #'     \code{\link{serial_config}} to register serialization and unserialization
-#'     functions for sending and receiving custom reference objects.
+#'     functions for sending and receiving reference objects that are normally
+#'     non-exportable, such as Arrow Tables or torch tensors.
 #' @param tls [default NULL] (optional for secure TLS connections) if not
 #'     supplied, zero-configuration single-use keys and certificates are
 #'     automatically generated. If supplied, \strong{either} the character path
