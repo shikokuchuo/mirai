@@ -27,9 +27,9 @@ return reference objects individually e.g. \code{arrow::write_to_raw} and
 to use (each compute profile has its own independent set of daemons).}
 }
 \value{
-Invisibly, a pairlist comprising the currently registered
-    serialization configuration for the specified compute profile, or else
-    NULL if not registered.
+Invisibly, a list comprising the currently-registered serialization
+    configuration for the specified compute profile (an empty list if not
+    registered).
 }
 \description{
 Registers custom serialization and unserialization functions for sending and

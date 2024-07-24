@@ -1,6 +1,6 @@
-# mirai 1.1.1.9006 (development)
+# mirai 1.1.1.9007 (development)
 
-* Brand new `serialization()` with a revamped function signature, and '.compute' argument to apply to specific compute profiles.
+* Brand new `serialization()` with a revamped function signature, and '.compute' argument to apply custom serialization functions to specific compute profiles.
 * Faster local `daemons(dispatcher = FALSE)` and `make_cluster()` by using asynchronous launches (thanks @mtmorgan #123).
 * More efficient dispatcher startup by only loading the base package, as well as not reading startup configurations (thanks @krlmlr).
 * Removes hard dependency on `stats` and `utils` base packages.
