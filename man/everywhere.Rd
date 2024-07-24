@@ -4,7 +4,7 @@
 \alias{everywhere}
 \title{Evaluate Everywhere}
 \usage{
-everywhere(.expr, ..., .args = list(), .compute = "default")
+everywhere(.expr, ..., .args = list(), .serial = NULL, .compute = "default")
 }
 \arguments{
 \item{.expr}{an expression to evaluate asynchronously (of arbitrary length,
@@ -22,6 +22,13 @@ environment containing such objects. These objects will remain local to
 the evaluation environment as opposed to those supplied in \sQuote{...}
 above - see \sQuote{evaluation} section below.}
 
+\item{.serial}{[default NULL] (optional) a configuration created by
+\code{\link{serial_config}} to register serialization and unserialization
+functions for sending and receiving reference objects that are normally
+non-exportable, such as Arrow Tables or torch tensors. Updating with a
+new configuration replaces any existing registered functions. To remove
+the configuration, specify an empty list.}
+
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
 }
@@ -31,8 +38,9 @@ Invisible NULL.
 \description{
 Evaluate an expression \sQuote{everywhere} on all connected daemons for the
     specified compute profile. Designed for performing setup operations
-    across daemons or exporting common data, resultant changes to the global
-    environment, loaded packages or options are persisted regardless of a
+    across daemons by loading packages, exporting common data, or registering
+    custom serialization functions. Resultant changes to the global
+    environment, loaded packages and options are persisted regardless of a
     daemon's \sQuote{cleanup} setting.
 }
 \section{Evaluation}{
@@ -63,14 +71,18 @@ if (interactive()) {
 daemons(1)
 # export common data by a super-assignment expression:
 everywhere(y <<- 3)
-# '...' variables are assigned to the global environment:
+# '...' variables are assigned to the global environment
+# '.expr' may be specified as an empty {} in such cases:
 everywhere({}, a = 1, b = 2)
 m <- mirai(a + b - y == 0L)
 call_mirai(m)$data
 daemons(0)
 
+# loading a package on all daemons and also
+# registering custom serialization functions:
+cfg <- serial_config("cls_name", function(x) serialize(x, NULL), unserialize)
 daemons(1, dispatcher = FALSE)
-everywhere(library(parallel))
+everywhere(library(parallel), .serial = cfg)
 m <- mirai("package:parallel" \%in\% search())
 call_mirai(m)$data
 daemons(0)

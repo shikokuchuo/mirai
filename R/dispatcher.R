@@ -208,7 +208,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
       for (i in seq_n)
         if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["req"]])) {
           req <- .subset2(queue[[i]][["req"]], "value")
-          if (is.object(req)) req <- serialize(req, NULL)
+          if (is.object(req)) req <- serialize(req, connection = NULL, xdr = FALSE)
           send(queue[[i]][["ctx"]], data = req, mode = 2L, block = TRUE)
           q <- queue[[i]][["daemon"]]
           if (req[4L]) {

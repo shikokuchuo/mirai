@@ -11,7 +11,6 @@ daemons(
   dispatcher = TRUE,
   ...,
   seed = NULL,
-  serial = NULL,
   tls = NULL,
   pass = NULL,
   .compute = "default"
@@ -51,11 +50,6 @@ expected only for \code{dispatcher = FALSE}, as the unpredictable timing
 of task completions would otherwise influence the tasks sent to each
 daemon. Even for \code{dispatcher = FALSE}, reproducibility is not
 guaranteed if the order in which tasks are sent is not deterministic.}
-
-\item{serial}{[default NULL] (optional) a configuration created by
-\code{\link{serial_config}} to register serialization and unserialization
-functions for sending and receiving reference objects that are normally
-non-exportable, such as Arrow Tables or torch tensors.}
 
 \item{tls}{[default NULL] (optional for secure TLS connections) if not
 supplied, zero-configuration single-use keys and certificates are
@@ -272,14 +266,6 @@ daemons(0)
 
 # Set host URL for remote daemons to dial into
 daemons(url = host_url(), dispatcher = FALSE)
-status()
-# Reset to zero
-daemons(0)
-
-# Setting serialization configuration using serial_config()
-daemons(2, serial = serial_config(class = "reference_class",
-                                  sfunc = function(x) serialize,
-                                  ufunc = unserialize))
 status()
 # Reset to zero
 daemons(0)

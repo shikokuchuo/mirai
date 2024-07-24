@@ -21,15 +21,17 @@ This allows tensors from the [`torch`](https://torch.mlverse.org/) package to be
 
 #### Setup Steps
 
-1. Create the serialization configuration, specifying 'class' as 'torch_tensor' and 'vec' as TRUE.
+1. Set up dameons.
 
-2. Set up dameons, supplying the configuration to 'serial'.
+2. Create the serialization configuration, specifying 'class' as 'torch_tensor' and 'vec' as TRUE.
 
-3. Use `everywhere()` to make the `torch` package available on all daemons for convenience (optional).
+3. Use `everywhere()`, supplying the configuration to the '.serial' argument, and (optionally) making the `torch` package available on all daemons for convenience.
 
 ```{r tensors}
 library(mirai)
 library(torch)
+
+daemons(1)
 
 cfg <- serial_config(
   class = "torch_tensor",
@@ -38,8 +40,7 @@ cfg <- serial_config(
   vec = TRUE
 )
 
-daemons(1, serial = cfg)
-everywhere(library(torch))
+everywhere(library(torch), .serial = cfg)
 ```
 #### Example Usage
 

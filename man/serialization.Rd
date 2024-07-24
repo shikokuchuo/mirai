@@ -31,9 +31,9 @@ Invisibly, a list comprising the currently-registered serialization
     registered).
 }
 \description{
-[Deprecated in favour of the 'serial' argument to \link{daemons}] Registers
-    custom serialization and unserialization functions for sending and
-    receiving reference objects. Settings apply to an individual compute
+[Deprecated in favour of the '.serial' argument to \code{\link{everywhere}}]
+    Registers custom serialization and unserialization functions for sending
+    and receiving reference objects. Settings apply to an individual compute
     profile, and daemons must have been set beforehand.
 }
 \details{
@@ -41,7 +41,9 @@ Registering new functions replaces any existing registered
     functions.
 }
 \note{
-This function is deprecated and will be removed in a later version.
+This function is deprecated and will be removed in a later package
+    version. Use \code{\link{serial_config}} to create a configuration to
+    pass directly to the '.serial' argument of \code{\link{everywhere}}.
 }
 \examples{
 daemons(url = local_url())

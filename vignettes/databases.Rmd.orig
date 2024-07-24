@@ -50,20 +50,25 @@ It is possible using the `DBI` interface to access and manipulate data in the Ap
 
 The example below creates an in-memory SQLite connection using the `adbcsqlite` backend.
 
-Serialization is set up with the relevant serialization and deserialization functions from the `arrow` package. Note that the format class is 'nanoarrow_array_stream' as `nanoarrow` is the backend for all queries made by the DBI `db*Arrow()` functions.
+Serialization is set up with the relevant serialization functions from the `arrow` package as part of the `everywhere()` call. Note that the specified class is 'nanoarrow_array_stream' as `nanoarrow` is the backend for all queries made by the DBI `db*Arrow()` functions.
 
 ```{r arrow1}
 library(mirai)
+daemons(1)
+
 cfg <- serial_config(
   class = "nanoarrow_array_stream",
   sfunc = arrow::write_to_raw,
   ufunc = function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)
 )
-daemons(1, serial = cfg)
-everywhere({
-  library(DBI) # `adbi` and `adbcsqlite` packages must also be installed
-  con <<- dbConnect(adbi::adbi("adbcsqlite"), uri = ":memory:")
-})
+
+everywhere(
+  {
+    library(DBI) # `adbi` and `adbcsqlite` packages must also be installed
+    con <<- dbConnect(adbi::adbi("adbcsqlite"), uri = ":memory:")
+  },
+  .serial = cfg
+)
 
 ```
 `mirai()` calls may then be used to write to or query the database all in the Arrow format.
@@ -146,19 +151,21 @@ server <- function(input, output, session) {
   # create unique session id by hashing current time with a random key
   id <- secretbase::siphash13(Sys.time(), key = nanonext::random(4L))
 
-  # create new daemon for each session, setting the serialization configuration
-  daemons(1L, dispatcher = FALSE, serial = cfg, .compute = id)
+  # create new (non-dispatcher) daemon for each session
+  daemons(1L, dispatcher = FALSE, .compute = id)
 
   # tear down daemon when session ends
   session$onEnded(function() daemons(0L, .compute = id))
 
   # everywhere() loads DBI and creates ADBC connection in each daemon
+  # and sets up serialization
   everywhere(
     {
       library(DBI) # `adbi` and `adbcsqlite` packages must also be installed
       con <<- dbConnect(adbi::adbi("adbcsqlite"), uri = file)
     },
     file = file,
+    .serial = cfg,
     .compute = id
   )
 
