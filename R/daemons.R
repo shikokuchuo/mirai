@@ -327,7 +327,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "serial", serial), "n", n))
       if (length(remote))
         launch_remote(url = envir[["urls"]], remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
-      check_register_everywhere(envir = envir, .compute = .compute)
+      check_register_everywhere(serial = serial, .compute = .compute)
     } else {
       daemons(n = 0L, .compute = .compute)
       return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ..., seed = seed, serial = serial, tls = tls, pass = pass, .compute = .compute))
@@ -371,7 +371,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         `[[<-`(envir, "urls", urld)
       }
       `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "serial", serial), "n", n))
-      check_register_everywhere(envir = envir, .compute = .compute)
+      check_register_everywhere(serial = serial, .compute = .compute)
     } else {
       daemons(n = 0L, .compute = .compute)
       return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ..., seed = seed, serial = serial, tls = tls, pass = pass, .compute = .compute))
@@ -694,14 +694,12 @@ query_status <- function(envir) {
 
 register_everywhere <- function(serial, .compute)
   everywhere(
-    nanonext::`opt<-`(getNamespace("mirai")[["."]][["sock"]], "serial", serial),
+    nanonext::`opt<-`(.getNamespace("mirai")[["."]][["sock"]], "serial", serial),
     .args = list(serial = serial),
     .compute = .compute
   )
 
-check_register_everywhere <- function(envir, .compute) {
-  serial <- envir[["serial"]]
+check_register_everywhere <- function(serial, .compute)
   if (length(serial)) register_everywhere(serial, .compute)
-}
 
 ._scm_. <- as.raw(c(0x42, 0x0a, 0x03, 0x00, 0x00, 0x00, 0x02, 0x03, 0x04, 0x00, 0x00, 0x05, 0x03, 0x00, 0x05, 0x00, 0x00, 0x00, 0x55, 0x54, 0x46, 0x2d, 0x38, 0xfc, 0x00, 0x00, 0x00))
