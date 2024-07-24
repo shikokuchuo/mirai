@@ -527,6 +527,7 @@ status <- function(.compute = "default") {
 #'
 #' daemons(0)
 #'
+#' @keywords internal
 #' @export
 #'
 serialization <- function(fns, class, vec = FALSE, .compute = "default") {
