@@ -249,7 +249,7 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
   nanotestn(saisei(1))
   nanotesterr(launch_local(0:1), "out of bounds")
   nanotesterr(launch_remote(1:2), "out of bounds")
-  nanotestn(serialization(NULL))
+  nanotest(!length(serialization(NULL)))
   option <- 15L
   Sys.setenv(R_DEFAULT_PACKAGES = "stats,utils")
   nanotesto(daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 1000L, seed = 1546, token = TRUE, cleanup = option, autoexit = tools::SIGCONT))

@@ -503,9 +503,9 @@ status <- function(.compute = "default") {
 #'     return reference objects individually e.g. \code{arrow::write_to_raw} and
 #'     \code{arrow::read_ipc_stream}.
 #'
-#' @return Invisibly, a pairlist comprising the currently registered
-#'     serialization configuration for the specified compute profile, or else
-#'     NULL if not registered.
+#' @return Invisibly, a list comprising the currently-registered serialization
+#'     configuration for the specified compute profile (an empty list if not
+#'     registered).
 #'
 #' @details Registering new functions replaces any existing registered
 #'     functions.
@@ -526,11 +526,10 @@ status <- function(.compute = "default") {
 serialization <- function(class, sfunc, ufunc, vec = FALSE, .compute = "default") {
 
   envir <- ..[[.compute]]
-  is.null(envir) && return(invisible())
+  is.null(envir) && return(invisible(list()))
 
-  serial <- if (is.null(class))
-    serial_config(envir[["sock"]], NULL) else
-      serial_config(envir[["sock"]], class, sfunc, ufunc, vec)
+  serial <- if (is.null(class)) list() else serial_config(class, sfunc, ufunc, vec)
+  `opt<-`(envir[["sock"]], "serial", serial)
   `[[<-`(envir, "serial", serial)
 
   register_everywhere(serial = serial, .compute = .compute)
@@ -673,10 +672,7 @@ query_status <- function(envir) {
 
 register_everywhere <- function(serial, .compute)
   everywhere(
-    nanonext::serial_config(
-      getNamespace("mirai")[["."]][["sock"]],
-      serial[[1L]], serial[[2L]], serial[[3L]], serial[[4L]]
-    ),
+    nanonext::`opt<-`(getNamespace("mirai")[["."]][["sock"]], "serial", serial),
     .args = list(serial = serial),
     .compute = .compute
   )
