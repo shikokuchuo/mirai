@@ -497,16 +497,17 @@ x <- as_arrow_table(iris)
 m <- mirai(list(a = head(x), b = "some text"), x = x)
 m[]
 ```
-However it is possible to register custom serialization and unserialization functions that hook into R's native serialization mechanism for reference objects ('refhooks').
-
-`serialization()` registers these on a per compute profile basis.
+However, `serial_config()` can be used to create custom serialization configurations, specifying functions that hook into R's native serialization mechanism for reference objects ('refhooks'). This configuration can then be specified to the 'serial' argument of the `daemons()` call.
 
 ```{r arrowpass}
-serialization(
+cfg <- serial_config(
   class = "ArrowTabular",
   sfunc = arrow::write_to_raw,
   ufunc = function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)
 )
+
+daemons(2, serial = cfg)
+everywhere(library(arrow))
 
 m <- mirai(list(a = head(x), b = "some text"), x = x)
 m[]
@@ -514,22 +515,17 @@ m[]
 ```
 It can be seen that this time, the arrow table is seamlessly handled in the 'mirai' process. This is the case even when the object is deeply nested inside lists or other structures.
 
-To change registered serialization functions, just call `serialization()` again supplying the new functions. As an example, we can switch to using [`polars`](https://pola-rs.github.io/r-polars/), a 'lightning fast' dataframe library written in Rust (requires `polars` >= 0.16.4).
+As another example, we can try using [`polars`](https://pola-rs.github.io/r-polars/), a 'lightning fast' dataframe library written in Rust (requires `polars` >= 0.16.4).
 ```{r polars}
-serialization(
-  class = "RPolarsDataFrame",
-  sfunc = function(x) polars::as_polars_df(x)$to_raw_ipc(),
-  ufunc = polars::pl$read_ipc
-)
+
+daemons(2, serial = serial_config("RPolarsDataFrame",
+                                  function(x) polars::as_polars_df(x)$to_raw_ipc(),
+                                  polars::pl$read_ipc))
 
 x <- polars::as_polars_df(iris)
 
 m <- mirai(list(a = head(x), b = "some text"), x = x)
 m[]
-```
-To cancel serialization functions entirely:
-```{r serialcancel}
-serialization(NULL)
 
 daemons(0)
 ```

@@ -1,6 +1,7 @@
 # mirai 1.1.1.9007 (development)
 
-* Brand new `serialization()` with a revamped function signature, and '.compute' argument to apply custom serialization functions to specific compute profiles.
+* `daemons()` adds argument 'serial' for accepting serialization configurations created by `serial_config()`. These allow normally non-exportable reference objects to be sent and received transparently without additional marshalling steps. Configurations now apply on a per compute profile basis.
+* `serialization()` is now deprecated in favour of the 'serial' argument to `daemons()`. However, this function has been updated with a '.compute' argument in the meantime.
 * Faster local `daemons(dispatcher = FALSE)` and `make_cluster()` by using asynchronous launches (thanks @mtmorgan #123).
 * More efficient dispatcher startup by only loading the base package, as well as not reading startup configurations (thanks @krlmlr).
 * Removes hard dependency on `stats` and `utils` base packages.

@@ -4,18 +4,17 @@
 \alias{serialization}
 \title{Custom Serialization Functions}
 \usage{
-serialization(class, sfunc, ufunc, vec = FALSE, .compute = "default")
+serialization(fns, class, vec = FALSE, .compute = "default")
 }
 \arguments{
+\item{fns}{\strong{either} a list comprising 2 functions: \cr serialization
+function: must accept a reference object (or list of objects) inheriting
+from \sQuote{class} and return a raw vector.\cr unserialization function:
+must accept a raw vector and return a reference object (or list of
+reference objects).\cr \strong{or else} NULL to reset.}
+
 \item{class}{the class of reference object (as a character string) that these
-functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor', or else
-NULL to cancel registered functions.}
-
-\item{sfunc}{a function that accepts a reference object inheriting from
-\sQuote{class} (or a list of such objects) and returns a raw vector.}
-
-\item{ufunc}{a function that accepts a raw vector and returns a reference
-object (or list of such objects).}
+functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor'}
 
 \item{vec}{[default FALSE] whether or not the serialization functions are
 vectorized and accept and return a list of reference objects, e.g.
@@ -32,7 +31,8 @@ Invisibly, a list comprising the currently-registered serialization
     registered).
 }
 \description{
-Registers custom serialization and unserialization functions for sending and
+[Deprecated in favour of the 'serial' argument to \link{daemons}] Registers
+    custom serialization and unserialization functions for sending and
     receiving reference objects. Settings apply to an individual compute
     profile, and daemons must have been set beforehand.
 }
@@ -40,10 +40,16 @@ Registers custom serialization and unserialization functions for sending and
 Registering new functions replaces any existing registered
     functions.
 }
+\note{
+This function is deprecated and will be removed in a later version.
+}
 \examples{
 daemons(url = local_url())
 
-reg <- serialization("test_cls", function(x) serialize(x, NULL), unserialize)
+reg <- serialization(
+  fns = list(function(x) serialize(x, NULL), unserialize),
+  class = "custom_class"
+)
 reg
 
 reg <- serialization(NULL)

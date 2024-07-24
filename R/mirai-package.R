@@ -112,3 +112,7 @@
 .intmax <- .Machine[["integer.max"]]
 .limit_short <- 5000L
 .limit_long <- 10000L
+
+#' @export
+#'
+nanonext::serial_config
