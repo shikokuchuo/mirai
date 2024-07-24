@@ -62,17 +62,17 @@ Serialization is set up with the relevant serialization and deserialization func
 
 ``` r
 library(mirai)
-daemons(1)
+cfg <- serial_config(
+  class = "nanoarrow_array_stream",
+  sfunc = arrow::write_to_raw,
+  ufunc = function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)
+)
+daemons(1, serial = cfg)
 #> [1] 1
 everywhere({
   library(DBI) # `adbi` and `adbcsqlite` packages must also be installed
   con <<- dbConnect(adbi::adbi("adbcsqlite"), uri = ":memory:")
 })
-serialization(
-  class = "nanoarrow_array_stream",
-  sfunc = arrow::write_to_raw,
-  ufunc = function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)
-)
 ```
 `mirai()` calls may then be used to write to or query the database all in the Arrow format.
 
@@ -176,6 +176,13 @@ library(secretbase)
 library(shiny)
 library(bslib)
 
+# create an Arrow serialization configuration
+cfg <- serial_config(
+  class = "nanoarrow_array_stream",
+  sfunc = arrow::write_to_raw,
+  ufunc = nanoarrow::read_nanoarrow
+)
+
 # write 'iris' dataset to temp database file (for this demonstration)
 file <- tempfile()
 con <- DBI::dbConnect(adbi::adbi("adbcsqlite"), uri = file)
@@ -205,19 +212,11 @@ server <- function(input, output, session) {
   # create unique session id by hashing current time with a random key
   id <- secretbase::siphash13(Sys.time(), key = nanonext::random(4L))
 
-  # create new daemon for each session (set dispatcher = FALSE)
-  daemons(1L, dispatcher = FALSE, .compute = id)
+  # create new daemon for each session, setting the serialization configuration
+  daemons(1L, dispatcher = FALSE, serial = cfg, .compute = id)
 
   # tear down daemon when session ends
   session$onEnded(function() daemons(0L, .compute = id))
-
-  # serialization() specifies the native Arrow serialization functions
-  serialization(
-    class = "nanoarrow_array_stream",
-    sfunc = arrow::write_to_raw,
-    ufunc = nanoarrow::read_nanoarrow,
-    .compute = id
-  )
 
   # everywhere() loads DBI and creates ADBC connection in each daemon
   everywhere(

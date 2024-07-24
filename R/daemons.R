@@ -55,6 +55,9 @@
 #'     of task completions would otherwise influence the tasks sent to each
 #'     daemon. Even for \code{dispatcher = FALSE}, reproducibility is not
 #'     guaranteed if the order in which tasks are sent is not deterministic.
+#' @param serial [default NULL] (optional) a configuration created by
+#'     \code{\link{serial_config}} to register serialization and unserialization
+#'     functions for sending and receiving custom reference objects.
 #' @param tls [default NULL] (optional for secure TLS connections) if not
 #'     supplied, zero-configuration single-use keys and certificates are
 #'     automatically generated. If supplied, \strong{either} the character path
@@ -249,6 +252,14 @@
 #' # Reset to zero
 #' daemons(0)
 #'
+#' # Setting serialization configuration using serial_config()
+#' daemons(2, serial = serial_config(class = "reference_class",
+#'                                   sfunc = function(x) serialize,
+#'                                   ufunc = unserialize))
+#' status()
+#' # Reset to zero
+#' daemons(0)
+#'
 #' # Use with() to evaluate with daemons for the duration of the expression
 #' with(
 #'   daemons(2),
@@ -281,7 +292,8 @@
 #' @export
 #'
 daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
-                    seed = NULL, tls = NULL, pass = NULL, .compute = "default") {
+                    seed = NULL, serial = NULL, tls = NULL, pass = NULL,
+                    .compute = "default") {
 
   missing(n) && missing(url) && return(status(.compute))
 
@@ -301,23 +313,23 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         output <- attr(dots, "output")
         urld <- local_url()
         urlc <- sprintf("%s%s", urld, "c")
-        sock <- req_socket(urld)
+        sock <- req_socket(urld, serial = serial)
         sockc <- req_socket(urlc)
         launch_sync_dispatcher(sock, wa5(urld, dots, n, urlc, url), output, tls, pass) || stop(._[["sync_timeout"]])
         init_monitor(sockc = sockc, envir = envir)
         `[[<-`(envir, "cv", cv)
       } else {
-        sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass))
+        sock <- req_socket(url, serial = serial, tls = if (length(tls)) tls_config(server = tls, pass = pass))
         store_urls(sock = sock, envir = envir)
         n <- 0L
       }
-      `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
+      `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "serial", serial), "n", n))
       if (length(remote))
         launch_remote(url = envir[["urls"]], remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
       check_register_everywhere(envir = envir, .compute = .compute)
     } else {
       daemons(n = 0L, .compute = .compute)
-      return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ..., seed = seed, tls = tls, pass = pass, .compute = .compute))
+      return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ..., seed = seed, serial = serial, tls = tls, pass = pass, .compute = .compute))
     }
 
   } else {
@@ -345,7 +357,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       output <- attr(dots, "output")
       if (dispatcher) {
         cv <- cv()
-        sock <- req_socket(urld)
+        sock <- req_socket(urld, serial = serial)
         urlc <- sprintf("%s%s", urld, "c")
         sockc <- req_socket(urlc)
         launch_sync_dispatcher(sock, wa4(urld, dots, envir[["stream"]], n, urlc), output) || stop(._[["sync_timeout"]])
@@ -353,15 +365,15 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         init_monitor(sockc = sockc, envir = envir)
         `[[<-`(envir, "cv", cv)
       } else {
-        sock <- req_socket(urld)
+        sock <- req_socket(urld, serial = serial)
         launch_sync_daemons(seq_len(n), sock, wa3(urld, dots, next_stream(envir)), output) || stop(._[["sync_timeout"]])
         `[[<-`(envir, "urls", urld)
       }
-      `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
+      `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "serial", serial), "n", n))
       check_register_everywhere(envir = envir, .compute = .compute)
     } else {
       daemons(n = 0L, .compute = .compute)
-      return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ..., seed = seed, tls = tls, pass = pass, .compute = .compute))
+      return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ..., seed = seed, serial = serial, tls = tls, pass = pass, .compute = .compute))
     }
 
   }
@@ -485,18 +497,19 @@ status <- function(.compute = "default") {
 
 #' Custom Serialization Functions
 #'
-#' Registers custom serialization and unserialization functions for sending and
+#' [Deprecated in favour of the 'serial' argument to \link{daemons}] Registers
+#'     custom serialization and unserialization functions for sending and
 #'     receiving reference objects. Settings apply to an individual compute
 #'     profile, and daemons must have been set beforehand.
 #'
 #' @inheritParams mirai
+#' @param fns \strong{either} a list comprising 2 functions: \cr serialization
+#'     function: must accept a reference object (or list of objects) inheriting
+#'     from \sQuote{class} and return a raw vector.\cr unserialization function:
+#'     must accept a raw vector and return a reference object (or list of
+#'     reference objects).\cr \strong{or else} NULL to reset.
 #' @param class the class of reference object (as a character string) that these
-#'     functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor', or else
-#'     NULL to cancel registered functions.
-#' @param sfunc a function that accepts a reference object inheriting from
-#'     \sQuote{class} (or a list of such objects) and returns a raw vector.
-#' @param ufunc a function that accepts a raw vector and returns a reference
-#'     object (or list of such objects).
+#'     functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor'
 #' @param vec [default FALSE] whether or not the serialization functions are
 #'     vectorized and accept and return a list of reference objects, e.g.
 #'     \code{torch::torch_serialize} and \code{torch::torch_load}, or if FALSE
@@ -510,10 +523,15 @@ status <- function(.compute = "default") {
 #' @details Registering new functions replaces any existing registered
 #'     functions.
 #'
+#' @note This function is deprecated and will be removed in a later version.
+#'
 #' @examples
 #' daemons(url = local_url())
 #'
-#' reg <- serialization("test_cls", function(x) serialize(x, NULL), unserialize)
+#' reg <- serialization(
+#'   fns = list(function(x) serialize(x, NULL), unserialize),
+#'   class = "custom_class"
+#' )
 #' reg
 #'
 #' reg <- serialization(NULL)
@@ -523,12 +541,12 @@ status <- function(.compute = "default") {
 #'
 #' @export
 #'
-serialization <- function(class, sfunc, ufunc, vec = FALSE, .compute = "default") {
+serialization <- function(fns, class, vec = FALSE, .compute = "default") {
 
   envir <- ..[[.compute]]
   is.null(envir) && return(invisible(list()))
 
-  serial <- if (is.null(class)) list() else serial_config(class, sfunc, ufunc, vec)
+  serial <- if (is.null(fns)) list() else serial_config(class, fns[[1L]], fns[[2L]], vec)
   `opt<-`(envir[["sock"]], "serial", serial)
   `[[<-`(envir, "serial", serial)
 
@@ -561,8 +579,11 @@ create_stream <- function(n, seed, envir) {
 
 tokenized_url <- function(url) sprintf("%s/%s", url, random(12L))
 
-req_socket <- function(url, tls = NULL, resend = 0L)
-  `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", resend)
+req_socket <- function(url, serial = NULL, tls = NULL, resend = 0L) {
+  sock <- `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", resend)
+  length(serial) && return(`opt<-`(sock, "serial", serial))
+  sock
+}
 
 parse_dots <- function(...) {
   missing(...) && return("")
