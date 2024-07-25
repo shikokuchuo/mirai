@@ -22,11 +22,10 @@
 #'     networking and concurrency built on 'nanonext' and 'NNG' (Nanomsg Next
 #'     Gen) ensures reliable and efficient scheduling, over fast inter-process
 #'     communications or TCP/IP secured by TLS. Advantages include being
-#'     inherently queued, allowing the sending of many more tasks than available
-#'     processes, no arbitrary connection limits, no storage on the file system,
-#'     support for otherwise non-exportable reference objects, an event-driven
-#'     'promises' implementation, and very low overhead. Incorporates
-#'     asynchronous parallel map functionality.
+#'     inherently queued (handling many more tasks than available processes), no
+#'     storage on the file system, support for otherwise non-exportable
+#'     reference objects, an event-driven 'promises' implementation, built-in
+#'     asynchronous parallel map functionality, and very low overhead.
 #'
 #' @section Notes:
 #'
