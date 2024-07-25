@@ -602,6 +602,6 @@ mk_mirai_error <- function(e, sc) {
 }
 
 .miraiInterrupt <- `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))
-.register <- expression(nanonext::`opt<-`(mirai:::.[["sock"]], "serial", .serial))
+.register <- expression(mirai:::register(.serial), NULL)
 .snapshot <- expression(mirai:::snapshot(), NULL)
 .block <- expression(nanonext::msleep(500L))

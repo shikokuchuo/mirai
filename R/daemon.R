@@ -232,5 +232,5 @@ perform_cleanup <- function(cleanup) {
   if (cleanup[4L]) gc(verbose = FALSE)
 }
 
-snapshot <- function()
-  `[[<-`(`[[<-`(`[[<-`(., "op", .Options), "se", search()), "vars", names(.GlobalEnv))
+register <- function(x) `opt<-`(.[["sock"]], "serial", x)
+snapshot <- function() `[[<-`(`[[<-`(`[[<-`(., "op", .Options), "se", search()), "vars", names(.GlobalEnv))
