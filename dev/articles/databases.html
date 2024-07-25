@@ -285,7 +285,7 @@ profile.</p>
 <span><span class="va">slmin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Length</span><span class="op">)</span></span>
 <span><span class="va">slmax</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Length</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/page.html" class="external-link">page_fluid</a></span><span class="op">(</span></span>
+<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rstudio.github.io/bslib/reference/page.html" class="external-link">page_fluid</a></span><span class="op">(</span></span>
 <span>  <span class="fu">p</span><span class="op">(</span><span class="st">"The time is "</span>, <span class="fu">textOutput</span><span class="op">(</span><span class="st">"current_time"</span>, inline <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  <span class="fu">hr</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="fu">h3</span><span class="op">(</span><span class="st">"Shiny / mirai / DBI / ADBC demonstration"</span><span class="op">)</span>,</span>
@@ -294,7 +294,7 @@ profile.</p>
 <span>    <span class="st">"sl"</span>, <span class="st">"Query iris dataset based on Sepal Length"</span>, min <span class="op">=</span> <span class="va">slmin</span>, max <span class="op">=</span> <span class="va">slmax</span>,</span>
 <span>    value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">slmin</span>, <span class="va">slmax</span><span class="op">)</span>, width <span class="op">=</span> <span class="st">"75%"</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/input_task_button.html" class="external-link">input_task_button</a></span><span class="op">(</span><span class="st">"btn"</span>, <span class="st">"Return query"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/bslib/reference/input_task_button.html" class="external-link">input_task_button</a></span><span class="op">(</span><span class="st">"btn"</span>, <span class="st">"Return query"</span><span class="op">)</span>,</span>
 <span>  <span class="fu">tableOutput</span><span class="op">(</span><span class="st">"table"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -340,7 +340,7 @@ profile.</p>
 <span>      <span class="va">...</span>,</span>
 <span>      .compute <span class="op">=</span> <span class="va">id</span></span>
 <span>    <span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/bind_task_button.html" class="external-link">bind_task_button</a></span><span class="op">(</span><span class="st">"btn"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rstudio.github.io/bslib/reference/bind_task_button.html" class="external-link">bind_task_button</a></span><span class="op">(</span><span class="st">"btn"</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">btn</span>, <span class="va">task</span><span class="op">$</span><span class="fu">invoke</span><span class="op">(</span>sl <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">sl</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
