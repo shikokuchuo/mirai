@@ -534,12 +534,8 @@ serialization <- function(fns, class, vec = FALSE, .compute = "default") {
 
   envir <- ..[[.compute]]
   is.null(envir) && return(invisible(list()))
-
   serial <- if (is.null(fns)) list() else serial_config(class, fns[[1L]], fns[[2L]], vec)
-  `opt<-`(envir[["sock"]], "serial", serial)
-  `[[<-`(envir, "serial", serial)
-
-  register_everywhere(serial = serial, .compute = .compute)
+  everywhere({}, .serial = serial, .compute = .compute)
   invisible(serial)
 
 }
@@ -676,12 +672,5 @@ query_status <- function(envir) {
     )
   )
 }
-
-register_everywhere <- function(serial, .compute)
-  everywhere(
-    nanonext::`opt<-`(.getNamespace("mirai")[["."]][["sock"]], "serial", serial),
-    .args = list(serial = serial),
-    .compute = .compute
-  )
 
 ._scm_. <- as.raw(c(0x42, 0x0a, 0x03, 0x00, 0x00, 0x00, 0x02, 0x03, 0x04, 0x00, 0x00, 0x05, 0x03, 0x00, 0x05, 0x00, 0x00, 0x00, 0x55, 0x54, 0x46, 0x2d, 0x38, 0xfc, 0x00, 0x00, 0x00))
