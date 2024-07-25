@@ -232,5 +232,5 @@ perform_cleanup <- function(cleanup) {
   if (cleanup[4L]) gc(verbose = FALSE)
 }
 
-snapshot <- function() `[[<-`(`[[<-`(`[[<-`(., "op", .Options), "se", search()), "vars", names(.GlobalEnv))
-block <- function() msleep(500L)
+snapshot <- function()
+  `[[<-`(`[[<-`(`[[<-`(., "op", .Options), "se", search()), "vars", names(.GlobalEnv))
