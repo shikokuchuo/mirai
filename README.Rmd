@@ -30,11 +30,11 @@ knitr::opts_chunk$set(
 <br /><br />
 Minimalist Async Evaluation Framework for R
 <br /><br />
-Designed for simplicity, a 'mirai' evaluates an R expression asynchronously in a parallel process, on the local machine or distributed over the network, with the result automatically available upon completion. 
+Designed for simplicity, a 'mirai' evaluates an R expression asynchronously in a parallel process, locally or distributed over the network, with the result automatically available upon completion. 
 <br /><br />
 Modern networking and concurrency built on [nanonext](https://github.com/shikokuchuo/nanonext/) and [NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen) ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS.
 <br /><br />
-Advantages include being inherently queued (handling many more tasks than available processes), no storage on the file system, support for otherwise non-exportable reference objects, an event-driven 'promises' implementation, built-in asynchronous parallel map functionality, and very low overhead.
+Advantages include being inherently queued thus handling many more tasks than available processes, no storage on the file system, support for otherwise non-exportable reference objects, an event-driven promises implementation, and a built-in asynchronous parallel map.
 
 ### Quick Start
 

@@ -20,17 +20,17 @@ status](https://shikokuchuo.r-universe.dev/badges/mirai?color=2dab18)](https://s
 
 <br /> ( 未来 ) <br /><br /> Minimalist Async Evaluation Framework for R
 <br /><br /> Designed for simplicity, a ‘mirai’ evaluates an R
-expression asynchronously in a parallel process, on the local machine or
-distributed over the network, with the result automatically available
-upon completion. <br /><br /> Modern networking and concurrency built on
+expression asynchronously in a parallel process, locally or distributed
+over the network, with the result automatically available upon
+completion. <br /><br /> Modern networking and concurrency built on
 [nanonext](https://github.com/shikokuchuo/nanonext/) and
 [NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen) ensures reliable and
 efficient scheduling, over fast inter-process communications or TCP/IP
 secured by TLS. <br /><br /> Advantages include being inherently queued
-(handling many more tasks than available processes), no storage on the
-file system, support for otherwise non-exportable reference objects, an
-event-driven ‘promises’ implementation, built-in asynchronous parallel
-map functionality, and very low overhead.
+thus handling many more tasks than available processes, no storage on
+the file system, support for otherwise non-exportable reference objects,
+an event-driven promises implementation, and a built-in asynchronous
+parallel map.
 
 ### Quick Start
 
@@ -76,7 +76,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 3.87331
+#> [1] 3.184356
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -90,7 +90,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 3.87331
+#> [1] 3.184356
 ```
 
 #### Daemons
@@ -137,16 +137,16 @@ m
 #> < mirai map [0/4] >
 m[]
 #> [[1]]
-#> [1] 46.60184
+#> [1] 48.30732
 #> 
 #> [[2]]
-#> [1] 56.88741
+#> [1] 58.3161
 #> 
 #> [[3]]
-#> [1] 69.44047
+#> [1] 70.08766
 #> 
 #> [[4]]
-#> [1] 79.34174
+#> [1] 82.04826
 ```
 
 `mirai_map()` is designed to facilitate recovery from partial failure,
