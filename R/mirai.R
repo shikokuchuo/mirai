@@ -172,20 +172,28 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   }
   arglist <- list(
     ._mirai_globals_. = globals,
-    .expr = if (is.symbol(expr) && exists(expr, where = parent.frame()) && is.language(.expr)) .expr else expr
+    .expr = if (is.symbol(expr) && exists(expr, parent.frame()) && is.language(.expr)) .expr else expr
   )
   if (length(.args))
-    arglist <- c(if (is.environment(.args)) as.list.environment(.args) else .args, arglist)
+    arglist <- c(
+      if (is.environment(.args)) as.list.environment(.args) else .args,
+      arglist
+    )
   data <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
   envir <- ..[[.compute]]
   if (is.null(envir)) {
     sock <- ephemeral_daemon(local_url())
-    aio <- request(.context(sock), data = data, send_mode = 1L, recv_mode = 1L, timeout = .timeout, cv = NA)
+    aio <- request(
+      .context(sock), data = data, send_mode = 1L, recv_mode = 1L,
+      timeout = .timeout, cv = NA
+    )
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
   } else {
-    aio <- request(.context(envir[["sock"]]), data = data, send_mode = 1L,
-                   recv_mode = 1L, timeout = .timeout, cv = envir[["cv"]])
+    aio <- request(
+      .context(envir[["sock"]]), data = data, send_mode = 1L, recv_mode = 1L,
+      timeout = .timeout, cv = envir[["cv"]]
+    )
   }
 
   aio
@@ -248,7 +256,7 @@ everywhere <- function(.expr, ..., .args = list(), .serial = NULL, .compute = "d
 
     expr <- substitute(.expr)
     .expr <- c(
-      as.expression(if (is.symbol(expr) && exists(expr, where = parent.frame()) && is.language(.expr)) .expr else expr),
+      as.expression(if (is.symbol(expr) && exists(expr, parent.frame()) && is.language(.expr)) .expr else expr),
       .snapshot
     )
 
