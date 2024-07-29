@@ -148,6 +148,10 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
 
   on.exit(lapply(servers, reap), add = TRUE, after = TRUE)
 
+  if (auto)
+    for (i in seq_n)
+      until(cv, .limit_long) || stop(._[["sync_timeout"]])
+
   ctrchannel <- is.character(monitor)
   if (ctrchannel) {
     sockc <- socket(protocol = "rep")
