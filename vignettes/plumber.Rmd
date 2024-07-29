@@ -9,7 +9,7 @@ vignette: >
 
 ### Plumber Integration
 
-`mirai` may be used as an asynchronous / distributed backend for [`plumber`](https://www.rplumber.io/) pipelines.
+`mirai` may be used as an asynchronous backend for [`plumber`](https://www.rplumber.io/) pipelines.
 
 Example usage is provided below for different types of endpoint.
 
@@ -23,8 +23,7 @@ The /echo endpoint takes a GET request, sleeps for 1 second (simulating an expen
 ``` r
 library(mirai)
 
-# important to supply SIGINT so the plumber server is interrupted and exits
-# cleanly when torn down
+# supply SIGINT so the plumber server is interrupted and exits cleanly when finished
 daemons(1L, dispatcher = FALSE, autoexit = tools::SIGINT)
 #> [1] 1
 
@@ -33,7 +32,7 @@ m <- mirai({
   library(promises) # to provide the promise pipe
   library(mirai)
 
-  # does not use dispatcher (suitable when all requests require similar compute)
+  # more efficient not to use dispatcher if all requests are similar length
   daemons(4L, dispatcher = FALSE) # handles 4 requests simultaneously
 
   pr() |>
@@ -43,9 +42,12 @@ m <- mirai({
         mirai(
           {
             Sys.sleep(1L)
-            list(status = 200L, body = list(time = format(Sys.time()),
-                                            msg = msg,
-                                            pid = Sys.getpid()))
+            list(
+              status = 200L,
+              body = list(
+                time = format(Sys.time()), msg = msg, pid = Sys.getpid()
+              )
+            )
           },
           msg = req[["HEADERS"]][["msg"]]
         ) %...>% (function(x) {
@@ -64,33 +66,37 @@ Here, all 8 requests are submitted at once, but we note that that responses have
 
 ``` r
 library(nanonext)
-res <- lapply(1:8,
-              function(i) ncurl_aio("http://127.0.0.1:8985/echo",
-                                    headers = c(msg = as.character(i))))
+res <- lapply(
+  1:8,
+  function(i) ncurl_aio(
+    "http://127.0.0.1:8985/echo",
+    headers = c(msg = as.character(i))
+  )
+)
 collect_aio(res)
 #> [[1]]
-#> [1] "{\"time\":[\"2024-06-10 10:33:41\"],\"msg\":[\"1\"],\"pid\":[39397]}"
+#> [1] "{\"time\":[\"2024-07-29 11:30:29\"],\"msg\":[\"1\"],\"pid\":[16234]}"
 #> 
 #> [[2]]
-#> [1] "{\"time\":[\"2024-06-10 10:33:41\"],\"msg\":[\"2\"],\"pid\":[39442]}"
+#> [1] "{\"time\":[\"2024-07-29 11:30:29\"],\"msg\":[\"2\"],\"pid\":[16239]}"
 #> 
 #> [[3]]
-#> [1] "{\"time\":[\"2024-06-10 10:33:41\"],\"msg\":[\"3\"],\"pid\":[39487]}"
+#> [1] "{\"time\":[\"2024-07-29 11:30:30\"],\"msg\":[\"3\"],\"pid\":[16234]}"
 #> 
 #> [[4]]
-#> [1] "{\"time\":[\"2024-06-10 10:33:41\"],\"msg\":[\"4\"],\"pid\":[39532]}"
+#> [1] "{\"time\":[\"2024-07-29 11:30:29\"],\"msg\":[\"4\"],\"pid\":[16232]}"
 #> 
 #> [[5]]
-#> [1] "{\"time\":[\"2024-06-10 10:33:42\"],\"msg\":[\"5\"],\"pid\":[39442]}"
+#> [1] "{\"time\":[\"2024-07-29 11:30:29\"],\"msg\":[\"5\"],\"pid\":[16236]}"
 #> 
 #> [[6]]
-#> [1] "{\"time\":[\"2024-06-10 10:33:42\"],\"msg\":[\"6\"],\"pid\":[39532]}"
+#> [1] "{\"time\":[\"2024-07-29 11:30:30\"],\"msg\":[\"6\"],\"pid\":[16232]}"
 #> 
 #> [[7]]
-#> [1] "{\"time\":[\"2024-06-10 10:33:42\"],\"msg\":[\"7\"],\"pid\":[39487]}"
+#> [1] "{\"time\":[\"2024-07-29 11:30:30\"],\"msg\":[\"7\"],\"pid\":[16236]}"
 #> 
 #> [[8]]
-#> [1] "{\"time\":[\"2024-06-10 10:33:42\"],\"msg\":[\"8\"],\"pid\":[39397]}"
+#> [1] "{\"time\":[\"2024-07-29 11:30:30\"],\"msg\":[\"8\"],\"pid\":[16239]}"
 
 daemons(0)
 #> [1] 0
@@ -105,7 +111,7 @@ Note that `req$postBody` should always be accessed in the router process and pas
 ``` r
 library(mirai)
 
-# important to supply SIGINT so the plumber server is interrupted and exits cleanly when torn down
+# supply SIGINT so the plumber server is interrupted and exits cleanly when finished
 daemons(1L, dispatcher = FALSE, autoexit = tools::SIGINT)
 #> [1] 1
 
@@ -114,7 +120,7 @@ m <- mirai({
   library(promises) # to provide the promise pipe
   library(mirai)
 
-  # uses dispatcher (suitable for requests with differing compute lengths)
+  # uses dispatcher - suitable when requests take differing times to complete
   daemons(4L, dispatcher = TRUE) # handles 4 requests simultaneously
 
   pr() |>
@@ -124,10 +130,14 @@ m <- mirai({
         mirai(
           {
             Sys.sleep(1L) # simulate expensive computation
-            list(status = 200L,
-                 body = list(time = format(Sys.time()),
-                             msg = jsonlite::fromJSON(data)[["msg"]],
-                             pid = Sys.getpid()))
+            list(
+              status = 200L,
+              body = list(
+                time = format(Sys.time()),
+                msg = jsonlite::fromJSON(data)[["msg"]],
+                pid = Sys.getpid()
+              )
+            )
           },
           data = req$postBody
         ) %...>% (function(x) {
@@ -144,34 +154,38 @@ Querying the endpoint produces the same set of outputs as the previous example.
 
 ``` r
 library(nanonext)
-res <- lapply(1:8,
-              function(i) ncurl_aio("http://127.0.0.1:8986/echo",
-                                    method = "POST",
-                                    data = sprintf('{"msg":"%d"}', i)))
+res <- lapply(
+  1:8,
+  function(i) ncurl_aio(
+    "http://127.0.0.1:8986/echo",
+    method = "POST",
+    data = sprintf('{"msg":"%d"}', i)
+  )
+)
 collect_aio(res)
 #> [[1]]
-#> [1] "{\"time\":[\"2024-06-10 10:33:45\"],\"msg\":[\"1\"],\"pid\":[39674]}"
+#> [1] "{\"time\":[\"2024-07-29 11:30:33\"],\"msg\":[\"1\"],\"pid\":[16504]}"
 #> 
 #> [[2]]
-#> [1] "{\"time\":[\"2024-06-10 10:33:45\"],\"msg\":[\"2\"],\"pid\":[39679]}"
+#> [1] "{\"time\":[\"2024-07-29 11:30:33\"],\"msg\":[\"2\"],\"pid\":[16512]}"
 #> 
 #> [[3]]
-#> [1] "{\"time\":[\"2024-06-10 10:33:45\"],\"msg\":[\"3\"],\"pid\":[39684]}"
+#> [1] "{\"time\":[\"2024-07-29 11:30:33\"],\"msg\":[\"3\"],\"pid\":[16509]}"
 #> 
 #> [[4]]
-#> [1] "{\"time\":[\"2024-06-10 10:33:45\"],\"msg\":[\"4\"],\"pid\":[39677]}"
+#> [1] "{\"time\":[\"2024-07-29 11:30:33\"],\"msg\":[\"4\"],\"pid\":[16506]}"
 #> 
 #> [[5]]
-#> [1] "{\"time\":[\"2024-06-10 10:33:46\"],\"msg\":[\"5\"],\"pid\":[39674]}"
+#> [1] "{\"time\":[\"2024-07-29 11:30:34\"],\"msg\":[\"5\"],\"pid\":[16504]}"
 #> 
 #> [[6]]
-#> [1] "{\"time\":[\"2024-06-10 10:33:46\"],\"msg\":[\"6\"],\"pid\":[39684]}"
+#> [1] "{\"time\":[\"2024-07-29 11:30:34\"],\"msg\":[\"6\"],\"pid\":[16506]}"
 #> 
 #> [[7]]
-#> [1] "{\"time\":[\"2024-06-10 10:33:46\"],\"msg\":[\"7\"],\"pid\":[39679]}"
+#> [1] "{\"time\":[\"2024-07-29 11:30:34\"],\"msg\":[\"7\"],\"pid\":[16512]}"
 #> 
 #> [[8]]
-#> [1] "{\"time\":[\"2024-06-10 10:33:46\"],\"msg\":[\"8\"],\"pid\":[39677]}"
+#> [1] "{\"time\":[\"2024-07-29 11:30:34\"],\"msg\":[\"8\"],\"pid\":[16509]}"
 
 daemons(0)
 #> [1] 0

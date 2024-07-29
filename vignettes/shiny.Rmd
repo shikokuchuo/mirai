@@ -15,24 +15,23 @@ knitr::opts_chunk$set(
 ```
 ### Shiny Integration
 
-`mirai` may be used as an asynchronous / distributed backend to scale [Shiny](https://shiny.posit.co/) applications.
+`mirai` may be used as an asynchronous backend to scale [Shiny](https://shiny.posit.co/) applications.
 
 Depending on the options suppled to `daemons()`, mirai tasks may be distributed across local background processes or multiple networked servers in an efficient and performant manner.
 
-For use with Shiny, `mirai` implements innovative, event-driven promises, developed in collaboration with Joe Cheng.
+For use with Shiny, `mirai` implements truly event-driven promises, developed in collaboration with Joe Cheng (creator of Shiny).
 
-- Do not require each promise to be polled for completion by a `later` loop like other promises.
-- Instead, promise actions are automatically queued for execution as soon as each 'mirai' resolves.
+- Each promise is not polled in a loop for completion (as for other types of promise).
+- Instead, promise actions are triggered for execution as soon as each 'mirai' completes (asynchronously).
 - Allows for much higher responsiveness (lower latency) and massive scalability (situations with thousand of promises or more).
 
+mirai natively supports Shiny ExtendedTask to create scalable Shiny apps, which remain responsive intra-session for each user, as well as inter-session for multiple concurrent users.
 
-#### Shiny ExtendedTask Example: Clock and Plot
+'mirai' may be used anywhere a 'promise' or 'future_promise' would be accepted (with `promises` >= 1.3.0).
 
-mirai may be used within Shiny's ExtendedTask framework (in `shiny` >= 1.8.1) to create scalable Shiny apps, which are more responsive for a single user, as well as for multiple concurrent users.
+#### Shiny ExtendedTask Example: Plot with Clock
 
-'mirai' are accepted anywhere a 'promise', 'future' or 'future_promise' is currently accepted (with `promises` >= 1.3.0).
-
-In the example below, the app remains responsive, with the clock continuing to tick whilst the simulated expensive computation is running. Also the button is disabled and the plot greyed out until the computation is complete.
+In the example below, the app remains responsive, with the clock continuing to tick whilst the simulated expensive computation is running asynchronously in a parallel process. Also the button is disabled and the plot greyed out until the computation is complete.
 
 By wrapping the `runApp()` call in `with(daemons(...), ...)` the daemons are set up for the duration of the app, exiting automatically when the app is stopped.
 
@@ -57,10 +56,10 @@ server <- function(input, output, session) {
   })
 
   extended_task <- ExtendedTask$new(
-    function(x, y) mirai({Sys.sleep(y); runif(x)}, environment())
+    function(...) mirai({Sys.sleep(y); runif(x)}, ...)
   ) |> bind_task_button("btn")
 
-  observeEvent(input$btn, extended_task$invoke(input$n, input$delay))
+  observeEvent(input$btn, extended_task$invoke(x = input$n, y = input$delay))
 
   output$plot <- renderPlot(hist(extended_task$result()))
   
@@ -73,7 +72,6 @@ with(daemons(2), runApp(app))
 ```
 *Thanks to Joe Cheng for providing examples on which the above is based.*
 
-
 The key components to using ExtendedTask are:
 
 1. In the UI, use `bslib::input_task_button()`. This is a button which is disabled during computation to prevent additional clicks.
@@ -82,18 +80,18 @@ The key components to using ExtendedTask are:
 input_task_button("btn", "Plot uniform distribution")
 ```
 
-2. In the server, create an ExtendedTask object by calling `ExtendedTask$new()` on a function passing named arguments to `mirai()`, and bind it to the button created in (1). The arguments are passed in through the use of `environment()` which captures the 'x' and 'y' contained in the environment of the anonymous function.
+2. In the server, create an ExtendedTask object by calling `ExtendedTask$new()` on an anonymous function passing `...` arguments to `mirai()`, and bind it to the button created in (1).
 
 ```{r shinystep2, eval=FALSE}
 extended_task <- ExtendedTask$new(
-    function(x, y) mirai({Sys.sleep(y); runif(x)}, environment())
+    function(...) mirai({Sys.sleep(y); runif(x)}, ...)
   ) |> bind_task_button("btn")
 ```
 
-3. In the server, create an observer on the input button, which invokes the ExtendedTask, supplying the arguments to the anonymous function above.
+3. In the server, create an observer on the input button, which invokes the ExtendedTask, passing in named arguments to the anonymous function (and hence the mirai) above.
 
 ```{r shinystep3, eval=FALSE}
-observeEvent(input$btn, extended_task$invoke(input$n, input$delay))
+observeEvent(input$btn, extended_task$invoke(x = input$n, y = input$delay))
 ```
 
 4. In the server, create a render function for the output, which consumes the result of the ExtendedTask.
@@ -152,11 +150,11 @@ plotServer <- function(id, calc_time) {
     id,
     function(input, output, session) {
       extended_task <- ExtendedTask$new(
-        function(...) mirai(run(x), ...)
+        function(time, run) mirai(run(time), environment())
       ) |> bind_task_button("resample")
       
       observeEvent(input$resample,
-                   extended_task$invoke(x = calc_time, run = run_task))
+                   extended_task$invoke(calc_time, run_task))
       
       output$plot <- renderPlot(plot_result(extended_task$result()))
       
@@ -190,7 +188,7 @@ with(daemons(3), runApp(app))
 ```
 *The above example builds on original code by Joe Cheng, Daniel Woodie and William Landau.* 
 
-This example uses `...` to pass variables through to the `mirai()` call. This is an alternative and equivalent way to using `environment()` and can be flexibly used to pass objects not defined there.
+The above uses `environment()` instead of `...` as an alternative and equivalent way of passing variables present in the calling environment to the mirai.
 
 The key components to using this ExtendedTask example are:
 
@@ -200,18 +198,18 @@ The key components to using this ExtendedTask example are:
 input_task_button(ns("resample"), "Resample")
 ```
 
-2. In the server, create an ExtendedTask object by calling `ExtendedTask$new()` on a function passing arguments to `mirai()`, and bind it to the button created in (1). As not all variables are supplied by inputs in this case, we make use of `environment()` to conveniently pass in the calling environment of the ExtendedTask function.
+2. In the server, create an ExtendedTask object by calling `ExtendedTask$new()` on an anonymous function passing _named_ arguments to `mirai()`, and bind it to the button created in (1). These are passed through to the mirai by the use of `environment()`. 
 
 ```{r shinystep22, eval=FALSE}
 extended_task <- ExtendedTask$new(
-  function(x, run = run_task) mirai(run(x), environment())
+  function(time, run) mirai(run(time), environment())
 ) |> bind_task_button("resample")
 ```
 
-3. In the server, create an observer on the input button, which invokes the ExtendedTask with the parameters required by the ExtendedTask function.
+3. In the server, create an observer on the input button, which invokes the ExtendedTask, supplying the arguments to the anonymous function above.
 
 ```{r shinystep23, eval=FALSE}
-observeEvent(input$resample, extended_task$invoke(calc_time))
+observeEvent(input$resample, extended_task$invoke(calc_time, run_task))
 ```
 
 4. In the server, create a render function for the output, which consumes the result of the ExtendedTask.

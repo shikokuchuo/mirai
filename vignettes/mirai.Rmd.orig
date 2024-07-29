@@ -35,7 +35,7 @@ Multiple long computes (model fits etc.) can be performed in parallel on availab
 
 Use `mirai()` to evaluate an expression asynchronously in a separate, clean R process.
 
-The following expression mimics an expensive calculation that eventually returns a random value.
+The following mimics an expensive calculation that eventually returns a random value.
 
 ```{r exec}
 library(mirai)
@@ -44,7 +44,7 @@ x <- list(time = 2, mean = 4)
 
 m <- mirai({Sys.sleep(time); rnorm(1, mean)}, time = x$time, mean = x$mean)
 ```
-Above, the variables `time` and `mean` in the mirai expression are defined by `name = value` pairs passed as part of the `mirai()` call.
+The mirai expression is evaluated in another process and hence must be self-contained, not referring to variables that do not already exist there. Above, the variables `time` and `mean` are passed as part of the `mirai()` call.
 
 A 'mirai' object is returned immediately - creating a mirai never blocks the session.
 

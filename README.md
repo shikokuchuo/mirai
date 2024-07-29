@@ -30,15 +30,15 @@ secured by TLS. <br /><br /> Advantages include being inherently queued
 thus handling many more tasks than available processes, no storage on
 the file system, support for otherwise non-exportable reference objects,
 an event-driven promises implementation, and a built-in asynchronous
-parallel map.
+parallel map. <br /><br />
 
 ### Quick Start
 
 Use `mirai()` to evaluate an expression asynchronously in a separate,
 clean R process.
 
-The following expression mimics an expensive calculation that eventually
-returns a random value.
+The following mimics an expensive calculation that eventually returns a
+random value.
 
 ``` r
 library(mirai)
@@ -48,8 +48,10 @@ x <- list(time = 2, mean = 4)
 m <- mirai({Sys.sleep(time); rnorm(1, mean)}, time = x$time, mean = x$mean)
 ```
 
-Above, the variables `time` and `mean` in the mirai expression are
-defined by `name = value` pairs passed as part of the `mirai()` call.
+The mirai expression is evaluated in another process and hence must be
+self-contained, not referring to variables that do not already exist
+there. Above, the variables `time` and `mean` are passed as part of the
+`mirai()` call.
 
 A ‘mirai’ object is returned immediately - creating a mirai never blocks
 the session.
@@ -76,7 +78,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 3.184356
+#> [1] 4.241353
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -90,7 +92,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 3.184356
+#> [1] 4.241353
 ```
 
 #### Daemons
@@ -137,16 +139,16 @@ m
 #> < mirai map [0/4] >
 m[]
 #> [[1]]
-#> [1] 48.30732
+#> [1] 47.02296
 #> 
 #> [[2]]
-#> [1] 58.3161
+#> [1] 58.44801
 #> 
 #> [[3]]
-#> [1] 70.08766
+#> [1] 68.48919
 #> 
 #> [[4]]
-#> [1] 82.04826
+#> [1] 80.06869
 ```
 
 `mirai_map()` is designed to facilitate recovery from partial failure,

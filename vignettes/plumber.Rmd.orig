@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 ### Plumber Integration
 
-`mirai` may be used as an asynchronous / distributed backend for [`plumber`](https://www.rplumber.io/) pipelines.
+`mirai` may be used as an asynchronous backend for [`plumber`](https://www.rplumber.io/) pipelines.
 
 Example usage is provided below for different types of endpoint.
 
@@ -28,8 +28,7 @@ The /echo endpoint takes a GET request, sleeps for 1 second (simulating an expen
 ```{r get}
 library(mirai)
 
-# important to supply SIGINT so the plumber server is interrupted and exits
-# cleanly when torn down
+# supply SIGINT so the plumber server is interrupted and exits cleanly when finished
 daemons(1L, dispatcher = FALSE, autoexit = tools::SIGINT)
 
 m <- mirai({
@@ -37,7 +36,7 @@ m <- mirai({
   library(promises) # to provide the promise pipe
   library(mirai)
 
-  # does not use dispatcher (suitable when all requests require similar compute)
+  # more efficient not to use dispatcher if all requests are similar length
   daemons(4L, dispatcher = FALSE) # handles 4 requests simultaneously
 
   pr() |>
@@ -47,9 +46,12 @@ m <- mirai({
         mirai(
           {
             Sys.sleep(1L)
-            list(status = 200L, body = list(time = format(Sys.time()),
-                                            msg = msg,
-                                            pid = Sys.getpid()))
+            list(
+              status = 200L,
+              body = list(
+                time = format(Sys.time()), msg = msg, pid = Sys.getpid()
+              )
+            )
           },
           msg = req[["HEADERS"]][["msg"]]
         ) %...>% (function(x) {
@@ -69,9 +71,13 @@ The API can be queried using an async HTTP client such as `nanonext::ncurl_aio()
 Here, all 8 requests are submitted at once, but we note that that responses have differing timestamps as only 4 can be processed at any one time (limited by the number of daemons set).
 ```{r queryapi}
 library(nanonext)
-res <- lapply(1:8,
-              function(i) ncurl_aio("http://127.0.0.1:8985/echo",
-                                    headers = c(msg = as.character(i))))
+res <- lapply(
+  1:8,
+  function(i) ncurl_aio(
+    "http://127.0.0.1:8985/echo",
+    headers = c(msg = as.character(i))
+  )
+)
 collect_aio(res)
 
 daemons(0)
@@ -85,7 +91,7 @@ Note that `req$postBody` should always be accessed in the router process and pas
 ```{r post}
 library(mirai)
 
-# important to supply SIGINT so the plumber server is interrupted and exits cleanly when torn down
+# supply SIGINT so the plumber server is interrupted and exits cleanly when finished
 daemons(1L, dispatcher = FALSE, autoexit = tools::SIGINT)
 
 m <- mirai({
@@ -93,7 +99,7 @@ m <- mirai({
   library(promises) # to provide the promise pipe
   library(mirai)
 
-  # uses dispatcher (suitable for requests with differing compute lengths)
+  # uses dispatcher - suitable when requests take differing times to complete
   daemons(4L, dispatcher = TRUE) # handles 4 requests simultaneously
 
   pr() |>
@@ -103,10 +109,14 @@ m <- mirai({
         mirai(
           {
             Sys.sleep(1L) # simulate expensive computation
-            list(status = 200L,
-                 body = list(time = format(Sys.time()),
-                             msg = jsonlite::fromJSON(data)[["msg"]],
-                             pid = Sys.getpid()))
+            list(
+              status = 200L,
+              body = list(
+                time = format(Sys.time()),
+                msg = jsonlite::fromJSON(data)[["msg"]],
+                pid = Sys.getpid()
+              )
+            )
           },
           data = req$postBody
         ) %...>% (function(x) {
@@ -124,10 +134,14 @@ Sys.sleep(2)
 Querying the endpoint produces the same set of outputs as the previous example.
 ```{r queryapipost}
 library(nanonext)
-res <- lapply(1:8,
-              function(i) ncurl_aio("http://127.0.0.1:8986/echo",
-                                    method = "POST",
-                                    data = sprintf('{"msg":"%d"}', i)))
+res <- lapply(
+  1:8,
+  function(i) ncurl_aio(
+    "http://127.0.0.1:8986/echo",
+    method = "POST",
+    data = sprintf('{"msg":"%d"}', i)
+  )
+)
 collect_aio(res)
 
 daemons(0)
