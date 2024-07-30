@@ -268,13 +268,17 @@ everywhere <- function(.expr, ..., .args = list(), .serial = NULL, .compute = "d
     }
 
     if (is.null(envir[["sockc"]])) {
-      for (i in seq_len(max(stat(envir[["sock"]], "pipes"), envir[["n"]])))
-        mirai(.expr = .expr, ..., .args = .args, .compute = .compute)
+      vec <- vector(mode = "list", length = max(stat(envir[["sock"]], "pipes"), envir[["n"]]))
+      for (i in seq_along(vec))
+        vec[[i]] <- mirai(.expr = .expr, ..., .args = .args, .compute = .compute)
     } else {
       .expr <- c(.expr, .block)
-      for (i in seq_len(envir[["n"]]))
-        mirai(.expr = .expr, ..., .args = .args, .compute = .compute)
+      vec <- vector(mode = "list", length = envir[["n"]])
+      for (i in seq_along(vec))
+        vec[[i]] <- mirai(.expr = .expr, ..., .args = .args, .compute = .compute)
     }
+    `[[<-`(envir, "everywhere", vec)
+    invisible()
 
   }
 
