@@ -316,7 +316,8 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         launch_remote(url = envir[["urls"]], remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
     } else {
       daemons(n = 0L, .compute = .compute)
-      return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ..., seed = seed, tls = tls, pass = pass, .compute = .compute))
+      return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ...,
+                     seed = seed, tls = tls, pass = pass, .compute = .compute))
     }
 
   } else {
@@ -359,15 +360,14 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
     } else {
       daemons(n = 0L, .compute = .compute)
-      return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ..., seed = seed, tls = tls, pass = pass, .compute = .compute))
+      return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ...,
+                     seed = seed, tls = tls, pass = pass, .compute = .compute))
     }
 
   }
 
-  if (is.null(envir)) 0L else `class<-`(
-    if (envir[["n"]]) envir[["n"]] else envir[["urls"]],
-    c("miraiDaemons", .compute)
-  )
+  is.null(envir) && return(0L)
+  `class<-`(if (envir[["n"]]) envir[["n"]] else envir[["urls"]], c("miraiDaemons", .compute))
 
 }
 
@@ -544,8 +544,8 @@ serialization <- function(fns, class, vec = FALSE, .compute = "default") {
 
 check_create_tls <- function(url, tls, envir) {
   purl <- parse_url(url)
-  sch <- substr(purl[["scheme"]], 1L, 3L)
-  if ((sch == "wss" || sch == "tls") && is.null(tls)) {
+  sch <- purl[["scheme"]]
+  if ((startsWith(sch, "wss") || startsWith(sch, "tls")) && is.null(tls)) {
     cert <- write_cert(cn = purl[["hostname"]])
     `[[<-`(envir, "tls", cert[["client"]])
     tls <- cert[["server"]]

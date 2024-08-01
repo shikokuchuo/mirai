@@ -232,7 +232,8 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
           for (i in seq_n) {
             if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
               queue[[i]][["rctx"]] <- .context(servers[[q]])
-              queue[[i]][["req"]] <- request(queue[[i]][["rctx"]], data = .subset2(queue[[i]][["req"]], "value"), send_mode = 2L, recv_mode = 8L, cv = cv)
+              queue[[i]][["req"]] <- request(queue[[i]][["rctx"]], data = .subset2(queue[[i]][["req"]], "value"),
+                                             send_mode = 2L, recv_mode = 8L, cv = cv)
               queue[[i]][["daemon"]] <- q
               serverfree[q] <- FALSE
               assigned[q] <- assigned[q] + 1L
@@ -303,7 +304,7 @@ saisei <- function(i, force = FALSE, .compute = "default") {
 
   envir <- ..[[.compute]]
   i <- as.integer(i[1L])
-  length(envir[["sockc"]]) && i > 0L && i <= envir[["n"]] && substr(envir[["urls"]][i], 1L, 1L) != "t" || return()
+  length(envir[["sockc"]]) && i > 0L && i <= envir[["n"]] && !startsWith(envir[["urls"]][i], "t") || return()
   r <- query_dispatcher(sock = envir[["sockc"]], command = if (force) -i else i, mode = 9L)
   is.character(r) && nzchar(r) || return()
   envir[["urls"]][i] <- r
@@ -314,7 +315,7 @@ saisei <- function(i, force = FALSE, .compute = "default") {
 # internals --------------------------------------------------------------------
 
 get_ports <- function(baseurl, n)
-  if (substr(baseurl[["scheme"]], 1L, 1L) == "t") {
+  if (startsWith(baseurl[["scheme"]], "t")) {
     if (baseurl[["port"]] == "0") integer(n) else seq.int(baseurl[["port"]], length.out = n)
   }
 
@@ -327,8 +328,8 @@ get_and_reset_env <- function(x) {
 }
 
 get_tls <- function(baseurl, tls, pass) {
-  sch <- substr(baseurl[["scheme"]], 1L, 3L)
-  if ((sch == "wss" || sch == "tls") && is.null(tls)) {
+  sch <- baseurl[["scheme"]]
+  if ((startsWith(sch, "wss") || startsWith(sch, "tls")) && is.null(tls)) {
     tls <- get_and_reset_env("MIRAI_TEMP_FIELD1")
     if (length(tls)) tls <- c(tls, get_and_reset_env("MIRAI_TEMP_FIELD2"))
   }
