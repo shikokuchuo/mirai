@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9011</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9012</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -876,13 +876,13 @@ as an example:</p>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, b <span class="op">=</span> <span class="st">"some text"</span><span class="op">)</span>, x <span class="op">=</span> <span class="va">x</span><span class="op">)</span></span>
 <span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
 <span><span class="co">#&gt; 'miraiError' chr Error: Invalid &lt;Table&gt;, external pointer to null</span></span></code></pre></div>
-<p>However, <code><a href="https://shikokuchuo.net/nanonext/reference/serial_config.html" class="external-link">serial_config()</a></code> can be used to create custom
+<p>However, <code><a href="../reference/serial_config.html">serial_config()</a></code> can be used to create custom
 serialization configurations, specifying functions that hook into R’s
 native serialization mechanism for reference objects (‘refhooks’). This
 configuration can then be specified as part of an
 <code><a href="../reference/everywhere.html">everywhere()</a></code> call via its ‘.serial’ argument.</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/serial_config.html" class="external-link">serial_config</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/serial_config.html">serial_config</a></span><span class="op">(</span></span>
 <span>  class <span class="op">=</span> <span class="st">"ArrowTabular"</span>,</span>
 <span>  sfunc <span class="op">=</span> <span class="fu">arrow</span><span class="fu">::</span><span class="va">write_to_raw</span>,</span>
 <span>  ufunc <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu">read_ipc_stream</span><span class="op">(</span><span class="va">x</span>, as_data_frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -918,7 +918,7 @@ example, we can switch to using <a href="https://pola-rs.github.io/r-polars/" cl
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/everywhere.html">everywhere</a></span><span class="op">(</span></span>
 <span>  <span class="op">{</span><span class="op">}</span>,</span>
-<span>  .serial <span class="op">=</span> <span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/serial_config.html" class="external-link">serial_config</a></span><span class="op">(</span></span>
+<span>  .serial <span class="op">=</span> <span class="fu"><a href="../reference/serial_config.html">serial_config</a></span><span class="op">(</span></span>
 <span>    class <span class="op">=</span> <span class="st">"RPolarsDataFrame"</span>,</span>
 <span>    sfunc <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">polars</span><span class="fu">::</span><span class="fu">as_polars_df</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">$</span><span class="fu">to_raw_ipc</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    ufunc <span class="op">=</span> <span class="fu">polars</span><span class="fu">::</span><span class="va">pl</span><span class="op">$</span><span class="va">read_ipc</span></span>
