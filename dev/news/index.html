@@ -57,6 +57,7 @@
 <li>
 <code><a href="../reference/mirai_map.html">mirai_map()</a></code> gains the option <code>[.flat]</code> to collect and flatten results, avoiding coercion.</li>
 <li>Faster local <code>daemons(dispatcher = FALSE)</code> and <code><a href="../reference/make_cluster.html">make_cluster()</a></code> by using asynchronous launches (thanks <a href="https://github.com/mtmorgan" class="external-link">@mtmorgan</a> <a href="https://github.com/shikokuchuo/mirai/issues/123" class="external-link">#123</a>).</li>
+<li>Local dispatcher daemons now synchronize with host, the same as non-dispatcher daemons (prevents use before all have connected).</li>
 <li>More efficient dispatcher startup by only loading the base package, in addition to not reading startup configurations (thanks <a href="https://github.com/krlmlr" class="external-link">@krlmlr</a>).</li>
 <li>Removes hard dependency on <code>stats</code> and <code>utils</code> base packages.</li>
 <li>Requires <code>nanonext</code> &gt;= [1.1.1.9015].</li>
