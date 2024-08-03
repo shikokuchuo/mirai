@@ -58,14 +58,21 @@ Sends each application of function \code{.f} on an element of
     for all asynchronous operations to complete if still in progress,
     blocking but user-interruptible.
 
-    \code{x[.progress]} collects the results whilst showing a text progress
+    \code{x[.flat]} collects and flattens map results, avoiding coercion.
+    Note: errors if an \sQuote{errorValue} has been returned or results are
+    of differing type.
+
+    \code{x[.progress]} collects map results whilst showing a text progress
     indicator.
 
-    \code{x[.stop]} collects the results applying early stopping, which stops
-    at the first failure and aborts all remaining in-progress operations.
+    \code{x[.stop]} collects map results applying early stopping, which stops
+    at the first failure and aborts all remaining queued operations. Note:
+    individual operations already in-progress may continue to completion,
+    although their results are not collected.
 
-    \code{x[c(.stop, .progress)]} combines early stopping with a progress
-    indicator.
+    The options above may be combined in a vector, for example: \cr
+    \code{x[c(.stop, .progress)]} applies early stopping together with a
+    progress indicator.
 }
 
 \examples{
@@ -74,8 +81,9 @@ if (interactive()) {
 
 daemons(4, dispatcher = FALSE)
 
-res <- mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
-res
+mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
+
+mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[.flat]
 
 mp <- mirai_map(
   c(a = 2, b = 3, c = 4),

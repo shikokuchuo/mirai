@@ -103,7 +103,7 @@ A 'mirai_map' object is returned immediately. Other code can continue to run at 
 m
 m[]
 ```
-`mirai_map()` is designed to facilitate recovery from partial failure, and also provides options for early stopping and/or progress indicators. It also has some other [advantages](https://shikokuchuo.net/mirai/articles/mirai.html#map-functions) over alternative implementations.
+`mirai_map()` is designed to facilitate recovery from partial failure, and also provides options for flatmap, early stopping and/or progress indicators. It also has some other [advantages](https://shikokuchuo.net/mirai/articles/mirai.html#map-functions) over alternative implementations.
 
 ### Design Concepts
 

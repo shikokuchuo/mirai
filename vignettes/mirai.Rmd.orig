@@ -585,10 +585,13 @@ ml[]
 ```
 Use of `mirai_map()` assumes that `daemons()` have previously been set. If not then one (non-dispatcher) daemon is set to allow the function to proceed. This ensures safe behaviour, but is unlikely to be optimal, so please ensure daemons are set beforehand.
 
-When collecting the results, optionally specify `.progress` or `.stop` to `[]`:
+When collecting the results, optionally specify `.flat`, `.progress` or `.stop` to `[]`:
 
+- `x[.flat]` collects and flattens the results, checking that they are of the same type to avoid coercion.
 - `x[.progress]` collects results whilst showing a simple text progress indicator.
 - `x[.stop]` collects the results with early stopping, which stops at the first failure and aborts all remaining in-progress computations.
+
+Combinations of the above may be supplied in the fashion of `x[c(.stop, .progress)]`.
 ```{r mmapadv}
 tryCatch(
   mirai_map(list(a = 1, b = "a", c = 3), sum)[.stop],
@@ -597,7 +600,7 @@ tryCatch(
 
 with(
   daemons(4, dispatcher = FALSE),
-  mirai_map(c(0.1, 0.2, 0.3), Sys.sleep)[.progress]
+  mirai_map(c(0.1, 0.2, 0.3), Sys.sleep)[c(.progress, .flat)]
 )
 
 daemons(0)

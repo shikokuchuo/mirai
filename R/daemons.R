@@ -354,7 +354,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         `[[<-`(envir, "cv", cv)
       } else {
         sock <- req_socket(urld)
-        launch_sync_daemons(seq_len(n), sock, wa3(urld, dots, next_stream(envir)), output) || stop(._[["sync_timeout"]])
+        launch_sync_daemons(seq_len(n), sock, urld, dots, envir, output) || stop(._[["sync_timeout"]])
         `[[<-`(envir, "urls", urld)
       }
       `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
@@ -663,11 +663,11 @@ launch_sync_dispatcher <- function(sock, args, output, tls = NULL, pass = NULL) 
   res
 }
 
-launch_sync_daemons <- function(seq, sock, args, output) {
+launch_sync_daemons <- function(seq, sock, urld, dots, envir, output) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE)
   for (i in seq)
-    launch_daemon(args, output)
+    launch_daemon(wa3(urld, dots, next_stream(envir)), output)
   for (i in seq)
     until(cv, .limit_long) || return(pipe_notify(sock, cv = NULL, add = TRUE))
   !pipe_notify(sock, cv = NULL, add = TRUE)
