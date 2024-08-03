@@ -9,7 +9,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9012</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9013</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -124,12 +124,17 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <p><code>x[]</code> collects the results of a mirai_map <code>x</code>. This will wait
     for all asynchronous operations to complete if still in progress,
     blocking but user-interruptible.</p>
-<p><code>x[.progress]</code> collects the results whilst showing a text progress
+<p><code>x[.flat]</code> collects and flattens map results, avoiding coercion.
+    Note: errors if an ‘errorValue’ has been returned or results are
+    of differing type.</p>
+<p><code>x[.progress]</code> collects map results whilst showing a text progress
     indicator.</p>
-<p><code>x[.stop]</code> collects the results applying early stopping, which stops
-    at the first failure and aborts all remaining in-progress operations.</p>
-<p><code>x[c(.stop, .progress)]</code> combines early stopping with a progress
-    indicator.</p>
+<p><code>x[.stop]</code> collects map results applying early stopping, which stops
+    at the first failure and aborts all remaining queued operations. Note:
+    individual operations already in-progress may continue to completion,
+    although their results are not collected.</p>
+<p>The options above may be combined in a vector, for example: <br><code>x[c(.stop, .progress)]</code> applies early stopping together with a
+    progress indicator.</p>
     </div>
 
     <div class="section level2">
@@ -139,8 +144,9 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="daemons.html">daemons</a></span><span class="op">(</span><span class="fl">4</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">mirai_map</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="va">rnorm</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fl">20</span>, sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">res</span></span></span>
+<span class="r-in"><span><span class="fu">mirai_map</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="va">rnorm</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fl">20</span>, sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">mirai_map</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="va">rnorm</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fl">20</span>, sd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="va">.flat</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">mp</span> <span class="op">&lt;-</span> <span class="fu">mirai_map</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">2</span>, b <span class="op">=</span> <span class="fl">3</span>, c <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>,</span></span>
