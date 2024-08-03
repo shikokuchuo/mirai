@@ -40,7 +40,7 @@ Expressions to insert into the \code{[]} method for \sQuote{mirai_map}
 
     \code{x[.stop]} collects map results applying early stopping, which stops
     at the first failure and aborts all remaining queued operations. Note:
-    individual operations already in-progress may continue to completion,
+    individual operations already in progress continue to completion,
     although their results are not collected.
 
     The options above may be combined in a vector, for example: \cr

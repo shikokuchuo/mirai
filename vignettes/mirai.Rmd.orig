@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 8. [Compute Profiles](#compute-profiles)
 9. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
 10. [Serialization - Arrow, polars and beyond](#serialization-arrow-polars-and-beyond)
-11. [Map Functions](#map-functions)
+11. [Asynchronous Parallel Map](#asynchronous-parallel-map)
 
 ### Example 1: Compute-intensive Operations
 
@@ -543,7 +543,7 @@ Please refer to the [torch vignette](https://shikokuchuo.net/mirai/articles/torc
 
 [&laquo; Back to ToC](#table-of-contents)
 
-### Map Functions
+### Asynchronous Parallel Map
 
 `mirai_map()` performs asynchronous parallel/distributed map using `mirai`.
 
@@ -589,7 +589,7 @@ When collecting the results, optionally specify `.flat`, `.progress` or `.stop` 
 
 - `x[.flat]` collects and flattens the results, checking that they are of the same type to avoid coercion.
 - `x[.progress]` collects results whilst showing a simple text progress indicator.
-- `x[.stop]` collects the results with early stopping, which stops at the first failure and aborts all remaining in-progress computations.
+- `x[.stop]` collects the results with early stopping, which stops at the first failure and aborts all remaining queued computations (note: individual computations already in progress continue to completion, but their results are not collected).
 
 Combinations of the above may be supplied in the fashion of `x[c(.stop, .progress)]`.
 ```{r mmapadv}
