@@ -1,13 +1,14 @@
-# mirai 1.1.1.9013 (development)
+# mirai 1.1.1.9014 (development)
 
 * `everywhere()` adds argument '.serial' for accepting serialization configurations created by `serial_config()`. These allow normally non-exportable reference objects such as Arrow Tables or torch tensors to be sent and received transparently without additional marshalling steps. Configurations apply on a per compute profile basis.
 * `serialization()` is now deprecated in favour of the above usage of `everywhere()`, and will be removed in a future version, however it gains a '.compute' argument in the meantime.
 * `mirai_map()` gains the option `[.flat]` to collect and flatten results, avoiding coercion.
+* Collecting a 'mirai_map' no longer spuriously introduces empty names where none were present originally.
 * Faster local `daemons(dispatcher = FALSE)` and `make_cluster()` by using asynchronous launches (thanks @mtmorgan #123).
 * Local dispatcher daemons now synchronize with host, the same as non-dispatcher daemons (prevents use before all have connected).
 * More efficient dispatcher startup by only loading the base package, in addition to not reading startup configurations (thanks @krlmlr).
 * Removes hard dependency on `stats` and `utils` base packages.
-* Requires `nanonext` >= [1.1.1.9015].
+* Requires `nanonext` >= [1.1.1.9016].
 
 # mirai 1.1.1
 

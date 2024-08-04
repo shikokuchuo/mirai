@@ -78,7 +78,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 4.253094
+#> [1] 5.397199
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -92,7 +92,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 4.253094
+#> [1] 5.397199
 ```
 
 #### Daemons
@@ -125,37 +125,28 @@ processed in a separate parallel process.
 ``` r
 m <- mirai_map(
   1:4,
-  \(x) {res <- rnorm(1e8, mean = x, sd = x + 3) + z; max(res) - min(res)},
-  z = rnorm(1e7)
+  \(x) {res <- rnorm(1e7, mean = x, sd = x + 3) + z; max(res) - min(res)},
+  z = rnorm(1e6)
 )
 ```
 
 A ‘mirai_map’ object is returned immediately. Other code can continue to
 run at this point. Its value may be retrieved at any time using its `[]`
 method to return a list, just like `purrr::map()` or `base::lapply()`.
+The `[]` method also provides options for flatmap, early stopping and/or
+progress indicators.
 
 ``` r
 m
 #> < mirai map [0/4] >
-m[]
-#> [[1]]
-#> [1] 45.195
-#> 
-#> [[2]]
-#> [1] 58.67235
-#> 
-#> [[3]]
-#> [1] 67.10049
-#> 
-#> [[4]]
-#> [1] 79.24136
+m[.flat]
+#> [1] 43.36372 52.01809 63.82673 77.83800
 ```
 
-`mirai_map()` is designed to facilitate recovery from partial failure,
-and also provides options for flatmap, early stopping and/or progress
-indicators. It also has some other
+It is designed to facilitate recovery from partial failure by returning
+all errors as ‘errorValues’, and also has some other
 [advantages](https://shikokuchuo.net/mirai/articles/mirai.html#asynchronous-parallel-map)
-over alternative implementations.
+over alternative map implementations.
 
 ### Design Concepts
 

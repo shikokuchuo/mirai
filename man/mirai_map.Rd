@@ -54,21 +54,21 @@ Sends each application of function \code{.f} on an element of
 \section{Results}{
 
 
-    \code{x[]} collects the results of a mirai_map \code{x}. This will wait
-    for all asynchronous operations to complete if still in progress,
-    blocking but user-interruptible.
+    \code{x[]} collects the results of a \sQuote{mirai_map} \code{x} and
+    returns a list. This will wait for all asynchronous operations to
+    complete if still in progress, blocking but user-interruptible.
 
-    \code{x[.flat]} collects and flattens map results, avoiding coercion.
-    Note: errors if an \sQuote{errorValue} has been returned or results are
-    of differing type.
+    \code{x[.flat]} collects and flattens map results to a vector, checking
+    that they are of the same type to avoid coercion. Note: errors if an
+    \sQuote{errorValue} has been returned or results are of differing type.
 
     \code{x[.progress]} collects map results whilst showing a text progress
     indicator.
 
     \code{x[.stop]} collects map results applying early stopping, which stops
-    at the first failure and aborts all remaining queued operations. Note:
-    individual operations already in progress continue to completion,
-    although their results are not collected.
+    at the first failure and cancels remaining operations. Note: operations
+    already in progress continue to completion, although their results are
+    not collected.
 
     The options above may be combined in a vector, for example: \cr
     \code{x[c(.stop, .progress)]} applies early stopping together with a
