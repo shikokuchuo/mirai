@@ -9,7 +9,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9013</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9014</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,18 +76,18 @@
 
 
 
-<p><code>x[]</code> collects the results of a mirai_map <code>x</code>. This will wait
-    for all asynchronous operations to complete if still in progress,
-    blocking but user-interruptible.</p>
-<p><code>x[.flat]</code> collects and flattens map results, avoiding coercion.
-    Note: errors if an ‘errorValue’ has been returned or results are
-    of differing type.</p>
+<p><code>x[]</code> collects the results of a ‘mirai_map’ <code>x</code> and
+    returns a list. This will wait for all asynchronous operations to
+    complete if still in progress, blocking but user-interruptible.</p>
+<p><code>x[.flat]</code> collects and flattens map results to a vector, checking
+    that they are of the same type to avoid coercion. Note: errors if an
+    ‘errorValue’ has been returned or results are of differing type.</p>
 <p><code>x[.progress]</code> collects map results whilst showing a text progress
     indicator.</p>
 <p><code>x[.stop]</code> collects map results applying early stopping, which stops
-    at the first failure and aborts all remaining queued operations. Note:
-    individual operations already in progress continue to completion,
-    although their results are not collected.</p>
+    at the first failure and cancels remaining operations. Note: operations
+    already in progress continue to completion, although their results are
+    not collected.</p>
 <p>The options above may be combined in a vector, for example: <br><code>x[c(.stop, .progress)]</code> applies early stopping together with a
     progress indicator.</p>
     </div>
