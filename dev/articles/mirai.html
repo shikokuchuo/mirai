@@ -971,7 +971,7 @@ map using <code>mirai</code>. This function is analogous to
 <p>The results of a mirai_map <code>x</code> may be collected using
 <code>x[]</code>. This waits for all asynchronous operations to complete
 if still in progress.</p>
-<p><code><a href="../reference/mirai_map2.html">mirai_map2()</a></code> is a variant that allows mapping over 2
+<p><code><a href="../reference/mirai_map.html">mirai_map2()</a></code> is a variant that allows mapping over 2
 lists/vectors simultaneously, similar to <code><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">purrr::map2()</a></code>.</p>
 <p>Key advantages of <code><a href="../reference/mirai_map.html">mirai_map()</a></code>:</p>
 <ol style="list-style-type: decimal">
@@ -1063,7 +1063,7 @@ their results are not collected).</li>
 <code>x[c(.stop, .progress)]</code>.</p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/mirai_map2.html">mirai_map2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="st">"a"</span>, c <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, <span class="fl">3</span><span class="op">:</span><span class="fl">1</span>, <span class="va">sum</span><span class="op">)</span><span class="op">[</span><span class="va">.stop</span><span class="op">]</span>,</span>
+<span>  <span class="fu"><a href="../reference/mirai_map.html">mirai_map2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="st">"a"</span>, c <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, <span class="fl">3</span><span class="op">:</span><span class="fl">1</span>, <span class="va">sum</span><span class="op">)</span><span class="op">[</span><span class="va">.stop</span><span class="op">]</span>,</span>
 <span>  error <span class="op">=</span> <span class="va">identity</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;simpleError: Error in .Primitive("sum")("a", 2): invalid 'type' (character) of argument&gt;</span></span>
