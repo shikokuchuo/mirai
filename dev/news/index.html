@@ -54,8 +54,8 @@
 <code><a href="../reference/everywhere.html">everywhere()</a></code> adds argument ‘.serial’ for accepting serialization configurations created by <code><a href="../reference/serial_config.html">serial_config()</a></code>. These allow normally non-exportable reference objects such as Arrow Tables or torch tensors to be sent and received transparently without additional marshalling steps. Configurations apply on a per compute profile basis.</li>
 <li>
 <code><a href="../reference/serialization.html">serialization()</a></code> is now deprecated in favour of the above usage of <code><a href="../reference/everywhere.html">everywhere()</a></code>, and will be removed in a future version, however it gains a ‘.compute’ argument in the meantime.</li>
-<li>
-<code><a href="../reference/mirai_map.html">mirai_map()</a></code> gains the option <code>[.flat]</code> to collect and flatten results, avoiding coercion.</li>
+<li>Adds <code><a href="../reference/mirai_map2.html">mirai_map2()</a></code> for performing asynchronous parallel map over 2 arguments.</li>
+<li>‘mirai_map’ <code>[]</code> method gains the option <code>[.flat]</code> to collect and flatten results, avoiding coercion.</li>
 <li>Collecting a ‘mirai_map’ no longer spuriously introduces empty names where none were present originally.</li>
 <li>Faster local <code>daemons(dispatcher = FALSE)</code> and <code><a href="../reference/make_cluster.html">make_cluster()</a></code> by using asynchronous launches (thanks <a href="https://github.com/mtmorgan" class="external-link">@mtmorgan</a> <a href="https://github.com/shikokuchuo/mirai/issues/123" class="external-link">#123</a>).</li>
 <li>Local dispatcher daemons now synchronize with host, the same as non-dispatcher daemons (prevents use before all have connected).</li>
