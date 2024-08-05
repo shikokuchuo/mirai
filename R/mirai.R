@@ -462,29 +462,40 @@ stop_mirai <- stop_aio
 #'
 unresolved <- unresolved
 
-#' Is mirai
+#' Is mirai / mirai_map
 #'
-#' Is the object a \sQuote{mirai}.
+#' Is the object a \sQuote{mirai} or \sQuote{mirai_map}.
 #'
 #' @param x an object.
 #'
-#' @return Logical TRUE if \sQuote{x} is of class \sQuote{mirai}, FALSE
-#'     otherwise.
+#' @return Logical TRUE if \sQuote{x} is of class \sQuote{mirai} or
+#'     \sQuote{mirai_map} respectively, FALSE otherwise.
 #'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
+#' daemons(1, dispatcher = FALSE)
 #' df <- data.frame()
 #' m <- mirai(as.matrix(df), df = df)
 #' is_mirai(m)
 #' is_mirai(df)
+#'
+#' mp <- mirai_map(1:3, runif)
+#' is_mirai_map(mp)
+#' is_mirai_map(mp[])
+#' daemons(0)
 #'
 #' }
 #'
 #' @export
 #'
 is_mirai <- function(x) inherits(x, "mirai")
+
+#' @rdname is_mirai
+#' @export
+#'
+is_mirai_map <- function(x) inherits(x, "mirai_map")
 
 #' Error Validators
 #'

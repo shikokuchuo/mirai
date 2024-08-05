@@ -2,28 +2,37 @@
 % Please edit documentation in R/mirai.R
 \name{is_mirai}
 \alias{is_mirai}
-\title{Is mirai}
+\alias{is_mirai_map}
+\title{Is mirai / mirai_map}
 \usage{
 is_mirai(x)
+
+is_mirai_map(x)
 }
 \arguments{
 \item{x}{an object.}
 }
 \value{
-Logical TRUE if \sQuote{x} is of class \sQuote{mirai}, FALSE
-    otherwise.
+Logical TRUE if \sQuote{x} is of class \sQuote{mirai} or
+    \sQuote{mirai_map} respectively, FALSE otherwise.
 }
 \description{
-Is the object a \sQuote{mirai}.
+Is the object a \sQuote{mirai} or \sQuote{mirai_map}.
 }
 \examples{
 if (interactive()) {
 # Only run examples in interactive R sessions
 
+daemons(1, dispatcher = FALSE)
 df <- data.frame()
 m <- mirai(as.matrix(df), df = df)
 is_mirai(m)
 is_mirai(df)
+
+mp <- mirai_map(1:3, runif)
+is_mirai_map(mp)
+is_mirai_map(mp[])
+daemons(0)
 
 }
 
