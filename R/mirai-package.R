@@ -103,7 +103,8 @@
     single_url = "only one 'url' should be specified",
     sync_timeout = "initial sync with dispatcher/daemon timed out after 10s",
     url_spec = "numeric value for 'url' is out of bounds",
-    wrong_dots = "'...' arguments should only be of integer, numeric or logical type"
+    wrong_dots = "'...' arguments should only be of integer, numeric or logical type",
+    xlen_ylen = "length of '.y' must be the length of '.x' or one"
   ),
   hash = TRUE
 )

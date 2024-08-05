@@ -90,6 +90,7 @@ Daemons may also be deployed [remotely](https://shikokuchuo.net/mirai/articles/m
 #### Async Parallel Map
 
 `mirai_map()` maps a function over a list or vector, with each element processed in a separate parallel process.
+`mirai_map2()` is a variant that allows mapping over 2 lists/vectors simultaneously.
 
 ```{r map}
 m <- mirai_map(
@@ -103,7 +104,7 @@ A 'mirai_map' object is returned immediately. Other code can continue to run at 
 m
 m[.flat]
 ```
-It is designed to facilitate recovery from partial failure by returning all errors as 'errorValues', and also has some other [advantages](https://shikokuchuo.net/mirai/articles/mirai.html#asynchronous-parallel-map) over alternative map implementations.
+All errors are returned as 'errorValues', facilitating recovery from partial failure. There are also other [advantages](https://shikokuchuo.net/mirai/articles/mirai.html#asynchronous-parallel-map) over alternative map implementations.
 
 ### Design Concepts
 

@@ -78,7 +78,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 5.397199
+#> [1] 4.87383
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -92,7 +92,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 5.397199
+#> [1] 4.87383
 ```
 
 #### Daemons
@@ -120,7 +120,8 @@ required.
 #### Async Parallel Map
 
 `mirai_map()` maps a function over a list or vector, with each element
-processed in a separate parallel process.
+processed in a separate parallel process. `mirai_map2()` is a variant
+that allows mapping over 2 lists/vectors simultaneously.
 
 ``` r
 m <- mirai_map(
@@ -140,11 +141,11 @@ progress indicators.
 m
 #> < mirai map [0/4] >
 m[.flat]
-#> [1] 43.36372 52.01809 63.82673 77.83800
+#> [1] 43.44218 54.06780 62.76949 77.15675
 ```
 
-It is designed to facilitate recovery from partial failure by returning
-all errors as ‘errorValues’, and also has some other
+All errors are returned as ‘errorValues’, facilitating recovery from
+partial failure. There are also other
 [advantages](https://shikokuchuo.net/mirai/articles/mirai.html#asynchronous-parallel-map)
 over alternative map implementations.
 

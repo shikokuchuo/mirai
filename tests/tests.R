@@ -116,6 +116,12 @@ connection && .Platform[["OS.type"]] != "windows" && {
   nanotestp(mp <- mirai_map(list(x = "a"), function(...) do(...), do = function(x, y) sprintf("%s%s", x, y), .args = list("b")))
   nanotesti(collect_mirai(mp)[["x"]], "ab")
   nanotesti(call_mirai(mp)[["x"]][["data"]], "ab")
+  nanotest(all(mirai_map2(1:3, 3:1, sum, .args = list(3L))[.flat] == 7L))
+  daemons(0L)
+  Sys.sleep(1L)
+  nanotest(all(mirai_map2(c(a = 1, b = 1, c = 1), 2, sum)[.flat] == 3))
+  nanotesterr(mirai_map2(1:3, 1:2, sum), "must be the length of")
+  daemons(0L)
   Sys.sleep(1L)
   NA
 }
@@ -192,7 +198,7 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
     nanotest(promises::is.promise(p2 <- promises::`%...>%`(mirai("completed"), identity())))
     nanotest(promises::is.promise(p3 <- promises::as.promise(call_mirai(mirai("completed")))))
     nanotestz(mirai_map(0:1, function(x) x, .promise = identity)[][[1L]])
-    nanotest(is_mirai_map(mp <- mirai_map(1, function(x) x, .promise = list(identity))))
+    nanotest(is_mirai_map(mp <- mirai_map2(2L, -1L, function(x, y) x + y, .promise = list(identity))))
     nanotesto(mp[.flat])
     nanotest(is.null(names(mp[])))
     nanotest(is_error_value(mirai_map(1, function(x) stop(x), .promise = list(identity, identity))[][[1L]]))

@@ -68,12 +68,12 @@
 #'
 #'     Facilitates recovery from partial failure by returning all
 #'     \sQuote{miraiError} / \sQuote{errorValue} as the case may be, thus
-#'     allowing only the failures to be re-run. If using dispatcher,
-#'     \sQuote{retry} should be specified as FALSE to ensure crashes are
-#'     returned as errors.
+#'     allowing only the failures to be re-run.
 #'
 #'     Note: requires daemons to have previously been set. If not, then one
 #'     local daemon is set before the function propceeds.
+#'
+#' @seealso \code{\link{mirai_map2}}
 #'
 #' @examples
 #' if (interactive()) {
@@ -128,6 +128,8 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
 
   envir <- ..[[.compute]]
   is.null(envir) && {
+    .x
+    .f
     warning(._[["requires_daemons"]], immediate. = TRUE)
     daemons(n = 1L, dispatcher = FALSE, .compute = .compute)
     return(mirai_map(.x = .x, .f = .f, ..., .args = .args, .promise = .promise, .compute = .compute))
@@ -143,7 +145,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
       .compute = .compute
     )
 
-  if (length(.promise)) {
+  if (length(.promise))
     if (is.list(.promise)) {
       if (length(.promise) > 1L)
         lapply(vec, promises::then, .promise[[1L]], .promise[[2L]]) else
@@ -151,7 +153,92 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
     } else {
       lapply(vec, promises::then, .promise)
     }
+
+  `class<-`(`names<-`(vec, names(.x)), "mirai_map")
+
+}
+
+#' mirai Map2
+#'
+#' Asynchronous parallel / distributed map of a function over a \strong{pair} of
+#'     lists or vectors using mirai, with optional promises integration.
+#'
+#' @inheritParams mirai_map
+#' @param .y a list or atomic vector the same length as \sQuote{.x} (or length
+#'     one in which case it will be recycled).
+#' @param .f a function to be applied to each element of \code{.x} and
+#'     \code{.y}.
+#'
+#' @return A \sQuote{mirai_map} (list of \sQuote{mirai} objects).
+#'
+#' @details Sends each application of function \code{.f} on an element of
+#'     \code{.x} and \code{.y} for computation in a separate \code{\link{mirai}}
+#'     call.
+#'
+#'     This simple and transparent behaviour is designed to make full use of
+#'     \pkg{mirai} scheduling to minimise overall execution time.
+#'
+#'     Facilitates recovery from partial failure by returning all
+#'     \sQuote{miraiError} / \sQuote{errorValue} as the case may be, thus
+#'     allowing only the failures to be re-run.
+#'
+#'     Note: requires daemons to have previously been set. If not, then one
+#'     local daemon is set before the function propceeds.
+#'
+#' @inheritSection mirai_map Results
+#' @seealso \code{\link{mirai_map}}
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' daemons(4, dispatcher = FALSE)
+#'
+#' mirai_map2(1:3, c(1, 10, 20), rnorm, .args = list(sd = 2))[]
+#'
+#' mirai_map2(1:3, 50, rnorm, .args = list(sd = 2))[.flat]
+#'
+#' daemons(0)
+#'
+#' }
+#'
+#' @export
+#'
+mirai_map2 <- function(.x, .y, .f, ..., .args = list(), .promise = NULL, .compute = "default") {
+
+  xlen <- length(.x)
+  ylen <- length(.y)
+  scalary <- ylen <= 1L
+  scalary || xlen == ylen || stop(._[["xlen_ylen"]])
+
+  envir <- ..[[.compute]]
+  is.null(envir) && {
+    .f
+    warning(._[["requires_daemons"]], immediate. = TRUE)
+    daemons(n = 1L, dispatcher = FALSE, .compute = .compute)
+    return(mirai_map2(.x = .x, .y = .y, .f = .f, ..., .args = .args, .promise = .promise, .compute = .compute))
   }
+
+  vec <- vector(mode = "list", length = xlen)
+  for (i in seq_along(vec))
+    vec[[i]] <- mirai(
+      .expr = do.call(.f, c(list(.x, .y), .args)),
+      .f = .f,
+      .x = .subset2(.x, i),
+      .y = if (scalary) .y else .subset2(.y, i),
+      ...,
+      .args = list(.args = .args),
+      .compute = .compute
+    )
+
+  if (length(.promise))
+    if (is.list(.promise)) {
+      if (length(.promise) > 1L)
+        lapply(vec, promises::then, .promise[[1L]], .promise[[2L]]) else
+          lapply(vec, promises::then, .promise[[1L]])
+    } else {
+      lapply(vec, promises::then, .promise)
+    }
 
   `class<-`(`names<-`(vec, names(.x)), "mirai_map")
 
