@@ -51,9 +51,9 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.1.9016" id="mirai-1119016-development">mirai 1.1.1.9016 (development)<a class="anchor" aria-label="anchor" href="#mirai-1119016-development"></a></h2>
 <ul><li>
-<code><a href="../reference/everywhere.html">everywhere()</a></code> adds argument ‘.serial’ for accepting serialization configurations created by <code><a href="../reference/serial_config.html">serial_config()</a></code>. These allow normally non-exportable reference objects such as Arrow Tables or torch tensors to be sent and received transparently without additional marshalling steps. Configurations apply on a per compute profile basis.</li>
+<code><a href="../reference/everywhere.html">everywhere()</a></code> adds argument ‘.serial’ to accept serialization configurations created by <code><a href="../reference/serial_config.html">serial_config()</a></code>. These allow normally non-exportable reference objects such as Arrow Tables or torch tensors to be used seamlessly across parallel processes without additional marshalling steps. Configurations apply on a per compute profile basis.</li>
 <li>
-<code><a href="../reference/serialization.html">serialization()</a></code> is now deprecated in favour of the above usage of <code><a href="../reference/everywhere.html">everywhere()</a></code>, and will be removed in a future version, however it gains a ‘.compute’ argument in the meantime.</li>
+<code><a href="../reference/serialization.html">serialization()</a></code> is now deprecated in favour of the above usage of <code><a href="../reference/everywhere.html">everywhere()</a></code>, and will be removed in a future version.</li>
 <li>Adds <code><a href="../reference/mirai_map.html">mirai_map2()</a></code> for performing asynchronous parallel map over 2 arguments.</li>
 <li>‘mirai_map’ <code>[]</code> method gains the option <code>[.flat]</code> to collect and flatten results, avoiding coercion.</li>
 <li>Collecting a ‘mirai_map’ no longer spuriously introduces empty names where none were present originally.</li>
