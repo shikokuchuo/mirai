@@ -212,10 +212,10 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' @inheritParams mirai
 #' @param .serial [default NULL] (optional) a configuration created by
 #'     \code{\link{serial_config}} to register serialization and unserialization
-#'     functions for sending and receiving reference objects that are normally
-#'     non-exportable, such as Arrow Tables or torch tensors. Updating with a
-#'     new configuration replaces any existing registered functions. To remove
-#'     the configuration, specify an empty list.
+#'     functions for normally non-exportable reference objects, such as Arrow
+#'     Tables or torch tensors. Updating with a new configuration replaces any
+#'     existing registered functions. To remove the configuration, provide an
+#'     empty list.
 #'
 #' @return Invisible NULL.
 #'
