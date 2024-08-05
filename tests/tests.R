@@ -121,7 +121,6 @@ connection && .Platform[["OS.type"]] != "windows" && {
   Sys.sleep(1L)
   nanotest(all(mirai_map2(c(a = 1, b = 1, c = 1), 2, sum)[.flat] == 3))
   nanotesterr(mirai_map2(1:3, 1:2, sum), "must be the length of")
-  daemons(0L)
   Sys.sleep(1L)
   NA
 }
