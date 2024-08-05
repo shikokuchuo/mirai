@@ -2,30 +2,20 @@
 % Please edit documentation in R/map.R
 \name{mirai_map}
 \alias{mirai_map}
-\alias{mirai_map2}
 \title{mirai Map}
 \usage{
 mirai_map(.x, .f, ..., .args = list(), .promise = NULL, .compute = "default")
-
-mirai_map2(
-  .x,
-  .y,
-  .f,
-  ...,
-  .args = list(),
-  .promise = NULL,
-  .compute = "default"
-)
 }
 \arguments{
-\item{.x}{a list or atomic vector.}
+\item{.x}{a list or atomic vector. If a nested list/vector where the
+sub-elements are the same length, multiple map is performed across all
+sub-elements.}
 
-\item{.f}{a function to be applied to each element of \code{.x} (and
-\code{.y} for \strong{mirai_map2}).}
+\item{.f}{a function to be applied to each element of \code{.x}, or across
+all sub-elements of \code{.x} as the case may be.}
 
 \item{...}{(optional) named arguments (name = value pairs) specifying objects
-referenced, but not defined, in \code{.f}, or an environment containing
-such objects.}
+referenced, but not defined, in \code{.f}.}
 
 \item{.args}{(optional) further constant arguments to \code{.f}, provided as
 a list.}
@@ -39,25 +29,20 @@ respectively to \sQuote{onFulfilled} and \sQuote{onRejected} for
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
-
-\item{.y}{a list or atomic vector, the same length as \sQuote{.x}, or else
-length one in which case it is recycled.}
 }
 \value{
 A \sQuote{mirai_map} (list of \sQuote{mirai} objects).
 }
 \description{
-\strong{mirai_map} performs asynchronous parallel map of a function over a
-    list or vector using \pkg{mirai}, with optional \pkg{promises}
-    integration.
-
-\strong{mirai_map2} is a variant that maps a function over a pair of
-    lists/vectors.
+Asynchronous parallel map of a function over a list or vector using
+    \pkg{mirai}, with optional \pkg{promises} integration. Performs multiple
+    map over nested lists/vectors, allowing advanced patterns such as map
+    over the rows of a dataframe.
 }
 \details{
 Sends each application of function \code{.f} on an element of
-    \code{.x} (and \code{.y} for \strong{mirai_map2}) for computation in a
-    separate \code{\link{mirai}} call.
+    \code{.x} (or each application of \code{.f} across all sub-elements of
+    \code{.x}) for computation in a separate \code{\link{mirai}} call.
 
     This simple and transparent behaviour is designed to make full use of
     \pkg{mirai} scheduling to minimise overall execution time.
@@ -99,25 +84,36 @@ if (interactive()) {
 
 daemons(4, dispatcher = FALSE)
 
+# map with constant args specified via '.args'
 mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
 
-mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[.flat]
+# flatmap with function definition passed via '...'
+mirai_map(1:3, function(x) func(1L, x, x + 1L), func = stats::runif)[.flat]
 
-mirai_map2(1:3, c(1, 10, 20), rnorm, .args = list(2))[]
+# sum of 1,4 2,3 3,2 => 5, 5, 5
+mirai_map(list(1:3, c(4, 3, 2)), sum)[.flat]
 
-mirai_map2(1:3, 50, rnorm, .args = list(sd = 2))[.flat]
+# map over rows of a dataframe
+df <- data.frame(a = c("Aa", "Bb"), b = c(1L, 4L))
+mirai_map(df, function(...) sprintf("\%s: \%d", ...))[.flat]
 
+# indexed map over a vector
+v <- c("egg", "gif", "fen", "nip", "pid")
+mirai_map(list(1:length(v), v), function(i, v) sprintf("\%d_\%s", i, v))[.flat]
+
+# return a 'mirai_map' object, check for resolution, collect later
 mp <- mirai_map(
   c(a = 2, b = 3, c = 4),
-  function(x) do(x, as.logical(x \%\% 2)),
-  do = nanonext::random
+  function(x, y) do(x, as.logical(x \%\% y)),
+  do = nanonext::random,
+  .args = list(y = 2)
 )
 unresolved(mp)
 mp
 mp[]
 unresolved(mp)
 
-# progress indicator counts up to 4 seconds
+# progress indicator counts up from 0 to 4 seconds
 res <- mirai_map(1:4, Sys.sleep)[.progress]
 
 daemons(0)

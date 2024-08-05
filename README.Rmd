@@ -89,14 +89,14 @@ Daemons may also be deployed [remotely](https://shikokuchuo.net/mirai/articles/m
 
 #### Async Parallel Map
 
-`mirai_map()` maps a function over a list or vector, with each element processed in a separate parallel process.
-`mirai_map2()` is a variant that allows mapping over 2 lists/vectors simultaneously.
+`mirai_map()` maps a function over a list or vector, with each element processed in a separate parallel process. Performs multiple map over nested list/vectors, allowing advanced patterns such as map over the rows of a dataframe.
 
 ```{r map}
+df <- data.frame(fruit = c("melon", "orange", "coconut"), price = c(5L, 1L, 2L))
 m <- mirai_map(
-  1:4,
-  \(x) {res <- rnorm(1e7, mean = x, sd = x + 3) + z; max(res) - min(res)},
-  z = rnorm(1e6)
+  df,
+  function(fruit, currency, price) sprintf("The price of a %s is %s%d.", fruit, currency, price),
+  .args = list(currency = "$")
 )
 ```
 A 'mirai_map' object is returned immediately. Other code can continue to run at this point. Its value may be retrieved at any time using its `[]` method to return a list, just like `purrr::map()` or `base::lapply()`. The `[]` method also provides options for flatmap, early stopping and/or progress indicators. 

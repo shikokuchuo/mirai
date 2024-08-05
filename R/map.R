@@ -18,16 +18,18 @@
 
 #' mirai Map
 #'
-#' \strong{mirai_map} performs asynchronous parallel map of a function over a
-#'     list or vector using \pkg{mirai}, with optional \pkg{promises}
-#'     integration.
+#' Asynchronous parallel map of a function over a list or vector using
+#'     \pkg{mirai}, with optional \pkg{promises} integration. Performs multiple
+#'     map over nested lists/vectors, allowing advanced patterns such as map
+#'     over the rows of a dataframe.
 #'
-#' @param .x a list or atomic vector.
-#' @param .f a function to be applied to each element of \code{.x} (and
-#'     \code{.y} for \strong{mirai_map2}).
+#' @param .x a list or atomic vector. If a nested list/vector where the
+#'     sub-elements are the same length, multiple map is performed across all
+#'     sub-elements.
+#' @param .f a function to be applied to each element of \code{.x}, or across
+#'     all sub-elements of \code{.x} as the case may be.
 #' @param ... (optional) named arguments (name = value pairs) specifying objects
-#'     referenced, but not defined, in \code{.f}, or an environment containing
-#'     such objects.
+#'     referenced, but not defined, in \code{.f}.
 #' @param .args (optional) further constant arguments to \code{.f}, provided as
 #'     a list.
 #' @param .promise (optional) if supplied, registers a promise against each
@@ -63,8 +65,8 @@
 #'     progress indicator.
 #'
 #' @details Sends each application of function \code{.f} on an element of
-#'     \code{.x} (and \code{.y} for \strong{mirai_map2}) for computation in a
-#'     separate \code{\link{mirai}} call.
+#'     \code{.x} (or each application of \code{.f} across all sub-elements of
+#'     \code{.x}) for computation in a separate \code{\link{mirai}} call.
 #'
 #'     This simple and transparent behaviour is designed to make full use of
 #'     \pkg{mirai} scheduling to minimise overall execution time.
@@ -82,25 +84,36 @@
 #'
 #' daemons(4, dispatcher = FALSE)
 #'
+#' # map with constant args specified via '.args'
 #' mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
 #'
-#' mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[.flat]
+#' # flatmap with function definition passed via '...'
+#' mirai_map(1:3, function(x) func(1L, x, x + 1L), func = stats::runif)[.flat]
 #'
-#' mirai_map2(1:3, c(1, 10, 20), rnorm, .args = list(2))[]
+#' # sum of 1,4 2,3 3,2 => 5, 5, 5
+#' mirai_map(list(1:3, c(4, 3, 2)), sum)[.flat]
 #'
-#' mirai_map2(1:3, 50, rnorm, .args = list(sd = 2))[.flat]
+#' # map over rows of a dataframe
+#' df <- data.frame(a = c("Aa", "Bb"), b = c(1L, 4L))
+#' mirai_map(df, function(...) sprintf("%s: %d", ...))[.flat]
 #'
+#' # indexed map over a vector
+#' v <- c("egg", "gif", "fen", "nip", "pid")
+#' mirai_map(list(1:length(v), v), function(i, v) sprintf("%d_%s", i, v))[.flat]
+#'
+#' # return a 'mirai_map' object, check for resolution, collect later
 #' mp <- mirai_map(
 #'   c(a = 2, b = 3, c = 4),
-#'   function(x) do(x, as.logical(x %% 2)),
-#'   do = nanonext::random
+#'   function(x, y) do(x, as.logical(x %% y)),
+#'   do = nanonext::random,
+#'   .args = list(y = 2)
 #' )
 #' unresolved(mp)
 #' mp
 #' mp[]
 #' unresolved(mp)
 #'
-#' # progress indicator counts up to 4 seconds
+#' # progress indicator counts up from 0 to 4 seconds
 #' res <- mirai_map(1:4, Sys.sleep)[.progress]
 #'
 #' daemons(0)
@@ -139,66 +152,41 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
     daemons(n = 1L, dispatcher = FALSE, .compute = .compute)
     return(mirai_map(.x = .x, .f = .f, ..., .args = .args, .promise = .promise, .compute = .compute))
   }
-  vec <- vector(mode = "list", length = length(.x))
-  for (i in seq_along(vec))
-    vec[[i]] <- mirai(
-      .expr = do.call(.f, c(list(.x), .args)),
-      .f = .f,
-      .x = .subset2(.x, i),
-      ...,
-      .args = list(.args = .args),
-      .compute = .compute
-    )
-
-  if (length(.promise))
-    set_promise(vec, .promise)
-
-  `class<-`(`names<-`(vec, names(.x)), "mirai_map")
-
-}
-
-#' mirai Map2
-#'
-#' \strong{mirai_map2} is a variant that maps a function over a pair of
-#'     lists/vectors.
-#'
-#' @param .y a list or atomic vector, the same length as \sQuote{.x}, or else
-#'     length one in which case it is recycled.
-#'
-#' @rdname mirai_map
-#' @export
-#'
-mirai_map2 <- function(.x, .y, .f, ..., .args = list(), .promise = NULL, .compute = "default") {
-
-  xlen <- length(.x)
-  ylen <- length(.y)
-  scalary <- ylen <= 1L
-  scalary || xlen == ylen || stop(._[["xlen_ylen"]])
-
-  envir <- ..[[.compute]]
-  is.null(envir) && {
-    .f
-    warning(._[["requires_daemons"]], immediate. = TRUE)
-    daemons(n = 1L, dispatcher = FALSE, .compute = .compute)
-    return(mirai_map2(.x = .x, .y = .y, .f = .f, ..., .args = .args, .promise = .promise, .compute = .compute))
+  xilen <- length(.x[[1L]])
+  if (xilen > 1L && all(as.integer(lapply(.x, length)) == xilen)) {
+    vec <- vector(mode = "list", length = xilen)
+    for (i in seq_len(xilen))
+      vec[[i]] <- mirai(
+        .expr = do.call(.f, c(.x, .args)),
+        .f = .f,
+        .x = lapply(.x, .subset2, i),
+        ...,
+        .args = list(.args = .args),
+        .compute = .compute
+      )
+  } else {
+    vec <- `names<-`(vector(mode = "list", length = length(.x)), names(.x))
+    for (i in seq_along(vec))
+      vec[[i]] <- mirai(
+        .expr = do.call(.f, c(list(.x), .args)),
+        .f = .f,
+        .x = .subset2(.x, i),
+        ...,
+        .args = list(.args = .args),
+        .compute = .compute
+      )
   }
 
-  vec <- vector(mode = "list", length = xlen)
-  for (i in seq_along(vec))
-    vec[[i]] <- mirai(
-      .expr = do.call(.f, c(list(.x, .y), .args)),
-      .f = .f,
-      .x = .subset2(.x, i),
-      .y = if (scalary) .y else .subset2(.y, i),
-      ...,
-      .args = list(.args = .args),
-      .compute = .compute
-    )
-
   if (length(.promise))
-    set_promise(vec, .promise)
+    if (is.list(.promise)) {
+      if (length(.promise) > 1L)
+        lapply(vec, promises::then, .promise[[1L]], .promise[[2L]]) else
+          lapply(vec, promises::then, .promise[[1L]])
+    } else {
+      lapply(vec, promises::then, .promise)
+    }
 
-  `class<-`(`names<-`(vec, names(.x)), "mirai_map")
+  `class<-`(vec, "mirai_map")
 
 }
 
@@ -253,14 +241,3 @@ print.mirai_map <- function(x, ...) {
 #' @export
 #'
 .stop <- expression(if (is_error_value(xi)) { lapply(x, stop_mirai); stop(xi, call. = FALSE) })
-
-# internals --------------------------------------------------------------------
-
-set_promise <- function(vec, .promise)
-  if (is.list(.promise)) {
-    if (length(.promise) > 1L)
-      lapply(vec, promises::then, .promise[[1L]], .promise[[2L]]) else
-        lapply(vec, promises::then, .promise[[1L]])
-  } else {
-    lapply(vec, promises::then, .promise)
-  }

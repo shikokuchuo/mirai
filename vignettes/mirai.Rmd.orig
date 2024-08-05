@@ -545,11 +545,11 @@ Please refer to the [torch vignette](https://shikokuchuo.net/mirai/articles/torc
 
 ### Asynchronous Parallel Map
 
-`mirai_map()` performs asynchronous parallel/distributed map using `mirai`. This function is analogous to `purrr::map()`, but returns a 'mirai_map' object.
+`mirai_map()` performs asynchronous parallel/distributed map using `mirai`.
+
+This function is similar to `purrr::map()`, but returns a 'mirai_map' object. It is also more advanced as it allows multiple map over nested lists/vectors - for example mapping over the rows of a dataframe.
 
 The results of a mirai_map `x` may be collected using `x[]`. This waits for all asynchronous operations to complete if still in progress.
-
-`mirai_map2()` is a variant that allows mapping over 2 lists/vectors simultaneously, similar to `purrr::map2()`.
 
 Key advantages of `mirai_map()`:
 
@@ -594,7 +594,7 @@ When collecting the results, optionally specify `.flat`, `.progress` or `.stop` 
 Combinations of the above may be supplied in the fashion of `x[c(.stop, .progress)]`.
 ```{r mmapadv}
 tryCatch(
-  mirai_map2(list(a = 1, b = "a", c = 3), 3:1, sum)[.stop],
+  mirai_map(list(list(a = 1, b = "a", c = 3), 3:1), sum)[.stop],
   error = identity
 )
 
