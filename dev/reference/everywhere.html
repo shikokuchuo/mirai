@@ -101,10 +101,10 @@ above - see ‘evaluation’ section below.</p></dd>
 <dt id="arg--serial">.serial<a class="anchor" aria-label="anchor" href="#arg--serial"></a></dt>
 <dd><p>[default NULL] (optional) a configuration created by
 <code><a href="serial_config.html">serial_config</a></code> to register serialization and unserialization
-functions for sending and receiving reference objects that are normally
-non-exportable, such as Arrow Tables or torch tensors. Updating with a
-new configuration replaces any existing registered functions. To remove
-the configuration, specify an empty list.</p></dd>
+functions for normally non-exportable reference objects, such as Arrow
+Tables or torch tensors. Updating with a new configuration replaces any
+existing registered functions. To remove the configuration, provide an
+empty list.</p></dd>
 
 
 <dt id="arg--compute">.compute<a class="anchor" aria-label="anchor" href="#arg--compute"></a></dt>
