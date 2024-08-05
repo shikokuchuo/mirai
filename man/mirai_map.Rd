@@ -2,14 +2,26 @@
 % Please edit documentation in R/map.R
 \name{mirai_map}
 \alias{mirai_map}
+\alias{mirai_map2}
 \title{mirai Map}
 \usage{
 mirai_map(.x, .f, ..., .args = list(), .promise = NULL, .compute = "default")
+
+mirai_map2(
+  .x,
+  .y,
+  .f,
+  ...,
+  .args = list(),
+  .promise = NULL,
+  .compute = "default"
+)
 }
 \arguments{
 \item{.x}{a list or atomic vector.}
 
-\item{.f}{a function to be applied to each element of \code{.x}.}
+\item{.f}{a function to be applied to each element of \code{.x} (and
+\code{.y} for \strong{mirai_map2}).}
 
 \item{...}{(optional) named arguments (name = value pairs) specifying objects
 referenced, but not defined, in \code{.f}, or an environment containing
@@ -27,17 +39,25 @@ respectively to \sQuote{onFulfilled} and \sQuote{onRejected} for
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
+
+\item{.y}{a list or atomic vector, the same length as \sQuote{.x}, or else
+length one in which case it is recycled.}
 }
 \value{
 A \sQuote{mirai_map} (list of \sQuote{mirai} objects).
 }
 \description{
-Asynchronous parallel / distributed map of a function over a list or vector
-    using \pkg{mirai}, with optional \pkg{promises} integration.
+\strong{mirai_map} performs asynchronous parallel map of a function over a
+    list or vector using \pkg{mirai}, with optional \pkg{promises}
+    integration.
+
+\strong{mirai_map2} is a variant that maps a function over a pair of
+    lists/vectors.
 }
 \details{
 Sends each application of function \code{.f} on an element of
-    \code{.x} for computation in a separate \code{\link{mirai}} call.
+    \code{.x} (and \code{.y} for \strong{mirai_map2}) for computation in a
+    separate \code{\link{mirai}} call.
 
     This simple and transparent behaviour is designed to make full use of
     \pkg{mirai} scheduling to minimise overall execution time.
@@ -83,6 +103,10 @@ mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
 
 mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[.flat]
 
+mirai_map2(1:3, c(1, 10, 20), rnorm, .args = list(2))[]
+
+mirai_map2(1:3, 50, rnorm, .args = list(sd = 2))[.flat]
+
 mp <- mirai_map(
   c(a = 2, b = 3, c = 4),
   function(x) do(x, as.logical(x \%\% 2)),
@@ -120,7 +144,4 @@ ml <- mirai_map(
 
 }
 
-}
-\seealso{
-\code{\link{mirai_map2}}
 }

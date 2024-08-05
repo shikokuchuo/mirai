@@ -18,11 +18,13 @@
 
 #' mirai Map
 #'
-#' Asynchronous parallel / distributed map of a function over a list or vector
-#'     using \pkg{mirai}, with optional \pkg{promises} integration.
+#' \strong{mirai_map} performs asynchronous parallel map of a function over a
+#'     list or vector using \pkg{mirai}, with optional \pkg{promises}
+#'     integration.
 #'
 #' @param .x a list or atomic vector.
-#' @param .f a function to be applied to each element of \code{.x}.
+#' @param .f a function to be applied to each element of \code{.x} (and
+#'     \code{.y} for \strong{mirai_map2}).
 #' @param ... (optional) named arguments (name = value pairs) specifying objects
 #'     referenced, but not defined, in \code{.f}, or an environment containing
 #'     such objects.
@@ -61,7 +63,8 @@
 #'     progress indicator.
 #'
 #' @details Sends each application of function \code{.f} on an element of
-#'     \code{.x} for computation in a separate \code{\link{mirai}} call.
+#'     \code{.x} (and \code{.y} for \strong{mirai_map2}) for computation in a
+#'     separate \code{\link{mirai}} call.
 #'
 #'     This simple and transparent behaviour is designed to make full use of
 #'     \pkg{mirai} scheduling to minimise overall execution time.
@@ -73,8 +76,6 @@
 #'     Note: requires daemons to have previously been set. If not, then one
 #'     local daemon is set before the function propceeds.
 #'
-#' @seealso \code{\link{mirai_map2}}
-#'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
@@ -84,6 +85,10 @@
 #' mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
 #'
 #' mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[.flat]
+#'
+#' mirai_map2(1:3, c(1, 10, 20), rnorm, .args = list(2))[]
+#'
+#' mirai_map2(1:3, 50, rnorm, .args = list(sd = 2))[.flat]
 #'
 #' mp <- mirai_map(
 #'   c(a = 2, b = 3, c = 4),
@@ -154,48 +159,13 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
 
 #' mirai Map2
 #'
-#' Asynchronous parallel / distributed map of a function over a \strong{pair} of
-#'     lists or vectors using mirai, with optional promises integration.
+#' \strong{mirai_map2} is a variant that maps a function over a pair of
+#'     lists/vectors.
 #'
-#' @inheritParams mirai_map
-#' @param .y a list or atomic vector the same length as \sQuote{.x} (or length
-#'     one in which case it will be recycled).
-#' @param .f a function to be applied to each element of \code{.x} and
-#'     \code{.y}.
+#' @param .y a list or atomic vector, the same length as \sQuote{.x}, or else
+#'     length one in which case it is recycled.
 #'
-#' @return A \sQuote{mirai_map} (list of \sQuote{mirai} objects).
-#'
-#' @details Sends each application of function \code{.f} on an element of
-#'     \code{.x} and \code{.y} for computation in a separate \code{\link{mirai}}
-#'     call.
-#'
-#'     This simple and transparent behaviour is designed to make full use of
-#'     \pkg{mirai} scheduling to minimise overall execution time.
-#'
-#'     Facilitates recovery from partial failure by returning all
-#'     \sQuote{miraiError} / \sQuote{errorValue} as the case may be, thus
-#'     allowing only the failures to be re-run.
-#'
-#'     Note: requires daemons to have previously been set. If not, then one
-#'     local daemon is set before the function propceeds.
-#'
-#' @inheritSection mirai_map Results
-#' @seealso \code{\link{mirai_map}}
-#'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
-#' daemons(4, dispatcher = FALSE)
-#'
-#' mirai_map2(1:3, c(1, 10, 20), rnorm, .args = list(2))[]
-#'
-#' mirai_map2(1:3, 50, rnorm, .args = list(sd = 2))[.flat]
-#'
-#' daemons(0)
-#'
-#' }
-#'
+#' @rdname mirai_map
 #' @export
 #'
 mirai_map2 <- function(.x, .y, .f, ..., .args = list(), .promise = NULL, .compute = "default") {
