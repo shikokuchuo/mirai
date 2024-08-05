@@ -78,7 +78,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 3.817306
+#> [1] 4.743798
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -92,7 +92,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 3.817306
+#> [1] 4.743798
 ```
 
 #### Daemons
@@ -120,14 +120,20 @@ required.
 #### Async Parallel Map
 
 `mirai_map()` maps a function over a list or vector, with each element
-processed in a separate parallel process. `mirai_map2()` is a variant
-that allows mapping over 2 lists/vectors simultaneously.
+processed in a separate parallel process. It can also perform multiple
+map over nested list/vectors, allowing advanced patterns such as map
+over the rows of a dataframe.
 
 ``` r
+df <- data.frame(
+  fruit = c("melon", "pear", "coconut"),
+  price = c(5L, 1L, 2L)
+)
 m <- mirai_map(
-  1:4,
-  \(x) {res <- rnorm(1e7, mean = x, sd = x + 3) + z; max(res) - min(res)},
-  z = rnorm(1e6)
+  df,
+  function(fruit, currency, price)
+    sprintf("The price of a %s is %s%d.", fruit, currency, price),
+  .args = list(currency = "$")
 )
 ```
 
@@ -139,9 +145,10 @@ progress indicators.
 
 ``` r
 m
-#> < mirai map [0/4] >
+#> < mirai map [3/3] >
 m[.flat]
-#> [1] 44.40655 52.41569 62.30273 81.03117
+#> [1] "The price of a melon is $5."   "The price of a pear is $1."   
+#> [3] "The price of a coconut is $2."
 ```
 
 All errors are returned as ‘errorValues’, facilitating recovery from
