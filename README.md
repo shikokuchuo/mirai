@@ -78,7 +78,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 4.743798
+#> [1] 4.370811
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -92,7 +92,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 4.743798
+#> [1] 4.370811
 ```
 
 #### Daemons
@@ -120,9 +120,9 @@ required.
 #### Async Parallel Map
 
 `mirai_map()` maps a function over a list or vector, with each element
-processed in a separate parallel process. It can also perform multiple
-map over nested list/vectors, allowing advanced patterns such as map
-over the rows of a dataframe.
+processed in a separate parallel process. It also performs multiple map
+over 2D lists/vectors, allowing advanced patterns such as map over the
+rows of a dataframe or matrix.
 
 ``` r
 df <- data.frame(

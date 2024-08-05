@@ -2,7 +2,7 @@
 
 * `everywhere()` adds argument '.serial' to accept serialization configurations created by `serial_config()`. These allow normally non-exportable reference objects such as Arrow Tables or torch tensors to be used seamlessly across parallel processes without additional marshalling steps. Configurations apply on a per compute profile basis.
 * `serialization()` is now deprecated in favour of the above usage of `everywhere()`, and will be removed in a future version.
-* `mirai_map()` enhanced to perform multiple map over a nested list/vector argument, allowing advanced patterns such as mapping over the rows of a dataframe.
+* `mirai_map()` enhanced to perform multiple map over 2D lists/vectors, allowing advanced patterns such as mapping over the rows of a dataframe or matrix.
 * 'mirai_map' `[]` method gains the option `[.flat]` to collect and flatten results, avoiding coercion.
 * Collecting a 'mirai_map' no longer spuriously introduces empty names where none were present originally.
 * Faster local `daemons(dispatcher = FALSE)` and `make_cluster()` by using asynchronous launches (thanks @mtmorgan #123).

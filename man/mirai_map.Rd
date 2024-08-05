@@ -7,9 +7,9 @@
 mirai_map(.x, .f, ..., .args = list(), .promise = NULL, .compute = "default")
 }
 \arguments{
-\item{.x}{a list or atomic vector. If a nested list/vector where the
-sub-elements are the same length, multiple map is performed across all
-sub-elements.}
+\item{.x}{a list or atomic vector. If a 2D list (i.e. list of lists/vectors
+of the same length), multiple map is performed over a slice of the list.
+If a matrix, multiple map is performed over the rows of the matrix.}
 
 \item{.f}{a function to be applied to each element of \code{.x}, or across
 all sub-elements of \code{.x} as the case may be.}
@@ -36,13 +36,13 @@ A \sQuote{mirai_map} (list of \sQuote{mirai} objects).
 \description{
 Asynchronous parallel map of a function over a list or vector using
     \pkg{mirai}, with optional \pkg{promises} integration. Performs multiple
-    map over nested lists/vectors, allowing advanced patterns such as map
-    over the rows of a dataframe.
+    map over 2D lists/vectors, allowing advanced patterns such as map over
+    the rows of a dataframe or matrix.
 }
 \details{
 Sends each application of function \code{.f} on an element of
-    \code{.x} (or each application of \code{.f} across all sub-elements of
-    \code{.x}) for computation in a separate \code{\link{mirai}} call.
+    \code{.x} (or each application of \code{.f} on a slice of \code{.x}) for
+    computation in a separate \code{\link{mirai}} call.
 
     This simple and transparent behaviour is designed to make full use of
     \pkg{mirai} scheduling to minimise overall execution time.
@@ -90,8 +90,13 @@ mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
 # flatmap with function definition passed via '...'
 mirai_map(1:3, function(x) func(1L, x, x + 1L), func = stats::runif)[.flat]
 
-# sum of 1,4 2,3 3,2 => 5, 5, 5
-mirai_map(list(1:3, c(4, 3, 2)), sum)[.flat]
+# sum slices of a list of vectors
+(listvec <- list(1:3, c(4, 3, 2)))
+mirai_map(listvec, sum)[.flat]
+
+# sum rows of a matrix
+(mat <- matrix(1:4, nrow = 2L))
+mirai_map(mat, sum)[.flat]
 
 # map over rows of a dataframe
 df <- data.frame(a = c("Aa", "Bb"), b = c(1L, 4L))
