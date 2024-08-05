@@ -55,7 +55,7 @@
 <li>
 <code><a href="../reference/serialization.html">serialization()</a></code> is now deprecated in favour of the above usage of <code><a href="../reference/everywhere.html">everywhere()</a></code>, and will be removed in a future version.</li>
 <li>
-<code><a href="../reference/mirai_map.html">mirai_map()</a></code> enhanced to perform multiple map over a nested list/vector argument, allowing advanced patterns such as mapping over the rows of a dataframe.</li>
+<code><a href="../reference/mirai_map.html">mirai_map()</a></code> enhanced to perform multiple map over 2D lists/vectors, allowing advanced patterns such as mapping over the rows of a dataframe or matrix.</li>
 <li>‘mirai_map’ <code>[]</code> method gains the option <code>[.flat]</code> to collect and flatten results, avoiding coercion.</li>
 <li>Collecting a ‘mirai_map’ no longer spuriously introduces empty names where none were present originally.</li>
 <li>Faster local <code>daemons(dispatcher = FALSE)</code> and <code><a href="../reference/make_cluster.html">make_cluster()</a></code> by using asynchronous launches (thanks <a href="https://github.com/mtmorgan" class="external-link">@mtmorgan</a> <a href="https://github.com/shikokuchuo/mirai/issues/123" class="external-link">#123</a>).</li>
