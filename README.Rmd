@@ -104,7 +104,7 @@ A 'mirai_map' object is returned immediately. Other code can continue to run at 
 m
 m[.flat]
 ```
-All errors are returned as 'errorValues', facilitating recovery from partial failure. There are also other [advantages](https://shikokuchuo.net/mirai/articles/mirai.html#asynchronous-parallel-map) over alternative map implementations.
+All errors are returned as 'errorValues', facilitating recovery from partial failure. There are further [advantages](https://shikokuchuo.net/mirai/articles/mirai.html#asynchronous-parallel-map) over alternative map implementations.
 
 ### Design Concepts
 

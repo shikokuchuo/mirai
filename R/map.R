@@ -146,13 +146,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
     )
 
   if (length(.promise))
-    if (is.list(.promise)) {
-      if (length(.promise) > 1L)
-        lapply(vec, promises::then, .promise[[1L]], .promise[[2L]]) else
-          lapply(vec, promises::then, .promise[[1L]])
-    } else {
-      lapply(vec, promises::then, .promise)
-    }
+    set_promise(vec, .promise)
 
   `class<-`(`names<-`(vec, names(.x)), "mirai_map")
 
@@ -194,7 +188,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
 #'
 #' daemons(4, dispatcher = FALSE)
 #'
-#' mirai_map2(1:3, c(1, 10, 20), rnorm, .args = list(sd = 2))[]
+#' mirai_map2(1:3, c(1, 10, 20), rnorm, .args = list(2))[]
 #'
 #' mirai_map2(1:3, 50, rnorm, .args = list(sd = 2))[.flat]
 #'
@@ -232,13 +226,7 @@ mirai_map2 <- function(.x, .y, .f, ..., .args = list(), .promise = NULL, .comput
     )
 
   if (length(.promise))
-    if (is.list(.promise)) {
-      if (length(.promise) > 1L)
-        lapply(vec, promises::then, .promise[[1L]], .promise[[2L]]) else
-          lapply(vec, promises::then, .promise[[1L]])
-    } else {
-      lapply(vec, promises::then, .promise)
-    }
+    set_promise(vec, .promise)
 
   `class<-`(`names<-`(vec, names(.x)), "mirai_map")
 
@@ -295,3 +283,14 @@ print.mirai_map <- function(x, ...) {
 #' @export
 #'
 .stop <- expression(if (is_error_value(xi)) { lapply(x, stop_mirai); stop(xi, call. = FALSE) })
+
+# internals --------------------------------------------------------------------
+
+set_promise <- function(vec, .promise)
+  if (is.list(.promise)) {
+    if (length(.promise) > 1L)
+      lapply(vec, promises::then, .promise[[1L]], .promise[[2L]]) else
+        lapply(vec, promises::then, .promise[[1L]])
+  } else {
+    lapply(vec, promises::then, .promise)
+  }

@@ -92,7 +92,7 @@ if (interactive()) {
 
 daemons(4, dispatcher = FALSE)
 
-mirai_map2(1:3, c(1, 10, 20), rnorm, .args = list(sd = 2))[]
+mirai_map2(1:3, c(1, 10, 20), rnorm, .args = list(2))[]
 
 mirai_map2(1:3, 50, rnorm, .args = list(sd = 2))[.flat]
 
