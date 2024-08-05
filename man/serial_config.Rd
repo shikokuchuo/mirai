@@ -31,7 +31,7 @@ A list comprising the configuration. This should be passed to the
 \description{
 Returns a serialization configuration, which may be set to perform custom
     serialization and unserialization of normally non-exportable reference
-    objects, allowing these to be used transparently between different R
+    objects, allowing these to be used seamlessly between different R
     sessions. This feature utilises the 'refhook' system of R native
     serialization. Once set, the functions apply to all mirai requests for a
     specific compute profile.

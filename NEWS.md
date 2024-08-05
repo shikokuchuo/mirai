@@ -1,7 +1,7 @@
 # mirai 1.1.1.9016 (development)
 
-* `everywhere()` adds argument '.serial' for accepting serialization configurations created by `serial_config()`. These allow normally non-exportable reference objects such as Arrow Tables or torch tensors to be sent and received transparently without additional marshalling steps. Configurations apply on a per compute profile basis.
-* `serialization()` is now deprecated in favour of the above usage of `everywhere()`, and will be removed in a future version, however it gains a '.compute' argument in the meantime.
+* `everywhere()` adds argument '.serial' to accept serialization configurations created by `serial_config()`. These allow normally non-exportable reference objects such as Arrow Tables or torch tensors to be used seamlessly across parallel processes without additional marshalling steps. Configurations apply on a per compute profile basis.
+* `serialization()` is now deprecated in favour of the above usage of `everywhere()`, and will be removed in a future version.
 * Adds `mirai_map2()` for performing asynchronous parallel map over 2 arguments.
 * 'mirai_map' `[]` method gains the option `[.flat]` to collect and flatten results, avoiding coercion.
 * Collecting a 'mirai_map' no longer spuriously introduces empty names where none were present originally.

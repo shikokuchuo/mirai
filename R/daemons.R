@@ -485,7 +485,7 @@ status <- function(.compute = "default") {
 #'
 #' Returns a serialization configuration, which may be set to perform custom
 #'     serialization and unserialization of normally non-exportable reference
-#'     objects, allowing these to be used transparently between different R
+#'     objects, allowing these to be used seamlessly between different R
 #'     sessions. This feature utilises the 'refhook' system of R native
 #'     serialization. Once set, the functions apply to all mirai requests for a
 #'     specific compute profile.
@@ -522,7 +522,6 @@ serial_config <- serial_config
 #'     and receiving reference objects. Settings apply to an individual compute
 #'     profile, and daemons must have been set beforehand.
 #'
-#' @inheritParams mirai
 #' @param fns \strong{either} a list comprising 2 functions: \cr serialization
 #'     function: must accept a reference object (or list of objects) inheriting
 #'     from \sQuote{class} and return a raw vector.\cr unserialization function:
@@ -537,8 +536,8 @@ serial_config <- serial_config
 #'     \code{arrow::read_ipc_stream}.
 #'
 #' @return Invisibly, a list comprising the currently-registered serialization
-#'     configuration for the specified compute profile (an empty list if not
-#'     registered).
+#'     configuration for the \sQuote{default} compute profile (an empty list if
+#'     not registered).
 #'
 #' @details Registering new functions replaces any existing registered
 #'     functions.
@@ -564,12 +563,11 @@ serial_config <- serial_config
 #' @keywords internal
 #' @export
 #'
-serialization <- function(fns, class, vec = FALSE, .compute = "default") {
+serialization <- function(fns, class, vec = FALSE) {
 
-  envir <- ..[[.compute]]
-  is.null(envir) && return(invisible(list()))
+  is.null(..[["default"]]) && return(invisible(list()))
   serial <- if (is.null(fns)) list() else serial_config(class, fns[[1L]], fns[[2L]], vec)
-  everywhere({}, .serial = serial, .compute = .compute)
+  everywhere({}, .serial = serial, .compute = "default")
   invisible(serial)
 
 }

@@ -4,7 +4,7 @@
 \alias{serialization}
 \title{Custom Serialization Functions}
 \usage{
-serialization(fns, class, vec = FALSE, .compute = "default")
+serialization(fns, class, vec = FALSE)
 }
 \arguments{
 \item{fns}{\strong{either} a list comprising 2 functions: \cr serialization
@@ -21,14 +21,11 @@ vectorized and accept and return a list of reference objects, e.g.
 \code{torch::torch_serialize} and \code{torch::torch_load}, or if FALSE
 return reference objects individually e.g. \code{arrow::write_to_raw} and
 \code{arrow::read_ipc_stream}.}
-
-\item{.compute}{[default 'default'] character value for the compute profile
-to use (each compute profile has its own independent set of daemons).}
 }
 \value{
 Invisibly, a list comprising the currently-registered serialization
-    configuration for the specified compute profile (an empty list if not
-    registered).
+    configuration for the \sQuote{default} compute profile (an empty list if
+    not registered).
 }
 \description{
 [Deprecated in favour of the '.serial' argument to \code{\link{everywhere}}]
