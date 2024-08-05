@@ -197,7 +197,7 @@ print.mirai_map <- function(x, ...) {
 #' @keywords internal
 #' @export
 #'
-.flat <- expression({ if (i == 1L) typ <- typeof(xi) else if (i > 1L) is_error_value(xi) && stop(xi, call. = FALSE) || typeof(xi) == typ || stop(sprintf("cannot flatten outputs of differing type: %s / %s", typ, typeof(xi)), call. = FALSE); if (i == xlen) out <- unlist(out) })
+.flat <- expression({ if (i <= 1L) typ <- typeof(xi) else is_error_value(xi) && stop(xi, call. = FALSE) || typeof(xi) == typ || stop(sprintf("cannot flatten outputs of differing type: %s / %s", typ, typeof(xi)), call. = FALSE); if (i == xlen) out <- unlist(out, recursive = FALSE) })
 
 #' @rdname dot-flat
 #' @export
