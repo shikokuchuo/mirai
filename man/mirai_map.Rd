@@ -104,7 +104,7 @@ mirai_map(df, function(...) sprintf("\%s: \%d", ...))[.flat]
 
 # indexed map over a vector
 v <- c("egg", "got", "ten", "nap", "pie")
-mirai_map(list(1:length(v), v), function(i, v) sprintf("\%d_\%s", i, v))[.flat]
+mirai_map(list(1:length(v), v), sprintf, .args = list(fmt = "\%d_\%s"))[.flat]
 
 # return a 'mirai_map' object, check for resolution, collect later
 mp <- mirai_map(
@@ -126,7 +126,7 @@ daemons(0)
 # generates warning as daemons not set
 # stops early when second element returns an error
 tryCatch(
-  mirai_map(list(a = 1, b = "a", c = 3), sum)[.stop],
+  mirai_map(list(list(a = 1, b = "a", c = 3), 3:1), sum)[.stop],
   error = identity
 )
 

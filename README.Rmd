@@ -96,11 +96,7 @@ df <- data.frame(
   fruit = c("melon", "pear", "coconut"),
   price = c(5L, 1L, 2L)
 )
-m <- mirai_map(
-  df,
-  function(fruit, sym, price) sprintf("%s: %s%d", fruit, sym, price),
-  .args = list(sym = "$")
-)
+m <- mirai_map(df, sprintf, .args = list(fmt = "%s: $%d"))
 ```
 A 'mirai_map' object is returned immediately. Other code can continue to run at this point. Its value may be retrieved at any time using its `[]` method to return a list, just like `purrr::map()` or `base::lapply()`. The `[]` method also provides options for flatmap, early stopping and/or progress indicators. 
 ```{r mapvalue}
