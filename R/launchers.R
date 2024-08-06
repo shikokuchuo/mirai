@@ -429,15 +429,15 @@ print.miraiLaunchCmd <- function(x, ...) {
 
 find_dot <- function(args) {
   sel <- args == "."
-  any(sel) || stop(._[["dot_required"]])
+  any(sel) || stop(._[["dot_required"]], call. = FALSE)
   sel
 }
 
 process_url <- function(url, .compute) {
   if (is.numeric(url)) {
     vec <- ..[[.compute]][["urls"]]
-    is.null(vec) && stop(._[["daemons_unset"]])
-    all(url >= 1L, url <= length(vec)) || stop(._[["url_spec"]])
+    is.null(vec) && stop(._[["daemons_unset"]], call. = FALSE)
+    all(url >= 1L, url <= length(vec)) || stop(._[["url_spec"]], call. = FALSE)
     url <- vec[url]
   } else {
     lapply(url, parse_url)
@@ -447,6 +447,6 @@ process_url <- function(url, .compute) {
 
 parse_check_local_url <- function(url) {
   purl <- parse_url(url)
-  purl[["hostname"]] == "127.0.0.1" || purl[["hostname"]] == "localhost" || stop(._[["requires_local"]])
+  purl[["hostname"]] == "127.0.0.1" || purl[["hostname"]] == "localhost" || stop(._[["requires_local"]], call. = FALSE)
   purl
 }

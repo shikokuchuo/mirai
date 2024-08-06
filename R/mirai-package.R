@@ -89,8 +89,8 @@
     arglen = "'args' and/or 'url' must be of length 1 or the same length",
     cluster_inactive = "cluster is no longer active",
     correct_context = "'host' must be specified if not using directly in a function argument",
-    daemons_unset = "a numeric value for 'url' requires daemons to be set",
-    dot_required = "'.' must be an element of the character vector(s) supplied to 'args'",
+    daemons_unset = "launch_*(): a numeric value for 'url' requires daemons to be set",
+    dot_required = "remote_config(): '.' must be an element of the character vector(s) supplied to 'args'",
     missing_expression = "missing expression, perhaps wrap in {}?",
     missing_url = "at least one URL must be supplied for 'url' or 'n' must be at least 1",
     named_args = "all '...' arguments must be named, unless supplying an environment",
@@ -98,12 +98,12 @@
     n_zero = "the number of daemons must be zero or greater",
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
     register_cluster = "this function requires a more recent version of R",
-    requires_daemons = "mirai_map: launching one local daemon as none previously set",
-    requires_local = "SSH tunnelling requires 'url' hostname to be '127.0.0.1' or 'localhost'",
+    requires_daemons = "mirai_map(): launching one local daemon as none previously set",
+    requires_local = "ssh_config(): SSH tunnelling requires 'url' hostname to be '127.0.0.1' or 'localhost'",
     single_url = "only one 'url' should be specified",
     sync_timeout = "initial sync with dispatcher/daemon timed out after 10s",
-    url_spec = "numeric value for 'url' is out of bounds",
-    wrong_dots = "'...' arguments should only be of integer, numeric or logical type"
+    url_spec = "launch_*(): numeric value for 'url' is out of bounds",
+    wrong_dots = "daemons(): '...' arguments should only be of integer, numeric or logical type"
   ),
   hash = TRUE
 )

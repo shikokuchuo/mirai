@@ -603,7 +603,7 @@ parse_dots <- function(...) {
   missing(...) && return("")
   dots <- list(...)
   for (dot in dots)
-    is.numeric(dot) || is.logical(dot) || stop(._[["wrong_dots"]])
+    is.numeric(dot) || is.logical(dot) || stop(._[["wrong_dots"]], call. = FALSE)
   dnames <- names(dots)
   out <- sprintf(",%s", paste(dnames, dots, sep = "=", collapse = ","))
   pos <- dnames == "output"
