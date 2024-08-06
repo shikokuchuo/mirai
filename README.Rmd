@@ -98,9 +98,8 @@ df <- data.frame(
 )
 m <- mirai_map(
   df,
-  function(fruit, currency, price)
-    sprintf("The price of a %s is %s%d.", fruit, currency, price),
-  .args = list(currency = "$")
+  function(fruit, sym, price) sprintf("%s: %s%d", fruit, sym, price),
+  .args = list(sym = "$")
 )
 ```
 A 'mirai_map' object is returned immediately. Other code can continue to run at this point. Its value may be retrieved at any time using its `[]` method to return a list, just like `purrr::map()` or `base::lapply()`. The `[]` method also provides options for flatmap, early stopping and/or progress indicators. 
@@ -116,7 +115,7 @@ All errors are returned as 'errorValues', facilitating recovery from partial fai
 
 - Fast
   + Over 100x more responsive than common alternatives <sup>[1]</sup>
-  + Built for low-latency applications such as real time inference and Shiny apps
+  + Built for low-latency applications such as real time inference or Shiny apps
 
 - Reliable
   + Consistent behaviour with no reliance on global options or variables

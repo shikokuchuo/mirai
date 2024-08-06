@@ -78,7 +78,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 4.370811
+#> [1] 4.47121
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -92,7 +92,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 4.370811
+#> [1] 4.47121
 ```
 
 #### Daemons
@@ -131,9 +131,8 @@ df <- data.frame(
 )
 m <- mirai_map(
   df,
-  function(fruit, currency, price)
-    sprintf("The price of a %s is %s%d.", fruit, currency, price),
-  .args = list(currency = "$")
+  function(fruit, sym, price) sprintf("%s: %s%d", fruit, sym, price),
+  .args = list(sym = "$")
 )
 ```
 
@@ -147,8 +146,7 @@ progress indicators.
 m
 #> < mirai map [3/3] >
 m[.flat]
-#> [1] "The price of a melon is $5."   "The price of a pear is $1."   
-#> [3] "The price of a coconut is $2."
+#> [1] "melon: $5"   "pear: $1"    "coconut: $2"
 ```
 
 All errors are returned as ‘errorValues’, facilitating recovery from
@@ -163,7 +161,7 @@ experience.
 
 - Fast
   - Over 100x more responsive than common alternatives <sup>\[1\]</sup>
-  - Built for low-latency applications such as real time inference and
+  - Built for low-latency applications such as real time inference or
     Shiny apps
 - Reliable
   - Consistent behaviour with no reliance on global options or variables

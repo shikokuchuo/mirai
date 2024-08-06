@@ -103,7 +103,7 @@ df <- data.frame(a = c("Aa", "Bb"), b = c(1L, 4L))
 mirai_map(df, function(...) sprintf("\%s: \%d", ...))[.flat]
 
 # indexed map over a vector
-v <- c("egg", "gif", "fen", "nip", "pid")
+v <- c("egg", "got", "ten", "nap", "pie")
 mirai_map(list(1:length(v), v), function(i, v) sprintf("\%d_\%s", i, v))[.flat]
 
 # return a 'mirai_map' object, check for resolution, collect later
