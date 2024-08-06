@@ -153,7 +153,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
   is.null(envir) && {
     .x
     .f
-    warning(._[["requires_daemons"]], immediate. = TRUE)
+    warning(._[["requires_daemons"]], call. = FALSE, immediate. = TRUE)
     daemons(n = 1L, dispatcher = FALSE, .compute = .compute)
     return(mirai_map(.x = .x, .f = .f, ..., .args = .args, .promise = .promise, .compute = .compute))
   }

@@ -40,9 +40,9 @@ The following mimics an expensive calculation that eventually returns a random v
 ```{r exec}
 library(mirai)
 
-x <- list(time = 2, mean = 4)
+x <- list(time = 2L, mean = 4)
 
-m <- mirai({Sys.sleep(time); rnorm(1, mean)}, time = x$time, mean = x$mean)
+m <- mirai({Sys.sleep(time); rnorm(5L, mean)}, time = x$time, mean = x$mean)
 ```
 The mirai expression is evaluated in another process and hence must be self-contained, not referring to variables that do not already exist there. Above, the variables `time` and `mean` are passed as part of the `mirai()` call.
 
@@ -69,7 +69,7 @@ m$data
 For easy programmatic use of `mirai()`, '.expr' accepts a pre-constructed language object, and also a list of named arguments passed via '.args'. So, the following would be equivalent to the above:
 
 ```{r equiv}
-expr <- quote({Sys.sleep(time); rnorm(1, mean)})
+expr <- quote({Sys.sleep(time); rnorm(5L, mean)})
 
 args <- list(time = x$time, mean = x$mean)
 
@@ -594,7 +594,7 @@ When collecting the results, optionally specify `.flat`, `.progress` or `.stop` 
 Combinations of the above may be supplied in the fashion of `x[c(.stop, .progress)]`.
 ```{r mmapadv}
 tryCatch(
-  mirai_map(list(list(a = 1, b = "a", c = 3), 3:1), sum)[.stop],
+  mirai_map(list(list(1, "a", 3), 3:1), sum)[.stop],
   error = identity
 )
 
