@@ -41,15 +41,13 @@ Advantages include being inherently queued thus handling many more tasks than av
 
 Use `mirai()` to evaluate an expression asynchronously in a separate, clean R process.
 
-The following mimics an expensive calculation that eventually returns a random value.
+The following mimics an expensive calculation that eventually returns a vector of random values.
 ```{r exec}
 library(mirai)
 
-x <- list(time = 2, mean = 4)
-
-m <- mirai({Sys.sleep(time); rnorm(1, mean)}, time = x$time, mean = x$mean)
+m <- mirai({Sys.sleep(n); rnorm(n, mean)}, n = 5L, mean = 7)
 ```
-The mirai expression is evaluated in another process and hence must be self-contained, not referring to variables that do not already exist there. Above, the variables `time` and `mean` are passed as part of the `mirai()` call.
+The mirai expression is evaluated in another process and hence must be self-contained, not referring to variables that do not already exist there. Above, the variables `n` and `mean` are passed as part of the `mirai()` call.
 
 A 'mirai' object is returned immediately - creating a mirai never blocks the session.
 

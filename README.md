@@ -38,19 +38,17 @@ Use `mirai()` to evaluate an expression asynchronously in a separate,
 clean R process.
 
 The following mimics an expensive calculation that eventually returns a
-random value.
+vector of random values.
 
 ``` r
 library(mirai)
 
-x <- list(time = 2, mean = 4)
-
-m <- mirai({Sys.sleep(time); rnorm(1, mean)}, time = x$time, mean = x$mean)
+m <- mirai({Sys.sleep(n); rnorm(n, mean)}, n = 5L, mean = 7)
 ```
 
 The mirai expression is evaluated in another process and hence must be
 self-contained, not referring to variables that do not already exist
-there. Above, the variables `time` and `mean` are passed as part of the
+there. Above, the variables `n` and `mean` are passed as part of the
 `mirai()` call.
 
 A ‘mirai’ object is returned immediately - creating a mirai never blocks
@@ -78,7 +76,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 4.197993
+#> [1] 6.275195 6.697046 7.518985 6.332227 6.446677
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -92,7 +90,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 4.197993
+#> [1] 6.275195 6.697046 7.518985 6.332227 6.446677
 ```
 
 #### Daemons
