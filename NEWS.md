@@ -1,4 +1,4 @@
-# mirai 1.1.1.9017 (development)
+# mirai 1.1.1.9018 (development)
 
 * `everywhere()` adds argument '.serial' to accept serialization configurations created by `serial_config()`. These allow normally non-exportable reference objects such as Arrow Tables or torch tensors to be used seamlessly across parallel processes without additional marshalling steps. Configurations apply on a per compute profile basis.
 * `serialization()` is now deprecated in favour of the above usage of `everywhere()`, and will be removed in a future version.
