@@ -126,7 +126,7 @@
 #' # generates warning as daemons not set
 #' # stops early when second element returns an error
 #' tryCatch(
-#'   mirai_map(list(list(a = 1, b = "a", c = 3), 3:1), sum)[.stop],
+#'   mirai_map(list(list(1, "a", 3), 3:1), sum)[.stop],
 #'   error = identity
 #' )
 #'
@@ -233,6 +233,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
     eval(.expr)
     xi
   }
+  eval(.expr)
   out <- `names<-`(lapply(seq_len(xlen), collect_map), names(x))
   i <- xlen + 1L
   eval(.expr)

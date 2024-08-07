@@ -126,7 +126,7 @@ daemons(0)
 # generates warning as daemons not set
 # stops early when second element returns an error
 tryCatch(
-  mirai_map(list(list(a = 1, b = "a", c = 3), 3:1), sum)[.stop],
+  mirai_map(list(list(1, "a", 3), 3:1), sum)[.stop],
   error = identity
 )
 
