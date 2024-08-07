@@ -1,4 +1,4 @@
-# mirai 1.1.1.9017 (development)
+# mirai 1.1.1.9018 (development)
 
 * `everywhere()` adds argument '.serial' to accept serialization configurations created by `serial_config()`. These allow normally non-exportable reference objects such as Arrow Tables or torch tensors to be used seamlessly across parallel processes without additional marshalling steps. Configurations apply on a per compute profile basis.
 * `serialization()` is now deprecated in favour of the above usage of `everywhere()`, and will be removed in a future version.
@@ -9,7 +9,7 @@
 * Local dispatcher daemons now synchronize with host, the same as non-dispatcher daemons (prevents use before all have connected).
 * More efficient dispatcher startup by only loading the base package, in addition to not reading startup configurations (thanks @krlmlr).
 * Removes hard dependency on `stats` and `utils` base packages.
-* Requires `nanonext` >= [1.1.1.9017].
+* Requires `nanonext` >= [1.1.1.9018].
 
 # mirai 1.1.1
 

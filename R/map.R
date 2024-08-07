@@ -164,11 +164,11 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
     xilen <- length(.x[[1L]])
     cond <- xilen > 1L && all(as.integer(lapply(.x, length)) == xilen)
   }
-  if (cond) {
-    vec <- vector(mode = "list", length = xilen)
-    if (is.matrix(.x)) {
-      for (i in seq_len(xilen))
-        vec[[i]] <- mirai(
+  vec <- if (cond) {
+    if (is.matrix(.x))
+      lapply(
+        seq_len(xilen),
+        function(i) mirai(
           .expr = do.call(.f, c(as.list(.x), .args)),
           .f = .f,
           .x = .x[i, ],
@@ -176,28 +176,33 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
           .args = list(.args = .args),
           .compute = .compute
         )
-    } else {
-      for (i in seq_len(xilen))
-        vec[[i]] <- mirai(
-          .expr = do.call(.f, c(.x, .args)),
+      ) else
+        lapply(
+          seq_len(xilen),
+          function(i) mirai(
+            .expr = do.call(.f, c(.x, .args)),
+            .f = .f,
+            .x = lapply(.x, .subset2, i),
+            ...,
+            .args = list(.args = .args),
+            .compute = .compute
+          )
+        )
+  } else {
+    `names<-`(
+      lapply(
+        seq_along(.x),
+        function(i) mirai(
+          .expr = do.call(.f, c(list(.x), .args)),
           .f = .f,
-          .x = lapply(.x, .subset2, i),
+          .x = .subset2(.x, i),
           ...,
           .args = list(.args = .args),
           .compute = .compute
         )
-    }
-  } else {
-    vec <- `names<-`(vector(mode = "list", length = length(.x)), names(.x))
-    for (i in seq_along(vec))
-      vec[[i]] <- mirai(
-        .expr = do.call(.f, c(list(.x), .args)),
-        .f = .f,
-        .x = .subset2(.x, i),
-        ...,
-        .args = list(.args = .args),
-        .compute = .compute
-      )
+      ),
+      names(.x)
+    )
   }
 
   if (length(.promise))
@@ -220,15 +225,17 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
   missing(i) && return(collect_aio_(x))
 
   .expr <- i
-  xi <- i <- 0L
+  i <- 0L
+  typ <- xi <- character()
   xlen <- length(x)
-  out <- `names<-`(vector(mode = "list", length = xlen), names(x))
-  eval(.expr)
-  for (i in seq_len(xlen)) {
+  collect_map <- function(i) {
     xi <- collect_aio_(x[[i]])
-    if (!is.null(xi)) out[[i]] <- xi
     eval(.expr)
+    xi
   }
+  out <- `names<-`(lapply(seq_len(xlen), collect_map), names(x))
+  i <- xlen + 1L
+  eval(.expr)
   out
 
 }
@@ -253,15 +260,16 @@ print.mirai_map <- function(x, ...) {
 #' @keywords internal
 #' @export
 #'
-.flat <- expression({
-  if (i <= 1L) typ <- typeof(xi) else is_error_value(xi) && stop(xi, call. = FALSE) || typeof(xi) == typ || stop(sprintf("[.flat]: cannot flatten outputs of differing type: %s / %s", typ, typeof(xi)), call. = FALSE)
-  if (i == xlen) out <- unlist(out, recursive = FALSE)
-})
+.flat <- expression(
+  if (i <= 1L) typ <<- typeof(xi) else
+    if (i <= xlen) is_error_value(xi) && stop(xi, call. = FALSE) || typeof(xi) == typ || stop(sprintf("[.flat]: cannot flatten outputs of differing type: %s / %s", typ, typeof(xi)), call. = FALSE) else
+      out <- unlist(out, recursive = FALSE)
+)
 
 #' @rdname dot-flat
 #' @export
 #'
-.progress <- expression(cat(if (i < xlen) sprintf("\r[ %d / %d .... ]", i, xlen) else sprintf("\r[ %d / %d done ]\n", i, xlen), file = stderr()))
+.progress <- expression(cat(if (i < xlen) sprintf("\r[ %d / %d .... ]", i, xlen) else if (i == xlen) sprintf("\r[ %d / %d done ]\n", i, xlen), file = stderr()))
 
 #' @rdname dot-flat
 #' @export
