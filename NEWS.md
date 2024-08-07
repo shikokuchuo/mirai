@@ -9,7 +9,7 @@
 * Local dispatcher daemons now synchronize with host, the same as non-dispatcher daemons (prevents use before all have connected).
 * More efficient dispatcher startup by only loading the base package, in addition to not reading startup configurations (thanks @krlmlr).
 * Removes hard dependency on `stats` and `utils` base packages.
-* Requires `nanonext` >= [1.1.1.9017].
+* Requires `nanonext` >= [1.1.1.9018].
 
 # mirai 1.1.1
 

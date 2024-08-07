@@ -27,7 +27,7 @@ Encoding: UTF-8
 Depends: 
     R (>= 3.6)
 Imports: 
-    nanonext (>= 1.1.1.9017)
+    nanonext (>= 1.1.1.9018)
 Enhances: 
     parallel,
     promises
