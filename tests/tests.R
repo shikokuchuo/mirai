@@ -43,9 +43,9 @@ nanotest(mirai:::.DollarNames.miraiError(NULL, "s") == "stack.trace")
 nanotest(mirai:::is.promising.mirai())
 nanotestn(nextstream())
 nanotestn(nextget("pid"))
-Sys.sleep(1L)
 # mirai and daemons tests
 connection && {
+  Sys.sleep(1L)
   n <- function() m
   m <- mirai({
     Sys.sleep(0.1)
@@ -91,11 +91,10 @@ connection && {
   Sys.sleep(1L)
   nanotest(is.integer(status(.compute = "new")[["connections"]]))
   nanotestz(daemons(0L, .compute = "new"))
-  Sys.sleep(1L)
-  NA
 }
 # additional daemons tests
 connection && .Platform[["OS.type"]] != "windows" && {
+  Sys.sleep(1L)
   nanotest(daemons(url = value <- local_url(), dispatcher = FALSE) == value)
   nanotesti(status()$daemons, nextget("urls"))
   nanotestz(daemons(0L))
@@ -118,13 +117,12 @@ connection && .Platform[["OS.type"]] != "windows" && {
   nanotesti(call_mirai(mp)[["x"]][["data"]], "ab")
   nanotest(all(mirai_map(list(1:3, 3:1), sum, .args = list(3L))[.flat] == 7L))
   nanotest(all(mirai_map(list(c(a = 1, b = 1, c = 1), 3), sum)[.flat] == 3))
-  Sys.sleep(1L)
-  NA
 }
 # parallel cluster tests
 library(parallel)
 nanotestn(tryCatch(mirai::register_cluster(), error = function(e) NULL))
 connection && {
+  Sys.sleep(1L)
   cluster <- make_cluster(1)
   nanotest(inherits(cluster, "miraiCluster"))
   nanotest(inherits(cluster, "cluster"))
@@ -180,16 +178,15 @@ connection && {
   Sys.sleep(1L)
   nanotestp(cl <- make_cluster(n = 1, url = local_url(), remote = remote_config()))
   nanotestn(stopCluster(cl))
-  Sys.sleep(1L)
-  NA
 }
 # advanced daemons and dispatcher tests
 connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "true" && {
+  Sys.sleep(1L)
   nanotesto(daemons(url = local_url(), dispatcher = TRUE))
   nanotest(grepl("://", launch_remote(1L), fixed = TRUE))
   nanotestn(launch_local(nextget("urls")))
   Sys.sleep(1L)
-  if (requireNamespace("promises", quietly = TRUE)) {
+  requireNamespace("promises", quietly = TRUE) && {
     nanotest(promises::is.promise(p1 <- promises::as.promise(mirai("completed"))))
     nanotest(promises::is.promise(p2 <- promises::`%...>%`(mirai("completed"), identity())))
     nanotest(promises::is.promise(p3 <- promises::as.promise(call_mirai(mirai("completed")))))
@@ -278,6 +275,5 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
     daemons(url = "tls+tcp://127.0.0.1:0", tls = file) == 1L && daemons(0L) == 0L
   }
   nanotest(test_tls(nanonext::write_cert(cn = "127.0.0.1")))
-  Sys.sleep(1L)
-  NA
 }
+Sys.sleep(1L)

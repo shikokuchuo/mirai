@@ -221,7 +221,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
 
   .expr <- i
   i <- 0L
-  typ <- xi <- character()
+  typ <- xi <- NULL
   xlen <- length(x)
   collect_map <- function(i) {
     xi <- collect_aio_(x[[i]])
