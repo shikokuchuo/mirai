@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -138,25 +138,28 @@ manipulate data in the Apache Arrow data format efficiently through ABDC
 (Arrow Database Connectivity).</p>
 <p>The example below creates an in-memory SQLite connection using the
 <code>adbcsqlite</code> backend.</p>
-<p>Serialization is set up with the relevant serialization and
-deserialization functions from the <code>arrow</code> package. Note that
-the format class is ‘nanoarrow_array_stream’ as <code>nanoarrow</code>
-is the backend for all queries made by the DBI <code>db*Arrow()</code>
-functions.</p>
+<p>Serialization is set up with the relevant serialization functions
+from the <code>arrow</code> package as part of the
+<code><a href="../reference/everywhere.html">everywhere()</a></code> call. Note that the specified class is
+‘nanoarrow_array_stream’ as <code>nanoarrow</code> is the backend for
+all queries made by the DBI <code>db*Arrow()</code> functions.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
-<span><span class="fu"><a href="../reference/everywhere.html">everywhere</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dbi.r-dbi.org" class="external-link">DBI</a></span><span class="op">)</span> <span class="co"># `adbi` and `adbcsqlite` packages must also be installed</span></span>
-<span>  <span class="va">con</span> <span class="op">&lt;&lt;-</span> <span class="fu">dbConnect</span><span class="op">(</span><span class="fu">adbi</span><span class="fu">::</span><span class="fu">adbi</span><span class="op">(</span><span class="st">"adbcsqlite"</span><span class="op">)</span>, uri <span class="op">=</span> <span class="st">":memory:"</span><span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/serialization.html">serialization</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="fu">arrow</span><span class="fu">::</span><span class="va">write_to_raw</span>,</span>
-<span>    <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu">read_ipc_stream</span><span class="op">(</span><span class="va">x</span>, as_data_frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  class <span class="op">=</span> <span class="st">"nanoarrow_array_stream"</span></span>
+<span></span>
+<span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/serial_config.html">serial_config</a></span><span class="op">(</span></span>
+<span>  class <span class="op">=</span> <span class="st">"nanoarrow_array_stream"</span>,</span>
+<span>  sfunc <span class="op">=</span> <span class="fu">arrow</span><span class="fu">::</span><span class="va">write_to_raw</span>,</span>
+<span>  ufunc <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">arrow</span><span class="fu">::</span><span class="fu">read_ipc_stream</span><span class="op">(</span><span class="va">x</span>, as_data_frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/everywhere.html">everywhere</a></span><span class="op">(</span></span>
+<span>  <span class="op">{</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dbi.r-dbi.org" class="external-link">DBI</a></span><span class="op">)</span> <span class="co"># `adbi` and `adbcsqlite` packages must also be installed</span></span>
+<span>    <span class="va">con</span> <span class="op">&lt;&lt;-</span> <span class="fu">dbConnect</span><span class="op">(</span><span class="fu">adbi</span><span class="fu">::</span><span class="fu">adbi</span><span class="op">(</span><span class="st">"adbcsqlite"</span><span class="op">)</span>, uri <span class="op">=</span> <span class="st">":memory:"</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  .serial <span class="op">=</span> <span class="va">cfg</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><code><a href="../reference/mirai.html">mirai()</a></code> calls may then be used to write to or query the
 database all in the Arrow format.</p>
@@ -264,6 +267,13 @@ profile.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a></span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># create an Arrow serialization configuration</span></span>
+<span><span class="va">cfg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/serial_config.html">serial_config</a></span><span class="op">(</span></span>
+<span>  class <span class="op">=</span> <span class="st">"nanoarrow_array_stream"</span>,</span>
+<span>  sfunc <span class="op">=</span> <span class="fu">arrow</span><span class="fu">::</span><span class="va">write_to_raw</span>,</span>
+<span>  ufunc <span class="op">=</span> <span class="fu">nanoarrow</span><span class="fu">::</span><span class="va">read_nanoarrow</span></span>
+<span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># write 'iris' dataset to temp database file (for this demonstration)</span></span>
 <span><span class="va">file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu">DBI</span><span class="fu">::</span><span class="fu">dbConnect</span><span class="op">(</span><span class="fu">adbi</span><span class="fu">::</span><span class="fu">adbi</span><span class="op">(</span><span class="st">"adbcsqlite"</span><span class="op">)</span>, uri <span class="op">=</span> <span class="va">file</span><span class="op">)</span></span>
@@ -274,7 +284,7 @@ profile.</p>
 <span><span class="va">slmin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Length</span><span class="op">)</span></span>
 <span><span class="va">slmax</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Length</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/page.html" class="external-link">page_fluid</a></span><span class="op">(</span></span>
+<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rstudio.github.io/bslib/reference/page.html" class="external-link">page_fluid</a></span><span class="op">(</span></span>
 <span>  <span class="fu">p</span><span class="op">(</span><span class="st">"The time is "</span>, <span class="fu">textOutput</span><span class="op">(</span><span class="st">"current_time"</span>, inline <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  <span class="fu">hr</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="fu">h3</span><span class="op">(</span><span class="st">"Shiny / mirai / DBI / ADBC demonstration"</span><span class="op">)</span>,</span>
@@ -283,7 +293,7 @@ profile.</p>
 <span>    <span class="st">"sl"</span>, <span class="st">"Query iris dataset based on Sepal Length"</span>, min <span class="op">=</span> <span class="va">slmin</span>, max <span class="op">=</span> <span class="va">slmax</span>,</span>
 <span>    value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">slmin</span>, <span class="va">slmax</span><span class="op">)</span>, width <span class="op">=</span> <span class="st">"75%"</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/input_task_button.html" class="external-link">input_task_button</a></span><span class="op">(</span><span class="st">"btn"</span>, <span class="st">"Return query"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/bslib/reference/input_task_button.html" class="external-link">input_task_button</a></span><span class="op">(</span><span class="st">"btn"</span>, <span class="st">"Return query"</span><span class="op">)</span>,</span>
 <span>  <span class="fu">tableOutput</span><span class="op">(</span><span class="st">"table"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -293,19 +303,21 @@ profile.</p>
 <span>  <span class="co"># create unique session id by hashing current time with a random key</span></span>
 <span>  <span class="va">id</span> <span class="op">&lt;-</span> <span class="fu">secretbase</span><span class="fu">::</span><span class="fu">siphash13</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, key <span class="op">=</span> <span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/random.html" class="external-link">random</a></span><span class="op">(</span><span class="fl">4L</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="co"># create new daemon for each session (set dispatcher = FALSE)</span></span>
+<span>  <span class="co"># create new (non-dispatcher) daemon for each session</span></span>
 <span>  <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1L</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span>, .compute <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># tear down daemon when session ends</span></span>
 <span>  <span class="va">session</span><span class="op">$</span><span class="fu">onEnded</span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0L</span>, .compute <span class="op">=</span> <span class="va">id</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># everywhere() loads DBI and creates ADBC connection in each daemon</span></span>
+<span>  <span class="co"># and sets up serialization</span></span>
 <span>  <span class="fu"><a href="../reference/everywhere.html">everywhere</a></span><span class="op">(</span></span>
 <span>    <span class="op">{</span></span>
 <span>      <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dbi.r-dbi.org" class="external-link">DBI</a></span><span class="op">)</span> <span class="co"># `adbi` and `adbcsqlite` packages must also be installed</span></span>
 <span>      <span class="va">con</span> <span class="op">&lt;&lt;-</span> <span class="fu">dbConnect</span><span class="op">(</span><span class="fu">adbi</span><span class="fu">::</span><span class="fu">adbi</span><span class="op">(</span><span class="st">"adbcsqlite"</span><span class="op">)</span>, uri <span class="op">=</span> <span class="va">file</span><span class="op">)</span></span>
 <span>    <span class="op">}</span>,</span>
 <span>    file <span class="op">=</span> <span class="va">file</span>,</span>
+<span>    .serial <span class="op">=</span> <span class="va">cfg</span>,</span>
 <span>    .compute <span class="op">=</span> <span class="va">id</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
@@ -327,19 +339,13 @@ profile.</p>
 <span>      <span class="va">...</span>,</span>
 <span>      .compute <span class="op">=</span> <span class="va">id</span></span>
 <span>    <span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/bind_task_button.html" class="external-link">bind_task_button</a></span><span class="op">(</span><span class="st">"btn"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rstudio.github.io/bslib/reference/bind_task_button.html" class="external-link">bind_task_button</a></span><span class="op">(</span><span class="st">"btn"</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">btn</span>, <span class="va">task</span><span class="op">$</span><span class="fu">invoke</span><span class="op">(</span>sl <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">sl</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="va">output</span><span class="op">$</span><span class="va">table</span> <span class="op">&lt;-</span> <span class="fu">renderTable</span><span class="op">(</span><span class="va">task</span><span class="op">$</span><span class="fu">result</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># serialization() specifies the native Arrow serialization functions</span></span>
-<span><span class="fu"><a href="../reference/serialization.html">serialization</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">arrow</span><span class="fu">::</span><span class="va">write_to_raw</span>, <span class="fu">nanoarrow</span><span class="fu">::</span><span class="va">read_nanoarrow</span><span class="op">)</span>,</span>
-<span>  class <span class="op">=</span> <span class="st">"nanoarrow_array_stream"</span></span>
-<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># run Shiny app</span></span>
 <span><span class="fu">shinyApp</span><span class="op">(</span>ui <span class="op">=</span> <span class="va">ui</span>, server <span class="op">=</span> <span class="va">server</span><span class="op">)</span></span>

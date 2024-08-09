@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -113,7 +113,7 @@ as <code><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-
 <span></span>
 <span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_cluster.html">make_cluster</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">cl</span></span>
-<span><span class="co">#&gt; &lt; miraiCluster | ID: `4` nodes: 4 active: TRUE &gt;</span></span>
+<span><span class="co">#&gt; &lt; miraiCluster | ID: `0` nodes: 4 active: TRUE &gt;</span></span>
 <span><span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/clusterApply.html" class="external-link">parLapply</a></span><span class="op">(</span><span class="va">cl</span>, <span class="va">iris</span>, <span class="va">mean</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $Sepal.Length</span></span>
 <span><span class="co">#&gt; [1] 5.843333</span></span>
@@ -137,7 +137,7 @@ number of connected nodes at any time.</p>
 <span><span class="co">#&gt; [1] 4</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $daemons</span></span>
-<span><span class="co">#&gt; [1] "abstract://1af7af3881982aa3a528ee0e"</span></span>
+<span><span class="co">#&gt; [1] "abstract://84c8107ee842139796c7f87f"</span></span>
 <span><span class="fu"><a href="../reference/make_cluster.html">stop_cluster</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
 <p>Making a cluster specifying ‘url’ without ‘remote’ causes the shell
 commands for manual deployment of nodes to be printed to the
@@ -147,10 +147,10 @@ console.</p>
 <span><span class="co">#&gt; Shell commands for deployment on nodes:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [1]</span></span>
-<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:39081',rs=c(10407,399751828,-1885737851,-1144379518,-865780453,239553952,1537886497))"</span></span>
+<span><span class="co">#&gt; Rscript -e 'mirai::daemon("tcp://kumamoto:42603",rs=c(10407,-2096125748,1743292253,-1955520902,-2036622925,1260071768,-1320342151))'</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [2]</span></span>
-<span><span class="co">#&gt; Rscript -e "mirai::daemon('tcp://hostname:39081',rs=c(10407,1247122786,1508345779,-1660073377,1594894979,-1919945611,-1646144461))"</span></span>
+<span><span class="co">#&gt; Rscript -e 'mirai::daemon("tcp://kumamoto:42603",rs=c(10407,-1702861686,161023499,1803127216,-1397060724,-897111933,-129599054))'</span></span>
 <span><span class="fu"><a href="../reference/make_cluster.html">stop_cluster</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -173,9 +173,9 @@ function:</p>
 <span><span class="fu">foreach</span><span class="op">(</span>i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>, .combine <span class="op">=</span> <span class="va">rbind</span><span class="op">)</span> <span class="op">%dopar%</span></span>
 <span>  <span class="op">(</span><span class="va">m</span><span class="op">[</span><span class="va">i</span>, <span class="op">]</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">m</span><span class="op">[</span><span class="va">i</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                [,1]       [,2]      [,3]</span></span>
-<span><span class="co">#&gt; result.1  1.1086890  3.6172602 -1.725949</span></span>
-<span><span class="co">#&gt; result.2 -4.1152027  4.8586848  2.256518</span></span>
-<span><span class="co">#&gt; result.3  0.8223401 -0.6849304  2.862590</span></span>
+<span><span class="co">#&gt; result.1  0.3487084 -0.4731823 3.1244739</span></span>
+<span><span class="co">#&gt; result.2  1.3038052  1.5895562 0.1066386</span></span>
+<span><span class="co">#&gt; result.3 -0.3771049  1.5104437 1.8666612</span></span>
 <span><span class="co"># simple parallel matrix multiply</span></span>
 <span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">16</span>, <span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span>

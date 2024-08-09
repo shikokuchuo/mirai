@@ -19,8 +19,8 @@
 <link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Minimalist Async Evaluation Framework for R">
-<meta name="description" content="Designed for simplicity, a mirai evaluates an R expression asynchronously in a parallel process, on the local machine or distributed over the network, with the result automatically available upon completion. Modern networking and concurrency built on nanonext and NNG (Nanomsg Next Gen) ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS. Advantages include being inherently queued, allowing the sending of many more tasks than available processes, no arbitrary connection limits, no storage on the file system, support for otherwise non-exportable reference objects, an event-driven promises implementation, and very low overhead. Incorporates asynchronous parallel map functionality.">
-<meta property="og:description" content="Designed for simplicity, a mirai evaluates an R expression asynchronously in a parallel process, on the local machine or distributed over the network, with the result automatically available upon completion. Modern networking and concurrency built on nanonext and NNG (Nanomsg Next Gen) ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS. Advantages include being inherently queued, allowing the sending of many more tasks than available processes, no arbitrary connection limits, no storage on the file system, support for otherwise non-exportable reference objects, an event-driven promises implementation, and very low overhead. Incorporates asynchronous parallel map functionality.">
+<meta name="description" content="Designed for simplicity, a mirai evaluates an R expression asynchronously in a parallel process, locally or distributed over the network, with the result automatically available upon completion. Modern networking and concurrency built on nanonext and NNG (Nanomsg Next Gen) ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS. Advantages include being inherently queued thus handling many more tasks than available processes, no storage on the file system, support for otherwise non-exportable reference objects, an event-driven promises implementation, and built-in asynchronous parallel map.">
+<meta property="og:description" content="Designed for simplicity, a mirai evaluates an R expression asynchronously in a parallel process, locally or distributed over the network, with the result automatically available upon completion. Modern networking and concurrency built on nanonext and NNG (Nanomsg Next Gen) ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS. Advantages include being inherently queued thus handling many more tasks than available processes, no storage on the file system, support for otherwise non-exportable reference objects, an event-driven promises implementation, and built-in asynchronous parallel map.">
 <meta property="og:image" content="https://shikokuchuo.net/mirai/logo.png">
 </head>
 <body>
@@ -31,7 +31,7 @@
 
     <a class="navbar-brand me-2" href="index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,20 +87,18 @@
 <div class="section level3">
 <h3 id="ミライ">ミライ<a class="anchor" aria-label="anchor" href="#%E3%83%9F%E3%83%A9%E3%82%A4"></a>
 </h3>
-<p><br> ( 未来 ) <br><br> Minimalist Async Evaluation Framework for R <br><br> Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously in a parallel process, on the local machine or distributed over the network, with the result automatically available upon completion. <br><br> Modern networking and concurrency built on <a href="https://github.com/shikokuchuo/nanonext/" class="external-link">nanonext</a> and <a href="https://nng.nanomsg.org/" class="external-link">NNG</a> (Nanomsg Next Gen) ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS. <br><br> Advantages include being inherently queued, allowing the sending of many more tasks than available processes, no arbitrary connection limits, no storage on the file system, support for otherwise non-exportable reference objects, an event-driven ‘promises’ implementation, and very low overhead. <br><br> Incorporates asynchronous parallel map functionality.</p>
+<p><br> ( 未来 ) <br><br> Minimalist Async Evaluation Framework for R <br><br> Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously in a parallel process, locally or distributed over the network, with the result automatically available upon completion. <br><br> Modern networking and concurrency built on <a href="https://github.com/shikokuchuo/nanonext/" class="external-link">nanonext</a> and <a href="https://nng.nanomsg.org/" class="external-link">NNG</a> (Nanomsg Next Gen) ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS. <br><br> Advantages include being inherently queued thus handling many more tasks than available processes, no storage on the file system, support for otherwise non-exportable reference objects, an event-driven promises implementation, and built-in asynchronous parallel map. <br><br></p>
 </div>
 <div class="section level3">
 <h3 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h3>
 <p>Use <code><a href="reference/mirai.html">mirai()</a></code> to evaluate an expression asynchronously in a separate, clean R process.</p>
-<p>The following expression mimics an expensive calculation that eventually returns a random value.</p>
+<p>The following mimics an expensive calculation that eventually returns a vector of random values.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fl">2</span>, mean <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">mean</span><span class="op">)</span><span class="op">}</span>, time <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">time</span>, mean <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">mean</span><span class="op">)</span></span></code></pre></div>
-<p>Above, the variables <code>time</code> and <code>mean</code> in the mirai expression are defined by <code>name = value</code> pairs passed as part of the <code><a href="reference/mirai.html">mirai()</a></code> call.</p>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">mean</span><span class="op">)</span><span class="op">}</span>, n <span class="op">=</span> <span class="fl">5L</span>, mean <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span></code></pre></div>
+<p>The mirai expression is evaluated in another process and hence must be self-contained, not referring to variables that do not already exist there. Above, the variables <code>n</code> and <code>mean</code> are passed as part of the <code><a href="reference/mirai.html">mirai()</a></code> call.</p>
 <p>A ‘mirai’ object is returned immediately - creating a mirai never blocks the session.</p>
 <p>Whilst the async operation is ongoing, attempting to access a mirai’s data yields an ‘unresolved’ logical NA.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -108,14 +106,14 @@
 <span><span class="co">#&gt; &lt; mirai [] &gt;</span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; 'unresolved' logi NA</span></span></code></pre></div>
-<p>To check whether a mirai remains unresolved i.e. its async operation is still ongoing:</p>
+<p>To check whether a mirai remains unresolved (yet to complete):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/unresolved.html">unresolved</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>To wait for and collect the return value, use the mirai’s <code>[]</code> method:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 4.983207</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 5.735529 7.862045 6.024613 7.572171 5.791506</span></span></code></pre></div>
 <p>As a mirai represents an async operation, it is never necessary to wait for it. Other code can continue to be run. Once it completes, the return value automatically becomes available at <code>$data</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="reference/unresolved.html">unresolved</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -124,7 +122,7 @@
 <span><span class="va">m</span></span>
 <span><span class="co">#&gt; &lt; mirai [$data] &gt;</span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] 4.983207</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 5.735529 7.862045 6.024613 7.572171 5.791506</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
 </h4>
@@ -138,30 +136,20 @@
 <div class="section level4">
 <h4 id="async-parallel-map">Async Parallel Map<a class="anchor" aria-label="anchor" href="#async-parallel-map"></a>
 </h4>
-<p><code><a href="reference/mirai_map.html">mirai_map()</a></code> maps a function over a list or vector, with each element processed in a separate parallel process.</p>
+<p><code><a href="reference/mirai_map.html">mirai_map()</a></code> maps a function over a list or vector, with each element processed in a separate parallel process. It also performs multiple map over 2D lists/vectors, allowing advanced patterns such as map over the rows of a dataframe or matrix.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai_map.html">mirai_map</a></span><span class="op">(</span></span>
-<span>  <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>,</span>
-<span>  \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1e8</span>, mean <span class="op">=</span> <span class="va">x</span>, sd <span class="op">=</span> <span class="va">x</span> <span class="op">+</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span> <span class="va">z</span>; <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span><span class="op">}</span>,</span>
-<span>  z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1e7</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>A ‘mirai_map’ object is returned immediately. Other code can continue to run at this point. Its value may be retrieved at any time using its <code>[]</code> method to return a list, just like <code><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">purrr::map()</a></code> or <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">base::lapply()</a></code>.</p>
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  fruit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"melon"</span>, <span class="st">"grapes"</span>, <span class="st">"coconut"</span><span class="op">)</span>,</span>
+<span>  price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3L</span>, <span class="fl">5L</span>, <span class="fl">2L</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai_map.html">mirai_map</a></span><span class="op">(</span><span class="va">df</span>, <span class="va">sprintf</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>fmt <span class="op">=</span> <span class="st">"%s: $%d"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>A ‘mirai_map’ object is returned immediately. Other code can continue to run at this point. Its value may be retrieved at any time using its <code>[]</code> method to return a list, just like <code><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">purrr::map()</a></code> or <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">base::lapply()</a></code>. The <code>[]</code> method also provides options for flatmap, early stopping and/or progress indicators.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span></span>
-<span><span class="co">#&gt; &lt; mirai map [0/4] &gt;</span></span>
-<span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [1] 46.98116</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [1] 58.23877</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[3]]</span></span>
-<span><span class="co">#&gt; [1] 70.20797</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; [[4]]</span></span>
-<span><span class="co">#&gt; [1] 81.99365</span></span></code></pre></div>
-<p><code><a href="reference/mirai_map.html">mirai_map()</a></code> is designed to facilitate recovery from partial failure, and also provides options for early stopping and/or progress indicators. It also has some other <a href="https://shikokuchuo.net/mirai/articles/mirai.html#map-functions">advantages</a> over alternative implementations.</p>
+<span><span class="co">#&gt; &lt; mirai map [3/3] &gt;</span></span>
+<span><span class="va">m</span><span class="op">[</span><span class="va">.flat</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] "melon: $3"   "grapes: $5"  "coconut: $2"</span></span></code></pre></div>
+<p>All errors are returned as ‘errorValues’, facilitating recovery from partial failure. There are further <a href="https://shikokuchuo.net/mirai/articles/mirai.html#asynchronous-parallel-map">advantages</a> over alternative map implementations.</p>
 </div>
 </div>
 <div class="section level3">
@@ -173,7 +161,7 @@
 <ul>
 <li>Over 100x more responsive than common alternatives <sup>[1]</sup>
 </li>
-<li>Built for low-latency applications such as real time inference and Shiny apps</li>
+<li>Built for low-latency applications such as real time inference or Shiny apps</li>
 </ul>
 </li>
 <li>Reliable
@@ -284,17 +272,7 @@
 </ul>
 </div>
 
-<div class="dev-status">
-<h2 data-toc-skip>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://CRAN.R-project.org/package=mirai" class="external-link"><img src="https://www.r-pkg.org/badges/version/mirai?color=00184a" alt="CRAN status"></a></li>
-<li><a href="https://community.r-multiverse.org/mirai" class="external-link"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcommunity.r-multiverse.org%2Fapi%2Fpackages%2Fmirai&amp;query=%24.Version&amp;label=r-multiverse&amp;color=00184a" alt="R-multiverse status"></a></li>
-<li><a href="https://shikokuchuo.r-universe.dev/mirai" class="external-link"><img src="https://shikokuchuo.r-universe.dev/badges/mirai?color=2dab18" alt="R-universe status"></a></li>
-<li><a href="https://github.com/shikokuchuo/mirai/actions" class="external-link"><img src="https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://app.codecov.io/gh/shikokuchuo/mirai" class="external-link"><img src="https://codecov.io/gh/shikokuchuo/mirai/graph/badge.svg" alt="codecov"></a></li>
-<li><a href="https://zenodo.org/badge/latestdoi/459341940" class="external-link"><img src="https://zenodo.org/badge/459341940.svg" alt="DOI"></a></li>
-</ul>
-</div>
+
 
   </aside>
 </div>

@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,36 +90,33 @@
 <div class="section level3">
 <h3 id="shiny-integration">Shiny Integration<a class="anchor" aria-label="anchor" href="#shiny-integration"></a>
 </h3>
-<p><code>mirai</code> may be used as an asynchronous / distributed
-backend to scale <a href="https://shiny.posit.co/" class="external-link">Shiny</a>
-applications.</p>
+<p><code>mirai</code> may be used as an asynchronous backend to scale <a href="https://shiny.posit.co/" class="external-link">Shiny</a> applications.</p>
 <p>Depending on the options suppled to <code><a href="../reference/daemons.html">daemons()</a></code>, mirai
 tasks may be distributed across local background processes or multiple
 networked servers in an efficient and performant manner.</p>
-<p>For use with Shiny, <code>mirai</code> implements innovative,
-event-driven promises, developed in collaboration with Joe Cheng.</p>
+<p>For use with Shiny, <code>mirai</code> implements truly event-driven
+promises, developed in collaboration with Joe Cheng (creator of
+Shiny).</p>
 <ul>
-<li>Do not require each promise to be polled for completion by a
-<code>later</code> loop like other promises.</li>
-<li>Instead, promise actions are automatically queued for execution as
-soon as each ‘mirai’ resolves.</li>
+<li>Each promise is not polled in a loop for completion (as for other
+types of promise).</li>
+<li>Instead, promise actions are triggered for execution as soon as each
+‘mirai’ completes (asynchronously).</li>
 <li>Allows for much higher responsiveness (lower latency) and massive
 scalability (situations with thousand of promises or more).</li>
 </ul>
+<p>mirai natively supports Shiny ExtendedTask to create scalable Shiny
+apps, which remain responsive intra-session for each user, as well as
+inter-session for multiple concurrent users.</p>
+<p>‘mirai’ may be used anywhere a ‘promise’ or ‘future_promise’ would be
+accepted (with <code>promises</code> &gt;= 1.3.0).</p>
 <div class="section level4">
-<h4 id="shiny-extendedtask-example-clock-and-plot">Shiny ExtendedTask Example: Clock and Plot<a class="anchor" aria-label="anchor" href="#shiny-extendedtask-example-clock-and-plot"></a>
+<h4 id="shiny-extendedtask-example-plot-with-clock">Shiny ExtendedTask Example: Plot with Clock<a class="anchor" aria-label="anchor" href="#shiny-extendedtask-example-plot-with-clock"></a>
 </h4>
-<p>mirai may be used within Shiny’s ExtendedTask framework (in
-<code>shiny</code> &gt;= 1.8.1) to create scalable Shiny apps, which are
-more responsive for a single user, as well as for multiple concurrent
-users.</p>
-<p>‘mirai’ are accepted anywhere a ‘promise’, ‘future’ or
-‘future_promise’ is currently accepted (with <code>promises</code> &gt;=
-1.3.0).</p>
 <p>In the example below, the app remains responsive, with the clock
-continuing to tick whilst the simulated expensive computation is
-running. Also the button is disabled and the plot greyed out until the
-computation is complete.</p>
+continuing to tick whilst the simulated expensive computation is running
+asynchronously in a parallel process. Also the button is disabled and
+the plot greyed out until the computation is complete.</p>
 <p>By wrapping the <code>runApp()</code> call in
 <code>with(daemons(...), ...)</code> the daemons are set up for the
 duration of the app, exiting automatically when the app is stopped.</p>
@@ -128,12 +125,12 @@ duration of the app, exiting automatically when the app is stopped.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/page.html" class="external-link">page_fluid</a></span><span class="op">(</span></span>
+<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rstudio.github.io/bslib/reference/page.html" class="external-link">page_fluid</a></span><span class="op">(</span></span>
 <span>  <span class="fu">p</span><span class="op">(</span><span class="st">"The time is "</span>, <span class="fu">textOutput</span><span class="op">(</span><span class="st">"current_time"</span>, inline <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  <span class="fu">hr</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="fu">numericInput</span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"Sample size (n)"</span>, <span class="fl">100</span><span class="op">)</span>,</span>
 <span>  <span class="fu">numericInput</span><span class="op">(</span><span class="st">"delay"</span>, <span class="st">"Seconds to take for plot"</span>, <span class="fl">5</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/input_task_button.html" class="external-link">input_task_button</a></span><span class="op">(</span><span class="st">"btn"</span>, <span class="st">"Plot uniform distribution"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/bslib/reference/input_task_button.html" class="external-link">input_task_button</a></span><span class="op">(</span><span class="st">"btn"</span>, <span class="st">"Plot uniform distribution"</span><span class="op">)</span>,</span>
 <span>  <span class="fu">plotOutput</span><span class="op">(</span><span class="st">"plot"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -144,10 +141,10 @@ duration of the app, exiting automatically when the app is stopped.</p>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="va">extended_task</span> <span class="op">&lt;-</span> <span class="va">ExtendedTask</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
-<span>    <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/bind_task_button.html" class="external-link">bind_task_button</a></span><span class="op">(</span><span class="st">"btn"</span><span class="op">)</span></span>
+<span>    <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">}</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rstudio.github.io/bslib/reference/bind_task_button.html" class="external-link">bind_task_button</a></span><span class="op">(</span><span class="st">"btn"</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">btn</span>, <span class="va">extended_task</span><span class="op">$</span><span class="fu">invoke</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">n</span>, <span class="va">input</span><span class="op">$</span><span class="va">delay</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">btn</span>, <span class="va">extended_task</span><span class="op">$</span><span class="fu">invoke</span><span class="op">(</span>x <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">n</span>, y <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">delay</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="va">output</span><span class="op">$</span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu">renderPlot</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">extended_task</span><span class="op">$</span><span class="fu">result</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>  </span>
@@ -161,31 +158,29 @@ duration of the app, exiting automatically when the app is stopped.</p>
 based.</em></p>
 <p>The key components to using ExtendedTask are:</p>
 <ol style="list-style-type: decimal">
-<li>In the UI, use <code><a href="https://rdrr.io/pkg/bslib/man/input_task_button.html" class="external-link">bslib::input_task_button()</a></code>. This is a
+<li>In the UI, use <code><a href="https://rstudio.github.io/bslib/reference/input_task_button.html" class="external-link">bslib::input_task_button()</a></code>. This is a
 button which is disabled during computation to prevent additional
 clicks.</li>
 </ol>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/bslib/man/input_task_button.html" class="external-link">input_task_button</a></span><span class="op">(</span><span class="st">"btn"</span>, <span class="st">"Plot uniform distribution"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rstudio.github.io/bslib/reference/input_task_button.html" class="external-link">input_task_button</a></span><span class="op">(</span><span class="st">"btn"</span>, <span class="st">"Plot uniform distribution"</span><span class="op">)</span></span></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>In the server, create an ExtendedTask object by calling
-<code>ExtendedTask$new()</code> on a function passing named arguments to
-<code><a href="../reference/mirai.html">mirai()</a></code>, and bind it to the button created in (1). The
-arguments are passed in through the use of <code><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment()</a></code>
-which captures the ‘x’ and ‘y’ contained in the environment of the
-anonymous function.</li>
+<code>ExtendedTask$new()</code> on an anonymous function passing
+<code>...</code> arguments to <code><a href="../reference/mirai.html">mirai()</a></code>, and bind it to the
+button created in (1).</li>
 </ol>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">extended_task</span> <span class="op">&lt;-</span> <span class="va">ExtendedTask</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
-<span>    <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/bind_task_button.html" class="external-link">bind_task_button</a></span><span class="op">(</span><span class="st">"btn"</span><span class="op">)</span></span></code></pre></div>
+<span>    <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">}</span>, <span class="va">...</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rstudio.github.io/bslib/reference/bind_task_button.html" class="external-link">bind_task_button</a></span><span class="op">(</span><span class="st">"btn"</span><span class="op">)</span></span></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
 <li>In the server, create an observer on the input button, which invokes
-the ExtendedTask, supplying the arguments to the anonymous function
-above.</li>
+the ExtendedTask, passing in named arguments to the anonymous function
+(and hence the mirai) above.</li>
 </ol>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">btn</span>, <span class="va">extended_task</span><span class="op">$</span><span class="fu">invoke</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">n</span>, <span class="va">input</span><span class="op">$</span><span class="va">delay</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">btn</span>, <span class="va">extended_task</span><span class="op">$</span><span class="fu">invoke</span><span class="op">(</span>x <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">n</span>, y <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">delay</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
 <li>In the server, create a render function for the output, which
 consumes the result of the ExtendedTask.</li>
@@ -230,9 +225,9 @@ start to be generated until one of the other plots has finished.</p>
 <span></span>
 <span><span class="va">plotUI</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">id</span>, <span class="va">calc_time</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">ns</span> <span class="op">&lt;-</span> <span class="fu">NS</span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/card.html" class="external-link">card</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/bslib/reference/card.html" class="external-link">card</a></span><span class="op">(</span></span>
 <span>    <span class="fu">strong</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Plot (calc time = "</span>, <span class="va">calc_time</span>, <span class="st">" secs)"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/input_task_button.html" class="external-link">input_task_button</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"resample"</span><span class="op">)</span>, <span class="st">"Resample"</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rstudio.github.io/bslib/reference/input_task_button.html" class="external-link">input_task_button</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"resample"</span><span class="op">)</span>, <span class="st">"Resample"</span><span class="op">)</span>,</span>
 <span>    <span class="fu">plotOutput</span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"plot"</span><span class="op">)</span>, height<span class="op">=</span><span class="st">"400px"</span>, width<span class="op">=</span><span class="st">"400px"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -244,11 +239,11 @@ start to be generated until one of the other plots has finished.</p>
 <span>    <span class="va">id</span>,</span>
 <span>    <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
 <span>      <span class="va">extended_task</span> <span class="op">&lt;-</span> <span class="va">ExtendedTask</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
-<span>        <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu">run</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
-<span>      <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/bind_task_button.html" class="external-link">bind_task_button</a></span><span class="op">(</span><span class="st">"resample"</span><span class="op">)</span></span>
+<span>        <span class="kw">function</span><span class="op">(</span><span class="va">time</span>, <span class="va">run</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu">run</span><span class="op">(</span><span class="va">time</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>      <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rstudio.github.io/bslib/reference/bind_task_button.html" class="external-link">bind_task_button</a></span><span class="op">(</span><span class="st">"resample"</span><span class="op">)</span></span>
 <span>      </span>
 <span>      <span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">resample</span>,</span>
-<span>                   <span class="va">extended_task</span><span class="op">$</span><span class="fu">invoke</span><span class="op">(</span>x <span class="op">=</span> <span class="va">calc_time</span>, run <span class="op">=</span> <span class="va">run_task</span><span class="op">)</span><span class="op">)</span></span>
+<span>                   <span class="va">extended_task</span><span class="op">$</span><span class="fu">invoke</span><span class="op">(</span><span class="va">calc_time</span>, <span class="va">run_task</span><span class="op">)</span><span class="op">)</span></span>
 <span>      </span>
 <span>      <span class="va">output</span><span class="op">$</span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu">renderPlot</span><span class="op">(</span><span class="fu">plot_result</span><span class="op">(</span><span class="va">extended_task</span><span class="op">$</span><span class="fu">result</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>      </span>
@@ -258,12 +253,12 @@ start to be generated until one of the other plots has finished.</p>
 <span></span>
 <span><span class="co"># ui and server</span></span>
 <span></span>
-<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/page_sidebar.html" class="external-link">page_sidebar</a></span><span class="op">(</span>fillable <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  sidebar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/sidebar.html" class="external-link">sidebar</a></span><span class="op">(</span></span>
+<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rstudio.github.io/bslib/reference/page_sidebar.html" class="external-link">page_sidebar</a></span><span class="op">(</span>fillable <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  sidebar <span class="op">=</span> <span class="fu"><a href="https://rstudio.github.io/bslib/reference/sidebar.html" class="external-link">sidebar</a></span><span class="op">(</span></span>
 <span>    <span class="fu">numericInput</span><span class="op">(</span><span class="st">"calc_time"</span>, <span class="st">"Calculation time (secs)"</span>, <span class="fl">5</span><span class="op">)</span>,</span>
 <span>    <span class="fu">actionButton</span><span class="op">(</span><span class="st">"add"</span>, <span class="st">"Add"</span>, class<span class="op">=</span><span class="st">"btn-primary"</span><span class="op">)</span>,</span>
 <span>  <span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/layout_column_wrap.html" class="external-link">layout_column_wrap</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"results"</span>, width <span class="op">=</span> <span class="st">"400px"</span>, fillable <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/bslib/reference/layout_column_wrap.html" class="external-link">layout_column_wrap</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"results"</span>, width <span class="op">=</span> <span class="st">"400px"</span>, fillable <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
@@ -281,37 +276,35 @@ start to be generated until one of the other plots has finished.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>, <span class="fu">runApp</span><span class="op">(</span><span class="va">app</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><em>The above example builds on original code by Joe Cheng, Daniel
 Woodie and William Landau.</em></p>
-<p>This example uses <code>...</code> to pass variables through to the
-<code><a href="../reference/mirai.html">mirai()</a></code> call. This is an alternative and equivalent way to
-using <code><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment()</a></code> and can be flexibly used to pass
-objects not defined there.</p>
+<p>The above uses <code><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment()</a></code> instead of <code>...</code>
+as an alternative and equivalent way of passing variables present in the
+calling environment to the mirai.</p>
 <p>The key components to using this ExtendedTask example are:</p>
 <ol style="list-style-type: decimal">
-<li>In the UI, use <code><a href="https://rdrr.io/pkg/bslib/man/input_task_button.html" class="external-link">bslib::input_task_button()</a></code>. This is a
+<li>In the UI, use <code><a href="https://rstudio.github.io/bslib/reference/input_task_button.html" class="external-link">bslib::input_task_button()</a></code>. This is a
 button which is disabled during computation to prevent additional
 clicks.</li>
 </ol>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/bslib/man/input_task_button.html" class="external-link">input_task_button</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"resample"</span><span class="op">)</span>, <span class="st">"Resample"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rstudio.github.io/bslib/reference/input_task_button.html" class="external-link">input_task_button</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"resample"</span><span class="op">)</span>, <span class="st">"Resample"</span><span class="op">)</span></span></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>In the server, create an ExtendedTask object by calling
-<code>ExtendedTask$new()</code> on a function passing arguments to
-<code><a href="../reference/mirai.html">mirai()</a></code>, and bind it to the button created in (1). As not
-all variables are supplied by inputs in this case, we make use of
-<code><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment()</a></code> to conveniently pass in the calling
-environment of the ExtendedTask function.</li>
+<code>ExtendedTask$new()</code> on an anonymous function passing
+<em>named</em> arguments to <code><a href="../reference/mirai.html">mirai()</a></code>, and bind it to the
+button created in (1). These are passed through to the mirai by the use
+of <code><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment()</a></code>.</li>
 </ol>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">extended_task</span> <span class="op">&lt;-</span> <span class="va">ExtendedTask</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
-<span>  <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">run</span> <span class="op">=</span> <span class="va">run_task</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu">run</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/bslib/man/bind_task_button.html" class="external-link">bind_task_button</a></span><span class="op">(</span><span class="st">"resample"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="kw">function</span><span class="op">(</span><span class="va">time</span>, <span class="va">run</span><span class="op">)</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="fu">run</span><span class="op">(</span><span class="va">time</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rstudio.github.io/bslib/reference/bind_task_button.html" class="external-link">bind_task_button</a></span><span class="op">(</span><span class="st">"resample"</span><span class="op">)</span></span></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
 <li>In the server, create an observer on the input button, which invokes
-the ExtendedTask with the parameters required by the ExtendedTask
-function.</li>
+the ExtendedTask, supplying the arguments to the anonymous function
+above.</li>
 </ol>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">resample</span>, <span class="va">extended_task</span><span class="op">$</span><span class="fu">invoke</span><span class="op">(</span><span class="va">calc_time</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">resample</span>, <span class="va">extended_task</span><span class="op">$</span><span class="fu">invoke</span><span class="op">(</span><span class="va">calc_time</span>, <span class="va">run_task</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
 <li>In the server, create a render function for the output, which
 consumes the result of the ExtendedTask.</li>

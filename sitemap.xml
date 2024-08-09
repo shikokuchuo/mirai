@@ -20,7 +20,7 @@
 <url><loc>https://shikokuchuo.net/mirai/reference/daemons.html</loc></url>
 <url><loc>https://shikokuchuo.net/mirai/reference/dispatcher.html</loc></url>
 <url><loc>https://shikokuchuo.net/mirai/reference/dot-daemon.html</loc></url>
-<url><loc>https://shikokuchuo.net/mirai/reference/dot-progress.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/dot-flat.html</loc></url>
 <url><loc>https://shikokuchuo.net/mirai/reference/everywhere.html</loc></url>
 <url><loc>https://shikokuchuo.net/mirai/reference/host_url.html</loc></url>
 <url><loc>https://shikokuchuo.net/mirai/reference/index.html</loc></url>
@@ -35,6 +35,7 @@
 <url><loc>https://shikokuchuo.net/mirai/reference/register_cluster.html</loc></url>
 <url><loc>https://shikokuchuo.net/mirai/reference/remote_config.html</loc></url>
 <url><loc>https://shikokuchuo.net/mirai/reference/saisei.html</loc></url>
+<url><loc>https://shikokuchuo.net/mirai/reference/serial_config.html</loc></url>
 <url><loc>https://shikokuchuo.net/mirai/reference/serialization.html</loc></url>
 <url><loc>https://shikokuchuo.net/mirai/reference/status.html</loc></url>
 <url><loc>https://shikokuchuo.net/mirai/reference/stop_mirai.html</loc></url>
