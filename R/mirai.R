@@ -264,7 +264,6 @@ everywhere <- function(.expr, ..., .args = list(), .serial = NULL, .compute = "d
       .expr <- c(.register, .expr)
       .args <- c(.args, list(.serial = .serial))
       `opt<-`(envir[["sock"]], "serial", .serial)
-      `[[<-`(envir, "serial", .serial)
     }
 
     if (is.null(envir[["sockc"]])) {

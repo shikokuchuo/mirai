@@ -64,8 +64,7 @@ m$data
 #> 'unresolved' logi NA
 ```
 
-To check whether a mirai remains unresolved i.e. its async operation is
-still ongoing:
+To check whether a mirai remains unresolved (yet to complete):
 
 ``` r
 unresolved(m)
@@ -76,7 +75,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 6.275195 6.697046 7.518985 6.332227 6.446677
+#> [1] 5.735529 7.862045 6.024613 7.572171 5.791506
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -90,7 +89,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 6.275195 6.697046 7.518985 6.332227 6.446677
+#> [1] 5.735529 7.862045 6.024613 7.572171 5.791506
 ```
 
 #### Daemons
@@ -124,8 +123,8 @@ rows of a dataframe or matrix.
 
 ``` r
 df <- data.frame(
-  fruit = c("melon", "pear", "coconut"),
-  price = c(5L, 1L, 2L)
+  fruit = c("melon", "grapes", "coconut"),
+  price = c(3L, 5L, 2L)
 )
 m <- mirai_map(df, sprintf, .args = list(fmt = "%s: $%d"))
 ```
@@ -140,7 +139,7 @@ progress indicators.
 m
 #> < mirai map [3/3] >
 m[.flat]
-#> [1] "melon: $5"   "pear: $1"    "coconut: $2"
+#> [1] "melon: $3"   "grapes: $5"  "coconut: $2"
 ```
 
 All errors are returned as ‘errorValues’, facilitating recovery from

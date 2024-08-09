@@ -53,7 +53,7 @@ Whilst the async operation is ongoing, attempting to access a mirai's data yield
 m
 m$data
 ```
-To check whether a mirai remains unresolved i.e. its async operation is still ongoing:
+To check whether a mirai remains unresolved (yet to complete):
 ```{r unres}
 unresolved(m)
 ```
