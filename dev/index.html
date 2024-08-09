@@ -32,7 +32,7 @@
 
     <a class="navbar-brand me-2" href="index.html">mirai</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9019</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9020</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,14 +107,14 @@
 <span><span class="co">#&gt; &lt; mirai [] &gt;</span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
 <span><span class="co">#&gt; 'unresolved' logi NA</span></span></code></pre></div>
-<p>To check whether a mirai remains unresolved i.e. its async operation is still ongoing:</p>
+<p>To check whether a mirai remains unresolved (yet to complete):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/unresolved.html">unresolved</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>To wait for and collect the return value, use the mirai’s <code>[]</code> method:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 6.275195 6.697046 7.518985 6.332227 6.446677</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 5.735529 7.862045 6.024613 7.572171 5.791506</span></span></code></pre></div>
 <p>As a mirai represents an async operation, it is never necessary to wait for it. Other code can continue to be run. Once it completes, the return value automatically becomes available at <code>$data</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="reference/unresolved.html">unresolved</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -123,7 +123,7 @@
 <span><span class="va">m</span></span>
 <span><span class="co">#&gt; &lt; mirai [$data] &gt;</span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] 6.275195 6.697046 7.518985 6.332227 6.446677</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 5.735529 7.862045 6.024613 7.572171 5.791506</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
 </h4>
@@ -140,8 +140,8 @@
 <p><code><a href="reference/mirai_map.html">mirai_map()</a></code> maps a function over a list or vector, with each element processed in a separate parallel process. It also performs multiple map over 2D lists/vectors, allowing advanced patterns such as map over the rows of a dataframe or matrix.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  fruit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"melon"</span>, <span class="st">"pear"</span>, <span class="st">"coconut"</span><span class="op">)</span>,</span>
-<span>  price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5L</span>, <span class="fl">1L</span>, <span class="fl">2L</span><span class="op">)</span></span>
+<span>  fruit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"melon"</span>, <span class="st">"grapes"</span>, <span class="st">"coconut"</span><span class="op">)</span>,</span>
+<span>  price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3L</span>, <span class="fl">5L</span>, <span class="fl">2L</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mirai_map.html">mirai_map</a></span><span class="op">(</span><span class="va">df</span>, <span class="va">sprintf</span>, .args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>fmt <span class="op">=</span> <span class="st">"%s: $%d"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>A ‘mirai_map’ object is returned immediately. Other code can continue to run at this point. Its value may be retrieved at any time using its <code>[]</code> method to return a list, just like <code><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">purrr::map()</a></code> or <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">base::lapply()</a></code>. The <code>[]</code> method also provides options for flatmap, early stopping and/or progress indicators.</p>
@@ -149,7 +149,7 @@
 <code class="sourceCode R"><span><span class="va">m</span></span>
 <span><span class="co">#&gt; &lt; mirai map [3/3] &gt;</span></span>
 <span><span class="va">m</span><span class="op">[</span><span class="va">.flat</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "melon: $5"   "pear: $1"    "coconut: $2"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "melon: $3"   "grapes: $5"  "coconut: $2"</span></span></code></pre></div>
 <p>All errors are returned as ‘errorValues’, facilitating recovery from partial failure. There are further <a href="https://shikokuchuo.net/mirai/articles/mirai.html#asynchronous-parallel-map">advantages</a> over alternative map implementations.</p>
 </div>
 </div>
