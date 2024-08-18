@@ -1,13 +1,17 @@
 library(mirai)
 
-nanotest <- function(x) invisible(x || stop("is not TRUE when expected to be TRUE"))
-nanotestn <- function(x) invisible(is.null(x) || stop("is not NULL when expected to be NULL"))
-nanotestz <- function(x) invisible(x == 0L || stop("does not equal 0L as expected"))
-nanotesto <- function(x) invisible(x == 1L || stop("does not equal 1L as expected"))
-nanotesti <- function(a, b) invisible(identical(a, b) || stop("the arguments are not identical as expected"))
+nanotest <- function(x) invisible(isTRUE(x) || {print(x); stop("the above was returned instead of TRUE")})
+nanotestn <- function(x) invisible(is.null(x) || {print(x); stop("the above was returned instead of NULL")})
+nanotestz <- function(x) invisible(x == 0L || {print(x); stop("the above was returned instead of 0L")})
+nanotesto <- function(x) invisible(x == 1L || {print(x); stop("the above was returned instead of 1L")})
+nanotesti <- function(a, b) invisible(identical(a, b) || {print(a); print(b); stop("the above arguments were not identical")})
 nanotestp <- function(x) invisible(is.character(capture.output(print(x))) || stop("print output of expression cannot be captured as a character value"))
-nanotesterr <- function(x, e = "") invisible(grepl(e, tryCatch(x, error = identity)[["message"]], fixed = TRUE) || stop("expected error message '", e, "' not generated"))
-connection <- !is_error_value(call_mirai(mirai(TRUE, .timeout = 2000L))[["data"]])
+nanotesterr <- function(x, e = "") {
+  x <- tryCatch(x, error = identity)
+  inherits(x, "error") && grepl(e, x[["message"]], fixed = TRUE) || stop("expected error message containing '", e, "' was not generated")
+  invisible(TRUE)
+}
+connection <- !is_error_value(collect_mirai(mirai(TRUE, .timeout = 2000L)))
 
 # core tests
 nanotest(is.list(status()))
