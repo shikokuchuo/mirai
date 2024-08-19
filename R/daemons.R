@@ -518,8 +518,8 @@ serial_config <- serial_config
 #' Custom Serialization Functions
 #'
 #' [Deprecated in favour of the '.serial' argument to \code{\link{everywhere}}]
-#'     Registers custom serialization and unserialization functions for sending
-#'     and receiving reference objects. Settings apply to an individual compute
+#'     Registers custom serialization and unserialization functions for
+#'     reference objects. Settings apply only to the \sQuote{default} compute
 #'     profile, and daemons must have been set beforehand.
 #'
 #' @param fns \strong{either} a list comprising 2 functions: \cr serialization
@@ -527,38 +527,15 @@ serial_config <- serial_config
 #'     from \sQuote{class} and return a raw vector.\cr unserialization function:
 #'     must accept a raw vector and return a reference object (or list of
 #'     reference objects).\cr \strong{or else} NULL to reset.
-#' @param class the class of reference object (as a character string) that these
-#'     functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor'
-#' @param vec [default FALSE] whether or not the serialization functions are
-#'     vectorized and accept and return a list of reference objects, e.g.
-#'     \code{torch::torch_serialize} and \code{torch::torch_load}, or if FALSE
-#'     return reference objects individually e.g. \code{arrow::write_to_raw} and
-#'     \code{arrow::read_ipc_stream}.
+#' @inheritParams serial_config
 #'
 #' @return Invisibly, a list comprising the currently-registered serialization
 #'     configuration for the \sQuote{default} compute profile (an empty list if
 #'     not registered).
 #'
-#' @details Registering new functions replaces any existing registered
-#'     functions.
-#'
 #' @note This function is deprecated and will be removed in a later package
 #'     version. Use \code{\link{serial_config}} to create a configuration to
 #'     pass directly to the '.serial' argument of \code{\link{everywhere}}.
-#'
-#' @examples
-#' daemons(url = local_url())
-#'
-#' reg <- serialization(
-#'   fns = list(function(x) serialize(x, NULL), unserialize),
-#'   class = "custom_class"
-#' )
-#' reg
-#'
-#' reg <- serialization(NULL)
-#' reg
-#'
-#' daemons(0)
 #'
 #' @keywords internal
 #' @export
