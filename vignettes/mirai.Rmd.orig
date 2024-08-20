@@ -2,7 +2,7 @@
 title: "mirai - Minimalist Async Evaluation Framework for R"
 vignette: >
   %\VignetteIndexEntry{mirai - Minimalist Async Evaluation Framework for R}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{litedown::vignette}
   %\VignetteEncoding{UTF-8}
 ---
 

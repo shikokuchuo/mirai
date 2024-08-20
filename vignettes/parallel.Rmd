@@ -2,7 +2,7 @@
 title: "mirai - Parallel Integration"
 vignette: >
   %\VignetteIndexEntry{mirai - Parallel Integration}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{litedown::vignette}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -50,7 +50,7 @@ status(cl)
 #> [1] 4
 #> 
 #> $daemons
-#> [1] "abstract://84c8107ee842139796c7f87f"
+#> [1] "abstract://cab972a420e906e24de07fae"
 stop_cluster(cl)
 ```
 Making a cluster specifying 'url' without 'remote' causes the shell commands for manual deployment of nodes to be printed to the console.
@@ -60,10 +60,10 @@ cl <- make_cluster(n = 2, url = host_url())
 #> Shell commands for deployment on nodes:
 #> 
 #> [1]
-#> Rscript -e 'mirai::daemon("tcp://kumamoto:42603",rs=c(10407,-2096125748,1743292253,-1955520902,-2036622925,1260071768,-1320342151))'
+#> Rscript -e 'mirai::daemon("tcp://hostname:46363",rs=c(10407,-164206562,1425597959,-1794797924,743251693,-2092905270,840187843))'
 #> 
 #> [2]
-#> Rscript -e 'mirai::daemon("tcp://kumamoto:42603",rs=c(10407,-1702861686,161023499,1803127216,-1397060724,-897111933,-129599054))'
+#> Rscript -e 'mirai::daemon("tcp://hostname:46363",rs=c(10407,-2139367744,746637888,-104113766,-1069989320,572694305,-481631613))'
 stop_cluster(cl)
 ```
 
@@ -85,10 +85,10 @@ doParallel::registerDoParallel(cl)
 m <- matrix(rnorm(9), 3, 3)
 foreach(i = 1:nrow(m), .combine = rbind) %dopar%
   (m[i, ] / mean(m[i, ]))
-#>                [,1]       [,2]      [,3]
-#> result.1  0.3487084 -0.4731823 3.1244739
-#> result.2  1.3038052  1.5895562 0.1066386
-#> result.3 -0.3771049  1.5104437 1.8666612
+#>              [,1]      [,2]       [,3]
+#> result.1 1.290734  2.016160 -0.3068945
+#> result.2 3.347448  1.835978 -2.1834258
+#> result.3 2.799416 -2.168144  2.3687278
 # simple parallel matrix multiply
 a <- matrix(1:16, 4, 4)
 b <- t(a)

@@ -28,8 +28,7 @@ In the example below, the app remains responsive, with the clock continuing to t
 
 By wrapping the `runApp()` call in `with(daemons(...), ...)` the daemons are set up for the duration of the app, exiting automatically when the app is stopped.
 
-
-``` r
+```{r shinyextended, eval=FALSE}
 library(shiny)
 library(bslib)
 library(mirai)
@@ -70,15 +69,13 @@ The key components to using ExtendedTask are:
 
 1. In the UI, use `bslib::input_task_button()`. This is a button which is disabled during computation to prevent additional clicks.
 
-
-``` r
+```{r shinystep1, eval=FALSE}
 input_task_button("btn", "Plot uniform distribution")
 ```
 
 2. In the server, create an ExtendedTask object by calling `ExtendedTask$new()` on an anonymous function passing `...` arguments to `mirai()`, and bind it to the button created in (1).
 
-
-``` r
+```{r shinystep2, eval=FALSE}
 extended_task <- ExtendedTask$new(
     function(...) mirai({Sys.sleep(y); runif(x)}, ...)
   ) |> bind_task_button("btn")
@@ -86,15 +83,13 @@ extended_task <- ExtendedTask$new(
 
 3. In the server, create an observer on the input button, which invokes the ExtendedTask, passing in named arguments to the anonymous function (and hence the mirai) above.
 
-
-``` r
+```{r shinystep3, eval=FALSE}
 observeEvent(input$btn, extended_task$invoke(x = input$n, y = input$delay))
 ```
 
 4. In the server, create a render function for the output, which consumes the result of the ExtendedTask.
 
-
-``` r
+```{r shinystep4, eval=FALSE}
 output$plot <- renderPlot(hist(extended_task$result()))
 ```
 
@@ -107,8 +102,7 @@ The user can add multiple plots, making use of Shiny modules, each having a diff
 
 The plots are generated asynchronously, and it is easy to see the practical limitations of the number of daemons set. For example, if updating 4 plots, and there are only 3 daemons, the 4th plot will not start to be generated until one of the other plots has finished.
 
-
-``` r
+```{r shinyextend2, eval=FALSE}
 library(shiny)
 library(mirai)
 library(bslib)
@@ -193,15 +187,13 @@ The key components to using this ExtendedTask example are:
 
 1. In the UI, use `bslib::input_task_button()`. This is a button which is disabled during computation to prevent additional clicks.
 
-
-``` r
+```{r shinystep21, eval=FALSE}
 input_task_button(ns("resample"), "Resample")
 ```
 
 2. In the server, create an ExtendedTask object by calling `ExtendedTask$new()` on an anonymous function passing _named_ arguments to `mirai()`, and bind it to the button created in (1). These are passed through to the mirai by the use of `environment()`. 
 
-
-``` r
+```{r shinystep22, eval=FALSE}
 extended_task <- ExtendedTask$new(
   function(time, run) mirai(run(time), environment())
 ) |> bind_task_button("resample")
@@ -209,15 +201,13 @@ extended_task <- ExtendedTask$new(
 
 3. In the server, create an observer on the input button, which invokes the ExtendedTask, supplying the arguments to the anonymous function above.
 
-
-``` r
+```{r shinystep23, eval=FALSE}
 observeEvent(input$resample, extended_task$invoke(calc_time, run_task))
 ```
 
 4. In the server, create a render function for the output, which consumes the result of the ExtendedTask.
 
-
-``` r
+```{r shinystep24, eval=FALSE}
 output$plot <- renderPlot(plot_result(extended_task$result()))
 ```
 
@@ -227,8 +217,7 @@ The below example demonstrates how to integrate a `mirai_map()` operation into a
 
 By specifying the '.promise' argument, this registers a promise action against each mapped operation. These can then be used to update reactive values or otherwise interact with the Shiny app.
 
-
-``` r
+```{r shinypromises, eval=FALSE}
 library(shiny)
 library(mirai)
 
@@ -291,8 +280,7 @@ The following is similar to the previous example, but allows multiple tasks to b
 
 It requires more boilerplate code to manage the mirai tasks, but otherwise functions similarly to the ExtendedTask example.
 
-
-``` r
+```{r shiny, eval=FALSE}
 library(mirai)
 library(shiny)
 library(ggplot2)

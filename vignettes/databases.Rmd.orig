@@ -2,7 +2,7 @@
 title: "mirai - Databases and Arrow"
 vignette: >
   %\VignetteIndexEntry{mirai - Databases and Arrow}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{litedown::vignette}
   %\VignetteEncoding{UTF-8}
 ---
 
