@@ -2,7 +2,7 @@
 title: "mirai - Parallel Integration"
 vignette: >
   %\VignetteIndexEntry{mirai - Parallel Integration}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{litedown::vignette}
   %\VignetteEncoding{UTF-8}
 ---
 

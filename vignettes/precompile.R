@@ -4,5 +4,5 @@ knitr::knit("vignettes/databases.Rmd.orig", "vignettes/databases.Rmd")
 knitr::knit("vignettes/parallel.Rmd.orig", "vignettes/parallel.Rmd")
 knitr::knit("vignettes/plumber.Rmd.orig", "vignettes/plumber.Rmd")
 knitr::knit("vignettes/promises.Rmd.orig", "vignettes/promises.Rmd")
-# Not pre-compiled: vignettes/shiny.Rmd
+knitr::knit("vignettes/shiny.Rmd.orig", "vignettes/shiny.Rmd")
 knitr::knit("vignettes/torch.Rmd.orig", "vignettes/torch.Rmd")

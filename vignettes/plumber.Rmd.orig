@@ -2,7 +2,7 @@
 title: "mirai - Plumber Integration"
 vignette: >
   %\VignetteIndexEntry{mirai - Plumber Integration}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{litedown::vignette}
   %\VignetteEncoding{UTF-8}
 ---
 

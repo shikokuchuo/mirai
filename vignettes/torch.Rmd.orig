@@ -2,7 +2,7 @@
 title: "mirai - Torch Integration"
 vignette: >
   %\VignetteIndexEntry{mirai - Torch Integration}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{litedown::vignette}
   %\VignetteEncoding{UTF-8}
 ---
 

@@ -31,7 +31,6 @@ Enhances:
     parallel,
     promises
 Suggests: 
-    knitr,
-    markdown
-VignetteBuilder: knitr
+    litedown
+VignetteBuilder: litedown
 RoxygenNote: 7.3.2

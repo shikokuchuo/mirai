@@ -2,7 +2,7 @@
 title: "mirai - Promises Integration"
 vignette: >
   %\VignetteIndexEntry{mirai - Promises Integration}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{litedown::vignette}
   %\VignetteEncoding{UTF-8}
 ---
 
