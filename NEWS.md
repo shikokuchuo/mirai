@@ -1,5 +1,7 @@
 # mirai 1.2.0.9000 (development)
 
+* Fixes flatmap with `mirai_map()` assigning the variable 'typ' to the global environment.
+
 # mirai 1.2.0
 
 * `everywhere()` adds argument '.serial' to accept serialization configurations created by `serial_config()`. These allow normally non-exportable reference objects such as Arrow Tables or torch tensors to be used seamlessly across parallel processes without additional marshalling steps. Configurations apply on a per compute profile basis.
