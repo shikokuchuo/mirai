@@ -1,4 +1,4 @@
-# mirai 1.2.0.9000 (development)
+# mirai 1.2.0.9001 (development)
 
 * Fixes flatmap with `mirai_map()` assigning the variable 'typ' to the global environment.
 
