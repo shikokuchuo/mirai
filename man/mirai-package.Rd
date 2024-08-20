@@ -9,13 +9,12 @@
 Designed for simplicity, a 'mirai' evaluates an R expression asynchronously
     in a parallel process, locally or distributed over the network, with the
     result automatically available upon completion. Modern networking and
-    concurrency built on 'nanonext' and 'NNG' (Nanomsg Next Gen) ensures
+    concurrency built on 'nanonext' and 'NNG' (Nanomsg Next Gen) ensure
     reliable and efficient scheduling, over fast inter-process communications
-    or TCP/IP secured by TLS. Advantages include being inherently queued thus
-    handling many more tasks than available processes, no storage on the file
-    system, support for otherwise non-exportable reference objects, an
-    event-driven promises implementation, and built-in asynchronous parallel
-    map.
+    or TCP/IP secured by TLS. Features built-in queueing to handle many more
+    tasks than available processes, no storage on the file system, support
+    for otherwise non-exportable reference objects, an event-driven promises
+    implementation, and asynchronous parallel map.
 }
 \section{Notes}{
 

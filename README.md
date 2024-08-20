@@ -24,13 +24,12 @@ expression asynchronously in a parallel process, locally or distributed
 over the network, with the result automatically available upon
 completion. <br /><br /> Modern networking and concurrency built on
 [nanonext](https://github.com/shikokuchuo/nanonext/) and
-[NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen) ensures reliable and
+[NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen) ensure reliable and
 efficient scheduling, over fast inter-process communications or TCP/IP
-secured by TLS. <br /><br /> Advantages include being inherently queued
-thus handling many more tasks than available processes, no storage on
-the file system, support for otherwise non-exportable reference objects,
-an event-driven promises implementation, and built-in asynchronous
-parallel map. <br /><br />
+secured by TLS. <br /><br /> Features built-in queueing to handle many
+more tasks than available processes, no storage on the file system,
+support for otherwise non-exportable reference objects, an event-driven
+promises implementation, and asynchronous parallel map. <br /><br />
 
 ### Quick Start
 
@@ -75,7 +74,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 5.735529 7.862045 6.024613 7.572171 5.791506
+#> [1] 5.547440 7.081894 5.928223 8.844078 7.044842
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -89,7 +88,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 5.735529 7.862045 6.024613 7.572171 5.791506
+#> [1] 5.547440 7.081894 5.928223 8.844078 7.044842
 ```
 
 #### Daemons
