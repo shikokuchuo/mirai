@@ -221,7 +221,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
 
   .expr <- i
   i <- 0L
-  typ <- xi <- NULL
+  cli <- typ <- xi <- NULL
   xlen <- length(x)
   collect_map <- function(i) {
     xi <- collect_aio_(x[[i]])
@@ -265,7 +265,19 @@ print.mirai_map <- function(x, ...) {
 #' @rdname dot-flat
 #' @export
 #'
-.progress <- expression(cat(if (i < xlen) sprintf("\r[ %d / %d .... ]", i, xlen) else if (i == xlen) sprintf("\r[ %d / %d done ]\n", i, xlen), file = stderr()))
+.progress <- expression(
+  if (i == 0L) {
+    cli <- requireNamespace("cli", quietly = TRUE)
+    if (cli) cli::cli_progress_bar(total = xlen, .envir = .) else
+      cat(sprintf("\r[ %d / %d .... ]", i, xlen), file = stderr())
+  } else if (i < xlen) {
+    if (cli) cli::cli_progress_update(, .envir = .) else
+      cat(sprintf("\r[ %d / %d .... ]", i, xlen), file = stderr())
+  } else if (i == xlen) {
+    if (cli) cli::cli_progress_done(.envir = .) else
+      cat(sprintf("\r[ %d / %d done ]\n", i, xlen), file = stderr())
+  }
+)
 
 #' @rdname dot-flat
 #' @export
