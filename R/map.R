@@ -277,7 +277,7 @@ print.mirai_map <- function(x, ...) {
     if (cli) cli::cli_progress_bar(type = NULL, total = xlen, auto_terminate = TRUE, .envir = .) else
       cat(sprintf("\r[ 0 / %d .... ]", xlen), file = stderr())
   } else if (i < xlen) {
-    if (cli) cli::cli_progress_update(.envir = .) else
+    if (cli) cli::cli_progress_update(force = TRUE, .envir = .) else
       cat(sprintf("\r[ %d / %d .... ]", i, xlen), file = stderr())
   } else if (i == xlen) {
     if (cli) cli::cli_progress_done(.envir = .) else
