@@ -217,26 +217,30 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
 
 #' @export
 #'
-`[.mirai_map` <- function(x, i) {
+`[.mirai_map` <- local(
+  function(x, i) {
 
-  missing(i) && return(collect_aio_(x))
+    missing(i) && return(collect_aio_(x))
 
-  .expr <- i
-  i <- 0L
-  cli <- typ <- xi <- NULL
-  xlen <- length(x)
-  collect_map <- function(i) {
-    xi <- collect_aio_(x[[i]])
+    .expr <- i
+    i <- 0L
+    typ <- xi <- NULL
+    xlen <- length(x)
+    collect_map <- function(i) {
+      xi <- collect_aio_(x[[i]])
+      eval(.expr)
+      xi
+    }
     eval(.expr)
-    xi
-  }
-  eval(.expr)
-  out <- `names<-`(lapply(seq_len(xlen), collect_map), names(x))
-  i <- xlen + 1L
-  eval(.expr)
-  out
+    out <- `names<-`(lapply(seq_len(xlen), collect_map), names(x))
+    i <- xlen + 1L
+    eval(.expr)
+    out
 
-}
+  }
+)
+
+environment(`[.mirai_map`)[["cli"]] <- NULL
 
 #' @export
 #'
@@ -269,7 +273,7 @@ print.mirai_map <- function(x, ...) {
 #'
 .progress <- expression(
   if (i == 0L) {
-    cli <- requireNamespace("cli", quietly = TRUE)
+    if (is.null(cli)) cli <<- requireNamespace("cli", quietly = TRUE)
     if (cli) cli::cli_progress_bar(total = xlen, .envir = .) else
       cat(sprintf("\r[ %d / %d .... ]", i, xlen), file = stderr())
   } else if (i < xlen) {
