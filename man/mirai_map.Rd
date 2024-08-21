@@ -65,8 +65,10 @@ Sends each application of function \code{.f} on an element of
     that they are of the same type to avoid coercion. Note: errors if an
     \sQuote{errorValue} has been returned or results are of differing type.
 
-    \code{x[.progress]} collects map results whilst showing a text progress
-    indicator.
+    \code{x[.progress]} collects map results whilst showing a progress
+    indicator. This uses the \CRANpkg{cli} package, if available, to show
+    completion percentage and ETA, or else a simple text indicator of parts
+    completed of the total.
 
     \code{x[.stop]} collects map results applying early stopping, which stops
     at the first failure and cancels remaining operations. Note: operations
