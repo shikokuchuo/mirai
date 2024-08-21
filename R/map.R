@@ -218,22 +218,21 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
 #' @export
 #'
 `[.mirai_map` <- local(
-  function(x, i) {
+  function(x, expr) {
 
-    missing(i) && return(collect_aio_(x))
+    missing(expr) && return(collect_aio_(x))
 
-    .expr <- i
     i <- 0L
     xlen <- length(x)
     collect_map <- function(i) {
       xi <- collect_aio_(x[[i]])
-      eval(.expr)
+      eval(expr)
       xi
     }
-    eval(.expr)
+    eval(expr)
     out <- `names<-`(lapply(seq_len(xlen), collect_map), names(x))
     i <- xlen + 1L
-    eval(.expr)
+    eval(expr)
     out
 
   }
