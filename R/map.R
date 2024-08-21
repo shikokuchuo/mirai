@@ -224,7 +224,6 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
 
     .expr <- i
     i <- 0L
-    typ <- xi <- NULL
     xlen <- length(x)
     collect_map <- function(i) {
       xi <- collect_aio_(x[[i]])
@@ -241,6 +240,8 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
 )
 
 environment(`[.mirai_map`)[["cli"]] <- NULL
+environment(`[.mirai_map`)[["typ"]] <- NULL
+environment(`[.mirai_map`)[["xi"]] <- NULL
 
 #' @export
 #'
@@ -263,7 +264,7 @@ print.mirai_map <- function(x, ...) {
 #' @export
 #'
 .flat <- expression(
-  if (i <= 1L) { if (i == 1L) typ <<- typeof(xi) } else
+  if (i <= 1L) typ <<- typeof(xi) else
     if (i <= xlen) is_error_value(xi) && stop(xi, call. = FALSE) || typeof(xi) == typ || stop(sprintf("[.flat]: cannot flatten outputs of differing type: %s / %s", typ, typeof(xi)), call. = FALSE) else
       out <- unlist(out, recursive = FALSE)
 )
