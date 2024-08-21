@@ -273,7 +273,7 @@ print.mirai_map <- function(x, ...) {
 #'
 .progress <- expression(
   if (i == 0L) {
-    if (is.null(cli)) cli <<- requireNamespace("cli", quietly = TRUE)
+    is.null(cli) && { cli <<- requireNamespace("cli", quietly = TRUE) }
     if (cli) cli::cli_progress_bar(total = xlen, .envir = .) else
       cat(sprintf("\r[ 0 / %d .... ]", xlen), file = stderr())
   } else if (i < xlen) {
