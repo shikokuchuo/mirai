@@ -31,6 +31,7 @@ Enhances:
     parallel,
     promises
 Suggests: 
+    cli,
     litedown
 VignetteBuilder: litedown
 RoxygenNote: 7.3.2
