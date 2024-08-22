@@ -1,7 +1,8 @@
-# mirai 1.2.0.9001 (development)
+# mirai 1.2.0.9002 (development)
 
 * Fixes flatmap with `mirai_map()` assigning the variable 'typ' to the global environment.
 * Adds `mirai_map()[.progress2]` as an alternative progress indicator, using the 'cli' package to show % complete and ETA.
+* Requires `nanonext` >= [1.2.1.9002].
 
 # mirai 1.2.0
 
