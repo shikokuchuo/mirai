@@ -52,8 +52,12 @@
 #'     that they are of the same type to avoid coercion. Note: errors if an
 #'     \sQuote{errorValue} has been returned or results are of differing type.
 #'
-#'     \code{x[.progress]} collects map results whilst showing a text progress
-#'     indicator.
+#'     \code{x[.progress]} collects map results whilst showing a simple text
+#'     progress indicator of parts completed of the total.
+#'
+#'     \code{x[.progress2]} collects map results whilst showing a progress bar
+#'     from the \CRANpkg{cli} package, if available, with completion percentage
+#'     and ETA.
 #'
 #'     \code{x[.stop]} collects map results applying early stopping, which stops
 #'     at the first failure and cancels remaining operations. Note: operations
@@ -215,26 +219,29 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
 
 #' @export
 #'
-`[.mirai_map` <- function(x, i) {
+`[.mirai_map` <- local(
+  function(x, expr) {
 
-  missing(i) && return(collect_aio_(x))
+    missing(expr) && return(collect_aio_(x))
 
-  .expr <- i
-  i <- 0L
-  typ <- xi <- NULL
-  xlen <- length(x)
-  collect_map <- function(i) {
-    xi <- collect_aio_(x[[i]])
-    eval(.expr)
-    xi
+    xlen <- length(x)
+    collect_map <- function(i) {
+      xi <- collect_aio_(x[[i]])
+      eval(expr)
+      xi
+    }
+    eval(expr)
+    out <- `names<-`(lapply(seq_len(xlen), collect_map), names(x))
+    i <- Inf
+    eval(expr)
+    out
+
   }
-  eval(.expr)
-  out <- `names<-`(lapply(seq_len(xlen), collect_map), names(x))
-  i <- xlen + 1L
-  eval(.expr)
-  out
+)
 
-}
+environment(`[.mirai_map`)[["typ"]] <- NULL
+environment(`[.mirai_map`)[["xi"]] <- NULL
+environment(`[.mirai_map`)[["i"]] <- 0L
 
 #' @export
 #'
@@ -257,7 +264,7 @@ print.mirai_map <- function(x, ...) {
 #' @export
 #'
 .flat <- expression(
-  if (i <= 1L) { if (i == 1L) typ <<- typeof(xi) } else
+  if (i <= 1L) typ <<- typeof(xi) else
     if (i <= xlen) is_error_value(xi) && stop(xi, call. = FALSE) || typeof(xi) == typ || stop(sprintf("[.flat]: cannot flatten outputs of differing type: %s / %s", typ, typeof(xi)), call. = FALSE) else
       out <- unlist(out, recursive = FALSE)
 )
@@ -265,7 +272,19 @@ print.mirai_map <- function(x, ...) {
 #' @rdname dot-flat
 #' @export
 #'
-.progress <- expression(cat(if (i < xlen) sprintf("\r[ %d / %d .... ]", i, xlen) else if (i == xlen) sprintf("\r[ %d / %d done ]\n", i, xlen), file = stderr()))
+.progress <- expression(
+  if (i == 0L) cat(sprintf("\r[ 0 / %d .... ]", xlen), file = stderr()) else
+    if (i < xlen) cat(sprintf("\r[ %d / %d .... ]", i, xlen), file = stderr()) else
+      if (i == xlen) cat(sprintf("\r[ %d / %d done ]\n", i, xlen), file = stderr())
+)
+
+#' @rdname dot-flat
+#' @export
+#'
+.progress2 <- expression(
+  if (i == 0L) cli::cli_progress_bar(type = NULL, total = xlen, auto_terminate = TRUE, .envir = .) else
+    if (i <= xlen) cli::cli_progress_update(force = TRUE, .envir = .)
+)
 
 #' @rdname dot-flat
 #' @export

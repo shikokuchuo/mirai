@@ -4,9 +4,12 @@
 \name{.flat}
 \alias{.flat}
 \alias{.progress}
+\alias{.progress2}
 \alias{.stop}
 \title{mirai Map Options}
 \format{
+An object of class \code{expression} of length 1.
+
 An object of class \code{expression} of length 1.
 
 An object of class \code{expression} of length 1.
@@ -17,6 +20,8 @@ An object of class \code{expression} of length 1.
 .flat
 
 .progress
+
+.progress2
 
 .stop
 }
@@ -35,8 +40,12 @@ Expressions to insert into the \code{[]} method for \sQuote{mirai_map}
     that they are of the same type to avoid coercion. Note: errors if an
     \sQuote{errorValue} has been returned or results are of differing type.
 
-    \code{x[.progress]} collects map results whilst showing a text progress
-    indicator.
+    \code{x[.progress]} collects map results whilst showing a simple text
+    progress indicator of parts completed of the total.
+
+    \code{x[.progress2]} collects map results whilst showing a progress bar
+    from the \CRANpkg{cli} package, if available, with completion percentage
+    and ETA.
 
     \code{x[.stop]} collects map results applying early stopping, which stops
     at the first failure and cancels remaining operations. Note: operations
