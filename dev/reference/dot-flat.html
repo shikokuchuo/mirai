@@ -9,7 +9,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,12 +62,15 @@
 <span></span>
 <span><span class="va">.progress</span></span>
 <span></span>
+<span><span class="va">.progress2</span></span>
+<span></span>
 <span><span class="va">.stop</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
     <p>An object of class <code>expression</code> of length 1.</p>
+<p>An object of class <code>expression</code> of length 1.</p>
 <p>An object of class <code>expression</code> of length 1.</p>
 <p>An object of class <code>expression</code> of length 1.</p>
     </div>
@@ -82,8 +85,11 @@
 <p><code>x[.flat]</code> collects and flattens map results to a vector, checking
     that they are of the same type to avoid coercion. Note: errors if an
     ‘errorValue’ has been returned or results are of differing type.</p>
-<p><code>x[.progress]</code> collects map results whilst showing a text progress
-    indicator.</p>
+<p><code>x[.progress]</code> collects map results whilst showing a simple text
+    progress indicator of parts completed of the total.</p>
+<p><code>x[.progress2]</code> collects map results whilst showing a progress bar
+    from the <a href="https://CRAN.R-project.org/package=cli" class="external-link"><span class="pkg">cli</span></a> package, if available, with completion percentage
+    and ETA.</p>
 <p><code>x[.stop]</code> collects map results applying early stopping, which stops
     at the first failure and cancels remaining operations. Note: operations
     already in progress continue to completion, although their results are
