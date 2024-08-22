@@ -1,7 +1,7 @@
 # mirai 1.2.0.9001 (development)
 
 * Fixes flatmap with `mirai_map()` assigning the variable 'typ' to the global environment.
-* `mirai_map()[.progress]` now uses enhanced progress bars from the 'cli' package if available.
+* Adds `mirai_map()[.progress2]` as an alternative progress indicator, using the 'cli' package to show % complete and ETA.
 
 # mirai 1.2.0
 

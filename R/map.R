@@ -52,10 +52,12 @@
 #'     that they are of the same type to avoid coercion. Note: errors if an
 #'     \sQuote{errorValue} has been returned or results are of differing type.
 #'
-#'     \code{x[.progress]} collects map results whilst showing a progress
-#'     indicator. This uses the \CRANpkg{cli} package, if available, to show
-#'     completion percentage and ETA, or else a simple text indicator of parts
-#'     completed of the total.
+#'     \code{x[.progress]} collects map results whilst showing a simple text
+#'     progress indicator of parts completed of the total.
+#'
+#'     \code{x[.progress2]} collects map results whilst showing a progress bar
+#'     from the \CRANpkg{cli} package, if available, with completion percentage
+#'     and ETA.
 #'
 #'     \code{x[.stop]} collects map results applying early stopping, which stops
 #'     at the first failure and cancels remaining operations. Note: operations
@@ -237,7 +239,6 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
   }
 )
 
-environment(`[.mirai_map`)[["cli"]] <- NULL
 environment(`[.mirai_map`)[["typ"]] <- NULL
 environment(`[.mirai_map`)[["xi"]] <- NULL
 environment(`[.mirai_map`)[["i"]] <- 0L
@@ -272,17 +273,17 @@ print.mirai_map <- function(x, ...) {
 #' @export
 #'
 .progress <- expression(
-  if (i == 0L) {
-    is.null(cli) && { cli <<- requireNamespace("cli", quietly = TRUE) }
-    if (cli) cli::cli_progress_bar(type = NULL, total = xlen, auto_terminate = TRUE, .envir = .) else
-      cat(sprintf("\r[ 0 / %d .... ]", xlen), file = stderr())
-  } else if (i < xlen) {
-    if (cli) cli::cli_progress_update(force = TRUE, .envir = .) else
-      cat(sprintf("\r[ %d / %d .... ]", i, xlen), file = stderr())
-  } else if (i == xlen) {
-    if (cli) cli::cli_progress_done(.envir = .) else
-      cat(sprintf("\r[ %d / %d done ]\n", i, xlen), file = stderr())
-  }
+  if (i == 0L) cat(sprintf("\r[ 0 / %d .... ]", xlen), file = stderr()) else
+    if (i < xlen) cat(sprintf("\r[ %d / %d .... ]", i, xlen), file = stderr()) else
+      if (i == xlen) cat(sprintf("\r[ %d / %d done ]\n", i, xlen), file = stderr())
+)
+
+#' @rdname dot-flat
+#' @export
+#'
+.progress2 <- expression(
+  if (i == 0L) cli::cli_progress_bar(type = NULL, total = xlen, auto_terminate = TRUE, .envir = .) else
+    if (i <= xlen) cli::cli_progress_update(force = TRUE, .envir = .)
 )
 
 #' @rdname dot-flat

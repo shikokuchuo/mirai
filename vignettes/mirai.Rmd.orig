@@ -588,7 +588,8 @@ Use of `mirai_map()` assumes that `daemons()` have previously been set. If not t
 When collecting the results, optionally specify `.flat`, `.progress` or `.stop` to `[]`:
 
 - `x[.flat]` collects and flattens the results, checking that they are of the same type to avoid coercion.
-- `x[.progress]` collects results whilst showing a progress indicator. If the `cli` package is available, this will show completion percentage and ETA, or else a simple text indicator of parts completed of the total.
+- `x[.progress]` collects results whilst showing a simple text progress indicator of parts completed of the total.
+- `x[.progress2]` is an alternative that uses `cli` progress bars, where available, showing completion percentage and ETA.
 - `x[.stop]` collects the results applying early stopping, which stops at the first failure and cancels remaining computations (note: computations already in progress continue to completion, but their results are not collected).
 
 Combinations of the above may be supplied in the fashion of `x[c(.stop, .progress)]`.
