@@ -26,7 +26,7 @@ Encoding: UTF-8
 Depends: 
     R (>= 3.6)
 Imports: 
-    shikokuchuo/nanonext (>= 1.2.1.9002)
+    nanonext (>= 1.2.1.9002)
 Enhances: 
     parallel,
     promises
@@ -35,3 +35,4 @@ Suggests:
     litedown
 VignetteBuilder: litedown
 RoxygenNote: 7.3.2
+Remotes: shikokuchuo/nanonext
