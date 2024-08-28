@@ -101,6 +101,14 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
     is.object(cmessage) && stop(._[["sync_timeout"]])
   }
 
+  pkgs <- Sys.getenv("MIRAI_DEF_PKGS")
+  if (nzchar(pkgs)) {
+    Sys.unsetenv("MIRAI_DEF_PKGS")
+    Sys.setenv(R_DEFAULT_PACKAGES = pkgs)
+  } else {
+    Sys.unsetenv("R_DEFAULT_PACKAGES")
+  }
+
   auto <- is.null(url)
   vectorised <- length(url) == n
   seq_n <- seq_len(n)
@@ -111,13 +119,6 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
   if (auto) {
     dots <- parse_dots(...)
     output <- attr(dots, "output")
-    pkgs <- Sys.getenv("MIRAI_DEF_PKGS")
-    if (nzchar(pkgs)) {
-      Sys.unsetenv("MIRAI_DEF_PKGS")
-      Sys.setenv(R_DEFAULT_PACKAGES = pkgs)
-    } else {
-      Sys.unsetenv("R_DEFAULT_PACKAGES")
-    }
   } else {
     ports <- get_ports(url = url, n = n)
     if (length(ports)) token <- FALSE
