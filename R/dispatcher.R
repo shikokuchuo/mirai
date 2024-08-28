@@ -99,14 +99,9 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
     dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
     cmessage <- recv(sockc, mode = 2L, block = .limit_long)
     is.object(cmessage) && stop(._[["sync_timeout"]])
-  }
-
-  pkgs <- Sys.getenv("MIRAI_DEF_PKGS")
-  if (nzchar(pkgs)) {
-    Sys.unsetenv("MIRAI_DEF_PKGS")
-    Sys.setenv(R_DEFAULT_PACKAGES = pkgs)
-  } else {
-    Sys.unsetenv("R_DEFAULT_PACKAGES")
+    if (nzchar(cmessage[2L]))
+      Sys.setenv(R_DEFAULT_PACKAGES = cmessage[2L]) else
+        Sys.unsetenv("R_DEFAULT_PACKAGES")
   }
 
   auto <- is.null(url)
@@ -122,18 +117,14 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
   } else {
     ports <- get_ports(url = url, n = n)
     if (length(ports)) token <- FALSE
-    if (ctrchannel && nzchar(cmessage[1L]) && is.null(tls)) {
-      if (length(cmessage) > 2L) {
-        tls <- `length<-`(cmessage, 1L + nzchar(cmessage[2L]))
-        pass <- cmessage[3L]
-      } else {
-        tls <- cmessage
-        pass <- NULL
-      }
+    if (ctrchannel && nzchar(cmessage[4L]) && is.null(tls)) {
+      tls <- c(cmessage[4L], if (nzchar(cmessage[6L])) cmessage[6L])
+      pass <- if (nzchar(cmessage[8L])) cmessage[8L]
     }
-    tls <- if (is.character(tls)) tls_config(server = tls, pass = if (is.character(pass)) pass)
-    pass <- NULL
+    if (length(tls))
+      tls <- tls_config(server = tls, pass = pass)
   }
+  pass <- NULL
 
   envir <- new.env(hash = FALSE)
   if (is.numeric(rs)) `[[<-`(envir, "stream", as.integer(rs))

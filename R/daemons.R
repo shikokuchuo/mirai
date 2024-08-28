@@ -610,13 +610,12 @@ launch_daemon <- function(args, output)
 
 launch_sync_dispatcher <- function(sock, sockc, args, output, tls = NULL, pass = NULL) {
   pkgs <- Sys.getenv("R_DEFAULT_PACKAGES")
-  if (nzchar(pkgs)) {
-    on.exit(Sys.unsetenv("MIRAI_DEF_PKGS"))
-    Sys.setenv(MIRAI_DEF_PKGS = pkgs)
-  }
   system2(command = .command, args = c("--default-packages=NULL", "--vanilla", "-e", args), stdout = output, stderr = output, wait = FALSE)
-  tls <- if (is.character(tls)) c(tls[1L], if (length(tls) > 1L) tls[2L] else "", if (is.character(pass)) pass)
-  query_dispatcher(sockc, command = tls, mode = 2L, block = .limit_long)
+  vec <- c("p", pkgs,
+           "t", if (is.character(tls)) tls[1L] else "",
+           "c", if (is.character(tls) && length(tls) > 1L) tls[2L] else "",
+           "s", if (is.character(pass)) pass[1L] else "", "x")
+  query_dispatcher(sockc, command = vec, mode = 2L, block = .limit_long)
 }
 
 launch_sync_daemons <- function(seq, sock, urld, dots, envir, output) {
