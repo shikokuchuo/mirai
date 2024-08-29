@@ -33,7 +33,8 @@ empty list.}
 to use (each compute profile has its own independent set of daemons).}
 }
 \value{
-Invisible NULL.
+Invisible NULL. Will error if the specified compute profile is not
+    found, i.e. not yet set up.
 }
 \description{
 Evaluate an expression \sQuote{everywhere} on all connected daemons for the

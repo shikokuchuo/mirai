@@ -95,6 +95,7 @@
     named_args = "all '...' arguments must be named, unless supplying an environment",
     n_one = "'n' must be 1 or greater",
     n_zero = "the number of daemons must be zero or greater",
+    not_found = "compute profile '%s' not found",
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
     register_cluster = "this function requires a more recent version of R",
     requires_daemons = "mirai_map(): launching one local daemon as none previously set",
