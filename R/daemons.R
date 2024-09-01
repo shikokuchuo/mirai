@@ -303,9 +303,9 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         urlc <- sprintf("%s%s", urld, "c")
         sock <- req_socket(urld)
         sockc <- req_socket(urlc)
-        launch_sync_dispatcher(sock, wa5(urld, dots, n, urlc, url), output, tls, pass) || stop(._[["sync_timeout"]])
-        init_monitor(sockc = sockc, envir = envir)
-        `[[<-`(envir, "cv", cv)
+        res <- launch_sync_dispatcher(sock, sockc, wa5(urld, dots, n, urlc, url), output, tls, pass)
+        is.object(res) && stop(._[["sync_timeout"]])
+        store_dispatcher(sockc = sockc, res = res, cv = cv, envir = envir)
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass))
         store_urls(sock = sock, envir = envir)
@@ -348,10 +348,10 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         sock <- req_socket(urld)
         urlc <- sprintf("%s%s", urld, "c")
         sockc <- req_socket(urlc)
-        launch_sync_dispatcher(sock, wa4(urld, dots, envir[["stream"]], n, urlc), output) || stop(._[["sync_timeout"]])
+        res <- launch_sync_dispatcher(sock, sockc, wa4(urld, dots, envir[["stream"]], n, urlc), output)
+        is.object(res) && stop(._[["sync_timeout"]])
+        store_dispatcher(sockc = sockc, res = res, cv = cv, envir = envir)
         for (i in seq_len(n)) next_stream(envir)
-        init_monitor(sockc = sockc, envir = envir)
-        `[[<-`(envir, "cv", cv)
       } else {
         sock <- req_socket(urld)
         launch_sync_daemons(seq_len(n), sock, urld, dots, envir, output) || stop(._[["sync_timeout"]])
@@ -608,34 +608,14 @@ wa5 <- function(urld, dots, n, urlc, url)
 launch_daemon <- function(args, output)
   system2(command = .command, args = c("-e", args), stdout = output, stderr = output, wait = FALSE)
 
-launch_sync_dispatcher <- function(sock, args, output, tls = NULL, pass = NULL) {
-  cv <- cv()
-  pipe_notify(sock, cv = cv, add = TRUE)
-  if (is.character(tls)) {
-    switch(
-      length(tls),
-      {
-        on.exit(Sys.unsetenv("MIRAI_TEMP_FIELD1"))
-        Sys.setenv(MIRAI_TEMP_FIELD1 = tls)
-        Sys.unsetenv("MIRAI_TEMP_FIELD2")
-      },
-      {
-        on.exit(Sys.unsetenv(c("MIRAI_TEMP_FIELD1", "MIRAI_TEMP_FIELD2")))
-        Sys.setenv(MIRAI_TEMP_FIELD1 = tls[1L])
-        Sys.setenv(MIRAI_TEMP_FIELD2 = tls[2L])
-      }
-    )
-    if (is.character(pass)) {
-      on.exit(Sys.unsetenv("MIRAI_TEMP_VAR"), add = TRUE)
-      Sys.setenv(MIRAI_TEMP_VAR = pass)
-    }
-  }
-  on.exit(Sys.unsetenv("MIRAI_DEF_PKGS"), add = TRUE)
-  Sys.setenv(MIRAI_DEF_PKGS = Sys.getenv("R_DEFAULT_PACKAGES"))
+launch_sync_dispatcher <- function(sock, sockc, args, output, tls = NULL, pass = NULL) {
+  pkgs <- Sys.getenv("R_DEFAULT_PACKAGES")
   system2(command = .command, args = c("--default-packages=NULL", "--vanilla", "-e", args), stdout = output, stderr = output, wait = FALSE)
-  res <- until(cv, .limit_long)
-  pipe_notify(sock, cv = NULL, add = TRUE)
-  res
+  vec <- c("p", pkgs,
+           "t", if (is.character(tls)) tls[1L] else "",
+           "c", if (is.character(tls) && length(tls) > 1L) tls[2L] else "",
+           "s", if (is.character(pass)) pass[1L] else "", "x")
+  query_dispatcher(sockc, command = vec, mode = 2L, block = .limit_long)
 }
 
 launch_sync_daemons <- function(seq, sock, urld, dots, envir, output) {
@@ -648,11 +628,8 @@ launch_sync_daemons <- function(seq, sock, urld, dots, envir, output) {
   !pipe_notify(sock, cv = NULL, add = TRUE)
 }
 
-init_monitor <- function(sockc, envir) {
-  res <- query_dispatcher(sockc, command = FALSE, mode = 2L, block = .limit_long)
-  is.object(res) && stop(._[["sync_timeout"]])
-  `[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L]))
-}
+store_dispatcher <- function(sockc, res, cv, envir)
+  `[[<-`(`[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L])), "cv", cv)
 
 store_urls <- function(sock, envir) {
   listener <- attr(sock, "listener")[[1L]]

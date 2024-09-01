@@ -85,14 +85,24 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(._[["missing_url"]])
 
-  pkgs <- Sys.getenv("MIRAI_DEF_PKGS")
-  Sys.unsetenv("MIRAI_DEF_PKGS")
-  if (nzchar(pkgs)) Sys.setenv(R_DEFAULT_PACKAGES = pkgs) else Sys.unsetenv("R_DEFAULT_PACKAGES")
   cv <- cv()
   sock <- socket(protocol = "rep")
   on.exit(reap(sock))
   pipe_notify(sock, cv = cv, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock = sock, url = host, asyncdial = asyncdial)
+
+  ctrchannel <- is.character(monitor)
+  if (ctrchannel) {
+    sockc <- socket(protocol = "rep")
+    on.exit(reap(sockc), add = TRUE, after = FALSE)
+    pipe_notify(sockc, cv = cv, remove = TRUE, flag = TRUE)
+    dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
+    cmessage <- recv(sockc, mode = 2L, block = .limit_long)
+    is.object(cmessage) && stop(._[["sync_timeout"]])
+    if (nzchar(cmessage[2L]))
+      Sys.setenv(R_DEFAULT_PACKAGES = cmessage[2L]) else
+        Sys.unsetenv("R_DEFAULT_PACKAGES")
+  }
 
   auto <- is.null(url)
   vectorised <- length(url) == n
@@ -105,12 +115,16 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
     dots <- parse_dots(...)
     output <- attr(dots, "output")
   } else {
-    baseurl <- parse_url(url)
-    ports <- get_ports(baseurl = baseurl, n = n)
+    ports <- get_ports(url = url, n = n)
     if (length(ports)) token <- FALSE
-    tls <- get_tls(baseurl = baseurl, tls = tls, pass = pass)
-    pass <- NULL
+    if (ctrchannel && nzchar(cmessage[4L]) && is.null(tls)) {
+      tls <- c(cmessage[4L], if (nzchar(cmessage[6L])) cmessage[6L])
+      pass <- if (nzchar(cmessage[8L])) cmessage[8L]
+    }
+    if (length(tls))
+      tls <- tls_config(server = tls, pass = pass)
   }
+  pass <- NULL
 
   envir <- new.env(hash = FALSE)
   if (is.numeric(rs)) `[[<-`(envir, "stream", as.integer(rs))
@@ -152,13 +166,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
     for (i in seq_n)
       until(cv, .limit_long) || stop(._[["sync_timeout"]])
 
-  ctrchannel <- is.character(monitor)
   if (ctrchannel) {
-    sockc <- socket(protocol = "rep")
-    on.exit(reap(sockc), add = TRUE, after = FALSE)
-    pipe_notify(sockc, cv = cv, remove = TRUE, flag = TRUE)
-    dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
-    recv(sockc, mode = 6L, block = .limit_long) && stop(._[["sync_timeout"]])
     send(sockc, c(Sys.getpid(), servernames), mode = 2L)
     cmessage <- recv_aio(sockc, mode = 5L, cv = cv)
   }
@@ -314,28 +322,10 @@ saisei <- function(i, force = FALSE, .compute = "default") {
 
 # internals --------------------------------------------------------------------
 
-get_ports <- function(baseurl, n)
+get_ports <- function(url, n) {
+  baseurl <- parse_url(url)
   if (startsWith(baseurl[["scheme"]], "t")) {
     if (baseurl[["port"]] == "0") integer(n) else seq.int(baseurl[["port"]], length.out = n)
-  }
-
-get_and_reset_env <- function(x) {
-  candidate <- Sys.getenv(x)
-  if (nzchar(candidate)) {
-    Sys.unsetenv(x)
-    candidate
-  }
-}
-
-get_tls <- function(baseurl, tls, pass) {
-  sch <- baseurl[["scheme"]]
-  if ((startsWith(sch, "wss") || startsWith(sch, "tls")) && is.null(tls)) {
-    tls <- get_and_reset_env("MIRAI_TEMP_FIELD1")
-    if (length(tls)) tls <- c(tls, get_and_reset_env("MIRAI_TEMP_FIELD2"))
-  }
-  if (length(tls)) {
-    if (is.null(pass)) pass <- get_and_reset_env("MIRAI_TEMP_VAR")
-    tls_config(server = tls, pass = pass)
   }
 }
 

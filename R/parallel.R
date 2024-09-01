@@ -224,7 +224,7 @@ register_cluster <- function(default = TRUE) {
 
   register <- .getNamespace("parallel")[["registerClusterType"]]
   is.null(register) && stop(._[["register_cluster"]])
-  register("MIRAI", make_cluster, make.default = isTRUE(default))
+  register("MIRAI", make_cluster, make.default = isTRUE(default)) # nocov
 
 }
 
