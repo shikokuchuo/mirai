@@ -72,7 +72,7 @@ as.promise.mirai <- function(x) {
       promise <- promises::then(
         promises::promise(
           function(resolve, reject)
-            context <- set_promise_context(x, environment())
+            context <- .promise(x, environment())
         ),
         onFulfilled = function(value)
           if (is_error_value(value) && !is_mirai_interrupt(value))

@@ -1,9 +1,9 @@
-# mirai 1.2.0.9003 (development)
+# mirai 1.2.0.9004 (development)
 
 * `everywhere()` now errors if the specified compute profile is not found, i.e. not yet set up, rather than fail silently.
 * Fixes flatmap with `mirai_map()` assigning the variable 'typ' to the global environment.
 * Adds `mirai_map()[.progress2]` as an alternative progress indicator, using the 'cli' package to show % complete and ETA.
-* Requires `nanonext` >= [1.2.1.9007].
+* Requires `nanonext` >= [1.2.1.9008].
 
 # mirai 1.2.0
 
