@@ -217,7 +217,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'     existing registered functions. To remove the configuration, provide an
 #'     empty list.
 #'
-#' @return Invisible NULL.
+#' @return Invisible NULL. Will error if the specified compute profile is not
+#'     found, i.e. not yet set up.
 #'
 #' @inheritSection mirai Evaluation
 #'
@@ -252,34 +253,32 @@ everywhere <- function(.expr, ..., .args = list(), .serial = NULL, .compute = "d
 
   envir <- ..[[.compute]]
 
-  if (length(envir)) {
+  is.null(envir) && stop(sprintf(._[["not_found"]], .compute))
 
-    expr <- substitute(.expr)
-    .expr <- c(
-      as.expression(if (is.symbol(expr) && exists(expr, parent.frame()) && is.language(.expr)) .expr else expr),
-      .snapshot
-    )
+  expr <- substitute(.expr)
+  .expr <- c(
+    as.expression(if (is.symbol(expr) && exists(expr, parent.frame()) && is.language(.expr)) .expr else expr),
+    .snapshot
+  )
 
-    if (is.list(.serial)) {
-      .expr <- c(.register, .expr)
-      .args <- c(.args, list(.serial = .serial))
-      `opt<-`(envir[["sock"]], "serial", .serial)
-    }
-
-    if (is.null(envir[["sockc"]])) {
-      vec <- vector(mode = "list", length = max(stat(envir[["sock"]], "pipes"), envir[["n"]]))
-      for (i in seq_along(vec))
-        vec[[i]] <- mirai(.expr = .expr, ..., .args = .args, .compute = .compute)
-    } else {
-      .expr <- c(.expr, .block)
-      vec <- vector(mode = "list", length = envir[["n"]])
-      for (i in seq_along(vec))
-        vec[[i]] <- mirai(.expr = .expr, ..., .args = .args, .compute = .compute)
-    }
-    `[[<-`(envir, "everywhere", vec)
-    invisible()
-
+  if (is.list(.serial)) {
+    .expr <- c(.register, .expr)
+    .args <- c(.args, list(.serial = .serial))
+    `opt<-`(envir[["sock"]], "serial", .serial)
   }
+
+  if (is.null(envir[["sockc"]])) {
+    vec <- vector(mode = "list", length = max(stat(envir[["sock"]], "pipes"), envir[["n"]]))
+    for (i in seq_along(vec))
+      vec[[i]] <- mirai(.expr = .expr, ..., .args = .args, .compute = .compute)
+  } else {
+    .expr <- c(.expr, .block)
+    vec <- vector(mode = "list", length = envir[["n"]])
+    for (i in seq_along(vec))
+      vec[[i]] <- mirai(.expr = .expr, ..., .args = .args, .compute = .compute)
+  }
+  `[[<-`(envir, "everywhere", vec)
+  invisible()
 
 }
 
