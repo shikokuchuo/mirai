@@ -74,7 +74,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 5.547440 7.081894 5.928223 8.844078 7.044842
+#> [1] 6.865812 7.343917 7.304600 6.918724 5.492014
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -88,7 +88,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 5.547440 7.081894 5.928223 8.844078 7.044842
+#> [1] 6.865812 7.343917 7.304600 6.918724 5.492014
 ```
 
 #### Daemons
@@ -152,7 +152,8 @@ over alternative map implementations.
 experience.
 
 - Fast
-  - Over 100x more responsive than common alternatives <sup>\[1\]</sup>
+  - Over 800x more responsive than common alternatives
+    [<sup>\[1\]</sup>](https://github.com/shikokuchuo/mirai/pull/142#issuecomment-2325948615)
   - Built for low-latency applications such as real time inference or
     Shiny apps
 - Reliable
@@ -276,9 +277,6 @@ package: <https://shikokuchuo.net/nanonext/>
 
 mirai is listed in CRAN High Performance Computing Task View: <br />
 <https://cran.r-project.org/view=HighPerformanceComputing>
-
-\[1\] Benchmark available in appendix of:
-<https://shikokuchuo.net/user2024-conference/>
 
 –
 

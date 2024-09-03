@@ -108,7 +108,7 @@ All errors are returned as 'errorValues', facilitating recovery from partial fai
 `mirai` is designed from the ground up to provide a production-grade experience.
 
 - Fast
-  + Over 100x more responsive than common alternatives <sup>[1]</sup>
+  + Over 800x more responsive than common alternatives [<sup>[1]</sup>](https://github.com/shikokuchuo/mirai/pull/142#issuecomment-2325948615)
   + Built for low-latency applications such as real time inference or Shiny apps
 
 - Reliable
@@ -189,8 +189,6 @@ install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
 
 mirai is listed in CRAN High Performance Computing Task View: <br />
 <https://cran.r-project.org/view=HighPerformanceComputing>
-
-[1] Benchmark available in appendix of: <https://shikokuchuo.net/user2024-conference/>
 
 --
 
