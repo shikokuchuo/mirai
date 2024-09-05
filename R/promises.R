@@ -71,8 +71,7 @@ as.promise.mirai <- function(x) {
     if (unresolved(x)) {
       promise <- promises::then(
         promises::promise(
-          function(resolve, reject)
-            .promise(x, environment())
+          function(resolve, reject) .keep(x, environment())
         ),
         onFulfilled = function(value)
           if (is_error_value(value) && !is_mirai_interrupt(value))
