@@ -182,21 +182,21 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   data <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
   envir <- ..[[.compute]]
-  if (is.null(envir)) {
+
+  is.null(envir) && {
     sock <- ephemeral_daemon(local_url())
     aio <- request(
       .context(sock), data = data, send_mode = 1L, recv_mode = 1L,
       timeout = .timeout, cv = NA
     )
     `attr<-`(.subset2(aio, "aio"), "sock", sock)
-  } else {
-    aio <- request(
-      .context(envir[["sock"]]), data = data, send_mode = 1L, recv_mode = 1L,
-      timeout = .timeout, cv = envir[["cv"]]
-    )
+    return(aio)
   }
 
-  aio
+  request(
+    .context(envir[["sock"]]), data = data, send_mode = 1L, recv_mode = 1L,
+    timeout = .timeout, cv = envir[["cv"]]
+  )
 
 }
 

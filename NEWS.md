@@ -1,4 +1,4 @@
-# mirai 1.2.0.9006 (development)
+# mirai 1.2.0.9007 (development)
 
 * `everywhere()` now errors if the specified compute profile is not found, i.e. not yet set up, rather than fail silently.
 * Fixes flatmap with `mirai_map()` assigning the variable 'typ' to the global environment.
