@@ -219,29 +219,25 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
 
 #' @export
 #'
-`[.mirai_map` <- local(
-  function(x, expr) {
+`[.mirai_map` <- function(x, expr) {
 
-    missing(expr) && return(collect_aio_(x))
+  missing(expr) && return(collect_aio_(x))
 
-    xlen <- length(x)
-    collect_map <- function(i) {
-      xi <- collect_aio_(x[[i]])
-      eval(expr)
-      xi
-    }
+  xlen <- length(x)
+  i <- 0L
+  typ <- xi <- NULL
+  collect_map <- function(i) {
+    xi <- collect_aio_(x[[i]])
     eval(expr)
-    out <- `names<-`(lapply(seq_len(xlen), collect_map), names(x))
-    i <- Inf
-    eval(expr)
-    out
-
+    xi
   }
-)
+  eval(expr)
+  out <- `names<-`(lapply(seq_len(xlen), collect_map), names(x))
+  i <- Inf
+  eval(expr)
+  out
 
-environment(`[.mirai_map`)[["typ"]] <- NULL
-environment(`[.mirai_map`)[["xi"]] <- NULL
-environment(`[.mirai_map`)[["i"]] <- 0L
+}
 
 #' @export
 #'
@@ -263,30 +259,38 @@ print.mirai_map <- function(x, ...) {
 #' @keywords internal
 #' @export
 #'
-.flat <- expression(
-  if (i <= 1L) typ <<- typeof(xi) else
-    if (i <= xlen) is_error_value(xi) && stop(xi, call. = FALSE) || typeof(xi) == typ || stop(sprintf("[.flat]: cannot flatten outputs of differing type: %s / %s", typ, typeof(xi)), call. = FALSE) else
-      out <- unlist(out, recursive = FALSE)
+.flat <- compiler::compile(
+  quote(
+    if (i <= 1L) { if (i) typ <<- typeof(xi) } else
+      if (i <= xlen) is_error_value(xi) && stop(xi, call. = FALSE) || typeof(xi) == typ || stop(sprintf("[.flat]: cannot flatten outputs of differing type: %s / %s", typ, typeof(xi)), call. = FALSE) else
+        out <- unlist(out, recursive = FALSE)
+  )
 )
 
 #' @rdname dot-flat
 #' @export
 #'
-.progress <- expression(
-  if (i == 0L) cat(sprintf("\r[ 0 / %d .... ]", xlen), file = stderr()) else
-    if (i < xlen) cat(sprintf("\r[ %d / %d .... ]", i, xlen), file = stderr()) else
-      if (i == xlen) cat(sprintf("\r[ %d / %d done ]\n", i, xlen), file = stderr())
+.progress <- compiler::compile(
+  quote(
+    if (i == 0L) cat(sprintf("\r[ 0 / %d .... ]", xlen), file = stderr()) else
+      if (i < xlen) cat(sprintf("\r[ %d / %d .... ]", i, xlen), file = stderr()) else
+        if (i == xlen) cat(sprintf("\r[ %d / %d done ]\n", i, xlen), file = stderr())
+  )
 )
 
 #' @rdname dot-flat
 #' @export
 #'
-.progress_cli <- expression(
-  if (i == 0L) cli::cli_progress_bar(type = NULL, total = xlen, auto_terminate = TRUE, .envir = .) else
-    if (i <= xlen) cli::cli_progress_update(force = TRUE, .envir = .)
+.progress_cli <- compiler::compile(
+  quote(
+    if (i == 0L) cli::cli_progress_bar(type = NULL, total = xlen, auto_terminate = TRUE, .envir = .) else
+      if (i <= xlen) cli::cli_progress_update(force = TRUE, .envir = .)
+  )
 )
 
 #' @rdname dot-flat
 #' @export
 #'
-.stop <- expression(if (is_error_value(xi)) { lapply(x, stop_mirai); stop(xi, call. = FALSE) })
+.stop <- compiler::compile(
+  quote(if (is_error_value(xi)) { lapply(x, stop_mirai); stop(xi, call. = FALSE) })
+)
