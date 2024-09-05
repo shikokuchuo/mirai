@@ -55,7 +55,7 @@
 #'     \code{x[.progress]} collects map results whilst showing a simple text
 #'     progress indicator of parts completed of the total.
 #'
-#'     \code{x[.progress2]} collects map results whilst showing a progress bar
+#'     \code{x[.progress_cli]} collects map results whilst showing a progress bar
 #'     from the \CRANpkg{cli} package, if available, with completion percentage
 #'     and ETA.
 #'
@@ -281,7 +281,7 @@ print.mirai_map <- function(x, ...) {
 #' @rdname dot-flat
 #' @export
 #'
-.progress2 <- expression(
+.progress_cli <- expression(
   if (i == 0L) cli::cli_progress_bar(type = NULL, total = xlen, auto_terminate = TRUE, .envir = .) else
     if (i <= xlen) cli::cli_progress_update(force = TRUE, .envir = .)
 )

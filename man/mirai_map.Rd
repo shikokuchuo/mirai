@@ -68,7 +68,7 @@ Sends each application of function \code{.f} on an element of
     \code{x[.progress]} collects map results whilst showing a simple text
     progress indicator of parts completed of the total.
 
-    \code{x[.progress2]} collects map results whilst showing a progress bar
+    \code{x[.progress_cli]} collects map results whilst showing a progress bar
     from the \CRANpkg{cli} package, if available, with completion percentage
     and ETA.
 
