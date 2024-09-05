@@ -8,13 +8,13 @@
 \alias{.stop}
 \title{mirai Map Options}
 \format{
-An object of class \code{expression} of length 1.
+An object of class \code{bytecode} of length 1.
 
-An object of class \code{expression} of length 1.
+An object of class \code{bytecode} of length 1.
 
-An object of class \code{expression} of length 1.
+An object of class \code{bytecode} of length 1.
 
-An object of class \code{expression} of length 1.
+An object of class \code{bytecode} of length 1.
 }
 \usage{
 .flat

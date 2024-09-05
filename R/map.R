@@ -259,30 +259,38 @@ print.mirai_map <- function(x, ...) {
 #' @keywords internal
 #' @export
 #'
-.flat <- expression(
-  if (i <= 1L) { if (i) typ <<- typeof(xi) } else
-    if (i <= xlen) is_error_value(xi) && stop(xi, call. = FALSE) || typeof(xi) == typ || stop(sprintf("[.flat]: cannot flatten outputs of differing type: %s / %s", typ, typeof(xi)), call. = FALSE) else
-      out <- unlist(out, recursive = FALSE)
+.flat <- compiler::compile(
+  quote(
+    if (i <= 1L) { if (i) typ <<- typeof(xi) } else
+      if (i <= xlen) is_error_value(xi) && stop(xi, call. = FALSE) || typeof(xi) == typ || stop(sprintf("[.flat]: cannot flatten outputs of differing type: %s / %s", typ, typeof(xi)), call. = FALSE) else
+        out <- unlist(out, recursive = FALSE)
+  )
 )
 
 #' @rdname dot-flat
 #' @export
 #'
-.progress <- expression(
-  if (i == 0L) cat(sprintf("\r[ 0 / %d .... ]", xlen), file = stderr()) else
-    if (i < xlen) cat(sprintf("\r[ %d / %d .... ]", i, xlen), file = stderr()) else
-      if (i == xlen) cat(sprintf("\r[ %d / %d done ]\n", i, xlen), file = stderr())
+.progress <- compiler::compile(
+  quote(
+    if (i == 0L) cat(sprintf("\r[ 0 / %d .... ]", xlen), file = stderr()) else
+      if (i < xlen) cat(sprintf("\r[ %d / %d .... ]", i, xlen), file = stderr()) else
+        if (i == xlen) cat(sprintf("\r[ %d / %d done ]\n", i, xlen), file = stderr())
+  )
 )
 
 #' @rdname dot-flat
 #' @export
 #'
-.progress_cli <- expression(
-  if (i == 0L) cli::cli_progress_bar(type = NULL, total = xlen, auto_terminate = TRUE, .envir = .) else
-    if (i <= xlen) cli::cli_progress_update(force = TRUE, .envir = .)
+.progress_cli <- compiler::compile(
+  quote(
+    if (i == 0L) cli::cli_progress_bar(type = NULL, total = xlen, auto_terminate = TRUE, .envir = .) else
+      if (i <= xlen) cli::cli_progress_update(force = TRUE, .envir = .)
+  )
 )
 
 #' @rdname dot-flat
 #' @export
 #'
-.stop <- expression(if (is_error_value(xi)) { lapply(x, stop_mirai); stop(xi, call. = FALSE) })
+.stop <- compiler::compile(
+  quote(if (is_error_value(xi)) { lapply(x, stop_mirai); stop(xi, call. = FALSE) })
+)
