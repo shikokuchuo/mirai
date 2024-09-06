@@ -298,7 +298,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         cv <- cv()
         sock <- .dispatcher(cv = cv, n = n, host = inproc_url(), url = url, tls = if (length(tls)) tls_config(server = tls, pass = pass))
         urls <- as.character(lapply(seq_len(n), function(x) sprintf("%s/%d", url, x)))
-        `[[<-`(`[[<-`(`[[<-`(envir, "cv", cv), "urls", urls), "dispatcher", url)
+        `[[<-`(`[[<-`(`[[<-`(envir, "cv", cv), "urls", urls), "dispatcher", TRUE)
       } else if (dispatcher) {
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
         if (length(tls)) tls_config(server = tls, pass = pass)
@@ -355,7 +355,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         urls <- as.character(lapply(seq_len(n), function(x) sprintf("%s/%d", urld, x)))
         for (i in seq_len(n))
           launch_daemon(wa3(urls[i], dots, next_stream(envir)), output)
-        `[[<-`(`[[<-`(`[[<-`(envir, "cv", cv), "urls", urls), "dispatcher", urld)
+        `[[<-`(`[[<-`(`[[<-`(envir, "cv", cv), "urls", urls), "dispatcher", TRUE)
       } else if (dispatcher) {
         cv <- cv()
         sock <- req_socket(urld)
@@ -488,11 +488,12 @@ status <- function(.compute = "default") {
 
   is.list(.compute) && return(status(attr(.compute, "id")))
   envir <- ..[[.compute]]
-  is.null(envir) && return(list(connections = 0L, daemons = 0L))
-  if (is.null(envir[["dispatcher"]]))
-    list(connections = as.integer(stat(envir[["sock"]], "pipes")),
-         daemons = if (is.null(envir[["sockc"]])) envir[["urls"]] else query_status(envir)) else
-           list(connections = .cv_flag(envir[["cv"]]), daemons = envir[["dispatcher"]])
+  is.null(envir) &&
+    return(list(connections = 0L, daemons = 0L))
+  is.null(envir[["dispatcher"]]) ||
+    return(list(connections = .cv_flag(envir[["cv"]]), daemons = dispatcher_stats(envir)))
+  list(connections = as.integer(stat(envir[["sock"]], "pipes")),
+       daemons = if (is.null(envir[["sockc"]])) envir[["urls"]] else query_status(envir))
 
 }
 
@@ -675,5 +676,8 @@ query_status <- function(envir) {
     )
   )
 }
+
+dispatcher_stats <- function(envir)
+  `dimnames<-`(`dim<-`(seq_len(envir[["n"]]), c(envir[["n"]], 1L)), list(envir[["urls"]], "i"))
 
 ._scm_. <- as.raw(c(0x42, 0x0a, 0x03, 0x00, 0x00, 0x00, 0x02, 0x03, 0x04, 0x00, 0x00, 0x05, 0x03, 0x00, 0x05, 0x00, 0x00, 0x00, 0x55, 0x54, 0x46, 0x2d, 0x38, 0xfc, 0x00, 0x00, 0x00))
