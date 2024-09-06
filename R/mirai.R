@@ -165,21 +165,23 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   length(globals) && {
     gn <- names(globals)
     if (is.null(gn)) {
-      is.environment(globals[[1L]]) || stop(._[["named_args"]])
+      is.environment(globals[[1L]]) || stop(._[["named_dots"]])
       globals <- as.list.environment(globals[[1L]])
     }
-    all(nzchar(gn)) || stop(._[["named_args"]])
+    all(nzchar(gn)) || stop(._[["named_dots"]])
   }
-  arglist <- list(
+  data <- list(
     ._mirai_globals_. = globals,
     .expr = if (is.symbol(expr) && exists(expr, parent.frame()) && is.language(.expr)) .expr else expr
   )
   if (length(.args))
-    arglist <- c(
-      if (is.environment(.args)) as.list.environment(.args) else .args,
-      arglist
+    data <- c(
+      if (is.environment(.args)) as.list.environment(.args) else {
+        length(names(.args)) && all(nzchar(names(.args))) || stop(._[["named_args"]])
+        .args
+      },
+      data
     )
-  data <- list2env(arglist, envir = NULL, parent = .GlobalEnv)
 
   envir <- ..[[.compute]]
 
@@ -610,11 +612,11 @@ mk_interrupt_error <- function() .miraiInterrupt
 
 mk_mirai_error <- function(e, sc) {
   call <- deparse_safe(.subset2(e, "call"))
-  msg <- if (is.null(call) || call == "eval(expr = ._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = NULL)")
+  msg <- if (is.null(call) || call == "eval(expr = ._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = .GlobalEnv)")
     sprintf("Error: %s", .subset2(e, "message")) else
       sprintf("Error in %s: %s", call, .subset2(e, "message"))
   cat(sprintf("%s\n", msg), file = stderr())
-  idx <- which(as.logical(lapply(sc, identical, quote(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL)))))
+  idx <- which(as.logical(lapply(sc, identical, quote(eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = .GlobalEnv)))))
   sc <- sc[(length(sc) - 1L):(idx + 1L)]
   if (sc[[1L]][[1L]] == ".handleSimpleError")
     sc <- sc[-1L]
