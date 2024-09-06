@@ -143,7 +143,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
     aio <- recv_aio(ctx, mode = 1L, timeout = idletime, cv = cv)
     wait(cv) || break
     m <- collect_aio(aio)
-    is.environment(m) || {
+    is.object(m) && {
       count < timerstart && {
         start <- mclock()
         next
@@ -203,7 +203,7 @@ eval_mirai <- function(._mirai_.) {
   list2env(._mirai_.[["._mirai_globals_."]], envir = .GlobalEnv)
   withRestarts(
     withCallingHandlers(
-      eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = NULL),
+      eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = .GlobalEnv),
       error = handle_mirai_error,
       interrupt = handle_mirai_interrupt
     ),
