@@ -165,21 +165,23 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   length(globals) && {
     gn <- names(globals)
     if (is.null(gn)) {
-      is.environment(globals[[1L]]) || stop(._[["named_args"]])
+      is.environment(globals[[1L]]) || stop(._[["named_dots"]])
       globals <- as.list.environment(globals[[1L]])
     }
-    all(nzchar(gn)) || stop(._[["named_args"]])
+    all(nzchar(gn)) || stop(._[["named_dots"]])
   }
-  arglist <- list(
+  data <- list(
     ._mirai_globals_. = globals,
     .expr = if (is.symbol(expr) && exists(expr, parent.frame()) && is.language(.expr)) .expr else expr
   )
   if (length(.args))
-    arglist <- c(
-      if (is.environment(.args)) as.list.environment(.args) else .args,
-      arglist
+    data <- c(
+      if (is.environment(.args)) as.list.environment(.args) else {
+        length(names(.args)) && all(nzchar(names(.args))) || stop(._[["named_args"]])
+        .args
+      },
+      data
     )
-  data <- arglist
 
   envir <- ..[[.compute]]
 
