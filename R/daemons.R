@@ -491,7 +491,7 @@ status <- function(.compute = "default") {
   is.null(envir) &&
     return(list(connections = 0L, daemons = 0L))
   is.null(envir[["dispatcher"]]) ||
-    return(list(connections = .cv_flag(envir[["cv"]]), daemons = dispatcher_stats(envir)))
+    return(dispatcher_status(envir))
   list(connections = as.integer(stat(envir[["sock"]], "pipes")),
        daemons = if (is.null(envir[["sockc"]])) envir[["urls"]] else query_status(envir))
 
@@ -677,7 +677,12 @@ query_status <- function(envir) {
   )
 }
 
-dispatcher_stats <- function(envir)
-  `dimnames<-`(`dim<-`(seq_len(envir[["n"]]), c(envir[["n"]], 1L)), list(envir[["urls"]], "i"))
+dispatcher_status <- function(envir) {
+  active <- .active(envir[["sock"]])
+  list(
+    connections = sum(active),
+    daemons = `dimnames<-`(`dim<-`(c(seq_len(envir[["n"]]), active), c(envir[["n"]], 2L)), list(envir[["urls"]], c("i", "online")))
+  )
+}
 
 ._scm_. <- as.raw(c(0x42, 0x0a, 0x03, 0x00, 0x00, 0x00, 0x02, 0x03, 0x04, 0x00, 0x00, 0x05, 0x03, 0x00, 0x05, 0x00, 0x00, 0x00, 0x55, 0x54, 0x46, 0x2d, 0x38, 0xfc, 0x00, 0x00, 0x00))
