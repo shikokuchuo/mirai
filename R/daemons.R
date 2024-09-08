@@ -567,7 +567,7 @@ serialization <- function(fns, class, vec = FALSE) {
 
 # internals --------------------------------------------------------------------
 
-inproc_url <- function() sprintf("inproc://%s", random(12L))
+inproc_url <- function() sprintf("inproc://%s", random(10L))
 
 check_create_tls <- function(url, tls, envir) {
   purl <- parse_url(url)
@@ -678,10 +678,10 @@ query_status <- function(envir) {
 }
 
 dispatcher_status <- function(envir) {
-  active <- .active(envir[["sock"]])
+  online <- .online(envir[["sock"]])
   list(
-    connections = sum(active),
-    daemons = `dimnames<-`(`dim<-`(c(seq_len(envir[["n"]]), active), c(envir[["n"]], 2L)), list(envir[["urls"]], c("i", "online")))
+    connections = sum(online),
+    daemons = `dimnames<-`(`dim<-`(online, c(envir[["n"]], 1L)), list(envir[["urls"]], "online"))
   )
 }
 
