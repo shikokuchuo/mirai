@@ -355,6 +355,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         urls <- as.character(lapply(seq_len(n), function(x) sprintf("%s/%d", urld, x)))
         for (i in seq_len(n))
           launch_daemon(wa3(urls[i], dots, next_stream(envir)), output)
+        query_dispatcher(sock, command = 0L, mode = 6L, block = .limit_long) && stop(._[["sync_timeout"]])
         `[[<-`(`[[<-`(`[[<-`(envir, "cv", cv), "urls", urls), "dispatcher", TRUE)
       } else if (dispatcher) {
         cv <- cv()
