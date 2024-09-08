@@ -62,9 +62,10 @@ nextstream <- function(.compute = "default") next_stream(..[[.compute]])
 #' \code{nextget} retrieves the specified item from the specified compute
 #'     profile.
 #'
-#' @param x character value of item to retrieve. One of \sQuote{pid} (dispatcher
-#'     process ID), \sQuote{urls} (URLs dispatcher is listening at) or
-#'     \sQuote{tls} (the stored client TLS configuration for use by daemons).
+#' @param x character value of item to retrieve. One of \sQuote{n} (number of
+#'     dispatcher daemons), \sQuote{pid} (dispatcher process ID), \sQuote{urls}
+#'     (URLs dispatcher is listening at) or \sQuote{tls} (the stored client TLS
+#'     configuration for use by daemons).
 #'
 #' @return For \code{nextget}: the requested item, or else NULL if not present.
 #'
