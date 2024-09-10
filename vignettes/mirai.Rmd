@@ -61,7 +61,7 @@ To wait for and collect the return value, use the mirai's `[]` method:
 
 ``` r
 m[]
-#> [1] 6.058432 3.641053 4.903094 3.526692 1.361654
+#> [1] 5.108131 5.359650 1.925260 4.204130 4.051092
 ```
 As a mirai represents an async operation, it is never necessary to wait for it. Other code can continue to be run. Once it completes, the return value automatically becomes available at `$data`.
 
@@ -69,7 +69,7 @@ As a mirai represents an async operation, it is never necessary to wait for it. 
 m
 #> < mirai [$data] >
 m$data
-#> [1] 6.058432 3.641053 4.903094 3.526692 1.361654
+#> [1] 5.108131 5.359650 1.925260 4.204130 4.051092
 ```
 For easy programmatic use of `mirai()`, '.expr' accepts a pre-constructed language object, and also a list of named arguments passed via '.args'. So, the following would be equivalent to the above:
 
@@ -81,7 +81,7 @@ args <- list(time = x$time, mean = x$mean)
 
 m <- mirai(.expr = expr, .args = args)
 m[]
-#> [1] 5.021883 3.125819 3.271037 4.999458 4.146232
+#> [1] 4.499697 3.632508 5.790429 5.696057 4.354197
 ```
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -199,12 +199,12 @@ status()
 #> 
 #> $daemons
 #>                                     i online instance assigned complete
-#> abstract://914bfc2ac2305823156d25e4 1      1        1        0        0
-#> abstract://0b1eae61a49545cc86ecf038 2      1        1        0        0
-#> abstract://2c838bdb5bd9ab2c9749e53c 3      1        1        0        0
-#> abstract://694fd4e236b23437911eb50a 4      1        1        0        0
-#> abstract://2c462a10b309ed75a82b809d 5      1        1        0        0
-#> abstract://26f3ff02116ab02e7cc6d6c7 6      1        1        0        0
+#> abstract://8fa66f5196f2dff59cebc01d 1      1        1        0        0
+#> abstract://2d8f068c9be89c08659447c3 2      1        1        0        0
+#> abstract://aad70ad76114655f429c8956 3      1        1        0        0
+#> abstract://75a0032574e69d45a613bfe3 4      1        1        0        0
+#> abstract://f1d20642a49266fc4ad20b9e 5      1        1        0        0
+#> abstract://9681a0b4c94cbdba847b2e63 6      1        1        0        0
 ```
 The default `dispatcher = TRUE` creates a `dispatcher()` background process that connects to individual daemon processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to daemons for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.
 
@@ -233,7 +233,7 @@ status()
 #> [1] 6
 #> 
 #> $daemons
-#> [1] "abstract://0177f94e5ad80f9a6379e64a"
+#> [1] "abstract://4041a7d661328489e1494c56"
 ```
 This implementation sends tasks immediately, and ensures that tasks are evenly-distributed amongst daemons. This means that optimal scheduling is not guaranteed as the duration of tasks cannot be known *a priori*. As an example, tasks could be queued at a daemon behind a long-running task, whilst other daemons are idle having already completed their tasks.
 
@@ -261,11 +261,11 @@ m <- mirai(capture.output(str(con)))
 m[]
 #> [1] "Formal class 'SQLiteConnection' [package \"RSQLite\"] with 8 slots" 
 #> [2] "  ..@ ptr                :<externalptr> "                           
-#> [3] "  ..@ dbname             : chr \"/tmp/Rtmpo1YnK6/file5fa629272c05\""
+#> [3] "  ..@ dbname             : chr \"/tmp/Rtmpp4TZRI/file9de25380b29f\""
 #> [4] "  ..@ loadable.extensions: logi TRUE"                               
 #> [5] "  ..@ flags              : int 70"                                  
 #> [6] "  ..@ vfs                : chr \"\""                                
-#> [7] "  ..@ ref                :<environment: 0x60d242465548> "           
+#> [7] "  ..@ ref                :<environment: 0x572f5ad9e6b0> "           
 #> [8] "  ..@ bigint             : chr \"integer64\""                       
 #> [9] "  ..@ extended_types     : logi FALSE"
 ```
@@ -356,7 +356,7 @@ By specifying `dispatcher = FALSE`, remote daemons connect directly to the host 
 
 ``` r
 daemons(url = host_url(), dispatcher = FALSE)
-#> [1] "tcp://hostname:43893"
+#> [1] "tcp://hostname:45467"
 ```
 Note that above, calling `host_url()` without a port value uses the default of '0'. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided in the return value of the call, or it may be queried at any time via `status()`.
 
@@ -370,7 +370,7 @@ status()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://hostname:43893"
+#> [1] "tcp://hostname:45467"
 ```
 To reset all connections and revert to default behaviour:
 
@@ -457,10 +457,10 @@ daemons(n = 2, url = host_url())
 #> [1] 2
 launch_remote(1:2)
 #> [1]
-#> Rscript -e 'mirai::daemon("tcp://hostname:40453",rs=c(10407,1243160329,-1145417930,426585151,334143860,2122984933,-2032115358))'
+#> Rscript -e 'mirai::daemon("tcp://hostname:45805",rs=c(10407,1022278944,-1477963103,1349130222,-535150697,165058284,1567414013))'
 #> 
 #> [2]
-#> Rscript -e 'mirai::daemon("tcp://hostname:34819",rs=c(10407,-973399617,-629782456,846340406,1930465789,-498361924,-29414133))'
+#> Rscript -e 'mirai::daemon("tcp://hostname:37443",rs=c(10407,-2048743830,-1067177549,489026650,-331196421,1565818945,2000258263))'
 daemons(0)
 #> [1] 0
 ```
@@ -487,37 +487,37 @@ The generated self-signed certificate is available via `launch_remote()`. This f
 ``` r
 launch_remote(1)
 #> [1]
-#> Rscript -e 'mirai::daemon("wss://hostname:40667/1",tls=c("-----BEGIN CERTIFICATE-----
+#> Rscript -e 'mirai::daemon("wss://hostname:35821/1",tls=c("-----BEGIN CERTIFICATE-----
 #> MIIFNzCCAx+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAzMREwDwYDVQQDDAhrdW1h
 #> bW90bzERMA8GA1UECgwITmFub25leHQxCzAJBgNVBAYTAkpQMB4XDTAxMDEwMTAw
 #> MDAwMFoXDTMwMTIzMTIzNTk1OVowMzERMA8GA1UEAwwIa3VtYW1vdG8xETAPBgNV
 #> BAoMCE5hbm9uZXh0MQswCQYDVQQGEwJKUDCCAiIwDQYJKoZIhvcNAQEBBQADggIP
-#> ADCCAgoCggIBAOAKK5H16dQlXNoEuJAiI6+VQWYPkMjy98i/1pyZT8lpZzqfvtRb
-#> cAOR+OD+w93dkigLKNVfV5rv4M71kU8GYPwbqfPiRMSa1DPtdgw9DNXFK33oLJEx
-#> bbHTyoL+IkD2euo47BRBaPse4GI0cMUdoBxn2FyCrx4cuHp2z/Ub4xQWE5vYgRFl
-#> AqUMbXyyZb/QoVe+Bzn33ytEj4g45KbovoTkr5kY90bLHnjxrY4uXvZChGEgQQay
-#> OWZpKB/1ebfPcJ9GzE8TIXAv8tfmObfhCaQHWKz6qZGsqfH7C1Q0e5N8qcXjAjB5
-#> Gp7NgChXXmN52XNvD0ImEu3Dj2XVjgJQW1CvSiFuzUqbOR3UUkPhri1SELhxcH94
-#> 9UUSDvudrjGGSsZall6jt5AjiZ/TdT7LJUJe/e4B+XCRTjIQ20U68cYsSvO3iX5x
-#> Z06mF+73+rSLpO5ydYMi88RY/2qtZYbRMOCnLI7ll6khItS69uF5Z8+vzAu8JIVb
-#> NhwIGSOktuGxa4C/I7xlVW1MjZADvfjBoTMPz6zQA/vC1IUQs5YVLnqd0y3tbfLr
-#> snvE4xClDgUjgmhJ++HXXWu+4GfRzVAw10G6WWIcCIRRz55XIVyrKfvDtbzcHrCL
-#> clDSaJ/ARZu1i28yTQQCDXiOUh3T/T1LpcErUUbboTO2jZ0xJgm1SsufAgMBAAGj
-#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFGSmcGQfrpHRLdy4D+6Q
-#> CnKZV/C8MB8GA1UdIwQYMBaAFGSmcGQfrpHRLdy4D+6QCnKZV/C8MA0GCSqGSIb3
-#> DQEBCwUAA4ICAQAXkBQay4cFuWbqxgnsKVRzMGJuYoWzRbtCYSEQxkXRjMQbGIyK
-#> FNY6aUrh3P/wGMBPNtlRAwswF81c8n9yXBIT/PZ20c/0Bok5FbeYvrxhqpRmlRcS
-#> kNw1u536ODaRTgdAaI6CeYyCnEbLFItO5wEDQR9G9nwdvxcKxwrDyDJDa+5XxgId
-#> EN2ktAw67JS6IvZ8Aw8wMe8dHF6uGPW829DRRmSXtLqqWt7SV92LLyeyWpn2CU9I
-#> C2jsZgr7NmMM0PVEvDd9eA07g1ywpnvKkAd7/oI+efjXVj3TpoLV0ARKHbUBq8q7
-#> 6zc2rWCCIFX9JTOcJBDUqynWrv+CFugBHbw3Ug65zs0PQRATkNl2wqit2ns/cwmv
-#> nOXhzqTZypwmBobenDdq7iPObgQ1X6wmC7gAQhZKkfRDP2G8FsAIfwFb/5HPKBNw
-#> cKPspS5h/lHh6LXKgZTkqGA2zHCDM6SGIZTG5qHHEV/2bFDKzrh3oF84eByr2lRT
-#> TAnOzSkfoxwaz8z28i8XxvrmHV1SuUwac8Fu9OIFRYwyLXKASunHE9/oydkRVvED
-#> o7opo93R2m40aFhtBNFVgYRjtIAuz256gFfbvPTjQbDiw5XwNPycNaLu955nNr6j
-#> vNnqeA7Q4qLA7R/xojw2Z0ZNAx5lChZ7J+JEN+Me/c09z9ZbFIZLkKjcoA==
+#> ADCCAgoCggIBAMARp+xvUaNV+Fv56GQmO2isBvUQO3hAE9pUZqPtIciY+wFH0IOR
+#> Hq7To8Wn1qhobZpeFlPYWey8KBWi8eJfDJ9UsEd7BPYMgQBXoHyw4FI9XHgrq7HH
+#> eHN5S4h3fpNz6Fqsq8w9moC+FXiwWqKIdf8zl+sO+dXNtURpS7NDjuI/fLLQgVee
+#> WNuf0X6JO6MNmye9/OTFsnjE3DUuNqRx4tKYYOWO5Ra+npUm2whTFw0ayoO7o+a1
+#> 3bMxBNyRY1SFQezG/LWThSod/ITpI+r67mwerbUa5bLrSU2LvyOaXgGbm7602TMm
+#> 8HPMaZrAyNAxNNB1x+gBJliqnAzvDjQTxa0rujyELp2S1a11D0aZ9rUcihwMImj4
+#> 4BBv+B/GUZ5gGeUL53EwwmLt3nPpPfbi8OqfzSyv2VB50ZTlfES0MGcvgCn4rtfs
+#> i3Jf8s9L2rI++LlOGH+tox9hDKfABlPAZiQTOPYT200hLlmpPWIDNkupRugepjjO
+#> Ys0JLQsE88YDJ0O81bQmPqgXBNapdxptsvs80DOKzToK0SuhXFWutFbgGDiF1p66
+#> tTWBgkdepxyxwxqpR7lwxbw2IPs1SjCRj8NhaOFB1k7Kq1BowxNQlmdqND8Gl0IB
+#> BiTFm/fVmYb1LJkQvSG5HZD0bgqt7bYRHKqiVnxEPOtC0iAv7pY0NgXBAgMBAAGj
+#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFJnjVsOVUvs3FBdZCxZH
+#> BtkPvuvYMB8GA1UdIwQYMBaAFJnjVsOVUvs3FBdZCxZHBtkPvuvYMA0GCSqGSIb3
+#> DQEBCwUAA4ICAQBFs44ropZDV83e7AUHToXitcTUdXgvWhQl/aHIn0I+pMfa+SFt
+#> QjtPTkaI1TJFfUeQLAskT2VKOGO62jjLVReGYIwM/b8ntm2NADRNbUjQesOd9stB
+#> TuuP+ZhZwLmB7eXo9K3KmfASSD4UX8Do5DDhrTRKl1xRnAPmUA6pk93CTcqGlyCb
+#> HoflTj39xNsGsB6hObLK2hzasCCcGRVZ51D50jcyGnBTiaAzH1U7ukpCMD5Z9YNO
+#> iKn+/pnWjbL3Rwj1GvQFH18FIctgzd4HgVagr/l2+JsWnpoE/F/KNhzORwEPd1fn
+#> kDBj67LrvNbjTiZ/H8milG7E5ekPiSIxv4UbGBaDs0LoBhwbDqQ4rMszJUOQPMKT
+#> t9ZxJfl99zc9CpMLXpP7/CqSRjBcw7kNzGaadksxznLgxdb2FsA0wyDUv2st8Np3
+#> VWCYVrn20jgDUNP45nc1dPegs9PHn0Rmj9u1QbFn3vDb37eADAjXoynvvzgAlNra
+#> QxJHKp9K8QkeJAxCCCSKd5pxC8ahr+jTathk/1xpmzG0cSqQUUVPsPjrZ6q5FHQv
+#> Hfq3Kd1ab8tH92SkWuUjLsrlxdenZqm271TIUTiw0ix2Xq9PTHcYwd0RnlgXCU9r
+#> 7c4cQRAB95IOSt7nWuEoQpxvKxTSFZa3YFq01tYCbCGry2/DOdR5KFVePg==
 #> -----END CERTIFICATE-----
-#> ",""),rs=c(10407,804375979,2042519792,-1991258063,-760400834,-1265108057,1361248188))'
+#> ",""),rs=c(10407,2028831594,1766366691,-1660029496,1869674793,-213411114,235527007))'
 ```
 The printed value may be deployed directly on a remote machine.
 
@@ -749,10 +749,10 @@ daemons(4)
 vec <- c(1, 1, 4, 4, 1, 1, 1, 1)
 system.time(mirai_map(vec, Sys.sleep)[])
 #>    user  system elapsed 
-#>   0.002   0.005   4.007
+#>   0.005   0.001   4.006
 system.time(parLapply(cl, vec, Sys.sleep))
 #>    user  system elapsed 
-#>   0.005   0.003   8.010
+#>   0.005   0.008   8.012
 ```
 `.args` is used to specify further constant arguments to `.f` - the 'mean' and 'sd' in the example below:
 
@@ -762,13 +762,13 @@ with(
   mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
 )
 #> [[1]]
-#> [1] 19.30702
+#> [1] 22.5223
 #> 
 #> [[2]]
-#> [1] 20.96059 15.88363
+#> [1] 20.29446 21.21329
 #> 
 #> [[3]]
-#> [1] 19.60720 21.41679 18.16795
+#> [1] 20.38645 18.68818 21.18102
 ```
 Use `...` to further specify objects referenced but not defined in `.f` - the 'do' in the anonymous function below:
 
@@ -783,13 +783,13 @@ ml
 #> < mirai map [3/3] >
 ml[]
 #> $a
-#> [1] "84"
+#> [1] "13"
 #> 
 #> $b
-#> [1] 07 b2
+#> [1] c7 da
 #> 
 #> $c
-#> [1] "6043f9"
+#> [1] "32444d"
 ```
 Use of `mirai_map()` assumes that `daemons()` have previously been set. If not then one (non-dispatcher) daemon is set to allow the function to proceed. This ensures safe behaviour, but is unlikely to be optimal, so please ensure daemons are set beforehand.
 
@@ -797,10 +797,10 @@ When collecting the results, optionally specify `.flat`, `.progress` or `.stop` 
 
 - `x[.flat]` collects and flattens the results, checking that they are of the same type to avoid coercion.
 - `x[.progress]` collects results whilst showing a simple text progress indicator of parts completed of the total.
-- `x[.progress2]` is an alternative that uses `cli` progress bars, where available, showing completion percentage and ETA.
+- `x[.progress_cli]` is an alternative that uses `cli` progress bars, where available, showing completion percentage and ETA.
 - `x[.stop]` collects the results applying early stopping, which stops at the first failure and cancels remaining computations (note: computations already in progress continue to completion, but their results are not collected).
 
-Combinations of the above may be supplied in the fashion of `x[c(.stop, .progress)]`.
+Combinations of the above may be supplied in the fashion of `x[.stop, .progress]`.
 
 ``` r
 tryCatch(
@@ -811,7 +811,7 @@ tryCatch(
 
 with(
   daemons(4, dispatcher = FALSE),
-  mirai_map(c(0.1, 0.2, 0.3), Sys.sleep)[c(.progress, .flat)]
+  mirai_map(c(0.1, 0.2, 0.3), Sys.sleep)[.progress, .flat]
 )
 #> NULL
 
