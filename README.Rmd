@@ -87,7 +87,7 @@ Daemons may also be deployed [remotely](https://shikokuchuo.net/mirai/articles/m
 
 #### Async Parallel Map
 
-`mirai_map()` maps a function over a list or vector, with each element processed in a separate parallel process. It also performs multiple map over 2D lists/vectors, allowing advanced patterns such as map over the rows of a dataframe or matrix.
+`mirai_map()` maps a function over a list or vector, with each element processed in a separate parallel process. It also performs multiple map over the rows of a dataframe or matrix.
 
 ```{r map}
 df <- data.frame(

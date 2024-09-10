@@ -3,6 +3,7 @@
 * `mirai_map()` behavioural changes:
   - Combining multiple collection options becomes easier, allowing for instance `x[.stop, .progress]`.
   - Adds `mirai_map()[.progress_cli]` as an alternative progress indicator, using the 'cli' package to show % complete and ETA.
+  - Now only performs multiple map over the rows of matrices and dataframes (thanks @andrewGhazi, #147).
 * Fixes flatmap with `mirai_map()[.flat]` assigning a variable 'typ' to the calling environment.
 * `everywhere()` now errors if the specified compute profile is not yet set up, rather than fail silently.
 * Internal performance enhancements.
