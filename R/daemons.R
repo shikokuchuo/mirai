@@ -40,8 +40,8 @@
 #'     \code{\link{ssh_config}}.
 #' @param dispatcher [default TRUE] logical value whether to use dispatcher.
 #'     Dispatcher is a local background process that connects to daemons on
-#'     behalf of the host and ensures FIFO scheduling (see Dispatcher section
-#'     below).
+#'     behalf of the host and ensures FIFO scheduling. Specify NA for threaded
+#'     dispatcher (see Dispatcher section below).
 #' @param ... (optional) additional arguments passed through to
 #'     \code{\link{dispatcher}} if using dispatcher and/or \code{\link{daemon}}
 #'     if launching daemons. These include \sQuote{retry} and \sQuote{token} at
@@ -115,6 +115,10 @@
 #'     synchronisation primitives from \pkg{nanonext}, waiting rather than
 #'     polling for tasks, which is both efficient (no resource usage) and fully
 #'     event-driven (having no latency).
+#'
+#'     Specifying \code{dispatcher = NA} uses threaded dispatcher, a faster and
+#'     more efficient alternative to the separate dispatcher process. Note that
+#'     this is a new feature and experimental (subject to change).
 #'
 #'     By specifying \code{dispatcher = FALSE}, daemons connect to the host
 #'     directly rather than through dispatcher. The host sends tasks to
