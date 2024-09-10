@@ -296,7 +296,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       if (is.na(dispatcher)) {
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
         cv <- cv()
-        urls <- as.character(lapply(seq_len(n), function(x) sprintf("%s/%d", url, x)))
+        urls <- resolve_dispatcher_urls(n = n, url = url)
         sock <- .dispatcher(cv = cv, host = inproc_url(), url = urls, tls = if (length(tls)) tls_config(server = tls, pass = pass))
         `[[<-`(`[[<-`(`[[<-`(envir, "cv", cv), "urls", urls), "dispatcher", TRUE)
       } else if (dispatcher) {
@@ -351,7 +351,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       output <- attr(dots, "output")
       if (is.na(dispatcher)) {
         cv <- cv()
-        urls <- as.character(lapply(seq_len(n), function(x) sprintf("%s/%d", urld, x)))
+        urls <- auto_dispatcher_urls(n = n, url = urld)
         sock <- .dispatcher(cv = cv, host = inproc_url(), url = urls)
         for (i in seq_len(n))
           launch_daemon(wa3(urls[i], dots, next_stream(envir)), output)
@@ -588,6 +588,30 @@ create_stream <- function(n, seed, envir) {
   if (length(seed)) set.seed(seed)
   `[[<-`(envir, "stream", .GlobalEnv[[".Random.seed"]])
   `[[<-`(.GlobalEnv, ".Random.seed", oseed)
+}
+
+auto_dispatcher_urls <- function(n, url)
+  as.character(lapply(seq_len(n), function(x) sprintf("%s/%d", url, x)))
+
+resolve_url_port <- function(url) {
+  parse_url(url)[["port"]] == "0" || return(url)
+  sock <- socket(listen = url)
+  port <- opt(attr(sock, "listener")[[1L]], "tcp-bound-port")
+  reap(sock)
+  sub_real_port(port = port, url = url)
+}
+
+resolve_dispatcher_urls <- function(n, url) {
+  for (i in seq_along(url))
+    url[[i]] <- resolve_url_port(url[[i]])
+  n == length(url) && return(url)
+  if (length(url) == 1L && n > 1L && startsWith(url, "t")) {
+    port <- parse_url(url)[["port"]]
+    ports <- seq.int(from = port, length.out = n)
+    as.character(lapply(ports, sub, pattern = port, x = url, fixed = TRUE))
+  } else {
+    auto_dispatcher_urls(n = n, url = url)
+  }
 }
 
 tokenized_url <- function(url) sprintf("%s/%s", url, random(12L))
