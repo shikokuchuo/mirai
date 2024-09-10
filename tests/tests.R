@@ -204,7 +204,7 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
     nanotest(promises::is.promise(p3 <- promises::as.promise(call_mirai(mirai("completed")))))
     nanotestz(mirai_map(0:1, function(x) x, .promise = identity)[][[1L]])
     nanotest(is_mirai_map(mp <- mirai_map(matrix(1:4, nrow = 2L), function(x, y) x + y, .promise = list(identity))))
-    nanotest(all(mp[.flat] == c(4L, 6L)))
+    nanotest(all(mp[.flat, .stop] == c(4L, 6L)))
     nanotest(is.null(names(mp[])))
     nanotest(is_error_value(mirai_map(1, function(x) stop(x), .promise = list(identity, identity))[][[1L]]))
   }
