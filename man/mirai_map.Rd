@@ -77,8 +77,8 @@ Sends each application of function \code{.f} on an element of
     already in progress continue to completion, although their results are
     not collected.
 
-    The options above may be combined in a vector, for example: \cr
-    \code{x[c(.stop, .progress)]} applies early stopping together with a
+    The options above may be combined in the manner of: \cr
+    \code{x[.stop, .progress]} which applies early stopping together with a
     progress indicator.
 }
 
@@ -130,7 +130,7 @@ daemons(0)
 # generates warning as daemons not set
 # stops early when second element returns an error
 tryCatch(
-  mirai_map(list(list(1, "a", 3), 3:1), sum)[.stop],
+  mirai_map(list(list(1, "a", 3), 3:1), sum)[.stop, .flat],
   error = identity
 )
 

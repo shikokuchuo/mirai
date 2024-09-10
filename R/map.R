@@ -64,8 +64,8 @@
 #'     already in progress continue to completion, although their results are
 #'     not collected.
 #'
-#'     The options above may be combined in a vector, for example: \cr
-#'     \code{x[c(.stop, .progress)]} applies early stopping together with a
+#'     The options above may be combined in the manner of: \cr
+#'     \code{x[.stop, .progress]} which applies early stopping together with a
 #'     progress indicator.
 #'
 #' @details Sends each application of function \code{.f} on an element of
@@ -130,7 +130,7 @@
 #' # generates warning as daemons not set
 #' # stops early when second element returns an error
 #' tryCatch(
-#'   mirai_map(list(list(1, "a", 3), 3:1), sum)[.stop],
+#'   mirai_map(list(list(1, "a", 3), 3:1), sum)[.stop, .flat],
 #'   error = identity
 #' )
 #'
@@ -219,10 +219,11 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
 
 #' @export
 #'
-`[.mirai_map` <- function(x, expr) {
+`[.mirai_map` <- function(x, ...) {
 
-  missing(expr) && return(collect_aio_(x))
+  missing(..1) && return(collect_aio_(x))
 
+  expr <- if (...length() > 1L) do.call(expression, list(...)) else ..1
   xlen <- length(x)
   i <- 0L
   typ <- xi <- NULL

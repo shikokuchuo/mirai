@@ -1,8 +1,10 @@
-# mirai 1.2.0.9010 (development)
+# mirai 1.2.0.9011 (development)
 
-* `everywhere()` now errors if the specified compute profile is not yet set up, rather than fail silently.
+* `mirai_map()` behavioural changes:
+  - Combining multiple collection options becomes easier, allowing for instance `x[.stop, .progress]`.
+  - Adds `mirai_map()[.progress_cli]` as an alternative progress indicator, using the 'cli' package to show % complete and ETA.
 * Fixes flatmap with `mirai_map()[.flat]` assigning a variable 'typ' to the calling environment.
-* Adds `mirai_map()[.progress_cli]` as an alternative progress indicator, using the 'cli' package to show % complete and ETA.
+* `everywhere()` now errors if the specified compute profile is not yet set up, rather than fail silently.
 * Internal performance enhancements.
 * Requires `nanonext` >= [1.2.1.9015].
 

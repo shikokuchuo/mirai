@@ -52,8 +52,8 @@ Expressions to insert into the \code{[]} method for \sQuote{mirai_map}
     already in progress continue to completion, although their results are
     not collected.
 
-    The options above may be combined in a vector, for example: \cr
-    \code{x[c(.stop, .progress)]} applies early stopping together with a
+    The options above may be combined in the manner of: \cr
+    \code{x[.stop, .progress]} which applies early stopping together with a
     progress indicator.
 }
 
