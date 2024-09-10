@@ -127,7 +127,7 @@ connection && .Platform[["OS.type"]] != "windows" && {
   nanotestp(mp <- mirai_map(list(x = "a"), function(...) do(...), do = function(x, y) sprintf("%s%s", x, y), .args = list("b")))
   nanotesti(collect_mirai(mp)[["x"]], "ab")
   nanotesti(call_mirai(mp)[["x"]][["data"]], "ab")
-  nanotest(all(mirai_map(list(1:3, 3:1), sum, .args = list(3L))[.flat] == 7L))
+  nanotest(all(mirai_map(data.frame(1:3, 3:1), sum, .args = list(3L))[.flat] == 7L))
   nanotest(all(mirai_map(list(c(a = 1, b = 1, c = 1), 3), sum)[.flat] == 3))
 }
 # parallel cluster tests

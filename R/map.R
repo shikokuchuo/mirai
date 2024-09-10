@@ -161,15 +161,9 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
     daemons(n = 1L, dispatcher = FALSE, .compute = .compute)
     return(mirai_map(.x = .x, .f = .f, ..., .args = .args, .promise = .promise, .compute = .compute))
   }
-  if (is.matrix(.x)) {
-    xilen <- length(.x[1L, ])
-    cond <- xilen > 1L
-  } else {
-    xilen <- length(.x[[1L]])
-    cond <- xilen > 1L && all(as.integer(lapply(.x, length)) == xilen)
-  }
-  if (cond) {
-  vec <- vector(mode = "list", length = xilen)
+  xilen <- dim(.x)[1L]
+  if (length(xilen)) {
+    vec <- vector(mode = "list", length = xilen)
     if (is.matrix(.x)) {
       for (i in seq_len(xilen))
         vec[[i]] <- mirai(
