@@ -40,8 +40,8 @@
 #'     \code{\link{ssh_config}}.
 #' @param dispatcher [default TRUE] logical value whether to use dispatcher.
 #'     Dispatcher is a local background process that connects to daemons on
-#'     behalf of the host and ensures FIFO scheduling (see Dispatcher section
-#'     below).
+#'     behalf of the host and ensures FIFO scheduling. Specify NA for threaded
+#'     dispatcher (see Dispatcher section below).
 #' @param ... (optional) additional arguments passed through to
 #'     \code{\link{dispatcher}} if using dispatcher and/or \code{\link{daemon}}
 #'     if launching daemons. These include \sQuote{retry} and \sQuote{token} at
@@ -115,6 +115,10 @@
 #'     synchronisation primitives from \pkg{nanonext}, waiting rather than
 #'     polling for tasks, which is both efficient (no resource usage) and fully
 #'     event-driven (having no latency).
+#'
+#'     Specifying \code{dispatcher = NA} uses threaded dispatcher, a faster and
+#'     more efficient alternative to the separate background process. This is a
+#'     new feature that should still be considered experimental.
 #'
 #'     By specifying \code{dispatcher = FALSE}, daemons connect to the host
 #'     directly rather than through dispatcher. The host sends tasks to
@@ -293,7 +297,12 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       envir <- new.env(hash = FALSE, parent = ..)
       tls <- check_create_tls(url = url, tls = tls, envir = envir)
       create_stream(n = n, seed = seed, envir = envir)
-      if (dispatcher) {
+      if (is.na(dispatcher)) {
+        n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
+        urls <- resolve_dispatcher_urls(n = n, url = url)
+        sock <- .dispatcher(host = inproc_url(), url = urls, tls = if (length(tls)) tls_config(server = tls, pass = pass))
+        `[[<-`(`[[<-`(envir, "urls", urls), "dispatcher", TRUE)
+      } else if (dispatcher) {
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
         if (length(tls)) tls_config(server = tls, pass = pass)
         cv <- cv()
@@ -343,7 +352,13 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       create_stream(n = n, seed = seed, envir = envir)
       dots <- parse_dots(...)
       output <- attr(dots, "output")
-      if (dispatcher) {
+      if (is.na(dispatcher)) {
+        urls <- auto_dispatcher_urls(n = n, url = urld)
+        sock <- .dispatcher(host = inproc_url(), url = urls)
+        for (i in seq_len(n))
+          launch_daemon(wa3(urls[i], dots, next_stream(envir)), output)
+        `[[<-`(`[[<-`(envir, "urls", urls), "dispatcher", TRUE)
+      } else if (dispatcher) {
         cv <- cv()
         sock <- req_socket(urld)
         urlc <- sprintf("%s%s", urld, "c")
@@ -475,7 +490,10 @@ status <- function(.compute = "default") {
 
   is.list(.compute) && return(status(attr(.compute, "id")))
   envir <- ..[[.compute]]
-  is.null(envir) && return(list(connections = 0L, daemons = 0L))
+  is.null(envir) &&
+    return(list(connections = 0L, daemons = 0L))
+  is.null(envir[["dispatcher"]]) ||
+    return(dispatcher_status(envir))
   list(connections = as.integer(stat(envir[["sock"]], "pipes")),
        daemons = if (is.null(envir[["sockc"]])) envir[["urls"]] else query_status(envir))
 
@@ -551,6 +569,8 @@ serialization <- function(fns, class, vec = FALSE) {
 
 # internals --------------------------------------------------------------------
 
+inproc_url <- function() sprintf("inproc://%s", random(10L))
+
 check_create_tls <- function(url, tls, envir) {
   purl <- parse_url(url)
   sch <- purl[["scheme"]]
@@ -569,6 +589,36 @@ create_stream <- function(n, seed, envir) {
   if (length(seed)) set.seed(seed)
   `[[<-`(envir, "stream", .GlobalEnv[[".Random.seed"]])
   `[[<-`(.GlobalEnv, ".Random.seed", oseed)
+}
+
+# "%s-%d" format required by IPC under MacOS
+auto_dispatcher_urls <- function(n, url)
+  as.character(
+    lapply(
+      seq_len(n),
+      function(x) sprintf(if (startsWith(url, "ipc")) "%s-%d" else "%s/%d", url, x)
+    )
+  )
+
+resolve_url_port <- function(url) {
+  parse_url(url)[["port"]] == "0" || return(url)
+  sock <- socket(listen = url)
+  port <- opt(attr(sock, "listener")[[1L]], "tcp-bound-port")
+  reap(sock)
+  sub_real_port(port = port, url = url)
+}
+
+resolve_dispatcher_urls <- function(n, url) {
+  for (i in seq_along(url))
+    url[[i]] <- resolve_url_port(url[[i]])
+  n == length(url) && return(url)
+  if (length(url) == 1L && n > 1L && startsWith(url, "t")) {
+    port <- parse_url(url)[["port"]]
+    ports <- seq.int(from = port, length.out = n)
+    as.character(lapply(ports, sub, pattern = port, x = url, fixed = TRUE))
+  } else {
+    auto_dispatcher_urls(n = n, url = url)
+  }
 }
 
 tokenized_url <- function(url) sprintf("%s/%s", url, random(12L))
@@ -656,6 +706,14 @@ query_status <- function(envir) {
       dim = c(envir[["n"]], 5L),
       dimnames = list(envir[["urls"]], c("i", "online", "instance", "assigned", "complete"))
     )
+  )
+}
+
+dispatcher_status <- function(envir) {
+  online <- .online(envir[["sock"]])
+  list(
+    connections = sum(online),
+    daemons = `dimnames<-`(`dim<-`(online, c(envir[["n"]], 1L)), list(envir[["urls"]], "online"))
   )
 }
 

@@ -132,7 +132,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
   for (i in seq_n) {
     burl <- if (auto) .urlscheme else
       if (vectorised) url[i] else
-        if (is.null(ports)) sprintf("%s/%d", url, i) else
+        if (is.null(ports)) sprintf(if (startsWith(url, "ipc")) "%s-%d" else "%s/%d", url, i) else
           sub(ports[1L], ports[i], url, fixed = TRUE)
     nurl <- if (auto) local_url() else if (token) tokenized_url(burl) else burl
     ncv <- cv()

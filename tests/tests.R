@@ -288,4 +288,22 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
   }
   nanotest(test_tls(nanonext::write_cert(cn = "127.0.0.1")))
 }
+# threaded dispatcher tests
+connection && Sys.getenv("NOT_CRAN") == "true" && {
+  nanotest(daemons(2, dispatcher = NA) == 2L)
+  nanotest(nextget("n") == 2L)
+  nanotest(startsWith(nextget("urls")[[1L]], mirai:::.urlscheme))
+  nanotest(is.matrix(status()$daemons))
+  nanotest(mirai(TRUE)[])
+  nanotestz(daemons(0))
+  nanotest(daemons(2, url = host_url(), dispatcher = NA) == 2L)
+  nanotest(length(urls <- nextget("urls")) == 2L)
+  nanotesti(as.integer(nanonext::parse_url(urls[[2L]])[["port"]]), as.integer(nanonext::parse_url(urls[[1L]])[["port"]]) + 1L)
+  nanotestz(daemons(0))
+  nanotest(daemons(2, url = host_url(ws = TRUE), dispatcher = NA) == 2L)
+  nanotest(length(urls <- nextget("urls")) == 2L)
+  nanotest(endsWith(urls[[1L]], "/1"))
+  nanotest(endsWith(urls[[2L]], "/2"))
+  nanotestz(daemons(0))
+}
 Sys.sleep(1L)
