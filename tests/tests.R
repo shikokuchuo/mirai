@@ -294,6 +294,7 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   nanotesto(nextget("n"))
   nanotest(startsWith(nextget("urls")[[1L]], mirai:::.urlscheme))
   nanotest(is.matrix(status()$daemons))
+  nanotest(mirai(TRUE)[])
   nanotestz(daemons(0))
   nanotest(daemons(2, url = host_url(), dispatcher = NA) == 2L)
   nanotest(length(urls <- nextget("urls")) == 2L)

@@ -299,10 +299,9 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       create_stream(n = n, seed = seed, envir = envir)
       if (is.na(dispatcher)) {
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
-        cv <- cv()
         urls <- resolve_dispatcher_urls(n = n, url = url)
-        sock <- .dispatcher(cv = cv, host = inproc_url(), url = urls, tls = if (length(tls)) tls_config(server = tls, pass = pass))
-        `[[<-`(`[[<-`(`[[<-`(envir, "cv", cv), "urls", urls), "dispatcher", TRUE)
+        sock <- .dispatcher(host = inproc_url(), url = urls, tls = if (length(tls)) tls_config(server = tls, pass = pass))
+        `[[<-`(`[[<-`(envir, "urls", urls), "dispatcher", TRUE)
       } else if (dispatcher) {
         n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
         if (length(tls)) tls_config(server = tls, pass = pass)
@@ -354,13 +353,11 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       dots <- parse_dots(...)
       output <- attr(dots, "output")
       if (is.na(dispatcher)) {
-        cv <- cv()
         urls <- auto_dispatcher_urls(n = n, url = urld)
-        sock <- .dispatcher(cv = cv, host = inproc_url(), url = urls)
+        sock <- .dispatcher(host = inproc_url(), url = urls)
         for (i in seq_len(n))
           launch_daemon(wa3(urls[i], dots, next_stream(envir)), output)
-        query_dispatcher(sock, command = 0L, mode = 6L, block = .limit_long) && stop(._[["sync_timeout"]])
-        `[[<-`(`[[<-`(`[[<-`(envir, "cv", cv), "urls", urls), "dispatcher", TRUE)
+        `[[<-`(`[[<-`(envir, "urls", urls), "dispatcher", TRUE)
       } else if (dispatcher) {
         cv <- cv()
         sock <- req_socket(urld)
