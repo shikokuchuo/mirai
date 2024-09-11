@@ -1,4 +1,4 @@
-# mirai 1.2.0.9011 (development)
+# mirai 1.2.0.9012 (development)
 
 * `mirai_map()` behavioural changes:
   - Combining multiple collection options becomes easier, allowing for instance `x[.stop, .progress]`.
@@ -7,7 +7,7 @@
 * Fixes flatmap with `mirai_map()[.flat]` assigning a variable 'typ' to the calling environment.
 * `everywhere()` now errors if the specified compute profile is not yet set up, rather than fail silently.
 * Internal performance enhancements.
-* Requires `nanonext` >= [1.2.1.9015].
+* Requires `nanonext` >= [1.2.1.9017].
 
 # mirai 1.2.0
 
