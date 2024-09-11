@@ -290,8 +290,8 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
 }
 # threaded dispatcher tests
 connection && Sys.getenv("NOT_CRAN") == "true" && {
-  nanotesto(daemons(1, dispatcher = NA))
-  nanotesto(nextget("n"))
+  nanotest(daemons(2, dispatcher = NA) == 2L)
+  nanotest(nextget("n") == 2L)
   nanotest(startsWith(nextget("urls")[[1L]], mirai:::.urlscheme))
   nanotest(is.matrix(status()$daemons))
   nanotest(mirai(TRUE)[])
@@ -302,8 +302,8 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   nanotestz(daemons(0))
   nanotest(daemons(2, url = local_url(), dispatcher = NA) == 2L)
   nanotest(length(urls <- nextget("urls")) == 2L)
-  nanotest(endsWith(urls[[1L]], "/1"))
-  nanotest(endsWith(urls[[2L]], "/2"))
+  nanotest(endsWith(urls[[1L]], "1"))
+  nanotest(endsWith(urls[[2L]], "2"))
   nanotestz(daemons(0))
 }
 Sys.sleep(1L)

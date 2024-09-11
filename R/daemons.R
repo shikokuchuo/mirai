@@ -591,8 +591,9 @@ create_stream <- function(n, seed, envir) {
   `[[<-`(.GlobalEnv, ".Random.seed", oseed)
 }
 
+# "%s-%d" format required by IPC under MacOS
 auto_dispatcher_urls <- function(n, url)
-  as.character(lapply(seq_len(n), function(x) sprintf("%s/%d", url, x)))
+  as.character(lapply(seq_len(n), function(x) sprintf("%s-%d", url, x)))
 
 resolve_url_port <- function(url) {
   parse_url(url)[["port"]] == "0" || return(url)
