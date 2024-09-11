@@ -117,8 +117,8 @@
 #'     event-driven (having no latency).
 #'
 #'     Specifying \code{dispatcher = NA} uses threaded dispatcher, a faster and
-#'     more efficient alternative to the separate dispatcher process. Note that
-#'     this is a new feature and experimental (subject to change).
+#'     more efficient alternative to the separate background process. This is a
+#'     new feature that should still be considered experimental.
 #'
 #'     By specifying \code{dispatcher = FALSE}, daemons connect to the host
 #'     directly rather than through dispatcher. The host sends tasks to

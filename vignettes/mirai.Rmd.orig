@@ -176,6 +176,9 @@ status()
 The default `dispatcher = TRUE` creates a `dispatcher()` background process that connects to individual daemon processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to daemons for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.
 
 Dispatcher uses synchronisation primitives from [`nanonext`](https://doi.org/10.5281/zenodo.7903429), waiting upon rather than polling for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).
+
+Alternatively, specifying `dispatcher = NA` uses threaded dispatcher, a faster and more efficient alternative to the separate background process. This is a new feature that should still be considered experimental.
+
 ```{r daemons4}
 daemons(0)
 ```
