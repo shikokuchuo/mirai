@@ -54,6 +54,7 @@
 <code><a href="../reference/mirai_map.html">mirai_map()</a></code> behavioural changes:
 <ul><li>Combining multiple collection options becomes easier, allowing for instance <code>x[.stop, .progress]</code>.</li>
 <li>Adds <code>mirai_map()[.progress_cli]</code> as an alternative progress indicator, using the ‘cli’ package to show % complete and ETA.</li>
+<li>Now only performs multiple map over the rows of matrices and dataframes (thanks <a href="https://github.com/andrewGhazi" class="external-link">@andrewGhazi</a>, <a href="https://github.com/shikokuchuo/mirai/issues/147" class="external-link">#147</a>).</li>
 </ul></li>
 <li>Fixes flatmap with <code>mirai_map()[.flat]</code> assigning a variable ‘typ’ to the calling environment.</li>
 <li>
