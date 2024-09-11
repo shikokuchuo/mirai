@@ -161,8 +161,8 @@ for (i in 1:10) {
 #> iteration 4 successful
 #> iteration 5 successful
 #> iteration 6 successful
-#> Error: random error
 #> iteration 7 successful
+#> Error: random error
 #> iteration 8 successful
 #> iteration 9 successful
 #> iteration 10 successful
@@ -729,7 +729,7 @@ Please refer to the [torch vignette](https://shikokuchuo.net/mirai/articles/torc
 
 `mirai_map()` performs asynchronous parallel/distributed map using `mirai`.
 
-This function is similar to `purrr::map()`, but returns a 'mirai_map' object. It is also more advanced as it allows multiple map over 2D lists/vectors - for example mapping over the rows of a datafram or matrix.
+This function is similar to `purrr::map()`, but returns a 'mirai_map' object. It is also more advanced as it allows multiple map over the rows of a dataframe or matrix.
 
 The results of a mirai_map `x` may be collected using `x[]`. This waits for all asynchronous operations to complete if still in progress.
 
@@ -804,10 +804,10 @@ Combinations of the above may be supplied in the fashion of `x[.stop, .progress]
 
 ``` r
 tryCatch(
-  mirai_map(list(list(1, "a", 3), 3:1), sum)[.stop],
+  mirai_map(list(a = 1, b = "a", c = 3), sum)[.stop],
   error = identity
 )
-#> <simpleError: Error in .Primitive("sum")("a", 2): invalid 'type' (character) of argument>
+#> <simpleError: Error in .Primitive("sum")("a"): invalid 'type' (character) of argument>
 
 with(
   daemons(4, dispatcher = FALSE),
