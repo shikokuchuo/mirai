@@ -302,8 +302,8 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   nanotestz(daemons(0))
   nanotest(daemons(2, url = local_url(), dispatcher = NA) == 2L)
   nanotest(length(urls <- nextget("urls")) == 2L)
-  nanotest(endsWith(urls[[1L]], "1"))
-  nanotest(endsWith(urls[[2L]], "2"))
+  nanotest(endsWith(urls[[1L]], "/1"))
+  nanotest(endsWith(urls[[2L]], "/2"))
   nanotestz(daemons(0))
 }
 Sys.sleep(1L)
