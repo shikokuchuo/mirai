@@ -300,7 +300,7 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   nanotest(length(urls <- nextget("urls")) == 2L)
   nanotesti(as.integer(nanonext::parse_url(urls[[2L]])[["port"]]), as.integer(nanonext::parse_url(urls[[1L]])[["port"]]) + 1L)
   nanotestz(daemons(0))
-  nanotest(daemons(2, url = local_url(), dispatcher = NA) == 2L)
+  nanotest(daemons(2, url = host_url(ws = TRUE), dispatcher = NA) == 2L)
   nanotest(length(urls <- nextget("urls")) == 2L)
   nanotest(endsWith(urls[[1L]], "/1"))
   nanotest(endsWith(urls[[2L]], "/2"))
