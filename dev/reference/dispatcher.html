@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9014</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9015</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,6 @@
 <span>  url <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  asyncdial <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  retry <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  token <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -110,15 +109,6 @@ into.</p></dd>
 <dd><p>(optional) additional arguments passed through to <code><a href="daemon.html">daemon</a></code>.
 These include ‘autoexit’, ‘cleanup’, ‘maxtasks’,
 ‘idletime’, ‘walltime’ and ‘timerstart’.</p></dd>
-
-
-<dt id="arg-asyncdial">asyncdial<a class="anchor" aria-label="anchor" href="#arg-asyncdial"></a></dt>
-<dd><p>[default FALSE] whether to perform dials asynchronously. The
-default FALSE will error if a connection is not immediately possible
-(e.g. <code><a href="daemons.html">daemons</a></code> has yet to be called on the host, or the
-specified port is not open etc.). Specifying TRUE continues retrying
-(indefinitely) if not immediately successful, which is more resilient but
-can mask potential connection issues.</p></dd>
 
 
 <dt id="arg-retry">retry<a class="anchor" aria-label="anchor" href="#arg-retry"></a></dt>
