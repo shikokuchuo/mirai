@@ -178,8 +178,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
 #'
 #' @return Logical TRUE or FALSE.
 #'
-#' @keywords internal
-#' @export
+#' @noRd
 #'
 .daemon <- function(url) {
 
