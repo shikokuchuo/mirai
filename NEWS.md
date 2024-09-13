@@ -1,4 +1,4 @@
-# mirai 1.2.0.9014 (development)
+# mirai 1.2.0.9015 (development)
 
 * `daemons(dispatcher = NA)` now provides access to threaded dispatcher (experimental). This implements dispatcher using a thread rather than an external process and is faster and more efficient.
 * `mirai_map()` behavioural changes:
@@ -6,6 +6,8 @@
   - Adds `mirai_map()[.progress_cli]` as an alternative progress indicator, using the 'cli' package to show % complete and ETA.
   - Now only performs multiple map over the rows of matrices and dataframes (thanks @andrewGhazi, #147).
 * Fixes flatmap with `mirai_map()[.flat]` assigning a variable 'typ' to the calling environment.
+* `daemon()` gains argument 'asyncdial' to allow control of connection behaviour independently of what happens when the daemon exits.
+* `dispatcher()` drops argument 'asyncdial' as it is not practically very useful to set this here.
 * `everywhere()` now errors if the specified compute profile is not yet set up, rather than fail silently.
 * Internal performance enhancements.
 * Requires `nanonext` >= [1.2.1.9018].

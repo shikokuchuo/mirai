@@ -9,7 +9,6 @@ dispatcher(
   url = NULL,
   n = NULL,
   ...,
-  asyncdial = FALSE,
   retry = FALSE,
   token = FALSE,
   tls = NULL,
@@ -39,13 +38,6 @@ into.}
 \item{...}{(optional) additional arguments passed through to \code{\link{daemon}}.
 These include \sQuote{autoexit}, \sQuote{cleanup}, \sQuote{maxtasks},
 \sQuote{idletime}, \sQuote{walltime} and \sQuote{timerstart}.}
-
-\item{asyncdial}{[default FALSE] whether to perform dials asynchronously. The
-default FALSE will error if a connection is not immediately possible
-(e.g. \code{\link{daemons}} has yet to be called on the host, or the
-specified port is not open etc.). Specifying TRUE continues retrying
-(indefinitely) if not immediately successful, which is more resilient but
-can mask potential connection issues.}
 
 \item{retry}{[default FALSE] logical value, whether to automatically retry
 tasks where the daemon crashes or terminates unexpectedly on the next

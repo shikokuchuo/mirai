@@ -69,7 +69,7 @@ connection && {
   nanotest(is_error_value(call_mirai_(m)$data) || m$data == 8L)
   nanotestn(stop_mirai(m))
   Sys.sleep(1L)
-  nanotesto(d <- daemons(1L, dispatcher = FALSE, seed = 1546L))
+  nanotesto(d <- daemons(1L, dispatcher = FALSE, asyncdial = FALSE, seed = 1546L))
   nanotestp(d)
   me <- mirai(mirai::mirai(), .timeout = 2000L)
   nanotest(is_mirai_error(call_mirai(me)$data) || is_error_value(me$data))

@@ -27,6 +27,12 @@
 #' @param url the character host or dispatcher URL to dial into, including the
 #'     port to connect to (and optionally for websockets, a path), e.g.
 #'     'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.
+#' @param asyncdial [default FALSE] whether to perform dials asynchronously. The
+#'     default FALSE will error if a connection is not immediately possible (for
+#'     instance if \code{\link{daemons}} has yet to be called on the host, or
+#'     the specified port is not open etc.). Specifying TRUE continues retrying
+#'     (indefinitely) if not immediately successful, which is more resilient but
+#'     can mask potential connection issues.
 #' @param autoexit [default TRUE] logical value, whether the daemon should
 #'     exit automatically when its socket connection ends. If a signal from the
 #'     \pkg{tools} package, e.g. \code{tools::SIGINT}, or an equivalent integer
@@ -76,20 +82,16 @@
 #'     socket connection has ended.
 #'
 #'     Instead of TRUE, supplying a signal from the \pkg{tools} package, e.g.
-#'     \code{tools::SIGINT}, or an equivalent integer value, sets the signal to
-#'     be raised when the socket connection ends. As an example, supplying
-#'     SIGINT allows a potentially more immediate exit by interrupting any
-#'     ongoing evaluation rather than letting it complete.
+#'     \code{tools::SIGINT}, or an equivalent integer value, sets this to be
+#'     raised when the socket connection ends. As an example, supplying SIGINT
+#'     allows a potentially more immediate exit by interrupting any ongoing
+#'     evaluation rather than letting it complete.
 #'
 #'     Setting to FALSE allows the daemon to persist indefinitely even when
 #'     there is no longer a socket connection. This allows a host session to end
 #'     and a new session to connect at the URL where the daemon is dialled in.
 #'     Daemons must be terminated with \code{daemons(NULL)} in this case, which
 #'     sends explicit exit instructions to all connected daemons.
-#'
-#'     Persistence also implies that dials are performed asynchronously, which
-#'     means retries are attempted (indefinitely) if not immediately successful.
-#'     This is resilient behaviour but can mask potential connection issues.
 #'
 #' @section Cleanup Options:
 #'
@@ -108,9 +110,9 @@
 #'
 #' @export
 #'
-daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
-                   maxtasks = Inf, idletime = Inf, walltime = Inf, timerstart = 0L,
-                   ..., tls = NULL, rs = NULL) {
+daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
+                   output = FALSE, maxtasks = Inf, idletime = Inf, walltime = Inf,
+                   timerstart = 0L, ..., tls = NULL, rs = NULL) {
 
   cv <- cv()
   sock <- socket(protocol = "rep")
@@ -118,7 +120,7 @@ daemon <- function(url, autoexit = TRUE, cleanup = TRUE, output = FALSE,
   `[[<-`(., "sock", sock)
   autoexit && pipe_notify(sock, cv = cv, remove = TRUE, flag = as.integer(autoexit))
   if (length(tls)) tls <- tls_config(client = tls)
-  dial_and_sync_socket(sock = sock, url = url, asyncdial = !autoexit, tls = tls)
+  dial_and_sync_socket(sock = sock, url = url, asyncdial = asyncdial, tls = tls)
 
   if (is.numeric(rs)) `[[<-`(.GlobalEnv, ".Random.seed", as.integer(rs))
   if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
@@ -211,7 +213,7 @@ eval_mirai <- function(._mirai_.) {
   )
 }
 
-dial_and_sync_socket <- function(sock, url, asyncdial, tls = NULL) {
+dial_and_sync_socket <- function(sock, url, asyncdial = FALSE, tls = NULL) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE)
   dial(sock, url = url, autostart = asyncdial || NA, tls = tls, error = TRUE)

@@ -41,12 +41,6 @@
 #' @param ... (optional) additional arguments passed through to \code{\link{daemon}}.
 #'     These include \sQuote{autoexit}, \sQuote{cleanup}, \sQuote{maxtasks},
 #'     \sQuote{idletime}, \sQuote{walltime} and \sQuote{timerstart}.
-#' @param asyncdial [default FALSE] whether to perform dials asynchronously. The
-#'     default FALSE will error if a connection is not immediately possible
-#'     (e.g. \code{\link{daemons}} has yet to be called on the host, or the
-#'     specified port is not open etc.). Specifying TRUE continues retrying
-#'     (indefinitely) if not immediately successful, which is more resilient but
-#'     can mask potential connection issues.
 #' @param retry [default FALSE] logical value, whether to automatically retry
 #'     tasks where the daemon crashes or terminates unexpectedly on the next
 #'     daemon instance to connect. If TRUE, the mirai will remain unresolved but
@@ -78,9 +72,8 @@
 #'
 #' @export
 #'
-dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
-                       retry = FALSE, token = FALSE, tls = NULL, pass = NULL,
-                       rs = NULL, monitor = NULL) {
+dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token = FALSE,
+                       tls = NULL, pass = NULL, rs = NULL, monitor = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(._[["missing_url"]])
@@ -89,14 +82,14 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., asyncdial = FALSE,
   sock <- socket(protocol = "rep")
   on.exit(reap(sock))
   pipe_notify(sock, cv = cv, remove = TRUE, flag = TRUE)
-  dial_and_sync_socket(sock = sock, url = host, asyncdial = asyncdial)
+  dial_and_sync_socket(sock = sock, url = host)
 
   ctrchannel <- is.character(monitor)
   if (ctrchannel) {
     sockc <- socket(protocol = "rep")
     on.exit(reap(sockc), add = TRUE, after = FALSE)
     pipe_notify(sockc, cv = cv, remove = TRUE, flag = TRUE)
-    dial_and_sync_socket(sock = sockc, url = monitor, asyncdial = asyncdial)
+    dial_and_sync_socket(sock = sockc, url = monitor)
     cmessage <- recv(sockc, mode = 2L, block = .limit_long)
     is.object(cmessage) && stop(._[["sync_timeout"]])
     if (nzchar(cmessage[2L]))
