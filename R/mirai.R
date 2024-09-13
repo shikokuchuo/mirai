@@ -175,30 +175,19 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
     .expr = if (is.symbol(expr) && exists(expr, parent.frame()) && is.language(.expr)) .expr else expr
   )
   if (length(.args))
-    data <- c(
-      if (is.environment(.args)) as.list.environment(.args) else {
-        length(names(.args)) && all(nzchar(names(.args))) || stop(._[["named_args"]])
-        .args
-      },
-      data
-    )
+    data <- c(if (is.environment(.args)) as.list.environment(.args) else
+    {
+      length(names(.args)) && all(nzchar(names(.args))) || stop(._[["named_args"]])
+      .args
+    },
+    data)
 
   envir <- ..[[.compute]]
 
-  is.null(envir) && {
-    sock <- ephemeral_daemon(local_url())
-    aio <- request(
-      .context(sock), data = data, send_mode = 1L, recv_mode = 1L,
-      timeout = .timeout, cv = NA
-    )
-    `attr<-`(.subset2(aio, "aio"), "sock", sock)
-    return(aio)
-  }
+  is.null(envir) && return(ephemeral_daemon(data = data, timeout = .timeout))
 
-  request(
-    .context(envir[["sock"]]), data = data, send_mode = 1L, recv_mode = 1L,
-    timeout = .timeout, cv = envir[["cv"]]
-  )
+  request(.context(envir[["sock"]]), data = data, send_mode = 1L, recv_mode = 1L,
+          timeout = .timeout, cv = envir[["cv"]])
 
 }
 
@@ -594,10 +583,13 @@ print.miraiInterrupt <- function(x, ...) {
 
 # internals --------------------------------------------------------------------
 
-ephemeral_daemon <- function(url) {
+ephemeral_daemon <- function(data, timeout) {
+  url <- local_url()
   sock <- req_socket(url)
-  system2(command = .command, args = c("-e", shQuote(sprintf("mirai::.daemon(\"%s\")", url))), stdout = FALSE, stderr = FALSE, wait = FALSE)
-  sock
+  system2(command = .command, args = c("-e", shQuote(sprintf("mirai:::.daemon(\"%s\")", url))), stdout = FALSE, stderr = FALSE, wait = FALSE)
+  aio <- request(.context(sock), data = data, send_mode = 1L, recv_mode = 1L, timeout = timeout, cv = NA)
+  `attr<-`(.subset2(aio, "aio"), "sock", sock)
+  aio
 }
 
 deparse_safe <- function(x) if (length(x))

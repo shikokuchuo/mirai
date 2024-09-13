@@ -47,11 +47,11 @@ specified port is not open etc.). Specifying TRUE continues retrying
 (indefinitely) if not immediately successful, which is more resilient but
 can mask potential connection issues.}
 
-\item{retry}{[default FALSE] if TRUE, a task where the daemon crashes or
-terminates unexpectedly will be automatically re-tried on the next daemon
-instance to connect. In such a case, the mirai will remain unresolved but
+\item{retry}{[default FALSE] logical value, whether to automatically retry
+tasks where the daemon crashes or terminates unexpectedly on the next
+daemon instance to connect. If TRUE, the mirai will remain unresolved but
 \code{\link{status}} will show \sQuote{online} as 0 and \sQuote{assigned}
-> \sQuote{complete}. To cancel a task in such a case, use
+> \sQuote{complete}. To cancel a task in this case, use
 \code{saisei(force = TRUE)}. If FALSE, such tasks will be returned as
 \sQuote{errorValue} 19 (Connection reset).}
 
