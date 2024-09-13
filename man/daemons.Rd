@@ -39,9 +39,9 @@ dispatcher (see Dispatcher section below).}
 \item{...}{(optional) additional arguments passed through to
 \code{\link{dispatcher}} if using dispatcher and/or \code{\link{daemon}}
 if launching daemons. These include \sQuote{retry} and \sQuote{token} at
-dispatcher and \sQuote{autoexit}, \sQuote{cleanup}, \sQuote{output},
-\sQuote{maxtasks}, \sQuote{idletime}, \sQuote{walltime} and
-\sQuote{timerstart} at daemon.}
+dispatcher and \sQuote{asyncdial}, \sQuote{autoexit}, \sQuote{cleanup},
+\sQuote{output}, \sQuote{maxtasks}, \sQuote{idletime}, \sQuote{walltime}
+and \sQuote{timerstart} at daemon.}
 
 \item{seed}{[default NULL] (optional) supply a random seed (single value,
 interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG

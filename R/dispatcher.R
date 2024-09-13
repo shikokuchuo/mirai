@@ -38,8 +38,9 @@
 #'     \sQuote{url}. Where a single URL is supplied and \sQuote{n} > 1,
 #'     \sQuote{n} unique URLs will be automatically assigned for daemons to dial
 #'     into.
-#' @param ... (optional) additional arguments passed through to \code{\link{daemon}}.
-#'     These include \sQuote{autoexit}, \sQuote{cleanup}, \sQuote{maxtasks},
+#' @param ... (optional) additional arguments passed through to
+#'     \code{\link{daemon}}. These include  \sQuote{asyncdial},
+#'     \sQuote{autoexit}, \sQuote{cleanup}, \sQuote{maxtasks},
 #'     \sQuote{idletime}, \sQuote{walltime} and \sQuote{timerstart}.
 #' @param retry [default FALSE] logical value, whether to automatically retry
 #'     tasks where the daemon crashes or terminates unexpectedly on the next
@@ -51,12 +52,13 @@
 #' @param token [default FALSE] if TRUE, appends a unique 24-character token
 #'     to each URL path the dispatcher listens at (not applicable for TCP URLs
 #'     which do not accept a path).
-#' @param tls [default NULL] (required for secure TLS connections) \strong{either}
-#'     the character path to a file containing the PEM-encoded TLS certificate
-#'     and associated private key (may contain additional certificates leading
-#'     to a validation chain, with the TLS certificate first), \strong{or} a
-#'     length 2 character vector comprising [i] the TLS certificate (optionally
-#'     certificate chain) and [ii] the associated private key.
+#' @param tls [default NULL] (required for secure TLS connections)
+#'     \strong{either} the character path to a file containing the PEM-encoded
+#'     TLS certificate and associated private key (may contain additional
+#'     certificates leading to a validation chain, with the TLS certificate
+#'     first), \strong{or} a length 2 character vector comprising [i] the TLS
+#'     certificate (optionally certificate chain) and [ii] the associated
+#'     private key.
 #' @param pass [default NULL] (required only if the private key supplied to
 #'     \sQuote{tls} is encrypted with a password) For security, should be
 #'     provided through a function that returns this value, rather than directly.

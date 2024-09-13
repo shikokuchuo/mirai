@@ -35,8 +35,9 @@ Otherwise \sQuote{n} will be inferred from the number of URLs supplied in
 \sQuote{n} unique URLs will be automatically assigned for daemons to dial
 into.}
 
-\item{...}{(optional) additional arguments passed through to \code{\link{daemon}}.
-These include \sQuote{autoexit}, \sQuote{cleanup}, \sQuote{maxtasks},
+\item{...}{(optional) additional arguments passed through to
+\code{\link{daemon}}. These include  \sQuote{asyncdial},
+\sQuote{autoexit}, \sQuote{cleanup}, \sQuote{maxtasks},
 \sQuote{idletime}, \sQuote{walltime} and \sQuote{timerstart}.}
 
 \item{retry}{[default FALSE] logical value, whether to automatically retry
@@ -51,12 +52,13 @@ daemon instance to connect. If TRUE, the mirai will remain unresolved but
 to each URL path the dispatcher listens at (not applicable for TCP URLs
 which do not accept a path).}
 
-\item{tls}{[default NULL] (required for secure TLS connections) \strong{either}
-the character path to a file containing the PEM-encoded TLS certificate
-and associated private key (may contain additional certificates leading
-to a validation chain, with the TLS certificate first), \strong{or} a
-length 2 character vector comprising [i] the TLS certificate (optionally
-certificate chain) and [ii] the associated private key.}
+\item{tls}{[default NULL] (required for secure TLS connections)
+\strong{either} the character path to a file containing the PEM-encoded
+TLS certificate and associated private key (may contain additional
+certificates leading to a validation chain, with the TLS certificate
+first), \strong{or} a length 2 character vector comprising [i] the TLS
+certificate (optionally certificate chain) and [ii] the associated
+private key.}
 
 \item{pass}{[default NULL] (required only if the private key supplied to
 \sQuote{tls} is encrypted with a password) For security, should be

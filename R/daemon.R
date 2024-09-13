@@ -35,9 +35,9 @@
 #'     can mask potential connection issues.
 #' @param autoexit [default TRUE] logical value, whether the daemon should
 #'     exit automatically when its socket connection ends. If a signal from the
-#'     \pkg{tools} package, e.g. \code{tools::SIGINT}, or an equivalent integer
-#'     value is supplied, this signal is additionally raised (see 'Persistence'
-#'     section below).
+#'     \pkg{tools} package, such as \code{tools::SIGINT}, or an equivalent
+#'     integer value is supplied, this signal is additionally raised on exit
+#'     (see 'Persistence' section below).
 #' @param cleanup [default TRUE] logical value, whether to perform cleanup of
 #'     the global environment and restore loaded packages and options to an
 #'     initial state after each evaluation. For more granular control, also
@@ -81,9 +81,9 @@
 #'     daemon. The default TRUE ensures that it will exit cleanly once its
 #'     socket connection has ended.
 #'
-#'     Instead of TRUE, supplying a signal from the \pkg{tools} package, e.g.
-#'     \code{tools::SIGINT}, or an equivalent integer value, sets this to be
-#'     raised when the socket connection ends. As an example, supplying SIGINT
+#'     Instead of TRUE, supplying a signal from the \pkg{tools} package, such as
+#'     \code{tools::SIGINT}, or an equivalent integer value, sets this signal to
+#'     be raised when the socket connection ends. For instance, supplying SIGINT
 #'     allows a potentially more immediate exit by interrupting any ongoing
 #'     evaluation rather than letting it complete.
 #'
