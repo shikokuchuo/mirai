@@ -106,8 +106,9 @@ into.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>(optional) additional arguments passed through to <code><a href="daemon.html">daemon</a></code>.
-These include ‘autoexit’, ‘cleanup’, ‘maxtasks’,
+<dd><p>(optional) additional arguments passed through to
+<code><a href="daemon.html">daemon</a></code>. These include  ‘asyncdial’,
+‘autoexit’, ‘cleanup’, ‘maxtasks’,
 ‘idletime’, ‘walltime’ and ‘timerstart’.</p></dd>
 
 
@@ -128,12 +129,13 @@ which do not accept a path).</p></dd>
 
 
 <dt id="arg-tls">tls<a class="anchor" aria-label="anchor" href="#arg-tls"></a></dt>
-<dd><p>[default NULL] (required for secure TLS connections) <strong>either</strong>
-the character path to a file containing the PEM-encoded TLS certificate
-and associated private key (may contain additional certificates leading
-to a validation chain, with the TLS certificate first), <strong>or</strong> a
-length 2 character vector comprising [i] the TLS certificate (optionally
-certificate chain) and [ii] the associated private key.</p></dd>
+<dd><p>[default NULL] (required for secure TLS connections)
+<strong>either</strong> the character path to a file containing the PEM-encoded
+TLS certificate and associated private key (may contain additional
+certificates leading to a validation chain, with the TLS certificate
+first), <strong>or</strong> a length 2 character vector comprising [i] the TLS
+certificate (optionally certificate chain) and [ii] the associated
+private key.</p></dd>
 
 
 <dt id="arg-pass">pass<a class="anchor" aria-label="anchor" href="#arg-pass"></a></dt>

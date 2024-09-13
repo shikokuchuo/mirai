@@ -105,9 +105,9 @@ can mask potential connection issues.</p></dd>
 <dt id="arg-autoexit">autoexit<a class="anchor" aria-label="anchor" href="#arg-autoexit"></a></dt>
 <dd><p>[default TRUE] logical value, whether the daemon should
 exit automatically when its socket connection ends. If a signal from the
-<span class="pkg">tools</span> package, e.g. <code><a href="https://rdrr.io/r/tools/pskill.html" class="external-link">tools::SIGINT</a></code>, or an equivalent integer
-value is supplied, this signal is additionally raised (see 'Persistence'
-section below).</p></dd>
+<span class="pkg">tools</span> package, such as <code><a href="https://rdrr.io/r/tools/pskill.html" class="external-link">tools::SIGINT</a></code>, or an equivalent
+integer value is supplied, this signal is additionally raised on exit
+(see 'Persistence' section below).</p></dd>
 
 
 <dt id="arg-cleanup">cleanup<a class="anchor" aria-label="anchor" href="#arg-cleanup"></a></dt>
@@ -185,9 +185,9 @@ process and should not be independently supplied.</p></dd>
 <p>The ‘autoexit’ argument governs persistence settings for the
     daemon. The default TRUE ensures that it will exit cleanly once its
     socket connection has ended.</p>
-<p>Instead of TRUE, supplying a signal from the <span class="pkg">tools</span> package, e.g.
-    <code><a href="https://rdrr.io/r/tools/pskill.html" class="external-link">tools::SIGINT</a></code>, or an equivalent integer value, sets this to be
-    raised when the socket connection ends. As an example, supplying SIGINT
+<p>Instead of TRUE, supplying a signal from the <span class="pkg">tools</span> package, such as
+    <code><a href="https://rdrr.io/r/tools/pskill.html" class="external-link">tools::SIGINT</a></code>, or an equivalent integer value, sets this signal to
+    be raised when the socket connection ends. For instance, supplying SIGINT
     allows a potentially more immediate exit by interrupting any ongoing
     evaluation rather than letting it complete.</p>
 <p>Setting to FALSE allows the daemon to persist indefinitely even when
