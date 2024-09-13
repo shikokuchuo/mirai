@@ -6,6 +6,7 @@
 \usage{
 daemon(
   url,
+  asyncdial = FALSE,
   autoexit = TRUE,
   cleanup = TRUE,
   output = FALSE,
@@ -22,6 +23,13 @@ daemon(
 \item{url}{the character host or dispatcher URL to dial into, including the
 port to connect to (and optionally for websockets, a path), e.g.
 'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.}
+
+\item{asyncdial}{[default FALSE] whether to perform dials asynchronously. The
+default FALSE will error if a connection is not immediately possible (for
+instance if \code{\link{daemons}} has yet to be called on the host, or
+the specified port is not open etc.). Specifying TRUE continues retrying
+(indefinitely) if not immediately successful, which is more resilient but
+can mask potential connection issues.}
 
 \item{autoexit}{[default TRUE] logical value, whether the daemon should
 exit automatically when its socket connection ends. If a signal from the
@@ -91,20 +99,16 @@ The network topology is such that daemons dial into the host or
     socket connection has ended.
 
     Instead of TRUE, supplying a signal from the \pkg{tools} package, e.g.
-    \code{tools::SIGINT}, or an equivalent integer value, sets the signal to
-    be raised when the socket connection ends. As an example, supplying
-    SIGINT allows a potentially more immediate exit by interrupting any
-    ongoing evaluation rather than letting it complete.
+    \code{tools::SIGINT}, or an equivalent integer value, sets this to be
+    raised when the socket connection ends. As an example, supplying SIGINT
+    allows a potentially more immediate exit by interrupting any ongoing
+    evaluation rather than letting it complete.
 
     Setting to FALSE allows the daemon to persist indefinitely even when
     there is no longer a socket connection. This allows a host session to end
     and a new session to connect at the URL where the daemon is dialled in.
     Daemons must be terminated with \code{daemons(NULL)} in this case, which
     sends explicit exit instructions to all connected daemons.
-
-    Persistence also implies that dials are performed asynchronously, which
-    means retries are attempted (indefinitely) if not immediately successful.
-    This is resilient behaviour but can mask potential connection issues.
 }
 
 \section{Cleanup Options}{
