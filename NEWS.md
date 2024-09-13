@@ -1,4 +1,4 @@
-# mirai 1.2.0.9013 (development)
+# mirai 1.2.0.9014 (development)
 
 * `daemons(dispatcher = NA)` now provides access to threaded dispatcher (experimental). This implements dispatcher using a thread rather than an external process and is faster and more efficient.
 * `mirai_map()` behavioural changes:
@@ -8,7 +8,7 @@
 * Fixes flatmap with `mirai_map()[.flat]` assigning a variable 'typ' to the calling environment.
 * `everywhere()` now errors if the specified compute profile is not yet set up, rather than fail silently.
 * Internal performance enhancements.
-* Requires `nanonext` >= [1.2.1.9017].
+* Requires `nanonext` >= [1.2.1.9018].
 
 # mirai 1.2.0
 
