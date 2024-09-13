@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9013</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9014</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -122,11 +122,11 @@ can mask potential connection issues.</p></dd>
 
 
 <dt id="arg-retry">retry<a class="anchor" aria-label="anchor" href="#arg-retry"></a></dt>
-<dd><p>[default FALSE] if TRUE, a task where the daemon crashes or
-terminates unexpectedly will be automatically re-tried on the next daemon
-instance to connect. In such a case, the mirai will remain unresolved but
+<dd><p>[default FALSE] logical value, whether to automatically retry
+tasks where the daemon crashes or terminates unexpectedly on the next
+daemon instance to connect. If TRUE, the mirai will remain unresolved but
 <code><a href="status.html">status</a></code> will show ‘online’ as 0 and ‘assigned’
-&gt; ‘complete’. To cancel a task in such a case, use
+&gt; ‘complete’. To cancel a task in this case, use
 <code>saisei(force = TRUE)</code>. If FALSE, such tasks will be returned as
 ‘errorValue’ 19 (Connection reset).</p></dd>
 
