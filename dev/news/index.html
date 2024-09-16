@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9015</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9016</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,9 +49,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.2.0.9015" id="mirai-1209015-development">mirai 1.2.0.9015 (development)<a class="anchor" aria-label="anchor" href="#mirai-1209015-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.2.0.9016" id="mirai-1209016-development">mirai 1.2.0.9016 (development)<a class="anchor" aria-label="anchor" href="#mirai-1209016-development"></a></h2>
 <ul><li>
 <code>daemons(dispatcher = NA)</code> now provides access to threaded dispatcher (experimental). This implements dispatcher using a thread rather than an external process and is faster and more efficient.</li>
+<li>
+<code><a href="../reference/daemons.html">daemons()</a></code> behavioural changes:
+<ul><li>Return value is now always an integer value - either the number of daemons set if using dispatcher, or the number of daemons launched locally (zero if using a remote launcher).</li>
+<li>Gains argument ‘force’ to control whether calls to <code><a href="../reference/daemons.html">daemons()</a></code> resets previous settings for the same compute profile.</li>
+</ul></li>
 <li>
 <code><a href="../reference/mirai_map.html">mirai_map()</a></code> behavioural changes:
 <ul><li>Combining multiple collection options becomes easier, allowing for instance <code>x[.stop, .progress]</code>.</li>

@@ -17,7 +17,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9015</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9016</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,6 +76,7 @@
 <span>  remote <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dispatcher <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span>,</span>
+<span>  force <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pass <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -123,6 +124,13 @@ dispatcher and ‘asyncdial’, ‘autoexit’, ‘cleanup’,
 and ‘timerstart’ at daemon.</p></dd>
 
 
+<dt id="arg-force">force<a class="anchor" aria-label="anchor" href="#arg-force"></a></dt>
+<dd><p>[default TRUE] logical value whether to always reset and apply
+new daemons settings, even if the compute profile is already set up. If
+FALSE, to apply new daemons settings requires daemons to be explicitly
+reset first using <code>daemons(0)</code>.</p></dd>
+
+
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
 <dd><p>[default NULL] (optional) supply a random seed (single value,
 interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
@@ -157,11 +165,10 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Depending on the arguments supplied:</p>
-<p></p><ul><li><p>using dispatcher: integer number of daemons set.</p></li>
-<li><p>or else launching local daemons: integer number of daemons launched.</p></li>
-<li><p>otherwise: the character host URL.</p></li>
-</ul></div>
+    <p>If using dispatcher, the integer number of daemons set, or else the
+    integer number of daemons launched locally (zero if using a remote
+    launcher).</p>
+    </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Use <code>daemons(0)</code> to reset daemon connections:</p><ul><li><p>All connected daemons and/or dispatchers exit automatically.</p></li>
@@ -170,8 +177,8 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <li><p>Any unresolved ‘mirai’ will return an ‘errorValue’ 19
     (Connection reset) after a reset.</p></li>
 <li><p>Calling <code>daemons</code> with revised (or even the same) settings for
-    the same compute profile implicitly resets daemons before applying the
-    new settings.</p></li>
+    the same compute profile resets daemons before applying the new settings
+    if <code>force = TRUE</code>.</p></li>
 </ul><p>If the host session ends, all connected dispatcher and daemon processes
     automatically exit as soon as their connections are dropped (unless
     the daemons were started with <code>autoexit = FALSE</code>). If a daemon is
