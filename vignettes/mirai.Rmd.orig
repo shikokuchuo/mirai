@@ -26,6 +26,7 @@ knitr::opts_chunk$set(
 9. [Errors, Interrupts and Timeouts](#errors-interrupts-and-timeouts)
 10. [Serialization - Arrow, polars and beyond](#serialization-arrow-polars-and-beyond)
 11. [Asynchronous Parallel Map](#asynchronous-parallel-map)
+12. [Using mirai in a Package](#using-mirai-in-a-package)
 
 ### Example 1: Compute-intensive Operations
 
@@ -288,14 +289,14 @@ By specifying `dispatcher = FALSE`, remote daemons connect directly to the host 
 ```{r remote}
 daemons(url = host_url(), dispatcher = FALSE)
 ```
-Note that above, calling `host_url()` without a port value uses the default of '0'. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port is provided in the return value of the call, or it may be queried at any time via `status()`.
-
-The number of daemons connecting to the host URL is not limited and network resources may be added or removed at any time, with tasks automatically distributed to all connected daemons.
-
-`$connections` will show the actual number of connected daemons.
-```{r remotev}
+Note that above, calling `host_url()` without a port value uses the default of '0'. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port may be queried at any time via `status()`:
+```{r remotestatus}
 status()
 ```
+The number of daemons connecting to the host URL is not limited and network resources may be added or removed at any time, with tasks automatically distributed to all connected daemons.
+
+From the status query above, `$connections` shows the actual number of connected daemons.
+
 To reset all connections and revert to default behaviour:
 ```{r reset}
 daemons(0)
@@ -609,5 +610,26 @@ with(
 
 daemons(0)
 ```
+
+[&laquo; Back to ToC](#table-of-contents)
+
+### Using mirai in a Package
+
+mirai as a framework is designed to support completely transparent and inter-operable use within packages. A core design precept of not relying on global options or environment variables minimises the likelihood of conflict between use by different packages.
+
+There are hence not many requirements of package authors. However, the following notes may be helpful:
+
+- `daemons()` settings should usually be left to end-users. Either provide guidance on how to do this or point them to `mirai` documentation. If however, your package wishes to set default settings for instance, `daemons()` should always be called specifying `force = FALSE`. This ensures that any prior user setting is respected, and that daemons set elsewhere are not prematurely terminated.
+
+- Consider exposing the '.compute' argument in package functions, mapping to the '.compute' argument of `mirai()`, so that the end-user may choose where to run your functions if they have multiple compute profiles set up.
+
+- Calling package functions in a mirai requires namespacing the call, or an equivalent way to access the functions, i.e.
+```r
+ mirai(mypkg::my_func())
+```
+
+- Do not rely on the shape or contents of the `status()` daemons matrix, as this user interface is subject to change at any time. There is a developer interface `nextget()`, for querying documented values such as 'urls'. Note: only these specifically-documented values are supported interfaces.
+
+- Testing on CRAN should respect it's 2-core usage limit. This practically means limiting tests to using one daemon (with `dispatcher = FALSE`) to ensure that only one additional process is used. Always reset daemons at the end and then allow at least a one-second sleep to ensure all background processes have exited properly. There are of course no limits for testing outside of CRAN, and a full suite of tests using more daemons options may be run locally.
 
 [&laquo; Back to ToC](#table-of-contents)
