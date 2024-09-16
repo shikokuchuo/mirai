@@ -48,10 +48,10 @@
 #'     dispatcher and \sQuote{asyncdial}, \sQuote{autoexit}, \sQuote{cleanup},
 #'     \sQuote{output}, \sQuote{maxtasks}, \sQuote{idletime}, \sQuote{walltime}
 #'     and \sQuote{timerstart} at daemon.
-#' @param force [default TRUE] logical value whether to always reset and apply
-#'     new daemons settings, even if the compute profile is already set up. If
-#'     FALSE, to apply new daemons settings requires daemons to be explicitly
-#'     reset first using \code{daemons(0)}.
+#' @param force [default TRUE] logical value whether to always reset daemons and
+#'     apply new settings for a compute profile, even if already set. If FALSE,
+#'     applying new settings requires daemons to be explicitly reset first using
+#'     \code{daemons(0)}.
 #' @param seed [default NULL] (optional) supply a random seed (single value,
 #'     interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
 #'     RNG streams sent to each daemon. Note that reproducible results can be
