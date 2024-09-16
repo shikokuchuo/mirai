@@ -195,7 +195,7 @@ connection && {
 # advanced daemons and dispatcher tests
 connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "true" && {
   Sys.sleep(1L)
-  nanotesto(daemons(url = local_url(), dispatcher = TRUE))
+  nanotesto(daemons(url = local_url(), dispatcher = TRUE, notused = "wrongtype"))
   nanotest(grepl("://", launch_remote(1L), fixed = TRUE))
   nanotestn(launch_local(nextget("urls")))
   Sys.sleep(1L)
@@ -211,9 +211,9 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
   }
   Sys.sleep(1L)
   nanotestz(daemons(NULL))
-  nanotesto(daemons(url = "ws://:0", token = TRUE))
+  nanotesto(daemons(url = "ws://:0", correctype = 0L, token = TRUE))
   nanotestz(daemons(0L))
-  nanotestz(with(daemons(url = "tcp://:0", token = TRUE), {8L - 9L + 1L}))
+  nanotestz(with(daemons(url = "tcp://:0", correcttype = 1, token = TRUE), {8L - 9L + 1L}))
   nanotest(daemons(n = 2, "ws://:0") == 2L)
   nanotest(is.integer(nextget("pid")))
   nanotest(length(nextget("urls")) == 2L)
@@ -236,7 +236,7 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
   nanotest(is.character(saisei(i = 1L, force = TRUE)))
   nanotestn(saisei(i = 10L))
   nanotestz(daemons(0))
-  nanotest(daemons(n = 2, "tcp://127.0.0.1:45555") == 2L)
+  nanotest(daemons(n = 2, "tcp://127.0.0.1:45555", correcttype = NA) == 2L)
   Sys.sleep(1L)
   nanotestn(launch_local(nextget("urls", .compute = "default")[1L], maxtasks = 1L))
   nanotestn(launch_local(2, maxtasks = 1L))
