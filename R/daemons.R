@@ -48,6 +48,10 @@
 #'     dispatcher and \sQuote{asyncdial}, \sQuote{autoexit}, \sQuote{cleanup},
 #'     \sQuote{output}, \sQuote{maxtasks}, \sQuote{idletime}, \sQuote{walltime}
 #'     and \sQuote{timerstart} at daemon.
+#' @param force [default TRUE] logical value whether to always reset and apply
+#'     new daemons settings, even if the compute profile is already set up. If
+#'     FALSE, to apply new daemons settings requires daemons to be explicitly
+#'     reset first using \code{daemons(0)}.
 #' @param seed [default NULL] (optional) supply a random seed (single value,
 #'     interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
 #'     RNG streams sent to each daemon. Note that reproducible results can be
@@ -80,8 +84,8 @@
 #'     \item Any unresolved \sQuote{mirai} will return an \sQuote{errorValue} 19
 #'     (Connection reset) after a reset.
 #'     \item Calling \code{daemons} with revised (or even the same) settings for
-#'     the same compute profile implicitly resets daemons before applying the
-#'     new settings.
+#'     the same compute profile resets daemons before applying the new settings
+#'     if \code{force = TRUE}.
 #'     }
 #'
 #'     If the host session ends, all connected dispatcher and daemon processes
@@ -284,7 +288,7 @@
 #'
 #' @export
 #'
-daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
+daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ..., force = TRUE,
                     seed = NULL, tls = NULL, pass = NULL, .compute = "default") {
 
   missing(n) && missing(url) && return(status(.compute))
@@ -373,7 +377,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         `[[<-`(envir, "urls", urld)
       }
       `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
-    } else {
+    } else if (force) {
       daemons(n = 0L, .compute = .compute)
       return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ...,
                      seed = seed, tls = tls, pass = pass, .compute = .compute))
