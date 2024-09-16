@@ -1,6 +1,9 @@
-# mirai 1.2.0.9015 (development)
+# mirai 1.2.0.9016 (development)
 
 * `daemons(dispatcher = NA)` now provides access to threaded dispatcher (experimental). This implements dispatcher using a thread rather than an external process and is faster and more efficient.
+* `daemons()` behavioural changes:
+  - Return value is now always an integer value - either the number of daemons set if using dispatcher, or the number of daemons launched locally (zero if using a remote launcher).
+  - Gains argument 'force' to control whether calls to `daemons()` resets previous settings for the same compute profile.
 * `mirai_map()` behavioural changes:
   - Combining multiple collection options becomes easier, allowing for instance `x[.stop, .progress]`.
   - Adds `mirai_map()[.progress_cli]` as an alternative progress indicator, using the 'cli' package to show % complete and ETA.
