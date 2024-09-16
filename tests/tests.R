@@ -104,15 +104,17 @@ connection && {
 # additional daemons tests
 connection && .Platform[["OS.type"]] != "windows" && {
   Sys.sleep(1L)
-  nanotest(daemons(url = value <- local_url(), dispatcher = FALSE) == value)
-  nanotesti(status()$daemons, nextget("urls"))
+  nanotestz(daemons(url = value <- local_url(), dispatcher = FALSE))
+  nanotesti(status()$daemons, value)
+  nanotesti(nextget("urls"), value)
   nanotestz(daemons(0L))
   Sys.sleep(1L)
   nanotest(is.character(launch_remote("ws://[::1]:5555", remote = remote_config(command = "echo", args = list(c("Test out:", ".", ">/dev/null")), rscript = "/usr/lib/R/bin/Rscript"))))
   nanotest(is.character(launch_remote("tcp://localhost:5555", remote = ssh_config(remotes = c("ssh://remotehost", "ssh://remotenode"), tunnel = TRUE, command = "echo"))))
   nanotestn(launch_local(local_url(), .compute = "test"))
   Sys.sleep(1L)
-  nanotest(daemons(n = 2L, url = value <- "ws://:0", dispatcher = FALSE, remote = remote_config(quote = TRUE)) != value)
+  nanotestz(daemons(n = 2L, url = value <- "ws://:0", dispatcher = FALSE, remote = remote_config(quote = TRUE)))
+  nanotest(status()$daemons != value)
   nanotestz(daemons(0L))
   Sys.sleep(1L)
   m <- with(daemons(1, dispatcher = FALSE, .compute = "ml"), {
