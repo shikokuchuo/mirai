@@ -68,13 +68,9 @@
 #'     vector comprising [i] the TLS certificate (optionally certificate chain)
 #'     and [ii] the associated private key.
 #'
-#' @return Depending on the arguments supplied:
-#'
-#'     \itemize{
-#'     \item using dispatcher: integer number of daemons set.
-#'     \item or else launching local daemons: integer number of daemons launched.
-#'     \item otherwise: the character host URL.
-#'     }
+#' @return If using dispatcher, the integer number of daemons set, or else the
+#'     integer number of daemons launched locally (zero if using a remote
+#'     launcher).
 #'
 #' @details Use \code{daemons(0)} to reset daemon connections:
 #'     \itemize{
@@ -386,7 +382,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ..., force 
   }
 
   is.null(envir) && return(0L)
-  `class<-`(if (envir[["n"]]) envir[["n"]] else envir[["urls"]], c("miraiDaemons", .compute))
+  `class<-`(envir[["n"]], c("miraiDaemons", .compute))
 
 }
 

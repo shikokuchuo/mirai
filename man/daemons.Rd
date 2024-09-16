@@ -74,13 +74,9 @@ provided through a function that returns this value, rather than directly.}
 to use (each compute profile has its own independent set of daemons).}
 }
 \value{
-Depending on the arguments supplied:
-
-    \itemize{
-    \item using dispatcher: integer number of daemons set.
-    \item or else launching local daemons: integer number of daemons launched.
-    \item otherwise: the character host URL.
-    }
+If using dispatcher, the integer number of daemons set, or else the
+    integer number of daemons launched locally (zero if using a remote
+    launcher).
 }
 \description{
 Set \sQuote{daemons} or persistent background processes to receive
