@@ -627,10 +627,9 @@ req_socket <- function(url, tls = NULL, resend = 0L)
   `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", resend)
 
 parse_dots <- function(...) {
-  missing(...) && return("")
+  ...length() || return("")
   dots <- list(...)
-  for (dot in dots)
-    is.numeric(dot) || is.logical(dot) || stop(._[["wrong_dots"]], call. = FALSE)
+  dots <- dots[as.logical(lapply(dots, function(x) is.numeric(x) | is.logical(x)))]
   dnames <- names(dots)
   out <- sprintf(",%s", paste(dnames, dots, sep = "=", collapse = ","))
   pos <- dnames == "output"
