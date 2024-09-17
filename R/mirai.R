@@ -230,7 +230,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' # loading a package on all daemons and also
 #' # registering custom serialization functions:
 #' cfg <- serial_config("cls_name", function(x) serialize(x, NULL), unserialize)
-#' daemons(1, dispatcher = FALSE)
+#' daemons(1, dispatcher = "none")
 #' everywhere(library(parallel), .serial = cfg)
 #' m <- mirai("package:parallel" %in% search())
 #' call_mirai(m)$data
@@ -464,7 +464,7 @@ unresolved <- unresolved
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' daemons(1, dispatcher = FALSE)
+#' daemons(1, dispatcher = "none")
 #' df <- data.frame()
 #' m <- mirai(as.matrix(df), df = df)
 #' is_mirai(m)

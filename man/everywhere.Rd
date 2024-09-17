@@ -82,7 +82,7 @@ daemons(0)
 # loading a package on all daemons and also
 # registering custom serialization functions:
 cfg <- serial_config("cls_name", function(x) serialize(x, NULL), unserialize)
-daemons(1, dispatcher = FALSE)
+daemons(1, dispatcher = "none")
 everywhere(library(parallel), .serial = cfg)
 m <- mirai("package:parallel" \%in\% search())
 call_mirai(m)$data

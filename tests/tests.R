@@ -25,6 +25,8 @@ nanotesterr(daemons(url = "URL"), "Invalid argument")
 nanotesterr(daemons(-1), "zero or greater")
 nanotesterr(daemons(n = 0, url = "ws://localhost:0"), "1 or greater")
 nanotesterr(daemons(raw(0L)), "must be numeric")
+nanotesterr(daemons(1, dispatcher = "wrong"), "must be one of")
+nanotesterr(daemons(url = local_url(), dispatcher = "wrong"), "must be one of")
 nanotesterr(dispatcher(client = "URL"), "at least one")
 nanotesterr(daemon("URL"), "Invalid argument")
 nanotest(is.character(mlc <- launch_remote("ws://[::1]:5555")))
@@ -103,7 +105,7 @@ connection && {
 # additional daemons tests
 connection && .Platform[["OS.type"]] != "windows" && {
   Sys.sleep(1L)
-  nanotestz(daemons(url = value <- local_url(), dispatcher = FALSE))
+  nanotestz(daemons(url = value <- local_url(), dispatcher = "none"))
   nanotesti(status()$daemons, value)
   nanotesti(nextget("urls"), value)
   nanotestz(daemons(0L))
@@ -116,7 +118,7 @@ connection && .Platform[["OS.type"]] != "windows" && {
   nanotest(status()$daemons != value)
   nanotestz(daemons(0L))
   Sys.sleep(1L)
-  m <- with(daemons(1, dispatcher = FALSE, .compute = "ml"), {
+  m <- with(daemons(1, dispatcher = "none", .compute = "ml"), {
     if (is.null(tryCatch(mirai_map(list(1, "a", 2), sum, .compute = "ml")[.stop], error = function(e) NULL)))
       mirai_map(1:3, rnorm, .args = list(mean = 20, 2), .compute = "ml")[.progress]
   })
@@ -195,7 +197,7 @@ connection && {
 # advanced daemons and dispatcher tests
 connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "true" && {
   Sys.sleep(1L)
-  nanotesto(daemons(url = local_url(), dispatcher = TRUE, notused = "wrongtype"))
+  nanotesto(daemons(url = local_url(), dispatcher = "process", notused = "wrongtype"))
   nanotest(grepl("://", launch_remote(1L), fixed = TRUE))
   nanotestn(launch_local(nextget("urls")))
   Sys.sleep(1L)
@@ -291,17 +293,17 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
 }
 # threaded dispatcher tests
 connection && Sys.getenv("NOT_CRAN") == "true" && {
-  nanotest(daemons(2, dispatcher = NA) == 2L)
+  nanotest(daemons(2, dispatcher = "thread") == 2L)
   nanotest(nextget("n") == 2L)
   nanotest(startsWith(nextget("urls")[[1L]], mirai:::.urlscheme))
   nanotest(is.matrix(status()$daemons))
   nanotest(mirai(TRUE)[])
   nanotestz(daemons(0))
-  nanotest(daemons(2, url = host_url(), dispatcher = NA) == 2L)
+  nanotest(daemons(2, url = host_url(), dispatcher = "thread") == 2L)
   nanotest(length(urls <- nextget("urls")) == 2L)
   nanotesti(as.integer(nanonext::parse_url(urls[[2L]])[["port"]]), as.integer(nanonext::parse_url(urls[[1L]])[["port"]]) + 1L)
   nanotestz(daemons(0))
-  nanotest(daemons(2, url = host_url(ws = TRUE), dispatcher = NA) == 2L)
+  nanotest(daemons(2, url = host_url(ws = TRUE), dispatcher = "thread") == 2L)
   nanotest(length(urls <- nextget("urls")) == 2L)
   nanotest(endsWith(urls[[1L]], "/1"))
   nanotest(endsWith(urls[[2L]], "/2"))
