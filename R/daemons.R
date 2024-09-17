@@ -313,7 +313,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ..., force 
         sock <- req_socket(urld)
         sockc <- req_socket(urlc)
         res <- launch_sync_dispatcher(sock, sockc, wa5(urld, dots, n, urlc, url), output, tls, pass)
-        is.object(res) && stop(._[["sync_timeout"]])
+        is.object(res) && stop(._[["sync_dispatcher"]])
         store_dispatcher(sockc = sockc, res = res, cv = cv, envir = envir)
       } else {
         sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass))
@@ -364,12 +364,12 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ..., force 
         urlc <- sprintf("%s%s", urld, "c")
         sockc <- req_socket(urlc)
         res <- launch_sync_dispatcher(sock, sockc, wa4(urld, dots, envir[["stream"]], n, urlc), output)
-        is.object(res) && stop(._[["sync_timeout"]])
+        is.object(res) && stop(._[["sync_dispatcher"]])
         store_dispatcher(sockc = sockc, res = res, cv = cv, envir = envir)
         for (i in seq_len(n)) next_stream(envir)
       } else {
         sock <- req_socket(urld)
-        launch_sync_daemons(seq_len(n), sock, urld, dots, envir, output) || stop(._[["sync_timeout"]])
+        launch_sync_daemons(seq_len(n), sock, urld, dots, envir, output) || stop(._[["sync_daemons"]])
         `[[<-`(envir, "urls", urld)
       }
       `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
@@ -629,7 +629,7 @@ req_socket <- function(url, tls = NULL, resend = 0L)
 parse_dots <- function(...) {
   ...length() || return("")
   dots <- list(...)
-  dots <- dots[as.logical(lapply(dots, function(x) is.numeric(x) | is.logical(x)))]
+  dots <- dots[as.logical(lapply(dots, function(x) is.logical(x) || is.numeric(x)))]
   dnames <- names(dots)
   out <- sprintf(",%s", paste(dnames, dots, sep = "=", collapse = ","))
   pos <- dnames == "output"

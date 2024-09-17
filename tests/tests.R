@@ -213,7 +213,7 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
   nanotestz(daemons(NULL))
   nanotesto(daemons(url = "ws://:0", correctype = 0L, token = TRUE))
   nanotestz(daemons(0L))
-  nanotestz(with(daemons(url = "tcp://:0", correcttype = 1, token = TRUE), {8L - 9L + 1L}))
+  nanotestz(with(daemons(url = "tcp://:0", correcttype = c(1, 0), token = TRUE), {8L - 9L + 1L}))
   nanotest(daemons(n = 2, "ws://:0") == 2L)
   nanotest(is.integer(nextget("pid")))
   nanotest(length(nextget("urls")) == 2L)

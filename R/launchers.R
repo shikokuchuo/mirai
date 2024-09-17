@@ -123,7 +123,7 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
   envir <- ..[[.compute]]
   dots <- parse_dots(...)
   if (is.null(tls)) tls <- envir[["tls"]]
-  url <- process_url(url, .compute = .compute)
+  url <- process_url(url, .compute = .compute, local = FALSE)
 
   ulen <- length(url)
   command <- remote[["command"]]
@@ -433,11 +433,13 @@ find_dot <- function(args) {
   sel
 }
 
-process_url <- function(url, .compute) {
+process_url <- function(url, .compute, local = TRUE) {
   if (is.numeric(url)) {
     vec <- ..[[.compute]][["urls"]]
-    is.null(vec) && stop(._[["daemons_unset"]], call. = FALSE)
-    all(url >= 1L, url <= length(vec)) || stop(._[["url_spec"]], call. = FALSE)
+    is.null(vec) &&
+      stop(sprintf(._[["daemons_unset"]], if (local) "local" else "remote"), call. = FALSE)
+    all(url >= 1L, url <= length(vec)) ||
+      stop(sprintf(._[["url_spec"]], if (local) "local" else "remote"), call. = FALSE)
     url <- vec[url]
   } else {
     lapply(url, parse_url)

@@ -93,7 +93,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token = F
     pipe_notify(sockc, cv = cv, remove = TRUE, flag = TRUE)
     dial_and_sync_socket(sock = sockc, url = monitor)
     cmessage <- recv(sockc, mode = 2L, block = .limit_long)
-    is.object(cmessage) && stop(._[["sync_timeout"]])
+    is.object(cmessage) && stop(._[["sync_dispatcher"]])
     if (nzchar(cmessage[2L]))
       Sys.setenv(R_DEFAULT_PACKAGES = cmessage[2L]) else
         Sys.unsetenv("R_DEFAULT_PACKAGES")
@@ -159,7 +159,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token = F
 
   if (auto)
     for (i in seq_n)
-      until(cv, .limit_long) || stop(._[["sync_timeout"]])
+      until(cv, .limit_long) || stop(._[["sync_daemons"]])
 
   if (ctrchannel) {
     send(sockc, c(Sys.getpid(), servernames), mode = 2L)
