@@ -55,21 +55,21 @@ env$res
 ```
 ### The One Million Promises Challenge
 
-The code below is taken from the challenge to launch and collect one million promises. For illustration, the example is scaled down to one thousand.
+The code below is taken from the challenge to launch and collect one million promises. For illustration, the example is scaled down to ten thousand.
 
 
 ``` r
 library(mirai)
-daemons(8, dispatcher = FALSE)
+daemons(8, dispatcher = "none")
 #> [1] 8
 r <- 0
 start <- Sys.time()
-m <- mirai_map(1:1000, \(x) x, .promise = \(x) r <<- r + x)
+m <- mirai_map(1:10000, \(x) x, .promise = \(x) r <<- r + x)
 Sys.time() - start
-#> Time difference of 0.2506421 secs
+#> Time difference of 2.722618 secs
 later::run_now()
 r
-#> [1] 500500
+#> [1] 50005000
 daemons(0)
 #> [1] 0
 ```

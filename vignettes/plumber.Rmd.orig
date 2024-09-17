@@ -29,7 +29,7 @@ The /echo endpoint takes a GET request, sleeps for 1 second (simulating an expen
 library(mirai)
 
 # supply SIGINT so the plumber server is interrupted and exits cleanly when finished
-daemons(1L, dispatcher = FALSE, autoexit = tools::SIGINT)
+daemons(1L, dispatcher = "none", autoexit = tools::SIGINT)
 
 m <- mirai({
   library(plumber)
@@ -37,7 +37,7 @@ m <- mirai({
   library(mirai)
 
   # more efficient not to use dispatcher if all requests are similar length
-  daemons(4L, dispatcher = FALSE) # handles 4 requests simultaneously
+  daemons(4L, dispatcher = "none") # handles 4 requests simultaneously
 
   pr() |>
     pr_get(
@@ -92,7 +92,7 @@ Note that `req$postBody` should always be accessed in the router process and pas
 library(mirai)
 
 # supply SIGINT so the plumber server is interrupted and exits cleanly when finished
-daemons(1L, dispatcher = FALSE, autoexit = tools::SIGINT)
+daemons(1L, dispatcher = "none", autoexit = tools::SIGINT)
 
 m <- mirai({
   library(plumber)
