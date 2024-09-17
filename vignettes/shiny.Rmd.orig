@@ -55,7 +55,7 @@ server <- function(input, output, session) {
   observeEvent(input$btn, extended_task$invoke(x = input$n, y = input$delay))
 
   output$plot <- renderPlot(hist(extended_task$result()))
-  
+
 }
 
 app <- shinyApp(ui = ui, server = server)
@@ -145,12 +145,12 @@ plotServer <- function(id, calc_time) {
       extended_task <- ExtendedTask$new(
         function(time, run) mirai(run(time), environment())
       ) |> bind_task_button("resample")
-      
+
       observeEvent(input$resample,
                    extended_task$invoke(calc_time, run_task))
-      
+
       output$plot <- renderPlot(plot_result(extended_task$result()))
-      
+
     }
   )
 }
@@ -179,7 +179,7 @@ app <- shinyApp(ui, server)
 # run app using 3 local daemons
 with(daemons(3), runApp(app))
 ```
-*The above example builds on original code by Joe Cheng, Daniel Woodie and William Landau.* 
+*The above example builds on original code by Joe Cheng, Daniel Woodie and William Landau.*
 
 The above uses `environment()` instead of `...` as an alternative and equivalent way of passing variables present in the calling environment to the mirai.
 
@@ -191,7 +191,7 @@ The key components to using this ExtendedTask example are:
 input_task_button(ns("resample"), "Resample")
 ```
 
-2. In the server, create an ExtendedTask object by calling `ExtendedTask$new()` on an anonymous function passing _named_ arguments to `mirai()`, and bind it to the button created in (1). These are passed through to the mirai by the use of `environment()`. 
+2. In the server, create an ExtendedTask object by calling `ExtendedTask$new()` on an anonymous function passing _named_ arguments to `mirai()`, and bind it to the button created in (1). These are passed through to the mirai by the use of `environment()`.
 
 ```{r shinystep22, eval=FALSE}
 extended_task <- ExtendedTask$new(
@@ -234,17 +234,17 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-  
+
   # Keep running totals of heads, tails, and task errors
   flips <- reactiveValues(heads = 0, tails = 0, flips = 0)
-  
+
   # Button to submit a batch of coin flips
   observeEvent(input$task, {
     flips$flips <- flips$flips + 1000
     m <- mirai_map(1:1000, flip_coin, .promise = \(x)
       if (x) flips$heads <- flips$heads + 1 else flips$tails <- flips$tails + 1)
   })
-  
+
   # Print time and task status
   output$status <- renderText({
     input$task
@@ -252,7 +252,7 @@ server <- function(input, output, session) {
     time <- format(Sys.time(), "%H:%M:%S")
     sprintf("%s %s flips submitted", time, flips$flips)
   })
-  
+
   # Print number of heads and tails
   output$outcomes <- renderText(
     sprintf("%s heads %s tails", flips$heads, flips$tails)
@@ -262,8 +262,8 @@ server <- function(input, output, session) {
 
 app <- shinyApp(ui = ui, server = server)
 
-# run app using 8 local daemons, without dispatcher as tasks are the same length
-with(daemons(8, dispatcher = FALSE), {
+# run app using 8 local non-dispatcher daemons (tasks are the same length)
+with(daemons(8, dispatcher = "none"), {
   # pre-load flip_coin function on all daemons for efficiency
   everywhere({}, flip_coin = flip_coin)
   runApp(app)
@@ -324,7 +324,7 @@ server <- function(input, output, session) {
   output$result <- renderPlot(reactive_result(), height = 600, width = 600)
   output$status <- renderText(reactive_status())
   poll_for_results <- reactiveVal(FALSE)
-  
+
   # create empty mirai queue
   q <- list()
 

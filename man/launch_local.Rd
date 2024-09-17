@@ -77,7 +77,7 @@ These functions may be used to re-launch daemons that have exited
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-daemons(url = host_url(ws = TRUE), dispatcher = FALSE)
+daemons(url = host_url(ws = TRUE), dispatcher = "none")
 status()
 launch_local(status()$daemons, maxtasks = 10L)
 launch_remote(1L, maxtasks = 10L)

@@ -218,7 +218,7 @@ server <- function(input, output, session) {
   id <- secretbase::siphash13(Sys.time(), key = nanonext::random(4L))
 
   # create new (non-dispatcher) daemon for each session
-  daemons(1L, dispatcher = FALSE, .compute = id)
+  daemons(1L, dispatcher = "none", .compute = id)
 
   # tear down daemon when session ends
   session$onEnded(function() daemons(0L, .compute = id))

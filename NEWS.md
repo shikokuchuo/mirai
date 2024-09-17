@@ -1,7 +1,8 @@
-# mirai 1.2.0.9018 (development)
+# mirai 1.2.0.9019 (development)
 
-* `daemons(dispatcher = NA)` now provides access to threaded dispatcher (experimental). This implements dispatcher using a thread rather than an external process and is faster and more efficient.
+* `daemons(dispatcher = "thread")` implements threaded dispatcher (experimental), a faster and more efficient way of running dispatcher logic than in a background process.
 * `daemons()` behavioural changes:
+  - Argument 'dispatcher' now takes the character options 'process', 'thread' and 'none'. Previous values of TRUE/FALSE continue to be accepted (thanks @hadley #157).
   - Return value is now always an integer value - either the number of daemons set if using dispatcher, or the number of daemons launched locally (zero if using a remote launcher).
   - Gains argument 'force' to control whether calls to `daemons()` resets previous settings for the same compute profile.
   - Invalid type of '...' arguments are now dropped instead of throwing an error. This allows '...' containing unused arguments to be more easily passed from other functions. 

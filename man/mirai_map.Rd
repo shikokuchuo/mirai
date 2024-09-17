@@ -84,7 +84,7 @@ Sends each application of function \code{.f} on an element of
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-daemons(4, dispatcher = FALSE)
+daemons(4, dispatcher = "none")
 
 # map with constant args specified via '.args'
 mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
@@ -138,7 +138,7 @@ tryCatch(
 
 # promises example that outputs the results, including errors, to the console
 if (requireNamespace("promises", quietly = TRUE)) {
-daemons(1, dispatcher = FALSE)
+daemons(1, dispatcher = "none")
 ml <- mirai_map(
   1:30,
   function(x) {Sys.sleep(0.1); if (x == 30) stop(x) else x},
