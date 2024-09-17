@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9018</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9019</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,12 +49,13 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.2.0.9018" id="mirai-1209018-development">mirai 1.2.0.9018 (development)<a class="anchor" aria-label="anchor" href="#mirai-1209018-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.2.0.9019" id="mirai-1209019-development">mirai 1.2.0.9019 (development)<a class="anchor" aria-label="anchor" href="#mirai-1209019-development"></a></h2>
 <ul><li>
-<code>daemons(dispatcher = NA)</code> now provides access to threaded dispatcher (experimental). This implements dispatcher using a thread rather than an external process and is faster and more efficient.</li>
+<code>daemons(dispatcher = "thread")</code> implements threaded dispatcher (experimental), a faster and more efficient way of running dispatcher logic than in a background process.</li>
 <li>
 <code><a href="../reference/daemons.html">daemons()</a></code> behavioural changes:
-<ul><li>Return value is now always an integer value - either the number of daemons set if using dispatcher, or the number of daemons launched locally (zero if using a remote launcher).</li>
+<ul><li>Argument ‘dispatcher’ now takes the character options ‘process’, ‘thread’ and ‘none’. Previous values of TRUE/FALSE continue to be accepted (thanks <a href="https://github.com/hadley" class="external-link">@hadley</a> <a href="https://github.com/shikokuchuo/mirai/issues/157" class="external-link">#157</a>).</li>
+<li>Return value is now always an integer value - either the number of daemons set if using dispatcher, or the number of daemons launched locally (zero if using a remote launcher).</li>
 <li>Gains argument ‘force’ to control whether calls to <code><a href="../reference/daemons.html">daemons()</a></code> resets previous settings for the same compute profile.</li>
 <li>Invalid type of ‘…’ arguments are now dropped instead of throwing an error. This allows ‘…’ containing unused arguments to be more easily passed from other functions.</li>
 </ul></li>
