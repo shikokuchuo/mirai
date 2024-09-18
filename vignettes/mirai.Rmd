@@ -62,7 +62,7 @@ To wait for and collect the return value, use the mirai's `[]` method:
 
 ``` r
 m[]
-#> [1] 2.680219 4.756610 2.887941 5.411004 5.071045
+#> [1] 5.696442 2.968951 2.924338 4.826340 2.661820
 ```
 As a mirai represents an async operation, it is never necessary to wait for it. Other code can continue to be run. Once it completes, the return value automatically becomes available at `$data`.
 
@@ -70,7 +70,7 @@ As a mirai represents an async operation, it is never necessary to wait for it. 
 m
 #> < mirai [$data] >
 m$data
-#> [1] 2.680219 4.756610 2.887941 5.411004 5.071045
+#> [1] 5.696442 2.968951 2.924338 4.826340 2.661820
 ```
 For easy programmatic use of `mirai()`, '.expr' accepts a pre-constructed language object, and also a list of named arguments passed via '.args'. So, the following would be equivalent to the above:
 
@@ -82,7 +82,7 @@ args <- list(time = x$time, mean = x$mean)
 
 m <- mirai(.expr = expr, .args = args)
 m[]
-#> [1] 4.138162 3.041805 2.651815 4.168465 3.422566
+#> [1] 4.220879 6.454040 3.456183 2.761228 2.957848
 ```
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -163,8 +163,8 @@ for (i in 1:10) {
 #> iteration 5 successful
 #> iteration 6 successful
 #> iteration 7 successful
-#> iteration 8 successful
 #> Error: random error
+#> iteration 8 successful
 #> iteration 9 successful
 #> iteration 10 successful
 ```
@@ -200,12 +200,12 @@ status()
 #> 
 #> $daemons
 #>                                     i online instance assigned complete
-#> abstract://c700e8e455c194aaa368d9ab 1      1        1        0        0
-#> abstract://8e574b453c61dcabeb6ff1b8 2      1        1        0        0
-#> abstract://631dbcefa2a1035af6b69d0c 3      1        1        0        0
-#> abstract://8e2244a29ea117c8ae203a22 4      1        1        0        0
-#> abstract://948c1ea8b3f051538d0de5b4 5      1        1        0        0
-#> abstract://ccfa7e70b5525c674eed3e68 6      1        1        0        0
+#> abstract://386f778b8cbfb408ba9361e0 1      1        1        0        0
+#> abstract://7712cf252277900f2e1c0d18 2      1        1        0        0
+#> abstract://d0b6a13e2957dd4be33cf8ff 3      1        1        0        0
+#> abstract://65418211f1ac768a522a88f0 4      1        1        0        0
+#> abstract://87caef4d74b6576324fc81fa 5      1        1        0        0
+#> abstract://4b43328bbc02fbc3361667c2 6      1        1        0        0
 ```
 The default `dispatcher = "process"` creates a `dispatcher()` background process that connects to individual daemon processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to daemons for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.
 
@@ -237,7 +237,7 @@ status()
 #> [1] 6
 #> 
 #> $daemons
-#> [1] "abstract://0b0d527c1b332ee5cd5323cb"
+#> [1] "abstract://017c264e3944e490150387b1"
 ```
 This implementation sends tasks immediately, and ensures that tasks are evenly-distributed amongst daemons. This means that optimal scheduling is not guaranteed as the duration of tasks cannot be known *a priori*. As an example, tasks could be queued at a daemon behind a long-running task, whilst other daemons are idle having already completed their tasks.
 
@@ -263,14 +263,14 @@ By super-assignment, the conenction 'con' will be available in the global enviro
 ``` r
 m <- mirai(capture.output(str(con)))
 m[]
-#> [1] "Formal class 'SQLiteConnection' [package \"RSQLite\"] with 8 slots"  
-#> [2] "  ..@ ptr                :<externalptr> "                            
-#> [3] "  ..@ dbname             : chr \"/tmp/Rtmp0hOwqa/file27f094b82067b\""
-#> [4] "  ..@ loadable.extensions: logi TRUE"                                
-#> [5] "  ..@ flags              : int 70"                                   
-#> [6] "  ..@ vfs                : chr \"\""                                 
-#> [7] "  ..@ ref                :<environment: 0x59840fa8ebb0> "            
-#> [8] "  ..@ bigint             : chr \"integer64\""                        
+#> [1] "Formal class 'SQLiteConnection' [package \"RSQLite\"] with 8 slots" 
+#> [2] "  ..@ ptr                :<externalptr> "                           
+#> [3] "  ..@ dbname             : chr \"/tmp/RtmpCHFvph/filec690506dccad\""
+#> [4] "  ..@ loadable.extensions: logi TRUE"                               
+#> [5] "  ..@ flags              : int 70"                                  
+#> [6] "  ..@ vfs                : chr \"\""                                
+#> [7] "  ..@ ref                :<environment: 0x60ce539ebbb0> "           
+#> [8] "  ..@ bigint             : chr \"integer64\""                       
 #> [9] "  ..@ extended_types     : logi FALSE"
 ```
 Disconnect from the database everywhere, and set the number of daemons to zero to reset.
@@ -370,7 +370,7 @@ status()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://hostname:33749"
+#> [1] "tcp://hostname:39779"
 ```
 The number of daemons connecting to the host URL is not limited and network resources may be added or removed at any time, with tasks automatically distributed to all connected daemons.
 
@@ -461,10 +461,10 @@ daemons(n = 2, url = host_url())
 #> [1] 2
 launch_remote(1:2)
 #> [1]
-#> Rscript -e 'mirai::daemon("tcp://hostname:34489",rs=c(10407,1310063767,-1576669204,-69460995,-122994022,371205971,-2129546120))'
+#> Rscript -e 'mirai::daemon("tcp://hostname:43311",rs=c(10407,1287807452,-1199797971,-1747049974,111526915,-2118836888,770626633))'
 #> 
 #> [2]
-#> Rscript -e 'mirai::daemon("tcp://hostname:40709",rs=c(10407,-1580297822,-989256394,-525146036,-226183254,-55335039,1511625224))'
+#> Rscript -e 'mirai::daemon("tcp://hostname:44849",rs=c(10407,-723258281,-1653517715,-1542453900,22075007,1744505489,-1487879931))'
 daemons(0)
 #> [1] 0
 ```
@@ -491,37 +491,37 @@ The generated self-signed certificate is available via `launch_remote()`. This f
 ``` r
 launch_remote(1)
 #> [1]
-#> Rscript -e 'mirai::daemon("wss://hostname:37173/1",tls=c("-----BEGIN CERTIFICATE-----
+#> Rscript -e 'mirai::daemon("wss://hostname:45873/1",tls=c("-----BEGIN CERTIFICATE-----
 #> MIIFNzCCAx+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAzMREwDwYDVQQDDAhrdW1h
 #> bW90bzERMA8GA1UECgwITmFub25leHQxCzAJBgNVBAYTAkpQMB4XDTAxMDEwMTAw
 #> MDAwMFoXDTMwMTIzMTIzNTk1OVowMzERMA8GA1UEAwwIa3VtYW1vdG8xETAPBgNV
 #> BAoMCE5hbm9uZXh0MQswCQYDVQQGEwJKUDCCAiIwDQYJKoZIhvcNAQEBBQADggIP
-#> ADCCAgoCggIBAJcVcvBoOihlKMFRKBfSTwUETv+/w3Ebdz2sVOsy0MEYeNiWGHQ3
-#> mgW67FMYQ/yNmEYWSLwuXYRVB+xBgJBR0+mANIlsswYjAZXfcI0mCRhI5rWrZ5gX
-#> D+UDCHJrBB2ZDnYphgm/gDbCBQEVmhD2lwmdBx1tstgY2bm7U89Np5cgDAFyL/zt
-#> 9Suo7bYyl8qnuWqI6YV4+FAoPOmoeasDknv5S9D4pgurEiLY6K4QNlUFn9Nr8KbK
-#> k85c/wVoTgLxq3yiR2GaC+PezVT1IeSjnUMkORdJcEr7DCwP0LpJ5JPg2RFf1ZFa
-#> Y+UG1JNEPXLbxJiHTYQKesvtgmFyN/g5grgAPNn4JYyRGzcwS41WJiAl2oolFPLC
-#> nA+4TrVFKGXvlJwa/8GWqnIhT+bdnxYLcAELtnW9k3G72eRHkLT1rd09SMu5+TOn
-#> UyH0woN1zC208/AWRPhBS8stZyPlqXb0Nuq/qVaHXyJKUQh179UXG5b88ruaLl28
-#> wLuCTbW6xFikTf/VNwJpQbxzjDuz3ED/+aQR28KGfrbN0AdoGH7a5dX6s44mAs1e
-#> ru+UPi6yhisHJ7tQ+cfCqB4y5r69lYXs3/H3805mGrD5RZQi+dVHU8nfQWhWRWFN
-#> jYsJaSNSf9N50aD50kLfkM9dBndVZPOcypD2mLYmle4wDnMZBx2Fh6+NAgMBAAGj
-#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFFmOAdOaKBZiBWlXeuZy
-#> 9w4woAnwMB8GA1UdIwQYMBaAFFmOAdOaKBZiBWlXeuZy9w4woAnwMA0GCSqGSIb3
-#> DQEBCwUAA4ICAQCFRiK1WdGYTdh56Us7l2VYNhE8qs/IBKrQGCgJW4RYbsCNjt2/
-#> oV6CYlWXIrP23IuK3ZckuYaB14T5/bSqXHxhvAM2LQF48VImvFJEtl1ZdQde64fi
-#> ekFvgx7Ucfm/SjHahNqil9L7rNRDm0i0ZqlZp2fuZGdbQGPMaoKua1lvlyb1vcJ9
-#> SrTntkVMKTIVEYldMBhinwfsvwGDTiWdfH4Sa8V4MHzcsjMx0810XClp002Z7hCP
-#> i/s1Mg7YlJQ7vxMey9qk9osXd0L/gRQBTmYKw8t67olPuaQdHNnH376hnC22PRsg
-#> DcgoP1rb82q6ZKrRxIL3dcVI2mTdQ6gDDD9q/BXfERolrLcpR4/DxGPAGkzghIDi
-#> RgWnBg/RnwDj0oe/5f7zocGbie7SyDKg5DWpSGpFVgtP+aRlKarHxVNbO/pQZ9JW
-#> Xq6aPx6FlrA7MHrPxW8kgd/PqfAEBdsEvu9Iam2P1l5XuEQsoGQgxiO2vehx9vLx
-#> mUzH7Nz68r0FCd+Yq2mrAsRQ70+6dNsthPrtF+Jzh55h24ahIMyYSDdhUSBqQEIw
-#> nmp3aw4131OBHc3EDwpk1D0LRxPyXQZIwamJ0AG2wIjn85Hy3PpBDF24y4rf50nS
-#> aVlyVuJK5E/BZgqTa+a1slT9Fl3S6wf3dnxg5SttSb2z3N2rqbFn5iyXrw==
+#> ADCCAgoCggIBAMf22bSiYzZBhwrZDOD2RlMa02st6ydfUNdjIPUUhK4JCCm8wr+V
+#> T/fVPUQ5fvK0T1gaD5ujOFlGtlho6Stt8wxbaOdMsW4G6WSZuXLER9Y4xjiI9V9q
+#> HJZBNWYkF5VtxP6kZoFKkFY9pbINOAxBNbFs4QWlmsBKboD/eR5YsMvZXPQXdYUr
+#> Q8XAYCLD1XQCcdaEwGT4yaGmRwM83We5ORpjRLlwOnq3S39V+iapU9Ib76hOACKV
+#> UzxnMmtvzvU48hfQCxzb5gIX7O/Rc0cx0Ve0zCD3oQw6uCqeX5wsQnoWh8/SG8S4
+#> HTQRFpUxfhzE1M/vjZ1rrUQueYKibg1rNvfd6acvumEOvgzolEwF4CUxBEuLNDLb
+#> iMvT/eldvkiC3r9d8vL5TvG+csrhMyZAkm7oOil9ta+bzY7/Hz7ddQlnsiK5LjuZ
+#> cz7OlwDsUO2So9xvKiMwKTglm1hQ9OQyZElap/EjetsnwXIWc55f6kXfBgU8FrP5
+#> iXu7PbLNNxrAJ3ccuFIppYkHur0shNbsy9YCHprije2UDSR+kM9/vq0pfYp8flqM
+#> dtfSUsdci9DW/cnlCeByRvDsgpC92vziGWrcf6VexNbr9IDi2bI9C8uqDh/R03aR
+#> AlcJJzTZFhuElDkLApiVqD9vRP7i2xzlWYkmoLY5mjmyPGdawEVfsRe7AgMBAAGj
+#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFNLUcxuK3wZLx9IjHBTZ
+#> wBXR0HqaMB8GA1UdIwQYMBaAFNLUcxuK3wZLx9IjHBTZwBXR0HqaMA0GCSqGSIb3
+#> DQEBCwUAA4ICAQDCaZshHibMxK1grkR45PdlhLHvddI3Tmml9kEz0gXSmLwcHNdB
+#> WmPq532CBZ5TZcV5rfNogx5avm8uIZom7y9X3zeyKdyGaV/8vGQOq+mPHrwj3tST
+#> rDI38ao6R6D7hi3OabWCCJoQ4niPyGRXUCAOvqbMvAcy0rRWBpVMQa22KXjwAMsr
+#> GFWmu/r2qeFjxsXdoZMQZyUU9JvUyyrHlY9s/gq7oH1yzBo6km1tTHeKM9CyIYzD
+#> v96Z0NOBV/UvQU5OO74BSY16XsDJpL4NwqArX71HnTI4awKjR6T6Pt8DKmuUTwGg
+#> eGpWo6Ewvtj/Pw8WZgDk2Abg2wwYGJfRl0nPl/7JX6ldbDsYvtzpM+WZTH2e7X+S
+#> JwJME2CM+4rfY5iXGyzmFA6CbeLvRDTvYEkde36DhvPUGDp5t0l3vBS1Oj3oRckh
+#> Eqr1A8Cbr18l4IQYXF6Eq8BvrgQYUJVq8fUrsNrIrd1OXbvOZKMLNn7m8mPlYdAY
+#> J3vB9BOgIsqxqbf0kINtGJMFSEFkQJnANZL3MP6cz1N7YniTkAXz2EMNshzJJi1O
+#> r7S6Dcu3OwtMA6SLBJ2siWVG5ONPTFV+CDA8YwmrKqz1ZDjRUinGlqJqQcC+0/4+
+#> sZnAnDaPkUb5uAZ5q540LDEKGN2RR3DFAdYJRyWGlvHtWXHgXA+3q5OtEw==
 #> -----END CERTIFICATE-----
-#> ",""),rs=c(10407,-569260196,-2101849939,1516135306,-1943160957,1248893672,-286141495))'
+#> ",""),rs=c(10407,-816907792,-18918095,-983845570,1742882983,-158619460,774089357))'
 ```
 The printed value may be deployed directly on a remote machine.
 
@@ -601,7 +601,7 @@ m3[]
 
 m3$data$stack.trace
 #> [[1]]
-#> [1] "function(x) if (x > 0) stop(\"positive\")"
+#> [1] "stop(\"positive\")"
 #> 
 #> [[2]]
 #> [1] "f(1)"
@@ -753,10 +753,10 @@ daemons(4)
 vec <- c(1, 1, 4, 4, 1, 1, 1, 1)
 system.time(mirai_map(vec, Sys.sleep)[])
 #>    user  system elapsed 
-#>   0.005   0.003   4.007
+#>   0.003   0.001   4.007
 system.time(parLapply(cl, vec, Sys.sleep))
 #>    user  system elapsed 
-#>   0.008   0.003   8.012
+#>   0.006   0.003   8.012
 ```
 `.args` is used to specify further constant arguments to `.f` - the 'mean' and 'sd' in the example below:
 
@@ -766,13 +766,13 @@ with(
   mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
 )
 #> [[1]]
-#> [1] 21.45034
+#> [1] 22.49109
 #> 
 #> [[2]]
-#> [1] 17.47028 20.26902
+#> [1] 23.13812 18.51654
 #> 
 #> [[3]]
-#> [1] 21.21790 23.24985 20.05553
+#> [1] 20.03507 17.26104 21.48317
 ```
 Use `...` to further specify objects referenced but not defined in `.f` - the 'do' in the anonymous function below:
 
@@ -784,16 +784,16 @@ ml <- mirai_map(
 )
 #> Warning: mirai_map(): launching one local daemon as none previously set
 ml
-#> < mirai map [3/3] >
+#> < mirai map [2/3] >
 ml[]
 #> $a
-#> [1] "d0"
+#> [1] "8e"
 #> 
 #> $b
-#> [1] 05 fd
+#> [1] 88 f9
 #> 
 #> $c
-#> [1] "2b17dc"
+#> [1] "48f6a4"
 ```
 Use of `mirai_map()` assumes that `daemons()` have previously been set. If not then one (non-dispatcher) daemon is set to allow the function to proceed. This ensures safe behaviour, but is unlikely to be optimal, so please ensure daemons are set beforehand.
 
@@ -829,21 +829,23 @@ daemons(0)
 
 mirai as a framework is designed to support completely transparent and inter-operable use within packages. A core design precept of not relying on global options or environment variables minimises the likelihood of conflict between use by different packages.
 
-There are hence not many requirements of package authors.
+There are hence few requirements of package authors.
 
-The following notes may be helpful nevertheless:
+The following may nonetheless be helpful:
 
-- `daemons()` settings should usually be left to end-users. Users may be pointed to mirai documentation if desired. If however, your package wishes to set default settings for instance, `daemons()` should always be called specifying `force = FALSE`. This ensures that any prior user settings are respected, and that daemons set elsewhere are not prematurely terminated.
+- `daemons()` settings should usually be left to end-users. Users may be guided to mirai documentation if desired. If however, a package wishes to set default settings, for example, `daemons()` should always be called specifying `force = FALSE`. This ensures that any prior user settings are respected, and that daemons set elsewhere are not prematurely terminated.
 
-- Consider exposing a `.compute = "default"` argument in package functions, mapping to the '.compute' argument of `mirai()`, so that the end-user may choose where to run your functions if they have multiple compute profiles set up.
-
-- Calling package functions in a mirai requires namespacing the call, or an equivalent way to access the functions, i.e.
+- Calling package functions in a mirai requires namespacing the call, or alternatively exporting the function, i.e.
 ```r
  mirai(mypkg::my_func())
 ```
+or
+```r
+ mirai(my_func(), .args = list(myfunc = myfunc))
+```
 
-- Do not rely on the shape or contents of the `status()` daemons matrix, as this user interface is subject to change at any time. There is a developer interface `nextget()`, for querying values such as 'urls' described in the function documentation. Note: only these specifically-documented values are supported interfaces.
+- The shape and contents of the `status()` daemons matrix must not be relied upon, as this user interface is subject to change at any time. There is a developer interface `nextget()`, for querying values such as 'urls' described in the function documentation. Note: only the specifically-documented values are supported interfaces.
 
-- Testing on CRAN should respect it's 2-core usage limit. This practically means limiting tests to using one daemon (with `dispatcher = "none"`) to ensure that only one additional process is used. Always reset daemons when done and then allow at least a one-second sleep to ensure all background processes have properly exited. These limits only apply to CRAN of course, and a full suite of tests involving further daemons options may be run in other contexts.
+- Testing on CRAN should respect it's 2-core usage limit. This practically means limiting tests to using one daemon (with `dispatcher = "none"`) to ensure that only one additional process is used. Always reset daemons when done and then allow at least a one-second sleep to ensure all background processes have properly exited. These limits only apply to CRAN of course, and it is always possible to run a full suite of tests involving further daemons options in other contexts.
 
 [&laquo; Back to ToC](#table-of-contents)
