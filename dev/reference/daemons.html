@@ -17,7 +17,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9019</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9020</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -209,13 +209,13 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 
 
 
-<p>By default <code>dispatcher = 'process'</code> launches a background process
+<p>By default <code>dispatcher = "process"</code> launches a background process
     running <code><a href="dispatcher.html">dispatcher</a></code>. Dispatcher connects to daemons on
     behalf of the host and ensures optimal FIFO scheduling of tasks.</p>
-<p>Specifying <code>dispatcher = 'thread'</code> runs dispatcher logic on a new
+<p>Specifying <code>dispatcher = "thread"</code> runs dispatcher logic on a new
     thread, a faster and more efficient alternative to using a separate
     process. This is a new feature and should be considered experimental.</p>
-<p>Specifying <code>dispatcher = 'none'</code>, uses the default behaviour without
+<p>Specifying <code>dispatcher = "none"</code>, uses the default behaviour without
     additional dispatcher logic. In this case daemons connect directly to the
     host and tasks are distributed in a round-robin fashion. Optimal
     scheduling is not guaranteed as the duration of tasks cannot be known
@@ -334,7 +334,7 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Set host URL for remote daemons to dial into</span></span></span>
-<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span>url <span class="op">=</span> <span class="fu"><a href="host_url.html">host_url</a></span><span class="op">(</span><span class="op">)</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span>url <span class="op">=</span> <span class="fu"><a href="host_url.html">host_url</a></span><span class="op">(</span><span class="op">)</span>, dispatcher <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="status.html">status</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Reset to zero</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
@@ -357,7 +357,7 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span>url <span class="op">=</span> <span class="fu"><a href="host_url.html">host_url</a></span><span class="op">(</span>tls <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>        remote <span class="op">=</span> <span class="fu"><a href="remote_config.html">ssh_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ssh://nodeone'</span>, <span class="st">'ssh://nodetwo'</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>        dispatcher <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Launch 4 daemons on the remote machine 10.75.32.90 using SSH tunnelling</span></span></span>
 <span class="r-in"><span><span class="co"># over port 5555 ('url' hostname must be 'localhost' or '127.0.0.1'):</span></span></span>
@@ -379,7 +379,7 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

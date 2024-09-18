@@ -1,5 +1,5 @@
 pandoc: 3.1.11
-pkgdown: 2.1.0
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   databases: databases.html
@@ -9,7 +9,7 @@ articles:
   promises: promises.html
   shiny: shiny.html
   torch: torch.html
-last_built: 2024-09-17T14:05Z
+last_built: 2024-09-18T18:40Z
 urls:
   reference: https://shikokuchuo.net/mirai/reference
   article: https://shikokuchuo.net/mirai/articles
