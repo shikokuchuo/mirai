@@ -283,8 +283,8 @@
 #'
 #' @export
 #'
-daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thread", "none"), ..., force = TRUE,
-                    seed = NULL, tls = NULL, pass = NULL, .compute = "default") {
+daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thread", "none"),
+                    ..., force = TRUE, seed = NULL, tls = NULL, pass = NULL, .compute = "default") {
 
   missing(n) && missing(url) && return(status(.compute))
 
@@ -297,7 +297,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thr
       tls <- check_create_tls(url = url, tls = tls, envir = envir)
       create_stream(n = n, seed = seed, envir = envir)
       switch(
-        parse_dispatcher(dispatcher),
+        parse_dispatcher(dispatcher[1L]),
         {
           n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
           if (length(tls)) tls_config(server = tls, pass = pass)
@@ -358,7 +358,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thr
       dots <- parse_dots(...)
       output <- attr(dots, "output")
       switch(
-        parse_dispatcher(dispatcher),
+        parse_dispatcher(dispatcher[1L]),
         {
           cv <- cv()
           sock <- req_socket(urld)
@@ -637,9 +637,9 @@ tokenized_url <- function(url) sprintf("%s/%s", url, random(12L))
 req_socket <- function(url, tls = NULL, resend = 0L)
   `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", resend)
 
-parse_dispatcher <- function(dispatcher)
-  if (is.logical(dispatcher)) 1L + (!dispatcher) * 2L else
-    pmatch(dispatcher, c("process", "thread", "none"), nomatch = 4L)[1L]
+parse_dispatcher <- function(x)
+  if (x == "process") 1L else if (x == "thread") 2L else if (x == "none") 3L else
+    if (is.logical(x)) 1L + (!x) * 2L else 4L
 
 parse_dots <- function(...) {
   ...length() || return("")

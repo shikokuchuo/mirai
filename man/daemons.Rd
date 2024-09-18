@@ -270,7 +270,7 @@ status()
 daemons(0)
 
 # Set host URL for remote daemons to dial into
-daemons(url = host_url(), dispatcher = FALSE)
+daemons(url = host_url(), dispatcher = "none")
 status()
 # Reset to zero
 daemons(0)
@@ -293,7 +293,7 @@ with(
 
 daemons(url = host_url(tls = TRUE),
         remote = ssh_config(c('ssh://nodeone', 'ssh://nodetwo')),
-        dispatcher = FALSE)
+        dispatcher = "none")
 
 # Launch 4 daemons on the remote machine 10.75.32.90 using SSH tunnelling
 # over port 5555 ('url' hostname must be 'localhost' or '127.0.0.1'):
