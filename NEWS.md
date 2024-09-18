@@ -1,4 +1,4 @@
-# mirai 1.2.0.9019 (development)
+# mirai 1.2.0.9020 (development)
 
 * `daemons(dispatcher = "thread")` implements threaded dispatcher (experimental), a faster and more efficient way of running dispatcher logic than in a background process.
 * `daemons()` behavioural changes:

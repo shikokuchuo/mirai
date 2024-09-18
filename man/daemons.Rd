@@ -129,15 +129,15 @@ Use \code{daemons(0)} to reset daemon connections:
 \section{Dispatcher}{
 
 
-    By default \code{dispatcher = 'process'} launches a background process
+    By default \code{dispatcher = "process"} launches a background process
     running \code{\link{dispatcher}}. Dispatcher connects to daemons on
     behalf of the host and ensures optimal FIFO scheduling of tasks.
 
-    Specifying \code{dispatcher = 'thread'} runs dispatcher logic on a new
+    Specifying \code{dispatcher = "thread"} runs dispatcher logic on a new
     thread, a faster and more efficient alternative to using a separate
     process. This is a new feature and should be considered experimental.
 
-    Specifying \code{dispatcher = 'none'}, uses the default behaviour without
+    Specifying \code{dispatcher = "none"}, uses the default behaviour without
     additional dispatcher logic. In this case daemons connect directly to the
     host and tasks are distributed in a round-robin fashion. Optimal
     scheduling is not guaranteed as the duration of tasks cannot be known

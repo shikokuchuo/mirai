@@ -111,15 +111,15 @@
 #'
 #' @section Dispatcher:
 #'
-#'     By default \code{dispatcher = 'process'} launches a background process
+#'     By default \code{dispatcher = "process"} launches a background process
 #'     running \code{\link{dispatcher}}. Dispatcher connects to daemons on
 #'     behalf of the host and ensures optimal FIFO scheduling of tasks.
 #'
-#'     Specifying \code{dispatcher = 'thread'} runs dispatcher logic on a new
+#'     Specifying \code{dispatcher = "thread"} runs dispatcher logic on a new
 #'     thread, a faster and more efficient alternative to using a separate
 #'     process. This is a new feature and should be considered experimental.
 #'
-#'     Specifying \code{dispatcher = 'none'}, uses the default behaviour without
+#'     Specifying \code{dispatcher = "none"}, uses the default behaviour without
 #'     additional dispatcher logic. In this case daemons connect directly to the
 #'     host and tasks are distributed in a round-robin fashion. Optimal
 #'     scheduling is not guaranteed as the duration of tasks cannot be known
@@ -293,9 +293,8 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thr
   if (is.character(url)) {
 
     if (is.null(envir)) {
-      envir <- new.env(hash = FALSE, parent = ..)
+      envir <- init_envir_stream(seed = seed)
       tls <- check_create_tls(url = url, tls = tls, envir = envir)
-      create_stream(n = n, seed = seed, envir = envir)
       switch(
         parse_dispatcher(dispatcher[1L]),
         {
@@ -320,7 +319,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thr
         },
         {
           sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass))
-          store_urls(sock = sock, envir = envir)
+          check_store_url(sock = sock, envir = envir)
           n <- 0L
         },
         stop(._[["dispatcher_args"]])
@@ -352,9 +351,8 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thr
     } else if (is.null(envir)) {
 
       n > 0L || stop(._[["n_zero"]])
-      envir <- new.env(hash = FALSE, parent = ..)
+      envir <- init_envir_stream(seed = seed)
       urld <- local_url()
-      create_stream(n = n, seed = seed, envir = envir)
       dots <- parse_dots(...)
       output <- attr(dots, "output")
       switch(
@@ -593,13 +591,14 @@ check_create_tls <- function(url, tls, envir) {
   tls
 }
 
-create_stream <- function(n, seed, envir) {
+init_envir_stream <- function(seed) {
   .advance()
   oseed <- .GlobalEnv[[".Random.seed"]]
   RNGkind("L'Ecuyer-CMRG")
   if (length(seed)) set.seed(seed)
-  `[[<-`(envir, "stream", .GlobalEnv[[".Random.seed"]])
+  envir <- `[[<-`(new.env(hash = FALSE, parent = ..), "stream", .GlobalEnv[[".Random.seed"]])
   `[[<-`(.GlobalEnv, ".Random.seed", oseed)
+  envir
 }
 
 # "%s-%d" format required by IPC under MacOS
@@ -695,12 +694,12 @@ launch_sync_daemons <- function(seq, sock, urld, dots, envir, output) {
 store_dispatcher <- function(sockc, res, cv, envir)
   `[[<-`(`[[<-`(`[[<-`(`[[<-`(envir, "sockc", sockc), "urls", res[-1L]), "pid", as.integer(res[1L])), "cv", cv)
 
-store_urls <- function(sock, envir) {
+check_store_url <- function(sock, envir) {
   listener <- attr(sock, "listener")[[1L]]
-  urls <- opt(listener, "url")
-  if (parse_url(urls)[["port"]] == "0")
-    urls <- sub_real_port(port = opt(listener, "tcp-bound-port"), url = urls)
-  `[[<-`(envir, "urls", urls)
+  url <- opt(listener, "url")
+  if (parse_url(url)[["port"]] == "0")
+    url <- sub_real_port(port = opt(listener, "tcp-bound-port"), url = url)
+  `[[<-`(envir, "urls", url)
 }
 
 send_signal <- function(envir) {
