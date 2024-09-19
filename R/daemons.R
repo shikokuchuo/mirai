@@ -675,9 +675,10 @@ launch_sync_dispatcher <- function(sock, sockc, args, output, tls = NULL, pass =
   pkgs <- Sys.getenv("R_DEFAULT_PACKAGES")
   system2(command = .command, args = c("--default-packages=NULL", "--vanilla", "-e", args), stdout = output, stderr = output, wait = FALSE)
   vec <- c("p", pkgs,
-           "t", if (is.character(tls)) tls[1L] else "",
-           "c", if (is.character(tls) && length(tls) > 1L) tls[2L] else "",
-           "s", if (is.character(pass)) pass[1L] else "", "x")
+           "o", if (is.character(tls)) tls[1L] else "",
+           "s", if (is.character(tls) && length(tls) > 1L) tls[2L] else "",
+           "i", if (is.character(pass)) pass[1L] else "",
+           "t")
   query_dispatcher(sockc, command = vec, mode = 2L, block = .limit_long)
 }
 
