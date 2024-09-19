@@ -15,7 +15,7 @@
 * `dispatcher()` drops argument 'asyncdial' as it is not practically very useful to set this here.
 * `everywhere()` now errors if the specified compute profile is not yet set up, rather than fail silently.
 * Internal performance enhancements.
-* Requires `nanonext` >= [1.2.1.9018].
+* Requires `nanonext` >= [1.2.1.9020].
 
 # mirai 1.2.0
 

@@ -88,7 +88,7 @@
     arglen = "'args' and/or 'url' must be of length 1 or the same length",
     cluster_inactive = "cluster is no longer active",
     correct_context = "'host' must be specified if not using directly in a function argument",
-    daemons_unset = "launch_%s(): a numeric value for 'url' requires daemons to be set",
+    daemons_unset = "a numeric value for 'url' requires daemons to be set",
     dispatcher_args = "'dispatcher' must be one of 'process', 'thread' or 'none'",
     dot_required = "remote_config(): '.' must be an element of the character vector(s) supplied to 'args'",
     missing_expression = "missing expression, perhaps wrap in {}?",
@@ -105,7 +105,7 @@
     single_url = "only one 'url' should be specified",
     sync_daemons = "initial sync with daemon(s) timed out after 10s",
     sync_dispatcher = "initial sync with dispatcher timed out after 10s",
-    url_spec = "launch_%s(): numeric value for 'url' is out of bounds"
+    url_spec = "numeric value for 'url' is out of bounds"
   ),
   hash = TRUE
 )

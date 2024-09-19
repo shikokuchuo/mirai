@@ -85,6 +85,7 @@ launch_local <- function(url, ..., tls = NULL, .compute = "default") {
   output <- attr(dots, "output")
   if (is.null(tls)) tls <- envir[["tls"]]
   url <- process_url(url, .compute = .compute)
+  is.character(url) || stop(._[[if (url) "daemons_unset" else "url_spec"]])
   if (is.null(envir[["stream"]])) {
     for (u in url)
       launch_daemon(wa2(u, dots, tls), output)
@@ -123,7 +124,8 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
   envir <- ..[[.compute]]
   dots <- parse_dots(...)
   if (is.null(tls)) tls <- envir[["tls"]]
-  url <- process_url(url, .compute = .compute, local = FALSE)
+  url <- process_url(url, .compute = .compute)
+  is.character(url) || stop(._[[if (url) "daemons_unset" else "url_spec"]])
 
   ulen <- length(url)
   command <- remote[["command"]]
@@ -433,13 +435,11 @@ find_dot <- function(args) {
   sel
 }
 
-process_url <- function(url, .compute, local = TRUE) {
+process_url <- function(url, .compute) {
   if (is.numeric(url)) {
     vec <- ..[[.compute]][["urls"]]
-    is.null(vec) &&
-      stop(sprintf(._[["daemons_unset"]], if (local) "local" else "remote"), call. = FALSE)
-    all(url >= 1L, url <= length(vec)) ||
-      stop(sprintf(._[["url_spec"]], if (local) "local" else "remote"), call. = FALSE)
+    is.null(vec) && return(TRUE)
+    all(url >= 1L, url <= length(vec)) || return(FALSE)
     url <- vec[url]
   } else {
     lapply(url, parse_url)
