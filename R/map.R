@@ -66,6 +66,15 @@
 #'     \code{x[.stop, .progress]} which applies early stopping together with a
 #'     progress indicator.
 #'
+#' @section Multiple Map:
+#'
+#'    Multiple map is performed automatically over the \strong{rows} of an
+#'    object with \sQuote{dim} attributes such as a matrix or dataframe. This is
+#'    most often the desired behaviour.
+#'
+#'    To map over \strong{columns} instead, first wrap a dataframe in
+#'    \code{\link{as.list}}, or transpose a matrix using \code{\link{t}}.
+#'
 #' @details Sends each application of function \code{.f} on an element of
 #'     \code{.x} (or row of \code{.x}) for computation in a separate
 #'     \code{\link{mirai}} call.

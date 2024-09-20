@@ -80,6 +80,17 @@ Sends each application of function \code{.f} on an element of
     progress indicator.
 }
 
+\section{Multiple Map}{
+
+
+   Multiple map is performed automatically over the \strong{rows} of an
+   object with \sQuote{dim} attributes such as a matrix or dataframe. This is
+   most often the desired behaviour.
+
+   To map over \strong{columns} instead, first wrap a dataframe in
+   \code{\link{as.list}}, or transpose a matrix using \code{\link{t}}.
+}
+
 \examples{
 if (interactive()) {
 # Only run examples in interactive R sessions
