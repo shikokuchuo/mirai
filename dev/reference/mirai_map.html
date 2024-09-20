@@ -142,6 +142,17 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 <p>The options above may be combined in the manner of: <br><code>x[.stop, .progress]</code> which applies early stopping together with a
     progress indicator.</p>
     </div>
+    <div class="section level2">
+    <h2 id="multiple-map">Multiple Map<a class="anchor" aria-label="anchor" href="#multiple-map"></a></h2>
+
+
+
+<p>Multiple map is performed automatically over the <strong>rows</strong> of an
+   object with ‘dim’ attributes such as a matrix or dataframe. This is
+   most often the desired behaviour.</p>
+<p>To map over <strong>columns</strong> instead, first wrap a dataframe in
+   <code><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></code>, or transpose a matrix using <code><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></code>.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
