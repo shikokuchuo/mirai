@@ -238,7 +238,7 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
   nanotest(is.character(saisei(i = 1L, force = TRUE)))
   nanotestn(saisei(i = 10L))
   nanotestz(daemons(0))
-  nanotest(daemons(url = c(host_url(), host_url()), correcttype = NA) == 2L)
+  nanotest(daemons(url = c("tcp://127.0.0.1:0", "tcp://127.0.0.1:0"), correcttype = NA) == 2L)
   Sys.sleep(1L)
   nanotestn(launch_local(nextget("urls", .compute = "default")[1L], maxtasks = 1L))
   nanotestn(launch_local(2, maxtasks = 1L))
