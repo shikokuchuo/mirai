@@ -1,13 +1,14 @@
-# mirai 1.2.0.9020 (development)
+# mirai 1.2.0.9021 (development)
 
-* `daemons(dispatcher = "thread")` implements threaded dispatcher (experimental), a faster and more efficient way of running dispatcher logic than in a background process.
+* `daemons(dispatcher = "thread")` implements threaded dispatcher (experimental), a faster and more efficient option to running dispatcher in a separate process.
 * `daemons()` behavioural changes:
   - Argument 'dispatcher' now takes the character options 'process', 'thread' and 'none'. Previous values of TRUE/FALSE continue to be accepted (thanks @hadley #157).
   - Return value is now always an integer value - either the number of daemons set if using dispatcher, or the number of daemons launched locally (zero if using a remote launcher).
   - Gains argument 'force' to control whether calls to `daemons()` resets previous settings for the same compute profile.
-  - Invalid type of '...' arguments are now dropped instead of throwing an error. This allows '...' containing unused arguments to be more easily passed from other functions. 
+  - Invalid type of '...' arguments are now dropped instead of throwing an error. This allows '...' containing unused arguments to be more easily passed from other functions.
+* Fixes `daemons()` to correctly handle a vector of URLs passed to 'url' again.
 * `mirai_map()` behavioural changes:
-  - Combining multiple collection options becomes easier, allowing for instance `x[.stop, .progress]`.
+  - Combining collection options is now easier, in the fashion of: `x[.stop, .progress]`.
   - Adds `mirai_map()[.progress_cli]` as an alternative progress indicator, using the 'cli' package to show % complete and ETA.
   - Now only performs multiple map over the rows of matrices and dataframes (thanks @andrewGhazi, #147).
 * Fixes flatmap with `mirai_map()[.flat]` assigning a variable 'typ' to the calling environment.
