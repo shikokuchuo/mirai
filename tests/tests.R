@@ -1,4 +1,4 @@
-# minitest - a minimal testing framework ---------------------------------------
+# minitest - a minimal testing framework v0.0.1 --------------------------------
 test_library <- function(package) library(package = package, character.only = TRUE)
 test_true <- function(x) invisible(isTRUE(x) || {print(x); stop("the above was returned instead of TRUE")})
 test_null <- function(x) invisible(is.null(x) || {print(x); stop("the above was returned instead of NULL")})
@@ -8,7 +8,7 @@ test_class <- function(class, x) invisible(inherits(x, class) || {stop("object o
 test_equal <- function(a, b) invisible(a == b || {print(a); print(b); stop("the above expressions were not equal")})
 test_identical <- function(a, b) invisible(identical(a, b) || {print(a); print(b); stop("the above expressions were not identical")})
 test_print <- function(x) invisible(is.character(capture.output(print(x))) || stop("print output of expression cannot be captured as a character value"))
-test_error <- function(x, containing = "") inherits(x <- tryCatch(x, error = identity), "error") && grepl(containing, x[["message"]], fixed = TRUE) || stop("expected error message containing '", containing, "' was not generated")
+test_error <- function(x, containing = "") invisible(inherits(x <- tryCatch(x, error = identity), "error") && grepl(containing, x[["message"]], fixed = TRUE) || stop("expected error message containing '", containing, "' was not generated"))
 # ------------------------------------------------------------------------------
 
 test_library("mirai")
