@@ -656,9 +656,6 @@ parse_tls <- function(tls)
 
 libp <- function(lp = .libPaths()) lp[file.exists(file.path(lp, "mirai"))][1L]
 
-wa2 <- function(url, dots, tls = NULL)
-  shQuote(sprintf("mirai::daemon(\"%s\"%s%s)", url, dots, parse_tls(tls)))
-
 wa3 <- function(url, dots, rs, tls = NULL)
   shQuote(sprintf("mirai::daemon(\"%s\"%s%s,rs=c(%s))", url, dots, parse_tls(tls), paste0(rs, collapse = ",")))
 

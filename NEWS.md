@@ -1,4 +1,4 @@
-# mirai 1.2.0.9022 (development)
+# mirai 1.2.0.9023 (development)
 
 * `daemons(dispatcher = "thread")` implements threaded dispatcher (experimental), a faster and more efficient option to running dispatcher in a separate process.
 * `daemons()` behavioural changes:
@@ -15,6 +15,7 @@
 * `daemon()` gains argument 'asyncdial' to allow control of connection behaviour independently of what happens when the daemon exits.
 * `dispatcher()` drops argument 'asyncdial' as it is not practically very useful to set this here.
 * `everywhere()` now errors if the specified compute profile is not yet set up, rather than fail silently.
+* `launch_local()` and `launch_remote()` now strictly require daemons to be set, and will error otherwise.
 * Internal performance enhancements.
 * Requires `nanonext` >= [1.2.1.9022].
 
