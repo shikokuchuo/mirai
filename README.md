@@ -74,7 +74,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 7.524793 7.455351 6.652585 6.462451 7.050566
+#> [1] 5.663356 5.131649 6.319674 5.036944 6.571185
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -88,7 +88,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 7.524793 7.455351 6.652585 6.462451 7.050566
+#> [1] 5.663356 5.131649 6.319674 5.036944 6.571185
 ```
 
 #### Daemons
@@ -251,7 +251,7 @@ efficient solution to serialization and transmission of `torch` tensors.
 [Kirill Müller](https://github.com/krlmlr/) for discussion on using
 ‘daemons’ to host Arrow database connections.
 
-[<img alt="R Consortium" src="https://www.r-consortium.org/wp-content/uploads/sites/13/2016/09/RConsortium_Horizontal_Pantone.png" width="100" height="22" />](https://www.r-consortium.org/) 
+[<img alt="R Consortium" src="https://r-consortium.org/images/RConsortium_Horizontal_Pantone.webp" width="100" height="22" />](https://r-consortium.org/) 
 for funding work on the TLS implementation in `nanonext`, used to
 provide secure connections in `mirai`.
 

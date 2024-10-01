@@ -166,7 +166,7 @@ We would like to thank in particular:
 
 [Kirill Müller](https://github.com/krlmlr/) for discussion on using 'daemons' to host Arrow database connections.
 
-[<img alt="R Consortium" src="https://www.r-consortium.org/wp-content/uploads/sites/13/2016/09/RConsortium_Horizontal_Pantone.png" width="100" height="22" />](https://www.r-consortium.org/)&nbsp; for funding work on the TLS implementation in `nanonext`, used to provide secure connections in `mirai`.
+[<img alt="R Consortium" src="https://r-consortium.org/images/RConsortium_Horizontal_Pantone.webp" width="100" height="22" />](https://r-consortium.org/)&nbsp; for funding work on the TLS implementation in `nanonext`, used to provide secure connections in `mirai`.
 
 ### Installation
 
