@@ -114,7 +114,7 @@
 <p>To wait for and collect the return value, use the mirai’s <code>[]</code> method:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 7.524793 7.455351 6.652585 6.462451 7.050566</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 5.663356 5.131649 6.319674 5.036944 6.571185</span></span></code></pre></div>
 <p>As a mirai represents an async operation, it is never necessary to wait for it. Other code can continue to be run. Once it completes, the return value automatically becomes available at <code>$data</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="reference/unresolved.html">unresolved</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -123,7 +123,7 @@
 <span><span class="va">m</span></span>
 <span><span class="co">#&gt; &lt; mirai [$data] &gt;</span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] 7.524793 7.455351 6.652585 6.462451 7.050566</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 5.663356 5.131649 6.319674 5.036944 6.571185</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
 </h4>
@@ -212,7 +212,7 @@
 <p><a href="https://github.com/HenrikBengtsson/" class="external-link">Henrik Bengtsson</a> for valuable insights leading to the interface accepting broader usage patterns.</p>
 <p><a href="https://github.com/dfalbel/" class="external-link">Daniel Falbel</a> for discussion around an efficient solution to serialization and transmission of <code>torch</code> tensors.</p>
 <p><a href="https://github.com/krlmlr/" class="external-link">Kirill Müller</a> for discussion on using ‘daemons’ to host Arrow database connections.</p>
-<p><a href="https://www.r-consortium.org/" class="external-link"><img alt="R Consortium" src="https://www.r-consortium.org/wp-content/uploads/sites/13/2016/09/RConsortium_Horizontal_Pantone.png" width="100" height="22"></a>  for funding work on the TLS implementation in <code>nanonext</code>, used to provide secure connections in <code>mirai</code>.</p>
+<p><a href="https://r-consortium.org/" class="external-link"><img alt="R Consortium" src="https://r-consortium.org/images/RConsortium_Horizontal_Pantone.webp" width="100" height="22"></a>  for funding work on the TLS implementation in <code>nanonext</code>, used to provide secure connections in <code>mirai</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
