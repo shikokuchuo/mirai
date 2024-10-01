@@ -26,10 +26,11 @@ completion. <br /><br /> Modern networking and concurrency built on
 [nanonext](https://github.com/shikokuchuo/nanonext/) and
 [NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen) ensure reliable and
 efficient scheduling, over fast inter-process communications or TCP/IP
-secured by TLS. <br /><br /> Features built-in queueing to handle many
-more tasks than available processes, no storage on the file system,
-support for otherwise non-exportable reference objects, an event-driven
-promises implementation, and asynchronous parallel map. <br /><br />
+secured by TLS. <br /><br /> Advantages include being inherently queued
+thus handling many more tasks than available processes, no storage on
+the file system, support for otherwise non-exportable reference objects,
+an event-driven promises implementation, and built-in asynchronous
+parallel map. <br /><br />
 
 ### Quick Start
 
@@ -74,7 +75,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 5.663356 5.131649 6.319674 5.036944 6.571185
+#> [1] 6.851895 6.525120 8.516672 6.846605 8.751862
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -88,7 +89,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 5.663356 5.131649 6.319674 5.036944 6.571185
+#> [1] 6.851895 6.525120 8.516672 6.846605 8.751862
 ```
 
 #### Daemons
