@@ -49,10 +49,11 @@
 #' @details These functions may be used to re-launch daemons that have exited
 #'     after reaching time or task limits.
 #'
-#'     If daemons have been set, the generated command will automatically
-#'     contain the argument \sQuote{rs} specifying the length 7 L'Ecuyer-CMRG
-#'     random seed supplied to the daemon. The values will be different each
-#'     time the function is called.
+#'     Daemons must already be set for launchers to work.
+#'
+#'     The generated command contains the argument \sQuote{rs} specifying the
+#'     length 7 L'Ecuyer-CMRG random seed supplied to the daemon. The values
+#'     will be different each time the function is called.
 #'
 #' @examples
 #' if (interactive()) {
@@ -106,7 +107,7 @@ launch_local <- function(url, ..., tls = NULL, .compute = "default") {
 #'
 #' @return For \strong{launch_remote}: A character vector of daemon launch
 #'     commands, classed as \sQuote{miraiLaunchCmd}. The printed output may be
-#'     directly copy / pasted to the remote machine.
+#'     copy / pasted directly to the remote machine.
 #'
 #' @rdname launch_local
 #' @export
