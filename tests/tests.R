@@ -120,7 +120,7 @@ connection && .Platform[["OS.type"]] != "windows" && {
   Sys.sleep(1L)
   m <- with(daemons(1, dispatcher = "none", .compute = "ml"), {
     if (is.null(tryCatch(mirai_map(list(1, "a", 2), sum, .compute = "ml")[.stop], error = function(e) NULL)))
-      mirai_map(1:3, rnorm, .args = list(mean = 20, 2), .compute = "ml")[.progress]
+      mirai_map(1:3, rnorm, .args = list(mean = 20, 2), .compute = "ml")[]
   })
   test_true(!is_mirai_map(m))
   test_type("list", m)
@@ -259,7 +259,7 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
   test_equal(sum(tstatus[, "instance"]), 2L)
   test_zero(sum(tstatus[, "assigned"]))
   test_zero(sum(tstatus[, "complete"]))
-  test_type("double", res <- mirai_map(c(1,1), rnorm)[.flat])
+  test_type("double", res <- mirai_map(c(1,1), rnorm)[.flat, .progress])
   test_true(res[1L] != res[2L])
   test_zero(daemons(0))
   test_equal(1L, daemons(url = "wss://127.0.0.1:0", token = TRUE, pass = "test"))
