@@ -114,8 +114,8 @@
 <p>To wait for and collect the return value, use the mirai’s <code>[]</code> method:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 6.331538 7.989301 6.017000 7.694094 6.836757</span></span></code></pre></div>
-<p>As a mirai represents an async operation, it is never necessary to wait for it. Other code can continue to be run. Once it completes, the return value automatically becomes available at <code>$data</code>.</p>
+<span><span class="co">#&gt; [1] 7.781188 5.028784 8.031969 7.663697 7.517325</span></span></code></pre></div>
+<p>As a mirai represents an async operation, it is never necessary to wait for it. Other code can continue to run. Once it completes, the return value automatically becomes available at <code>$data</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="reference/unresolved.html">unresolved</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># do work here that does not depend on 'm'</span></span>
@@ -123,7 +123,7 @@
 <span><span class="va">m</span></span>
 <span><span class="co">#&gt; &lt; mirai [$data] &gt;</span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] 6.331538 7.989301 6.017000 7.694094 6.836757</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 7.781188 5.028784 8.031969 7.663697 7.517325</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
 </h4>
@@ -197,8 +197,8 @@
 <div class="section level3">
 <h3 id="powering-crew-and-targets-high-performance-computing">Powering Crew and Targets High Performance Computing<a class="anchor" aria-label="anchor" href="#powering-crew-and-targets-high-performance-computing"></a>
 </h3>
-<p><a href="https://docs.ropensci.org/targets/" class="external-link"><img alt="targets" src="https://github.com/ropensci/targets/raw/main/man/figures/logo.png" width="40" height="46"></a>   <code>targets</code>, a Make-like pipeline tool for statistics and data science, has integrated and adopted <code>crew</code> as its default high-performance computing backend.</p>
-<p><a href="https://wlandau.github.io/crew/" class="external-link"><img alt="crew" src="https://github.com/wlandau/crew/raw/main/man/figures/logo.png" width="40" height="46"></a>   <code>crew</code> is a distributed worker-launcher extending <code>mirai</code> to different distributed computing platforms, from traditional clusters to cloud services.</p>
+<p><a href="https://docs.ropensci.org/targets/" class="external-link"><img alt="targets" src="https://github.com/ropensci/targets/raw/main/man/figures/logo.png" width="40" height="46"></a>   Targets, a Make-like pipeline tool for statistics and data science, has integrated and adopted <code>crew</code> as its default high-performance computing backend.</p>
+<p><a href="https://wlandau.github.io/crew/" class="external-link"><img alt="crew" src="https://github.com/wlandau/crew/raw/main/man/figures/logo.png" width="40" height="46"></a>   Crew is a distributed worker-launcher extending <code>mirai</code> to different distributed computing platforms, from traditional clusters to cloud services.</p>
 <p><a href="https://wlandau.github.io/crew.cluster/" class="external-link"><img alt="crew.cluster" src="https://github.com/wlandau/crew.cluster/raw/main/man/figures/logo.png" width="40" height="46"></a>   <code>crew.cluster</code> enables mirai-based workflows on traditional high-performance computing clusters using LFS, PBS/TORQUE, SGE and Slurm.</p>
 <p><a href="https://wlandau.github.io/crew.aws.batch/" class="external-link"><img alt="crew.aws.batch" src="https://github.com/wlandau/crew.aws.batch/raw/main/man/figures/logo.png" width="40" height="46"></a>   <code>crew.aws.batch</code> extends <code>mirai</code> to cloud computing using AWS Batch.</p>
 </div>
