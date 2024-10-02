@@ -18,6 +18,10 @@ Authors@R:
              role = c("aut", "cre"),
              email = "charlie.gao@shikokuchuo.net",
              comment = c(ORCID = "0000-0002-0750-061X")),
+      person(given = "Joe",
+             family = "Cheng",
+             role = "ctb",
+             email = "joe@posit.co"),
       person(given = "Hibiki AI Limited",
              role = "cph"))
 License: GPL (>= 3)
