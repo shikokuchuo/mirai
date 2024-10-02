@@ -75,11 +75,11 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 6.331538 7.989301 6.017000 7.694094 6.836757
+#> [1] 7.781188 5.028784 8.031969 7.663697 7.517325
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
-for it. Other code can continue to be run. Once it completes, the return
+for it. Other code can continue to run. Once it completes, the return
 value automatically becomes available at `$data`.
 
 ``` r
@@ -89,7 +89,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 6.331538 7.989301 6.017000 7.694094 6.836757
+#> [1] 7.781188 5.028784 8.031969 7.663697 7.517325
 ```
 
 #### Daemons
@@ -208,12 +208,12 @@ to be used seamlessly across parallel processes.
 ### Powering Crew and Targets High Performance Computing
 
 [<img alt="targets" src="https://github.com/ropensci/targets/raw/main/man/figures/logo.png" width="40" height="46" />](https://docs.ropensci.org/targets/)
-  `targets`, a Make-like pipeline tool for statistics and data science,
+  Targets, a Make-like pipeline tool for statistics and data science,
 has integrated and adopted `crew` as its default high-performance
 computing backend.
 
 [<img alt="crew" src="https://github.com/wlandau/crew/raw/main/man/figures/logo.png" width="40" height="46" />](https://wlandau.github.io/crew/)
-  `crew` is a distributed worker-launcher extending `mirai` to different
+  Crew is a distributed worker-launcher extending `mirai` to different
 distributed computing platforms, from traditional clusters to cloud
 services.
 
