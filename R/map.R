@@ -231,7 +231,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
   expr <- if (...length() > 1L) do.call(expression, list(...)) else ..1
   xlen <- length(x)
   i <- 0L
-  typ <- xi <- NULL
+  typ <- xi <- FALSE
   collect_map <- function(i) {
     xi <- collect_aio_(x[[i]])
     eval(expr)
@@ -239,8 +239,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
   }
   eval(expr)
   out <- `names<-`(lapply(seq_len(xlen), collect_map), names(x))
-  i <- Inf
-  eval(expr)
+  xi && return(unlist(out, recursive = FALSE))
   out
 
 }
@@ -267,9 +266,9 @@ print.mirai_map <- function(x, ...) {
 #'
 .flat <- compiler::compile(
   quote(
-    if (i <= 1L) { if (i) typ <<- typeof(xi) } else
-      if (i <= xlen) is_error_value(xi) && stop(xi, call. = FALSE) || typeof(xi) == typ || stop(sprintf("[.flat]: cannot flatten outputs of differing type: %s / %s", typ, typeof(xi)), call. = FALSE) else
-        out <- unlist(out, recursive = FALSE)
+    if (i == 0L) xi <- TRUE else
+      if (i == 1L) typ <<- typeof(xi) else
+        if (i <= xlen) is_error_value(xi) && stop(xi, call. = FALSE) || typeof(xi) == typ || stop(sprintf("[.flat]: cannot flatten outputs of differing type: %s / %s", typ, typeof(xi)), call. = FALSE)
   )
 )
 
