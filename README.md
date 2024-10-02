@@ -75,7 +75,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 6.851895 6.525120 8.516672 6.846605 8.751862
+#> [1] 6.331538 7.989301 6.017000 7.694094 6.836757
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -89,7 +89,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 6.851895 6.525120 8.516672 6.846605 8.751862
+#> [1] 6.331538 7.989301 6.017000 7.694094 6.836757
 ```
 
 #### Daemons
@@ -152,8 +152,8 @@ over alternative map implementations.
 experience.
 
 - Fast
-  - Over 800x more responsive than common alternatives
-    [<sup>\[1\]</sup>](https://github.com/shikokuchuo/mirai/pull/142#issuecomment-2325948615)
+  - 900x more responsive than common alternatives
+    [<sup>\[1\]</sup>](https://github.com/shikokuchuo/mirai/pull/142#issuecomment-2344077028)
   - Built for low-latency applications such as real time inference or
     Shiny apps
 - Reliable
@@ -190,12 +190,12 @@ with the promise pipe `%...>%`.
 
 [<img alt="Shiny" src="https://github.com/rstudio/shiny/raw/main/man/figures/logo.png" width="40" height="46" />](https://shikokuchuo.net/mirai/articles/shiny.html)
   Asynchronous parallel / distributed backend, supporting the next level
-of responsiveness and scalability for Shiny. Launches ExtendedTasks, or
-plugs directly into the reactive framework for advanced uses.
+of responsiveness and scalability within Shiny, with native support for
+ExtendedTask.
 
 [<img alt="Plumber" src="https://rstudio.github.io/cheatsheets/html/images/logo-plumber.png" width="40" height="46" />](https://shikokuchuo.net/mirai/articles/plumber.html)
-  Asynchronous parallel / distributed backend, capable of scaling
-Plumber applications in production usage.
+  Asynchronous parallel / distributed backend for scaling Plumber
+applications in production.
 
 [<img alt="Arrow" src="https://arrow.apache.org/img/arrow-logo_hex_black-txt_white-bg.png" width="40" height="46" />](https://shikokuchuo.net/mirai/articles/databases.html)
   Allows queries using the Apache Arrow format to be handled seamlessly
@@ -208,12 +208,12 @@ to be used seamlessly across parallel processes.
 ### Powering Crew and Targets High Performance Computing
 
 [<img alt="targets" src="https://github.com/ropensci/targets/raw/main/man/figures/logo.png" width="40" height="46" />](https://docs.ropensci.org/targets/)
-  Targets, a Make-like pipeline tool for statistics and data science,
+  `targets`, a Make-like pipeline tool for statistics and data science,
 has integrated and adopted `crew` as its default high-performance
 computing backend.
 
 [<img alt="crew" src="https://github.com/wlandau/crew/raw/main/man/figures/logo.png" width="40" height="46" />](https://wlandau.github.io/crew/)
-  Crew is a distributed worker-launcher extending `mirai` to different
+  `crew` is a distributed worker-launcher extending `mirai` to different
 distributed computing platforms, from traditional clusters to cloud
 services.
 
@@ -234,9 +234,9 @@ shaping development of the package, from initiating the original request
 for persistent daemons, through to orchestrating robustness testing for
 the high performance computing requirements of `crew` and `targets`.
 
-[Joe Cheng](https://github.com/jcheng5/) for optimising the `promises`
+[Joe Cheng](https://github.com/jcheng5/) for integrating the `promises`
 method to work seamlessly within Shiny, and prototyping event-driven
-promises, which is implemented across `nanonext` and `mirai`.
+promises.
 
 [Luke Tierney](https://github.com/ltierney/) of R Core, for discussion
 on L’Ecuyer-CMRG streams to ensure statistical independence in parallel
