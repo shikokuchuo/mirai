@@ -104,8 +104,8 @@ mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
 mirai_map(1:3, function(x) func(1L, x, x + 1L), func = stats::runif)[.flat]
 
 # sum rows of a dataframe
-(listvec <- data.frame(1:3, c(4, 3, 2)))
-mirai_map(listvec, sum)[.flat]
+(df <- data.frame(a = 1:3, b = c(4, 3, 2)))
+mirai_map(df, sum)[.flat]
 
 # sum rows of a matrix
 (mat <- matrix(1:4, nrow = 2L))
