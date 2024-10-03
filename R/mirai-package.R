@@ -92,6 +92,7 @@
     daemons_unset = "daemons must be set to use launchers",
     dispatcher_args = "'dispatcher' must be one of 'process', 'thread' or 'none'",
     dot_required = "remote_config(): '.' must be an element of the character vector(s) supplied to 'args'",
+    function_required = "'.f' must be of type function, not %s",
     missing_expression = "missing expression, perhaps wrap in {}?",
     missing_url = "at least one URL must be supplied for 'url' or 'n' must be at least 1",
     named_args = "all items in '.args' must be named, unless supplying an environment",

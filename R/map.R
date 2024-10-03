@@ -164,6 +164,7 @@
 #'
 mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "default") {
 
+  is.function(.f) || stop(sprintf(._[["function_required"]], typeof(.f)))
   envir <- ..[[.compute]]
   is.null(envir) && {
     .x
