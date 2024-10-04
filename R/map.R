@@ -290,7 +290,7 @@ print.mirai_map <- function(x, ...) {
 .progress_cli <- compiler::compile(
   quote(
     if (i == 0L) cli::cli_progress_bar(type = NULL, total = xlen, auto_terminate = TRUE, .envir = .) else
-      if (i <= xlen) cli::cli_progress_update(force = TRUE, .envir = .)
+      if (i <= xlen) cli::cli_progress_update(.envir = .)
   )
 )
 
