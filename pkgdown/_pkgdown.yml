@@ -1,6 +1,4 @@
 url: https://shikokuchuo.net/mirai/
-development:
-  mode: auto
 template:
   bootstrap: 5
   bslib:

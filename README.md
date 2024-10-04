@@ -18,8 +18,8 @@ status](https://shikokuchuo.r-universe.dev/badges/mirai?color=2dab18)](https://s
 
 ### ミライ
 
-<br /> ( 未来 ) <br /><br /> Minimalist Async Evaluation Framework for R
-<br /><br /> Designed for simplicity, a ‘mirai’ evaluates an R
+<br /> みらい 未来 <br /><br /> Minimalist Async Evaluation Framework
+for R <br /><br /> Designed for simplicity, a ‘mirai’ evaluates an R
 expression asynchronously in a parallel process, locally or distributed
 over the network, with the result automatically available upon
 completion. <br /><br /> Modern networking and concurrency built on
@@ -75,7 +75,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 6.256299 8.241925 7.314121 6.837514 5.670451
+#> [1] 8.455296 6.804198 6.158908 6.822219 5.264206
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -89,7 +89,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 6.256299 8.241925 7.314121 6.837514 5.670451
+#> [1] 8.455296 6.804198 6.158908 6.822219 5.264206
 ```
 
 #### Daemons
