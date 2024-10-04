@@ -78,6 +78,7 @@ everywhere(
   },
   .serial = cfg
 )
+
 ```
 `mirai()` calls may then be used to write to or query the database all in the Arrow format.
 

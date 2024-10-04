@@ -75,7 +75,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 7.781188 5.028784 8.031969 7.663697 7.517325
+#> [1] 6.256299 8.241925 7.314121 6.837514 5.670451
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -89,7 +89,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 7.781188 5.028784 8.031969 7.663697 7.517325
+#> [1] 6.256299 8.241925 7.314121 6.837514 5.670451
 ```
 
 #### Daemons
@@ -258,7 +258,7 @@ provide secure connections in `mirai`.
 
 ### Installation
 
-Install the latest release from CRAN or R-multiverse:
+Install the latest release from CRAN:
 
 ``` r
 install.packages("mirai")

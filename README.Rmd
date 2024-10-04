@@ -170,7 +170,7 @@ We would like to thank in particular:
 
 ### Installation
 
-Install the latest release from CRAN or R-multiverse:
+Install the latest release from CRAN:
 
 ```{r cran, eval=FALSE}
 install.packages("mirai")
