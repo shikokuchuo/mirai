@@ -69,8 +69,9 @@
 <li>Invalid type of ‘…’ arguments are now dropped instead of throwing an error. This allows ‘…’ containing unused arguments to be more easily passed from other functions.</li>
 </ul></li>
 <li>For <code><a href="../reference/mirai_map.html">mirai_map()</a></code>:
-<ul><li>Combining collection options is now easier, in the fashion of: <code>x[.stop, .progress]</code>.</li>
-<li>Now only performs multiple map over the rows of matrices and dataframes (thanks <a href="https://github.com/andrewGhazi" class="external-link">@andrewGhazi</a>, <a href="https://github.com/shikokuchuo/mirai/issues/147" class="external-link">#147</a>).</li>
+<ul><li>Now only performs multiple map over the rows of matrices and dataframes (thanks <a href="https://github.com/andrewGhazi" class="external-link">@andrewGhazi</a>, <a href="https://github.com/shikokuchuo/mirai/issues/147" class="external-link">#147</a>).</li>
+<li>Combining collection options is now easier, in the fashion of: <code>x[.stop, .progress]</code>.</li>
+<li>Collection options now work even if mirai is not on the search path e.g. <code>mirai::mirai_map(1:4, Sys.sleep)[.progress]</code>.</li>
 </ul></li>
 <li>
 <code><a href="../reference/dispatcher.html">dispatcher()</a></code> drops argument ‘asyncdial’ as it is rarely useful to set this here.</li>
