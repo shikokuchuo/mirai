@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9027</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,7 +51,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Dispatcher</h1>
-      <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/mirai/blob/v1.2.0/R/dispatcher.R" class="external-link"><code>R/dispatcher.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/mirai/blob/main/R/dispatcher.R" class="external-link"><code>R/dispatcher.R</code></a></small>
       <div class="d-none name"><code>dispatcher.Rd</code></div>
     </div>
 
@@ -69,7 +69,6 @@
 <span>  url <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  asyncdial <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  retry <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  token <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -107,26 +106,18 @@ into.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>(optional) additional arguments passed through to <code><a href="daemon.html">daemon</a></code>.
-These include ‘autoexit’, ‘cleanup’, ‘maxtasks’,
+<dd><p>(optional) additional arguments passed through to
+<code><a href="daemon.html">daemon</a></code>. These include  ‘asyncdial’,
+‘autoexit’, ‘cleanup’, ‘maxtasks’,
 ‘idletime’, ‘walltime’ and ‘timerstart’.</p></dd>
 
 
-<dt id="arg-asyncdial">asyncdial<a class="anchor" aria-label="anchor" href="#arg-asyncdial"></a></dt>
-<dd><p>[default FALSE] whether to perform dials asynchronously. The
-default FALSE will error if a connection is not immediately possible
-(e.g. <code><a href="daemons.html">daemons</a></code> has yet to be called on the host, or the
-specified port is not open etc.). Specifying TRUE continues retrying
-(indefinitely) if not immediately successful, which is more resilient but
-can mask potential connection issues.</p></dd>
-
-
 <dt id="arg-retry">retry<a class="anchor" aria-label="anchor" href="#arg-retry"></a></dt>
-<dd><p>[default FALSE] if TRUE, a task where the daemon crashes or
-terminates unexpectedly will be automatically re-tried on the next daemon
-instance to connect. In such a case, the mirai will remain unresolved but
+<dd><p>[default FALSE] logical value, whether to automatically retry
+tasks where the daemon crashes or terminates unexpectedly on the next
+daemon instance to connect. If TRUE, the mirai will remain unresolved but
 <code><a href="status.html">status</a></code> will show ‘online’ as 0 and ‘assigned’
-&gt; ‘complete’. To cancel a task in such a case, use
+&gt; ‘complete’. To cancel a task in this case, use
 <code>saisei(force = TRUE)</code>. If FALSE, such tasks will be returned as
 ‘errorValue’ 19 (Connection reset).</p></dd>
 
@@ -138,12 +129,13 @@ which do not accept a path).</p></dd>
 
 
 <dt id="arg-tls">tls<a class="anchor" aria-label="anchor" href="#arg-tls"></a></dt>
-<dd><p>[default NULL] (required for secure TLS connections) <strong>either</strong>
-the character path to a file containing the PEM-encoded TLS certificate
-and associated private key (may contain additional certificates leading
-to a validation chain, with the TLS certificate first), <strong>or</strong> a
-length 2 character vector comprising [i] the TLS certificate (optionally
-certificate chain) and [ii] the associated private key.</p></dd>
+<dd><p>[default NULL] (required for secure TLS connections)
+<strong>either</strong> the character path to a file containing the PEM-encoded
+TLS certificate and associated private key (may contain additional
+certificates leading to a validation chain, with the TLS certificate
+first), <strong>or</strong> a length 2 character vector comprising [i] the TLS
+certificate (optionally certificate chain) and [ii] the associated
+private key.</p></dd>
 
 
 <dt id="arg-pass">pass<a class="anchor" aria-label="anchor" href="#arg-pass"></a></dt>
@@ -184,7 +176,7 @@ process and should not be independently supplied.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>

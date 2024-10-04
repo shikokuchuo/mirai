@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9027</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>mirai - Promises Integration</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/mirai/blob/v1.2.0/vignettes/promises.Rmd" class="external-link"><code>vignettes/promises.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/mirai/blob/main/vignettes/promises.Rmd" class="external-link"><code>vignettes/promises.Rmd</code></a></small>
       <div class="d-none name"><code>promises.Rmd</code></div>
     </div>
 
@@ -145,20 +145,20 @@ an environment in the example below).</p>
 <h3 id="the-one-million-promises-challenge">The One Million Promises Challenge<a class="anchor" aria-label="anchor" href="#the-one-million-promises-challenge"></a>
 </h3>
 <p>The code below is taken from the challenge to launch and collect one
-million promises. For illustration, the example is scaled down to one
+million promises. For illustration, the example is scaled down to ten
 thousand.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">8</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">8</span>, dispatcher <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 8</span></span>
 <span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span><span class="va">start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai_map.html">mirai_map</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">1000</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span>, .promise <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">r</span> <span class="op">&lt;&lt;-</span> <span class="va">r</span> <span class="op">+</span> <span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai_map.html">mirai_map</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10000</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span>, .promise <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">r</span> <span class="op">&lt;&lt;-</span> <span class="va">r</span> <span class="op">+</span> <span class="va">x</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="va">start</span></span>
-<span><span class="co">#&gt; Time difference of 0.2506421 secs</span></span>
+<span><span class="co">#&gt; Time difference of 2.722618 secs</span></span>
 <span><span class="fu">later</span><span class="fu">::</span><span class="fu"><a href="https://r-lib.github.io/later/reference/run_now.html" class="external-link">run_now</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">r</span></span>
-<span><span class="co">#&gt; [1] 500500</span></span>
+<span><span class="co">#&gt; [1] 50005000</span></span>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <p>The one million promises challenge took 6 mins 25 secs to complete
@@ -175,7 +175,7 @@ using an Intel i7 11th gen mobile processor with 16GB RAM.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

@@ -19,8 +19,8 @@
 <link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Minimalist Async Evaluation Framework for R">
-<meta name="description" content="Designed for simplicity, a mirai evaluates an R expression asynchronously in a parallel process, locally or distributed over the network, with the result automatically available upon completion. Modern networking and concurrency built on nanonext and NNG (Nanomsg Next Gen) ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS. Advantages include being inherently queued thus handling many more tasks than available processes, no storage on the file system, support for otherwise non-exportable reference objects, an event-driven promises implementation, and built-in asynchronous parallel map.">
-<meta property="og:description" content="Designed for simplicity, a mirai evaluates an R expression asynchronously in a parallel process, locally or distributed over the network, with the result automatically available upon completion. Modern networking and concurrency built on nanonext and NNG (Nanomsg Next Gen) ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS. Advantages include being inherently queued thus handling many more tasks than available processes, no storage on the file system, support for otherwise non-exportable reference objects, an event-driven promises implementation, and built-in asynchronous parallel map.">
+<meta name="description" content="Designed for simplicity, a mirai evaluates an R expression asynchronously in a parallel process, locally or distributed over the network, with the result automatically available upon completion. Modern networking and concurrency built on nanonext and NNG (Nanomsg Next Gen) ensure reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS. Advantages include being inherently queued thus handling many more tasks than available processes, no storage on the file system, support for otherwise non-exportable reference objects, an event-driven promises implementation, and built-in asynchronous parallel map.">
+<meta property="og:description" content="Designed for simplicity, a mirai evaluates an R expression asynchronously in a parallel process, locally or distributed over the network, with the result automatically available upon completion. Modern networking and concurrency built on nanonext and NNG (Nanomsg Next Gen) ensure reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS. Advantages include being inherently queued thus handling many more tasks than available processes, no storage on the file system, support for otherwise non-exportable reference objects, an event-driven promises implementation, and built-in asynchronous parallel map.">
 <meta property="og:image" content="https://shikokuchuo.net/mirai/logo.png">
 </head>
 <body>
@@ -31,7 +31,7 @@
 
     <a class="navbar-brand me-2" href="index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9027</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,7 +87,7 @@
 <div class="section level3">
 <h3 id="ミライ">ミライ<a class="anchor" aria-label="anchor" href="#%E3%83%9F%E3%83%A9%E3%82%A4"></a>
 </h3>
-<p><br> ( 未来 ) <br><br> Minimalist Async Evaluation Framework for R <br><br> Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously in a parallel process, locally or distributed over the network, with the result automatically available upon completion. <br><br> Modern networking and concurrency built on <a href="https://github.com/shikokuchuo/nanonext/" class="external-link">nanonext</a> and <a href="https://nng.nanomsg.org/" class="external-link">NNG</a> (Nanomsg Next Gen) ensures reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS. <br><br> Advantages include being inherently queued thus handling many more tasks than available processes, no storage on the file system, support for otherwise non-exportable reference objects, an event-driven promises implementation, and built-in asynchronous parallel map. <br><br></p>
+<p><br> みらい 未来 <br><br> Minimalist Async Evaluation Framework for R <br><br> Designed for simplicity, a ‘mirai’ evaluates an R expression asynchronously in a parallel process, locally or distributed over the network, with the result automatically available upon completion. <br><br> Modern networking and concurrency built on <a href="https://github.com/shikokuchuo/nanonext/" class="external-link">nanonext</a> and <a href="https://nng.nanomsg.org/" class="external-link">NNG</a> (Nanomsg Next Gen) ensure reliable and efficient scheduling, over fast inter-process communications or TCP/IP secured by TLS. <br><br> Advantages include being inherently queued thus handling many more tasks than available processes, no storage on the file system, support for otherwise non-exportable reference objects, an event-driven promises implementation, and built-in asynchronous parallel map. <br><br></p>
 </div>
 <div class="section level3">
 <h3 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
@@ -113,8 +113,8 @@
 <p>To wait for and collect the return value, use the mirai’s <code>[]</code> method:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 5.735529 7.862045 6.024613 7.572171 5.791506</span></span></code></pre></div>
-<p>As a mirai represents an async operation, it is never necessary to wait for it. Other code can continue to be run. Once it completes, the return value automatically becomes available at <code>$data</code>.</p>
+<span><span class="co">#&gt; [1] 8.455296 6.804198 6.158908 6.822219 5.264206</span></span></code></pre></div>
+<p>As a mirai represents an async operation, it is never necessary to wait for it. Other code can continue to run. Once it completes, the return value automatically becomes available at <code>$data</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="reference/unresolved.html">unresolved</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># do work here that does not depend on 'm'</span></span>
@@ -122,7 +122,7 @@
 <span><span class="va">m</span></span>
 <span><span class="co">#&gt; &lt; mirai [$data] &gt;</span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] 5.735529 7.862045 6.024613 7.572171 5.791506</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 8.455296 6.804198 6.158908 6.822219 5.264206</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
 </h4>
@@ -136,7 +136,7 @@
 <div class="section level4">
 <h4 id="async-parallel-map">Async Parallel Map<a class="anchor" aria-label="anchor" href="#async-parallel-map"></a>
 </h4>
-<p><code><a href="reference/mirai_map.html">mirai_map()</a></code> maps a function over a list or vector, with each element processed in a separate parallel process. It also performs multiple map over 2D lists/vectors, allowing advanced patterns such as map over the rows of a dataframe or matrix.</p>
+<p><code><a href="reference/mirai_map.html">mirai_map()</a></code> maps a function over a list or vector, with each element processed in a separate parallel process. It also performs multiple map over the rows of a dataframe or matrix.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  fruit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"melon"</span>, <span class="st">"grapes"</span>, <span class="st">"coconut"</span><span class="op">)</span>,</span>
@@ -159,7 +159,7 @@
 <ul>
 <li>Fast
 <ul>
-<li>Over 100x more responsive than common alternatives <sup>[1]</sup>
+<li>900x more responsive than common alternatives <a href="https://github.com/shikokuchuo/mirai/pull/142#issuecomment-2344077028" class="external-link"><sup>[1]</sup></a>
 </li>
 <li>Built for low-latency applications such as real time inference or Shiny apps</li>
 </ul>
@@ -188,8 +188,8 @@
 <p>The following core integrations are documented, with usage examples in the linked vignettes:</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/parallel.html"><img alt="R parallel" src="https://www.r-project.org/logo/Rlogo.png" width="40" height="31"></a>   Provides an alternative communications backend for R, implementing a new parallel cluster type, a feature request by R-Core at R Project Sprint 2023. ‘miraiCluster’ may also be used with <code>foreach</code> via <code>doParallel</code>.</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/promises.html"><img alt="promises" src="https://docs.posit.co/images/posit-ball.png" width="40" height="36"></a>   Implements the next generation of completely event-driven, non-polling promises. ‘mirai’ may be used interchageably with ‘promises’, including with the promise pipe <code>%...&gt;%</code>.</p>
-<p><a href="https://shikokuchuo.net/mirai/articles/shiny.html"><img alt="Shiny" src="https://github.com/rstudio/shiny/raw/main/man/figures/logo.png" width="40" height="46"></a>   Asynchronous parallel / distributed backend, supporting the next level of responsiveness and scalability for Shiny. Launches ExtendedTasks, or plugs directly into the reactive framework for advanced uses.</p>
-<p><a href="https://shikokuchuo.net/mirai/articles/plumber.html"><img alt="Plumber" src="https://rstudio.github.io/cheatsheets/html/images/logo-plumber.png" width="40" height="46"></a>   Asynchronous parallel / distributed backend, capable of scaling Plumber applications in production usage.</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/shiny.html"><img alt="Shiny" src="https://github.com/rstudio/shiny/raw/main/man/figures/logo.png" width="40" height="46"></a>   Asynchronous parallel / distributed backend, supporting the next level of responsiveness and scalability within Shiny, with native support for ExtendedTask.</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/plumber.html"><img alt="Plumber" src="https://rstudio.github.io/cheatsheets/html/images/logo-plumber.png" width="40" height="46"></a>   Asynchronous parallel / distributed backend for scaling Plumber applications in production.</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/databases.html"><img alt="Arrow" src="https://arrow.apache.org/img/arrow-logo_hex_black-txt_white-bg.png" width="40" height="46"></a>   Allows queries using the Apache Arrow format to be handled seamlessly over ADBC database connections hosted in background processes.</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/torch.html"><img alt="torch" src="https://torch.mlverse.org/css/images/hex/torch.png" width="40" height="46"></a>   Allows Torch tensors and complex objects such as models and optimizers to be used seamlessly across parallel processes.</p>
 </div>
@@ -206,17 +206,17 @@
 </h3>
 <p>We would like to thank in particular:</p>
 <p><a href="https://github.com/wlandau/" class="external-link">Will Landau</a> for being instrumental in shaping development of the package, from initiating the original request for persistent daemons, through to orchestrating robustness testing for the high performance computing requirements of <code>crew</code> and <code>targets</code>.</p>
-<p><a href="https://github.com/jcheng5/" class="external-link">Joe Cheng</a> for optimising the <code>promises</code> method to work seamlessly within Shiny, and prototyping event-driven promises, which is implemented across <code>nanonext</code> and <code>mirai</code>.</p>
+<p><a href="https://github.com/jcheng5/" class="external-link">Joe Cheng</a> for integrating the <code>promises</code> method to work seamlessly within Shiny, and prototyping event-driven promises.</p>
 <p><a href="https://github.com/ltierney/" class="external-link">Luke Tierney</a> of R Core, for discussion on L’Ecuyer-CMRG streams to ensure statistical independence in parallel processing, and making it possible for <code>mirai</code> to be the first ‘alternative communications backend for R’.</p>
 <p><a href="https://github.com/HenrikBengtsson/" class="external-link">Henrik Bengtsson</a> for valuable insights leading to the interface accepting broader usage patterns.</p>
 <p><a href="https://github.com/dfalbel/" class="external-link">Daniel Falbel</a> for discussion around an efficient solution to serialization and transmission of <code>torch</code> tensors.</p>
 <p><a href="https://github.com/krlmlr/" class="external-link">Kirill Müller</a> for discussion on using ‘daemons’ to host Arrow database connections.</p>
-<p><a href="https://www.r-consortium.org/" class="external-link"><img alt="R Consortium" src="https://www.r-consortium.org/wp-content/uploads/sites/13/2016/09/RConsortium_Horizontal_Pantone.png" width="100" height="22"></a>  for funding work on the TLS implementation in <code>nanonext</code>, used to provide secure connections in <code>mirai</code>.</p>
+<p><a href="https://r-consortium.org/" class="external-link"><img alt="R Consortium" src="https://r-consortium.org/images/RConsortium_Horizontal_Pantone.webp" width="100" height="22"></a>  for funding work on the TLS implementation in <code>nanonext</code>, used to provide secure connections in <code>mirai</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
-<p>Install the latest release from CRAN or R-multiverse:</p>
+<p>Install the latest release from CRAN:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mirai"</span><span class="op">)</span></span></code></pre></div>
 <p>The current development version is available from R-universe:</p>
@@ -228,7 +228,6 @@
 </h3>
 <p>◈ mirai R package: <a href="https://shikokuchuo.net/mirai/" class="uri">https://shikokuchuo.net/mirai/</a> <br> ◈ nanonext R package: <a href="https://shikokuchuo.net/nanonext/" class="external-link uri">https://shikokuchuo.net/nanonext/</a></p>
 <p>mirai is listed in CRAN High Performance Computing Task View: <br><a href="https://cran.r-project.org/view=HighPerformanceComputing" class="external-link uri">https://cran.r-project.org/view=HighPerformanceComputing</a></p>
-<p>[1] Benchmark available in appendix of: <a href="https://shikokuchuo.net/user2024-conference/" class="external-link uri">https://shikokuchuo.net/user2024-conference/</a></p>
 <p>–</p>
 <p>Please note that this project is released with a <a href="https://shikokuchuo.net/mirai/CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
 </div>
@@ -272,7 +271,17 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://CRAN.R-project.org/package=mirai" class="external-link"><img src="https://www.r-pkg.org/badges/version/mirai?color=00184a" alt="CRAN status"></a></li>
+<li><a href="https://community.r-multiverse.org/mirai" class="external-link"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcommunity.r-multiverse.org%2Fapi%2Fpackages%2Fmirai&amp;query=%24.Version&amp;label=r-multiverse&amp;color=00184a" alt="R-multiverse status"></a></li>
+<li><a href="https://shikokuchuo.r-universe.dev/mirai" class="external-link"><img src="https://shikokuchuo.r-universe.dev/badges/mirai?color=2dab18" alt="R-universe status"></a></li>
+<li><a href="https://github.com/shikokuchuo/mirai/actions" class="external-link"><img src="https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/shikokuchuo/mirai" class="external-link"><img src="https://codecov.io/gh/shikokuchuo/mirai/graph/badge.svg" alt="codecov"></a></li>
+<li><a href="https://zenodo.org/badge/latestdoi/459341940" class="external-link"><img src="https://zenodo.org/badge/459341940.svg" alt="DOI"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
@@ -283,7 +292,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
