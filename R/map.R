@@ -229,7 +229,8 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
 
   missing(..1) && return(collect_aio_(x))
 
-  expr <- if (...length() > 1L) do.call(expression, list(...)) else ..1
+  dots <- lapply(substitute(alist(...))[-1L], get, pos = .getNamespace("mirai"))
+  expr <- if (length(dots) > 1L) do.call(expression, dots) else dots[[1L]]
   xlen <- length(x)
   i <- 0L
   typ <- xi <- FALSE

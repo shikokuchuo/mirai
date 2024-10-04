@@ -14,8 +14,9 @@
   - Return value is now always an integer value - either the number of daemons set if using dispatcher, or the number of daemons launched locally (zero if using a remote launcher).
   - Invalid type of '...' arguments are now dropped instead of throwing an error. This allows '...' containing unused arguments to be more easily passed from other functions.
 * For `mirai_map()`:
-  - Combining collection options is now easier, in the fashion of: `x[.stop, .progress]`.
   - Now only performs multiple map over the rows of matrices and dataframes (thanks @andrewGhazi, #147).
+  - Combining collection options is now easier, in the fashion of: `x[.stop, .progress]`.
+  - Collection options now work even if mirai is not on the search path e.g. `mirai::mirai_map(1:4, Sys.sleep)[.progress]`.
 * `dispatcher()` drops argument 'asyncdial' as it is rarely useful to set this here.
 * `everywhere()` now errors if the specified compute profile is not yet set up, rather than fail silently.
 * `launch_local()` and `launch_remote()` now strictly require daemons to be set, and will error otherwise.
