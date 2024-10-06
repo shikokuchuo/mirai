@@ -16,9 +16,9 @@ knitr::opts_chunk$set(
 # mirai <a href="https://shikokuchuo.net/mirai/" alt="mirai"><img src="man/figures/logo.png" alt="mirai logo" align="right" width="120"/></a>
 
 <!-- badges: start -->
-[![CRAN status](https://www.r-pkg.org/badges/version/mirai?color=191970)](https://CRAN.R-project.org/package=mirai)
-[![R-multiverse status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcommunity.r-multiverse.org%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=r-multiverse&color=d8fa01)](https://community.r-multiverse.org/mirai)
-[![R-universe status](https://shikokuchuo.r-universe.dev/badges/mirai?color=ff6347)](https://shikokuchuo.r-universe.dev/mirai)
+[![CRAN status](https://www.r-pkg.org/badges/version/mirai?color=00184a)](https://CRAN.R-project.org/package=mirai)
+[![R-multiverse status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcommunity.r-multiverse.org%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=r-multiverse)](https://community.r-multiverse.org/mirai)
+[![R-universe status](https://shikokuchuo.r-universe.dev/badges/mirai)](https://shikokuchuo.r-universe.dev/mirai)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
 [![codecov](https://codecov.io/gh/shikokuchuo/mirai/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/mirai)
 [![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)

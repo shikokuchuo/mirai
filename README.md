@@ -6,11 +6,11 @@
 <!-- badges: start -->
 
 [![CRAN
-status](https://www.r-pkg.org/badges/version/mirai?color=191970)](https://CRAN.R-project.org/package=mirai)
+status](https://www.r-pkg.org/badges/version/mirai?color=00184a)](https://CRAN.R-project.org/package=mirai)
 [![R-multiverse
-status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcommunity.r-multiverse.org%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=r-multiverse&color=d8fa01)](https://community.r-multiverse.org/mirai)
+status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcommunity.r-multiverse.org%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=r-multiverse)](https://community.r-multiverse.org/mirai)
 [![R-universe
-status](https://shikokuchuo.r-universe.dev/badges/mirai?color=ff6347)](https://shikokuchuo.r-universe.dev/mirai)
+status](https://shikokuchuo.r-universe.dev/badges/mirai)](https://shikokuchuo.r-universe.dev/mirai)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
 [![codecov](https://codecov.io/gh/shikokuchuo/mirai/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/mirai)
 [![DOI](https://zenodo.org/badge/459341940.svg)](https://zenodo.org/badge/latestdoi/459341940)
@@ -75,7 +75,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 7.295884 7.017275 7.502276 5.011602 6.683662
+#> [1] 6.558945 6.774610 6.776656 7.419766 6.670370
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -89,7 +89,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 7.295884 7.017275 7.502276 5.011602 6.683662
+#> [1] 6.558945 6.774610 6.776656 7.419766 6.670370
 ```
 
 #### Daemons

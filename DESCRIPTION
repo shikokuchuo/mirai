@@ -40,4 +40,3 @@ Suggests:
     litedown
 VignetteBuilder: litedown
 RoxygenNote: 7.3.2
-Remotes: shikokuchuo/nanonext
