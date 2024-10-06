@@ -79,6 +79,8 @@
 <code><a href="../reference/everywhere.html">everywhere()</a></code> now errors if the specified compute profile is not yet set up, rather than fail silently.</li>
 <li>
 <code><a href="../reference/launch_local.html">launch_local()</a></code> and <code><a href="../reference/launch_local.html">launch_remote()</a></code> now strictly require daemons to be set, and will error otherwise.</li>
+<li>
+<code><a href="../reference/serial_config.html">serial_config()</a></code> now validates the arguments provided and returns them as a list. This means any saved configurations from previous package versions must be re-generated.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-1-2-0-9027">Updates<a class="anchor" aria-label="anchor" href="#updates-1-2-0-9027"></a></h5>
@@ -86,6 +88,7 @@
 <li>Fixes flatmap with <code>mirai_map()[.flat]</code> assigning a variable ‘typ’ to the calling environment.</li>
 <li>Internal performance enhancements.</li>
 <li>Requires <code>nanonext</code> &gt;= 1.3.0.</li>
+<li>The package has adopted a new logo.</li>
 </ul></div>
 </div>
     <div class="section level2">
