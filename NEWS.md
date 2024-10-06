@@ -20,6 +20,7 @@
 * `dispatcher()` drops argument 'asyncdial' as it is rarely useful to set this here.
 * `everywhere()` now errors if the specified compute profile is not yet set up, rather than fail silently.
 * `launch_local()` and `launch_remote()` now strictly require daemons to be set, and will error otherwise.
+* `serial_config()` now validates the arguments provided and returns them as a list. This means any saved configurations from previous package versions must be re-generated.
 
 #### Updates
 
@@ -27,6 +28,7 @@
 * Fixes flatmap with `mirai_map()[.flat]` assigning a variable 'typ' to the calling environment.
 * Internal performance enhancements.
 * Requires `nanonext` >= 1.3.0.
+* The package has adopted a new logo.
 
 # mirai 1.2.0
 
