@@ -229,7 +229,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
 
   missing(..1) && return(collect_aio_(x))
 
-  dots <- lapply(substitute(alist(...))[-1L], eval, envir = environment(mirai_map))
+  dots <- eval(`[[<-`(substitute(alist(...)), 1L, quote(list)), envir = environment(mirai_map))
   expr <- if (length(dots) > 1L) do.call(expression, dots) else dots[[1L]]
   xlen <- length(x)
   i <- 0L
