@@ -174,41 +174,41 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
     return(mirai_map(.x = .x, .f = .f, ..., .args = .args, .promise = .promise, .compute = .compute))
   }
   xilen <- dim(.x)[1L]
-  if (length(xilen)) {
-    vec <- vector(mode = "list", length = xilen)
-    if (is.matrix(.x)) {
-      for (i in seq_len(xilen))
-        vec[[i]] <- mirai(
+  vec <- if (length(xilen))
+    lapply(
+      seq_len(xilen),
+      if (is.matrix(.x))
+        function(i) mirai(
           .expr = do.call(.f, c(as.list(.x), .args)),
           .f = .f,
           .x = .x[i, ],
           ...,
           .args = list(.args = .args),
           .compute = .compute
-        )
-    } else {
-      for (i in seq_len(xilen))
-        vec[[i]] <- mirai(
-        .expr = do.call(.f, c(.x, .args)),
-        .f = .f,
-        .x = lapply(.x, .subset2, i),
-        ...,
-        .args = list(.args = .args),
-        .compute = .compute
+        ) else
+          function(i) mirai(
+            .expr = do.call(.f, c(.x, .args)),
+            .f = .f,
+            .x = lapply(.x, .subset2, i),
+            ...,
+            .args = list(.args = .args),
+            .compute = .compute
+          )
+    ) else
+      `names<-`(
+        lapply(
+          seq_along(.x),
+          function(i) mirai(
+            .expr = do.call(.f, c(list(.x), .args)),
+            .f = .f,
+            .x = .subset2(.x, i),
+            ...,
+            .args = list(.args = .args),
+            .compute = .compute
+          )
+        ),
+        names(.x)
       )
-    }
-  } else {
-    vec <- `names<-`(vector(mode = "list", length = length(.x)), names(.x))
-    for (i in seq_along(vec))
-      vec[[i]] <- mirai(
-        .expr = do.call(.f, c(list(.x), .args)),
-        .f = .f,
-        .x = .subset2(.x, i),
-        ...,
-        .args = list(.args = .args),
-        .compute = .compute
-      )
-  }
 
   if (length(.promise))
     if (is.list(.promise)) {
