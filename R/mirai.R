@@ -174,18 +174,15 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
     ._mirai_globals_. = globals,
     .expr = if (is.symbol(expr) && exists(expr, parent.frame()) && is.language(.expr)) .expr else expr
   )
-  if (length(.args))
-    data <- c(if (is.environment(.args)) as.list.environment(.args) else
-    {
-      length(names(.args)) && all(nzchar(names(.args))) || stop(._[["named_args"]])
-      .args
-    },
-    data)
+  if (length(.args)) {
+    if (is.environment(.args))
+      .args <- as.list.environment(.args) else
+        length(names(.args)) && all(nzchar(names(.args))) || stop(._[["named_args"]])
+    data <- c(.args, data)
+  }
 
   envir <- ..[[.compute]]
-
   is.null(envir) && return(ephemeral_daemon(data = data, timeout = .timeout))
-
   request(.context(envir[["sock"]]), data = data, send_mode = 1L, recv_mode = 1L,
           timeout = .timeout, cv = envir[["cv"]])
 
