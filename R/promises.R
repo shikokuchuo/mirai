@@ -68,22 +68,23 @@ as.promise.mirai <- function(x) {
 
   if (is.null(promise)) {
 
-    if (unresolved(x)) {
-      promise <- promises::then(
-        promises::promise(
-          function(resolve, reject) .keep(x, environment())
-        ),
+    promise <- if (.unresolved(x)) {
+      promises::promise(
+        function(resolve, reject) .keep(x, environment())
+      )$then(
         onFulfilled = function(value)
           if (is_error_value(value) && !is_mirai_interrupt(value))
             stop(if (is_mirai_error(value)) value else nng_error(value)) else
               value
       )
-
     } else {
-      value <- .subset2(x, "value")
-      promise <- if (is_error_value(value) && !is_mirai_interrupt(value))
-        promises::promise_reject(if (is_mirai_error(value)) value else nng_error(value)) else
-          promises::promise_resolve(value)
+      value <- collect_aio(x)
+      promises::promise(
+        function(resolve, reject)
+          if (is_error_value(value) && !is_mirai_interrupt(value))
+            reject(value) else
+              resolve(value)
+      )
     }
 
     assign("promise", promise, x)
