@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9028</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9029</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,9 +49,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.2.0.9028" id="mirai-1209028-development">mirai 1.2.0.9028 (development)<a class="anchor" aria-label="anchor" href="#mirai-1209028-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.2.0.9029" id="mirai-1209029-development">mirai 1.2.0.9029 (development)<a class="anchor" aria-label="anchor" href="#mirai-1209029-development"></a></h2>
 <div class="section level5">
-<h5 id="new-features-1-2-0-9028">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-2-0-9028"></a></h5>
+<h5 id="new-features-1-2-0-9029">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-2-0-9029"></a></h5>
 <ul><li>
 <code>daemons(dispatcher = "thread")</code> implements threaded dispatcher (experimental), a faster and more efficient option to running dispatcher in a separate process.</li>
 <li>
@@ -62,7 +62,7 @@
 <code><a href="../reference/daemon.html">daemon()</a></code> gains argument ‘asyncdial’ to allow control of connection behaviour independently of what happens when the daemon exits.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="behavioural-changes-1-2-0-9028">Behavioural Changes<a class="anchor" aria-label="anchor" href="#behavioural-changes-1-2-0-9028"></a></h5>
+<h5 id="behavioural-changes-1-2-0-9029">Behavioural Changes<a class="anchor" aria-label="anchor" href="#behavioural-changes-1-2-0-9029"></a></h5>
 <ul><li>For <code><a href="../reference/daemons.html">daemons()</a></code>:
 <ul><li>Argument ‘dispatcher’ now takes the character options ‘process’, ‘thread’ and ‘none’. Previous values of TRUE/FALSE continue to be accepted (thanks <a href="https://github.com/hadley" class="external-link">@hadley</a> <a href="https://github.com/shikokuchuo/mirai/issues/157" class="external-link">#157</a>).</li>
 <li>Return value is now always an integer value - either the number of daemons set if using dispatcher, or the number of daemons launched locally (zero if using a remote launcher).</li>
@@ -83,12 +83,12 @@
 <code><a href="../reference/serial_config.html">serial_config()</a></code> now validates the arguments provided and returns them as a list. This means any saved configurations from previous package versions must be re-generated.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-1-2-0-9028">Updates<a class="anchor" aria-label="anchor" href="#updates-1-2-0-9028"></a></h5>
+<h5 id="updates-1-2-0-9029">Updates<a class="anchor" aria-label="anchor" href="#updates-1-2-0-9029"></a></h5>
 <ul><li>Fixes <code><a href="../reference/daemons.html">daemons()</a></code> to correctly handle a vector of URLs passed to ‘url’ again.</li>
 <li>Fixes flatmap with <code>mirai_map()[.flat]</code> assigning a variable ‘typ’ to the calling environment.</li>
-<li>Internal performance enhancements.</li>
+<li>Performance enhancements for <code><a href="../reference/mirai.html">mirai()</a></code>, <code><a href="../reference/mirai_map.html">mirai_map()</a></code> and the promises method.</li>
 <li>Requires <code>nanonext</code> &gt;= 1.3.0.</li>
-<li>The package has adopted a new logo.</li>
+<li>The package has a shiny new hex logo.</li>
 </ul></div>
 </div>
     <div class="section level2">
