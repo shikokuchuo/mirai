@@ -1,4 +1,4 @@
-# mirai 1.2.0.9028 (development)
+# mirai 1.2.0.9029 (development)
 
 #### New Features
 
@@ -26,9 +26,9 @@
 
 * Fixes `daemons()` to correctly handle a vector of URLs passed to 'url' again.
 * Fixes flatmap with `mirai_map()[.flat]` assigning a variable 'typ' to the calling environment.
-* Internal performance enhancements.
+* Performance enhancements for `mirai()`, `mirai_map()` and the promises method.
 * Requires `nanonext` >= 1.3.0.
-* The package has adopted a new logo.
+* The package has a shiny new hex logo.
 
 # mirai 1.2.0
 
