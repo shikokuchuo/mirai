@@ -68,7 +68,7 @@ as.promise.mirai <- function(x) {
 
   if (is.null(promise)) {
 
-    promise <- if (unresolved(x)) {
+    promise <- if (.unresolved(x)) {
       promises::promise(
         function(resolve, reject) .keep(x, environment())
       )$then(
@@ -78,7 +78,7 @@ as.promise.mirai <- function(x) {
               value
       )
     } else {
-      value <- .subset2(x, "value")
+      value <- collect_aio(x)
       promises::promise(
         function(resolve, reject)
           if (is_error_value(value) && !is_mirai_interrupt(value))
