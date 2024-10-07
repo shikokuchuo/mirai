@@ -193,11 +193,11 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
       )
     ) else `names<-`(
       lapply(
-        seq_along(.x),
-        function(i) mirai(
+        .x,
+        function(x) mirai(
           .expr = do.call(.f, c(list(.x), .args)),
           .f = .f,
-          .x = .subset2(.x, i),
+          .x = x,
           ...,
           .args = list(.args = .args),
           .compute = .compute
