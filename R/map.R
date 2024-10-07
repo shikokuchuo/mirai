@@ -168,7 +168,6 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
   envir <- ..[[.compute]]
   is.null(envir) && {
     .x
-    .f
     warning(._[["requires_daemons"]], call. = FALSE, immediate. = TRUE)
     daemons(n = 1L, dispatcher = "none", .compute = .compute)
     return(mirai_map(.x = .x, .f = .f, ..., .args = .args, .promise = .promise, .compute = .compute))
@@ -177,38 +176,35 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
   vec <- if (length(xilen))
     lapply(
       seq_len(xilen),
-      if (is.matrix(.x))
+      if (is.matrix(.x)) function(i) mirai(
+        .expr = do.call(.f, c(as.list(.x), .args)),
+        .f = .f,
+        .x = .x[i, ],
+        ...,
+        .args = list(.args = .args),
+        .compute = .compute
+      ) else function(i) mirai(
+        .expr = do.call(.f, c(.x, .args)),
+        .f = .f,
+        .x = lapply(.x, .subset2, i),
+        ...,
+        .args = list(.args = .args),
+        .compute = .compute
+      )
+    ) else `names<-`(
+      lapply(
+        seq_along(.x),
         function(i) mirai(
-          .expr = do.call(.f, c(as.list(.x), .args)),
+          .expr = do.call(.f, c(list(.x), .args)),
           .f = .f,
-          .x = .x[i, ],
+          .x = .subset2(.x, i),
           ...,
           .args = list(.args = .args),
           .compute = .compute
-        ) else
-          function(i) mirai(
-            .expr = do.call(.f, c(.x, .args)),
-            .f = .f,
-            .x = lapply(.x, .subset2, i),
-            ...,
-            .args = list(.args = .args),
-            .compute = .compute
-          )
-    ) else
-      `names<-`(
-        lapply(
-          seq_along(.x),
-          function(i) mirai(
-            .expr = do.call(.f, c(list(.x), .args)),
-            .f = .f,
-            .x = .subset2(.x, i),
-            ...,
-            .args = list(.args = .args),
-            .compute = .compute
-          )
-        ),
-        names(.x)
-      )
+        )
+      ),
+      names(.x)
+    )
 
   if (length(.promise))
     if (is.list(.promise)) {
