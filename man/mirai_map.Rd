@@ -50,7 +50,7 @@ Sends each application of function \code{.f} on an element of
     allowing only the failures to be re-run.
 
     Note: requires daemons to have previously been set. If not, then one
-    local daemon is set before the function propceeds.
+    local daemon is set before the function proceeds.
 }
 \section{Results}{
 

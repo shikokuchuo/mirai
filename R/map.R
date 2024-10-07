@@ -87,7 +87,7 @@
 #'     allowing only the failures to be re-run.
 #'
 #'     Note: requires daemons to have previously been set. If not, then one
-#'     local daemon is set before the function propceeds.
+#'     local daemon is set before the function proceeds.
 #'
 #' @examples
 #' if (interactive()) {
@@ -168,27 +168,22 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
   envir <- ..[[.compute]]
   is.null(envir) && {
     .x
-    .f
     warning(._[["requires_daemons"]], call. = FALSE, immediate. = TRUE)
     daemons(n = 1L, dispatcher = "none", .compute = .compute)
     return(mirai_map(.x = .x, .f = .f, ..., .args = .args, .promise = .promise, .compute = .compute))
   }
   xilen <- dim(.x)[1L]
-  if (length(xilen)) {
-    vec <- vector(mode = "list", length = xilen)
-    if (is.matrix(.x)) {
-      for (i in seq_len(xilen))
-        vec[[i]] <- mirai(
-          .expr = do.call(.f, c(as.list(.x), .args)),
-          .f = .f,
-          .x = .x[i, ],
-          ...,
-          .args = list(.args = .args),
-          .compute = .compute
-        )
-    } else {
-      for (i in seq_len(xilen))
-        vec[[i]] <- mirai(
+  vec <- if (length(xilen))
+    lapply(
+      seq_len(xilen),
+      if (is.matrix(.x)) function(i) mirai(
+        .expr = do.call(.f, c(as.list(.x), .args)),
+        .f = .f,
+        .x = .x[i, ],
+        ...,
+        .args = list(.args = .args),
+        .compute = .compute
+      ) else function(i) mirai(
         .expr = do.call(.f, c(.x, .args)),
         .f = .f,
         .x = lapply(.x, .subset2, i),
@@ -196,19 +191,20 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
         .args = list(.args = .args),
         .compute = .compute
       )
-    }
-  } else {
-    vec <- `names<-`(vector(mode = "list", length = length(.x)), names(.x))
-    for (i in seq_along(vec))
-      vec[[i]] <- mirai(
-        .expr = do.call(.f, c(list(.x), .args)),
-        .f = .f,
-        .x = .subset2(.x, i),
-        ...,
-        .args = list(.args = .args),
-        .compute = .compute
-      )
-  }
+    ) else `names<-`(
+      lapply(
+        .x,
+        function(x) mirai(
+          .expr = do.call(.f, c(list(.x), .args)),
+          .f = .f,
+          .x = x,
+          ...,
+          .args = list(.args = .args),
+          .compute = .compute
+        )
+      ),
+      names(.x)
+    )
 
   if (length(.promise))
     if (is.list(.promise)) {
