@@ -2,8 +2,8 @@
 
 #### New Features
 
-* `daemons(dispatcher = "thread")` implements threaded dispatcher (experimental), a faster and more efficient option to running dispatcher in a separate process.
-* `mirai_map()[.progress_cli]` added as an alternative progress indicator, using the cli package to show % complete and ETA.
+* `daemons(dispatcher = "thread")` implements threaded dispatcher (experimental), a faster and more efficient alternative to running dispatcher in a separate process.
+* `mirai_map()` adds `[.progress_cli]` as an alternative progress indicator, using the cli package to show % complete and ETA.
 * `daemons()` gains argument 'force' to control whether further calls reset previous settings for the same compute profile.
 * `daemon()` gains argument 'asyncdial' to allow control of connection behaviour independently of what happens when the daemon exits.
 
@@ -11,8 +11,8 @@
 
 * For `daemons()`:
   - Argument 'dispatcher' now takes the character options 'process', 'thread' and 'none'. Previous values of TRUE/FALSE continue to be accepted (thanks @hadley #157).
-  - Return value is now always an integer value - either the number of daemons set if using dispatcher, or the number of daemons launched locally (zero if using a remote launcher).
-  - Invalid type of '...' arguments are now dropped instead of throwing an error. This allows '...' containing unused arguments to be more easily passed from other functions.
+  - Return value is now always an integer - either the number of daemons set if using dispatcher, or the number of daemons launched locally (zero if using a remote launcher).
+  - Invalid type of `...` arguments are now dropped instead of throwing an error. This allows `...` containing unused arguments to be more easily passed from other functions.
 * For `mirai_map()`:
   - Now only performs multiple map over the rows of matrices and dataframes (thanks @andrewGhazi, #147).
   - Combining collection options is now easier, in the fashion of: `x[.stop, .progress]`.
