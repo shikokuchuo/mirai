@@ -172,7 +172,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   }
   data <- list(
     ._mirai_globals_. = globals,
-    .expr = if (is.symbol(expr) && exists(expr, parent.frame()) && is.language(.expr)) .expr else expr
+    .expr = if (is.symbol(expr) && exists(as.character(expr), parent.frame()) && is.language(.expr)) .expr else expr
   )
   if (length(.args)) {
     if (is.environment(.args))
@@ -245,7 +245,7 @@ everywhere <- function(.expr, ..., .args = list(), .serial = NULL, .compute = "d
 
   expr <- substitute(.expr)
   .expr <- c(
-    as.expression(if (is.symbol(expr) && exists(expr, parent.frame()) && is.language(.expr)) .expr else expr),
+    as.expression(if (is.symbol(expr) && exists(as.character(expr), parent.frame()) && is.language(.expr)) .expr else expr),
     .snapshot
   )
 
