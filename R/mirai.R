@@ -245,7 +245,7 @@ everywhere <- function(.expr, ..., .args = list(), .serial = NULL, .compute = "d
 
   expr <- substitute(.expr)
   .expr <- c(
-    as.expression(if (is.symbol(expr) && exists(expr, parent.frame()) && is.language(.expr)) .expr else expr),
+    as.expression(if (is.symbol(expr) && exists(as.character(expr), parent.frame()) && is.language(.expr)) .expr else expr),
     .snapshot
   )
 
