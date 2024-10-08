@@ -53,9 +53,9 @@
 <div class="section level5">
 <h5 id="new-features-1-2-0-9030">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-2-0-9030"></a></h5>
 <ul><li>
-<code>daemons(dispatcher = "thread")</code> implements threaded dispatcher (experimental), a faster and more efficient option to running dispatcher in a separate process.</li>
+<code>daemons(dispatcher = "thread")</code> implements threaded dispatcher (experimental), a faster and more efficient alternative to running dispatcher in a separate process.</li>
 <li>
-<code>mirai_map()[.progress_cli]</code> added as an alternative progress indicator, using the cli package to show % complete and ETA.</li>
+<code><a href="../reference/mirai_map.html">mirai_map()</a></code> adds <code>[.progress_cli]</code> as an alternative progress indicator, using the cli package to show % complete and ETA.</li>
 <li>
 <code><a href="../reference/daemons.html">daemons()</a></code> gains argument ‘force’ to control whether further calls reset previous settings for the same compute profile.</li>
 <li>
@@ -65,8 +65,8 @@
 <h5 id="behavioural-changes-1-2-0-9030">Behavioural Changes<a class="anchor" aria-label="anchor" href="#behavioural-changes-1-2-0-9030"></a></h5>
 <ul><li>For <code><a href="../reference/daemons.html">daemons()</a></code>:
 <ul><li>Argument ‘dispatcher’ now takes the character options ‘process’, ‘thread’ and ‘none’. Previous values of TRUE/FALSE continue to be accepted (thanks <a href="https://github.com/hadley" class="external-link">@hadley</a> <a href="https://github.com/shikokuchuo/mirai/issues/157" class="external-link">#157</a>).</li>
-<li>Return value is now always an integer value - either the number of daemons set if using dispatcher, or the number of daemons launched locally (zero if using a remote launcher).</li>
-<li>Invalid type of ‘…’ arguments are now dropped instead of throwing an error. This allows ‘…’ containing unused arguments to be more easily passed from other functions.</li>
+<li>Return value is now always an integer - either the number of daemons set if using dispatcher, or the number of daemons launched locally (zero if using a remote launcher).</li>
+<li>Invalid type of <code>...</code> arguments are now dropped instead of throwing an error. This allows <code>...</code> containing unused arguments to be more easily passed from other functions.</li>
 </ul></li>
 <li>For <code><a href="../reference/mirai_map.html">mirai_map()</a></code>:
 <ul><li>Now only performs multiple map over the rows of matrices and dataframes (thanks <a href="https://github.com/andrewGhazi" class="external-link">@andrewGhazi</a>, <a href="https://github.com/shikokuchuo/mirai/issues/147" class="external-link">#147</a>).</li>
