@@ -2,9 +2,9 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [main, dev]
+    branches: [main, dev, testing]
   pull_request:
-    branches: [main, dev]
+    branches: [main, dev, testing]
 
 name: R-CMD-check
 
@@ -21,8 +21,10 @@ jobs:
           - {os: ubuntu-latest, r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest, r: 'release'}
           - {os: ubuntu-latest, r: 'oldrel-1'}
+          - {os: ubuntu-latest, r: 'oldrel-4'}
           - {os: macOS-latest,  r: 'release'}
           - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'oldrel-4'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
