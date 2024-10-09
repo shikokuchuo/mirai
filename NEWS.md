@@ -1,3 +1,9 @@
+# mirai 1.3.0.9000 (development)
+
+#### Updates
+
+* `serialization()` deprecated in mirai 1.2.0 is now removed.
+
 # mirai 1.3.0
 
 #### New Features

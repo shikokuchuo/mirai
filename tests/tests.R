@@ -262,7 +262,6 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
   test_true(res[[1L]] != res[[2L]])
   test_zero(daemons(0))
   test_equal(1L, daemons(url = "wss://127.0.0.1:0", token = TRUE, pass = "test"))
-  test_type("list", serialization(list(function(x) serialize(x, NULL), unserialize), "tst_cls"))
   test_null(launch_local(1L))
   Sys.sleep(1L)
   test_true(grepl("CERTIFICATE", launch_remote(1L), fixed = TRUE))
@@ -274,7 +273,6 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
   test_null(saisei(1))
   test_error(launch_local(0:1), "out of bounds")
   test_error(launch_remote(1:2), "out of bounds")
-  test_true(!length(serialization(NULL)))
   option <- 15L
   Sys.setenv(R_DEFAULT_PACKAGES = "stats,utils")
   test_equal(1L, daemons(1, dispatcher = TRUE, maxtasks = 10L, timerstart = 1L, walltime = 1000L, seed = 1546, token = TRUE, cleanup = option, autoexit = tools::SIGCONT))

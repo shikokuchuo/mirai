@@ -542,40 +542,6 @@ status <- function(.compute = "default") {
 #'
 serial_config <- serial_config
 
-#' Custom Serialization Functions
-#'
-#' [Deprecated in favour of the '.serial' argument to \code{\link{everywhere}}]
-#'     Registers custom serialization and unserialization functions for
-#'     reference objects. Settings apply only to the \sQuote{default} compute
-#'     profile, and daemons must have been set beforehand.
-#'
-#' @param fns \strong{either} a list comprising 2 functions: \cr serialization
-#'     function: must accept a reference object (or list of objects) inheriting
-#'     from \sQuote{class} and return a raw vector.\cr unserialization function:
-#'     must accept a raw vector and return a reference object (or list of
-#'     reference objects).\cr \strong{or else} NULL to reset.
-#' @inheritParams serial_config
-#'
-#' @return Invisibly, a list comprising the currently-registered serialization
-#'     configuration for the \sQuote{default} compute profile (an empty list if
-#'     not registered).
-#'
-#' @note This function is deprecated and will be removed in a later package
-#'     version. Use \code{\link{serial_config}} to create a configuration to
-#'     pass directly to the '.serial' argument of \code{\link{everywhere}}.
-#'
-#' @keywords internal
-#' @export
-#'
-serialization <- function(fns, class, vec = FALSE) {
-
-  is.null(..[["default"]]) && return(invisible(list()))
-  serial <- if (is.null(fns)) list() else serial_config(class, fns[[1L]], fns[[2L]], vec)
-  everywhere({}, .serial = serial, .compute = "default")
-  invisible(serial)
-
-}
-
 # internals --------------------------------------------------------------------
 
 inproc_url <- function() sprintf("inproc://%s", random(10L))
