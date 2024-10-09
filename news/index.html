@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,9 +45,17 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/shikokuchuo/mirai/blob/v1.3.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/shikokuchuo/mirai/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.3.0.9000" id="mirai-1309000-development">mirai 1.3.0.9000 (development)<a class="anchor" aria-label="anchor" href="#mirai-1309000-development"></a></h2>
+<div class="section level5">
+<h5 id="updates-1-3-0-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-1-3-0-9000"></a></h5>
+<ul><li>
+<code>serialization()</code> deprecated in mirai 1.2.0 is now removed.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.3.0" id="mirai-130">mirai 1.3.0<a class="anchor" aria-label="anchor" href="#mirai-130"></a></h2><p class="text-muted">CRAN release: 2024-10-09</p>
 <div class="section level5">
@@ -96,7 +104,7 @@
 <ul><li>
 <code><a href="../reference/everywhere.html">everywhere()</a></code> adds argument ‘.serial’ to accept serialization configurations created by <code><a href="../reference/serial_config.html">serial_config()</a></code>. These allow normally non-exportable reference objects such as Arrow Tables or torch tensors to be used seamlessly across parallel processes without additional marshalling steps. Configurations apply on a per compute profile basis.</li>
 <li>
-<code><a href="../reference/serialization.html">serialization()</a></code> is now deprecated in favour of the above usage of <code><a href="../reference/everywhere.html">everywhere()</a></code>, and will be removed in a future version.</li>
+<code>serialization()</code> is now deprecated in favour of the above usage of <code><a href="../reference/everywhere.html">everywhere()</a></code>, and will be removed in a future version.</li>
 <li>
 <code><a href="../reference/mirai_map.html">mirai_map()</a></code> enhanced to perform multiple map over 2D lists/vectors, allowing advanced patterns such as mapping over the rows of a dataframe or matrix.</li>
 <li>‘mirai_map’ <code>[]</code> method gains the option <code>[.flat]</code> to collect and flatten results, avoiding coercion.</li>
@@ -111,7 +119,7 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.1" id="mirai-111">mirai 1.1.1<a class="anchor" aria-label="anchor" href="#mirai-111"></a></h2><p class="text-muted">CRAN release: 2024-07-01</p>
 <ul><li>
-<code><a href="../reference/serialization.html">serialization()</a></code> function signature and return value slightly modified for clarity. Successful registration / cancellation messages are no longer printed to the console.</li>
+<code>serialization()</code> function signature and return value slightly modified for clarity. Successful registration / cancellation messages are no longer printed to the console.</li>
 <li>
 <code><a href="../reference/dispatcher.html">dispatcher()</a></code> argument ‘retry’ now defaults to FALSE for consistency with non-dispatcher behaviour.</li>
 <li>
@@ -212,7 +220,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.11.3" id="mirai-0113">mirai 0.11.3<a class="anchor" aria-label="anchor" href="#mirai-0113"></a></h2><p class="text-muted">CRAN release: 2023-12-07</p>
-<ul><li>Implements <code><a href="../reference/serialization.html">serialization()</a></code> for registering custom serialization and unserialization functions when using daemons.</li>
+<ul><li>Implements <code>serialization()</code> for registering custom serialization and unserialization functions when using daemons.</li>
 <li>Introduces <code><a href="../reference/call_mirai.html">call_mirai_()</a></code>, a user-interruptible version of <code><a href="../reference/call_mirai.html">call_mirai()</a></code> suitable for interactive use.</li>
 <li>Simplification of <code><a href="../reference/mirai.html">mirai()</a></code> interface:
 <ul><li>‘.args’ will now coerce to a list if an object other than a list is supplied, rather than error.</li>

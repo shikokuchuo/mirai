@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>mirai - Databases and Arrow</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/mirai/blob/v1.3.0/vignettes/databases.Rmd" class="external-link"><code>vignettes/databases.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/mirai/blob/main/vignettes/databases.Rmd" class="external-link"><code>vignettes/databases.Rmd</code></a></small>
       <div class="d-none name"><code>databases.Rmd</code></div>
     </div>
 
@@ -247,7 +247,7 @@ tear down the databases, before resetting daemons.</p>
 </h3>
 <p>The following is an example of how database connections hosted in
 mirai daemons may be used to power a Shiny app.</p>
-<p>The one-time <code><a href="../reference/serialization.html">serialization()</a></code> setup ensures seamless
+<p>The one-time <code>serialization()</code> setup ensures seamless
 transport of Apache Arrow data, and occurs in the global environment
 outside of <code>server()</code>.</p>
 <p>A new database connection is created in a new daemon process for
