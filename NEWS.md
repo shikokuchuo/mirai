@@ -1,4 +1,4 @@
-# mirai 1.2.0.9031 (development)
+# mirai 1.3.0
 
 #### New Features
 
