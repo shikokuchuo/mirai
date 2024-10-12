@@ -75,6 +75,10 @@ connection && {
   test_class("errorValue", me[["data"]])
   test_print(me)
   test_print(me$data)
+  err <- mirai(func("stopped"), func = function(x) stop(x), .timeout = 2000L)[]
+  if (is_mirai_error(err)) test_type("list", err$stack.trace)
+  if (is_mirai_error(err)) test_true(all(as.logical(lapply(err$stack.trace, is.character))))
+  if (is_mirai_error(err)) test_true(length(err$stack.trace) >= 2L)
   df <- data.frame(a = 1, b = 2)
   dm <- mirai(as.matrix(df), .args = list(df = df), .timeout = 2000L)
   test_true(is_mirai(call_mirai(dm)))
