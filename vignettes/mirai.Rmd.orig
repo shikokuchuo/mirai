@@ -470,7 +470,8 @@ m3$data$stack.trace
 ```
 If a daemon instance is sent a user interrupt, the mirai will resolve to an object of class 'miraiInterrupt' and 'errorValue'. `is_mirai_interrupt()` may be used to test for such interrupts.
 ```{r interruptexample}
-is_mirai_interrupt(m2$data)
+m4 <- mirai(rlang::interrupt()) # simulates a user interrupt
+is_mirai_interrupt(m4[])
 ```
 If execution of a mirai surpasses the timeout set via the '.timeout' argument, the mirai will resolve to an 'errorValue' of 5L (timed out). This can, amongst other things, guard against mirai processes that have the potential to hang and never return.
 ```{r timeouts}
