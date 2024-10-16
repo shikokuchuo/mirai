@@ -13,14 +13,14 @@ language object.}
 
 \item{...}{(optional) \strong{either} named arguments (name = value pairs)
 specifying objects referenced, but not defined, in \sQuote{.expr},
-\strong{or} an environment containing such objects. See
-\sQuote{evaluation} section below.}
+\strong{or} an environment containing such objects. See \sQuote{evaluation}
+section below.}
 
 \item{.args}{(optional) \strong{either} a named list specifying objects
-referenced, but not defined, in \sQuote{.expr}, \strong{or} an
-environment containing such objects. These objects will remain local to
-the evaluation environment as opposed to those supplied in \sQuote{...}
-above - see \sQuote{evaluation} section below.}
+referenced, but not defined, in \sQuote{.expr}, \strong{or} an environment
+containing such objects. These objects will remain local to the evaluation
+environment as opposed to those supplied in \sQuote{...} above - see
+\sQuote{evaluation} section below.}
 
 \item{.serial}{[default NULL] (optional) a configuration created by
 \code{\link{serial_config}} to register serialization and unserialization
@@ -34,35 +34,35 @@ to use (each compute profile has its own independent set of daemons).}
 }
 \value{
 Invisible NULL. Will error if the specified compute profile is not
-    found, i.e. not yet set up.
+  found, i.e. not yet set up.
 }
 \description{
 Evaluate an expression \sQuote{everywhere} on all connected daemons for the
-    specified compute profile. Designed for performing setup operations
-    across daemons by loading packages, exporting common data, or registering
-    custom serialization functions. Resultant changes to the global
-    environment, loaded packages and options are persisted regardless of a
-    daemon's \sQuote{cleanup} setting.
+specified compute profile. Designed for performing setup operations across
+daemons by loading packages, exporting common data, or registering custom
+serialization functions. Resultant changes to the global environment, loaded
+packages and options are persisted regardless of a daemon's \sQuote{cleanup}
+setting.
 }
 \section{Evaluation}{
 
 
-    The expression \sQuote{.expr} will be evaluated in a separate R process
-    in a clean environment (not the global environment), consisting only of
-    the objects in the list or environment supplied to \sQuote{.args}, with
-    the named objects passed as \sQuote{...} (from the environment if one was
-    supplied) assigned to the global environment of that process.
+The expression \sQuote{.expr} will be evaluated in a separate R process in a
+clean environment (not the global environment), consisting only of the
+objects in the list or environment supplied to \sQuote{.args}, with the named
+objects passed as \sQuote{...} (from the environment if one was supplied)
+assigned to the global environment of that process.
 
-    For evaluation to occur \emph{as if} in your global environment, supply
-    objects to \sQuote{...} rather than \sQuote{.args}. For stricter scoping,
-    use \sQuote{.args}, which limits, for example, where variables not
-    explicitly passed as arguments to functions are found.
+For evaluation to occur \emph{as if} in your global environment, supply
+objects to \sQuote{...} rather than \sQuote{.args}. For stricter scoping, use
+\sQuote{.args}, which limits, for example, where variables not explicitly
+passed as arguments to functions are found.
 
-    As evaluation occurs in a clean environment, all undefined objects must
-    be supplied though \sQuote{...} and/or \sQuote{.args}, including
-    self-defined functions. Functions from a package should use namespaced
-    calls such as \code{mirai::mirai()}, or else the package should be loaded
-    beforehand as part of \sQuote{.expr}.
+As evaluation occurs in a clean environment, all undefined objects must be
+supplied though \sQuote{...} and/or \sQuote{.args}, including self-defined
+functions. Functions from a package should use namespaced calls such as
+\code{mirai::mirai()}, or else the package should be loaded beforehand as
+part of \sQuote{.expr}.
 }
 
 \examples{

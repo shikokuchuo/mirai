@@ -7,27 +7,26 @@
 \title{mirai: Minimalist Async Evaluation Framework for R}
 \description{
 Designed for simplicity, a 'mirai' evaluates an R expression asynchronously
-    in a parallel process, locally or distributed over the network, with the
-    result automatically available upon completion. Modern networking and
-    concurrency built on 'nanonext' and 'NNG' (Nanomsg Next Gen) ensure
-    reliable and efficient scheduling, over fast inter-process communications
-    or TCP/IP secured by TLS. Advantages include being inherently queued thus
-    handling many more tasks than available processes, no storage on the file
-    system, support for otherwise non-exportable reference objects, an
-    event-driven promises implementation, and built-in asynchronous parallel
-    map.
+in a parallel process, locally or distributed over the network, with the
+result automatically available upon completion. Modern networking and
+concurrency built on 'nanonext' and 'NNG' (Nanomsg Next Gen) ensure reliable
+and efficient scheduling, over fast inter-process communications or TCP/IP
+secured by TLS. Advantages include being inherently queued thus handling many
+more tasks than available processes, no storage on the file system, support
+for otherwise non-exportable reference objects, an event-driven promises
+implementation, and built-in asynchronous parallel map.
 }
 \section{Notes}{
 
 
-    For local mirai requests, the default transport for inter-process
-    communications is platform-dependent: abstract Unix domain sockets on
-    Linux, Unix domain sockets on MacOS, Solaris and other POSIX platforms,
-    and named pipes on Windows.
+ For local mirai requests, the default transport for inter-process
+ communications is platform-dependent: abstract Unix domain sockets on Linux,
+ Unix domain sockets on MacOS, Solaris and other POSIX platforms, and named
+ pipes on Windows.
 
-    This may be overriden, if desired, by specifying 'url' in the
-    \code{\link{daemons}} interface and launching daemons using
-    \code{\link{launch_local}}.
+ This may be overriden, if desired, by specifying 'url' in the
+ \code{\link{daemons}} interface and launching daemons using
+ \code{\link{launch_local}}.
 }
 
 \section{Reference Manual}{
@@ -47,5 +46,5 @@ Useful links:
 }
 \author{
 Charlie Gao \email{charlie.gao@shikokuchuo.net}
-    (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
+  (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 }

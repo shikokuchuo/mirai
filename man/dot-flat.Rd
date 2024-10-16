@@ -27,34 +27,33 @@ An object of class \code{bytecode} of length 1.
 }
 \description{
 Expressions to insert into the \code{[]} method for \sQuote{mirai_map}
-    objects.
+objects.
 }
 \section{Results}{
 
 
-    \code{x[]} collects the results of a \sQuote{mirai_map} \code{x} and
-    returns a list. This will wait for all asynchronous operations to
-    complete if still in progress, blocking but user-interruptible.
+\code{x[]} collects the results of a \sQuote{mirai_map} \code{x} and returns
+a list. This will wait for all asynchronous operations to complete if still
+in progress, blocking but user-interruptible.
 
-    \code{x[.flat]} collects and flattens map results to a vector, checking
-    that they are of the same type to avoid coercion. Note: errors if an
-    \sQuote{errorValue} has been returned or results are of differing type.
+\code{x[.flat]} collects and flattens map results to a vector, checking that
+they are of the same type to avoid coercion. Note: errors if an
+\sQuote{errorValue} has been returned or results are of differing type.
 
-    \code{x[.progress]} collects map results whilst showing a simple text
-    progress indicator of parts completed of the total.
+\code{x[.progress]} collects map results whilst showing a simple text
+progress indicator of parts completed of the total.
 
-    \code{x[.progress_cli]} collects map results whilst showing a progress bar
-    from the \CRANpkg{cli} package, if available, with completion percentage
-    and ETA.
+\code{x[.progress_cli]} collects map results whilst showing a progress bar
+from the \CRANpkg{cli} package, if available, with completion percentage and
+ETA.
 
-    \code{x[.stop]} collects map results applying early stopping, which stops
-    at the first failure and cancels remaining operations. Note: operations
-    already in progress continue to completion, although their results are
-    not collected.
+\code{x[.stop]} collects map results applying early stopping, which stops at
+the first failure and cancels remaining operations. Note: operations already
+in progress continue to completion, although their results are not collected.
 
-    The options above may be combined in the manner of: \cr
-    \code{x[.stop, .progress]} which applies early stopping together with a
-    progress indicator.
+The options above may be combined in the manner of: \cr
+\code{x[.stop, .progress]} which applies early stopping together with a
+progress indicator.
 }
 
 \keyword{datasets}

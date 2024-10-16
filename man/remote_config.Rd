@@ -23,12 +23,11 @@ ssh_config(
 }
 \arguments{
 \item{command}{the command used to effect the daemon launch on the remote
-machine as a character string (e.g. \code{'ssh'}). Defaults to
-\sQuote{ssh} for \code{ssh_config}, although may be substituted for the
-full path to a specific SSH application. The default NULL for
-\code{remote_config} does not effect any launches, but causes
-\code{\link{launch_remote}} to return the shell commands for manual
-deployment on remote machines.}
+machine as a character string (e.g. \code{'ssh'}). Defaults to \sQuote{ssh}
+for \code{ssh_config}, although may be substituted for the full path to a
+specific SSH application. The default NULL for \code{remote_config} does
+not effect any launches, but causes \code{\link{launch_remote}} to return
+the shell commands for manual deployment on remote machines.}
 
 \item{args}{(optional) arguments passed to \sQuote{command}, as a character
 vector that must include \code{"."} as an element, which will be
@@ -64,48 +63,47 @@ required and can be inferred from the \sQuote{url} supplied (see
 }
 \value{
 A list in the required format to be supplied to the \sQuote{remote}
-    argument of \code{\link{launch_remote}}, \code{\link{daemons}}, or
-    \code{\link{make_cluster}}.
+  argument of \code{\link{launch_remote}}, \code{\link{daemons}}, or
+  \code{\link{make_cluster}}.
 }
 \description{
-\code{remote_config} provides a flexible generic framework for generating
-    the shell commands to deploy daemons remotely.
+\code{remote_config} provides a flexible generic framework for generating the
+shell commands to deploy daemons remotely.
 
 \code{ssh_config} generates a remote configuration for launching daemons over
-    SSH, with the option of SSH tunnelling.
+SSH, with the option of SSH tunnelling.
 }
 \section{SSH Direct Connections}{
 
 
-    The simplest use of SSH is to execute the daemon launch command on a
-    remote machine, for it to dial back to the host / dispatcher URL.
+The simplest use of SSH is to execute the daemon launch command on a remote
+machine, for it to dial back to the host / dispatcher URL.
 
-    It is assumed that SSH key-based authentication is already in place. The
-    relevant port on the host must also be open to inbound connections from
-    the remote machine.
+It is assumed that SSH key-based authentication is already in place. The
+relevant port on the host must also be open to inbound connections from the
+remote machine.
 }
 
 \section{SSH Tunnelling}{
 
 
-    Use of SSH tunnelling provides a convenient way to launch remote daemons
-    without requiring the remote machine to be able to access the host.
-    Often firewall configurations or security policies may prevent opening a
-    port to accept outside connections.
+Use of SSH tunnelling provides a convenient way to launch remote daemons
+without requiring the remote machine to be able to access the host. Often
+firewall configurations or security policies may prevent opening a port to
+accept outside connections.
 
-    In these cases SSH tunnelling offers a solution by creating a tunnel once
-    the initial SSH connection is made. For simplicity, this SSH tunnelling
-    implementation uses the same port on both the side of the host and that
-    of the daemon. SSH key-based authentication must also already be in
-    place.
+In these cases SSH tunnelling offers a solution by creating a tunnel once the
+initial SSH connection is made. For simplicity, this SSH tunnelling
+implementation uses the same port on both the side of the host and that of
+the daemon. SSH key-based authentication must also already be in place.
 
-    Tunnelling requires the hostname for the \sQuote{host} argument (or the
-    \sQuote{url} argument to \code{\link{daemons}} if called directly in
-    that context) to be either \sQuote{127.0.0.1} or \sQuote{localhost}.
-    This is as the tunnel is created between \code{127.0.0.1:port} or
-    equivalently \code{localhost:port} on each machine. The host listens to
-    \code{port} on its machine and the remotes each dial into \code{port} on
-    their own respective machines.
+Tunnelling requires the hostname for the \sQuote{host} argument (or the
+\sQuote{url} argument to \code{\link{daemons}} if called directly in that
+context) to be either \sQuote{127.0.0.1} or \sQuote{localhost}. This is as
+the tunnel is created between \code{127.0.0.1:port} or equivalently
+\code{localhost:port} on each machine. The host listens to \code{port} on its
+machine and the remotes each dial into \code{port} on their own respective
+machines.
 }
 
 \examples{

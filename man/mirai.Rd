@@ -13,18 +13,18 @@ language object.}
 
 \item{...}{(optional) \strong{either} named arguments (name = value pairs)
 specifying objects referenced, but not defined, in \sQuote{.expr},
-\strong{or} an environment containing such objects. See
-\sQuote{evaluation} section below.}
+\strong{or} an environment containing such objects. See \sQuote{evaluation}
+section below.}
 
 \item{.args}{(optional) \strong{either} a named list specifying objects
-referenced, but not defined, in \sQuote{.expr}, \strong{or} an
-environment containing such objects. These objects will remain local to
-the evaluation environment as opposed to those supplied in \sQuote{...}
-above - see \sQuote{evaluation} section below.}
+referenced, but not defined, in \sQuote{.expr}, \strong{or} an environment
+containing such objects. These objects will remain local to the evaluation
+environment as opposed to those supplied in \sQuote{...} above - see
+\sQuote{evaluation} section below.}
 
 \item{.timeout}{[default NULL] for no timeout, or an integer value in
-milliseconds. A mirai will resolve to an \sQuote{errorValue} 5 (timed
-out) if evaluation exceeds this limit.}
+milliseconds. A mirai will resolve to an \sQuote{errorValue} 5 (timed out)
+if evaluation exceeds this limit.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
@@ -34,68 +34,67 @@ A \sQuote{mirai} object.
 }
 \description{
 Evaluate an expression asynchronously in a new background R process or
-    persistent daemon (local or remote). This function will return
-    immediately with a \sQuote{mirai}, which will resolve to the evaluated
-    result once complete.
+persistent daemon (local or remote). This function will return immediately
+with a \sQuote{mirai}, which will resolve to the evaluated result once
+complete.
 }
 \details{
 This function will return a \sQuote{mirai} object immediately.
 
-    The value of a mirai may be accessed at any time at \code{$data}, and
-    if yet to resolve, an \sQuote{unresolved} logical NA will be returned
-    instead.
+The value of a mirai may be accessed at any time at \code{$data}, and if yet
+to resolve, an \sQuote{unresolved} logical NA will be returned instead.
 
-    \code{\link{unresolved}} may be used on a mirai, returning TRUE if a
-    \sQuote{mirai} has yet to resolve and FALSE otherwise. This is suitable
-    for use in control flow statements such as \code{while} or \code{if}.
+\code{\link{unresolved}} may be used on a mirai, returning TRUE if a
+\sQuote{mirai} has yet to resolve and FALSE otherwise. This is suitable for
+use in control flow statements such as \code{while} or \code{if}.
 
-    Alternatively, to call (and wait for) the result, use
-    \code{\link{call_mirai}} on the returned \sQuote{mirai}. This will block
-    until the result is returned.
+Alternatively, to call (and wait for) the result, use
+\code{\link{call_mirai}} on the returned \sQuote{mirai}. This will block
+until the result is returned.
 
-    Specify \sQuote{.compute} to send the mirai using a specific compute
-    profile (if previously created by \code{\link{daemons}}), otherwise leave
-    as \sQuote{default}.
+Specify \sQuote{.compute} to send the mirai using a specific compute profile
+(if previously created by \code{\link{daemons}}), otherwise leave as
+\sQuote{default}.
 }
 \section{Evaluation}{
 
 
-    The expression \sQuote{.expr} will be evaluated in a separate R process
-    in a clean environment (not the global environment), consisting only of
-    the objects in the list or environment supplied to \sQuote{.args}, with
-    the named objects passed as \sQuote{...} (from the environment if one was
-    supplied) assigned to the global environment of that process.
+The expression \sQuote{.expr} will be evaluated in a separate R process in a
+clean environment (not the global environment), consisting only of the
+objects in the list or environment supplied to \sQuote{.args}, with the named
+objects passed as \sQuote{...} (from the environment if one was supplied)
+assigned to the global environment of that process.
 
-    For evaluation to occur \emph{as if} in your global environment, supply
-    objects to \sQuote{...} rather than \sQuote{.args}. For stricter scoping,
-    use \sQuote{.args}, which limits, for example, where variables not
-    explicitly passed as arguments to functions are found.
+For evaluation to occur \emph{as if} in your global environment, supply
+objects to \sQuote{...} rather than \sQuote{.args}. For stricter scoping, use
+\sQuote{.args}, which limits, for example, where variables not explicitly
+passed as arguments to functions are found.
 
-    As evaluation occurs in a clean environment, all undefined objects must
-    be supplied though \sQuote{...} and/or \sQuote{.args}, including
-    self-defined functions. Functions from a package should use namespaced
-    calls such as \code{mirai::mirai()}, or else the package should be loaded
-    beforehand as part of \sQuote{.expr}.
+As evaluation occurs in a clean environment, all undefined objects must be
+supplied though \sQuote{...} and/or \sQuote{.args}, including self-defined
+functions. Functions from a package should use namespaced calls such as
+\code{mirai::mirai()}, or else the package should be loaded beforehand as
+part of \sQuote{.expr}.
 }
 
 \section{Errors}{
 
 
-    If an error occurs in evaluation, the error message is returned as a
-    character string of class \sQuote{miraiError} and \sQuote{errorValue}
-    (the stack trace is available at \code{$stack.trace} on the error
-    object). \code{\link{is_mirai_error}} may be used to test for this.
+If an error occurs in evaluation, the error message is returned as a
+character string of class \sQuote{miraiError} and \sQuote{errorValue} (the
+stack trace is available at \code{$stack.trace} on the error object).
+\code{\link{is_mirai_error}} may be used to test for this.
 
-    If a daemon crashes or terminates unexpectedly during evaluation, an
-    \sQuote{errorValue} 19 (Connection reset) is returned (when not using
-    dispatcher or using dispatcher with \code{retry = FALSE}). Otherwise,
-    using dispatcher with \code{retry = TRUE}, the mirai will remain
-    unresolved and is automatically re-tried on the next daemon to connect to
-    the particular instance. To cancel the task instead, use
-    \code{saisei(force = TRUE)} (see \code{\link{saisei}}).
+If a daemon crashes or terminates unexpectedly during evaluation, an
+\sQuote{errorValue} 19 (Connection reset) is returned (when not using
+dispatcher or using dispatcher with \code{retry = FALSE}). Otherwise, using
+dispatcher with \code{retry = TRUE}, the mirai will remain unresolved and is
+automatically re-tried on the next daemon to connect to the particular
+instance. To cancel the task instead, use \code{saisei(force = TRUE)} (see
+\code{\link{saisei}}).
 
-    \code{\link{is_error_value}} tests for all error conditions including
-    \sQuote{mirai} errors, interrupts, and timeouts.
+\code{\link{is_error_value}} tests for all error conditions including
+\sQuote{mirai} errors, interrupts, and timeouts.
 }
 
 \examples{

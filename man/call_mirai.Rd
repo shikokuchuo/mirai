@@ -14,56 +14,56 @@ call_mirai_(x)
 }
 \value{
 The passed object (invisibly). For a \sQuote{mirai}, the retrieved
-    value is stored at \code{$data}.
+  value is stored at \code{$data}.
 }
 \description{
 \code{call_mirai} waits for the \sQuote{mirai} to resolve if still in
-    progress, storing the value at \code{$data}, and returns the
-    \sQuote{mirai} object.
+progress, storing the value at \code{$data}, and returns the \sQuote{mirai}
+object.
 
 \code{call_mirai_} is a variant of \code{call_mirai} that allows user
-    interrupts, suitable for interactive use.
+interrupts, suitable for interactive use.
 }
 \details{
-Both functions accept a list of \sQuote{mirai} objects, such as that
-    returned by \code{\link{mirai_map}} as well as individual \sQuote{mirai}.
+Both functions accept a list of \sQuote{mirai} objects, such as that returned
+by \code{\link{mirai_map}} as well as individual \sQuote{mirai}.
 
-    They will wait for the asynchronous operation(s) to complete if still in
-    progress (blocking).
+They will wait for the asynchronous operation(s) to complete if still in
+progress (blocking).
 
-    \code{x[]} may also be used to wait for and return the value of a mirai
-    \code{x}, and is the equivalent of \code{call_mirai_(x)$data}.
+\code{x[]} may also be used to wait for and return the value of a mirai
+\code{x}, and is the equivalent of \code{call_mirai_(x)$data}.
 }
 \section{Alternatively}{
 
 
-    The value of a \sQuote{mirai} may be accessed at any time at
-    \code{$data}, and if yet to resolve, an \sQuote{unresolved} logical NA
-    will be returned instead.
+The value of a \sQuote{mirai} may be accessed at any time at \code{$data},
+and if yet to resolve, an \sQuote{unresolved} logical NA will be returned
+instead.
 
-    Using \code{\link{unresolved}} on a \sQuote{mirai} returns TRUE only if
-    it has yet to resolve and FALSE otherwise. This is suitable for use in
-    control flow statements such as \code{while} or \code{if}.
+Using \code{\link{unresolved}} on a \sQuote{mirai} returns TRUE only if it
+has yet to resolve and FALSE otherwise. This is suitable for use in control
+flow statements such as \code{while} or \code{if}.
 }
 
 \section{Errors}{
 
 
-    If an error occurs in evaluation, the error message is returned as a
-    character string of class \sQuote{miraiError} and \sQuote{errorValue}
-    (the stack trace is available at \code{$stack.trace} on the error
-    object). \code{\link{is_mirai_error}} may be used to test for this.
+If an error occurs in evaluation, the error message is returned as a
+character string of class \sQuote{miraiError} and \sQuote{errorValue} (the
+stack trace is available at \code{$stack.trace} on the error object).
+\code{\link{is_mirai_error}} may be used to test for this.
 
-    If a daemon crashes or terminates unexpectedly during evaluation, an
-    \sQuote{errorValue} 19 (Connection reset) is returned (when not using
-    dispatcher or using dispatcher with \code{retry = FALSE}). Otherwise,
-    using dispatcher with \code{retry = TRUE}, the mirai will remain
-    unresolved and is automatically re-tried on the next daemon to connect to
-    the particular instance. To cancel the task instead, use
-    \code{saisei(force = TRUE)} (see \code{\link{saisei}}).
+If a daemon crashes or terminates unexpectedly during evaluation, an
+\sQuote{errorValue} 19 (Connection reset) is returned (when not using
+dispatcher or using dispatcher with \code{retry = FALSE}). Otherwise, using
+dispatcher with \code{retry = TRUE}, the mirai will remain unresolved and is
+automatically re-tried on the next daemon to connect to the particular
+instance. To cancel the task instead, use \code{saisei(force = TRUE)} (see
+\code{\link{saisei}}).
 
-    \code{\link{is_error_value}} tests for all error conditions including
-    \sQuote{mirai} errors, interrupts, and timeouts.
+\code{\link{is_error_value}} tests for all error conditions including
+\sQuote{mirai} errors, interrupts, and timeouts.
 }
 
 \examples{

@@ -19,23 +19,22 @@
 #' Next >> Developer Interface
 #'
 #' \code{nextstream} retrieves the currently stored L'Ecuyer-CMRG RNG stream
-#'     for the specified compute profile and advances it to the next stream.
+#' for the specified compute profile and advances it to the next stream.
+#'
+#' These functions are exported for use by packages extending \pkg{mirai} with
+#' alternative launchers of \code{\link{daemon}} processes.
+#'
+#' For \code{nextstream}: This function should be called for its return value
+#' when required. The function also has the side effect of automatically
+#' advancing the stream stored within the compute profile. This ensures that the
+#' next recursive stream is returned when the function is called again.
 #'
 #' @inheritParams mirai
 #'
 #' @return For \code{nextstream}: a length 7 integer vector, as given by
-#'     \code{.Random.seed} when the L'Ecuyer-CMRG RNG is in use (may be passed
-#'     directly to the \sQuote{rs} argument of \code{\link{daemon}}), or else
-#'     NULL if a stream has not yet been created.
-#'
-#' @details These functions are exported for use by packages extending
-#'     \pkg{mirai} with alternative launchers of \code{\link{daemon}} processes.
-#'
-#'     For \code{nextstream}: This function should be called for its return
-#'     value when required. The function also has the side effect of
-#'     automatically advancing the stream stored within the compute profile.
-#'     This ensures that the next recursive stream is returned when the function
-#'     is called again.
+#'   \code{.Random.seed} when the L'Ecuyer-CMRG RNG is in use (may be passed
+#'   directly to the \sQuote{rs} argument of \code{\link{daemon}}), or else
+#'   NULL if a stream has not yet been created.
 #'
 #' @examples
 #' if (interactive()) {
@@ -60,12 +59,12 @@ nextstream <- function(.compute = "default") next_stream(..[[.compute]])
 #' Next >> Developer Interface
 #'
 #' \code{nextget} retrieves the specified item from the specified compute
-#'     profile.
+#' profile.
 #'
 #' @param x character value of item to retrieve. One of \sQuote{n} (number of
-#'     dispatcher daemons), \sQuote{pid} (dispatcher process ID), \sQuote{urls}
-#'     (URLs dispatcher is listening at) or \sQuote{tls} (the stored client TLS
-#'     configuration for use by daemons).
+#'   dispatcher daemons), \sQuote{pid} (dispatcher process ID), \sQuote{urls}
+#'   (URLs dispatcher is listening at) or \sQuote{tls} (the stored client TLS
+#'   configuration for use by daemons).
 #'
 #' @return For \code{nextget}: the requested item, or else NULL if not present.
 #'

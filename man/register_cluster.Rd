@@ -15,11 +15,11 @@ Invisible NULL
 }
 \description{
 Registers 'miraiCluster' with the \pkg{parallel} package as cluster type
-    'MIRAI' and (optionally) makes it the default cluster type.
+'MIRAI' and (optionally) makes it the default cluster type.
 }
 \note{
 The underlying implementation in the \pkg{parallel} package this
-    function relies on iis currently only available in R-devel (4.5).
+  function relies on iis currently only available in R-devel (4.5).
 }
 \examples{
 tryCatch(mirai::register_cluster(), error = identity)

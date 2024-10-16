@@ -12,20 +12,20 @@ unresolved(x)
 }
 \value{
 Logical TRUE if \sQuote{aio} is an unresolved \sQuote{mirai} or
-    \sQuote{mirai} value or the list contains at least one unresolved
-    \sQuote{mirai}, or FALSE otherwise.
+  \sQuote{mirai} value or the list contains at least one unresolved
+  \sQuote{mirai}, or FALSE otherwise.
 }
 \description{
-Query whether a \sQuote{mirai}, \sQuote{mirai} value or list of \sQuote{mirai}
-    remains unresolved. Unlike \code{\link{call_mirai}}, this function does
-    not wait for completion.
+Query whether a \sQuote{mirai}, \sQuote{mirai} value or list of
+\sQuote{mirai} remains unresolved. Unlike \code{\link{call_mirai}}, this
+function does not wait for completion.
 }
 \details{
 Suitable for use in control flow statements such as \code{while} or
-    \code{if}.
+\code{if}.
 
-    Note: querying resolution may cause a previously unresolved
-    \sQuote{mirai} to resolve.
+Note: querying resolution may cause a previously unresolved \sQuote{mirai} to
+resolve.
 }
 \examples{
 if (interactive()) {

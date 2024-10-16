@@ -26,15 +26,15 @@ list of reference objects, e.g. \code{torch::torch_serialize} and
 }
 \value{
 A list comprising the configuration. This should be passed to the
-    \sQuote{.serial} argument of \code{\link{everywhere}}.
+  \sQuote{.serial} argument of \code{\link{everywhere}}.
 }
 \description{
 Returns a serialization configuration, which may be set to perform custom
-    serialization and unserialization of normally non-exportable reference
-    objects, allowing these to be used seamlessly between different R
-    sessions. This feature utilises the 'refhook' system of R native
-    serialization. Once set, the functions apply to all mirai requests for a
-    specific compute profile.
+serialization and unserialization of normally non-exportable reference
+objects, allowing these to be used seamlessly between different R sessions.
+This feature utilises the 'refhook' system of R native serialization. Once
+set, the functions apply to all mirai requests for a specific compute
+profile.
 }
 \examples{
 cfg <- serial_config("test_cls", function(x) serialize(x, NULL), unserialize)

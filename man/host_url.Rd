@@ -18,29 +18,29 @@ scheme used will be either 'wss://' or 'tls+tcp://' accordingly.}
 
 \item{port}{[default 0] numeric port to use. This should be open to
 connections from the network addresses the daemons are connecting from.
-\sQuote{0} is a wildcard value that automatically assigns a free
-ephemeral port.}
+\sQuote{0} is a wildcard value that automatically assigns a free ephemeral
+port.}
 }
 \value{
 A character string comprising a valid URL.
 }
 \description{
 \code{host_url} constructs a valid host URL (at which daemons may connect)
-    based on the computer's hostname. This may be supplied directly to the
-    \sQuote{url} argument of \code{\link{daemons}}.
+based on the computer's hostname. This may be supplied directly to the
+\sQuote{url} argument of \code{\link{daemons}}.
 
 \code{local_url} constructs a random URL suitable for local daemons.
 }
 \details{
-\code{host_url} relies on using the host name of the computer
-    rather than an IP address and typically works on local networks, although
-    this is not always guaranteed. If unsuccessful, substitute an IPv4 or
-    IPv6 address in place of the hostname.
+\code{host_url} relies on using the host name of the computer rather than an
+IP address and typically works on local networks, although this is not always
+guaranteed. If unsuccessful, substitute an IPv4 or IPv6 address in place of
+the hostname.
 
-    \code{local_url} generates a random URL for the platform's default
-    inter-process communications transport: abstract Unix domain sockets on
-    Linux, Unix domain sockets on MacOS, Solaris and other POSIX platforms,
-    and named pipes on Windows.
+\code{local_url} generates a random URL for the platform's default
+inter-process communications transport: abstract Unix domain sockets on
+Linux, Unix domain sockets on MacOS, Solaris and other POSIX platforms, and
+named pipes on Windows.
 }
 \examples{
 host_url()

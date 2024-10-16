@@ -19,75 +19,72 @@
 #' mirai Map
 #'
 #' Asynchronous parallel map of a function over a list or vector using
-#'     \pkg{mirai}, with optional \pkg{promises} integration. Performs multiple
-#'     map over the rows of a dataframe or matrix.
+#' \pkg{mirai}, with optional \pkg{promises} integration. Performs multiple map
+#' over the rows of a dataframe or matrix.
+#'
+#' Sends each application of function \code{.f} on an element of \code{.x}
+#' (or row of \code{.x}) for computation in a separate \code{\link{mirai}} call.
+#'
+#' This simple and transparent behaviour is designed to make full use of
+#' \pkg{mirai} scheduling to minimise overall execution time.
+#'
+#' Facilitates recovery from partial failure by returning all
+#' \sQuote{miraiError} / \sQuote{errorValue} as the case may be, thus allowing
+#' only the failures to be re-run.
+#'
+#' Note: requires daemons to have previously been set. If not, then one local
+#' daemon is set before the function proceeds.
 #'
 #' @param .x a list or atomic vector. Also accepts a matrix or dataframe, in
-#'     which case multiple map is performed over its rows.
+#'   which case multiple map is performed over its rows.
 #' @param .f a function to be applied to each element of \code{.x}, or row of
-#'     \code{.x} as the case may be.
+#'   \code{.x} as the case may be.
 #' @param ... (optional) named arguments (name = value pairs) specifying objects
-#'     referenced, but not defined, in \code{.f}.
+#'   referenced, but not defined, in \code{.f}.
 #' @param .args (optional) further constant arguments to \code{.f}, provided as
-#'     a list.
+#'   a list.
 #' @param .promise (optional) if supplied, registers a promise against each
-#'     mirai. Either a function, supplied to the \sQuote{onFulfilled} argument
-#'     of \code{promises::then()} or a list of 2 functions, supplied
-#'     respectively to \sQuote{onFulfilled} and \sQuote{onRejected} for
-#'     \code{promises::then()}. Using this argument requires the
-#'     \CRANpkg{promises} package.
+#'   mirai. Either a function, supplied to the \sQuote{onFulfilled} argument of
+#'   \code{promises::then()} or a list of 2 functions, supplied respectively to
+#'   \sQuote{onFulfilled} and \sQuote{onRejected} for \code{promises::then()}.
+#'   Using this argument requires the \CRANpkg{promises} package.
 #' @inheritParams mirai
 #'
 #' @return A \sQuote{mirai_map} (list of \sQuote{mirai} objects).
 #'
 #' @section Results:
 #'
-#'     \code{x[]} collects the results of a \sQuote{mirai_map} \code{x} and
-#'     returns a list. This will wait for all asynchronous operations to
-#'     complete if still in progress, blocking but user-interruptible.
+#' \code{x[]} collects the results of a \sQuote{mirai_map} \code{x} and returns
+#' a list. This will wait for all asynchronous operations to complete if still
+#' in progress, blocking but user-interruptible.
 #'
-#'     \code{x[.flat]} collects and flattens map results to a vector, checking
-#'     that they are of the same type to avoid coercion. Note: errors if an
-#'     \sQuote{errorValue} has been returned or results are of differing type.
+#' \code{x[.flat]} collects and flattens map results to a vector, checking that
+#' they are of the same type to avoid coercion. Note: errors if an
+#' \sQuote{errorValue} has been returned or results are of differing type.
 #'
-#'     \code{x[.progress]} collects map results whilst showing a simple text
-#'     progress indicator of parts completed of the total.
+#' \code{x[.progress]} collects map results whilst showing a simple text
+#' progress indicator of parts completed of the total.
 #'
-#'     \code{x[.progress_cli]} collects map results whilst showing a progress bar
-#'     from the \CRANpkg{cli} package, if available, with completion percentage
-#'     and ETA.
+#' \code{x[.progress_cli]} collects map results whilst showing a progress bar
+#' from the \CRANpkg{cli} package, if available, with completion percentage and
+#' ETA.
 #'
-#'     \code{x[.stop]} collects map results applying early stopping, which stops
-#'     at the first failure and cancels remaining operations. Note: operations
-#'     already in progress continue to completion, although their results are
-#'     not collected.
+#' \code{x[.stop]} collects map results applying early stopping, which stops at
+#' the first failure and cancels remaining operations. Note: operations already
+#' in progress continue to completion, although their results are not collected.
 #'
-#'     The options above may be combined in the manner of: \cr
-#'     \code{x[.stop, .progress]} which applies early stopping together with a
-#'     progress indicator.
+#' The options above may be combined in the manner of: \cr
+#' \code{x[.stop, .progress]} which applies early stopping together with a
+#' progress indicator.
 #'
 #' @section Multiple Map:
 #'
-#'    Multiple map is performed automatically over the \strong{rows} of an
-#'    object with \sQuote{dim} attributes such as a matrix or dataframe. This is
-#'    most often the desired behaviour.
+#' Multiple map is performed automatically over the \strong{rows} of an object
+#' with \sQuote{dim} attributes such as a matrix or dataframe. This is most
+#' often the desired behaviour in these cases.
 #'
-#'    To map over \strong{columns} instead, first wrap a dataframe in
-#'    \code{\link{as.list}}, or transpose a matrix using \code{\link{t}}.
-#'
-#' @details Sends each application of function \code{.f} on an element of
-#'     \code{.x} (or row of \code{.x}) for computation in a separate
-#'     \code{\link{mirai}} call.
-#'
-#'     This simple and transparent behaviour is designed to make full use of
-#'     \pkg{mirai} scheduling to minimise overall execution time.
-#'
-#'     Facilitates recovery from partial failure by returning all
-#'     \sQuote{miraiError} / \sQuote{errorValue} as the case may be, thus
-#'     allowing only the failures to be re-run.
-#'
-#'     Note: requires daemons to have previously been set. If not, then one
-#'     local daemon is set before the function proceeds.
+#' To map over \strong{columns} instead, first wrap a dataframe in
+#' \code{\link{as.list}}, or transpose a matrix using \code{\link{t}}.
 #'
 #' @examples
 #' if (interactive()) {
@@ -255,7 +252,7 @@ print.mirai_map <- function(x, ...) {
 #' mirai Map Options
 #'
 #' Expressions to insert into the \code{[]} method for \sQuote{mirai_map}
-#'     objects.
+#' objects.
 #'
 #' @inheritSection mirai_map Results
 #'

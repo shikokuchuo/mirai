@@ -14,15 +14,15 @@
 \item{...}{not used.}
 }
 \value{
-The return value of 'expr'.
+The return value of \sQuote{expr}.
 }
 \description{
 Evaluate an expression with daemons that last for the duration of the
-    expression.
+expression.
 }
 \details{
-This function is an S3 method for the generic \code{with} for
-    class 'miraiDaemons'.
+This function is an S3 method for the generic \code{with} for class
+'miraiDaemons'.
 }
 \examples{
 if (interactive()) {
