@@ -353,16 +353,16 @@ daemons(
 
 `remote_config()` may be used to run a command to deploy daemons using a resource manager.
 
-Taking Slurm as an example, the following uses `srun` to launch 2 daemons on the cluster, with some additional arguments to `srun` specifying the resource allocation:
-
-```{r remotecfg, eval=FALSE}
+Taking Slurm as an example, the following uses `sbatch` to launch 2 daemons on the cluster, with some additional arguments to `sbatch` specifying the resource allocation:
+``` r
 daemons(
   n = 2,
   url = host_url(ws = TRUE),
   remote = remote_config(
-    command = "srun",
-    args = c("--mem 512", "-n 1", "."),
-    rscript = file.path(R.home("bin"), "Rscript")
+    command = "sbatch",
+    args = c("--mem 512", "-n 1", "--wrap", "."),
+    rscript = file.path(R.home("bin"), "Rscript"),
+    quote = TRUE
   )
 )
 ```

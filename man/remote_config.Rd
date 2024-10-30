@@ -41,7 +41,7 @@ path. Prepend the full path if necessary. If launching on Windows,
 
 \item{quote}{[default FALSE] logical value whether or not to quote the daemon
 launch command (not required for Slurm \sQuote{srun} for example, but
-required for \sQuote{ssh}).}
+required for \sQuote{ssh} or Slurm \sQuote{sbatch}).}
 
 \item{remotes}{the character URL or vector of URLs to SSH into, using the
 'ssh://' scheme and including the port open for SSH connections (defaults
