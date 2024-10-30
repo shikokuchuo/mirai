@@ -198,14 +198,22 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
 #'   \code{\link{make_cluster}}.
 #'
 #' @examples
-#' # example for Slurm
+#' # Slurm srun example
 #' remote_config(
 #'   command = "srun",
 #'   args = c("--mem 512", "-n 1", "."),
 #'   rscript = file.path(R.home("bin"), "Rscript")
 #' )
 #'
-#' # commands like SSH require quoting of the daemon launch command
+#' # Slurm sbatch requires 'quote = TRUE'
+#' remote_config(
+#'   command = "sbatch",
+#'   args = c("--mem 512", "-n 1", "--wrap", "."),
+#'   rscript = file.path(R.home("bin"), "Rscript"),
+#'   quote = TRUE
+#' )
+#'
+#' # SSH also requires 'quote = TRUE'
 #' remote_config(
 #'   command = "/usr/bin/ssh",
 #'   args = c("-fTp 22 10.75.32.90", "."),
