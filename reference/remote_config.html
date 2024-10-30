@@ -181,7 +181,7 @@ machines.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># example for Slurm</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Slurm srun example</span></span></span>
 <span class="r-in"><span><span class="fu">remote_config</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  command <span class="op">=</span> <span class="st">"srun"</span>,</span></span>
 <span class="r-in"><span>  args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"--mem 512"</span>, <span class="st">"-n 1"</span>, <span class="st">"."</span><span class="op">)</span>,</span></span>
@@ -200,7 +200,27 @@ machines.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># commands like SSH require quoting of the daemon launch command</span></span></span>
+<span class="r-in"><span><span class="co"># Slurm sbatch requires 'quote = TRUE'</span></span></span>
+<span class="r-in"><span><span class="fu">remote_config</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  command <span class="op">=</span> <span class="st">"sbatch"</span>,</span></span>
+<span class="r-in"><span>  args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"--mem 512"</span>, <span class="st">"-n 1"</span>, <span class="st">"--wrap"</span>, <span class="st">"."</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  rscript <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="st">"bin"</span><span class="op">)</span>, <span class="st">"Rscript"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  quote <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $command</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "sbatch"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $args</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "--mem 512" "-n 1"      "--wrap"    "."        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $rscript</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/opt/R/4.4.1/lib/R/bin/Rscript"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $quote</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># SSH also requires 'quote = TRUE'</span></span></span>
 <span class="r-in"><span><span class="fu">remote_config</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  command <span class="op">=</span> <span class="st">"/usr/bin/ssh"</span>,</span></span>
 <span class="r-in"><span>  args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-fTp 22 10.75.32.90"</span>, <span class="st">"."</span><span class="op">)</span>,</span></span>
