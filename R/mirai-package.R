@@ -114,3 +114,4 @@
 .intmax <- .Machine[["integer.max"]]
 .limit_short <- 5000L
 .limit_long <- 10000L
+.symbol <- if (as.numeric(R.version$minor) > 4) identity else as.character
