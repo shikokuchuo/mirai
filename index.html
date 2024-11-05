@@ -113,7 +113,7 @@
 <p>To wait for and collect the return value, use the mirai’s <code>[]</code> method:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 6.558945 6.774610 6.776656 7.419766 6.670370</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 5.835207 7.043738 7.042160 7.768617 9.154654</span></span></code></pre></div>
 <p>As a mirai represents an async operation, it is never necessary to wait for it. Other code can continue to run. Once it completes, the return value automatically becomes available at <code>$data</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="reference/unresolved.html">unresolved</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -122,7 +122,7 @@
 <span><span class="va">m</span></span>
 <span><span class="co">#&gt; &lt; mirai [$data] &gt;</span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] 6.558945 6.774610 6.776656 7.419766 6.670370</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 5.835207 7.043738 7.042160 7.768617 9.154654</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
 </h4>
@@ -159,7 +159,7 @@
 <ul>
 <li>Fast
 <ul>
-<li>900x more responsive than common alternatives <a href="https://github.com/shikokuchuo/mirai/pull/142#issuecomment-2344077028" class="external-link"><sup>[1]</sup></a>
+<li>1,000x more responsive compared to common alternatives <a href="https://github.com/shikokuchuo/mirai/pull/142#issuecomment-2457589563" class="external-link"><sup>[1]</sup></a>
 </li>
 <li>Built for low-latency applications such as real time inference or Shiny apps</li>
 </ul>
