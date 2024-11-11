@@ -227,7 +227,7 @@ parse_cleanup <- function(cleanup)
 
 perform_cleanup <- function(cleanup) {
   if (cleanup[1L]) rm(list = (vars <- names(.GlobalEnv))[!vars %in% .[["vars"]]], envir = .GlobalEnv)
-  if (cleanup[2L]) lapply((new <- search())[!new %in% .[["se"]]], detach, unload = TRUE, character.only = TRUE)
+  if (cleanup[2L]) lapply((new <- search())[!new %in% .[["se"]]], detach, character.only = TRUE)
   if (cleanup[3L]) options(.[["op"]])
   if (cleanup[4L]) gc(verbose = FALSE)
 }
