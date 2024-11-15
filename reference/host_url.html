@@ -13,7 +13,7 @@ local_url constructs a random URL suitable for local daemons."><meta property="o
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,7 +51,7 @@ local_url constructs a random URL suitable for local daemons."><meta property="o
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>URL Constructors</h1>
-      <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/mirai/blob/v1.3.1/R/launchers.R" class="external-link"><code>R/launchers.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/mirai/blob/main/R/launchers.R" class="external-link"><code>R/launchers.R</code></a></small>
       <div class="d-none name"><code>host_url.Rd</code></div>
     </div>
 
@@ -109,16 +109,16 @@ named pipes on Windows.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">host_url</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tcp://fv-az1024-245:0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tcp://fv-az732-237:0"</span>
 <span class="r-in"><span><span class="fu">host_url</span><span class="op">(</span>ws <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ws://fv-az1024-245:0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ws://fv-az732-237:0"</span>
 <span class="r-in"><span><span class="fu">host_url</span><span class="op">(</span>tls <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tls+tcp://fv-az1024-245:0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tls+tcp://fv-az732-237:0"</span>
 <span class="r-in"><span><span class="fu">host_url</span><span class="op">(</span>ws <span class="op">=</span> <span class="cn">TRUE</span>, tls <span class="op">=</span> <span class="cn">TRUE</span>, port <span class="op">=</span> <span class="fl">5555</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "wss://fv-az1024-245:5555"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "wss://fv-az732-237:5555"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">local_url</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "abstract://01c498bb3bfb326e2d4c0e62"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "abstract://6998f7cee0366db58ea06bd1"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
