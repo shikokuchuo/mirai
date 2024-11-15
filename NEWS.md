@@ -2,7 +2,7 @@
 
 #### Updates
 
-* Cleanup of packages only detaches them from the search path and does not attempt to unload them, as it is not always safe to do so (thanks @D3SL, #166).
+* Cleanup of packages only detaches them from the search path and does not attempt to unload them, as it is not always safe to do so. Fixes daemon crashes using packages such as `data.table` (thanks @D3SL, #166).
 * `serialization()` deprecated in mirai 1.2.0 is now removed.
 
 # mirai 1.3.0

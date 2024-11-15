@@ -38,7 +38,7 @@ value is supplied, this signal is additionally raised on exit (see
 'Persistence' section below).}
 
 \item{cleanup}{[default TRUE] logical value, whether to perform cleanup of
-the global environment and restore loaded packages and options to an
+the global environment and restore attached packages and options to an
 initial state after each evaluation. For more granular control, also
 accepts an integer value (see \sQuote{Cleanup Options} section below).}
 
@@ -116,8 +116,8 @@ instructions to all connected daemons.
 
 The \sQuote{cleanup} argument also accepts an integer value, which operates
 an additive bitmask: perform cleanup of the global environment (1L), reset
-loaded packages to an initial state (2L), restore options to an initial state
-(4L), and perform garbage collection (8L).
+attached packages to an initial state (2L), restore options to an initial
+state (4L), and perform garbage collection (8L).
 
 As an example, to perform cleanup of the global environment and garbage
 collection, specify 9L (1L + 8L). The default argument value of TRUE performs
