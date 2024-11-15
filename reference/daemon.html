@@ -112,7 +112,7 @@ value is supplied, this signal is additionally raised on exit (see
 
 <dt id="arg-cleanup">cleanup<a class="anchor" aria-label="anchor" href="#arg-cleanup"></a></dt>
 <dd><p>[default TRUE] logical value, whether to perform cleanup of
-the global environment and restore loaded packages and options to an
+the global environment and restore attached packages and options to an
 initial state after each evaluation. For more granular control, also
 accepts an integer value (see ‘Cleanup Options’ section below).</p></dd>
 
@@ -203,8 +203,8 @@ instructions to all connected daemons.</p>
 
 <p>The ‘cleanup’ argument also accepts an integer value, which operates
 an additive bitmask: perform cleanup of the global environment (1L), reset
-loaded packages to an initial state (2L), restore options to an initial state
-(4L), and perform garbage collection (8L).</p>
+attached packages to an initial state (2L), restore options to an initial
+state (4L), and perform garbage collection (8L).</p>
 <p>As an example, to perform cleanup of the global environment and garbage
 collection, specify 9L (1L + 8L). The default argument value of TRUE performs
 all actions apart from garbage collection and is equivalent to a value of 7L.</p>
