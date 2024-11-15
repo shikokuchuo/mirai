@@ -114,4 +114,3 @@
 .intmax <- .Machine[["integer.max"]]
 .limit_short <- 5000L
 .limit_long <- 10000L
-.symbol <- if (getRversion() > "4.0") identity else as.character
