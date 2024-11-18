@@ -307,7 +307,12 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thr
         {
           n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
           urls <- resolve_dispatcher_urls(n = n, url = url)
-          sock <- .dispatcher(host = inproc_url(), url = urls, tls = if (length(tls)) tls_config(server = tls, pass = pass))
+          sock <- .dispatcher(
+            host = inproc_url(),
+            url = urls,
+            tls = if (length(tls)) tls_config(server = tls, pass = pass),
+            retry = parse_retry(...)
+          )
           `[[<-`(`[[<-`(envir, "urls", urls), "dispatcher", TRUE)
         },
         {
@@ -362,7 +367,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thr
         },
         {
           urls <- auto_dispatcher_urls(n = n, url = urld)
-          sock <- .dispatcher(host = inproc_url(), url = urls)
+          sock <- .dispatcher(host = inproc_url(), url = urls, retry = parse_retry(...))
           for (i in seq_len(n))
             launch_daemon(wa3(urls[i], dots, next_stream(envir)), output)
           `[[<-`(`[[<-`(envir, "urls", urls), "dispatcher", TRUE)
@@ -610,6 +615,11 @@ parse_dots <- function(...) {
   out <- sprintf(",%s", paste(dnames, dots, sep = "=", collapse = ","))
   is.logical(dots[["output"]]) && dots[["output"]] && return(`attr<-`(out, "output", ""))
   out
+}
+
+parse_retry <- function(...) {
+  dots <- list(...)
+  is.logical(dots[["retry"]]) && dots[["retry"]]
 }
 
 parse_tls <- function(tls)

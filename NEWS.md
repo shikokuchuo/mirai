@@ -1,5 +1,9 @@
 # mirai 1.3.1.9000 (development)
 
+#### New Features
+
+* `daemons(dispatcher = "thread")` now also respects argument 'retry' to govern whether to auto-retry failed tasks or else return an error.
+
 # mirai 1.3.1
 
 #### Updates

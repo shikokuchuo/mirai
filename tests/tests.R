@@ -307,7 +307,7 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   test_equal(length(urls <- nextget("urls")), 2L)
   test_identical(as.integer(nanonext::parse_url(urls[[2L]])[["port"]]), as.integer(nanonext::parse_url(urls[[1L]])[["port"]]) + 1L)
   test_zero(daemons(0))
-  test_equal(daemons(2, url = host_url(ws = TRUE), dispatcher = "thread"), 2L)
+  test_equal(daemons(2, url = host_url(ws = TRUE), dispatcher = "thread", retry = TRUE), 2L)
   test_equal(length(urls <- nextget("urls")), 2L)
   test_true(endsWith(urls[[1L]], "/1"))
   test_true(endsWith(urls[[2L]], "/2"))
