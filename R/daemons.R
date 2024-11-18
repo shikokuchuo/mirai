@@ -605,10 +605,10 @@ parse_dots <- function(...) {
   ...length() || return("")
   dots <- list(...)
   dots <- dots[as.logical(lapply(dots, function(x) is.logical(x) || is.numeric(x)))]
+  length(dots) || return("")
   dnames <- names(dots)
   out <- sprintf(",%s", paste(dnames, dots, sep = "=", collapse = ","))
-  pos <- dnames == "output"
-  any(pos) && as.logical(dots[pos])[1L] && return(`attr<-`(out, "output", ""))
+  is.logical(dots[["output"]]) && dots[["output"]] && return(`attr<-`(out, "output", ""))
   out
 }
 
