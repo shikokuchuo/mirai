@@ -287,12 +287,11 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thr
 
     if (is.null(envir)) {
       envir <- init_envir_stream(seed = seed)
-      tls <- check_create_tls(url = url, tls = tls, envir = envir)
       switch(
         parse_dispatcher(dispatcher[1L]),
         {
           n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
-          if (length(tls)) tls_config(server = tls, pass = pass)
+          tls <- configure_tls(url, tls, pass, envir, returnconfig = FALSE)
           cv <- cv()
           dots <- parse_dots(...)
           output <- attr(dots, "output")
@@ -306,12 +305,14 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thr
         },
         {
           n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
+          tls <- configure_tls(url, tls, pass, envir)
           urls <- resolve_dispatcher_urls(n = n, url = url)
-          sock <- .dispatcher(host = inproc_url(), url = urls, tls = if (length(tls)) tls_config(server = tls, pass = pass))
+          sock <- .dispatcher(host = inproc_url(), url = urls, tls = tls)
           `[[<-`(`[[<-`(envir, "urls", urls), "dispatcher", TRUE)
         },
         {
-          sock <- req_socket(url, tls = if (length(tls)) tls_config(server = tls, pass = pass))
+          tls <- configure_tls(url, tls, pass, envir)
+          sock <- req_socket(url, tls = tls)
           check_store_url(sock = sock, envir = envir)
           n <- 0L
         },
@@ -541,7 +542,7 @@ serial_config <- serial_config
 
 inproc_url <- function() sprintf("inproc://%s", random(10L))
 
-check_create_tls <- function(url, tls, envir) {
+configure_tls <- function(url, tls, pass, envir, returnconfig = TRUE) {
   purl <- parse_url(url)
   sch <- purl[["scheme"]]
   if ((startsWith(sch, "wss") || startsWith(sch, "tls")) && is.null(tls)) {
@@ -549,7 +550,9 @@ check_create_tls <- function(url, tls, envir) {
     `[[<-`(envir, "tls", cert[["client"]])
     tls <- cert[["server"]]
   }
-  tls
+  cfg <- if (length(tls)) tls_config(server = tls, pass = pass)
+  returnconfig || return(tls)
+  cfg
 }
 
 init_envir_stream <- function(seed) {
