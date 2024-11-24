@@ -495,10 +495,8 @@ status <- function(.compute = "default") {
 
   is.list(.compute) && return(status(attr(.compute, "id")))
   envir <- ..[[.compute]]
-  is.null(envir) &&
-    return(list(connections = 0L, daemons = 0L))
-  is.null(envir[["dispatcher"]]) ||
-    return(dispatcher_status(envir))
+  is.null(envir) && return(list(connections = 0L, daemons = 0L))
+  is.null(envir[["dispatcher"]]) || return(dispatcher_status(envir))
   list(connections = as.integer(stat(envir[["sock"]], "pipes")),
        daemons = if (is.null(envir[["sockc"]])) envir[["urls"]] else query_status(envir))
 
@@ -630,11 +628,11 @@ wa5 <- function(urld, dots, n, urlc, url)
   shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher(\"%s\",c(\"%s\"),n=%d,monitor=\"%s\"%s)", libp(), urld, paste0(url, collapse = "\",\""), n, urlc, dots))
 
 launch_daemon <- function(args, output)
-  system2(command = .command, args = c("-e", args), stdout = output, stderr = output, wait = FALSE)
+  system2(.command, args = c("-e", args), stdout = output, stderr = output, wait = FALSE)
 
 launch_sync_dispatcher <- function(sock, sockc, args, output, tls = NULL, pass = NULL) {
   pkgs <- Sys.getenv("R_DEFAULT_PACKAGES")
-  system2(command = .command, args = c("--default-packages=NULL", "--vanilla", "-e", args), stdout = output, stderr = output, wait = FALSE)
+  system2(.command, args = c("--default-packages=NULL", "--vanilla", "-e", args), stdout = output, stderr = output, wait = FALSE)
   vec <- c("p", pkgs,
            "o", if (is.character(tls)) tls[1L] else "",
            "s", if (is.character(tls) && length(tls) > 1L) tls[2L] else "",

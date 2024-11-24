@@ -203,7 +203,7 @@ eval_mirai <- function(._mirai_.) {
   list2env(._mirai_.[["._mirai_globals_."]], envir = .GlobalEnv)
   withRestarts(
     withCallingHandlers(
-      eval(expr = ._mirai_.[[".expr"]], envir = ._mirai_., enclos = .GlobalEnv),
+      eval(._mirai_.[[".expr"]], envir = ._mirai_., enclos = .GlobalEnv),
       error = handle_mirai_error,
       interrupt = handle_mirai_interrupt
     ),

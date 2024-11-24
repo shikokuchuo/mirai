@@ -213,7 +213,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token = F
       for (i in seq_n)
         if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["req"]])) {
           req <- .subset2(queue[[i]][["req"]], "value")
-          if (is.object(req)) req <- serialize(req, connection = NULL, xdr = FALSE)
+          if (is.object(req)) req <- serialize(req, NULL, xdr = FALSE)
           send(queue[[i]][["ctx"]], req, mode = 2L, block = TRUE)
           q <- queue[[i]][["daemon"]]
           if (req[4L]) {
@@ -316,7 +316,7 @@ saisei <- function(i, force = FALSE, .compute = "default") {
 get_ports <- function(url, n) {
   baseurl <- parse_url(url)
   if (startsWith(baseurl[["scheme"]], "t")) {
-    if (baseurl[["port"]] == "0") integer(n) else seq.int(baseurl[["port"]], length.out = n)
+    if (baseurl[["port"]] == "0") integer(n) else seq.int(from = baseurl[["port"]], length.out = n)
   }
 }
 
