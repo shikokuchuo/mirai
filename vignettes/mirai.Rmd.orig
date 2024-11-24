@@ -237,6 +237,8 @@ with(daemons(4), shiny::runApp(app))
 ```
 Note: in the above case, it is assumed the app is already created. Wrapping a call to `shiny::shinyApp()` would not work as `runApp()` is implicitly called when the app is printed, however printing occurs only after `with()` has returned, hence the app would run outside of the scope of the `with()` statement.
 
+In the case of a Shiny app, all mirai calls will be executed before the app returns. In the case of other expressions, be sure to call the results (or collect the values) of all mirai within the expression so that daemons are not reset before they have all completed.
+
 [&laquo; Back to ToC](#table-of-contents)
 
 ### Distributed Computing: Remote Daemons

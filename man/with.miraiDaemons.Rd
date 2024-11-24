@@ -18,7 +18,9 @@ The return value of \sQuote{expr}.
 }
 \description{
 Evaluate an expression with daemons that last for the duration of the
-expression.
+expression. Ensure each mirai within the statement is explicitly called (or
+their values collected) so that daemons are not reset before they have all
+completed.
 }
 \details{
 This function is an S3 method for the generic \code{with} for class
@@ -29,11 +31,11 @@ if (interactive()) {
 # Only run examples in interactive R sessions
 
 with(
-  daemons(2),
+  daemons(2, dispatcher = "none"),
   {
     m1 <- mirai(Sys.getpid())
     m2 <- mirai(Sys.getpid())
-    cat(call_mirai(m1)$data, call_mirai(m2)$data, "\n")
+    cat(m1[], m2[], "\n")
   }
 )
 
