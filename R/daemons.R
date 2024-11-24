@@ -286,7 +286,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thr
   if (is.character(url)) {
 
     if (is.null(envir)) {
-      envir <- init_envir_stream(seed = seed)
+      envir <- init_envir_stream(seed)
       switch(
         parse_dispatcher(dispatcher[1L]),
         {
@@ -301,28 +301,28 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thr
           sockc <- req_socket(urlc)
           res <- launch_sync_dispatcher(sock, sockc, wa5(urld, dots, n, urlc, url), output, tls, pass)
           is.object(res) && stop(._[["sync_dispatcher"]])
-          store_dispatcher(sockc = sockc, res = res, cv = cv, envir = envir)
+          store_dispatcher(sockc, res, cv, envir)
         },
         {
           n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
           tls <- configure_tls(url, tls, pass, envir)
-          urls <- resolve_dispatcher_urls(n = n, url = url)
-          sock <- .dispatcher(host = inproc_url(), url = urls, tls = tls)
+          urls <- resolve_dispatcher_urls(n, url)
+          sock <- .dispatcher(inproc_url(), urls, tls = tls)
           `[[<-`(`[[<-`(envir, "urls", urls), "dispatcher", TRUE)
         },
         {
           tls <- configure_tls(url, tls, pass, envir)
           sock <- req_socket(url, tls = tls)
-          check_store_url(sock = sock, envir = envir)
+          check_store_url(sock, envir)
           n <- 0L
         },
         stop(._[["dispatcher_args"]])
       )
       `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
       if (length(remote))
-        launch_remote(url = envir[["urls"]], remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
+        launch_remote(envir[["urls"]], remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
     } else {
-      daemons(n = 0L, .compute = .compute)
+      daemons(0L, .compute = .compute)
       return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ...,
                      seed = seed, tls = tls, pass = pass, .compute = .compute))
     }
@@ -337,7 +337,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thr
     if (n == 0L) {
       is.null(envir) && return(0L)
 
-      if (signal) send_signal(envir = envir)
+      if (signal) send_signal(envir)
       reap(envir[["sock"]])
       is.null(envir[["sockc"]]) || reap(envir[["sockc"]])
       ..[[.compute]] <- NULL -> envir
@@ -345,7 +345,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thr
     } else if (is.null(envir)) {
 
       n > 0L || stop(._[["n_zero"]])
-      envir <- init_envir_stream(seed = seed)
+      envir <- init_envir_stream(seed)
       urld <- local_url()
       dots <- parse_dots(...)
       output <- attr(dots, "output")
@@ -358,12 +358,12 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thr
           sockc <- req_socket(urlc)
           res <- launch_sync_dispatcher(sock, sockc, wa4(urld, dots, envir[["stream"]], n, urlc), output)
           is.object(res) && stop(._[["sync_dispatcher"]])
-          store_dispatcher(sockc = sockc, res = res, cv = cv, envir = envir)
+          store_dispatcher(sockc, res, cv, envir)
           for (i in seq_len(n)) next_stream(envir)
         },
         {
-          urls <- auto_dispatcher_urls(n = n, url = urld)
-          sock <- .dispatcher(host = inproc_url(), url = urls)
+          urls <- auto_dispatcher_urls(n, urld)
+          sock <- .dispatcher(inproc_url(), urls)
           for (i in seq_len(n))
             launch_daemon(wa3(urls[i], dots, next_stream(envir)), output)
           `[[<-`(`[[<-`(envir, "urls", urls), "dispatcher", TRUE)
@@ -377,7 +377,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thr
       )
       `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
     } else if (force) {
-      daemons(n = 0L, .compute = .compute)
+      daemons(0L, .compute = .compute)
       return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ...,
                      seed = seed, tls = tls, pass = pass, .compute = .compute))
     }
@@ -579,7 +579,7 @@ resolve_url_port <- function(url) {
   sock <- socket(listen = url)
   port <- opt(attr(sock, "listener")[[1L]], "tcp-bound-port")
   reap(sock)
-  sub_real_port(port = port, url = url)
+  sub_real_port(port, url)
 }
 
 resolve_dispatcher_urls <- function(n, url) {
@@ -591,7 +591,7 @@ resolve_dispatcher_urls <- function(n, url) {
     ports <- seq.int(from = port, length.out = n)
     as.character(lapply(ports, sub, pattern = port, x = url, fixed = TRUE))
   } else {
-    auto_dispatcher_urls(n = n, url = url)
+    auto_dispatcher_urls(n, url)
   }
 }
 
@@ -660,20 +660,20 @@ check_store_url <- function(sock, envir) {
   listener <- attr(sock, "listener")[[1L]]
   url <- opt(listener, "url")
   if (parse_url(url)[["port"]] == "0")
-    url <- sub_real_port(port = opt(listener, "tcp-bound-port"), url = url)
+    url <- sub_real_port(opt(listener, "tcp-bound-port"), url)
   `[[<-`(envir, "urls", url)
 }
 
 send_signal <- function(envir) {
   signals <- max(length(envir[["urls"]]), stat(envir[["sock"]], "pipes"))
   for (i in seq_len(signals)) {
-    send(envir[["sock"]], data = ._scm_., mode = 2L)
+    send(envir[["sock"]], ._scm_., mode = 2L)
     msleep(10L)
   }
 }
 
 query_status <- function(envir) {
-  res <- query_dispatcher(sock = envir[["sockc"]], command = 0L, mode = 5L)
+  res <- query_dispatcher(envir[["sockc"]], command = 0L, mode = 5L)
   is.object(res) && return(res)
   `attributes<-`(
     res,

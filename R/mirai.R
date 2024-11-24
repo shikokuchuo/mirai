@@ -181,9 +181,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   }
 
   envir <- ..[[.compute]]
-  is.null(envir) && return(ephemeral_daemon(data = data, timeout = .timeout))
-  request(.context(envir[["sock"]]), data = data, send_mode = 1L, recv_mode = 1L,
-          timeout = .timeout, cv = envir[["cv"]])
+  is.null(envir) && return(ephemeral_daemon(data, .timeout))
+  request(.context(envir[["sock"]]), data, send_mode = 1L, recv_mode = 1L, timeout = .timeout, cv = envir[["cv"]])
 
 }
 
@@ -257,12 +256,12 @@ everywhere <- function(.expr, ..., .args = list(), .serial = NULL, .compute = "d
   if (is.null(envir[["sockc"]])) {
     vec <- vector(mode = "list", length = max(stat(envir[["sock"]], "pipes"), envir[["n"]]))
     for (i in seq_along(vec))
-      vec[[i]] <- mirai(.expr = .expr, ..., .args = .args, .compute = .compute)
+      vec[[i]] <- mirai(.expr, ..., .args = .args, .compute = .compute)
   } else {
     .expr <- c(.expr, .block)
     vec <- vector(mode = "list", length = envir[["n"]])
     for (i in seq_along(vec))
-      vec[[i]] <- mirai(.expr = .expr, ..., .args = .args, .compute = .compute)
+      vec[[i]] <- mirai(.expr, ..., .args = .args, .compute = .compute)
   }
   `[[<-`(envir, "everywhere", vec)
   invisible()
@@ -581,8 +580,8 @@ print.miraiInterrupt <- function(x, ...) {
 ephemeral_daemon <- function(data, timeout) {
   url <- local_url()
   sock <- req_socket(url)
-  system2(command = .command, args = c("-e", shQuote(sprintf("mirai:::.daemon(\"%s\")", url))), stdout = FALSE, stderr = FALSE, wait = FALSE)
-  aio <- request(.context(sock), data = data, send_mode = 1L, recv_mode = 1L, timeout = timeout, cv = NA)
+  system2(.command, args = c("-e", shQuote(sprintf("mirai:::.daemon(\"%s\")", url))), stdout = FALSE, stderr = FALSE, wait = FALSE)
+  aio <- request(.context(sock), data, send_mode = 1L, recv_mode = 1L, timeout = timeout, cv = NA)
   `attr<-`(.subset2(aio, "aio"), "sock", sock)
   aio
 }

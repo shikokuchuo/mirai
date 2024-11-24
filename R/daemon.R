@@ -119,7 +119,7 @@ daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
   `[[<-`(., "sock", sock)
   autoexit && pipe_notify(sock, cv = cv, remove = TRUE, flag = as.integer(autoexit))
   if (length(tls)) tls <- tls_config(client = tls)
-  dial_and_sync_socket(sock = sock, url = url, asyncdial = asyncdial, tls = tls)
+  dial_and_sync_socket(sock, url, asyncdial = asyncdial, tls = tls)
 
   if (is.numeric(rs)) `[[<-`(.GlobalEnv, ".Random.seed", as.integer(rs))
   if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
@@ -156,13 +156,13 @@ daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
 
     (count >= maxtasks || count > timerstart && mclock() - start >= walltime) && {
       .mark()
-      send(ctx, data = data, mode = 1L, block = TRUE)
+      send(ctx, data, mode = 1L, block = TRUE)
       aio <- recv_aio(ctx, mode = 8L, cv = cv)
       wait(cv)
       break
     }
 
-    send(ctx, data = data, mode = 1L, block = TRUE)
+    send(ctx, data, mode = 1L, block = TRUE)
     perform_cleanup(cleanup)
     if (count <= timerstart) start <- mclock()
 
@@ -189,7 +189,7 @@ daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
   pipe_notify(sock, cv = cv, remove = TRUE)
   dial(sock, url = url, autostart = NA, error = TRUE)
   data <- eval_mirai(recv(sock, mode = 1L, block = TRUE))
-  send(sock, data = data, mode = 1L) || until(cv, .limit_short)
+  send(sock, data, mode = 1L) || until(cv, .limit_short)
 
 }
 

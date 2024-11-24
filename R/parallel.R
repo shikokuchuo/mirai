@@ -118,7 +118,7 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
   } else {
     is.numeric(n) || stop(._[["numeric_n"]])
     n >= 1L || stop(._[["n_one"]])
-    daemons(n = n, dispatcher = "none", cleanup = FALSE, ..., .compute = id)
+    daemons(n, dispatcher = "none", cleanup = FALSE, ..., .compute = id)
   }
 
   `[[<-`(..[[id]], "cvs", cvs)
@@ -138,7 +138,7 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
 #' @export
 #'
 stop_cluster <- function(cl)
-  daemons(n = 0L, .compute = attr(cl, "id")) || return(invisible())
+  daemons(0L, .compute = attr(cl, "id")) || return(invisible())
 
 #' @exportS3Method parallel::stopCluster
 #'

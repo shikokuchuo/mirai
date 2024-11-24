@@ -86,7 +86,7 @@ launch_local <- function(url, ..., tls = NULL, .compute = "default") {
   dots <- parse_dots(...)
   output <- attr(dots, "output")
   if (is.null(tls)) tls <- envir[["tls"]]
-  url <- process_url(url = url, envir = envir)
+  url <- process_url(url, envir)
   is.character(url) || stop(._[["url_spec"]])
   for (u in url)
     launch_daemon(wa3(u, dots, next_stream(envir), tls), output)
@@ -122,7 +122,7 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
   is.null(envir) && stop(._[["daemons_unset"]])
   dots <- parse_dots(...)
   if (is.null(tls)) tls <- envir[["tls"]]
-  url <- process_url(url = url, envir = envir)
+  url <- process_url(url, envir)
   is.character(url) || stop(._[["url_spec"]])
 
   ulen <- length(url)
