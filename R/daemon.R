@@ -170,6 +170,70 @@ daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
 
 }
 
+#' @export
+#'
+daemon2 <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
+                    output = FALSE, maxtasks = Inf, idletime = Inf, walltime = Inf,
+                    timerstart = 0L, ..., tls = NULL, rs = NULL) {
+
+  cv <- cv()
+  sock <- req_socket(NULL)
+  on.exit(reap(sock))
+  `[[<-`(., "sock", sock)
+  autoexit && pipe_notify(sock, cv = cv, remove = TRUE, flag = as.integer(autoexit))
+  if (length(tls)) tls <- tls_config(client = tls)
+  dial_and_sync_socket(sock, url, asyncdial = asyncdial, tls = tls)
+
+  if (is.numeric(rs)) `[[<-`(.GlobalEnv, ".Random.seed", as.integer(rs))
+  if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
+  cleanup <- parse_cleanup(cleanup)
+  if (!output) {
+    devnull <- file(nullfile(), open = "w", blocking = FALSE)
+    sink(file = devnull)
+    sink(file = devnull, type = "message")
+    on.exit({
+      sink(type = "message")
+      sink()
+      close(devnull)
+    }, add = TRUE)
+  }
+  id <- random(10L)
+  snapshot()
+  count <- 0L
+  start <- mclock()
+
+  repeat {
+
+    ctx <- .context(sock)
+    aio <- request(ctx, id, send_mode = 2L, recv_mode = 1L, timeout = idletime, cv = cv)
+    wait(cv) || break
+    m <- collect_aio(aio)
+    is.object(m) && {
+      count < timerstart && {
+        start <- mclock()
+        next
+      }
+      break
+    }
+    data <- eval_mirai(m)
+    count <- count + 1L
+
+    (count >= maxtasks || count > timerstart && mclock() - start >= walltime) && {
+      .mark()
+      send(ctx, data, mode = 1L, block = TRUE)
+      aio <- recv_aio(ctx, mode = 8L, cv = cv)
+      wait(cv)
+      break
+    }
+
+    send(ctx, data, mode = 1L, block = TRUE)
+    perform_cleanup(cleanup)
+    if (count <= timerstart) start <- mclock()
+
+  }
+
+}
+
 #' dot Daemon
 #'
 #' Ephemeral executor for the remote process. User code must not call this.

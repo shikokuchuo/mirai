@@ -248,6 +248,184 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token = F
 
 }
 
+#' @export
+#'
+dispatcher2 <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token = FALSE,
+                        tls = NULL, pass = NULL, rs = NULL, monitor = NULL) {
+
+  n <- if (is.numeric(n)) as.integer(n) else length(url)
+  n > 0L || stop(._[["missing_url"]])
+
+  cv <- cv()
+  sock <- socket(protocol = "rep")
+  on.exit(reap(sock))
+  pipe_notify(sock, cv = cv, remove = TRUE, flag = TRUE)
+  dial_and_sync_socket(sock, host)
+
+  ctrchannel <- is.character(monitor)
+  if (ctrchannel) {
+    sockc <- socket(protocol = "rep")
+    on.exit(reap(sockc), add = TRUE, after = FALSE)
+    pipe_notify(sockc, cv = cv, remove = TRUE, flag = TRUE)
+    dial_and_sync_socket(sockc, monitor)
+    cmessage <- recv(sockc, mode = 2L, block = .limit_long)
+    is.object(cmessage) && stop(._[["sync_dispatcher"]])
+    if (nzchar(cmessage[2L]))
+      Sys.setenv(R_DEFAULT_PACKAGES = cmessage[2L]) else
+        Sys.unsetenv("R_DEFAULT_PACKAGES")
+  }
+
+  auto <- is.null(url)
+  vectorised <- length(url) == n
+  seq_n <- seq_len(n)
+  basenames <- servernames <- character(n)
+  activestore <- instance <- complete <- assigned <- integer(n)
+  serverfree <- !integer(n)
+  active <- servers <- queue <- vector(mode = "list", length = n)
+  if (auto) {
+    dots <- parse_dots(...)
+    output <- attr(dots, "output")
+  } else {
+    ports <- get_ports(url, n)
+    if (length(ports)) token <- FALSE
+    if (ctrchannel && nzchar(cmessage[4L]) && is.null(tls)) {
+      tls <- c(cmessage[4L], if (nzchar(cmessage[6L])) cmessage[6L])
+      pass <- if (nzchar(cmessage[8L])) cmessage[8L]
+    }
+    if (length(tls))
+      tls <- tls_config(server = tls, pass = pass)
+  }
+  pass <- NULL
+
+  envir <- new.env(hash = FALSE)
+  if (is.numeric(rs)) `[[<-`(envir, "stream", as.integer(rs))
+
+  for (i in seq_n) {
+    burl <- if (auto) .urlscheme else
+      if (vectorised) url[i] else
+        if (is.null(ports)) sprintf(if (startsWith(url, "ipc")) "%s-%d" else "%s/%d", url, i) else
+          sub(ports[1L], ports[i], url, fixed = TRUE)
+    nurl <- if (auto) local_url() else if (token) tokenized_url(burl) else burl
+    ncv <- cv()
+    nsock <- req_socket(NULL, resend = retry * .intmax)
+    pipe_notify(nsock, cv = ncv, cv2 = cv, add = TRUE, remove = TRUE)
+    lock(nsock, cv = ncv)
+    listen(nsock, url = nurl, tls = tls, error = TRUE)
+    listener <- attr(nsock, "listener")[[1L]]
+    listurl <- opt(listener, "url")
+    if (i == 1L && !auto && parse_url(listurl)[["port"]] == "0") {
+      realport <- opt(listener, "tcp-bound-port")
+      listurl <- sub_real_port(realport, nurl)
+      if (!vectorised || n == 1L) {
+        url <- sub_real_port(realport, url)
+        burl <- sub_real_port(realport, burl)
+      }
+    }
+
+    auto && launch_daemon(wa3(nurl, dots, next_stream(envir)), output)
+
+    basenames[i] <- burl
+    servernames[i] <- listurl
+    servers[[i]] <- nsock
+    active[[i]] <- ncv
+    queue[[i]] <- create_req(.context(sock), cv)
+  }
+
+  on.exit(lapply(servers, reap), add = TRUE, after = TRUE)
+
+  if (auto)
+    for (i in seq_n)
+      until(cv, .limit_long) || stop(._[["sync_daemons"]])
+
+  if (ctrchannel) {
+    send(sockc, c(Sys.getpid(), servernames), mode = 2L)
+    cmessage <- recv_aio(sockc, mode = 5L, cv = cv)
+  }
+
+  suspendInterrupts(
+    repeat {
+
+      wait(cv) || break
+
+      cv_values <- as.integer(lapply(active, cv_value))
+      activevec <- cv_values %% 2L
+      changes <- (activevec - activestore) > 0L
+      activestore <- activevec
+      if (any(changes)) {
+        instance[changes] <- abs(instance[changes]) + 1L
+        serverfree <- serverfree | changes
+      }
+
+      ctrchannel && !unresolved(cmessage) && {
+        i <- .subset2(cmessage, "value")
+        if (i) {
+          if (i > 0L && !activevec[[i]]) {
+            reap(attr(servers[[i]], "listener")[[1L]])
+            attr(servers[[i]], "listener") <- NULL
+            data <- servernames[i] <- if (auto) local_url() else tokenized_url(basenames[i])
+            instance[i] <- -abs(instance[i])
+            listen(servers[[i]], url = data, tls = tls, error = TRUE)
+
+          } else if (i < 0L) {
+            i <- -i
+            reap(servers[[i]])
+            servers[[i]] <- nsock <- req_socket(NULL, resend = retry * .intmax)
+            pipe_notify(nsock, cv = active[[i]], cv2 = cv, add = TRUE, remove = TRUE)
+            lock(nsock, cv = active[[i]])
+            data <- servernames[i] <- if (auto) local_url() else tokenized_url(basenames[i])
+            instance[i] <- -abs(instance[i])
+            listen(nsock, url = data, tls = tls, error = TRUE)
+
+          } else {
+            data <- ""
+
+          }
+        } else {
+          data <- as.integer(c(seq_n, activevec, instance, assigned, complete))
+        }
+        send(sockc, data, mode = 2L)
+        cmessage <- recv_aio(sockc, mode = 5L, cv = cv)
+        next
+      }
+
+      for (i in seq_n)
+        if (length(queue[[i]]) > 2L && !unresolved(queue[[i]][["req"]])) {
+          req <- .subset2(queue[[i]][["req"]], "value")
+          if (is.object(req)) req <- serialize(req, NULL, xdr = FALSE)
+          send(queue[[i]][["ctx"]], req, mode = 2L, block = TRUE)
+          q <- queue[[i]][["daemon"]]
+          if (req[4L]) {
+            send(queue[[i]][["rctx"]], NULL, mode = 2L, block = TRUE)
+            reap(queue[[i]][["rctx"]])
+          } else {
+            serverfree[q] <- TRUE
+          }
+          complete[q] <- complete[q] + 1L
+          queue[[i]] <- create_req(.context(sock), cv)
+        }
+
+      free <- which(serverfree & activevec)
+
+      if (length(free))
+        for (q in free)
+          for (i in seq_n) {
+            if (length(queue[[i]]) == 2L && !unresolved(queue[[i]][["req"]])) {
+              queue[[i]][["rctx"]] <- .context(servers[[q]])
+              queue[[i]][["req"]] <- request(queue[[i]][["rctx"]], .subset2(queue[[i]][["req"]], "value"),
+                                             send_mode = 2L, recv_mode = 8L, cv = cv)
+              queue[[i]][["daemon"]] <- q
+              serverfree[q] <- FALSE
+              assigned[q] <- assigned[q] + 1L
+              break
+            }
+            serverfree[q] || break
+          }
+
+    }
+  )
+
+}
+
 #' Saisei (Regenerate Token)
 #'
 #' When using daemons with dispatcher, regenerates the token for the URL a
