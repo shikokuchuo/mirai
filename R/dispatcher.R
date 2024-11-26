@@ -72,7 +72,7 @@
 #'
 #' @export
 #'
-dispatcher2 <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token = FALSE,
+dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token = FALSE,
                        tls = NULL, pass = NULL, rs = NULL, monitor = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
@@ -248,11 +248,10 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token = 
 
 }
 
-
 #' @export
 #'
-dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token = FALSE,
-                        tls = NULL, pass = NULL, rs = NULL, monitor = NULL) {
+dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
+                        rs = NULL, monitor = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(._[["missing_url"]])
@@ -282,8 +281,6 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token = F
     dots <- parse_dots(...)
     output <- attr(dots, "output")
   } else {
-    ports <- get_ports(url, n)
-    if (length(ports)) token <- FALSE
     if (ctrchannel && nzchar(cmessage[4L]) && is.null(tls)) {
       tls <- c(cmessage[4L], if (nzchar(cmessage[6L])) cmessage[6L])
       pass <- if (nzchar(cmessage[8L])) cmessage[8L]
@@ -296,29 +293,28 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token = F
   envir <- new.env(hash = FALSE)
   if (is.numeric(rs)) `[[<-`(envir, "stream", as.integer(rs))
 
-  nurl <- if (auto) local_url() else url
+  if (auto) url <- local_url()
   ncv <- cv()
   nsock <- socket(protocol = "poly")
   on.exit(reap(nsock), add = TRUE, after = TRUE)
   pipe_notify(nsock, cv = ncv, cv2 = cv, add = TRUE, remove = TRUE)
-  listen(nsock, url = nurl, tls = tls, error = TRUE)
+  listen(nsock, url = url, tls = tls, error = TRUE)
   listener <- attr(nsock, "listener")[[1L]]
   listurl <- opt(listener, "url")
   if (!auto && parse_url(listurl)[["port"]] == "0") {
     realport <- opt(listener, "tcp-bound-port")
-    url <- sub_real_port(realport, nurl)
+    url <- sub_real_port(realport, url)
   }
 
-  if (auto) for (i in seq_len(n)) {
-    launch_daemon(wa3(nurl, dots, next_stream(envir)), output)
-  }
-
-  if (auto)
+  if (auto) {
+    for (i in seq_len(n))
+      launch_daemon(wa32(url, dots, next_stream(envir)), output)
     for (i in seq_len(n))
       until(cv, .limit_long) || stop(._[["sync_daemons"]])
+  }
 
   if (ctrchannel) {
-    send(sockc, c(Sys.getpid(), nurl), mode = 2L)
+    send(sockc, c(Sys.getpid(), url), mode = 2L)
     cmessage <- recv_aio(sockc, mode = 5L, cv = cv)
   }
 
@@ -332,33 +328,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token = F
       wait(cv) || break
 
       ctrchannel && !unresolved(cmessage) && {
-        i <- .subset2(cmessage, "value")
-        if (i) {
-          if (i > 0L && !activevec[[i]]) {
-            reap(attr(servers[[i]], "listener")[[1L]])
-            attr(servers[[i]], "listener") <- NULL
-            data <- servernames[i] <- if (auto) local_url() else tokenized_url(basenames[i])
-            instance[i] <- -abs(instance[i])
-            listen(servers[[i]], url = data, tls = tls, error = TRUE)
-
-          } else if (i < 0L) {
-            i <- -i
-            reap(servers[[i]])
-            servers[[i]] <- nsock <- req_socket(NULL, resend = retry * .intmax)
-            pipe_notify(nsock, cv = active[[i]], cv2 = cv, add = TRUE, remove = TRUE)
-            lock(nsock, cv = active[[i]])
-            data <- servernames[i] <- if (auto) local_url() else tokenized_url(basenames[i])
-            instance[i] <- -abs(instance[i])
-            listen(nsock, url = data, tls = tls, error = TRUE)
-
-          } else {
-            data <- ""
-
-          }
-        } else {
-          data <- as.integer(c(seq_n, activevec, instance, assigned, complete))
-        }
-        send(sockc, data, mode = 2L)
+        send(sockc, as.integer(stat(nsock, "pipes")), mode = 2L)
         cmessage <- recv_aio(sockc, mode = 5L, cv = cv)
         next
       }

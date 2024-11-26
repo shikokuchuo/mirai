@@ -276,7 +276,7 @@
 #'
 #' @export
 #'
-daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thread", "none"),
+daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("next", "process", "thread", "none"),
                     ..., force = TRUE, seed = NULL, tls = NULL, pass = NULL, .compute = "default") {
 
   missing(n) && missing(url) && return(status(.compute))
@@ -289,6 +289,20 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thr
       envir <- init_envir_stream(seed)
       switch(
         parse_dispatcher(dispatcher[1L]),
+        {
+          n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
+          tls <- configure_tls(url, tls, pass, envir, returnconfig = FALSE)
+          cv <- cv()
+          dots <- parse_dots(...)
+          output <- attr(dots, "output")
+          urld <- local_url()
+          urlc <- sprintf("%s%s", urld, "c")
+          sock <- req_socket(urld)
+          sockc <- req_socket(urlc)
+          res <- launch_sync_dispatcher(sock, sockc, wa52(urld, dots, n, urlc, url), output, tls, pass)
+          is.object(res) && stop(._[["sync_dispatcher"]])
+          store_dispatcher(sockc, res, cv, envir)
+        },
         {
           n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
           tls <- configure_tls(url, tls, pass, envir, returnconfig = FALSE)
@@ -351,6 +365,16 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "thr
       output <- attr(dots, "output")
       switch(
         parse_dispatcher(dispatcher[1L]),
+        {
+          cv <- cv()
+          sock <- req_socket(urld)
+          urlc <- sprintf("%s%s", urld, "c")
+          sockc <- req_socket(urlc)
+          res <- launch_sync_dispatcher(sock, sockc, wa42(urld, dots, envir[["stream"]], n, urlc), output)
+          is.object(res) && stop(._[["sync_dispatcher"]])
+          store_dispatcher(sockc, res, cv, envir)
+          for (i in seq_len(n)) next_stream(envir)
+        },
         {
           cv <- cv()
           sock <- req_socket(urld)
@@ -601,8 +625,8 @@ req_socket <- function(url, tls = NULL, resend = 0L)
   `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", resend)
 
 parse_dispatcher <- function(x)
-  if (x == "process") 1L else if (x == "thread") 2L else if (x == "none") 3L else
-    if (is.logical(x)) 1L + (!x) * 2L else 4L
+  if (x == "next") 1L else if (x == "process") 2L else if (x == "thread") 3L else if (x == "none") 4L else
+    if (is.logical(x)) 2L + (!x) * 2L else 5L
 
 parse_dots <- function(...) {
   ...length() || return("")
@@ -623,11 +647,20 @@ libp <- function(lp = .libPaths()) lp[file.exists(file.path(lp, "mirai"))][1L]
 wa3 <- function(url, dots, rs, tls = NULL)
   shQuote(sprintf("mirai::daemon(\"%s\"%s%s,rs=c(%s))", url, dots, parse_tls(tls), paste0(rs, collapse = ",")))
 
+wa32 <- function(url, dots, rs, tls = NULL)
+  shQuote(sprintf("mirai::daemon2(\"%s\"%s%s,rs=c(%s))", url, dots, parse_tls(tls), paste0(rs, collapse = ",")))
+
 wa4 <- function(urld, dots, rs, n, urlc)
   shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher(\"%s\",n=%d,rs=c(%s),monitor=\"%s\"%s)", libp(), urld, n, paste0(rs, collapse= ","), urlc, dots))
 
+wa42 <- function(urld, dots, rs, n, urlc)
+  shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher2(\"%s\",n=%d,rs=c(%s),monitor=\"%s\"%s)", libp(), urld, n, paste0(rs, collapse= ","), urlc, dots))
+
 wa5 <- function(urld, dots, n, urlc, url)
   shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher(\"%s\",c(\"%s\"),n=%d,monitor=\"%s\"%s)", libp(), urld, paste0(url, collapse = "\",\""), n, urlc, dots))
+
+wa52 <- function(urld, dots, n, urlc, url)
+  shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher2(\"%s\",c(\"%s\"),n=%d,monitor=\"%s\"%s)", libp(), urld, paste0(url, collapse = "\",\""), n, urlc, dots))
 
 launch_daemon <- function(args, output)
   system2(.command, args = c("-e", args), stdout = output, stderr = output, wait = FALSE)
@@ -674,7 +707,7 @@ send_signal <- function(envir) {
 
 query_status <- function(envir) {
   res <- query_dispatcher(envir[["sockc"]], command = 0L, mode = 5L)
-  is.object(res) && return(res)
+  length(res) == 1L && return(res)
   `attributes<-`(
     res,
     list(

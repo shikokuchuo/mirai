@@ -8,7 +8,7 @@ daemons(
   n,
   url = NULL,
   remote = NULL,
-  dispatcher = c("process", "thread", "none"),
+  dispatcher = c("next", "process", "thread", "none"),
   ...,
   force = TRUE,
   seed = NULL,
@@ -66,6 +66,10 @@ key (may contain additional certificates leading to a validation chain,
 with the TLS certificate first), \strong{or} a length 2 character vector
 comprising [i] the TLS certificate (optionally certificate chain) and [ii]
 the associated private key.}
+
+\item{pass}{[default NULL] (required only if the private key supplied to
+\sQuote{tls} is encrypted with a password) For security, should be provided
+through a function that returns this value, rather than directly.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}

@@ -109,7 +109,7 @@
 #'
 #' @export
 #'
-daemon2 <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
+daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
                    output = FALSE, maxtasks = Inf, idletime = Inf, walltime = Inf,
                    timerstart = 0L, ..., tls = NULL, rs = NULL) {
 
@@ -172,9 +172,8 @@ daemon2 <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
 
 #' @export
 #'
-daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
-                    output = FALSE, maxtasks = Inf, idletime = Inf, walltime = Inf,
-                    timerstart = 0L, ..., tls = NULL, rs = NULL) {
+daemon2 <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
+                    output = FALSE, ..., tls = NULL, rs = NULL) {
 
   cv <- cv()
   sock <- socket(protocol = "poly")
@@ -185,7 +184,6 @@ daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
   dial_and_sync_socket(sock, url, asyncdial = asyncdial, tls = tls)
 
   if (is.numeric(rs)) `[[<-`(.GlobalEnv, ".Random.seed", as.integer(rs))
-  if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
   cleanup <- parse_cleanup(cleanup)
   if (!output) {
     devnull <- file(nullfile(), open = "w", blocking = FALSE)
@@ -198,37 +196,16 @@ daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
     }, add = TRUE)
   }
   snapshot()
-  count <- 0L
-  start <- mclock()
 
   repeat {
-
     send(sock, 0L, mode = 2L, block = TRUE)
-    aio <- recv_aio(sock, mode = 1L, timeout = idletime, cv = cv)
+    aio <- recv_aio(sock, mode = 1L, cv = cv)
     wait(cv) || break
     m <- collect_aio(aio)
-    is.object(m) && {
-      count < timerstart && {
-        start <- mclock()
-        next
-      }
-      break
-    }
+    is.object(m) && break
     data <- eval_mirai(m)
-    count <- count + 1L
-
-    (count >= maxtasks || count > timerstart && mclock() - start >= walltime) && {
-      .mark()
-      send(sock, data, mode = 1L, block = TRUE)
-      aio <- recv_aio(sock, mode = 8L, cv = cv)
-      wait(cv)
-      break
-    }
-
     send(sock, data, mode = 1L, block = TRUE)
     perform_cleanup(cleanup)
-    if (count <= timerstart) start <- mclock()
-
   }
 
 }
