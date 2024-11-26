@@ -341,23 +341,21 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
 
       } else if (!.unresolved(inc)) {
         pipe <- collect_pipe(inc)
+        id <- as.character(attr(pipe, "id"))
         value <- collect_aio(inc)
         if (value[1L] == 0L) {
-          pos <- length(outq) + 1L
-          outq[[pos]] <- list(pipe = pipe)
-          names(outq)[[pos]] <- as.character(pipe$id)
+          outq[[id]] <- pipe
         } else {
-          send(outq[[as.character(pipe$id)]][["ctx"]], value, mode = 2L, block = TRUE)
-          outq[[as.character(pipe$id)]] <- NULL
+          send(outq[[id]], value, mode = 2L, block = TRUE)
         }
         inc <- recv_aio(nsock, mode = 8L, cv = cv)
       }
 
       for (i in seq_along(outq)) {
-        if (length(outq[[i]]) == 1L) {
+        if (is.object(outq[[i]])) {
           if (length(inq)) {
-            call_aio(send_aio(outq[[i]][["pipe"]], inq[[1L]][["req"]], mode = 2L))
-            outq[[i]] <- c(outq[[i]], inq[[1L]])
+            call_aio(send_aio(outq[[i]], inq[[1L]][["req"]], mode = 2L))
+            outq[[i]] <- inq[[1L]][["ctx"]]
             inq[[1L]] <- NULL
           }
         }
