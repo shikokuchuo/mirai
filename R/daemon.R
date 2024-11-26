@@ -109,7 +109,7 @@
 #'
 #' @export
 #'
-daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
+daemon2 <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
                    output = FALSE, maxtasks = Inf, idletime = Inf, walltime = Inf,
                    timerstart = 0L, ..., tls = NULL, rs = NULL) {
 
@@ -172,12 +172,12 @@ daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
 
 #' @export
 #'
-daemon2 <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
+daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
                     output = FALSE, maxtasks = Inf, idletime = Inf, walltime = Inf,
                     timerstart = 0L, ..., tls = NULL, rs = NULL) {
 
   cv <- cv()
-  sock <- req_socket(NULL)
+  sock <- socket(protocol = "poly")
   on.exit(reap(sock))
   `[[<-`(., "sock", sock)
   autoexit && pipe_notify(sock, cv = cv, remove = TRUE, flag = as.integer(autoexit))
@@ -197,15 +197,14 @@ daemon2 <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
       close(devnull)
     }, add = TRUE)
   }
-  id <- random(10L)
   snapshot()
   count <- 0L
   start <- mclock()
 
   repeat {
 
-    ctx <- .context(sock)
-    aio <- request(ctx, id, send_mode = 2L, recv_mode = 1L, timeout = idletime, cv = cv)
+    send(sock, 0L, mode = 2L, block = TRUE)
+    aio <- recv_aio(sock, mode = 1L, timeout = idletime, cv = cv)
     wait(cv) || break
     m <- collect_aio(aio)
     is.object(m) && {
@@ -220,13 +219,13 @@ daemon2 <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
 
     (count >= maxtasks || count > timerstart && mclock() - start >= walltime) && {
       .mark()
-      send(ctx, data, mode = 1L, block = TRUE)
-      aio <- recv_aio(ctx, mode = 8L, cv = cv)
+      send(sock, data, mode = 1L, block = TRUE)
+      aio <- recv_aio(sock, mode = 8L, cv = cv)
       wait(cv)
       break
     }
 
-    send(ctx, data, mode = 1L, block = TRUE)
+    send(sock, data, mode = 1L, block = TRUE)
     perform_cleanup(cleanup)
     if (count <= timerstart) start <- mclock()
 
