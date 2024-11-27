@@ -319,8 +319,8 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
   }
 
   ctx <- .context(sock)
-  aio <- recv_aio(ctx, mode = 8L, cv = cv)
-  inc <- recv_aio(nsock, mode = 8L, cv = cv)
+  req <- recv_aio(ctx, mode = 8L, cv = cv)
+  res <- recv_aio(nsock, mode = 8L, cv = cv)
 
   suspendInterrupts(
     repeat {
@@ -333,17 +333,17 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
         next
       }
 
-      if (!.unresolved(aio)) {
-        inq[[length(inq) + 1L]] <- list(ctx = ctx, req = collect_aio(aio))
+      if (!.unresolved(req)) {
+        inq[[length(inq) + 1L]] <- list(ctx = ctx, req = collect_aio(req))
         ctx <- .context(sock)
-        aio <- recv_aio(ctx, mode = 8L, cv = cv)
+        req <- recv_aio(ctx, mode = 8L, cv = cv)
         length(outq) || next
 
-      } else if (!.unresolved(inc)) {
-        pipe <- collect_pipe(inc)
+      } else if (!.unresolved(res)) {
+        pipe <- collect_pipe(res)
         id <- as.character(attr(pipe, "id"))
-        value <- collect_aio(inc)
-        inc <- recv_aio(nsock, mode = 8L, cv = cv)
+        value <- collect_aio(res)
+        res <- recv_aio(nsock, mode = 8L, cv = cv)
         if (value[1L] == 0L) {
           outq[[id]] <- list(pipe = pipe, busy = FALSE)
         } else {
