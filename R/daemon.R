@@ -204,7 +204,10 @@ daemon2 <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
     aio2 <- recv_aio(sock, mode = 1L, cv = cv)
     wait(cv) || break
     m <- collect_aio(aio)
-    is.object(m) && break
+    is.object(m) && {
+      aio <- aio2
+      next
+    }
     data <- eval_mirai(m)
     send(sock, data, mode = 1L, block = TRUE)
     perform_cleanup(cleanup)
@@ -244,6 +247,8 @@ handle_mirai_interrupt <- function(e) invokeRestart("mirai_interrupt")
 
 eval_mirai <- function(._mirai_.) {
   list2env(._mirai_.[["._mirai_globals_."]], envir = .GlobalEnv)
+  .interrupt()
+  on.exit(.interrupt())
   withRestarts(
     withCallingHandlers(
       eval(._mirai_.[[".expr"]], envir = ._mirai_., enclos = .GlobalEnv),

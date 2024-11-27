@@ -183,7 +183,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   envir <- ..[[.compute]]
   is.null(envir) && return(ephemeral_daemon(data, .timeout))
   r <- request(.context(envir[["sock"]]), data, send_mode = 1L, recv_mode = 1L, timeout = .timeout, cv = envir[["cv"]])
-  `attr<-`(r, "msgid", next_msgid(envir))
+  `attr<-`(`attr<-`(r, "msgid", next_msgid(envir)), "profile", .compute)
 
 }
 
@@ -410,7 +410,14 @@ collect_mirai <- collect_aio
 #'
 #' @export
 #'
-stop_mirai <- stop_aio
+stop_mirai <- function(x) {
+  .compute <- attr(x, "profile")
+  if (!is.null(.compute)) {
+    envir <- ..[[.compute]]
+    res <- query_dispatcher(envir[["sockc"]], command = attr(x, "msgid"), mode = 5L, block = 0L)
+  }
+  stop_aio(x)
+}
 
 #' Query if a mirai is Unresolved
 #'

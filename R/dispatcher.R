@@ -333,8 +333,18 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
         # add connection / disconnection logic
       }
 
-      ctrchannel && !unresolved(cmessage) && {
-        send(sockc, as.integer(stat(nsock, "pipes")), mode = 2L)
+      ctrchannel && !.unresolved(cmessage) && {
+        msgid <- collect_aio(cmessage)
+        if (msgid) {
+          for (item in outq)
+            if (msgid == item[["msgid"]]) {
+              call_aio(send_aio(item[["pipe"]], .miraiInterrupt, mode = 1L))
+              break
+            }
+
+        } else {
+          send(sockc, as.integer(stat(nsock, "pipes")), mode = 2L)
+        }
         cmessage <- recv_aio(sockc, mode = 5L, cv = cv)
         next
       }
@@ -352,17 +362,16 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
         value <- collect_aio(res)
         res <- recv_aio(nsock, mode = 8L, cv = cv)
         if (value[1L] == 0L) {
-          outq[[id]] <- list(pipe = pipe, busy = FALSE, ctx = NULL, msgid = 0L)
+          outq[[id]] <- list(pipe = pipe, msgid = 0L, ctx = NULL)
         } else {
           send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)
-          outq[[id]][["busy"]] <- FALSE
+          outq[[id]][["msgid"]] <- 0L
         }
       }
 
       if (length(inq))
         for (i in seq_along(outq))
-          if (!outq[[i]][["busy"]]) {
-            outq[[i]][["busy"]] <- TRUE
+          if (!outq[[i]][["msgid"]]) {
             call_aio(send_aio(outq[[i]][["pipe"]], inq[[1L]][["req"]], mode = 2L))
             outq[[i]][["ctx"]] <- inq[[1L]][["ctx"]]
             outq[[i]][["msgid"]] <- inq[[1L]][["msgid"]]
