@@ -334,7 +334,7 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
       }
 
       if (!.unresolved(aio)) {
-        inq[[length(inq) + 1L]] <- list(ctx, collect_aio(aio))
+        inq[[length(inq) + 1L]] <- list(ctx = ctx, req = collect_aio(aio))
         ctx <- .context(sock)
         aio <- recv_aio(ctx, mode = 8L, cv = cv)
         length(outq) || next
@@ -345,21 +345,22 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
         value <- collect_aio(inc)
         inc <- recv_aio(nsock, mode = 8L, cv = cv)
         if (value[1L] == 0L) {
-          outq[[id]] <- pipe
-          length(inq) || next
+          outq[[id]] <- list(pipe = pipe, busy = FALSE)
         } else {
-          send(outq[[id]], value, mode = 2L, block = TRUE)
-          next
+          send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)
+          outq[[id]][["busy"]] <- FALSE
         }
       }
 
-      for (i in seq_along(outq))
-        if (is.object(outq[[i]])) {
-          call_aio(send_aio(outq[[i]], inq[[1L]][[2L]], mode = 2L))
-          outq[[i]] <- inq[[1L]][[1L]]
-          inq[[1L]] <- NULL
-          break
-        }
+      if (length(inq))
+        for (i in seq_along(outq))
+          if (!outq[[i]][["busy"]]) {
+            outq[[i]][["busy"]] <- TRUE
+            call_aio(send_aio(outq[[i]][["pipe"]], inq[[1L]][["req"]], mode = 2L))
+            outq[[i]][["ctx"]] <- inq[[1L]][["ctx"]]
+            inq[[1L]] <- NULL
+            break
+          }
 
     }
   )

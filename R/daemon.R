@@ -197,8 +197,9 @@ daemon2 <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
   }
   snapshot()
 
+  send(sock, 0L, mode = 2L, block = TRUE)
+
   repeat {
-    send(sock, 0L, mode = 2L, block = TRUE)
     aio <- recv_aio(sock, mode = 1L, cv = cv)
     wait(cv) || break
     m <- collect_aio(aio)
