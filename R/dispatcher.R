@@ -334,32 +334,32 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
       }
 
       if (!.unresolved(aio)) {
-        pos <- length(inq) + 1L
-        inq[[pos]] <- list(ctx = ctx, req = collect_aio(aio))
+        inq[[length(inq) + 1L]] <- list(ctx, collect_aio(aio))
         ctx <- .context(sock)
         aio <- recv_aio(ctx, mode = 8L, cv = cv)
+        length(outq) || next
 
       } else if (!.unresolved(inc)) {
         pipe <- collect_pipe(inc)
         id <- as.character(attr(pipe, "id"))
         value <- collect_aio(inc)
+        inc <- recv_aio(nsock, mode = 8L, cv = cv)
         if (value[1L] == 0L) {
           outq[[id]] <- pipe
+          length(inq) || next
         } else {
           send(outq[[id]], value, mode = 2L, block = TRUE)
+          next
         }
-        inc <- recv_aio(nsock, mode = 8L, cv = cv)
       }
 
-      for (i in seq_along(outq)) {
+      for (i in seq_along(outq))
         if (is.object(outq[[i]])) {
-          if (length(inq)) {
-            call_aio(send_aio(outq[[i]], inq[[1L]][["req"]], mode = 2L))
-            outq[[i]] <- inq[[1L]][["ctx"]]
-            inq[[1L]] <- NULL
-          }
+          call_aio(send_aio(outq[[i]], inq[[1L]][[2L]], mode = 2L))
+          outq[[i]] <- inq[[1L]][[1L]]
+          inq[[1L]] <- NULL
+          break
         }
-      }
 
     }
   )
