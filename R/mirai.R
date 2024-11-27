@@ -182,7 +182,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 
   envir <- ..[[.compute]]
   is.null(envir) && return(ephemeral_daemon(data, .timeout))
-  request(.context(envir[["sock"]]), data, send_mode = 1L, recv_mode = 1L, timeout = .timeout, cv = envir[["cv"]])
+  r <- request(.context(envir[["sock"]]), data, send_mode = 1L, recv_mode = 1L, timeout = .timeout, cv = envir[["cv"]])
+  `attr<-`(r, "msgid", next_msgid(envir))
 
 }
 

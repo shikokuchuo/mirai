@@ -81,3 +81,9 @@ next_stream <- function(envir) {
   if (length(stream)) `[[<-`(envir, "stream", parallel::nextRNGStream(stream))
   stream
 }
+
+next_msgid <- function(envir) {
+  msgid <- envir[["msgid"]] + 1L
+  `[[<-`(envir, "msgid", msgid)
+  msgid
+}

@@ -584,7 +584,7 @@ init_envir_stream <- function(seed) {
   oseed <- .GlobalEnv[[".Random.seed"]]
   RNGkind("L'Ecuyer-CMRG")
   if (length(seed)) set.seed(seed)
-  envir <- `[[<-`(new.env(hash = FALSE, parent = ..), "stream", .GlobalEnv[[".Random.seed"]])
+  envir <- `[[<-`(`[[<-`(new.env(hash = FALSE, parent = ..), "stream", .GlobalEnv[[".Random.seed"]]), "msgid", 0L)
   `[[<-`(.GlobalEnv, ".Random.seed", oseed)
   envir
 }

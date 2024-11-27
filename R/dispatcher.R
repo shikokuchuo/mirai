@@ -276,7 +276,6 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
   }
 
   auto <- is.null(url)
-  inq <- outq <- list()
   if (auto) {
     dots <- parse_dots(...)
     output <- attr(dots, "output")
@@ -318,6 +317,8 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
     cmessage <- recv_aio(sockc, mode = 5L, cv = cv)
   }
 
+  inq <- outq <- list()
+  msgid <- 0L
   ctx <- .context(sock)
   req <- recv_aio(ctx, mode = 8L, cv = cv)
   res <- recv_aio(nsock, mode = 8L, cv = cv)
@@ -327,6 +328,11 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
 
       wait(cv) || break
 
+      if (cv_value(ncv)) {
+        wait(ncv)
+        # add connection / disconnection logic
+      }
+
       ctrchannel && !unresolved(cmessage) && {
         send(sockc, as.integer(stat(nsock, "pipes")), mode = 2L)
         cmessage <- recv_aio(sockc, mode = 5L, cv = cv)
@@ -334,7 +340,8 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
       }
 
       if (!.unresolved(req)) {
-        inq[[length(inq) + 1L]] <- list(ctx = ctx, req = collect_aio(req))
+        msgid <- msgid + 1L
+        inq[[length(inq) + 1L]] <- list(ctx = ctx, req = collect_aio(req), msgid = msgid)
         ctx <- .context(sock)
         req <- recv_aio(ctx, mode = 8L, cv = cv)
         length(outq) || next
@@ -345,7 +352,7 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
         value <- collect_aio(res)
         res <- recv_aio(nsock, mode = 8L, cv = cv)
         if (value[1L] == 0L) {
-          outq[[id]] <- list(pipe = pipe, busy = FALSE)
+          outq[[id]] <- list(pipe = pipe, busy = FALSE, ctx = NULL, msgid = 0L)
         } else {
           send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)
           outq[[id]][["busy"]] <- FALSE
@@ -358,6 +365,7 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
             outq[[i]][["busy"]] <- TRUE
             call_aio(send_aio(outq[[i]][["pipe"]], inq[[1L]][["req"]], mode = 2L))
             outq[[i]][["ctx"]] <- inq[[1L]][["ctx"]]
+            outq[[i]][["msgid"]] <- inq[[1L]][["msgid"]]
             inq[[1L]] <- NULL
             break
           }
