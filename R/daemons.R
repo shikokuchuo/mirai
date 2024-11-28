@@ -307,7 +307,6 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "nex
           res <- launch_sync_dispatcher(sock, sockc, wa5(urld, dots, n, urlc, url), output, tls, pass)
           is.object(res) && stop(._[["sync_dispatcher"]])
           store_dispatcher(sockc, res, cv, envir)
-          `[[<-`(envir, "msgid", 100L)
         },
         {
           n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
@@ -322,6 +321,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "nex
           res <- launch_sync_dispatcher(sock, sockc, wa52(urld, dots, n, urlc, url), output, tls, pass)
           is.object(res) && stop(._[["sync_dispatcher"]])
           store_dispatcher(sockc, res, cv, envir)
+          `[[<-`(envir, "msgid", 100L)
         },
         {
           n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])

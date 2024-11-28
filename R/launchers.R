@@ -83,13 +83,14 @@ launch_local <- function(url, ..., tls = NULL, .compute = "default") {
 
   envir <- ..[[.compute]]
   is.null(envir) && stop(._[["daemons_unset"]])
+  write_args <- if (length(envir[["msgid"]])) wa32 else wa3
   dots <- parse_dots(...)
   output <- attr(dots, "output")
   if (is.null(tls)) tls <- envir[["tls"]]
   url <- process_url(url, envir)
   is.character(url) || stop(._[["url_spec"]])
   for (u in url)
-    launch_daemon(wa3(u, dots, next_stream(envir), tls), output)
+    launch_daemon(write_args(u, dots, next_stream(envir), tls), output)
 
 }
 
@@ -119,6 +120,7 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
     url <- rep(..[[.compute]][["urls"]], max(length(url), 1L))
   }
   envir <- ..[[.compute]]
+  write_args <- if (length(envir[["msgid"]])) wa32 else wa3
   is.null(envir) && stop(._[["daemons_unset"]])
   dots <- parse_dots(...)
   if (is.null(tls)) tls <- envir[["tls"]]
@@ -144,7 +146,7 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
         arglen <- length(args)
         cmds <- character(arglen)
         for (i in seq_along(args))
-          cmds[i] <- sprintf("%s -e %s", rscript, wa3(url[min(i, ulen)], dots, next_stream(envir), tls))
+          cmds[i] <- sprintf("%s -e %s", rscript, write_args(url[min(i, ulen)], dots, next_stream(envir), tls))
 
         for (i in seq_along(args))
           system2(command, args = `[<-`(args[[i]], find_dot(args[[i]]), if (quote) shQuote(cmds[i]) else cmds[i]), wait = FALSE)
@@ -160,7 +162,7 @@ launch_remote <- function(url, remote = remote_config(), ..., tls = NULL, .compu
 
   cmds <- character(ulen)
   for (i in seq_along(url))
-    cmds[i] <- sprintf("%s -e %s", rscript, wa3(url[i], dots, next_stream(envir), tls))
+    cmds[i] <- sprintf("%s -e %s", rscript, write_args(url[i], dots, next_stream(envir), tls))
 
   if (length(command))
     for (cmd in cmds)
