@@ -33,6 +33,8 @@ regenerated. If this happens while a mirai task is still ongoing, it will be
 returned as an \sQuote{errorValue} 7 (Object closed). This may be used to
 cancel a task that consistently hangs or crashes to prevent it from failing
 repeatedly when new daemons connect.
+
+Has no effect and returns NULL if using \sQuote{next} dispatcher.
 }
 \section{Timeouts}{
 

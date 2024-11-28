@@ -302,8 +302,8 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
   pipe_notify(nsock, cv = ncv, cv2 = cv, add = TRUE, remove = TRUE)
   listen(nsock, url = url, tls = tls, error = TRUE)
   listener <- attr(nsock, "listener")[[1L]]
-  listurl <- opt(listener, "url")
-  if (!auto && parse_url(listurl)[["port"]] == "0") {
+  url <- opt(listener, "url")
+  if (!auto && parse_url(url)[["port"]] == "0") {
     realport <- opt(listener, "tcp-bound-port")
     url <- sub_real_port(realport, url)
   }
@@ -413,6 +413,8 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
 #' cancel a task that consistently hangs or crashes to prevent it from failing
 #' repeatedly when new daemons connect.
 #'
+#' Has no effect and returns NULL if using \sQuote{next} dispatcher.
+#'
 #' @inheritParams mirai
 #' @param i integer index number URL to regenerate at dispatcher.
 #' @param force [default FALSE] logical value whether to regenerate the URL even
@@ -451,6 +453,7 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
 saisei <- function(i, force = FALSE, .compute = "default") {
 
   envir <- ..[[.compute]]
+  length(envir[["msgid"]]) && return()
   i <- as.integer(i[1L])
   length(envir[["sockc"]]) && i > 0L && i <= envir[["n"]] && !startsWith(envir[["urls"]][i], "t") || return()
   r <- query_dispatcher(envir[["sockc"]], command = if (force) -i else i, mode = 9L)
