@@ -10,7 +10,10 @@ stop_mirai(x)
 \item{x}{a \sQuote{mirai} object, or list of \sQuote{mirai} objects.}
 }
 \value{
-Invisible NULL.
+Logical TRUE if the cancellation request was successful, or FALSE if
+  already cancelled or completed (or not using \sQuote{next} dispatcher). A
+  return value of TRUE does not guarantee actual cancellation as it is not
+  always possible to interrupt an ongoing evaluation.
 }
 \description{
 Stops a \sQuote{mirai} if still in progress, causing it to resolve
@@ -20,11 +23,9 @@ immediately to an \sQuote{errorValue} 20 (Operation canceled).
 Forces the \sQuote{mirai} to resolve immediately. Has no effect if the
 \sQuote{mirai} has already resolved.
 
-If cancellation was successful, the value at \code{$data} will be an
-\sQuote{errorValue} 20 (Operation canceled). Note that in such a case, the
-\sQuote{mirai} has been aborted and the value not retrieved - but any ongoing
-evaluation in the daemon process will continue to completion and is not
-interrupted.
+This function returns TRUE if the cancellation request was successful. In
+such a case if the mirai is queued for execution, it is discarded, and if
+in the process of execution on a daemon, an interrupt signal is triggered.
 }
 \examples{
 if (interactive()) {

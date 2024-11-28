@@ -388,15 +388,16 @@ collect_mirai <- collect_aio
 #' Forces the \sQuote{mirai} to resolve immediately. Has no effect if the
 #' \sQuote{mirai} has already resolved.
 #'
-#' If cancellation was successful, the value at \code{$data} will be an
-#' \sQuote{errorValue} 20 (Operation canceled). Note that in such a case, the
-#' \sQuote{mirai} has been aborted and the value not retrieved - but any ongoing
-#' evaluation in the daemon process will continue to completion and is not
-#' interrupted.
+#' This function returns TRUE if the cancellation request was successful. In
+#' such a case if the mirai is queued for execution, it is discarded, and if
+#' in the process of execution on a daemon, an interrupt signal is triggered.
 #'
 #' @inheritParams call_mirai
 #'
-#' @return Invisible NULL.
+#' @return Logical TRUE if the cancellation request was successful, or FALSE if
+#'   already cancelled or completed (or not using \sQuote{next} dispatcher). A
+#'   return value of TRUE does not guarantee actual cancellation as it is not
+#'   always possible to interrupt an ongoing evaluation.
 #'
 #' @examples
 #' if (interactive()) {
@@ -412,11 +413,12 @@ collect_mirai <- collect_aio
 #'
 stop_mirai <- function(x) {
   .compute <- attr(x, "profile")
-  if (!is.null(.compute)) {
+  res <- !is.null(.compute) && {
     envir <- ..[[.compute]]
-    res <- query_dispatcher(envir[["sockc"]], command = attr(x, "msgid"), mode = 5L, block = 0L)
-  }
+    length(envir[["msgid"]])
+  } && query_dispatcher(envir[["sockc"]], command = attr(x, "msgid"), mode = 6L)
   stop_aio(x)
+  invisible(res)
 }
 
 #' Query if a mirai is Unresolved

@@ -318,7 +318,7 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
   }
 
   inq <- outq <- list()
-  msgid <- 0L
+  msgid <- 100L
   ctx <- .context(sock)
   req <- recv_aio(ctx, mode = 8L, cv = cv)
   res <- recv_aio(nsock, mode = 8L, cv = cv)
@@ -336,11 +336,22 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
       ctrchannel && !.unresolved(cmessage) && {
         msgid <- collect_aio(cmessage)
         if (msgid) {
+
+          found <- FALSE
           for (item in outq)
             if (msgid == item[["msgid"]]) {
               call_aio(send_aio(item[["pipe"]], .miraiInterrupt, mode = 1L))
+              found <- TRUE
               break
             }
+          if (!found)
+            for (i in seq_along(inq))
+              if (msgid == inq[[i]][["msgid"]]) {
+                inq[[i]] <- NULL
+                found <- TRUE
+                break
+              }
+          send(sockc, found, mode = 2L)
 
         } else {
           send(sockc, as.integer(stat(nsock, "pipes")), mode = 2L)

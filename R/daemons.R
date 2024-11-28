@@ -316,6 +316,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("next", "proces
           res <- launch_sync_dispatcher(sock, sockc, wa5(urld, dots, n, urlc, url), output, tls, pass)
           is.object(res) && stop(._[["sync_dispatcher"]])
           store_dispatcher(sockc, res, cv, envir)
+          `[[<-`(envir, "msgid", 100L)
         },
         {
           n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
@@ -374,6 +375,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("next", "proces
           is.object(res) && stop(._[["sync_dispatcher"]])
           store_dispatcher(sockc, res, cv, envir)
           for (i in seq_len(n)) next_stream(envir)
+          `[[<-`(envir, "msgid", 100L)
         },
         {
           cv <- cv()
@@ -584,7 +586,7 @@ init_envir_stream <- function(seed) {
   oseed <- .GlobalEnv[[".Random.seed"]]
   RNGkind("L'Ecuyer-CMRG")
   if (length(seed)) set.seed(seed)
-  envir <- `[[<-`(`[[<-`(new.env(hash = FALSE, parent = ..), "stream", .GlobalEnv[[".Random.seed"]]), "msgid", 0L)
+  envir <- `[[<-`(new.env(hash = FALSE, parent = ..), "stream", .GlobalEnv[[".Random.seed"]])
   `[[<-`(.GlobalEnv, ".Random.seed", oseed)
   envir
 }
