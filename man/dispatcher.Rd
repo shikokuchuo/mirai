@@ -2,6 +2,7 @@
 % Please edit documentation in R/dispatcher.R
 \name{dispatcher}
 \alias{dispatcher}
+\alias{dispatcher2}
 \title{Dispatcher}
 \usage{
 dispatcher(
@@ -11,6 +12,17 @@ dispatcher(
   ...,
   retry = FALSE,
   token = FALSE,
+  tls = NULL,
+  pass = NULL,
+  rs = NULL,
+  monitor = NULL
+)
+
+dispatcher2(
+  host,
+  url = NULL,
+  n = NULL,
+  ...,
   tls = NULL,
   pass = NULL,
   rs = NULL,
@@ -83,4 +95,6 @@ host and daemons, ensuring that tasks received from the host are dispatched
 on a FIFO basis for processing. Tasks are queued at the dispatcher to ensure
 tasks are only sent to daemons that can begin immediate execution of the
 task.
+
+\code{dispatcher2} is the type \sQuote{next} dispatcher for daemons.
 }

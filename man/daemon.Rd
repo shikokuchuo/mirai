@@ -2,6 +2,7 @@
 % Please edit documentation in R/daemon.R
 \name{daemon}
 \alias{daemon}
+\alias{daemon2}
 \title{Daemon Instance}
 \usage{
 daemon(
@@ -14,6 +15,17 @@ daemon(
   idletime = Inf,
   walltime = Inf,
   timerstart = 0L,
+  ...,
+  tls = NULL,
+  rs = NULL
+)
+
+daemon2(
+  url,
+  asyncdial = FALSE,
+  autoexit = TRUE,
+  cleanup = TRUE,
+  output = FALSE,
   ...,
   tls = NULL,
   rs = NULL
@@ -90,6 +102,8 @@ The network topology is such that daemons dial into the host or dispatcher,
 which listens at the \sQuote{url} address. In this way, network resources may
 be added or removed dynamically and the host or dispatcher automatically
 distributes tasks to all available daemons.
+
+\code{daemon2} is a newer daemon type for use with \code{\link{dispatcher2}}.
 }
 \section{Persistence}{
 

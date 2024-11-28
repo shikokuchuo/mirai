@@ -29,6 +29,8 @@
 #' tasks are only sent to daemons that can begin immediate execution of the
 #' task.
 #'
+#' \code{dispatcher2} is the type \sQuote{next} dispatcher for daemons.
+#'
 #' @inheritParams daemon
 #' @param host the character host URL to dial (where tasks are sent from),
 #'   including the port to connect to (and optionally for websockets, a path),
@@ -248,6 +250,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token = F
 
 }
 
+#' @rdname dispatcher
 #' @export
 #'
 dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,

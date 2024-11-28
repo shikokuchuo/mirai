@@ -29,6 +29,8 @@
 #' be added or removed dynamically and the host or dispatcher automatically
 #' distributes tasks to all available daemons.
 #'
+#' \code{daemon2} is a newer daemon type for use with \code{\link{dispatcher2}}.
+#'
 #' @param url the character host or dispatcher URL to dial into, including the
 #'   port to connect to (and optionally for websockets, a path), e.g.
 #'   'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.
@@ -170,6 +172,7 @@ daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
 
 }
 
+#' @rdname daemon
 #' @export
 #'
 daemon2 <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,

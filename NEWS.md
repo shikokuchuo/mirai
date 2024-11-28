@@ -1,4 +1,8 @@
-# mirai 1.3.1.9001 (development)
+# mirai 1.3.1.9002 (development)
+
+#### New Features
+
+* Introduces `daemons(dispatcher = "next")`, a newer and more efficient dispatcher. Supports mirai cancellation.
 
 # mirai 1.3.1
 
