@@ -364,15 +364,14 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
         req <- recv_aio(ctx, mode = 8L, cv = cv)
 
       } else if (!.unresolved(res)) {
-        pipe <- collect_pipe(res)
-        id <- as.character(attr(pipe, "id"))
         value <- collect_aio(res)
+        id <- .subset2(res, "aio")
         res <- recv_aio(psock, mode = 8L, cv = cv)
         if (value[1L] == 0L) {
-          outq[[id]] <- list(pipe = pipe, msgid = 0L, ctx = NULL)
+          outq[[as.character(id)]] <- list(pipe = socket_pipe(id), msgid = 0L, ctx = NULL)
         } else {
-          send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)
-          outq[[id]][["msgid"]] <- 0L
+          send(outq[[as.character(id)]][["ctx"]], value, mode = 2L, block = TRUE)
+          outq[[as.character(id)]][["msgid"]] <- 0L
         }
       }
 

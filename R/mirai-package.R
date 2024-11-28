@@ -46,10 +46,10 @@
 #'   (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 #'
 #' @importFrom nanonext .advance call_aio call_aio_ collect_aio collect_aio_
-#'   collect_pipe .context cv cv_value dial .dispatcher .interrupt
-#'   is_error_value .keep listen lock .mark mclock msleep nng_error .online opt
-#'   opt<- parse_url pipe_notify random reap recv recv_aio request send send_aio
-#'   serial_config socket stat stop_aio tls_config unresolved .unresolved until
+#'   .context cv cv_value dial .dispatcher .interrupt is_error_value .keep
+#'   listen lock .mark mclock msleep nng_error .online opt opt<- parse_url
+#'   pipe_notify random reap recv recv_aio request send send_aio serial_config
+#'   socket socket_pipe stat stop_aio tls_config unresolved .unresolved until
 #'   wait write_cert
 #'
 "_PACKAGE"
