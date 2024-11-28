@@ -279,52 +279,48 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
   }
 
   auto <- is.null(url)
+  if (auto) url <- local_url()
+  ncv <- cv()
+  psock <- socket(protocol = "poly")
+  on.exit(reap(psock), add = TRUE, after = TRUE)
+  pipe_notify(psock, cv = ncv, cv2 = cv, add = TRUE, remove = TRUE)
+  listen(psock, url = url, tls = tls, error = TRUE)
+
   if (auto) {
+
+    envir <- new.env(hash = FALSE)
+    if (is.numeric(rs)) `[[<-`(envir, "stream", as.integer(rs))
     dots <- parse_dots(...)
     output <- attr(dots, "output")
+    for (i in seq_len(n))
+      launch_daemon(wa32(url, dots, next_stream(envir)), output)
+    for (i in seq_len(n))
+      until(cv, .limit_long) || stop(._[["sync_daemons"]])
+
   } else {
+
+    url <- check_url(psock)
     if (ctrchannel && nzchar(cmessage[4L]) && is.null(tls)) {
       tls <- c(cmessage[4L], if (nzchar(cmessage[6L])) cmessage[6L])
       pass <- if (nzchar(cmessage[8L])) cmessage[8L]
     }
     if (length(tls))
       tls <- tls_config(server = tls, pass = pass)
+
   }
+
   pass <- NULL
-
-  envir <- new.env(hash = FALSE)
-  if (is.numeric(rs)) `[[<-`(envir, "stream", as.integer(rs))
-
-  if (auto) url <- local_url()
-  ncv <- cv()
-  nsock <- socket(protocol = "poly")
-  on.exit(reap(nsock), add = TRUE, after = TRUE)
-  pipe_notify(nsock, cv = ncv, cv2 = cv, add = TRUE, remove = TRUE)
-  listen(nsock, url = url, tls = tls, error = TRUE)
-  listener <- attr(nsock, "listener")[[1L]]
-  url <- opt(listener, "url")
-  if (!auto && parse_url(url)[["port"]] == "0") {
-    realport <- opt(listener, "tcp-bound-port")
-    url <- sub_real_port(realport, url)
-  }
-
-  if (auto) {
-    for (i in seq_len(n))
-      launch_daemon(wa32(url, dots, next_stream(envir)), output)
-    for (i in seq_len(n))
-      until(cv, .limit_long) || stop(._[["sync_daemons"]])
-  }
 
   if (ctrchannel) {
     send(sockc, c(Sys.getpid(), url), mode = 2L)
     cmessage <- recv_aio(sockc, mode = 5L, cv = cv)
   }
 
-  inq <- outq <- list()
   msgid <- 100L
+  inq <- outq <- list()
   ctx <- .context(sock)
   req <- recv_aio(ctx, mode = 8L, cv = cv)
-  res <- recv_aio(nsock, mode = 8L, cv = cv)
+  res <- recv_aio(psock, mode = 8L, cv = cv)
 
   suspendInterrupts(
     repeat {
@@ -339,7 +335,6 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
       ctrchannel && !.unresolved(cmessage) && {
         msgid <- collect_aio(cmessage)
         if (msgid) {
-
           found <- FALSE
           for (item in outq)
             if (msgid == item[["msgid"]]) {
@@ -355,9 +350,8 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
                 break
               }
           send(sockc, found, mode = 2L)
-
         } else {
-          send(sockc, as.integer(stat(nsock, "pipes")), mode = 2L)
+          send(sockc, as.integer(stat(psock, "pipes")), mode = 2L)
         }
         cmessage <- recv_aio(sockc, mode = 5L, cv = cv)
         next
@@ -373,7 +367,7 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
         pipe <- collect_pipe(res)
         id <- as.character(attr(pipe, "id"))
         value <- collect_aio(res)
-        res <- recv_aio(nsock, mode = 8L, cv = cv)
+        res <- recv_aio(psock, mode = 8L, cv = cv)
         if (value[1L] == 0L) {
           outq[[id]] <- list(pipe = pipe, msgid = 0L, ctx = NULL)
         } else {
@@ -473,6 +467,14 @@ get_ports <- function(url, n) {
 }
 
 sub_real_port <- function(port, url) sub("(?<=:)0(?![^/])", port, url, perl = TRUE)
+
+check_url <- function(sock) {
+  listener <- attr(sock, "listener")[[1L]]
+  url <- opt(listener, "url")
+  if (parse_url(url)[["port"]] == "0")
+    url <- sub_real_port(opt(listener, "tcp-bound-port"), url)
+  url
+}
 
 query_dispatcher <- function(sock, command, mode, block = .limit_short)
   if (r <- send(sock, command, mode = 2L, block = block)) r else
