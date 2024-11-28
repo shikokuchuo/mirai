@@ -413,10 +413,8 @@ collect_mirai <- collect_aio
 #'
 stop_mirai <- function(x) {
   .compute <- attr(x, "profile")
-  res <- !is.null(.compute) && {
-    envir <- ..[[.compute]]
-    length(envir[["msgid"]])
-  } && query_dispatcher(envir[["sockc"]], command = attr(x, "msgid"), mode = 6L)
+  envir <- if (!is.null(.compute)) ..[[.compute]]
+  res <- length(envir[["msgid"]]) && query_dispatcher(envir[["sockc"]], command = attr(x, "msgid"), mode = 6L)
   stop_aio(x)
   invisible(res)
 }

@@ -368,7 +368,6 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
         inq[[length(inq) + 1L]] <- list(ctx = ctx, req = collect_aio(req), msgid = msgid)
         ctx <- .context(sock)
         req <- recv_aio(ctx, mode = 8L, cv = cv)
-        length(outq) || next
 
       } else if (!.unresolved(res)) {
         pipe <- collect_pipe(res)

@@ -249,12 +249,14 @@ handle_mirai_error <- function(e) invokeRestart("mirai_error", e, sys.calls())
 handle_mirai_interrupt <- function(e) invokeRestart("mirai_interrupt")
 
 eval_mirai <- function(._mirai_.) {
-  list2env(._mirai_.[["._mirai_globals_."]], envir = .GlobalEnv)
-  .interrupt()
-  on.exit(.interrupt())
   withRestarts(
     withCallingHandlers(
-      eval(._mirai_.[[".expr"]], envir = ._mirai_., enclos = .GlobalEnv),
+      {
+        .interrupt()
+        on.exit(.interrupt())
+        list2env(._mirai_.[["._mirai_globals_."]], envir = .GlobalEnv)
+        eval(._mirai_.[[".expr"]], envir = ._mirai_., enclos = .GlobalEnv)
+      },
       error = handle_mirai_error,
       interrupt = handle_mirai_interrupt
     ),

@@ -313,4 +313,18 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   test_true(endsWith(urls[[2L]], "/2"))
   test_zero(daemons(0))
 }
+# next dispatcher tests
+connection && Sys.getenv("NOT_CRAN") == "true" && {
+  test_equal(daemons(1, dispatcher = "next", cleanup = FALSE), 1L)
+  m1 <- mirai({ Sys.sleep(1); res <<- "m1 done" })
+  m2 <- mirai({ Sys.sleep(1); res <<- "m2 done" })
+  Sys.sleep(0.01)
+  test_true(stop_mirai(m2))
+  test_equal(m2$data, 20L)
+  test_true(stop_mirai(m1))
+  test_class("miraiError", mirai(res)[])
+  test_equal(status()$connections, 1L)
+  test_equal(length(nextget("urls")), 1L)
+  test_zero(daemons(0))
+}
 Sys.sleep(1L)
