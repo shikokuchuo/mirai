@@ -343,7 +343,7 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
             found <- FALSE
             for (i in seq_along(outq))
               if (outq[[i]][["msgid"]] == id) {
-                call_aio(send_aio(psock, .miraiInterrupt, mode = 1L, pipe = outq[[i]][["pipe"]]))
+                send(psock, .miraiInterrupt, mode = 1L, pipe = outq[[i]][["pipe"]], block = TRUE)
                 outq[[i]][["msgid"]] <- 0L
                 found <- TRUE
                 break
@@ -384,7 +384,7 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
       if (length(inq))
         for (i in seq_along(outq))
           if (!outq[[i]][["msgid"]]) {
-            call_aio(send_aio(psock, inq[[1L]][["req"]], mode = 2L, pipe = outq[[i]][["pipe"]]))
+            send(psock, inq[[1L]][["req"]], mode = 2L, pipe = outq[[i]][["pipe"]], block = TRUE)
             outq[[i]][["ctx"]] <- inq[[1L]][["ctx"]]
             outq[[i]][["msgid"]] <- inq[[1L]][["msgid"]]
             inq[[1L]] <- NULL
