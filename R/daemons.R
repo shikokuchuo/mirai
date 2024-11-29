@@ -682,7 +682,7 @@ launch_sync_dispatcher <- function(sock, sockc, args, output, tls = NULL, pass =
            "s", if (is.character(tls) && length(tls) > 1L) tls[2L] else "",
            "i", if (is.character(pass)) pass[1L] else "",
            "t")
-  query_dispatcher(sockc, command = vec, mode = 2L, block = .limit_long)
+  query_dispatcher(sockc, vec, mode = 2L, block = .limit_long)
 }
 
 launch_sync_daemons <- function(seq, sock, urld, dots, envir, output) {
@@ -715,8 +715,9 @@ send_signal <- function(envir) {
 }
 
 query_status <- function(envir) {
-  res <- query_dispatcher(envir[["sockc"]], command = 0L, mode = 5L)
-  length(res) == 1L && return(res)
+  if (length(envir[["msgid"]]))
+    return(query_dispatcher(envir[["sock"]], c(0L, 0L), mode = 5L))
+  res <- query_dispatcher(envir[["sockc"]], 0L, mode = 5L)
   `attributes<-`(
     res,
     list(

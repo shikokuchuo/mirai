@@ -342,45 +342,45 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
               send(outq[[id]][["ctx"]], .connectionReset, mode = 1L, block = TRUE)
             outq[[id]] <- NULL
           }
-
         }
         next
       }
 
-      ctrchannel && !.unresolved(cmessage) && {
-        msgid <- collect_aio(cmessage)
-        if (msgid) {
-          found <- FALSE
-          for (i in seq_along(outq))
-            if (outq[[i]][["msgid"]] == msgid) {
-              call_aio(send_aio(psock, .miraiInterrupt, mode = 1L, pipe = outq[[i]][["pipe"]]))
-              outq[[i]][["msgid"]] <- 0L
-              found <- TRUE
-              break
-            }
-          if (!found)
-            for (i in seq_along(inq))
-              if (msgid == inq[[i]][["msgid"]]) {
-                inq[[i]] <- NULL
+      if (!unresolved(req)) {
+        value <- .subset2(req, "value")
+        if (value[1L] == 0L) {
+          id <- readBin(value, "integer", n = 2L)[2L]
+          if (id) {
+            found <- FALSE
+            for (i in seq_along(outq))
+              if (outq[[i]][["msgid"]] == id) {
+                call_aio(send_aio(psock, .miraiInterrupt, mode = 1L, pipe = outq[[i]][["pipe"]]))
+                outq[[i]][["msgid"]] <- 0L
                 found <- TRUE
                 break
               }
-          send(sockc, found, mode = 2L)
-        } else {
-          send(sockc, as.integer(stat(psock, "pipes")), mode = 2L)
+            if (!found)
+              for (i in seq_along(inq))
+                if (inq[[i]][["msgid"]] == id) {
+                  inq[[i]] <- NULL
+                  found <- TRUE
+                  break
+                }
+            send(ctx, found, mode = 2L, block = TRUE)
+          } else {
+            send(ctx, as.integer(stat(psock, "pipes")), mode = 2L, block = TRUE)
+          }
+          ctx <- .context(sock)
+          req <- recv_aio(ctx, mode = 8L, cv = cv)
+          next
         }
-        cmessage <- recv_aio(sockc, mode = 5L, cv = cv)
-        next
-      }
-
-      if (!.unresolved(req)) {
         msgid <- msgid + 1L
-        inq[[length(inq) + 1L]] <- list(ctx = ctx, req = collect_aio(req), msgid = msgid)
+        inq[[length(inq) + 1L]] <- list(ctx = ctx, req = value, msgid = msgid)
         ctx <- .context(sock)
         req <- recv_aio(ctx, mode = 8L, cv = cv)
 
-      } else if (!.unresolved(res)) {
-        value <- collect_aio(res)
+      } else if (!unresolved(res)) {
+        value <- .subset2(res, "value")
         id <- as.character(.subset2(res, "aio"))
         res <- recv_aio(psock, mode = 8L, cv = cv)
         send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)
@@ -461,7 +461,7 @@ saisei <- function(i, force = FALSE, .compute = "default") {
   length(envir[["msgid"]]) && return()
   i <- as.integer(i[1L])
   length(envir[["sockc"]]) && i > 0L && i <= envir[["n"]] && !startsWith(envir[["urls"]][i], "t") || return()
-  r <- query_dispatcher(envir[["sockc"]], command = if (force) -i else i, mode = 9L)
+  r <- query_dispatcher(envir[["sockc"]], if (force) -i else i, mode = 9L)
   is.character(r) && nzchar(r) || return()
   envir[["urls"]][i] <- r
   r
@@ -487,7 +487,7 @@ check_url <- function(sock) {
   url
 }
 
-query_dispatcher <- function(sock, command, mode, block = .limit_short)
+query_dispatcher <- function(sock, command, mode = 6L, block = .limit_short)
   if (r <- send(sock, command, mode = 2L, block = block)) r else
     recv(sock, mode = mode, block = block)
 

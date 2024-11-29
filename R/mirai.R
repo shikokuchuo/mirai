@@ -415,7 +415,7 @@ stop_mirai <- function(x) {
   .compute <- attr(x, "profile")
   envir <- if (!is.null(.compute)) ..[[.compute]]
   stop_aio(x)
-  invisible(length(envir[["msgid"]]) && query_dispatcher(envir[["sockc"]], command = attr(x, "msgid"), mode = 6L))
+  invisible(length(envir[["msgid"]]) && query_dispatcher(envir[["sock"]], c(0L, attr(x, "msgid"))))
 }
 
 #' Query if a mirai is Unresolved
