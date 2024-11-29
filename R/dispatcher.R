@@ -278,7 +278,7 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
   m <- monitor(psock, cv)
   listen(psock, url = url, tls = tls, error = TRUE)
 
-  msgid <- 100L
+  msgid <- 0L
   inq <- outq <- list()
 
   if (auto) {
@@ -357,7 +357,12 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
                 }
             send(ctx, found, mode = 2L, block = TRUE)
           } else {
-            send(ctx, as.integer(stat(psock, "pipes")), mode = 2L, block = TRUE)
+            status <- c(
+              length(outq),
+              length(inq),
+              sum(as.logical(lapply(outq, function(x) as.logical(x[["msgid"]]))))
+            )
+            send(ctx, status, mode = 2L, block = TRUE)
           }
           ctx <- .context(sock)
           req <- recv_aio(ctx, mode = 8L, cv = cv)

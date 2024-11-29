@@ -319,7 +319,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "nex
           res <- launch_sync_dispatcher(sock, sock, wa52(urld, dots, n, url), output, tls, pass)
           is.object(res) && stop(._[["sync_dispatcher"]])
           store_dispatcher(sock, res, cv, envir)
-          `[[<-`(envir, "msgid", 100L)
+          `[[<-`(envir, "msgid", 0L)
         },
         {
           n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
@@ -386,7 +386,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "nex
           is.object(res) && stop(._[["sync_dispatcher"]])
           store_dispatcher(sock, res, cv, envir)
           for (i in seq_len(n)) next_stream(envir)
-          `[[<-`(envir, "msgid", 100L)
+          `[[<-`(envir, "msgid", 0L)
         },
         {
           urls <- auto_dispatcher_urls(n, urld)
@@ -525,6 +525,7 @@ status <- function(.compute = "default") {
   is.list(.compute) && return(status(attr(.compute, "id")))
   envir <- ..[[.compute]]
   is.null(envir) && return(list(connections = 0L, daemons = 0L))
+  length(envir[["msgid"]]) && return(dispatcher2_status(envir))
   is.null(envir[["dispatcher"]]) || return(dispatcher_status(envir))
   list(connections = as.integer(stat(envir[["sock"]], "pipes")),
        daemons = if (is.null(envir[["sockc"]])) envir[["urls"]] else query_status(envir))
@@ -711,8 +712,7 @@ send_signal <- function(envir) {
 }
 
 query_status <- function(envir) {
-  res <- query_dispatcher(envir[["sockc"]], c(0L, 0L), mode = 5L)
-  length(res) == 1L && return(res)
+  res <- query_dispatcher(envir[["sockc"]], 0L, mode = 5L)
   `attributes<-`(
     res,
     list(
@@ -728,6 +728,14 @@ dispatcher_status <- function(envir) {
     connections = sum(online),
     daemons = `dimnames<-`(`dim<-`(online, c(envir[["n"]], 1L)), list(envir[["urls"]], "online"))
   )
+}
+
+dispatcher2_status <- function(envir) {
+  status <- query_dispatcher(envir[["sock"]], c(0L, 0L), mode = 5L)
+  list(connections = status[1L],
+       tasks = c(awaiting = status[2L],
+                 executing = status[3L],
+                 completed = envir[["msgid"]] - status[2L] - status[3L]))
 }
 
 ._scm_. <- as.raw(c(0x42, 0x0a, 0x03, 0x00, 0x00, 0x00, 0x02, 0x03, 0x04, 0x00, 0x00, 0x05, 0x03, 0x00, 0x05, 0x00, 0x00, 0x00, 0x55, 0x54, 0x46, 0x2d, 0x38, 0xfc, 0x00, 0x00, 0x00))
