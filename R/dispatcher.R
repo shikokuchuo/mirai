@@ -338,7 +338,7 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
           found <- FALSE
           for (item in outq)
             if (msgid == item[["msgid"]]) {
-              call_aio(send_aio(item[["pipe"]], .miraiInterrupt, mode = 1L))
+              call_aio(send_aio(psock, .miraiInterrupt, mode = 1L, pipe = item[["pipe"]]))
               found <- TRUE
               break
             }
@@ -368,7 +368,7 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
         id <- .subset2(res, "aio")
         res <- recv_aio(psock, mode = 8L, cv = cv)
         if (value[1L] == 0L) {
-          outq[[as.character(id)]] <- list(pipe = socket_pipe(id), msgid = 0L, ctx = NULL)
+          outq[[as.character(id)]] <- list(pipe = id, msgid = 0L, ctx = NULL)
         } else {
           send(outq[[as.character(id)]][["ctx"]], value, mode = 2L, block = TRUE)
           outq[[as.character(id)]][["msgid"]] <- 0L
@@ -378,7 +378,7 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
       if (length(inq))
         for (i in seq_along(outq))
           if (!outq[[i]][["msgid"]]) {
-            call_aio(send_aio(outq[[i]][["pipe"]], inq[[1L]][["req"]], mode = 2L))
+            call_aio(send_aio(psock, inq[[1L]][["req"]], mode = 2L, pipe = outq[[i]][["pipe"]]))
             outq[[i]][["ctx"]] <- inq[[1L]][["ctx"]]
             outq[[i]][["msgid"]] <- inq[[1L]][["msgid"]]
             inq[[1L]] <- NULL

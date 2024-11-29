@@ -1,4 +1,4 @@
-# mirai 1.3.1.9003 (development)
+# mirai 1.3.1.9004 (development)
 
 #### New Features
 
@@ -6,7 +6,7 @@
 
 #### Updates
 
-* Requires `nanonext` >= [1.3.2.9005].
+* Requires `nanonext` >= [1.3.2.9006].
 
 # mirai 1.3.1
 
