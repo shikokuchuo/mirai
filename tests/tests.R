@@ -322,7 +322,7 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   test_true(stop_mirai(m2))
   test_equal(m2$data, 20L)
   test_true(stop_mirai(m1))
-  test_class("miraiError", mirai(res)[])
+  test_class("miraiInterrupt", mirai(res)[])
   test_equal(status()$connections, 1L)
   test_equal(length(nextget("urls")), 1L)
   test_class("miraiLaunchCmd", launch_remote(1))
