@@ -316,7 +316,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "nex
           output <- attr(dots, "output")
           urld <- local_url()
           sock <- req_socket(urld)
-          res <- launch_sync_dispatcher(sock, sock, wa52(urld, dots, n, NULL, url), output, tls, pass)
+          res <- launch_sync_dispatcher(sock, sock, wa52(urld, dots, n, url), output, tls, pass)
           is.object(res) && stop(._[["sync_dispatcher"]])
           store_dispatcher(sock, res, cv, envir)
           `[[<-`(envir, "msgid", 100L)
@@ -382,7 +382,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "nex
         {
           cv <- cv()
           sock <- req_socket(urld)
-          res <- launch_sync_dispatcher(sock, sock, wa42(urld, dots, envir[["stream"]], n, NULL), output)
+          res <- launch_sync_dispatcher(sock, sock, wa42(urld, dots, envir[["stream"]], n), output)
           is.object(res) && stop(._[["sync_dispatcher"]])
           store_dispatcher(sock, res, cv, envir)
           for (i in seq_len(n)) next_stream(envir)
@@ -658,13 +658,13 @@ wa32 <- function(url, dots, rs, tls = NULL)
 wa4 <- function(urld, dots, rs, n, urlc)
   shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher(\"%s\",n=%d,rs=c(%s),monitor=\"%s\"%s)", libp(), urld, n, paste0(rs, collapse= ","), urlc, dots))
 
-wa42 <- function(urld, dots, rs, n, urlc)
+wa42 <- function(urld, dots, rs, n)
   shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher2(\"%s\",n=%d,rs=c(%s)%s)", libp(), urld, n, paste0(rs, collapse= ","), dots))
 
 wa5 <- function(urld, dots, n, urlc, url)
   shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher(\"%s\",c(\"%s\"),n=%d,monitor=\"%s\"%s)", libp(), urld, paste0(url, collapse = "\",\""), n, urlc, dots))
 
-wa52 <- function(urld, dots, n, urlc, url)
+wa52 <- function(urld, dots, n, url)
   shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher2(\"%s\",c(\"%s\"),n=%d%s)", libp(), urld, paste0(url, collapse = "\",\""), n, dots))
 
 launch_daemon <- function(args, output)
