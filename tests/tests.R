@@ -337,6 +337,7 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   q <- quote(list2env(list(b = 2), envir = .GlobalEnv))
   m <- mirai("Seattle", .timeout = 1000)
   if (!is_error_value(m[])) test_equal(m[], "Seattle")
+  test_class("errorValue", mirai(q(), .timeout = 1000)[])
   test_zero(daemons(0))
 }
 Sys.sleep(1L)

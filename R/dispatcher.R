@@ -300,10 +300,8 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
       until(cv, .limit_long) || stop(._[["sync_daemons"]])
 
     changes <- read_monitor(m)
-    for (item in changes) {
+    for (item in changes)
       outq[[as.character(item)]] <- if (item > 0) list(pipe = item, msgid = 0L, ctx = NULL)
-      print(item)
-    }
 
   } else {
 
@@ -336,8 +334,15 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
       changes <- read_monitor(m)
       if (length(changes)) {
         for (item in changes) {
-          outq[[as.character(item)]] <- if (item > 0) list(pipe = item, msgid = 0L, ctx = NULL)
-          print(item)
+          if (item > 0) {
+            outq[[as.character(item)]] <- list(pipe = item, msgid = 0L, ctx = NULL)
+          } else {
+            id <- as.character(-item)
+            if (outq[[id]][["msgid"]])
+              send(outq[[id]][["ctx"]], .connectionReset, mode = 1L, block = TRUE)
+            outq[[id]] <- NULL
+          }
+
         }
         next
       }
