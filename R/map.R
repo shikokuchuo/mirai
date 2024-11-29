@@ -90,7 +90,7 @@
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' daemons(4, daemons = "next")
+#' daemons(4, dispatcher = "next")
 #'
 #' # map with constant args specified via '.args'
 #' mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
