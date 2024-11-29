@@ -712,7 +712,7 @@ send_signal <- function(envir) {
 }
 
 query_status <- function(envir) {
-  res <- query_dispatcher(envir[["sockc"]], 0L, mode = 5L)
+  res <- query_dispatcher(envir[["sockc"]], 0L)
   `attributes<-`(
     res,
     list(
@@ -731,7 +731,7 @@ dispatcher_status <- function(envir) {
 }
 
 dispatcher2_status <- function(envir) {
-  status <- query_dispatcher(envir[["sock"]], c(0L, 0L), mode = 5L)
+  status <- query_dispatcher(envir[["sock"]], c(0L, 0L))
   list(connections = status[1L],
        tasks = c(awaiting = status[2L],
                  executing = status[3L],

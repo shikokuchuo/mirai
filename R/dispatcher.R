@@ -181,7 +181,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token = F
       }
 
       ctrchannel && !unresolved(cmessage) && {
-        i <- .subset2(cmessage, "value")[1L]
+        i <- .subset2(cmessage, "value")
         if (i) {
           if (i > 0L && !activevec[[i]]) {
             reap(attr(servers[[i]], "listener")[[1L]])
@@ -335,8 +335,9 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
         next
       }
 
-      if (!unresolved(req)) {
-        value <- .subset2(req, "value")
+      if (!.unresolved(req)) {
+        value <- collect_aio(req)
+
         if (value[1L] == 0L) {
           id <- readBin(value, "integer", n = 2L)[2L]
           if (id) {
@@ -368,13 +369,14 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
           req <- recv_aio(ctx, mode = 8L, cv = cv)
           next
         }
+
         msgid <- msgid + 1L
         inq[[length(inq) + 1L]] <- list(ctx = ctx, req = value, msgid = msgid)
         ctx <- .context(sock)
         req <- recv_aio(ctx, mode = 8L, cv = cv)
 
-      } else if (!unresolved(res)) {
-        value <- .subset2(res, "value")
+      } else if (!.unresolved(res)) {
+        value <- collect_aio(res)
         id <- as.character(.subset2(res, "aio"))
         res <- recv_aio(psock, mode = 8L, cv = cv)
         send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)
@@ -481,7 +483,7 @@ check_url <- function(sock) {
   url
 }
 
-query_dispatcher <- function(sock, command, mode = 6L, block = .limit_short)
+query_dispatcher <- function(sock, command, mode = 5L, block = .limit_short)
   if (r <- send(sock, command, mode = 2L, block = block)) r else
     recv(sock, mode = mode, block = block)
 
