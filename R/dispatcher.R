@@ -181,7 +181,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token = F
       }
 
       ctrchannel && !unresolved(cmessage) && {
-        i <- .subset2(cmessage, "value")
+        i <- .subset2(cmessage, "value")[1L]
         if (i) {
           if (i > 0L && !activevec[[i]]) {
             reap(attr(servers[[i]], "listener")[[1L]])
@@ -253,8 +253,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token = F
 #' @rdname dispatcher
 #' @export
 #'
-dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
-                        rs = NULL, monitor = NULL) {
+dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL, rs = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(._[["missing_url"]])
@@ -265,18 +264,12 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
   pipe_notify(sock, cv = cv, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock, host)
 
-  ctrchannel <- is.character(monitor)
-  if (ctrchannel) {
-    sockc <- socket(protocol = "rep")
-    on.exit(reap(sockc), add = TRUE, after = FALSE)
-    pipe_notify(sockc, cv = cv, remove = TRUE, flag = TRUE)
-    dial_and_sync_socket(sockc, monitor)
-    cmessage <- recv(sockc, mode = 2L, block = .limit_long)
-    is.object(cmessage) && stop(._[["sync_dispatcher"]])
-    if (nzchar(cmessage[2L]))
-      Sys.setenv(R_DEFAULT_PACKAGES = cmessage[2L]) else
-        Sys.unsetenv("R_DEFAULT_PACKAGES")
-  }
+  ctx <- .context(sock)
+  cmessage <- recv(ctx, mode = 2L, block = .limit_long)
+  is.object(cmessage) && stop(._[["sync_dispatcher"]])
+  if (nzchar(cmessage[2L]))
+    Sys.setenv(R_DEFAULT_PACKAGES = cmessage[2L]) else
+      Sys.unsetenv("R_DEFAULT_PACKAGES")
 
   auto <- is.null(url)
   if (auto) url <- local_url()
@@ -306,7 +299,7 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
   } else {
 
     url <- check_url(psock)
-    if (ctrchannel && nzchar(cmessage[4L]) && is.null(tls)) {
+    if (nzchar(cmessage[4L]) && is.null(tls)) {
       tls <- c(cmessage[4L], if (nzchar(cmessage[6L])) cmessage[6L])
       pass <- if (nzchar(cmessage[8L])) cmessage[8L]
     }
@@ -316,11 +309,7 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
   }
 
   pass <- NULL
-
-  if (ctrchannel) {
-    send(sockc, c(Sys.getpid(), url), mode = 2L)
-    cmessage <- recv_aio(sockc, mode = 5L, cv = cv)
-  }
+  send(ctx, c(Sys.getpid(), url), mode = 2L, block = TRUE)
 
   ctx <- .context(sock)
   req <- recv_aio(ctx, mode = 8L, cv = cv)

@@ -315,12 +315,10 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "nex
           dots <- parse_dots(...)
           output <- attr(dots, "output")
           urld <- local_url()
-          urlc <- sprintf("%s%s", urld, "c")
           sock <- req_socket(urld)
-          sockc <- req_socket(urlc)
-          res <- launch_sync_dispatcher(sock, sockc, wa52(urld, dots, n, urlc, url), output, tls, pass)
+          res <- launch_sync_dispatcher(sock, sock, wa52(urld, dots, n, NULL, url), output, tls, pass)
           is.object(res) && stop(._[["sync_dispatcher"]])
-          store_dispatcher(sockc, res, cv, envir)
+          store_dispatcher(sock, res, cv, envir)
           `[[<-`(envir, "msgid", 100L)
         },
         {
@@ -384,11 +382,9 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "nex
         {
           cv <- cv()
           sock <- req_socket(urld)
-          urlc <- sprintf("%s%s", urld, "c")
-          sockc <- req_socket(urlc)
-          res <- launch_sync_dispatcher(sock, sockc, wa42(urld, dots, envir[["stream"]], n, urlc), output)
+          res <- launch_sync_dispatcher(sock, sock, wa42(urld, dots, envir[["stream"]], n, NULL), output)
           is.object(res) && stop(._[["sync_dispatcher"]])
-          store_dispatcher(sockc, res, cv, envir)
+          store_dispatcher(sock, res, cv, envir)
           for (i in seq_len(n)) next_stream(envir)
           `[[<-`(envir, "msgid", 100L)
         },
@@ -663,13 +659,13 @@ wa4 <- function(urld, dots, rs, n, urlc)
   shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher(\"%s\",n=%d,rs=c(%s),monitor=\"%s\"%s)", libp(), urld, n, paste0(rs, collapse= ","), urlc, dots))
 
 wa42 <- function(urld, dots, rs, n, urlc)
-  shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher2(\"%s\",n=%d,rs=c(%s),monitor=\"%s\"%s)", libp(), urld, n, paste0(rs, collapse= ","), urlc, dots))
+  shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher2(\"%s\",n=%d,rs=c(%s)%s)", libp(), urld, n, paste0(rs, collapse= ","), dots))
 
 wa5 <- function(urld, dots, n, urlc, url)
   shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher(\"%s\",c(\"%s\"),n=%d,monitor=\"%s\"%s)", libp(), urld, paste0(url, collapse = "\",\""), n, urlc, dots))
 
 wa52 <- function(urld, dots, n, urlc, url)
-  shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher2(\"%s\",c(\"%s\"),n=%d,monitor=\"%s\"%s)", libp(), urld, paste0(url, collapse = "\",\""), n, urlc, dots))
+  shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher2(\"%s\",c(\"%s\"),n=%d%s)", libp(), urld, paste0(url, collapse = "\",\""), n, dots))
 
 launch_daemon <- function(args, output)
   system2(.command, args = c("-e", args), stdout = output, stderr = output, wait = FALSE)
@@ -715,9 +711,8 @@ send_signal <- function(envir) {
 }
 
 query_status <- function(envir) {
-  if (length(envir[["msgid"]]))
-    return(query_dispatcher(envir[["sock"]], c(0L, 0L), mode = 5L))
-  res <- query_dispatcher(envir[["sockc"]], 0L, mode = 5L)
+  res <- query_dispatcher(envir[["sockc"]], c(0L, 0L), mode = 5L)
+  length(res) == 1L && return(res)
   `attributes<-`(
     res,
     list(

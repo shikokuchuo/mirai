@@ -25,8 +25,7 @@ dispatcher2(
   ...,
   tls = NULL,
   pass = NULL,
-  rs = NULL,
-  monitor = NULL
+  rs = NULL
 )
 }
 \arguments{
