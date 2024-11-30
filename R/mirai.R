@@ -385,19 +385,17 @@ collect_mirai <- collect_aio
 #' Stops a \sQuote{mirai} if still in progress, causing it to resolve
 #' immediately to an \sQuote{errorValue} 20 (Operation canceled).
 #'
-#' Forces the \sQuote{mirai} to resolve immediately. Has no effect if the
-#' \sQuote{mirai} has already resolved.
-#'
-#' This function returns TRUE if the cancellation request was successful. In
-#' such a case if the mirai is queued for execution, it is discarded, and if
-#' in the process of execution on a daemon, an interrupt signal is triggered.
+#' In the case that the \sQuote{mirai} is in execution and an interrupt was
+#' sent, the task or a portion of it may have completed before the interrupt is
+#' received, and even then it is not always possible to immediately interrupt
+#' evaluation of compiled code.
 #'
 #' @inheritParams call_mirai
 #'
-#' @return Logical TRUE if the cancellation request was successful, or FALSE if
-#'   already cancelled or completed (or not using \sQuote{next} dispatcher). A
-#'   return value of TRUE does not guarantee actual cancellation as it is not
-#'   always possible to interrupt an ongoing evaluation.
+#' @return A logical value: \code{TRUE} if the cancellation request was
+#'   successful (task was awaiting execution and has been discarded), NA if a
+#'   cancellation request was successfully sent (task was in execution, and will
+#'   be interrupted). FALSE if already completed or previously-cancelled.
 #'
 #' @examples
 #' if (interactive()) {
