@@ -393,9 +393,10 @@ collect_mirai <- collect_aio
 #' @inheritParams call_mirai
 #'
 #' @return A logical value: \code{TRUE} if the cancellation request was
-#'   successful (task was awaiting execution and has been discarded), NA if a
-#'   cancellation request was successfully sent (task was in execution, and will
-#'   be interrupted). FALSE if already completed or previously-cancelled.
+#'   successful (task was awaiting execution and has been discarded), \code{NA}
+#'   if a cancellation request was successfully sent (task was in execution, and
+#'   will be interrupted), and \code{FALSE} if already completed or previously
+#'   cancelled.
 #'
 #' @examples
 #' if (interactive()) {

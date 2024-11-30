@@ -364,7 +364,7 @@ dispatcher2 <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL
             status <- c(
               length(outq),
               length(inq),
-              sum(as.logical(lapply(outq, function(x) as.logical(x[["msgid"]]))))
+              sum(as.logical(unlist(lapply(outq, .subset2, "msgid"), use.names = FALSE)))
             )
             send(ctx, status, mode = 2L, block = TRUE)
           }
