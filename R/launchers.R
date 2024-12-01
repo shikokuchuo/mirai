@@ -33,10 +33,10 @@
 #' @inheritParams mirai
 #' @param url the character host URL or vector of host URLs, including the port
 #'   to connect to (and optionally for websockets, a path), e.g.
-#'   'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'
+#'   'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path',
 #'
-#'   \strong{or} integer index value, or vector of index values, of the
-#'   dispatcher URLs, or 1L for the host URL (when not using dispatcher).
+#'   \strong{or} 1L, or a vector of 1Ls, to use the host / dispatcher URL
+#'   from the compute profile,
 #'
 #'   \strong{or} for \code{launch_remote} only, a \sQuote{miraiCluster} or
 #'   \sQuote{miraiNode}.
@@ -61,16 +61,15 @@
 #'
 #' daemons(url = host_url(ws = TRUE), dispatcher = "none")
 #' status()
-#' launch_local(status()$daemons, maxtasks = 10L)
-#' launch_remote(1L, maxtasks = 10L)
+#' launch_local(nextget("urls"), cleanup = FALSE)
+#' launch_remote(1L, cleanup = FALSE)
 #' Sys.sleep(1)
 #' status()
 #' daemons(0)
 #'
-#' daemons(n = 2L, url = host_url(tls = TRUE))
+#' daemons(url = host_url(tls = TRUE))
 #' status()
-#' launch_local(1:2, idletime = 60000L, timerstart = 1L)
-#' launch_remote(1:2, idletime = 60000L, timerstart = 1L)
+#' launch_local(c(1L, 1L), output = TRUE)
 #' Sys.sleep(1)
 #' status()
 #' daemons(0)

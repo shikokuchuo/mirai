@@ -405,8 +405,8 @@ dispatcher_v1 <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token 
 
 #' Saisei (Regenerate Token)
 #'
-#' When using daemons with dispatcher, regenerates the token for the URL a
-#' dispatcher socket listens at.
+#' When using daemons with the legacy v1 dispatcher, regenerates the token for
+#' the URL a dispatcher socket listens at.
 #'
 #' When a URL is regenerated, the listener at the specified socket is closed and
 #' replaced immediately, hence this function will only be successful if there
@@ -418,8 +418,6 @@ dispatcher_v1 <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token 
 #' returned as an \sQuote{errorValue} 7 (Object closed). This may be used to
 #' cancel a task that consistently hangs or crashes to prevent it from failing
 #' repeatedly when new daemons connect.
-#'
-#' Has no effect and returns NULL if using \sQuote{next} dispatcher.
 #'
 #' @inheritParams mirai
 #' @param i integer index number URL to regenerate at dispatcher.
@@ -444,7 +442,7 @@ dispatcher_v1 <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token 
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' daemons(1L)
+#' daemons(1L, dispatcher = "process")
 #' Sys.sleep(1L)
 #' status()
 #' saisei(i = 1L, force = TRUE)
