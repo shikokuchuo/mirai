@@ -651,10 +651,10 @@ parse_tls <- function(tls)
 libp <- function(lp = .libPaths()) lp[file.exists(file.path(lp, "mirai"))][1L]
 
 wa3 <- function(url, dots, rs, tls = NULL)
-  shQuote(sprintf("mirai::daemon(\"%s\"%s%s,rs=c(%s))", url, dots, parse_tls(tls), paste0(rs, collapse = ",")))
+  shQuote(sprintf("mirai::daemon(\"%s\"%s%s,rs=c(%s),dispatcher=FALSE)", url, dots, parse_tls(tls), paste0(rs, collapse = ",")))
 
 wa32 <- function(url, dots, rs, tls = NULL)
-  shQuote(sprintf("mirai::daemon2(\"%s\"%s%s,rs=c(%s))", url, dots, parse_tls(tls), paste0(rs, collapse = ",")))
+  shQuote(sprintf("mirai::daemon(\"%s\"%s%s,rs=c(%s),dispatcher=TRUE)", url, dots, parse_tls(tls), paste0(rs, collapse = ",")))
 
 wa4 <- function(urld, dots, rs, n, urlc)
   shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher(\"%s\",n=%d,rs=c(%s),monitor=\"%s\"%s)", libp(), urld, n, paste0(rs, collapse= ","), urlc, dots))

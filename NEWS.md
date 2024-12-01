@@ -1,12 +1,13 @@
-# mirai 1.3.1.9008 (development)
+# mirai 1.3.1.9009 (development)
 
 #### New Features
 
 * Introduces `daemons(dispatcher = "next")`, a newer and more efficient dispatcher. Supports mirai cancellation.
+* `daemon()` gains the new argument 'dispatcher', which should be set to `TRUE` when using dispatcher and `FALSE` otherwise.
 
 #### Updates
 
-* Requires `nanonext` >= [1.3.2.9008].
+* Requires `nanonext` >= [1.3.2.9009].
 
 # mirai 1.3.1
 
