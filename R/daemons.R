@@ -108,13 +108,9 @@
 #'
 #' @section Dispatcher:
 #'
-#' By default \code{dispatcher = "process"} launches a background process
+#' By default \code{dispatcher = "default"} launches a background process
 #' running \code{\link{dispatcher}}. Dispatcher connects to daemons on behalf of
 #' the host and ensures optimal FIFO scheduling of tasks.
-#'
-#' Specifying \code{dispatcher = "next"} launches a background process
-#' running \code{\link{dispatcher2}}. This is a newer more efficient
-#' architecture and will replace "process" over time.
 #'
 #' Specifying \code{dispatcher = "none"}, uses the default behaviour without
 #' additional dispatcher logic. In this case daemons connect directly to the
@@ -275,7 +271,7 @@
 #'
 #' @export
 #'
-daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "next", "none"),
+daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("default", "none"),
                     ..., force = TRUE, seed = NULL, tls = NULL, pass = NULL, .compute = "default") {
 
   missing(n) && missing(url) && return(status(.compute))
@@ -289,6 +285,26 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "nex
       switch(
         parse_dispatcher(dispatcher),
         {
+          url <- url[1L]
+          tls <- configure_tls(url, tls, pass, envir, returnconfig = FALSE)
+          cv <- cv()
+          dots <- parse_dots(...)
+          output <- attr(dots, "output")
+          urld <- local_url()
+          sock <- req_socket(urld)
+          res <- launch_sync_dispatcher(sock, sock, wa52(urld, dots, url), output, tls, pass)
+          is.object(res) && stop(._[["sync_dispatcher"]])
+          store_dispatcher(sock, res, cv, envir)
+          `[[<-`(envir, "msgid", 0L)
+          n <- 0L
+        },
+        {
+          tls <- configure_tls(url, tls, pass, envir)
+          sock <- req_socket(url, tls = tls)
+          check_store_url(sock, envir)
+          n <- 0L
+        },
+        {
           n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
           tls <- configure_tls(url, tls, pass, envir, returnconfig = FALSE)
           cv <- cv()
@@ -301,25 +317,6 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "nex
           res <- launch_sync_dispatcher(sock, sockc, wa5(urld, dots, n, urlc, url), output, tls, pass)
           is.object(res) && stop(._[["sync_dispatcher"]])
           store_dispatcher(sockc, res, cv, envir)
-        },
-        {
-          n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
-          tls <- configure_tls(url, tls, pass, envir, returnconfig = FALSE)
-          cv <- cv()
-          dots <- parse_dots(...)
-          output <- attr(dots, "output")
-          urld <- local_url()
-          sock <- req_socket(urld)
-          res <- launch_sync_dispatcher(sock, sock, wa52(urld, dots, n, url), output, tls, pass)
-          is.object(res) && stop(._[["sync_dispatcher"]])
-          store_dispatcher(sock, res, cv, envir)
-          `[[<-`(envir, "msgid", 0L)
-        },
-        {
-          tls <- configure_tls(url, tls, pass, envir)
-          sock <- req_socket(url, tls = tls)
-          check_store_url(sock, envir)
-          n <- 0L
         },
         stop(._[["dispatcher_args"]])
       )
@@ -359,16 +356,6 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "nex
         {
           cv <- cv()
           sock <- req_socket(urld)
-          urlc <- sprintf("%s%s", urld, "c")
-          sockc <- req_socket(urlc)
-          res <- launch_sync_dispatcher(sock, sockc, wa4(urld, dots, envir[["stream"]], n, urlc), output)
-          is.object(res) && stop(._[["sync_dispatcher"]])
-          store_dispatcher(sockc, res, cv, envir)
-          for (i in seq_len(n)) next_stream(envir)
-        },
-        {
-          cv <- cv()
-          sock <- req_socket(urld)
           res <- launch_sync_dispatcher(sock, sock, wa42(urld, dots, envir[["stream"]], n), output)
           is.object(res) && stop(._[["sync_dispatcher"]])
           store_dispatcher(sock, res, cv, envir)
@@ -379,6 +366,16 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "nex
           sock <- req_socket(urld)
           launch_sync_daemons(seq_len(n), sock, urld, dots, envir, output) || stop(._[["sync_daemons"]])
           `[[<-`(envir, "urls", urld)
+        },
+        {
+          cv <- cv()
+          sock <- req_socket(urld)
+          urlc <- sprintf("%s%s", urld, "c")
+          sockc <- req_socket(urlc)
+          res <- launch_sync_dispatcher(sock, sockc, wa4(urld, dots, envir[["stream"]], n, urlc), output)
+          is.object(res) && stop(._[["sync_dispatcher"]])
+          store_dispatcher(sockc, res, cv, envir)
+          for (i in seq_len(n)) next_stream(envir)
         },
         stop(._[["dispatcher_args"]])
       )
@@ -505,7 +502,7 @@ status <- function(.compute = "default") {
   is.list(.compute) && return(status(attr(.compute, "id")))
   envir <- ..[[.compute]]
   is.null(envir) && return(list(connections = 0L, daemons = 0L))
-  length(envir[["msgid"]]) && return(dispatcher2_status(envir))
+  length(envir[["msgid"]]) && return(dispatcher_status(envir))
   list(connections = as.integer(stat(envir[["sock"]], "pipes")),
        daemons = if (is.null(envir[["sockc"]])) envir[["urls"]] else query_status(envir))
 
@@ -587,8 +584,8 @@ req_socket <- function(url, tls = NULL, resend = 0L)
 
 parse_dispatcher <- function(x) {
   x <- x[1L]
-  if (x == "process") 1L else if (x == "next") 2L else if (x == "none") 3L else
-    if (is.logical(x)) 1L + (!x) * 2L else if (x == "thread") 1L else 4L
+  if (x == "default") 1L else if (x == "none") 2L else if (x == "process" || x == "thread") 3L else
+    if (is.logical(x)) 2L + x else 4L
 }
 
 parse_dots <- function(...) {
@@ -614,16 +611,16 @@ wa32 <- function(url, dots, rs, tls = NULL)
   shQuote(sprintf("mirai::daemon(\"%s\"%s%s,rs=c(%s),dispatcher=TRUE)", url, dots, parse_tls(tls), paste0(rs, collapse = ",")))
 
 wa4 <- function(urld, dots, rs, n, urlc)
-  shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher(\"%s\",n=%d,rs=c(%s),monitor=\"%s\"%s)", libp(), urld, n, paste0(rs, collapse= ","), urlc, dots))
+  shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher_v1(\"%s\",n=%d,rs=c(%s),monitor=\"%s\"%s)", libp(), urld, n, paste0(rs, collapse= ","), urlc, dots))
 
 wa42 <- function(urld, dots, rs, n)
-  shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher2(\"%s\",n=%d,rs=c(%s)%s)", libp(), urld, n, paste0(rs, collapse= ","), dots))
+  shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher(\"%s\",n=%d,rs=c(%s)%s)", libp(), urld, n, paste0(rs, collapse= ","), dots))
 
 wa5 <- function(urld, dots, n, urlc, url)
-  shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher(\"%s\",c(\"%s\"),n=%d,monitor=\"%s\"%s)", libp(), urld, paste0(url, collapse = "\",\""), n, urlc, dots))
+  shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher_v1(\"%s\",c(\"%s\"),n=%d,monitor=\"%s\"%s)", libp(), urld, paste0(url, collapse = "\",\""), n, urlc, dots))
 
-wa52 <- function(urld, dots, n, url)
-  shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher2(\"%s\",c(\"%s\"),n=%d%s)", libp(), urld, paste0(url, collapse = "\",\""), n, dots))
+wa52 <- function(urld, dots, url)
+  shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher(\"%s\",url=\"%s\"%s)", libp(), urld, url, dots))
 
 launch_daemon <- function(args, output)
   system2(.command, args = c("-e", args), stdout = output, stderr = output, wait = FALSE)
@@ -679,10 +676,10 @@ query_status <- function(envir) {
   )
 }
 
-dispatcher2_status <- function(envir) {
+dispatcher_status <- function(envir) {
   status <- query_dispatcher(envir[["sock"]], c(0L, 0L))
   list(connections = status[1L],
-       tasks = c(awaiting = status[2L],
+       mirai = c(awaiting = status[2L],
                  executing = status[3L],
                  completed = envir[["msgid"]] - status[2L] - status[3L]))
 }

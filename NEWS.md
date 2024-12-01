@@ -1,13 +1,14 @@
-# mirai 1.3.1.9009 (development)
+# mirai 1.3.1.9010 (development)
 
 #### New Features
 
-* Introduces `daemons(dispatcher = "next")`, a newer and more efficient dispatcher. Supports mirai cancellation.
-* `daemon()` gains the new argument 'dispatcher', which should be set to `TRUE` when using dispatcher and `FALSE` otherwise.
+* `daemons(dispatcher = "default")` provides a new and more efficient architecture for dispatcher. Although 'process' is no longer an option, this will still work and retains the previous behaviour of the v1 dispatcher.
+* `stop_mirai()` is upgraded to cancel remote mirai tasks when using the new dispatcher, returning a logical value indicating whether cancellation was successful.
+* `daemon()` gains the new argument 'dispatcher', which should be set to `TRUE` when connecting to dispatcher and `FALSE` when connecting directly to host.
 
 #### Updates
 
-* Experimental threaded dispatcher `daemons(dispatcher = "thread")` has been retired (as this was based on the old dispatcher architecture and future development will focus on the current design). Specifying 'dispatcher = thread' is deprecated, but will point to 'dispatcher = process' for the time being.
+* Experimental threaded dispatcher `daemons(dispatcher = "thread")` has been retired (as this was based on the old dispatcher architecture and future development will focus on the current design). Specifying 'dispatcher = thread' is defunct, but will point to 'dispatcher = process' for the time being.
 * `daemon()` '...' argument had been moved up to prevent partial matching on any of the optional arguments.
 * Requires `nanonext` >= [1.3.2.9009].
 

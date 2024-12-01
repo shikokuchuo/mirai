@@ -89,7 +89,7 @@
     cluster_inactive = "cluster is no longer active",
     correct_context = "'host' must be specified if not using directly in a function argument",
     daemons_unset = "daemons must be set to use launchers",
-    dispatcher_args = "'dispatcher' must be one of 'process', 'thread' or 'none'",
+    dispatcher_args = "'dispatcher' must be either 'default' or 'none'",
     dot_required = "'.' must be an element of the character vector(s) supplied to 'args'",
     function_required = "'.f' must be of type function, not %s",
     missing_expression = "missing expression, perhaps wrap in {}?",

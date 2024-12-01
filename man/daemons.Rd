@@ -8,7 +8,7 @@ daemons(
   n,
   url = NULL,
   remote = NULL,
-  dispatcher = c("process", "next", "none"),
+  dispatcher = c("default", "none"),
   ...,
   force = TRUE,
   seed = NULL,
@@ -126,13 +126,9 @@ connecting back to the host process, either directly or via dispatcher.
 \section{Dispatcher}{
 
 
-By default \code{dispatcher = "process"} launches a background process
+By default \code{dispatcher = "default"} launches a background process
 running \code{\link{dispatcher}}. Dispatcher connects to daemons on behalf of
 the host and ensures optimal FIFO scheduling of tasks.
-
-Specifying \code{dispatcher = "next"} launches a background process
-running \code{\link{dispatcher2}}. This is a newer more efficient
-architecture and will replace "process" over time.
 
 Specifying \code{dispatcher = "none"}, uses the default behaviour without
 additional dispatcher logic. In this case daemons connect directly to the
