@@ -135,17 +135,13 @@ daemon <- function(url, ..., dispatcher = FALSE, asyncdial = FALSE, autoexit = T
 
   aio <- recv_aio(sock, mode = 1L, cv = cv)
   repeat {
-    aio2 <- recv_aio(sock, mode = 1L, cv = cv)
     wait(cv) || break
     m <- collect_aio(aio)
-    is.object(m) && {
-      aio <- aio2
-      next
-    }
+    aio <- recv_aio(sock, mode = 1L, cv = cv)
+    is.object(m) && next
     data <- eval_mirai(m)
     send(sock, data, mode = 1L, block = TRUE)
     perform_cleanup(cleanup)
-    aio <- aio2
   }
 
 }
