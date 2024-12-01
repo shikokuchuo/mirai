@@ -388,15 +388,16 @@ collect_mirai <- collect_aio
 #' In the case that the \sQuote{mirai} is in execution and an interrupt was
 #' sent, the task or a portion of it may have completed before the interrupt is
 #' received, and even then it is not always possible to immediately interrupt
-#' evaluation of compiled code.
+#' evaluation (especially if it is compiled code).
 #'
 #' @inheritParams call_mirai
 #'
 #' @return A logical value: \code{TRUE} if the cancellation request was
-#'   successful (task was awaiting execution and has been discarded), \code{NA}
-#'   if a cancellation request was successfully sent (task was in execution, and
-#'   will be interrupted), and \code{FALSE} if already completed or previously
-#'   cancelled.
+#'   definitely successful (task was awaiting execution and has been discarded),
+#'   \code{NA} if a cancellation request was successfully sent (task was in
+#'   execution, and will be interrupted), and \code{FALSE} if already completed
+#'   or previously cancelled. Will always return \code{FALSE} if not using
+#'   dispatcher.
 #'
 #' @examples
 #' if (interactive()) {
