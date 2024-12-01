@@ -7,6 +7,7 @@
 
 #### Updates
 
+* `daemon()` '...' argument had been moved up to prevent partial matching on any of the optional arguments.
 * Requires `nanonext` >= [1.3.2.9009].
 
 # mirai 1.3.1
