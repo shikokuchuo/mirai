@@ -76,7 +76,18 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
       Sys.unsetenv("R_DEFAULT_PACKAGES")
 
   auto <- is.null(url)
-  if (auto) url <- local_url()
+  if (auto) {
+    url <- local_url()
+  } else {
+    if (nzchar(cmessage[4L]) && is.null(tls)) {
+      tls <- c(cmessage[4L], if (nzchar(cmessage[6L])) cmessage[6L])
+      pass <- if (nzchar(cmessage[8L])) cmessage[8L]
+    }
+    if (length(tls))
+      tls <- tls_config(server = tls, pass = pass)
+  }
+  pass <- NULL
+
   psock <- socket(protocol = "poly")
   on.exit(reap(psock), add = TRUE, after = TRUE)
   m <- monitor(psock, cv)
@@ -84,11 +95,9 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
 
   msgid <- 0L
   inq <- outq <- list()
-
+  envir <- new.env(hash = FALSE)
+  if (is.numeric(rs)) `[[<-`(envir, "stream", as.integer(rs))
   if (auto) {
-
-    envir <- new.env(hash = FALSE)
-    if (is.numeric(rs)) `[[<-`(envir, "stream", as.integer(rs))
     dots <- parse_dots(...)
     output <- attr(dots, "output")
     for (i in seq_len(n))
@@ -101,18 +110,9 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
       outq[[as.character(item)]] <- if (item > 0) list(pipe = item, msgid = 0L, ctx = NULL)
 
   } else {
-
     url <- check_url(psock)
-    if (nzchar(cmessage[4L]) && is.null(tls)) {
-      tls <- c(cmessage[4L], if (nzchar(cmessage[6L])) cmessage[6L])
-      pass <- if (nzchar(cmessage[8L])) cmessage[8L]
-    }
-    if (length(tls))
-      tls <- tls_config(server = tls, pass = pass)
-
   }
 
-  pass <- NULL
   send(ctx, c(Sys.getpid(), url), mode = 2L, block = TRUE)
 
   ctx <- .context(sock)
