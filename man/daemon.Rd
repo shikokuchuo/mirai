@@ -95,7 +95,7 @@ Setting to FALSE allows the daemon to persist indefinitely even when there is
 no longer a socket connection. This allows a host session to end and a new
 session to connect at the URL where the daemon is dialled in. Daemons must be
 terminated with \code{daemons(NULL)} in this case, which sends explicit exit
-instructions to all connected daemons.
+signals to all connected daemons.
 }
 
 \section{Cleanup Options}{
