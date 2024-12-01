@@ -178,8 +178,6 @@ The default `dispatcher = "process"` creates a `dispatcher()` background process
 
 Dispatcher uses synchronisation primitives from [`nanonext`](https://doi.org/10.5281/zenodo.7903429), waiting upon rather than polling for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).
 
-Alternatively, specifying `dispatcher = "thread"` runs dispatcher logic on a thread, a faster and more efficient alternative to the separate background process. This is a new feature that should be considered experimental.
-
 ```{r daemons4}
 daemons(0)
 ```

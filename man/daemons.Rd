@@ -8,7 +8,7 @@ daemons(
   n,
   url = NULL,
   remote = NULL,
-  dispatcher = c("process", "next", "thread", "none"),
+  dispatcher = c("process", "next", "none"),
   ...,
   force = TRUE,
   seed = NULL,

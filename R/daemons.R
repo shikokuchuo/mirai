@@ -275,7 +275,7 @@
 #'
 #' @export
 #'
-daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "next", "thread", "none"),
+daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("process", "next", "none"),
                     ..., force = TRUE, seed = NULL, tls = NULL, pass = NULL, .compute = "default") {
 
   missing(n) && missing(url) && return(status(.compute))
