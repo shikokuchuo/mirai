@@ -245,7 +245,7 @@ eval_mirai <- function(._mirai_.) {
     withCallingHandlers(
       {
         .interrupt()
-        on.exit(.interrupt())
+        on.exit(.interrupt(FALSE))
         list2env(._mirai_.[["._mirai_globals_."]], envir = .GlobalEnv)
         eval(._mirai_.[[".expr"]], envir = ._mirai_., enclos = .GlobalEnv)
       },
