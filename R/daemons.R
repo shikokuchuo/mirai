@@ -491,8 +491,6 @@ serial_config <- serial_config
 
 # internals --------------------------------------------------------------------
 
-inproc_url <- function() sprintf("inproc://%s", random(10L))
-
 configure_tls <- function(url, tls, pass, envir, returnconfig = TRUE) {
   purl <- parse_url(url)
   sch <- purl[["scheme"]]
@@ -514,14 +512,6 @@ init_envir_stream <- function(seed) {
   envir <- `[[<-`(new.env(hash = FALSE, parent = ..), "stream", .GlobalEnv[[".Random.seed"]])
   `[[<-`(.GlobalEnv, ".Random.seed", oseed)
   envir
-}
-
-resolve_url_port <- function(url) {
-  parse_url(url)[["port"]] == "0" || return(url)
-  sock <- socket(listen = url)
-  port <- opt(attr(sock, "listener")[[1L]], "tcp-bound-port")
-  reap(sock)
-  sub_real_port(port, url)
 }
 
 tokenized_url <- function(url) sprintf("%s/%s", url, random(12L))
