@@ -133,7 +133,6 @@ daemon <- function(url, ..., dispatcher = FALSE, asyncdial = FALSE, autoexit = T
   }
   snapshot()
 
-  .interrupt()
   repeat {
     aio <- recv_aio(sock, mode = 1L, cv = cv)
     wait(cv) || break
@@ -241,6 +240,8 @@ eval_mirai <- function(._mirai_.) {
   withRestarts(
     withCallingHandlers(
       {
+        on.exit(.interrupt(FALSE))
+        .interrupt()
         list2env(._mirai_.[["._mirai_globals_."]], envir = .GlobalEnv)
         eval(._mirai_.[[".expr"]], envir = ._mirai_., enclos = .GlobalEnv)
       },
