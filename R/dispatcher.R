@@ -139,7 +139,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
         next
       }
 
-      if (!.unresolved(req)) {
+      if (!unresolved(req)) {
         value <- collect_aio(req)
 
         if (value[1L] == 0L) {
@@ -182,7 +182,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
         ctx <- .context(sock)
         req <- recv_aio(ctx, mode = 8L, cv = cv)
 
-      } else if (!.unresolved(res)) {
+      } else if (!unresolved(res)) {
         value <- collect_aio(res)
         id <- as.character(.subset2(res, "aio"))
         res <- recv_aio(psock, mode = 8L, cv = cv)
