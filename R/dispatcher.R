@@ -140,7 +140,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
       }
 
       if (!unresolved(req)) {
-        value <- collect_aio(req)
+        value <- .subset2(req, "value")
 
         if (value[1L] == 0L) {
           id <- readBin(value, "integer", n = 2L)[2L]
@@ -183,7 +183,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
         req <- recv_aio(ctx, mode = 8L, cv = cv)
 
       } else if (!unresolved(res)) {
-        value <- collect_aio(res)
+        value <- .subset2(res, "value")
         id <- as.character(.subset2(res, "aio"))
         res <- recv_aio(psock, mode = 8L, cv = cv)
         send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)

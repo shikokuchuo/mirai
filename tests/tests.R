@@ -290,6 +290,20 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   test_class("errorValue", mirai(q(), .timeout = 1000)[])
   test_zero(daemons(0))
 }
+# additional stress testing
+connection && Sys.getenv("NOT_CRAN") == "true" && {
+  Sys.sleep(1L)
+  q <- vector(mode = "list", length = 10000L)
+  test_equal(daemons(4), 4L)
+  for (i in seq_len(10000L)) {q[[i]] <- mirai(1L); attr(q[[i]], "status") <- status()}
+  test_equal(sum(unlist(collect_mirai(q))), 10000L)
+  test_true(all(as.logical(lapply(lapply(q, attr, "status"), is.list))))
+  for (i in seq_len(10000L)) {q[[i]] <- mirai({Sys.sleep(0.001); rnorm(1)}); attr(q[[i]], "status") <- status()}
+  test_equal(length(unique(unlist(collect_mirai(q)))), 10000L)
+  test_true(all(as.logical(lapply(lapply(q, attr, "status"), is.list))))
+  test_equal(daemons()[["mirai"]][["completed"]], 20000L)
+  test_zero(daemons(0))
+}
 # legacy interface tests
 connection && Sys.getenv("NOT_CRAN") == "true" && {
   Sys.sleep(1L)
