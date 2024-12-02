@@ -137,7 +137,7 @@ daemon <- function(url, ..., dispatcher = FALSE, asyncdial = FALSE, autoexit = T
     aio <- recv_aio(sock, mode = 1L, cv = cv)
     wait(cv) || break
     m <- collect_aio(aio)
-    cancel <- recv_aio(sock, mode = 8L)
+    cancel <- recv_aio(sock, mode = 8L, cv = NA)
     data <- eval_mirai(m)
     stop_aio(cancel)
     send(sock, data, mode = 1L, block = TRUE)
