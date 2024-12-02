@@ -1,4 +1,4 @@
-# mirai 1.3.1.9011 (development)
+# mirai 1.3.1.9012 (development)
 
 #### New Features
 
@@ -10,7 +10,7 @@
 
 * Experimental threaded dispatcher `daemons(dispatcher = "thread")` has been retired (as this was based on the old dispatcher architecture and future development will focus on the current design). Specifying 'dispatcher = thread' is defunct, but will point to 'dispatcher = process' for the time being.
 * `daemon()` '...' argument had been moved up to prevent partial matching on any of the optional arguments.
-* Requires `nanonext` >= [1.3.2.9011].
+* Requires `nanonext` >= [1.3.2.9012].
 
 # mirai 1.3.1
 
