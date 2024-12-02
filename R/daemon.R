@@ -133,13 +133,13 @@ daemon <- function(url, ..., dispatcher = FALSE, asyncdial = FALSE, autoexit = T
   }
   snapshot()
 
-  aio <- recv_aio(sock, mode = 1L, cv = cv)
   repeat {
+    aio <- recv_aio(sock, mode = 1L, cv = cv)
     wait(cv) || break
     m <- collect_aio(aio)
-    aio <- recv_aio(sock, mode = 1L, cv = cv)
-    is.object(m) && next
+    cancel <- recv_aio(sock, mode = 8L, cv = cv)
     data <- eval_mirai(m)
+    stop_aio(cancel)
     send(sock, data, mode = 1L, block = TRUE)
     perform_cleanup(cleanup)
   }
