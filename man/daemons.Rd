@@ -139,20 +139,25 @@ available daemons.
 \section{Distributed Computing}{
 
 
-Specifying \sQuote{url} allows tasks to be distributed across the network.
-This should be a character string such as \sQuote{tcp://10.75.32.70:5555} at
-which daemon processes should connect to. Switching the URL scheme to
-\sQuote{tls+tcp://} or \sQuote{wss://} automatically upgrades the connection
-to use TLS. The auxiliary function \code{\link{host_url}} may be used to
-automatically construct a valid host URL based on the computer's hostname.
+Specifying \sQuote{url} as a character string allows tasks to be distributed
+across the network. \sQuote{n} is not required in this case, and disregarded
+if supplied.
 
-\sQuote{n} is not required in this case, and disregarded if supplied, as
-network resources may be added or removed at any time.
+It is recommended to use a TCP URL such as \sQuote{tcp://10.75.32.70:5555}.
+The host / dispatcher listens at this address, utilising a single port.
+Alternatively a websocket URL such as \sQuote{ws://10.75.32.70:5555/path}
+allows a unique path after the port number, which may support sharing the
+port with other applications
 
-Specify \sQuote{remote} with a call to \code{\link{remote_config}} or
-\code{\link{ssh_config}} to launch daemons on remote machines. Otherwise,
-\code{\link{launch_remote}} may be used to generate the shell commands to
-deploy daemons manually on remote resources.
+Individual daemons (started with \code{\link{daemon}}) may then dial in to
+this URL. Host / dispatcher automatically adjusts to the number of daemons
+actually connected. Hence it is possible to dynamically scale up or down the
+number of daemons as required.
+
+Switching the URL scheme to \sQuote{tls+tcp://} or \sQuote{wss://}
+automatically upgrades the connection to use TLS. The auxiliary function
+\code{\link{host_url}} may be used to construct a valid host URL based on the
+computer's hostname.
 
 IPv6 addresses are also supported and must be enclosed in square brackets [ ]
 to avoid confusion with the final colon separating the port. For example,
@@ -164,18 +169,10 @@ Specifying the wildcard value zero for the port number e.g.
 free ephemeral port. Use \code{\link{status}} to inspect the actual assigned
 port at any time.
 
-When using dispatcher, it is recommended to use a TCP URL such as
-\sQuote{tcp://10.75.32.70:5555}. The host / dispatcher listens at this
-address, utilising a single port.
-
-Alternatively a websocket URL such as \sQuote{ws://10.75.32.70:5555/path}
-supports sharing the port with other applications by specifying a unique path
-after the port number.
-
-Individual daemons (started with \code{\link{daemon}}) may then dial in to
-this URL. Host / dispatcher automatically adjusts to the number of daemons
-actually connected. Hence it is possible to dynamically scale up or down the
-number of daemons as required.
+Specify \sQuote{remote} with a call to \code{\link{remote_config}} or
+\code{\link{ssh_config}} to launch daemons on remote machines. Otherwise,
+\code{\link{launch_remote}} may be used to generate the shell commands to
+deploy daemons manually on remote resources.
 }
 
 \section{Compute Profiles}{
@@ -239,7 +236,7 @@ with(
   {
     m1 <- mirai(Sys.getpid())
     m2 <- mirai(Sys.getpid())
-    cat(call_mirai(m1)$data, call_mirai(m2)$data, "\n")
+    cat(m1[], m2[], "\n")
   }
 )
 
