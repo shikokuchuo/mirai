@@ -31,9 +31,10 @@
 #' different each time the function is called.
 #'
 #' @inheritParams mirai
-#' @param url the character host URL or vector of host URLs, including the port
-#'   to connect to (and optionally for websockets, a path), e.g.
-#'   'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path',
+#' @param url the character host URL, or vector of (the same) URLs if launching
+#'   more than one daemon, including the port to connect to (and optionally for
+#'   websockets, a path), e.g. 'tcp://hostname:5555' or
+#'   'ws://10.75.32.70:5555/path',
 #'
 #'   \strong{or} 1L, or a vector of 1Ls, to use the host / dispatcher URL
 #'   from the compute profile,
