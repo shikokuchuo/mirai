@@ -85,7 +85,7 @@
 
 ._ <- list2env(
   list(
-    arglen = "'args' and/or 'url' must be of length 1 or the same length",
+    arglen = "'n' must equal the length of 'args', or either must be 1",
     cluster_inactive = "cluster is no longer active",
     daemons_unset = "daemons must be set to use launchers",
     dispatcher_args = "'dispatcher' must be either 'default' or 'none'",

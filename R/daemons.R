@@ -263,13 +263,13 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("default", "non
           is.object(res) && stop(._[["sync_dispatcher"]])
           store_dispatcher(sock, res, cv, envir)
           `[[<-`(envir, "msgid", 0L)
-          n <- 0L
+          launches <- 0L
         },
         {
           tls <- configure_tls(url, tls, pass, envir)
           sock <- req_socket(url, tls = tls)
           check_store_url(sock, envir)
-          n <- 0L
+          launches <- 0L
         },
         {
           n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
@@ -284,10 +284,11 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("default", "non
           res <- launch_sync_dispatcher(sock, sockc, wa5(urld, dots, n, urlc, url), output, tls, pass)
           is.object(res) && stop(._[["sync_dispatcher"]])
           store_dispatcher(sockc, res, cv, envir)
+          launches <- n
         },
         stop(._[["dispatcher_args"]])
       )
-      `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
+      `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", launches))
       if (length(remote))
         launch_remote(n = n, remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
     } else {

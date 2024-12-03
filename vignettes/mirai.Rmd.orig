@@ -284,13 +284,15 @@ To launch remote daemons, supply a remote launch configuration to the 'remote' a
 The first example below launches 4 daemons on the machine 10.75.32.90 (using the default SSH port of 22 as this was not specified), connecting back to the dispatcher URLs:
 ```{r ldmn, eval=FALSE}
 daemons(
-  url = host_url(ws = TRUE, port = 5555),
-  remote = ssh_config(remotes = rep("ssh://10.75.32.90", 4))
+  n = 4L,
+  url = host_url(port = 5555),
+  remote = ssh_config(remotes = "ssh://10.75.32.90")
 )
 ```
 The second example below launches one daemon on each of 10.75.32.90 and 10.75.32.91 using the custom SSH port of 222:
 ```{r ldmnd, eval=FALSE}
 daemons(
+  n = 1L,
   url = host_url(ws = TRUE, port = 5555),
   remote = ssh_config(c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"))
 )
@@ -303,14 +305,16 @@ Use of SSH tunnelling provides a convenient way to launch remote daemons without
 
 In these cases SSH tunnelling offers a solution by creating a tunnel once the initial SSH connection is made. For simplicity, this SSH tunnelling implementation uses the same port on both the side of the host and that of the corresponding node. SSH key-based authentication must also already be in place.
 
-Tunnelling requires the hostname for 'url' specified when setting up daemons to be either '127.0.0.1' or 'localhost'. This is as the tunnel is created between 127.0.0.1:port or equivalently localhost:port on each machine. The host listens to its localhost:port and the remotes each dial into localhost:port on their own respective machines.
+Tunnelling requires the hostname for 'url' specified when setting up daemons to be '127.0.0.1'. This is as the tunnel is created between 127.0.0.1:port on each machine. The host listens to its 127.0.0.1:port and the remotes each dial into 127.0.0.1:port on their own respective machines.
 
-The below example launches 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling over port 5555 ('url' hostname is specified as 'localhost'):
+The below example launches 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling over port 5555 ('url' hostname is specified as '127.0.0.1'):
 ```{r sshrevtun, eval=FALSE}
 daemons(
-  url = "tcp://localhost:5555",
+  n = 1L,
+  url = "tcp://127.0.0.1:5555",
   remote = ssh_config(
     remotes = c("ssh://10.75.32.90", "ssh://10.75.32.90"),
+    port = 5555,
     tunnel = TRUE
   )
 )
@@ -322,6 +326,7 @@ daemons(
 Taking Slurm as an example, the following uses `sbatch` to launch a daemon on the cluster, with some additional arguments to `sbatch` specifying the resource allocation:
 ``` r
 daemons(
+  n = 2,
   url = host_url(),
   remote = remote_config(
     command = "sbatch",
@@ -337,7 +342,7 @@ daemons(
 As an alternative to automated launches, calling `launch_remote()` without specifying 'remote' may be used to return the shell commands for deploying daemons manually. The printed return values may be copy / pasted directly to a remote machine.
 ```{r launchremotereal}
 daemons(url = host_url())
-launch_remote(c(1, 1))
+launch_remote(2)
 daemons(0)
 ```
 Note that `daemons()` should be set up on the host machine before launching `daemon()` on remote resources, otherwise the daemon instances will exit if a connection is not immediately available. Alternatively, specifying the argument `autoexit = FALSE` will allow daemons to wait (indefinitely) for a connection to become available.

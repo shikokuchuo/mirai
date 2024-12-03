@@ -1,4 +1,4 @@
-# mirai 1.3.1.9014 (development)
+# mirai 1.3.1.9015 (development)
 
 #### Architecture Change
 
@@ -16,7 +16,7 @@
 
 * `status()` using the new default dispatcher updated to provide more concise information.
 * `launch_local()` and `launch_remote()` simplified to take the argument 'n' instead of 'url' for how many daemons to launch. `launch_local()` now returns the number of dameons launched rather than invisible NULL.
-* `ssh_config()` simplified to take the argument 'port' instead of 'host'. For SSH tunnelling, this is the port that will be used, and the hostname is enforced as '127.0.0.1' (no longer allowing the use of 'localhost'). 
+* `ssh_config()` simplified to take the argument 'port' instead of 'host'. For SSH tunnelling, this is the port that will be used, and the hostname is now required to be '127.0.0.1' (no longer accepting 'localhost'). 
 * `daemon()` '...' argument has been moved up to prevent partial matching on any of the optional arguments.
 * `saisei()` is defunct as no longer required, but still available for use with the old v1 dispatcher.
 * Experimental threaded dispatcher `daemons(dispatcher = "thread")` has been retired (as this was based on the old dispatcher architecture and future development will focus on the current design). Specifying 'dispatcher = thread' is defunct, but will point to 'dispatcher = process' for the time being.

@@ -86,7 +86,7 @@ connection && {
   test_class("miraiLaunchCmd", mlc)
   test_print(mlc)
   test_error(launch_remote(1L, remote = remote_config(command = "echo", args = "invalid")), "must be an element")
-  test_error(launch_remote(3L, remote = remote_config(command = "echo", args = list(c("test", "."), c("test", ".")))), "must be of length 1 or the same length")
+  test_error(launch_remote(3L, remote = remote_config(command = "echo", args = list(c("test", "."), c("test", ".")))), "must equal the length")
   test_zero(daemons(0L))
   Sys.sleep(1L)
   test_equal(1L, daemons(1L, dispatcher = FALSE, idletime = 500L, timerstart = 1L, cleanup = FALSE, output = TRUE, .compute = "new"))
