@@ -222,7 +222,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
 #'   do not accept a path).
 #' @param monitor (for package internal use only) do not set this parameter.
 #'
-#' @return The regenerated character URL upon success, or else NULL.
+#' @return Invisible NULL.
 #'
 #' @keywords internal
 #' @export

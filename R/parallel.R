@@ -112,7 +112,7 @@ make_cluster <- function(n, url = NULL, remote = NULL, ...) {
       print(launch_remote(n, ..., .compute = id))
     } else {
       args <- remote[["args"]]
-      if (is.list(args)) n <- max(n, length(args))
+      n <- if (is.list(args)) length(args) else 1L
     }
 
   } else {
