@@ -1,5 +1,11 @@
 # mirai 1.3.1.9013 (development)
 
+#### Architecture Change
+
+* Distributed computing now uses a single URL at which all daemons connect (with or without dispatcher).
+ - Allows using a more efficient `tcp://` or `tls+tcp://` address instead of websockets.
+ - Daemons may be added or removed at any time without limit.
+
 #### New Features
 
 * `daemons(dispatcher = "default")` provides a new and more efficient architecture for dispatcher. Although 'process' is no longer an option, this will still work and retains the previous behaviour of the v1 dispatcher.
@@ -8,8 +14,10 @@
 
 #### Updates
 
+* `status()` using the new default dispatcher is updated to provide more concise information.
+* `saisei()` is defunct as no longer required, but still available for use with the old v1 dispatcher.
 * Experimental threaded dispatcher `daemons(dispatcher = "thread")` has been retired (as this was based on the old dispatcher architecture and future development will focus on the current design). Specifying 'dispatcher = thread' is defunct, but will point to 'dispatcher = process' for the time being.
-* `daemon()` '...' argument had been moved up to prevent partial matching on any of the optional arguments.
+* `daemon()` '...' argument has been moved up to prevent partial matching on any of the optional arguments.
 * Requires `nanonext` >= 1.4.0.
 
 # mirai 1.3.1
