@@ -18,8 +18,7 @@ daemons(
 )
 }
 \arguments{
-\item{n}{integer number of daemons to launch locally (ignored if 'url' is
-specified).}
+\item{n}{integer number of daemons to launch.}
 
 \item{url}{[default NULL] if specified, a character string comprising a URL
 at which to listen for remote daemons, including a port accepting incoming
@@ -246,15 +245,17 @@ with(
 # Launch daemons on remotes 'nodeone' and 'nodetwo' using SSH
 # connecting back directly to the host URL over a TLS connection:
 
-daemons(url = host_url(tls = TRUE),
+daemons(n = 1L,
+        url = host_url(tls = TRUE),
         remote = ssh_config(c('ssh://nodeone', 'ssh://nodetwo')),
         dispatcher = "none")
 
 # Launch 4 daemons on the remote machine 10.75.32.90 using SSH tunnelling
 # over port 5555 ('url' hostname must be 'localhost' or '127.0.0.1'):
 
-daemons(url = 'ws://localhost:5555',
-        remote = ssh_config(rep('ssh://10.75.32.90', 4), tunnel = TRUE))
+daemons(n = 4L,
+        url = 'ws://localhost:5555',
+        remote = ssh_config('ssh://10.75.32.90', tunnel = TRUE))
 
 }
 

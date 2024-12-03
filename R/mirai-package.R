@@ -87,13 +87,12 @@
   list(
     arglen = "'args' and/or 'url' must be of length 1 or the same length",
     cluster_inactive = "cluster is no longer active",
-    correct_context = "'host' must be specified if not using directly in a function argument",
     daemons_unset = "daemons must be set to use launchers",
     dispatcher_args = "'dispatcher' must be either 'default' or 'none'",
     dot_required = "'.' must be an element of the character vector(s) supplied to 'args'",
     function_required = "'.f' must be of type function, not %s",
     missing_expression = "missing expression, perhaps wrap in {}?",
-    missing_url = "at least one URL must be supplied for 'url' or 'n' must be at least 1",
+    missing_url = "'n' must be 1 or greater, or else 'url' must be supplied",
     named_args = "all items in '.args' must be named, unless supplying an environment",
     named_dots = "all '...' arguments must be named, unless supplying an environment",
     n_one = "'n' must be 1 or greater",
@@ -102,11 +101,8 @@
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
     register_cluster = "this function requires a more recent version of R",
     requires_daemons = "mirai is launching one local daemon for a map operation as none previously set",
-    requires_local = "SSH tunnelling requires 'url' / 'host' to be '127.0.0.1' or 'localhost'",
-    single_url = "only one 'url' should be specified",
     sync_daemons = "initial sync with daemon(s) timed out after 10s",
-    sync_dispatcher = "initial sync with dispatcher timed out after 10s",
-    url_spec = "numeric value for 'url' is out of bounds"
+    sync_dispatcher = "initial sync with dispatcher timed out after 10s"
   ),
   hash = TRUE
 )

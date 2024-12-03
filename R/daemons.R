@@ -51,8 +51,7 @@
 #'
 #' @inheritParams mirai
 #' @inheritParams dispatcher
-#' @param n integer number of daemons to launch locally (ignored if 'url' is
-#'   specified).
+#' @param n integer number of daemons to launch.
 #' @param url [default NULL] if specified, a character string comprising a URL
 #'   at which to listen for remote daemons, including a port accepting incoming
 #'   connections, e.g. 'tcp://hostname:5555' or 'tcp://10.75.32.70:5555'.
@@ -223,15 +222,17 @@
 #' # Launch daemons on remotes 'nodeone' and 'nodetwo' using SSH
 #' # connecting back directly to the host URL over a TLS connection:
 #'
-#' daemons(url = host_url(tls = TRUE),
+#' daemons(n = 1L,
+#'         url = host_url(tls = TRUE),
 #'         remote = ssh_config(c('ssh://nodeone', 'ssh://nodetwo')),
 #'         dispatcher = "none")
 #'
 #' # Launch 4 daemons on the remote machine 10.75.32.90 using SSH tunnelling
 #' # over port 5555 ('url' hostname must be 'localhost' or '127.0.0.1'):
 #'
-#' daemons(url = 'ws://localhost:5555',
-#'         remote = ssh_config(rep('ssh://10.75.32.90', 4), tunnel = TRUE))
+#' daemons(n = 4L,
+#'         url = 'ws://localhost:5555',
+#'         remote = ssh_config('ssh://10.75.32.90', tunnel = TRUE))
 #'
 #' }
 #'
@@ -288,7 +289,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("default", "non
       )
       `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
       if (length(remote))
-        launch_remote(envir[["urls"]], remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
+        launch_remote(n = n, remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
     } else {
       daemons(0L, .compute = .compute)
       return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ...,
