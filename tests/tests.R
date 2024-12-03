@@ -116,6 +116,9 @@ connection && .Platform[["OS.type"]] != "windows" && {
   test_zero(daemons(n = 2L, url = value <- "ws://:0", dispatcher = FALSE, remote = remote_config(quote = TRUE)))
   test_true(status()$daemons != value)
   test_zero(daemons(0L))
+}
+# mirai_map tests
+connection && .Platform[["OS.type"]] != "windows" && {
   Sys.sleep(1L)
   m <- with(daemons(1, dispatcher = "none", .compute = "ml"), {
     if (is.null(tryCatch(mirai_map(list(1, "a", 2), sum, .compute = "ml")[.stop], error = function(e) NULL)))
@@ -200,23 +203,8 @@ connection && {
   test_null(stopCluster(cl))
 }
 # advanced daemons and dispatcher tests
-connection && Sys.getenv("NOT_CRAN") == "true" && {
+connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "true" && {
   Sys.sleep(1L)
-  test_equal(daemons(1, notused = "wrongtype"), 1L)
-  test_true(grepl("://", launch_remote(1L), fixed = TRUE))
-  requireNamespace("promises", quietly = TRUE) && {
-    test_true(promises::is.promise(p1 <- promises::as.promise(mirai("completed"))))
-    test_true(promises::is.promise(p2 <- promises::`%...>%`(mirai("completed"), identity())))
-    test_true(promises::is.promise(p3 <- promises::as.promise(call_mirai(mirai("completed")))))
-    test_zero(mirai_map(0:1, function(x) x, .promise = identity)[][[1L]])
-    test_true(is_mirai_map(mp <- mirai_map(matrix(1:4, nrow = 2L), function(x, y) x + y, .promise = list(identity))))
-    test_true(all(mp[.flat, .stop] == c(4L, 6L)))
-    test_null(names(mp[]))
-    test_class("errorValue", mirai_map(1, function(x) stop(x), .promise = list(identity, identity))[][[1L]])
-    Sys.sleep(1L)
-    getNamespace("later")[["run_now"]]()
-  }
-  test_zero(daemons(NULL))
   test_zero(daemons(url = "ws://:0", correctype = 0L, token = TRUE))
   test_zero(daemons(0L))
   test_zero(with(daemons(url = "tcp://:0", correcttype = c(1, 0), token = TRUE), {8L - 9L + 1L}))
@@ -236,6 +224,10 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   test_equal(daemons()[["connections"]], 2L)
   test_type("list", res <- mirai_map(c(1,1), rnorm)[.progress])
   test_true(res[[1L]] != res[[2L]])
+}
+# TLS tests
+connection && Sys.getenv("NOT_CRAN") == "true" && {
+  Sys.sleep(1L)
   test_zero(daemons(url = c("tls+tcp://127.0.0.1:0", "wss://127.0.0.1:0"), pass = "test"))
   test_equal(launch_local(1L), 1L)
   Sys.sleep(1L)
@@ -254,6 +246,23 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
     daemons(url = "tls+tcp://127.0.0.1:0", tls = file) == 0L && daemons(0L) == 0L
   }
   test_true(test_tls(nanonext::write_cert(cn = "127.0.0.1")))
+}
+# promises tests
+connection && requireNamespace("promises", quietly = TRUE) && Sys.getenv("NOT_CRAN") == "true" && {
+  Sys.sleep(1L)
+  test_equal(daemons(1, notused = "wrongtype"), 1L)
+  test_true(grepl("://", launch_remote(1L), fixed = TRUE))
+  test_true(promises::is.promise(p1 <- promises::as.promise(mirai("completed"))))
+  test_true(promises::is.promise(p2 <- promises::`%...>%`(mirai("completed"), identity())))
+  test_true(promises::is.promise(p3 <- promises::as.promise(call_mirai(mirai("completed")))))
+  test_zero(mirai_map(0:1, function(x) x, .promise = identity)[][[1L]])
+  test_true(is_mirai_map(mp <- mirai_map(matrix(1:4, nrow = 2L), function(x, y) x + y, .promise = list(identity))))
+  test_true(all(mp[.flat, .stop] == c(4L, 6L)))
+  test_null(names(mp[]))
+  test_class("errorValue", mirai_map(1, function(x) stop(x), .promise = list(identity, identity))[][[1L]])
+  Sys.sleep(1L)
+  getNamespace("later")[["run_now"]]()
+  test_zero(daemons(NULL))
 }
 # mirai cancellation tests
 connection && Sys.getenv("NOT_CRAN") == "true" && {
@@ -313,7 +322,9 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   test_equal(nextget("n"), 1L)
   test_equal(length(nextget("urls")), 1L)
   test_null(saisei(i = 0L))
+  test_null(saisei(i = 10L))
   test_class("matrix", status()$daemons)
+  test_print(saisei(i = 1L))
   test_zero(daemons(0))
 }
 Sys.sleep(1L)
