@@ -87,12 +87,7 @@
 #' \code{\link{is_mirai_error}} may be used to test for this.
 #'
 #' If a daemon crashes or terminates unexpectedly during evaluation, an
-#' \sQuote{errorValue} 19 (Connection reset) is returned (when not using
-#' dispatcher or using dispatcher with \code{retry = FALSE}). Otherwise, using
-#' dispatcher with \code{retry = TRUE}, the mirai will remain unresolved and is
-#' automatically re-tried on the next daemon to connect to the particular
-#' instance. To cancel the task instead, use \code{saisei(force = TRUE)} (see
-#' \code{\link{saisei}}).
+#' \sQuote{errorValue} 19 (Connection reset) is returned.
 #'
 #' \code{\link{is_error_value}} tests for all error conditions including
 #' \sQuote{mirai} errors, interrupts, and timeouts.
@@ -190,11 +185,17 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' Evaluate Everywhere
 #'
 #' Evaluate an expression \sQuote{everywhere} on all connected daemons for the
-#' specified compute profile. Designed for performing setup operations across
-#' daemons by loading packages, exporting common data, or registering custom
-#' serialization functions. Resultant changes to the global environment, loaded
-#' packages and options are persisted regardless of a daemon's \sQuote{cleanup}
-#' setting.
+#' specified compute profile - this must be set prior to calling this function.
+#' Designed for performing setup operations across daemons by loading packages,
+#' exporting common data, or registering custom serialization functions.
+#' Resultant changes to the global environment, loaded packages and options are
+#' persisted regardless of a daemon's \sQuote{cleanup} setting.
+#'
+#' This function should be called when no other mirai operations are in
+#' progress. If necessary, wait for all mirai operations to complete. This is as
+#' this function does not force a synchronization point, and using concurrently
+#' with other mirai operations does not guarantee the timing of when the
+#' instructions will be received, or that they will be received on each daemon.
 #'
 #' @inheritParams mirai
 #' @param .serial [default NULL] (optional) a configuration created by
@@ -204,8 +205,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'   existing registered functions. To remove the configuration, provide an
 #'   empty list.
 #'
-#' @return Invisible NULL. Will error if the specified compute profile is not
-#'   found, i.e. not yet set up.
+#' @return A list of mirai executed on each daemon. This may be waited for and
+#'   inspected using \code{\link{call_mirai}} or \code{\link{collect_mirai}}.
 #'
 #' @inheritSection mirai Evaluation
 #'
@@ -220,7 +221,12 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' # '.expr' may be specified as an empty {} in such cases:
 #' everywhere({}, a = 1, b = 2)
 #' m <- mirai(a + b - y == 0L)
-#' call_mirai(m)$data
+#' m[]
+#' # everywhere() returns a list of mirai which may be waited for and inspected
+#' mlist <- everywhere("just a normal operation")
+#' collect_mirai(mlist)
+#' mlist <- everywhere(stop("error"))
+#' collect_mirai(mlist)
 #' daemons(0)
 #'
 #' # loading a package on all daemons and also
@@ -229,7 +235,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' daemons(1, dispatcher = "none")
 #' everywhere(library(parallel), .serial = cfg)
 #' m <- mirai("package:parallel" %in% search())
-#' call_mirai(m)$data
+#' m[]
 #' daemons(0)
 #'
 #' }
@@ -244,8 +250,8 @@ everywhere <- function(.expr, ..., .args = list(), .serial = NULL, .compute = "d
 
   expr <- substitute(.expr)
   .expr <- c(
-    as.expression(if (is.symbol(expr) && exists(as.character(expr), parent.frame()) && is.language(.expr)) .expr else expr),
-    .snapshot
+    .snapshot,
+    as.expression(if (is.symbol(expr) && exists(as.character(expr), parent.frame()) && is.language(.expr)) .expr else expr)
   )
 
   if (is.list(.serial)) {
@@ -259,13 +265,13 @@ everywhere <- function(.expr, ..., .args = list(), .serial = NULL, .compute = "d
     for (i in seq_along(vec))
       vec[[i]] <- mirai(.expr, ..., .args = .args, .compute = .compute)
   } else {
-    .expr <- c(.expr, .block)
+    .expr <- c(.block, .expr)
     vec <- vector(mode = "list", length = max(status(.compute)[["connections"]], envir[["n"]]))
     for (i in seq_along(vec))
       vec[[i]] <- mirai(.expr, ..., .args = .args, .compute = .compute)
   }
   `[[<-`(envir, "everywhere", vec)
-  invisible()
+  invisible(vec)
 
 }
 
@@ -620,5 +626,5 @@ mk_mirai_error <- function(e, sc) {
 .miraiInterrupt <- `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))
 .connectionReset <- `class<-`(19L, c("errorValue", "try-error"))
 .register <- expression(mirai:::register(.serial), NULL)
-.snapshot <- expression(mirai:::snapshot(), NULL)
-.block <- expression(nanonext::msleep(500L))
+.snapshot <- expression(on.exit(mirai:::snapshot(), add = TRUE))
+.block <- expression(on.exit(nanonext::msleep(500L), add = TRUE))
