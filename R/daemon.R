@@ -106,7 +106,7 @@ daemon <- function(url, ..., dispatcher = FALSE, asyncdial = FALSE, autoexit = T
                    cleanup = TRUE, output = FALSE, tls = NULL, rs = NULL) {
 
   dispatcher || return(
-    ddaemon(
+    daemon_legacy(
       url = url, asyncdial = asyncdial, autoexit = autoexit, cleanup = cleanup,
       output = output, ..., tls = tls, rs = rs
     )
@@ -146,9 +146,9 @@ daemon <- function(url, ..., dispatcher = FALSE, asyncdial = FALSE, autoexit = T
 
 }
 
-ddaemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
-                   output = FALSE, maxtasks = Inf, idletime = Inf, walltime = Inf,
-                   timerstart = 0L, ..., tls = NULL, rs = NULL) {
+daemon_legacy <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
+                          output = FALSE, maxtasks = Inf, idletime = Inf, walltime = Inf,
+                          timerstart = 0L, ..., tls = NULL, rs = NULL) {
 
   cv <- cv()
   sock <- socket(protocol = "rep")

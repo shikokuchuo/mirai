@@ -134,6 +134,7 @@ connection && .Platform[["OS.type"]] != "windows" && {
   test_identical(call_mirai(mp)[["x"]][["data"]], "ab")
   test_true(all(mirai_map(data.frame(1:3, 3:1), sum, .args = list(3L))[.flat] == 7L))
   test_true(all(mirai_map(list(c(a = 1, b = 1, c = 1), 3), sum)[.flat] == 3))
+  test_zero(daemons(0L))
 }
 # parallel cluster tests
 library(parallel)
@@ -224,6 +225,7 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
   test_equal(daemons()[["connections"]], 2L)
   test_type("list", res <- mirai_map(c(1,1), rnorm)[.progress])
   test_true(res[[1L]] != res[[2L]])
+  test_zero(daemons(0L))
 }
 # TLS tests
 connection && Sys.getenv("NOT_CRAN") == "true" && {

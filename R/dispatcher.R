@@ -52,13 +52,20 @@
 #' @param pass [default NULL] (required only if the private key supplied to
 #'   \sQuote{tls} is encrypted with a password) For security, should be provided
 #'   through a function that returns this value, rather than directly.
+#' @param monitor unused legacy parameter - do not specify this value.
 #'
 #' @return Invisible NULL.
 #'
 #' @export
 #'
-dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL, rs = NULL) {
+dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
+                       rs = NULL, monitor = NULL) {
 
+  missing(monitor) || return(
+    dispatcher_legacy(
+      host = host, url = url, n = n, ..., tls = tls, pass = pass, rs = rs, monitor = monitor
+    )
+  )
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(._[["missing_url"]])
 
@@ -205,30 +212,8 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
 
 }
 
-#' Dispatcher (v1)
-#'
-#' This is a deprecated legacy function only present to support existing uses.
-#'
-#' @inheritParams dispatcher
-#' @param retry [default FALSE] logical value, whether to automatically retry
-#'   tasks where the daemon crashes or terminates unexpectedly on the next
-#'   daemon instance to connect. If TRUE, the mirai will remain unresolved but
-#'   \code{\link{status}} will show \sQuote{online} as 0 and \sQuote{assigned} >
-#'   \sQuote{complete}. To cancel a task in this case, use
-#'   \code{saisei(force = TRUE)}. If FALSE, such tasks will be returned as
-#'   \sQuote{errorValue} 19 (Connection reset).
-#' @param token [default FALSE] if TRUE, appends a unique 24-character token to
-#'   each URL path the dispatcher listens at (not applicable for TCP URLs which
-#'   do not accept a path).
-#' @param monitor (for package internal use only) do not set this parameter.
-#'
-#' @return Invisible NULL.
-#'
-#' @keywords internal
-#' @export
-#'
-dispatcher_v1 <- function(host, url = NULL, n = NULL, ..., retry = FALSE, token = FALSE,
-                          tls = NULL, pass = NULL, rs = NULL, monitor = NULL) {
+dispatcher_legacy <- function(host, url = NULL, n = NULL, ..., retry = FALSE,
+                              token = FALSE, tls = NULL, pass = NULL, rs = NULL, monitor = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(._[["missing_url"]])
