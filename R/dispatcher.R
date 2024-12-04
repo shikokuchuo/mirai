@@ -156,7 +156,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
             for (i in seq_along(outq))
               if (outq[[i]][["msgid"]] == id) {
                 send(psock, .connectionReset, mode = 1L, pipe = outq[[i]][["pipe"]], block = TRUE)
-                outq[[i]][["msgid"]] <- 0L
+                outq[[i]][["msgid"]] <- -1L
                 found <- TRUE
                 break
               }
