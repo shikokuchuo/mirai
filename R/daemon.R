@@ -48,8 +48,7 @@
 #'   'Persistence' section below).
 #' @param cleanup [default TRUE] logical value, whether to perform cleanup of
 #'   the global environment and restore attached packages and options to an
-#'   initial state after each evaluation. For more granular control, also
-#'   accepts an integer value (see \sQuote{Cleanup Options} section below).
+#'   initial state after each evaluation.
 #' @param output [default FALSE] logical value, to output generated stdout /
 #'   stderr if TRUE, or else discard if FALSE. Specify as TRUE in the
 #'   \sQuote{...} argument to \code{\link{daemons}} or
@@ -86,20 +85,6 @@
 #' terminated with \code{daemons(NULL)} in this case, which sends explicit exit
 #' signals to all connected daemons.
 #'
-#' @section Cleanup Options:
-#'
-#' The \sQuote{cleanup} argument also accepts an integer value, which operates
-#' an additive bitmask: perform cleanup of the global environment (1L), reset
-#' attached packages to an initial state (2L), restore options to an initial
-#' state (4L), and perform garbage collection (8L).
-#'
-#' As an example, to perform cleanup of the global environment and garbage
-#' collection, specify 9L (1L + 8L). The default argument value of TRUE performs
-#' all actions apart from garbage collection and is equivalent to a value of 7L.
-#'
-#' Caution: do not reset options but not loaded packages if packages set options
-#' on load.
-#'
 #' @export
 #'
 daemon <- function(url, ..., dispatcher = FALSE, asyncdial = FALSE, autoexit = TRUE,
@@ -120,7 +105,6 @@ daemon <- function(url, ..., dispatcher = FALSE, asyncdial = FALSE, autoexit = T
   dial_and_sync_socket(sock, url, asyncdial = asyncdial, tls = tls)
 
   if (is.numeric(rs)) `[[<-`(.GlobalEnv, ".Random.seed", as.integer(rs))
-  cleanup <- parse_cleanup(cleanup)
   if (!output) {
     devnull <- file(nullfile(), open = "w", blocking = FALSE)
     sink(file = devnull)
@@ -137,11 +121,12 @@ daemon <- function(url, ..., dispatcher = FALSE, asyncdial = FALSE, autoexit = T
     aio <- recv_aio(sock, mode = 1L, cv = cv)
     wait(cv) || break
     m <- collect_aio(aio)
+    is.object(m) && next
     cancel <- recv_aio(sock, mode = 8L, cv = NA)
     data <- eval_mirai(m)
     stop_aio(cancel)
     send(sock, data, mode = 1L, block = TRUE)
-    perform_cleanup(cleanup)
+    if (cleanup) do_cleanup()
   }
 
 }
@@ -271,6 +256,12 @@ perform_cleanup <- function(cleanup) {
   if (cleanup[2L]) lapply((new <- search())[!new %in% .[["se"]]], detach, character.only = TRUE)
   if (cleanup[3L]) options(.[["op"]])
   if (cleanup[4L]) gc(verbose = FALSE)
+}
+
+do_cleanup <- function() {
+  rm(list = (vars <- names(.GlobalEnv))[!vars %in% .[["vars"]]], envir = .GlobalEnv)
+  lapply((new <- search())[!new %in% .[["se"]]], detach, character.only = TRUE)
+  options(.[["op"]])
 }
 
 register <- function(x) `opt<-`(.[["sock"]], "serial", x)

@@ -41,8 +41,7 @@ value is supplied, this signal is additionally raised on exit (see
 
 \item{cleanup}{[default TRUE] logical value, whether to perform cleanup of
 the global environment and restore attached packages and options to an
-initial state after each evaluation. For more granular control, also
-accepts an integer value (see \sQuote{Cleanup Options} section below).}
+initial state after each evaluation.}
 
 \item{output}{[default FALSE] logical value, to output generated stdout /
 stderr if TRUE, or else discard if FALSE. Specify as TRUE in the
@@ -96,21 +95,5 @@ no longer a socket connection. This allows a host session to end and a new
 session to connect at the URL where the daemon is dialled in. Daemons must be
 terminated with \code{daemons(NULL)} in this case, which sends explicit exit
 signals to all connected daemons.
-}
-
-\section{Cleanup Options}{
-
-
-The \sQuote{cleanup} argument also accepts an integer value, which operates
-an additive bitmask: perform cleanup of the global environment (1L), reset
-attached packages to an initial state (2L), restore options to an initial
-state (4L), and perform garbage collection (8L).
-
-As an example, to perform cleanup of the global environment and garbage
-collection, specify 9L (1L + 8L). The default argument value of TRUE performs
-all actions apart from garbage collection and is equivalent to a value of 7L.
-
-Caution: do not reset options but not loaded packages if packages set options
-on load.
 }
 
