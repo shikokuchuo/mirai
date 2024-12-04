@@ -408,6 +408,9 @@ collect_mirai <- collect_aio
 #'   completed or previously cancelled). Will always return \code{FALSE} if not
 #'   using dispatcher.
 #'
+#'   Or a vector of logical values if supplying a list of \sQuote{mirai}, such
+#'   as those returned by \code{\link{mirai_map}}.
+#'
 #' @examples
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
@@ -421,8 +424,9 @@ collect_mirai <- collect_aio
 #' @export
 #'
 stop_mirai <- function(x) {
+  is.list(x) && return(rev(as.logical(lapply(rev(unclass(x)), stop_mirai))))
   .compute <- attr(x, "profile")
-  envir <- if (!is.null(.compute)) ..[[.compute]]
+  envir <- if (is.character(.compute)) ..[[.compute]]
   stop_aio(x)
   invisible(length(envir[["msgid"]]) && query_dispatcher(envir[["sock"]], c(0L, attr(x, "msgid"))))
 }
@@ -628,6 +632,7 @@ mk_mirai_error <- function(e, sc) {
 
 .miraiInterrupt <- `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))
 .connectionReset <- `class<-`(19L, c("errorValue", "try-error"))
-.register <- expression(mirai:::register(.serial), NULL)
+.cancelRequest <- `class<-`(0L, "c")
+.register <- expression(mirai:::register(.serial))
 .snapshot <- expression(on.exit(mirai:::snapshot(), add = TRUE))
 .block <- expression(on.exit(nanonext::msleep(500L), add = TRUE))

@@ -14,6 +14,9 @@ Logical \code{TRUE} if the cancellation request was successful (was
   awaiting execution or in execution), or else \code{FALSE} (if already
   completed or previously cancelled). Will always return \code{FALSE} if not
   using dispatcher.
+
+  Or a vector of logical values if supplying a list of \sQuote{mirai}, such
+  as those returned by \code{\link{mirai_map}}.
 }
 \description{
 Stops a \sQuote{mirai} if still in progress, causing it to resolve

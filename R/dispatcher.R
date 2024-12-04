@@ -97,6 +97,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
 
   psock <- socket(protocol = "poly")
   on.exit(reap(psock), add = TRUE, after = TRUE)
+  `opt<-`(psock, "send-buffer", 1L)
   m <- monitor(psock, cv)
   listen(psock, url = url, tls = tls, error = TRUE)
 
@@ -155,7 +156,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
             found <- FALSE
             for (i in seq_along(outq))
               if (outq[[i]][["msgid"]] == id) {
-                send(psock, .connectionReset, mode = 1L, pipe = outq[[i]][["pipe"]], block = TRUE)
+                send(psock, .cancelRequest, mode = 1L, pipe = outq[[i]][["pipe"]], block = TRUE)
                 outq[[i]][["msgid"]] <- -1L
                 found <- TRUE
                 break

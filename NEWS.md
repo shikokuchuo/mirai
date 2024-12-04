@@ -1,9 +1,9 @@
-# mirai 1.3.1.9018 (development)
+# mirai 1.3.1.9019 (development)
 
-#### Architecture Change
+#### New Architecture
 
 * Distributed computing now uses a single URL at which all daemons connect (with or without dispatcher).
- - Allows using a more efficient `tcp://` or `tls+tcp://` address instead of websockets.
+ - Allows a more efficient `tcp://` or `tls+tcp://` connection in most cases instead of websockets.
  - Daemons may be added or removed at any time without limit.
 
 #### New Features
