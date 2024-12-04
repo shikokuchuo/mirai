@@ -274,7 +274,7 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   m2 <- mirai({ Sys.sleep(1); res <<- "m2 done" })
   Sys.sleep(0.1)
   test_true(stop_mirai(m2))
-  test_true(is.na(stop_mirai(m1)))
+  test_true(stop_mirai(m1))
   test_equal(m2$data, 20L)
   test_equal(m1$data, 20L)
   test_class("errorValue", mirai(res)[])

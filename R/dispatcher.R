@@ -160,16 +160,13 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
                 found <- TRUE
                 break
               }
-            if (found) {
-              found <- NA
-            } else {
+            if (!found)
               for (i in seq_along(inq))
                 if (inq[[i]][["msgid"]] == id) {
                   inq[[i]] <- NULL
                   found <- TRUE
                   break
                 }
-            }
             send(ctx, found, mode = 2L, block = TRUE)
           } else {
             status <- c(
