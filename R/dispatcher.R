@@ -62,7 +62,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
                        rs = NULL, monitor = NULL) {
 
   missing(monitor) || return(
-    dispatcher_legacy(
+    v1_dispatcher(
       host = host, url = url, n = n, ..., tls = tls, pass = pass, rs = rs, monitor = monitor
     )
   )
@@ -210,8 +210,64 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
 
 }
 
-dispatcher_legacy <- function(host, url = NULL, n = NULL, ..., retry = FALSE,
-                              token = FALSE, tls = NULL, pass = NULL, rs = NULL, monitor = NULL) {
+#' Dispatcher (Legacy v1)
+#'
+#' Dispatches tasks from a host to daemons for processing, using FIFO
+#' scheduling, queuing tasks as required. Daemon / dispatcher settings may be
+#' controlled by \code{\link{daemons}} and this function should not need to be
+#' invoked directly.
+#'
+#' The network topology is such that a dispatcher acts as a gateway between the
+#' host and daemons, ensuring that tasks received from the host are dispatched
+#' on a FIFO basis for processing. Tasks are queued at the dispatcher to ensure
+#' tasks are only sent to daemons that can begin immediate execution of the
+#' task.
+#'
+#' @inheritParams daemon
+#' @param host the character host URL to dial (where tasks are sent from),
+#'   including the port to connect to (and optionally for websockets, a path),
+#'   e.g. 'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.
+#' @param url (optional) the character URL or vector of URLs dispatcher should
+#'   listen at, including the port to connect to (and optionally for websockets,
+#'   a path), e.g. 'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.
+#'   Specify 'tls+tcp://' or 'wss://' to use secure TLS connections. Tasks are
+#'   sent to daemons dialled into these URLs. If not supplied, \sQuote{n} local
+#'   inter-process URLs will be assigned automatically.
+#' @param n (optional) if specified, the integer number of daemons to listen for.
+#'   Otherwise \sQuote{n} will be inferred from the number of URLs supplied in
+#'   \sQuote{url}. Where a single URL is supplied and \sQuote{n} > 1, \sQuote{n}
+#'   unique URLs will be automatically assigned for daemons to dial into.
+#' @param ... (optional) additional arguments passed through to
+#'   \code{\link{daemon}}. These include  \sQuote{asyncdial}, \sQuote{autoexit},
+#'   \sQuote{cleanup}, \sQuote{maxtasks}, \sQuote{idletime}, \sQuote{walltime}
+#'   and \sQuote{timerstart}.
+#' @param retry [default FALSE] logical value, whether to automatically retry
+#'   tasks where the daemon crashes or terminates unexpectedly on the next
+#'   daemon instance to connect. If TRUE, the mirai will remain unresolved but
+#'   \code{\link{status}} will show \sQuote{online} as 0 and \sQuote{assigned} >
+#'   \sQuote{complete}. To cancel a task in this case, use
+#'   \code{saisei(force = TRUE)}. If FALSE, such tasks will be returned as
+#'   \sQuote{errorValue} 19 (Connection reset).
+#' @param token [default FALSE] if TRUE, appends a unique 24-character token to
+#'   each URL path the dispatcher listens at (not applicable for TCP URLs which
+#'   do not accept a path).
+#' @param tls [default NULL] (required for secure TLS connections)
+#'   \strong{either} the character path to a file containing the PEM-encoded TLS
+#'   certificate and associated private key (may contain additional certificates
+#'   leading to a validation chain, with the TLS certificate first), \strong{or}
+#'   a length 2 character vector comprising [i] the TLS certificate (optionally
+#'   certificate chain) and [ii] the associated private key.
+#' @param pass [default NULL] (required only if the private key supplied to
+#'   \sQuote{tls} is encrypted with a password) For security, should be provided
+#'   through a function that returns this value, rather than directly.
+#' @param monitor (for package internal use only) do not set this parameter.
+#'
+#' @return Invisible NULL.
+#'
+#' @noRd
+#'
+v1_dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE,
+                          token = FALSE, tls = NULL, pass = NULL, rs = NULL, monitor = NULL) {
 
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(._[["missing_url"]])
