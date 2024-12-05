@@ -318,6 +318,44 @@ v1_daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
 
 }
 
+#' Stop Daemon
+#'
+#' Sends exit signals to reduce the number of connected daemons. Does not
+#' interrupt any \sQuote{mirai} tasks in execution - exits will happen once
+#' these complete (if applicable). This function is only effective when using
+#' dispatcher.
+#'
+#' @param n [default 1L] integer number of daemons to stop.
+#' @inheritParams mirai
+#'
+#' @return Integer number of exit signals sent (the smaller of \sQuote{n} and
+#'   the number of actually connected daemons).
+#'
+#' @examples
+#' if (interactive()) {
+#' # Only run examples in interactive R sessions
+#'
+#' daemons(4)
+#' status()
+#' stop_daemon(2)
+#' mirai(TRUE)[]
+#' status()
+#' daemons(0)
+#'
+#' }
+#'
+#' @export
+#'
+stop_daemon <- function(n = 1L, .compute = "default") {
+  envir <- if (is.character(.compute)) ..[[.compute]]
+  length(envir[["msgid"]]) || return(0L)
+  d <- query_dispatcher(envir[["sock"]], c(0L, 0L))[1L]
+  stopped <- min(n, d)
+  for (i in seq_len(stopped))
+    query_dispatcher(envir[["sock"]], c(0L, -1L))
+  stopped
+}
+
 # internals --------------------------------------------------------------------
 
 handle_mirai_error <- function(e) invokeRestart("mirai_error", e, sys.calls())

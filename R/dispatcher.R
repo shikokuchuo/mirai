@@ -102,6 +102,8 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
   listen(psock, url = url, tls = tls, error = TRUE)
 
   msgid <- 0L
+  loop <- FALSE
+  status <- NULL
   inq <- outq <- list()
   envir <- new.env(hash = FALSE)
   if (is.numeric(rs)) `[[<-`(envir, "stream", as.integer(rs))
@@ -152,40 +154,48 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
 
         if (value[1L] == 0L) {
           id <- readBin(value, "integer", n = 2L)[2L]
-          if (id) {
-            found <- FALSE
-            for (i in seq_along(outq))
-              if (outq[[i]][["msgid"]] == id) {
-                send(psock, .cancelRequest, mode = 1L, pipe = outq[[i]][["pipe"]], block = TRUE)
-                outq[[i]][["msgid"]] <- -1L
-                found <- TRUE
-                break
-              }
-            if (!found)
-              for (i in seq_along(inq))
-                if (inq[[i]][["msgid"]] == id) {
-                  inq[[i]] <- NULL
-                  found <- TRUE
-                  break
-                }
-            send(ctx, found, mode = 2L, block = TRUE)
-          } else {
+          if (id == 0L) {
+            loop <- TRUE
             status <- c(
               length(outq),
               length(inq),
               sum(as.logical(unlist(lapply(outq, .subset2, "msgid"), use.names = FALSE)))
             )
-            send(ctx, status, mode = 2L, block = TRUE)
+          } else if (id > 0) {
+            loop <- TRUE
+            status <- FALSE
+            for (i in seq_along(outq))
+              if (outq[[i]][["msgid"]] == id) {
+                send(psock, .cancelRequest, mode = 1L, pipe = outq[[i]][["pipe"]], block = TRUE)
+                outq[[i]][["msgid"]] <- -1L
+                status <- TRUE
+                break
+              }
+            if (!status)
+              for (i in seq_along(inq))
+                if (inq[[i]][["msgid"]] == id) {
+                  inq[[i]] <- NULL
+                  status <- TRUE
+                  break
+                }
+          } else {
+            status <- TRUE
+            inq <- c(list(list(ctx = ctx, req = ._scm_. , msgid = -1L)), inq)
           }
-          ctx <- .context(sock)
-          req <- recv_aio(ctx, mode = 8L, cv = cv)
-          next
+          send(ctx, status, mode = 2L, block = TRUE)
         }
-
-        msgid <- msgid + 1L
-        inq[[length(inq) + 1L]] <- list(ctx = ctx, req = value, msgid = msgid)
+        if (is.null(status)) {
+          msgid <- msgid + 1L
+          inq[[length(inq) + 1L]] <- list(ctx = ctx, req = value, msgid = msgid)
+        } else {
+          status <- NULL
+        }
         ctx <- .context(sock)
         req <- recv_aio(ctx, mode = 8L, cv = cv)
+        loop && {
+          loop <- FALSE
+          next
+        }
 
       } else if (!unresolved(res)) {
         value <- .subset2(res, "value")

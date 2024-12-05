@@ -1,4 +1,4 @@
-# mirai 1.3.1.9019 (development)
+# mirai 1.3.1.9020 (development)
 
 #### New Architecture
 
@@ -9,7 +9,8 @@
 #### New Features
 
 * `daemons(dispatcher = "default")` provides a new and more efficient architecture for dispatcher. Although 'process' is no longer an option, this will still work and retains the previous behaviour of the v1 dispatcher.
-* `stop_mirai()` is upgraded to cancel remote mirai tasks when using the new dispatcher, returning a logical value indicating whether cancellation was successful.
+* Upgrades `stop_mirai()` to cancel remote mirai tasks when using the new dispatcher, returning a logical value indicating whether cancellation was successful.
+* Adds `stop_daemon()` to reduce the number of connected daemons (without interrupting any executing tasks).
 * `daemon()` gains the new argument 'dispatcher', which should be set to `TRUE` when connecting to dispatcher and `FALSE` when connecting directly to host.
 
 #### Updates
