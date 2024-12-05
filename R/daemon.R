@@ -87,17 +87,17 @@
 #'
 #' @export
 #'
-daemon <- function(url, ..., dispatcher = FALSE, asyncdial = FALSE, autoexit = TRUE,
+daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = TRUE,
                    cleanup = TRUE, output = FALSE, tls = NULL, rs = NULL) {
 
-  dispatcher || return(
+  missing(dispatcher) && return(
     daemon_legacy(
       url = url, asyncdial = asyncdial, autoexit = autoexit, cleanup = cleanup,
       output = output, ..., tls = tls, rs = rs
     )
   )
   cv <- cv()
-  sock <- socket(protocol = "poly")
+  sock <- socket(protocol = if (dispatcher) "poly" else "rep")
   on.exit(reap(sock))
   `[[<-`(., "sock", sock)
   autoexit && pipe_notify(sock, cv = cv, remove = TRUE, flag = as.integer(autoexit))
@@ -117,17 +117,27 @@ daemon <- function(url, ..., dispatcher = FALSE, asyncdial = FALSE, autoexit = T
   }
   snapshot()
 
-  repeat {
-    aio <- recv_aio(sock, mode = 1L, cv = cv)
-    wait(cv) || break
-    m <- collect_aio(aio)
-    is.object(m) && next
-    cancel <- recv_aio(sock, mode = 8L, cv = NA)
-    data <- eval_mirai(m)
-    stop_aio(cancel)
-    send(sock, data, mode = 1L, block = TRUE)
-    if (cleanup) do_cleanup()
-  }
+  if (dispatcher)
+    repeat {
+      aio <- recv_aio(sock, mode = 1L, cv = cv)
+      wait(cv) || break
+      m <- collect_aio(aio)
+      is.object(m) && next
+      cancel <- recv_aio(sock, mode = 8L, cv = NA)
+      data <- eval_mirai(m)
+      stop_aio(cancel)
+      send(sock, data, mode = 1L, block = TRUE)
+      if (cleanup) do_cleanup()
+    } else
+      repeat {
+        ctx <- .context(sock)
+        aio <- recv_aio(ctx, mode = 1L, cv = cv)
+        wait(cv) || break
+        m <- collect_aio(aio)
+        data <- eval_mirai(m)
+        send(ctx, data, mode = 1L, block = TRUE)
+        if (cleanup) do_cleanup()
+      }
 
 }
 
