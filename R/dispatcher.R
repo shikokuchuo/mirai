@@ -348,7 +348,7 @@ v1_dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE,
       }
     }
 
-    auto && launch_daemon(wa3(nurl, dots, next_stream(envir)), output)
+    auto && launch_daemon(wa31(nurl, dots, next_stream(envir)), output)
 
     basenames[i] <- burl
     servernames[i] <- listurl
