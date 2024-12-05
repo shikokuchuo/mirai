@@ -46,12 +46,7 @@ stack trace is available at \code{$stack.trace} on the error object).
 \code{\link{is_mirai_error}} may be used to test for this.
 
 If a daemon crashes or terminates unexpectedly during evaluation, an
-\sQuote{errorValue} 19 (Connection reset) is returned (when not using
-dispatcher or using dispatcher with \code{retry = FALSE}). Otherwise, using
-dispatcher with \code{retry = TRUE}, the mirai will remain unresolved and is
-automatically re-tried on the next daemon to connect to the particular
-instance. To cancel the task instead, use \code{saisei(force = TRUE)} (see
-\code{\link{saisei}}).
+\sQuote{errorValue} 19 (Connection reset) is returned.
 
 \code{\link{is_error_value}} tests for all error conditions including
 \sQuote{mirai} errors, interrupts, and timeouts.

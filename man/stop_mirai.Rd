@@ -10,21 +10,28 @@ stop_mirai(x)
 \item{x}{a \sQuote{mirai} object, or list of \sQuote{mirai} objects.}
 }
 \value{
-Invisible NULL.
+Logical \code{TRUE} if the cancellation request was successful (was
+  awaiting execution or in execution), or else \code{FALSE} (if already
+  completed or previously cancelled). Will always return \code{FALSE} if not
+  using dispatcher.
+
+  Or a vector of logical values if supplying a list of \sQuote{mirai}, such
+  as those returned by \code{\link{mirai_map}}.
 }
 \description{
 Stops a \sQuote{mirai} if still in progress, causing it to resolve
 immediately to an \sQuote{errorValue} 20 (Operation canceled).
 }
 \details{
-Forces the \sQuote{mirai} to resolve immediately. Has no effect if the
-\sQuote{mirai} has already resolved.
-
-If cancellation was successful, the value at \code{$data} will be an
-\sQuote{errorValue} 20 (Operation canceled). Note that in such a case, the
-\sQuote{mirai} has been aborted and the value not retrieved - but any ongoing
-evaluation in the daemon process will continue to completion and is not
-interrupted.
+Using dispatcher allows cancellation of \sQuote{mirai}. In the case that the
+\sQuote{mirai} is awaiting execution, it is discarded from the queue and
+never evaluated. In the case it is already in execution, an interrupt will be
+sent. A successful cancellation request does not guarantee successful
+cancellation. Note that the task, or a portion of it, may have already
+completed before the interrupt is received. Even then it is not always
+possible to immediately interrupt, for example, compiled code. This should be
+noted particularly if the code carries out side effects during execution,
+such as writing to files, etc.
 }
 \examples{
 if (interactive()) {

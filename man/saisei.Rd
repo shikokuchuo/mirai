@@ -19,8 +19,8 @@ to use (each compute profile has its own independent set of daemons).}
 The regenerated character URL upon success, or else NULL.
 }
 \description{
-When using daemons with dispatcher, regenerates the token for the URL a
-dispatcher socket listens at.
+When using daemons with the legacy v1 dispatcher, regenerates the token for
+the URL a dispatcher socket listens at.
 }
 \details{
 When a URL is regenerated, the listener at the specified socket is closed and
@@ -52,7 +52,7 @@ any particular URL for a new \code{\link{daemon}} to connect to.
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-daemons(1L)
+daemons(1L, dispatcher = "process")
 Sys.sleep(1L)
 status()
 saisei(i = 1L, force = TRUE)
@@ -63,3 +63,4 @@ daemons(0)
 }
 
 }
+\keyword{internal}

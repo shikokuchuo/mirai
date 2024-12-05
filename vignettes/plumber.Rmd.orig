@@ -100,7 +100,7 @@ m <- mirai({
   library(mirai)
 
   # uses dispatcher - suitable when requests take differing times to complete
-  daemons(4L, dispatcher = "thread") # handles 4 requests simultaneously
+  daemons(4L) # handles 4 requests simultaneously
 
   pr() |>
     pr_post(
