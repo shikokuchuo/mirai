@@ -424,7 +424,7 @@ collect_mirai <- collect_aio
 #' @export
 #'
 stop_mirai <- function(x) {
-  is.list(x) && return(rev(as.logical(lapply(rev(unclass(x)), stop_mirai))))
+  is.list(x) && return(as.logical(lapply(x, stop_mirai)))
   .compute <- attr(x, "profile")
   envir <- if (is.character(.compute)) ..[[.compute]]
   stop_aio(x)
