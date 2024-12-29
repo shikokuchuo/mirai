@@ -88,7 +88,7 @@
     arglen = "'n' must equal the length of 'args', or either must be 1",
     cluster_inactive = "cluster is no longer active",
     daemons_unset = "daemons must be set to use launchers",
-    dispatcher_args = "'dispatcher' must be either 'default' or 'none'",
+    dispatcher_args = "'dispatcher' must be either TRUE or FALSE",
     dot_required = "'.' must be an element of the character vector(s) supplied to 'args'",
     function_required = "'.f' must be of type function, not %s",
     missing_expression = "missing expression, perhaps wrap in {}?",

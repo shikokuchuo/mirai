@@ -106,7 +106,7 @@ connection && {
 # additional daemons tests
 connection && .Platform[["OS.type"]] != "windows" && {
   Sys.sleep(1L)
-  test_zero(daemons(url = value <- local_url(), dispatcher = "none"))
+  test_zero(daemons(url = value <- local_url(), dispatcher = FALSE))
   test_identical(status()$daemons, value)
   test_identical(nextget("urls"), value)
   test_type("character", launch_remote(remote = remote_config(command = "echo", args = list(c("Test out:", ".", ">/dev/null")), rscript = "/usr/lib/R/bin/Rscript")))
@@ -120,7 +120,7 @@ connection && .Platform[["OS.type"]] != "windows" && {
 # mirai_map tests
 connection && .Platform[["OS.type"]] != "windows" && {
   Sys.sleep(1L)
-  m <- with(daemons(1, dispatcher = "none", .compute = "ml"), {
+  m <- with(daemons(1, dispatcher = FALSE, .compute = "ml"), {
     if (is.null(tryCatch(mirai_map(list(1, "a", 2), sum, .compute = "ml")[.stop], error = function(e) NULL)))
       mirai_map(1:3, rnorm, .args = list(mean = 20, 2), .compute = "ml")[]
   })
@@ -230,7 +230,7 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
   test_zero(daemons()[["connections"]])
   test_zero(daemons(0L))
   Sys.sleep(1L)
-  test_zero(daemons(url = "tls+tcp://127.0.0.1:0", dispatcher = "default"))
+  test_zero(daemons(url = "tls+tcp://127.0.0.1:0", dispatcher = TRUE))
   test_equal(launch_local(1L), 1L)
   Sys.sleep(1L)
   test_true(grepl("CERTIFICATE", launch_remote(1L), fixed = TRUE))
@@ -282,7 +282,7 @@ connection && requireNamespace("promises", quietly = TRUE) && Sys.getenv("NOT_CR
 # mirai cancellation tests
 connection && Sys.getenv("NOT_CRAN") == "true" && {
   Sys.sleep(1L)
-  test_equal(daemons(1, dispatcher = "default", cleanup = FALSE), 1L)
+  test_equal(daemons(1, dispatcher = TRUE, cleanup = FALSE), 1L)
   m1 <- mirai({ Sys.sleep(1); res <<- "m1 done" })
   m2 <- mirai({ Sys.sleep(1); res <<- "m2 done" })
   Sys.sleep(0.1)

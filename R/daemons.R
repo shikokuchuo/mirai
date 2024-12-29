@@ -103,11 +103,11 @@
 #'
 #' @section Dispatcher:
 #'
-#' By default \code{dispatcher = "default"} launches a background process
-#' running \code{\link{dispatcher}}. Dispatcher connects to daemons on behalf of
+#' By default \code{dispatcher = TRUE} launches a background process running
+#' \code{\link{dispatcher}}. Dispatcher connects to daemons on behalf of
 #' the host and ensures optimal FIFO scheduling of tasks.
 #'
-#' Specifying \code{dispatcher = "none"}, uses the default behaviour without
+#' Specifying \code{dispatcher = FALSE}, uses the default behaviour without
 #' additional dispatcher logic. In this case daemons connect directly to the
 #' host and tasks are distributed in a round-robin fashion. Optimal scheduling
 #' is not guaranteed as the duration of tasks cannot be known \emph{a priori},
@@ -189,7 +189,7 @@
 #' daemons(0)
 #'
 #' # Create 2 local daemons (not using dispatcher)
-#' daemons(2, dispatcher = "none")
+#' daemons(2, dispatcher = FALSE)
 #' status()
 #' # Reset to zero
 #' daemons(0)
@@ -201,7 +201,7 @@
 #' daemons(0)
 #'
 #' # Set host URL for remote daemons to dial into
-#' daemons(url = host_url(), dispatcher = "none")
+#' daemons(url = host_url(), dispatcher = FALSE)
 #' status()
 #' # Reset to zero
 #' daemons(0)
@@ -225,7 +225,7 @@
 #' daemons(n = 1L,
 #'         url = host_url(tls = TRUE),
 #'         remote = ssh_config(c('ssh://nodeone', 'ssh://nodetwo')),
-#'         dispatcher = "none")
+#'         dispatcher = FALSE)
 #'
 #' # Launch 4 daemons on the remote machine 10.75.32.90 using SSH tunnelling
 #' # over port 5555 ('url' hostname must be 'localhost' or '127.0.0.1'):
@@ -238,8 +238,8 @@
 #'
 #' @export
 #'
-daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("default", "none"),
-                    ..., force = TRUE, seed = NULL, tls = NULL, pass = NULL, .compute = "default") {
+daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
+                    force = TRUE, seed = NULL, tls = NULL, pass = NULL, .compute = "default") {
 
   missing(n) && missing(url) && return(status(.compute))
 
@@ -252,6 +252,12 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("default", "non
       switch(
         parse_dispatcher(dispatcher),
         {
+          tls <- configure_tls(url, tls, pass, envir)
+          sock <- req_socket(url, tls = tls)
+          check_store_url(sock, envir)
+          launches <- 0L
+        },
+        {
           url <- url[1L]
           tls <- configure_tls(url, tls, pass, envir, returnconfig = FALSE)
           cv <- cv()
@@ -263,12 +269,6 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("default", "non
           is.object(res) && stop(._[["sync_dispatcher"]])
           store_dispatcher(sock, res, cv, envir)
           `[[<-`(envir, "msgid", 0L)
-          launches <- 0L
-        },
-        {
-          tls <- configure_tls(url, tls, pass, envir)
-          sock <- req_socket(url, tls = tls)
-          check_store_url(sock, envir)
           launches <- 0L
         },
         {
@@ -322,6 +322,11 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("default", "non
       switch(
         parse_dispatcher(dispatcher),
         {
+          sock <- req_socket(urld)
+          launch_sync_daemons(seq_len(n), sock, urld, dots, envir, output) || stop(._[["sync_daemons"]])
+          `[[<-`(envir, "urls", urld)
+        },
+        {
           cv <- cv()
           sock <- req_socket(urld)
           res <- launch_sync_dispatcher(sock, sock, wa42(urld, dots, envir[["stream"]], n), output)
@@ -329,11 +334,6 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = c("default", "non
           store_dispatcher(sock, res, cv, envir)
           for (i in seq_len(n)) next_stream(envir)
           `[[<-`(envir, "msgid", 0L)
-        },
-        {
-          sock <- req_socket(urld)
-          launch_sync_daemons(seq_len(n), sock, urld, dots, envir, output) || stop(._[["sync_daemons"]])
-          `[[<-`(envir, "urls", urld)
         },
         {
           cv <- cv()
@@ -386,7 +386,7 @@ print.miraiDaemons <- function(x, ...) print(unclass(x))
 #' # Only run examples in interactive R sessions
 #'
 #' with(
-#'   daemons(2, dispatcher = "none"),
+#'   daemons(2, dispatcher = FALSE),
 #'   {
 #'     m1 <- mirai(Sys.getpid())
 #'     m2 <- mirai(Sys.getpid())
@@ -519,8 +519,7 @@ req_socket <- function(url, tls = NULL, resend = 0L)
 
 parse_dispatcher <- function(x) {
   x <- x[1L]
-  if (x == "default") 1L else if (x == "none") 2L else if (x == "process" || x == "thread") 3L else
-    if (is.logical(x)) 2L + x else 4L
+  if (is.logical(x)) 1L + (!is.na(x) && x) else if (x == "process" || x == "thread") 3L else if (x == "none") 1L else 4L
 }
 
 parse_dots <- function(...) {

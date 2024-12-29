@@ -60,7 +60,7 @@ The code below is taken from the challenge to launch and collect one million pro
 
 ``` r
 library(mirai)
-daemons(8, dispatcher = "none")
+daemons(8, dispatcher = FALSE)
 #> [1] 8
 r <- 0
 start <- Sys.time()

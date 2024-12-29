@@ -53,7 +53,7 @@
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' daemons(url = host_url(ws = TRUE), dispatcher = "none")
+#' daemons(url = host_url(ws = TRUE), dispatcher = FALSE)
 #' status()
 #' launch_local(1L, cleanup = FALSE)
 #' launch_remote(1L, cleanup = FALSE)

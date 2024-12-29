@@ -8,7 +8,7 @@ daemons(
   n,
   url = NULL,
   remote = NULL,
-  dispatcher = c("default", "none"),
+  dispatcher = TRUE,
   ...,
   force = TRUE,
   seed = NULL,
@@ -121,11 +121,11 @@ connecting back to the host process, either directly or via dispatcher.
 \section{Dispatcher}{
 
 
-By default \code{dispatcher = "default"} launches a background process
-running \code{\link{dispatcher}}. Dispatcher connects to daemons on behalf of
+By default \code{dispatcher = TRUE} launches a background process running
+\code{\link{dispatcher}}. Dispatcher connects to daemons on behalf of
 the host and ensures optimal FIFO scheduling of tasks.
 
-Specifying \code{dispatcher = "none"}, uses the default behaviour without
+Specifying \code{dispatcher = FALSE}, uses the default behaviour without
 additional dispatcher logic. In this case daemons connect directly to the
 host and tasks are distributed in a round-robin fashion. Optimal scheduling
 is not guaranteed as the duration of tasks cannot be known \emph{a priori},
@@ -212,7 +212,7 @@ status()
 daemons(0)
 
 # Create 2 local daemons (not using dispatcher)
-daemons(2, dispatcher = "none")
+daemons(2, dispatcher = FALSE)
 status()
 # Reset to zero
 daemons(0)
@@ -224,7 +224,7 @@ status()
 daemons(0)
 
 # Set host URL for remote daemons to dial into
-daemons(url = host_url(), dispatcher = "none")
+daemons(url = host_url(), dispatcher = FALSE)
 status()
 # Reset to zero
 daemons(0)
@@ -248,7 +248,7 @@ with(
 daemons(n = 1L,
         url = host_url(tls = TRUE),
         remote = ssh_config(c('ssh://nodeone', 'ssh://nodetwo')),
-        dispatcher = "none")
+        dispatcher = FALSE)
 
 # Launch 4 daemons on the remote machine 10.75.32.90 using SSH tunnelling
 # over port 5555 ('url' hostname must be 'localhost' or '127.0.0.1'):

@@ -146,7 +146,7 @@ tryCatch(
 
 # promises example that outputs the results, including errors, to the console
 if (requireNamespace("promises", quietly = TRUE)) {
-daemons(1, dispatcher = "none")
+daemons(1, dispatcher = FALSE)
 ml <- mirai_map(
   1:30,
   function(x) {Sys.sleep(0.1); if (x == 30) stop(x) else x},

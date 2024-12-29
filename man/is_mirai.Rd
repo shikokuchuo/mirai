@@ -23,7 +23,7 @@ Is the object a \sQuote{mirai} or \sQuote{mirai_map}.
 if (interactive()) {
 # Only run examples in interactive R sessions
 
-daemons(1, dispatcher = "none")
+daemons(1, dispatcher = FALSE)
 df <- data.frame()
 m <- mirai(as.matrix(df), df = df)
 is_mirai(m)
