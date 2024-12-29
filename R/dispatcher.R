@@ -201,6 +201,11 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
         value <- .subset2(res, "value")
         id <- as.character(.subset2(res, "aio"))
         res <- recv_aio(psock, mode = 8L, cv = cv)
+        if (outq[[id]][["msgid"]] < 0) {
+          outq[[id]][["msgid"]] <- 0L
+          cv_signal(cv)
+          next
+        }
         send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)
         outq[[id]][["msgid"]] <- 0L
       }

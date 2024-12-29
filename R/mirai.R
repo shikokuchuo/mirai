@@ -424,7 +424,12 @@ collect_mirai <- collect_aio
 #' @export
 #'
 stop_mirai <- function(x) {
-  is.list(x) && return(rev(as.logical(lapply(rev(unclass(x)), stop_mirai))))
+  is.list(x) && {
+    vec <- logical(length(x))
+    for (i in length(x):1)
+      vec[i] <- stop_mirai(x[[i]])
+    return(vec)
+  }
   .compute <- attr(x, "profile")
   envir <- if (is.character(.compute)) ..[[.compute]]
   stop_aio(x)
