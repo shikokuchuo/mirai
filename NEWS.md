@@ -12,6 +12,7 @@
 * Upgrades `stop_mirai()` to cancel remote mirai tasks when using the new dispatcher, returning a logical value indicating whether cancellation was successful.
 * Adds `stop_daemon()` to reduce the number of connected daemons (without interrupting any executing tasks).
 * `daemon()` gains the new argument 'dispatcher', which should be set to `TRUE` when connecting to dispatcher and `FALSE` when connecting directly to host.
+* A 'miraiError' now preserves the original condition object. This means that `rlang::abort()` custom metadata may now be accessed using `$` on the 'miraiError' (thanks @James-G-Hill #173).
 
 #### Updates
 
