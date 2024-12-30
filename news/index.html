@@ -61,7 +61,6 @@
 <ul><li>
 <code>daemons(dispatcher = TRUE)</code> provides a new and more efficient architecture for dispatcher. This argument reverts to a logical value, although ‘process’ is still accepted and retains the previous behaviour of the v1 dispatcher.</li>
 <li>Upgrades <code><a href="../reference/stop_mirai.html">stop_mirai()</a></code> to cancel remote mirai tasks when using the new dispatcher, returning a logical value indicating whether cancellation was successful.</li>
-<li>Adds <code><a href="../reference/stop_daemon.html">stop_daemon()</a></code> to reduce the number of connected daemons (without interrupting any executing tasks).</li>
 <li>
 <code><a href="../reference/daemon.html">daemon()</a></code> gains the new argument ‘dispatcher’, which should be set to <code>TRUE</code> when connecting to dispatcher and <code>FALSE</code> when connecting directly to host.</li>
 <li>A ‘miraiError’ now preserves the original condition object. This means that <code><a href="https://rlang.r-lib.org/reference/abort.html" class="external-link">rlang::abort()</a></code> custom metadata may now be accessed using <code>$</code> on the ‘miraiError’ (thanks <a href="https://github.com/James-G-Hill" class="external-link">@James-G-Hill</a> <a href="https://github.com/shikokuchuo/mirai/issues/173" class="external-link">#173</a>).</li>
