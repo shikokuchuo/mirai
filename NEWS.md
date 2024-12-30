@@ -17,7 +17,8 @@
 
 * `status()` using the new dispatcher is updated to provide more concise information.
 * `everywhere()` now returns a list of mirai, which may be waited for and inspected (thanks @dgkf  #164).
-* `launch_local()` and `launch_remote()` simplified to take the argument 'n' instead of 'url' for how many daemons to launch. `launch_local()` now returns the number of dameons launched rather than invisible NULL.
+* `launch_local()` and `launch_remote()` simplified to take the argument 'n' instead of 'url' for how many daemons to launch.
+* `launch_local()` now returns the number of daemons launched rather than invisible NULL.
 * `ssh_config()` simplified to take the argument 'port' instead of 'host'. For SSH tunnelling, this is the port that will be used, and the hostname is now required to be '127.0.0.1' (no longer accepting 'localhost'). 
 * `daemon()` '...' argument has been moved up to prevent partial matching on any of the optional arguments.
 * `saisei()` is defunct as no longer required, but still available for use with the old v1 dispatcher.
