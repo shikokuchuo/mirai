@@ -102,7 +102,6 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
   listen(psock, url = url, tls = tls, error = TRUE)
 
   msgid <- 0L
-  status <- NULL
   inq <- outq <- list()
   envir <- new.env(hash = FALSE)
   if (is.numeric(rs)) `[[<-`(envir, "stream", as.integer(rs))
@@ -154,38 +153,33 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
         if (value[1L] == 0L) {
           id <- readBin(value, "integer", n = 2L)[2L]
           if (id == 0L) {
-            status <- c(
+            found <- c(
               length(outq),
               length(inq),
               sum(as.logical(unlist(lapply(outq, .subset2, "msgid"), use.names = FALSE)))
             )
-          } else if (id > 0) {
-            status <- FALSE
+          } else {
+            found <- FALSE
             for (i in seq_along(outq))
               if (outq[[i]][["msgid"]] == id) {
                 send(psock, .cancelRequest, mode = 1L, pipe = outq[[i]][["pipe"]], block = TRUE)
                 outq[[i]][["msgid"]] <- -1L
-                status <- TRUE
+                found <- TRUE
                 break
               }
-            if (!status)
+            if (!found)
               for (i in seq_along(inq))
                 if (inq[[i]][["msgid"]] == id) {
                   inq[[i]] <- NULL
-                  status <- TRUE
+                  found <- TRUE
                   break
                 }
-          } else {
-            status <- TRUE
-            inq <- c(list(list(ctx = ctx, req = ._scm_. , msgid = -1L)), inq)
           }
-          send(ctx, status, mode = 2L, block = TRUE)
-        }
-        if (is.null(status)) {
+          send(ctx, found, mode = 2L, block = TRUE)
+
+        } else {
           msgid <- msgid + 1L
           inq[[length(inq) + 1L]] <- list(ctx = ctx, req = value, msgid = msgid)
-        } else {
-          status <- NULL
         }
         ctx <- .context(sock)
         req <- recv_aio(ctx, mode = 8L, cv = cv)
