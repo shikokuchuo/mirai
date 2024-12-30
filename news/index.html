@@ -72,7 +72,9 @@
 <li>
 <code><a href="../reference/everywhere.html">everywhere()</a></code> now returns a list of mirai, which may be waited for and inspected (thanks <a href="https://github.com/dgkf" class="external-link">@dgkf</a> <a href="https://github.com/shikokuchuo/mirai/issues/164" class="external-link">#164</a>).</li>
 <li>
-<code><a href="../reference/launch_local.html">launch_local()</a></code> and <code><a href="../reference/launch_local.html">launch_remote()</a></code> simplified to take the argument ‘n’ instead of ‘url’ for how many daemons to launch. <code><a href="../reference/launch_local.html">launch_local()</a></code> now returns the number of dameons launched rather than invisible NULL.</li>
+<code><a href="../reference/launch_local.html">launch_local()</a></code> and <code><a href="../reference/launch_local.html">launch_remote()</a></code> simplified to take the argument ‘n’ instead of ‘url’ for how many daemons to launch.</li>
+<li>
+<code><a href="../reference/launch_local.html">launch_local()</a></code> now returns the number of daemons launched rather than invisible NULL.</li>
 <li>
 <code><a href="../reference/remote_config.html">ssh_config()</a></code> simplified to take the argument ‘port’ instead of ‘host’. For SSH tunnelling, this is the port that will be used, and the hostname is now required to be ‘127.0.0.1’ (no longer accepting ‘localhost’).</li>
 <li>
