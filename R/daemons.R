@@ -291,7 +291,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", launches))
       if (length(remote))
         launch_remote(n = n, remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
-    } else {
+    } else if (force) {
       daemons(0L, .compute = .compute)
       return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ...,
                      seed = seed, tls = tls, pass = pass, .compute = .compute))
