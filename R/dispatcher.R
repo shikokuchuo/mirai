@@ -102,7 +102,6 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
   listen(psock, url = url, tls = tls, error = TRUE)
 
   msgid <- 0L
-  loop <- FALSE
   status <- NULL
   inq <- outq <- list()
   envir <- new.env(hash = FALSE)
@@ -155,14 +154,12 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
         if (value[1L] == 0L) {
           id <- readBin(value, "integer", n = 2L)[2L]
           if (id == 0L) {
-            loop <- TRUE
             status <- c(
               length(outq),
               length(inq),
               sum(as.logical(unlist(lapply(outq, .subset2, "msgid"), use.names = FALSE)))
             )
           } else if (id > 0) {
-            loop <- TRUE
             status <- FALSE
             for (i in seq_along(outq))
               if (outq[[i]][["msgid"]] == id) {
@@ -192,10 +189,6 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
         }
         ctx <- .context(sock)
         req <- recv_aio(ctx, mode = 8L, cv = cv)
-        loop && {
-          loop <- FALSE
-          next
-        }
 
       } else if (!unresolved(res)) {
         value <- .subset2(res, "value")
