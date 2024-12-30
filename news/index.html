@@ -64,6 +64,7 @@
 <li>Adds <code><a href="../reference/stop_daemon.html">stop_daemon()</a></code> to reduce the number of connected daemons (without interrupting any executing tasks).</li>
 <li>
 <code><a href="../reference/daemon.html">daemon()</a></code> gains the new argument ‘dispatcher’, which should be set to <code>TRUE</code> when connecting to dispatcher and <code>FALSE</code> when connecting directly to host.</li>
+<li>A ‘miraiError’ now preserves the original condition object. This means that <code><a href="https://rlang.r-lib.org/reference/abort.html" class="external-link">rlang::abort()</a></code> custom metadata may now be accessed using <code>$</code> on the ‘miraiError’ (thanks <a href="https://github.com/James-G-Hill" class="external-link">@James-G-Hill</a> <a href="https://github.com/shikokuchuo/mirai/issues/173" class="external-link">#173</a>).</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-1-3-1-9022">Updates<a class="anchor" aria-label="anchor" href="#updates-1-3-1-9022"></a></h5>
