@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9022</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -304,7 +304,7 @@ profile.</p>
 <span>  <span class="va">id</span> <span class="op">&lt;-</span> <span class="fu">secretbase</span><span class="fu">::</span><span class="fu">siphash13</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, key <span class="op">=</span> <span class="fu">nanonext</span><span class="fu">::</span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/random.html" class="external-link">random</a></span><span class="op">(</span><span class="fl">4L</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># create new (non-dispatcher) daemon for each session</span></span>
-<span>  <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1L</span>, dispatcher <span class="op">=</span> <span class="st">"none"</span>, .compute <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1L</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span>, .compute <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># tear down daemon when session ends</span></span>
 <span>  <span class="va">session</span><span class="op">$</span><span class="fu">onEnded</span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0L</span>, .compute <span class="op">=</span> <span class="va">id</span><span class="op">)</span><span class="op">)</span></span>

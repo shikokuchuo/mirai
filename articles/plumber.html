@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9022</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,7 +105,7 @@ process it is run on.</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># supply SIGINT so the plumber server is interrupted and exits cleanly when finished</span></span>
-<span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1L</span>, dispatcher <span class="op">=</span> <span class="st">"none"</span>, autoexit <span class="op">=</span> <span class="fu">tools</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/tools/pskill.html" class="external-link">SIGINT</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1L</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span>, autoexit <span class="op">=</span> <span class="fu">tools</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/tools/pskill.html" class="external-link">SIGINT</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span></span>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -114,7 +114,7 @@ process it is run on.</p>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># more efficient not to use dispatcher if all requests are similar length</span></span>
-<span>  <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">4L</span>, dispatcher <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="co"># handles 4 requests simultaneously</span></span>
+<span>  <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">4L</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># handles 4 requests simultaneously</span></span>
 <span></span>
 <span>  <span class="fu">pr</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">pr_get</span><span class="op">(</span></span>
@@ -155,28 +155,28 @@ one time (limited by the number of daemons set).</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/collect_aio.html" class="external-link">collect_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-10-08 12:21:25\"],\"msg\":[\"1\"],\"pid\":[81109]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-12-01 10:05:03\"],\"msg\":[\"1\"],\"pid\":[30785]}"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-10-08 12:21:25\"],\"msg\":[\"2\"],\"pid\":[81111]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-12-01 10:05:03\"],\"msg\":[\"2\"],\"pid\":[30777]}"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-10-08 12:21:25\"],\"msg\":[\"3\"],\"pid\":[81107]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-12-01 10:05:03\"],\"msg\":[\"3\"],\"pid\":[30779]}"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[4]]</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-10-08 12:21:25\"],\"msg\":[\"4\"],\"pid\":[81115]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-12-01 10:05:04\"],\"msg\":[\"4\"],\"pid\":[30785]}"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[5]]</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-10-08 12:21:26\"],\"msg\":[\"5\"],\"pid\":[81111]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-12-01 10:05:03\"],\"msg\":[\"5\"],\"pid\":[30782]}"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[6]]</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-10-08 12:21:26\"],\"msg\":[\"6\"],\"pid\":[81115]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-12-01 10:05:04\"],\"msg\":[\"6\"],\"pid\":[30782]}"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[7]]</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-10-08 12:21:26\"],\"msg\":[\"7\"],\"pid\":[81109]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-12-01 10:05:04\"],\"msg\":[\"7\"],\"pid\":[30777]}"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[8]]</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-10-08 12:21:26\"],\"msg\":[\"8\"],\"pid\":[81107]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-12-01 10:05:04\"],\"msg\":[\"8\"],\"pid\":[30779]}"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
@@ -193,7 +193,7 @@ retrieved using a connection that is not serializable.</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># supply SIGINT so the plumber server is interrupted and exits cleanly when finished</span></span>
-<span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1L</span>, dispatcher <span class="op">=</span> <span class="st">"none"</span>, autoexit <span class="op">=</span> <span class="fu">tools</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/tools/pskill.html" class="external-link">SIGINT</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1L</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span>, autoexit <span class="op">=</span> <span class="fu">tools</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/tools/pskill.html" class="external-link">SIGINT</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span></span>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai.html">mirai</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -202,7 +202,7 @@ retrieved using a connection that is not serializable.</p>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># uses dispatcher - suitable when requests take differing times to complete</span></span>
-<span>  <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">4L</span>, dispatcher <span class="op">=</span> <span class="st">"thread"</span><span class="op">)</span> <span class="co"># handles 4 requests simultaneously</span></span>
+<span>  <span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">4L</span><span class="op">)</span> <span class="co"># handles 4 requests simultaneously</span></span>
 <span></span>
 <span>  <span class="fu">pr</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">pr_post</span><span class="op">(</span></span>
@@ -243,28 +243,28 @@ previous example.</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://shikokuchuo.net/nanonext/reference/collect_aio.html" class="external-link">collect_aio</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-10-08 12:21:29\"],\"msg\":[\"1\"],\"pid\":[81336]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-12-01 10:05:08\"],\"msg\":[\"1\"],\"pid\":[31046]}"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-10-08 12:21:29\"],\"msg\":[\"2\"],\"pid\":[81338]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-12-01 10:05:08\"],\"msg\":[\"2\"],\"pid\":[31048]}"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-10-08 12:21:29\"],\"msg\":[\"3\"],\"pid\":[81344]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-12-01 10:05:08\"],\"msg\":[\"3\"],\"pid\":[31054]}"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[4]]</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-10-08 12:21:30\"],\"msg\":[\"4\"],\"pid\":[81338]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-12-01 10:05:08\"],\"msg\":[\"4\"],\"pid\":[31051]}"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[5]]</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-10-08 12:21:30\"],\"msg\":[\"5\"],\"pid\":[81336]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-12-01 10:05:09\"],\"msg\":[\"5\"],\"pid\":[31046]}"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[6]]</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-10-08 12:21:29\"],\"msg\":[\"6\"],\"pid\":[81340]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-12-01 10:05:09\"],\"msg\":[\"6\"],\"pid\":[31048]}"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[7]]</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-10-08 12:21:30\"],\"msg\":[\"7\"],\"pid\":[81340]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-12-01 10:05:09\"],\"msg\":[\"7\"],\"pid\":[31051]}"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[8]]</span></span>
-<span><span class="co">#&gt; [1] "{\"time\":[\"2024-10-08 12:21:30\"],\"msg\":[\"8\"],\"pid\":[81344]}"</span></span>
+<span><span class="co">#&gt; [1] "{\"time\":[\"2024-12-01 10:05:09\"],\"msg\":[\"8\"],\"pid\":[31054]}"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>

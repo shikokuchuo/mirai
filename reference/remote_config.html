@@ -13,7 +13,7 @@ SSH, with the option of SSH tunnelling."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9022</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,11 +73,11 @@ SSH, with the option of SSH tunnelling.</p>
 <span></span>
 <span><span class="fu">ssh_config</span><span class="op">(</span></span>
 <span>  <span class="va">remotes</span>,</span>
+<span>  <span class="va">port</span>,</span>
 <span>  tunnel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  timeout <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  command <span class="op">=</span> <span class="st">"ssh"</span>,</span>
-<span>  rscript <span class="op">=</span> <span class="st">"Rscript"</span>,</span>
-<span>  <span class="va">host</span></span>
+<span>  rscript <span class="op">=</span> <span class="st">"Rscript"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -120,6 +120,11 @@ required for ‘ssh’ or Slurm ‘sbatch’).</p></dd>
 to 22 if not specified), e.g. 'ssh://10.75.32.90:22' or 'ssh://nodename'.</p></dd>
 
 
+<dt id="arg-port">port<a class="anchor" aria-label="anchor" href="#arg-port"></a></dt>
+<dd><p>(required only if using SSH tunnelling) integer local port number
+to use on 127.0.0.1.</p></dd>
+
+
 <dt id="arg-tunnel">tunnel<a class="anchor" aria-label="anchor" href="#arg-tunnel"></a></dt>
 <dd><p>[default FALSE] logical value whether to use SSH reverse
 tunnelling. If TRUE, a tunnel is created between the same ports on the
@@ -130,14 +135,6 @@ for how to correctly specify required settings.</p></dd>
 <dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>
 <dd><p>[default 10] maximum time allowed for connection setup in
 seconds.</p></dd>
-
-
-<dt id="arg-host">host<a class="anchor" aria-label="anchor" href="#arg-host"></a></dt>
-<dd><p>(optional) only applicable for reverse tunnelling. Should be
-specified if creating a standalone configuration object. If calling this
-function directly as an argument to <code><a href="daemons.html">daemons</a></code>, this is not
-required and can be inferred from the ‘url’ supplied (see
-‘SSH Tunnelling’ section below).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -170,13 +167,11 @@ accept outside connections.</p>
 initial SSH connection is made. For simplicity, this SSH tunnelling
 implementation uses the same port on both the side of the host and that of
 the daemon. SSH key-based authentication must also already be in place.</p>
-<p>Tunnelling requires the hostname for the ‘host’ argument (or the
-‘url’ argument to <code><a href="daemons.html">daemons</a></code> if called directly in that
-context) to be either ‘127.0.0.1’ or ‘localhost’. This is as
-the tunnel is created between <code>127.0.0.1:port</code> or equivalently
-<code>localhost:port</code> on each machine. The host listens to <code>port</code> on its
-machine and the remotes each dial into <code>port</code> on their own respective
-machines.</p>
+<p>Tunnelling requires the hostname for the the ‘url’ argument to
+<code><a href="daemons.html">daemons</a></code> be ‘127.0.0.1’. This is as the tunnel is created
+between <code>127.0.0.1:port</code> on each machine. The host listens to
+<code>port</code> on its machine and the remotes each dial into <code>port</code> on
+their own respective machines.</p>
     </div>
 
     <div class="section level2">
@@ -285,8 +280,8 @@ machines.</p>
 <span class="r-in"><span><span class="co"># SSH tunnelling example</span></span></span>
 <span class="r-in"><span><span class="fu">ssh_config</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  remotes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ssh://10.75.32.90:222"</span>, <span class="st">"ssh://nodename"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  tunnel <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>  host <span class="op">=</span> <span class="st">"tls+tcp://127.0.0.1:5555"</span></span></span>
+<span class="r-in"><span>  port <span class="op">=</span> <span class="fl">5555</span>,</span></span>
+<span class="r-in"><span>  tunnel <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $command</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ssh"</span>
@@ -322,12 +317,13 @@ machines.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># launch 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling over</span></span></span>
-<span class="r-in"><span><span class="co"># port 5555 ('url' hostname must be 'localhost' or '127.0.0.1'):</span></span></span>
+<span class="r-in"><span><span class="co"># port 5555 ('url' hostname must be '127.0.0.1'):</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_cluster.html">make_cluster</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  url <span class="op">=</span> <span class="st">"tcp://localhost:5555"</span>,</span></span>
+<span class="r-in"><span>  url <span class="op">=</span> <span class="st">"tcp://127.0.0.1:5555"</span>,</span></span>
 <span class="r-in"><span>  remote <span class="op">=</span> <span class="fu">ssh_config</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    remotes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ssh://10.75.32.90"</span>, <span class="st">"ssh://10.75.32.90"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    port <span class="op">=</span> <span class="fl">5555</span>,</span></span>
 <span class="r-in"><span>    tunnel <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>    timeout <span class="op">=</span> <span class="fl">1</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>

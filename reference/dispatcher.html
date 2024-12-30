@@ -13,7 +13,7 @@ invoked directly."><meta property="og:image" content="https://shikokuchuo.net/mi
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9022</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,8 +69,6 @@ invoked directly.</p>
 <span>  url <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  retry <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  token <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pass <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rs <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -89,42 +87,22 @@ e.g. 'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.</p></dd>
 
 
 <dt id="arg-url">url<a class="anchor" aria-label="anchor" href="#arg-url"></a></dt>
-<dd><p>(optional) the character URL or vector of URLs dispatcher should
-listen at, including the port to connect to (and optionally for websockets,
-a path), e.g. 'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.
-Specify 'tls+tcp://' or 'wss://' to use secure TLS connections. Tasks are
-sent to daemons dialled into these URLs. If not supplied, ‘n’ local
-inter-process URLs will be assigned automatically.</p></dd>
+<dd><p>(optional) the character URL dispatcher should listen at,
+including the port to connect to (and optionally for websockets, a path),
+e.g. 'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.
+Specify 'tls+tcp://' or 'wss://' to use secure TLS connections. Daemons
+should dial in to this URL.</p></dd>
 
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
-<dd><p>(optional) if specified, the integer number of daemons to listen for.
-Otherwise ‘n’ will be inferred from the number of URLs supplied in
-‘url’. Where a single URL is supplied and ‘n’ &gt; 1, ‘n’
-unique URLs will be automatically assigned for daemons to dial into.</p></dd>
+<dd><p>(optional) if specified, the integer number of daemons to launch. In
+this case, a local url is automatically generated.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>(optional) additional arguments passed through to
-<code><a href="daemon.html">daemon</a></code>. These include  ‘asyncdial’, ‘autoexit’,
-‘cleanup’, ‘maxtasks’, ‘idletime’, ‘walltime’
-and ‘timerstart’.</p></dd>
-
-
-<dt id="arg-retry">retry<a class="anchor" aria-label="anchor" href="#arg-retry"></a></dt>
-<dd><p>[default FALSE] logical value, whether to automatically retry
-tasks where the daemon crashes or terminates unexpectedly on the next
-daemon instance to connect. If TRUE, the mirai will remain unresolved but
-<code><a href="status.html">status</a></code> will show ‘online’ as 0 and ‘assigned’ &gt;
-‘complete’. To cancel a task in this case, use
-<code>saisei(force = TRUE)</code>. If FALSE, such tasks will be returned as
-‘errorValue’ 19 (Connection reset).</p></dd>
-
-
-<dt id="arg-token">token<a class="anchor" aria-label="anchor" href="#arg-token"></a></dt>
-<dd><p>[default FALSE] if TRUE, appends a unique 24-character token to
-each URL path the dispatcher listens at (not applicable for TCP URLs which
-do not accept a path).</p></dd>
+<code><a href="daemon.html">daemon</a></code>. These include ‘asyncdial’, ‘autoexit’,
+and ‘cleanup’.</p></dd>
 
 
 <dt id="arg-tls">tls<a class="anchor" aria-label="anchor" href="#arg-tls"></a></dt>
@@ -149,7 +127,7 @@ and should not be independently supplied.</p></dd>
 
 
 <dt id="arg-monitor">monitor<a class="anchor" aria-label="anchor" href="#arg-monitor"></a></dt>
-<dd><p>(for package internal use only) do not set this parameter.</p></dd>
+<dd><p>unused legacy parameter - do not specify this value.</p></dd>
 
 </dl></div>
     <div class="section level2">

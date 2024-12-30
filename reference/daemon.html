@@ -15,7 +15,7 @@ directly, unless deploying manually on remote resources."><meta property="og:ima
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9022</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,15 +69,12 @@ directly, unless deploying manually on remote resources.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">daemon</span><span class="op">(</span></span>
 <span>  <span class="va">url</span>,</span>
+<span>  dispatcher <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span>,</span>
 <span>  asyncdial <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  autoexit <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  cleanup <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  output <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  maxtasks <span class="op">=</span> <span class="cn">Inf</span>,</span>
-<span>  idletime <span class="op">=</span> <span class="cn">Inf</span>,</span>
-<span>  walltime <span class="op">=</span> <span class="cn">Inf</span>,</span>
-<span>  timerstart <span class="op">=</span> <span class="fl">0L</span>,</span>
-<span>  <span class="va">...</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rs <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -91,6 +88,15 @@ directly, unless deploying manually on remote resources.</p>
 <dd><p>the character host or dispatcher URL to dial into, including the
 port to connect to (and optionally for websockets, a path), e.g.
 'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.</p></dd>
+
+
+<dt id="arg-dispatcher">dispatcher<a class="anchor" aria-label="anchor" href="#arg-dispatcher"></a></dt>
+<dd><p>[default FALSE] logical value, which should be set to TRUE
+if using dispatcher and FALSE otherwise.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>reserved but not currently used.</p></dd>
 
 
 <dt id="arg-asyncdial">asyncdial<a class="anchor" aria-label="anchor" href="#arg-asyncdial"></a></dt>
@@ -113,8 +119,7 @@ value is supplied, this signal is additionally raised on exit (see
 <dt id="arg-cleanup">cleanup<a class="anchor" aria-label="anchor" href="#arg-cleanup"></a></dt>
 <dd><p>[default TRUE] logical value, whether to perform cleanup of
 the global environment and restore attached packages and options to an
-initial state after each evaluation. For more granular control, also
-accepts an integer value (see ‘Cleanup Options’ section below).</p></dd>
+initial state after each evaluation.</p></dd>
 
 
 <dt id="arg-output">output<a class="anchor" aria-label="anchor" href="#arg-output"></a></dt>
@@ -123,31 +128,6 @@ stderr if TRUE, or else discard if FALSE. Specify as TRUE in the
 ‘...’ argument to <code><a href="daemons.html">daemons</a></code> or
 <code><a href="launch_local.html">launch_local</a></code> to provide redirection of output to the host
 process (applicable only for local daemons).</p></dd>
-
-
-<dt id="arg-maxtasks">maxtasks<a class="anchor" aria-label="anchor" href="#arg-maxtasks"></a></dt>
-<dd><p>[default Inf] the maximum number of tasks to execute (task
-limit) before exiting.</p></dd>
-
-
-<dt id="arg-idletime">idletime<a class="anchor" aria-label="anchor" href="#arg-idletime"></a></dt>
-<dd><p>[default Inf] maximum idle time, since completion of the last
-task (in milliseconds) before exiting.</p></dd>
-
-
-<dt id="arg-walltime">walltime<a class="anchor" aria-label="anchor" href="#arg-walltime"></a></dt>
-<dd><p>[default Inf] soft walltime, or the minimum amount of real
-time taken (in milliseconds) before exiting.</p></dd>
-
-
-<dt id="arg-timerstart">timerstart<a class="anchor" aria-label="anchor" href="#arg-timerstart"></a></dt>
-<dd><p>[default 0L] number of completed tasks after which to start
-the timer for ‘idletime’ and ‘walltime’. 0L implies timers
-are started upon launch.</p></dd>
-
-
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>reserved but not currently used.</p></dd>
 
 
 <dt id="arg-tls">tls<a class="anchor" aria-label="anchor" href="#arg-tls"></a></dt>
@@ -194,22 +174,7 @@ rather than letting it complete.</p>
 no longer a socket connection. This allows a host session to end and a new
 session to connect at the URL where the daemon is dialled in. Daemons must be
 terminated with <code>daemons(NULL)</code> in this case, which sends explicit exit
-instructions to all connected daemons.</p>
-    </div>
-    <div class="section level2">
-    <h2 id="cleanup-options">Cleanup Options<a class="anchor" aria-label="anchor" href="#cleanup-options"></a></h2>
-
-
-
-<p>The ‘cleanup’ argument also accepts an integer value, which operates
-an additive bitmask: perform cleanup of the global environment (1L), reset
-attached packages to an initial state (2L), restore options to an initial
-state (4L), and perform garbage collection (8L).</p>
-<p>As an example, to perform cleanup of the global environment and garbage
-collection, specify 9L (1L + 8L). The default argument value of TRUE performs
-all actions apart from garbage collection and is equivalent to a value of 7L.</p>
-<p>Caution: do not reset options but not loaded packages if packages set options
-on load.</p>
+signals to all connected daemons.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

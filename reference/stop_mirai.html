@@ -9,7 +9,7 @@ immediately to an &amp;#8216;errorValue&amp;#8217; 20 (Operation canceled)."><me
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9022</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,17 +71,24 @@ immediately to an ‘errorValue’ 20 (Operation canceled).</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Invisible NULL.</p>
+    <p>Logical <code>TRUE</code> if the cancellation request was successful (was
+  awaiting execution or in execution), or else <code>FALSE</code> (if already
+  completed or previously cancelled). Will always return <code>FALSE</code> if not
+  using dispatcher.</p>
+<p>Or a vector of logical values if supplying a list of ‘mirai’, such
+  as those returned by <code><a href="mirai_map.html">mirai_map</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Forces the ‘mirai’ to resolve immediately. Has no effect if the
-‘mirai’ has already resolved.</p>
-<p>If cancellation was successful, the value at <code>$data</code> will be an
-‘errorValue’ 20 (Operation canceled). Note that in such a case, the
-‘mirai’ has been aborted and the value not retrieved - but any ongoing
-evaluation in the daemon process will continue to completion and is not
-interrupted.</p>
+    <p>Using dispatcher allows cancellation of ‘mirai’. In the case that the
+‘mirai’ is awaiting execution, it is discarded from the queue and
+never evaluated. In the case it is already in execution, an interrupt will be
+sent. A successful cancellation request does not guarantee successful
+cancellation. Note that the task, or a portion of it, may have already
+completed before the interrupt is received. Even then it is not always
+possible to immediately interrupt, for example, compiled code. This should be
+noted particularly if the code carries out side effects during execution,
+such as writing to files, etc.</p>
     </div>
 
     <div class="section level2">

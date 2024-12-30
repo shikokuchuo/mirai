@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9022</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -366,7 +366,7 @@ reactive values or otherwise interact with the Shiny app.</p>
 <span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">shinyApp</span><span class="op">(</span>ui <span class="op">=</span> <span class="va">ui</span>, server <span class="op">=</span> <span class="va">server</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># run app using 8 local non-dispatcher daemons (tasks are the same length)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">8</span>, dispatcher <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span>, <span class="op">{</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">8</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>, <span class="op">{</span></span>
 <span>  <span class="co"># pre-load flip_coin function on all daemons for efficiency</span></span>
 <span>  <span class="fu"><a href="../reference/everywhere.html">everywhere</a></span><span class="op">(</span><span class="op">{</span><span class="op">}</span>, flip_coin <span class="op">=</span> <span class="va">flip_coin</span><span class="op">)</span></span>
 <span>  <span class="fu">runApp</span><span class="op">(</span><span class="va">app</span><span class="op">)</span></span>
