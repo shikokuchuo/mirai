@@ -6,15 +6,12 @@
 \usage{
 daemon(
   url,
+  dispatcher = FALSE,
+  ...,
   asyncdial = FALSE,
   autoexit = TRUE,
   cleanup = TRUE,
   output = FALSE,
-  maxtasks = Inf,
-  idletime = Inf,
-  walltime = Inf,
-  timerstart = 0L,
-  ...,
   tls = NULL,
   rs = NULL
 )
@@ -23,6 +20,11 @@ daemon(
 \item{url}{the character host or dispatcher URL to dial into, including the
 port to connect to (and optionally for websockets, a path), e.g.
 'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.}
+
+\item{dispatcher}{[default FALSE] logical value, which should be set to TRUE
+if using dispatcher and FALSE otherwise.}
+
+\item{...}{reserved but not currently used.}
 
 \item{asyncdial}{[default FALSE] whether to perform dials asynchronously. The
 default FALSE will error if a connection is not immediately possible (for
@@ -39,29 +41,13 @@ value is supplied, this signal is additionally raised on exit (see
 
 \item{cleanup}{[default TRUE] logical value, whether to perform cleanup of
 the global environment and restore attached packages and options to an
-initial state after each evaluation. For more granular control, also
-accepts an integer value (see \sQuote{Cleanup Options} section below).}
+initial state after each evaluation.}
 
 \item{output}{[default FALSE] logical value, to output generated stdout /
 stderr if TRUE, or else discard if FALSE. Specify as TRUE in the
 \sQuote{...} argument to \code{\link{daemons}} or
 \code{\link{launch_local}} to provide redirection of output to the host
 process (applicable only for local daemons).}
-
-\item{maxtasks}{[default Inf] the maximum number of tasks to execute (task
-limit) before exiting.}
-
-\item{idletime}{[default Inf] maximum idle time, since completion of the last
-task (in milliseconds) before exiting.}
-
-\item{walltime}{[default Inf] soft walltime, or the minimum amount of real
-time taken (in milliseconds) before exiting.}
-
-\item{timerstart}{[default 0L] number of completed tasks after which to start
-the timer for \sQuote{idletime} and \sQuote{walltime}. 0L implies timers
-are started upon launch.}
-
-\item{...}{reserved but not currently used.}
 
 \item{tls}{[default NULL] required for secure TLS connections over
 'tls+tcp://' or 'wss://'. \strong{Either} the character path to a file
@@ -108,22 +94,6 @@ Setting to FALSE allows the daemon to persist indefinitely even when there is
 no longer a socket connection. This allows a host session to end and a new
 session to connect at the URL where the daemon is dialled in. Daemons must be
 terminated with \code{daemons(NULL)} in this case, which sends explicit exit
-instructions to all connected daemons.
-}
-
-\section{Cleanup Options}{
-
-
-The \sQuote{cleanup} argument also accepts an integer value, which operates
-an additive bitmask: perform cleanup of the global environment (1L), reset
-attached packages to an initial state (2L), restore options to an initial
-state (4L), and perform garbage collection (8L).
-
-As an example, to perform cleanup of the global environment and garbage
-collection, specify 9L (1L + 8L). The default argument value of TRUE performs
-all actions apart from garbage collection and is equivalent to a value of 7L.
-
-Caution: do not reset options but not loaded packages if packages set options
-on load.
+signals to all connected daemons.
 }
 

@@ -274,7 +274,7 @@ server <- function(input, output, session) {
 app <- shinyApp(ui = ui, server = server)
 
 # run app using 8 local non-dispatcher daemons (tasks are the same length)
-with(daemons(8, dispatcher = "none"), {
+with(daemons(8, dispatcher = FALSE), {
   # pre-load flip_coin function on all daemons for efficiency
   everywhere({}, flip_coin = flip_coin)
   runApp(app)

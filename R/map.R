@@ -90,7 +90,7 @@
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' daemons(4, dispatcher = "none")
+#' daemons(4)
 #'
 #' # map with constant args specified via '.args'
 #' mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
@@ -144,7 +144,7 @@
 #'
 #' # promises example that outputs the results, including errors, to the console
 #' if (requireNamespace("promises", quietly = TRUE)) {
-#' daemons(1, dispatcher = "none")
+#' daemons(1, dispatcher = FALSE)
 #' ml <- mirai_map(
 #'   1:30,
 #'   function(x) {Sys.sleep(0.1); if (x == 30) stop(x) else x},
@@ -166,7 +166,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
   is.null(envir) && {
     .x
     warning(._[["requires_daemons"]], call. = FALSE, immediate. = TRUE)
-    daemons(1L, dispatcher = "none", .compute = .compute)
+    daemons(1L, dispatcher = FALSE, .compute = .compute)
     return(mirai_map(.x = .x, .f = .f, ..., .args = .args, .promise = .promise, .compute = .compute))
   }
   xilen <- dim(.x)[1L]

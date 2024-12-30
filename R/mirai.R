@@ -87,12 +87,7 @@
 #' \code{\link{is_mirai_error}} may be used to test for this.
 #'
 #' If a daemon crashes or terminates unexpectedly during evaluation, an
-#' \sQuote{errorValue} 19 (Connection reset) is returned (when not using
-#' dispatcher or using dispatcher with \code{retry = FALSE}). Otherwise, using
-#' dispatcher with \code{retry = TRUE}, the mirai will remain unresolved and is
-#' automatically re-tried on the next daemon to connect to the particular
-#' instance. To cancel the task instead, use \code{saisei(force = TRUE)} (see
-#' \code{\link{saisei}}).
+#' \sQuote{errorValue} 19 (Connection reset) is returned.
 #'
 #' \code{\link{is_error_value}} tests for all error conditions including
 #' \sQuote{mirai} errors, interrupts, and timeouts.
@@ -182,18 +177,25 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 
   envir <- ..[[.compute]]
   is.null(envir) && return(ephemeral_daemon(data, .timeout))
-  request(.context(envir[["sock"]]), data, send_mode = 1L, recv_mode = 1L, timeout = .timeout, cv = envir[["cv"]])
+  r <- request(.context(envir[["sock"]]), data, send_mode = 1L, recv_mode = 1L, timeout = .timeout, cv = envir[["cv"]])
+  `attr<-`(`attr<-`(r, "msgid", next_msgid(envir)), "profile", .compute)
 
 }
 
 #' Evaluate Everywhere
 #'
 #' Evaluate an expression \sQuote{everywhere} on all connected daemons for the
-#' specified compute profile. Designed for performing setup operations across
-#' daemons by loading packages, exporting common data, or registering custom
-#' serialization functions. Resultant changes to the global environment, loaded
-#' packages and options are persisted regardless of a daemon's \sQuote{cleanup}
-#' setting.
+#' specified compute profile - this must be set prior to calling this function.
+#' Designed for performing setup operations across daemons by loading packages,
+#' exporting common data, or registering custom serialization functions.
+#' Resultant changes to the global environment, loaded packages and options are
+#' persisted regardless of a daemon's \sQuote{cleanup} setting.
+#'
+#' This function should be called when no other mirai operations are in
+#' progress. If necessary, wait for all mirai operations to complete. This is as
+#' this function does not force a synchronization point, and using concurrently
+#' with other mirai operations does not guarantee the timing of when the
+#' instructions will be received, or that they will be received on each daemon.
 #'
 #' @inheritParams mirai
 #' @param .serial [default NULL] (optional) a configuration created by
@@ -203,8 +205,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'   existing registered functions. To remove the configuration, provide an
 #'   empty list.
 #'
-#' @return Invisible NULL. Will error if the specified compute profile is not
-#'   found, i.e. not yet set up.
+#' @return A list of mirai executed on each daemon. This may be waited for and
+#'   inspected using \code{\link{call_mirai}} or \code{\link{collect_mirai}}.
 #'
 #' @inheritSection mirai Evaluation
 #'
@@ -219,16 +221,21 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' # '.expr' may be specified as an empty {} in such cases:
 #' everywhere({}, a = 1, b = 2)
 #' m <- mirai(a + b - y == 0L)
-#' call_mirai(m)$data
+#' m[]
+#' # everywhere() returns a list of mirai which may be waited for and inspected
+#' mlist <- everywhere("just a normal operation")
+#' collect_mirai(mlist)
+#' mlist <- everywhere(stop("error"))
+#' collect_mirai(mlist)
 #' daemons(0)
 #'
 #' # loading a package on all daemons and also
 #' # registering custom serialization functions:
 #' cfg <- serial_config("cls_name", function(x) serialize(x, NULL), unserialize)
-#' daemons(1, dispatcher = "none")
+#' daemons(1, dispatcher = FALSE)
 #' everywhere(library(parallel), .serial = cfg)
 #' m <- mirai("package:parallel" %in% search())
-#' call_mirai(m)$data
+#' m[]
 #' daemons(0)
 #'
 #' }
@@ -243,8 +250,8 @@ everywhere <- function(.expr, ..., .args = list(), .serial = NULL, .compute = "d
 
   expr <- substitute(.expr)
   .expr <- c(
-    as.expression(if (is.symbol(expr) && exists(as.character(expr), parent.frame()) && is.language(.expr)) .expr else expr),
-    .snapshot
+    .snapshot,
+    as.expression(if (is.symbol(expr) && exists(as.character(expr), parent.frame()) && is.language(.expr)) .expr else expr)
   )
 
   if (is.list(.serial)) {
@@ -258,13 +265,13 @@ everywhere <- function(.expr, ..., .args = list(), .serial = NULL, .compute = "d
     for (i in seq_along(vec))
       vec[[i]] <- mirai(.expr, ..., .args = .args, .compute = .compute)
   } else {
-    .expr <- c(.expr, .block)
-    vec <- vector(mode = "list", length = envir[["n"]])
+    .expr <- c(.block, .expr)
+    vec <- vector(mode = "list", length = max(status(.compute)[["connections"]], envir[["n"]]))
     for (i in seq_along(vec))
       vec[[i]] <- mirai(.expr, ..., .args = .args, .compute = .compute)
   }
   `[[<-`(envir, "everywhere", vec)
-  invisible()
+  invisible(vec)
 
 }
 
@@ -384,18 +391,25 @@ collect_mirai <- collect_aio
 #' Stops a \sQuote{mirai} if still in progress, causing it to resolve
 #' immediately to an \sQuote{errorValue} 20 (Operation canceled).
 #'
-#' Forces the \sQuote{mirai} to resolve immediately. Has no effect if the
-#' \sQuote{mirai} has already resolved.
-#'
-#' If cancellation was successful, the value at \code{$data} will be an
-#' \sQuote{errorValue} 20 (Operation canceled). Note that in such a case, the
-#' \sQuote{mirai} has been aborted and the value not retrieved - but any ongoing
-#' evaluation in the daemon process will continue to completion and is not
-#' interrupted.
+#' Using dispatcher allows cancellation of \sQuote{mirai}. In the case that the
+#' \sQuote{mirai} is awaiting execution, it is discarded from the queue and
+#' never evaluated. In the case it is already in execution, an interrupt will be
+#' sent. A successful cancellation request does not guarantee successful
+#' cancellation. Note that the task, or a portion of it, may have already
+#' completed before the interrupt is received. Even then it is not always
+#' possible to immediately interrupt, for example, compiled code. This should be
+#' noted particularly if the code carries out side effects during execution,
+#' such as writing to files, etc.
 #'
 #' @inheritParams call_mirai
 #'
-#' @return Invisible NULL.
+#' @return Logical \code{TRUE} if the cancellation request was successful (was
+#'   awaiting execution or in execution), or else \code{FALSE} (if already
+#'   completed or previously cancelled). Will always return \code{FALSE} if not
+#'   using dispatcher.
+#'
+#'   Or a vector of logical values if supplying a list of \sQuote{mirai}, such
+#'   as those returned by \code{\link{mirai_map}}.
 #'
 #' @examples
 #' if (interactive()) {
@@ -409,7 +423,20 @@ collect_mirai <- collect_aio
 #'
 #' @export
 #'
-stop_mirai <- stop_aio
+stop_mirai <- function(x) {
+  is.list(x) && {
+    xlen <- length(x)
+    vec <- logical(xlen)
+    if (xlen)
+      for (i in xlen:1)
+        vec[i] <- stop_mirai(x[[i]])
+    return(vec)
+  }
+  .compute <- attr(x, "profile")
+  envir <- if (is.character(.compute)) ..[[.compute]]
+  stop_aio(x)
+  invisible(length(envir[["msgid"]]) && query_dispatcher(envir[["sock"]], c(0L, attr(x, "msgid"))))
+}
 
 #' Query if a mirai is Unresolved
 #'
@@ -458,7 +485,7 @@ unresolved <- unresolved
 #' if (interactive()) {
 #' # Only run examples in interactive R sessions
 #'
-#' daemons(1, dispatcher = "none")
+#' daemons(1, dispatcher = FALSE)
 #' df <- data.frame()
 #' m <- mirai(as.matrix(df), df = df)
 #' is_mirai(m)
@@ -611,6 +638,8 @@ mk_mirai_error <- function(e, sc) {
 }
 
 .miraiInterrupt <- `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))
-.register <- expression(mirai:::register(.serial), NULL)
-.snapshot <- expression(mirai:::snapshot(), NULL)
-.block <- expression(nanonext::msleep(500L))
+.connectionReset <- `class<-`(19L, c("errorValue", "try-error"))
+.cancelRequest <- `class<-`(0L, "c")
+.register <- expression(mirai:::register(.serial))
+.snapshot <- expression(on.exit(mirai:::snapshot(), add = TRUE))
+.block <- expression(on.exit(nanonext::msleep(500L), add = TRUE))

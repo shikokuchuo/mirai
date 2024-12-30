@@ -33,16 +33,23 @@ empty list.}
 to use (each compute profile has its own independent set of daemons).}
 }
 \value{
-Invisible NULL. Will error if the specified compute profile is not
-  found, i.e. not yet set up.
+A list of mirai executed on each daemon. This may be waited for and
+  inspected using \code{\link{call_mirai}} or \code{\link{collect_mirai}}.
 }
 \description{
 Evaluate an expression \sQuote{everywhere} on all connected daemons for the
-specified compute profile. Designed for performing setup operations across
-daemons by loading packages, exporting common data, or registering custom
-serialization functions. Resultant changes to the global environment, loaded
-packages and options are persisted regardless of a daemon's \sQuote{cleanup}
-setting.
+specified compute profile - this must be set prior to calling this function.
+Designed for performing setup operations across daemons by loading packages,
+exporting common data, or registering custom serialization functions.
+Resultant changes to the global environment, loaded packages and options are
+persisted regardless of a daemon's \sQuote{cleanup} setting.
+}
+\details{
+This function should be called when no other mirai operations are in
+progress. If necessary, wait for all mirai operations to complete. This is as
+this function does not force a synchronization point, and using concurrently
+with other mirai operations does not guarantee the timing of when the
+instructions will be received, or that they will be received on each daemon.
 }
 \section{Evaluation}{
 
@@ -76,16 +83,21 @@ everywhere(y <<- 3)
 # '.expr' may be specified as an empty {} in such cases:
 everywhere({}, a = 1, b = 2)
 m <- mirai(a + b - y == 0L)
-call_mirai(m)$data
+m[]
+# everywhere() returns a list of mirai which may be waited for and inspected
+mlist <- everywhere("just a normal operation")
+collect_mirai(mlist)
+mlist <- everywhere(stop("error"))
+collect_mirai(mlist)
 daemons(0)
 
 # loading a package on all daemons and also
 # registering custom serialization functions:
 cfg <- serial_config("cls_name", function(x) serialize(x, NULL), unserialize)
-daemons(1, dispatcher = "none")
+daemons(1, dispatcher = FALSE)
 everywhere(library(parallel), .serial = cfg)
 m <- mirai("package:parallel" \%in\% search())
-call_mirai(m)$data
+m[]
 daemons(0)
 
 }

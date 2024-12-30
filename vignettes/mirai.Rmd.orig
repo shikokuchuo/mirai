@@ -170,15 +170,17 @@ daemons(6)
 ```{r daemons2, include=FALSE}
 Sys.sleep(1L)
 ```
-To view the current status, `status()` provides the number of active connections along with a matrix of statistics for each daemon.
+To view the current status, `status()` provides the number of active connections, the URL daemons connect to, and a named vector showing the number of awaiting, executing and completed tasks:
+- `waiting` number of tasks queued for execution at dispatcher
+- `assigned` number of tasks sent to a daemon for execution
+- `complete` number of tasks for which the result has been received (either completed or cancelled)
+
 ```{r daemons3}
 status()
 ```
-The default `dispatcher = "process"` creates a `dispatcher()` background process that connects to individual daemon processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to daemons for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.
+The default `dispatcher = TRUE` creates a `dispatcher()` background process that connects to individual daemon processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to daemons for processing. Tasks are queued at dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.
 
-Dispatcher uses synchronisation primitives from [`nanonext`](https://doi.org/10.5281/zenodo.7903429), waiting upon rather than polling for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).
-
-Alternatively, specifying `dispatcher = "thread"` runs dispatcher logic on a thread, a faster and more efficient alternative to the separate background process. This is a new feature that should be considered experimental.
+Dispatcher uses synchronisation primitives from [`nanonext`](https://doi.org/10.5281/zenodo.7903429), waiting upon rather than polling at intervals for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).
 
 ```{r daemons4}
 daemons(0)
@@ -187,9 +189,9 @@ Set the number of daemons to zero to reset. This reverts to the default of creat
 
 #### Without Dispatcher
 
-Alternatively, specifying `dispatcher = 'none`, the background daemons connect directly to the host process.
+Alternatively, specifying `dispatcher = FALSE`, the background daemons connect directly to the host process.
 ```{r daemonsq}
-daemons(6, dispatcher = "none")
+daemons(6, dispatcher = FALSE)
 ```
 ```{r daemonsq2, include=FALSE}
 Sys.sleep(0.5)
@@ -251,59 +253,23 @@ IPv6 addresses are also supported and must be enclosed in square brackets `[]` t
 
 For options on actually launching the daemons, please see the next section.
 
-#### Connecting to Remote Daemons Through Dispatcher
+It is recommended to use a TCP URL such as ‘tcp://10.75.32.70:5555’. The host / dispatcher listens at this address, utilising a single port. Alternatively a websocket URL such as ‘ws://10.75.32.70:5555/path’ allows a unique path after the port number, which may support sharing the port with other applications.
 
-With the default `dispatcher = "process"` or alternatively `dispatcher = "thread"`, dispatcher listens to a vector of URLs that remote `daemon()` processes dial in to, with each daemon having its own unique URL.
-
-It is recommended to use a websocket URL starting `ws://` instead of TCP in this scenario (used interchangeably with `tcp://`). A websocket URL supports a path after the port number, which can be made unique for each daemon. In this way a dispatcher can connect to an arbitrary number of daemons over a single port.
-
-Supplying a vector of URLs allows the use of arbitrary port numbers / paths. 'n' does not need to be specified if it can be inferred from the length of the 'url' vector, for example:
-```{r vectorqueue, eval=FALSE}
-daemons(url = c("ws://10.75.32.70:5566/cpu", "ws://10.75.32.70:5566/gpu", "ws://10.75.32.70:7788/1"))
-```
-Alternatively, below a single URL is supplied, along with `n = 4` to specify that the dispatcher should listen at 4 URLs. In such a case, an integer sequence is automatically appended to the path `/1` through `/4` to produce the URLs.
+Below, calling `host_url()` without a port value uses the default of '0'. This is a wildcard value that will automatically cause a free ephemeral port to be assigned:
 ```{r localqueue}
-daemons(n = 4, url = host_url(port = 5555))
+daemons(url = host_url())
 ```
-Requesting status on the host machine:
+The actual assigned port may be queried at any time via `status()`:
 ```{r remotev2}
 status()
 ```
-As per the local case, `$connections` shows the single connection to dispatcher, however `$daemons` now provides a matrix of statistics for the remote daemons.
-
-- `i` index number.
-- `online` shows as 1 when there is an active connection, or else 0 if a daemon has yet to connect or has disconnected.
-- `instance` increments by 1 every time there is a new connection at a URL. This counter is designed to track new daemon instances connecting after previous ones have ended (due to time-outs etc.). The count becomes negative immediately after a URL is regenerated by `saisei()`, but increments again once a new daemon connects.
-- `assigned` shows the cumulative number of tasks assigned to the daemon.
-- `complete` shows the cumulative number of tasks completed by the daemon.
-
-Dispatcher automatically adjusts to the number of daemons actually connected. Hence it is possible to dynamically scale up or down the number of daemons according to requirements (limited to the 'n' URLs assigned).
+Dispatcher automatically adjusts to the number of daemons actually connected. Hence it is possible to dynamically scale up or down the number of daemons according to requirements.
 
 To reset all connections and revert to default behaviour:
 ```{r reset2}
 daemons(0)
 ```
 Closing the connection causes the dispatcher to exit automatically, and in turn all connected daemons when their respective connections with the dispatcher are terminated.
-
-#### Connecting to Remote Daemons Directly
-
-By specifying `dispatcher = "none"`, remote daemons connect directly to the host process. The host listens at a single URL, and distributes tasks to all connected daemons.
-```{r remote}
-daemons(url = host_url(), dispatcher = "none")
-```
-Note that above, calling `host_url()` without a port value uses the default of '0'. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port may be queried at any time via `status()`:
-```{r remotestatus}
-status()
-```
-The number of daemons connecting to the host URL is not limited and network resources may be added or removed at any time, with tasks automatically distributed to all connected daemons.
-
-From the status query above, `$connections` shows the actual number of connected daemons.
-
-To reset all connections and revert to default behaviour:
-```{r reset}
-daemons(0)
-```
-This causes all connected daemons to exit automatically.
 
 [&laquo; Back to ToC](#table-of-contents)
 
@@ -318,15 +284,15 @@ To launch remote daemons, supply a remote launch configuration to the 'remote' a
 The first example below launches 4 daemons on the machine 10.75.32.90 (using the default SSH port of 22 as this was not specified), connecting back to the dispatcher URLs:
 ```{r ldmn, eval=FALSE}
 daemons(
-  n = 4,
-  url = host_url(ws = TRUE, port = 5555),
+  n = 4L,
+  url = host_url(port = 5555),
   remote = ssh_config(remotes = "ssh://10.75.32.90")
 )
 ```
 The second example below launches one daemon on each of 10.75.32.90 and 10.75.32.91 using the custom SSH port of 222:
 ```{r ldmnd, eval=FALSE}
 daemons(
-  n = 2,
+  n = 1L,
   url = host_url(ws = TRUE, port = 5555),
   remote = ssh_config(c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"))
 )
@@ -339,14 +305,16 @@ Use of SSH tunnelling provides a convenient way to launch remote daemons without
 
 In these cases SSH tunnelling offers a solution by creating a tunnel once the initial SSH connection is made. For simplicity, this SSH tunnelling implementation uses the same port on both the side of the host and that of the corresponding node. SSH key-based authentication must also already be in place.
 
-Tunnelling requires the hostname for 'url' specified when setting up daemons to be either '127.0.0.1' or 'localhost'. This is as the tunnel is created between 127.0.0.1:port or equivalently localhost:port on each machine. The host listens to its localhost:port and the remotes each dial into localhost:port on their own respective machines.
+Tunnelling requires the hostname for 'url' specified when setting up daemons to be '127.0.0.1'. This is as the tunnel is created between 127.0.0.1:port on each machine. The host listens to its 127.0.0.1:port and the remotes each dial into 127.0.0.1:port on their own respective machines.
 
-The below example launches 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling over port 5555 ('url' hostname is specified as 'localhost'):
+The below example launches 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling over port 5555 ('url' hostname is specified as '127.0.0.1'):
 ```{r sshrevtun, eval=FALSE}
 daemons(
-  url = "tcp://localhost:5555",
+  n = 1L,
+  url = "tcp://127.0.0.1:5555",
   remote = ssh_config(
     remotes = c("ssh://10.75.32.90", "ssh://10.75.32.90"),
+    port = 5555,
     tunnel = TRUE
   )
 )
@@ -355,11 +323,11 @@ daemons(
 
 `remote_config()` may be used to run a command to deploy daemons using a resource manager.
 
-Taking Slurm as an example, the following uses `sbatch` to launch 2 daemons on the cluster, with some additional arguments to `sbatch` specifying the resource allocation:
+Taking Slurm as an example, the following uses `sbatch` to launch a daemon on the cluster, with some additional arguments to `sbatch` specifying the resource allocation:
 ``` r
 daemons(
   n = 2,
-  url = host_url(ws = TRUE),
+  url = host_url(),
   remote = remote_config(
     command = "sbatch",
     args = c("--mem 512", "-n 1", "--wrap", "."),
@@ -373,8 +341,8 @@ daemons(
 
 As an alternative to automated launches, calling `launch_remote()` without specifying 'remote' may be used to return the shell commands for deploying daemons manually. The printed return values may be copy / pasted directly to a remote machine.
 ```{r launchremotereal}
-daemons(n = 2, url = host_url())
-launch_remote(1:2)
+daemons(url = host_url())
+launch_remote(2)
 daemons(0)
 ```
 Note that `daemons()` should be set up on the host machine before launching `daemon()` on remote resources, otherwise the daemon instances will exit if a connection is not immediately available. Alternatively, specifying the argument `autoexit = FALSE` will allow daemons to wait (indefinitely) for a connection to become available.
@@ -387,9 +355,9 @@ TLS is available as an option to secure communications from the local machine to
 
 #### Zero-configuration
 
-An automatic zero-configuration default is implemented. Simply specify a secure URL of the form `wss://` or `tls+tcp://` when setting daemons, or use `host_url(tls = TRUE)`, for example:
+An automatic zero-configuration default is implemented. Simply specify a secure URL of the form `tls+tcp://` or `wss://` when setting daemons, or use `host_url(tls = TRUE)`, for example:
 ```{r tlsremote}
-daemons(n = 4, url = host_url(ws = TRUE, tls = TRUE))
+daemons(url = host_url(tls = TRUE))
 ```
 Single-use keys and certificates are automatically generated and configured, without requiring any further intervention. The private key is always retained on the host machine and never transmitted.
 
@@ -496,7 +464,7 @@ Using the [`arrow`](https://arrow.apache.org/docs/r/) package as an example:
 
 ```{r arrowfail}
 library(arrow, warn.conflicts = FALSE)
-daemons(2)
+daemons(1)
 everywhere(library(arrow))
 
 x <- as_arrow_table(iris)
@@ -513,7 +481,6 @@ cfg <- serial_config(
   ufunc = function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)
 )
 
-daemons(2)
 everywhere(library(arrow), .serial = cfg)
 
 m <- mirai(list(a = head(x), b = "some text"), x = x)
@@ -576,7 +543,7 @@ system.time(parLapply(cl, vec, Sys.sleep))
 `.args` is used to specify further constant arguments to `.f` - the 'mean' and 'sd' in the example below:
 ```{r mmap}
 with(
-  daemons(3, dispatcher = "none"),
+  daemons(3, dispatcher = FALSE),
   mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
 )
 ```
@@ -609,7 +576,7 @@ tryCatch(
 )
 
 with(
-  daemons(4, dispatcher = "none"),
+  daemons(4, dispatcher = FALSE),
   mirai_map(c(0.1, 0.2, 0.3), Sys.sleep)[.progress, .flat]
 )
 ```
@@ -627,7 +594,7 @@ fruit <- c("melon", "grapes", "coconut")
 df <- data.frame(i = seq_along(fruit), fruit = fruit)
 
 with(
-  daemons(3, dispatcher = "none"),
+  daemons(3, dispatcher = FALSE),
   mirai_map(df, sprintf, .args = list(fmt = "%d. %s"))[.flat]
 )
 ```
@@ -656,10 +623,10 @@ or
  mirai(my_func(), .args = list(myfunc = myfunc))
 ```
 
-- The shape and contents of the `status()` daemons matrix must not be relied upon, as this user interface is subject to change at any time. There is a developer interface `nextget()`, for querying values such as 'urls' described in the function documentation. Note: only the specifically-documented values are supported interfaces.
+- The shape and contents of a `status()` call must not be relied upon, as this user interface is subject to change at any time. There is a developer interface `nextget()`, for querying values such as 'urls' described in the function documentation. Note: only the specifically-documented values are supported interfaces.
 
 - This is recommended practice in any case, but especially relevant for package developers: the functions `unresolved()`, `is_error_value()`, `is_mirai_error()`, and `is_mirai_interrupt()` should be used to test for the relevant state of a mirai or its value. The characteristics of how they are currently implemented, e.g. as a logical NA for an 'unresolvedValue', should not be relied upon, as these are subject to change.
 
-- Testing on CRAN should respect it's 2-core usage limit. This practically means limiting tests to using one daemon (with `dispatcher = "none"`) to ensure that only one additional process is used. Always reset daemons when done and then allow at least a one-second sleep to ensure all background processes have properly exited. These limits apply only to tests run on CRAN machines and not those run elsewhere.
+- Testing on CRAN should respect it's 2-core usage limit. This practically means limiting tests to using one daemon (with `dispatcher = FALSE`) to ensure that only one additional process is used. Always reset daemons when done and then allow at least a one-second sleep to ensure all background processes have properly exited. These limits apply only to tests run on CRAN machines and not those run elsewhere.
 
 [&laquo; Back to ToC](#table-of-contents)

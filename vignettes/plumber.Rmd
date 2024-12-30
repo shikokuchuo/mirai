@@ -24,7 +24,7 @@ The /echo endpoint takes a GET request, sleeps for 1 second (simulating an expen
 library(mirai)
 
 # supply SIGINT so the plumber server is interrupted and exits cleanly when finished
-daemons(1L, dispatcher = "none", autoexit = tools::SIGINT)
+daemons(1L, dispatcher = FALSE, autoexit = tools::SIGINT)
 #> [1] 1
 
 m <- mirai({
@@ -33,7 +33,7 @@ m <- mirai({
   library(mirai)
 
   # more efficient not to use dispatcher if all requests are similar length
-  daemons(4L, dispatcher = "none") # handles 4 requests simultaneously
+  daemons(4L, dispatcher = FALSE) # handles 4 requests simultaneously
 
   pr() |>
     pr_get(
@@ -75,28 +75,28 @@ res <- lapply(
 )
 collect_aio(res)
 #> [[1]]
-#> [1] "{\"time\":[\"2024-10-08 12:21:25\"],\"msg\":[\"1\"],\"pid\":[81109]}"
+#> [1] "{\"time\":[\"2024-12-01 10:05:03\"],\"msg\":[\"1\"],\"pid\":[30785]}"
 #> 
 #> [[2]]
-#> [1] "{\"time\":[\"2024-10-08 12:21:25\"],\"msg\":[\"2\"],\"pid\":[81111]}"
+#> [1] "{\"time\":[\"2024-12-01 10:05:03\"],\"msg\":[\"2\"],\"pid\":[30777]}"
 #> 
 #> [[3]]
-#> [1] "{\"time\":[\"2024-10-08 12:21:25\"],\"msg\":[\"3\"],\"pid\":[81107]}"
+#> [1] "{\"time\":[\"2024-12-01 10:05:03\"],\"msg\":[\"3\"],\"pid\":[30779]}"
 #> 
 #> [[4]]
-#> [1] "{\"time\":[\"2024-10-08 12:21:25\"],\"msg\":[\"4\"],\"pid\":[81115]}"
+#> [1] "{\"time\":[\"2024-12-01 10:05:04\"],\"msg\":[\"4\"],\"pid\":[30785]}"
 #> 
 #> [[5]]
-#> [1] "{\"time\":[\"2024-10-08 12:21:26\"],\"msg\":[\"5\"],\"pid\":[81111]}"
+#> [1] "{\"time\":[\"2024-12-01 10:05:03\"],\"msg\":[\"5\"],\"pid\":[30782]}"
 #> 
 #> [[6]]
-#> [1] "{\"time\":[\"2024-10-08 12:21:26\"],\"msg\":[\"6\"],\"pid\":[81115]}"
+#> [1] "{\"time\":[\"2024-12-01 10:05:04\"],\"msg\":[\"6\"],\"pid\":[30782]}"
 #> 
 #> [[7]]
-#> [1] "{\"time\":[\"2024-10-08 12:21:26\"],\"msg\":[\"7\"],\"pid\":[81109]}"
+#> [1] "{\"time\":[\"2024-12-01 10:05:04\"],\"msg\":[\"7\"],\"pid\":[30777]}"
 #> 
 #> [[8]]
-#> [1] "{\"time\":[\"2024-10-08 12:21:26\"],\"msg\":[\"8\"],\"pid\":[81107]}"
+#> [1] "{\"time\":[\"2024-12-01 10:05:04\"],\"msg\":[\"8\"],\"pid\":[30779]}"
 
 daemons(0)
 #> [1] 0
@@ -112,7 +112,7 @@ Note that `req$postBody` should always be accessed in the router process and pas
 library(mirai)
 
 # supply SIGINT so the plumber server is interrupted and exits cleanly when finished
-daemons(1L, dispatcher = "none", autoexit = tools::SIGINT)
+daemons(1L, dispatcher = FALSE, autoexit = tools::SIGINT)
 #> [1] 1
 
 m <- mirai({
@@ -121,7 +121,7 @@ m <- mirai({
   library(mirai)
 
   # uses dispatcher - suitable when requests take differing times to complete
-  daemons(4L, dispatcher = "thread") # handles 4 requests simultaneously
+  daemons(4L) # handles 4 requests simultaneously
 
   pr() |>
     pr_post(
@@ -164,28 +164,28 @@ res <- lapply(
 )
 collect_aio(res)
 #> [[1]]
-#> [1] "{\"time\":[\"2024-10-08 12:21:29\"],\"msg\":[\"1\"],\"pid\":[81336]}"
+#> [1] "{\"time\":[\"2024-12-01 10:05:08\"],\"msg\":[\"1\"],\"pid\":[31046]}"
 #> 
 #> [[2]]
-#> [1] "{\"time\":[\"2024-10-08 12:21:29\"],\"msg\":[\"2\"],\"pid\":[81338]}"
+#> [1] "{\"time\":[\"2024-12-01 10:05:08\"],\"msg\":[\"2\"],\"pid\":[31048]}"
 #> 
 #> [[3]]
-#> [1] "{\"time\":[\"2024-10-08 12:21:29\"],\"msg\":[\"3\"],\"pid\":[81344]}"
+#> [1] "{\"time\":[\"2024-12-01 10:05:08\"],\"msg\":[\"3\"],\"pid\":[31054]}"
 #> 
 #> [[4]]
-#> [1] "{\"time\":[\"2024-10-08 12:21:30\"],\"msg\":[\"4\"],\"pid\":[81338]}"
+#> [1] "{\"time\":[\"2024-12-01 10:05:08\"],\"msg\":[\"4\"],\"pid\":[31051]}"
 #> 
 #> [[5]]
-#> [1] "{\"time\":[\"2024-10-08 12:21:30\"],\"msg\":[\"5\"],\"pid\":[81336]}"
+#> [1] "{\"time\":[\"2024-12-01 10:05:09\"],\"msg\":[\"5\"],\"pid\":[31046]}"
 #> 
 #> [[6]]
-#> [1] "{\"time\":[\"2024-10-08 12:21:29\"],\"msg\":[\"6\"],\"pid\":[81340]}"
+#> [1] "{\"time\":[\"2024-12-01 10:05:09\"],\"msg\":[\"6\"],\"pid\":[31048]}"
 #> 
 #> [[7]]
-#> [1] "{\"time\":[\"2024-10-08 12:21:30\"],\"msg\":[\"7\"],\"pid\":[81340]}"
+#> [1] "{\"time\":[\"2024-12-01 10:05:09\"],\"msg\":[\"7\"],\"pid\":[31051]}"
 #> 
 #> [[8]]
-#> [1] "{\"time\":[\"2024-10-08 12:21:30\"],\"msg\":[\"8\"],\"pid\":[81344]}"
+#> [1] "{\"time\":[\"2024-12-01 10:05:09\"],\"msg\":[\"8\"],\"pid\":[31054]}"
 
 daemons(0)
 #> [1] 0

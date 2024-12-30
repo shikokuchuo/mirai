@@ -59,7 +59,7 @@ The code below is taken from the challenge to launch and collect one million pro
 
 ```{r promiseschallenge}
 library(mirai)
-daemons(8, dispatcher = "none")
+daemons(8, dispatcher = FALSE)
 r <- 0
 start <- Sys.time()
 m <- mirai_map(1:10000, \(x) x, .promise = \(x) r <<- r + x)

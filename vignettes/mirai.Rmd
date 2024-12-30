@@ -62,7 +62,7 @@ To wait for and collect the return value, use the mirai's `[]` method:
 
 ``` r
 m[]
-#> [1] 5.347230 2.106419 3.248701 3.211770 3.678773
+#> [1] 4.959333 4.523168 3.586805 5.561632 4.328395
 ```
 As a mirai represents an async operation, it is never necessary to wait for it. Other code can continue to be run. Once it completes, the return value automatically becomes available at `$data`.
 
@@ -70,7 +70,7 @@ As a mirai represents an async operation, it is never necessary to wait for it. 
 m
 #> < mirai [$data] >
 m$data
-#> [1] 5.347230 2.106419 3.248701 3.211770 3.678773
+#> [1] 4.959333 4.523168 3.586805 5.561632 4.328395
 ```
 For easy programmatic use of `mirai()`, '.expr' accepts a pre-constructed language object, and also a list of named arguments passed via '.args'. So, the following would be equivalent to the above:
 
@@ -82,7 +82,7 @@ args <- list(time = x$time, mean = x$mean)
 
 m <- mirai(.expr = expr, .args = args)
 m[]
-#> [1] 4.305100 3.698445 3.279351 3.344273 3.612615
+#> [1] 4.366640 3.459097 4.067057 3.192160 5.188314
 ```
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -160,8 +160,8 @@ for (i in 1:10) {
 #> iteration 2 successful
 #> iteration 3 successful
 #> iteration 4 successful
-#> iteration 5 successful
 #> Error: random error
+#> iteration 5 successful
 #> iteration 6 successful
 #> iteration 7 successful
 #> iteration 8 successful
@@ -191,27 +191,27 @@ daemons(6)
 #> [1] 6
 ```
 
-To view the current status, `status()` provides the number of active connections along with a matrix of statistics for each daemon.
+To view the current status, `status()` provides the number of active connections, the URL daemons connect to, and a named vector showing the number of awaiting, executing and completed tasks:
+- `waiting` number of tasks queued for execution at dispatcher
+- `assigned` number of tasks sent to a daemon for execution
+- `complete` number of tasks for which the result has been received (either completed or cancelled)
+
 
 ``` r
 status()
 #> $connections
-#> [1] 1
+#> [1] 6
 #> 
 #> $daemons
-#>                                     i online instance assigned complete
-#> abstract://ba5ac76ea8d0307b6e2cb210 1      1        1        0        0
-#> abstract://45f4fb98e68f1896f2e14d4d 2      1        1        0        0
-#> abstract://54317b4178358cccb3c7c7f0 3      1        1        0        0
-#> abstract://f2ab3d89e899cc4a3333cba0 4      1        1        0        0
-#> abstract://06b3e4ea8708d42c8bca98c7 5      1        1        0        0
-#> abstract://466806aabd943107766e9826 6      1        1        0        0
+#> [1] "abstract://9c2d00d48879aaac760412ce"
+#> 
+#> $mirai
+#>  awaiting executing completed 
+#>         0         0         0
 ```
-The default `dispatcher = "process"` creates a `dispatcher()` background process that connects to individual daemon processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to daemons for processing. Tasks are queued at the dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.
+The default `dispatcher = TRUE` creates a `dispatcher()` background process that connects to individual daemon processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to daemons for processing. Tasks are queued at dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.
 
-Dispatcher uses synchronisation primitives from [`nanonext`](https://doi.org/10.5281/zenodo.7903429), waiting upon rather than polling for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).
-
-Alternatively, specifying `dispatcher = "thread"` runs dispatcher logic on a thread, a faster and more efficient alternative to the separate background process. This is a new feature that should be considered experimental.
+Dispatcher uses synchronisation primitives from [`nanonext`](https://doi.org/10.5281/zenodo.7903429), waiting upon rather than polling at intervals for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).
 
 
 ``` r
@@ -222,10 +222,10 @@ Set the number of daemons to zero to reset. This reverts to the default of creat
 
 #### Without Dispatcher
 
-Alternatively, specifying `dispatcher = 'none`, the background daemons connect directly to the host process.
+Alternatively, specifying `dispatcher = FALSE`, the background daemons connect directly to the host process.
 
 ``` r
-daemons(6, dispatcher = "none")
+daemons(6, dispatcher = FALSE)
 #> [1] 6
 ```
 
@@ -237,7 +237,7 @@ status()
 #> [1] 6
 #> 
 #> $daemons
-#> [1] "abstract://061d5edc367ed219071d7057"
+#> [1] "abstract://306347c8433950ce440fff72"
 ```
 This implementation sends tasks immediately, and ensures that tasks are evenly-distributed amongst daemons. This means that optimal scheduling is not guaranteed as the duration of tasks cannot be known *a priori*. As an example, tasks could be queued at a daemon behind a long-running task, whilst other daemons are idle having already completed their tasks.
 
@@ -265,11 +265,11 @@ m <- mirai(capture.output(str(con)))
 m[]
 #> [1] "Formal class 'SQLiteConnection' [package \"RSQLite\"] with 8 slots" 
 #> [2] "  ..@ ptr                :<externalptr> "                           
-#> [3] "  ..@ dbname             : chr \"/tmp/RtmpdKZcFe/file84af3091ebeb\""
+#> [3] "  ..@ dbname             : chr \"/tmp/RtmpGd1teT/filefe9b5e5d439e\""
 #> [4] "  ..@ loadable.extensions: logi TRUE"                               
 #> [5] "  ..@ flags              : int 70"                                  
 #> [6] "  ..@ vfs                : chr \"\""                                
-#> [7] "  ..@ ref                :<environment: 0x61d961a19ba0> "           
+#> [7] "  ..@ ref                :<environment: 0x5f0036acbc20> "           
 #> [8] "  ..@ bigint             : chr \"integer64\""                       
 #> [9] "  ..@ extended_types     : logi FALSE"
 ```
@@ -307,46 +307,29 @@ IPv6 addresses are also supported and must be enclosed in square brackets `[]` t
 
 For options on actually launching the daemons, please see the next section.
 
-#### Connecting to Remote Daemons Through Dispatcher
+It is recommended to use a TCP URL such as ‘tcp://10.75.32.70:5555’. The host / dispatcher listens at this address, utilising a single port. Alternatively a websocket URL such as ‘ws://10.75.32.70:5555/path’ allows a unique path after the port number, which may support sharing the port with other applications.
 
-With the default `dispatcher = "process"` or alternatively `dispatcher = "thread"`, dispatcher listens to a vector of URLs that remote `daemon()` processes dial in to, with each daemon having its own unique URL.
-
-It is recommended to use a websocket URL starting `ws://` instead of TCP in this scenario (used interchangeably with `tcp://`). A websocket URL supports a path after the port number, which can be made unique for each daemon. In this way a dispatcher can connect to an arbitrary number of daemons over a single port.
-
-Supplying a vector of URLs allows the use of arbitrary port numbers / paths. 'n' does not need to be specified if it can be inferred from the length of the 'url' vector, for example:
+Below, calling `host_url()` without a port value uses the default of '0'. This is a wildcard value that will automatically cause a free ephemeral port to be assigned:
 
 ``` r
-daemons(url = c("ws://10.75.32.70:5566/cpu", "ws://10.75.32.70:5566/gpu", "ws://10.75.32.70:7788/1"))
+daemons(url = host_url())
+#> [1] 0
 ```
-Alternatively, below a single URL is supplied, along with `n = 4` to specify that the dispatcher should listen at 4 URLs. In such a case, an integer sequence is automatically appended to the path `/1` through `/4` to produce the URLs.
-
-``` r
-daemons(n = 4, url = host_url(port = 5555))
-#> [1] 4
-```
-Requesting status on the host machine:
+The actual assigned port may be queried at any time via `status()`:
 
 ``` r
 status()
 #> $connections
-#> [1] 1
+#> [1] 0
 #> 
 #> $daemons
-#>                     i online instance assigned complete
-#> tcp://hostname:5555 1      0        0        0        0
-#> tcp://hostname:5556 2      0        0        0        0
-#> tcp://hostname:5557 3      0        0        0        0
-#> tcp://hostname:5558 4      0        0        0        0
+#> [1] "tcp://hostname:34737"
+#> 
+#> $mirai
+#>  awaiting executing completed 
+#>         0         0         0
 ```
-As per the local case, `$connections` shows the single connection to dispatcher, however `$daemons` now provides a matrix of statistics for the remote daemons.
-
-- `i` index number.
-- `online` shows as 1 when there is an active connection, or else 0 if a daemon has yet to connect or has disconnected.
-- `instance` increments by 1 every time there is a new connection at a URL. This counter is designed to track new daemon instances connecting after previous ones have ended (due to time-outs etc.). The count becomes negative immediately after a URL is regenerated by `saisei()`, but increments again once a new daemon connects.
-- `assigned` shows the cumulative number of tasks assigned to the daemon.
-- `complete` shows the cumulative number of tasks completed by the daemon.
-
-Dispatcher automatically adjusts to the number of daemons actually connected. Hence it is possible to dynamically scale up or down the number of daemons according to requirements (limited to the 'n' URLs assigned).
+Dispatcher automatically adjusts to the number of daemons actually connected. Hence it is possible to dynamically scale up or down the number of daemons according to requirements.
 
 To reset all connections and revert to default behaviour:
 
@@ -355,36 +338,6 @@ daemons(0)
 #> [1] 0
 ```
 Closing the connection causes the dispatcher to exit automatically, and in turn all connected daemons when their respective connections with the dispatcher are terminated.
-
-#### Connecting to Remote Daemons Directly
-
-By specifying `dispatcher = "none"`, remote daemons connect directly to the host process. The host listens at a single URL, and distributes tasks to all connected daemons.
-
-``` r
-daemons(url = host_url(), dispatcher = "none")
-#> [1] 0
-```
-Note that above, calling `host_url()` without a port value uses the default of '0'. This is a wildcard value that will automatically cause a free ephemeral port to be assigned. The actual assigned port may be queried at any time via `status()`:
-
-``` r
-status()
-#> $connections
-#> [1] 0
-#> 
-#> $daemons
-#> [1] "tcp://hostname:45403"
-```
-The number of daemons connecting to the host URL is not limited and network resources may be added or removed at any time, with tasks automatically distributed to all connected daemons.
-
-From the status query above, `$connections` shows the actual number of connected daemons.
-
-To reset all connections and revert to default behaviour:
-
-``` r
-daemons(0)
-#> [1] 0
-```
-This causes all connected daemons to exit automatically.
 
 [&laquo; Back to ToC](#table-of-contents)
 
@@ -400,8 +353,8 @@ The first example below launches 4 daemons on the machine 10.75.32.90 (using the
 
 ``` r
 daemons(
-  n = 4,
-  url = host_url(ws = TRUE, port = 5555),
+  n = 4L,
+  url = host_url(port = 5555),
   remote = ssh_config(remotes = "ssh://10.75.32.90")
 )
 ```
@@ -409,7 +362,7 @@ The second example below launches one daemon on each of 10.75.32.90 and 10.75.32
 
 ``` r
 daemons(
-  n = 2,
+  n = 1L,
   url = host_url(ws = TRUE, port = 5555),
   remote = ssh_config(c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"))
 )
@@ -422,15 +375,17 @@ Use of SSH tunnelling provides a convenient way to launch remote daemons without
 
 In these cases SSH tunnelling offers a solution by creating a tunnel once the initial SSH connection is made. For simplicity, this SSH tunnelling implementation uses the same port on both the side of the host and that of the corresponding node. SSH key-based authentication must also already be in place.
 
-Tunnelling requires the hostname for 'url' specified when setting up daemons to be either '127.0.0.1' or 'localhost'. This is as the tunnel is created between 127.0.0.1:port or equivalently localhost:port on each machine. The host listens to its localhost:port and the remotes each dial into localhost:port on their own respective machines.
+Tunnelling requires the hostname for 'url' specified when setting up daemons to be '127.0.0.1'. This is as the tunnel is created between 127.0.0.1:port on each machine. The host listens to its 127.0.0.1:port and the remotes each dial into 127.0.0.1:port on their own respective machines.
 
-The below example launches 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling over port 5555 ('url' hostname is specified as 'localhost'):
+The below example launches 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling over port 5555 ('url' hostname is specified as '127.0.0.1'):
 
 ``` r
 daemons(
-  url = "tcp://localhost:5555",
+  n = 1L,
+  url = "tcp://127.0.0.1:5555",
   remote = ssh_config(
     remotes = c("ssh://10.75.32.90", "ssh://10.75.32.90"),
+    port = 5555,
     tunnel = TRUE
   )
 )
@@ -439,11 +394,11 @@ daemons(
 
 `remote_config()` may be used to run a command to deploy daemons using a resource manager.
 
-Taking Slurm as an example, the following uses `sbatch` to launch 2 daemons on the cluster, with some additional arguments to `sbatch` specifying the resource allocation:
+Taking Slurm as an example, the following uses `sbatch` to launch a daemon on the cluster, with some additional arguments to `sbatch` specifying the resource allocation:
 ``` r
 daemons(
   n = 2,
-  url = host_url(ws = TRUE),
+  url = host_url(),
   remote = remote_config(
     command = "sbatch",
     args = c("--mem 512", "-n 1", "--wrap", "."),
@@ -458,14 +413,14 @@ daemons(
 As an alternative to automated launches, calling `launch_remote()` without specifying 'remote' may be used to return the shell commands for deploying daemons manually. The printed return values may be copy / pasted directly to a remote machine.
 
 ``` r
-daemons(n = 2, url = host_url())
-#> [1] 2
-launch_remote(1:2)
+daemons(url = host_url())
+#> [1] 0
+launch_remote(2)
 #> [1]
-#> Rscript -e 'mirai::daemon("tcp://hostname:41989",rs=c(10407,-110976870,1455189331,1942209144,1729810969,-1086422266,-725861937))'
+#> Rscript -e 'mirai::daemon("tcp://hostname:33223",rs=c(10407,-1448320610,27079047,2011923484,-2123745683,1027481162,1351746371),dispatcher=TRUE)'
 #> 
 #> [2]
-#> Rscript -e 'mirai::daemon("tcp://hostname:39079",rs=c(10407,-528232075,1902297067,1113356709,1676137319,439588090,-2051780384))'
+#> Rscript -e 'mirai::daemon("tcp://hostname:33223",rs=c(10407,734329556,-965793925,-1645507988,9608480,-302228279,1996196426),dispatcher=TRUE)'
 daemons(0)
 #> [1] 0
 ```
@@ -479,11 +434,11 @@ TLS is available as an option to secure communications from the local machine to
 
 #### Zero-configuration
 
-An automatic zero-configuration default is implemented. Simply specify a secure URL of the form `wss://` or `tls+tcp://` when setting daemons, or use `host_url(tls = TRUE)`, for example:
+An automatic zero-configuration default is implemented. Simply specify a secure URL of the form `tls+tcp://` or `wss://` when setting daemons, or use `host_url(tls = TRUE)`, for example:
 
 ``` r
-daemons(n = 4, url = host_url(ws = TRUE, tls = TRUE))
-#> [1] 4
+daemons(url = host_url(tls = TRUE))
+#> [1] 0
 ```
 Single-use keys and certificates are automatically generated and configured, without requiring any further intervention. The private key is always retained on the host machine and never transmitted.
 
@@ -492,37 +447,37 @@ The generated self-signed certificate is available via `launch_remote()`. This f
 ``` r
 launch_remote(1)
 #> [1]
-#> Rscript -e 'mirai::daemon("wss://hostname:39839/1",tls=c("-----BEGIN CERTIFICATE-----
+#> Rscript -e 'mirai::daemon("tls+tcp://hostname:42189",tls=c("-----BEGIN CERTIFICATE-----
 #> MIIFNzCCAx+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAzMREwDwYDVQQDDAhrdW1h
 #> bW90bzERMA8GA1UECgwITmFub25leHQxCzAJBgNVBAYTAkpQMB4XDTAxMDEwMTAw
 #> MDAwMFoXDTMwMTIzMTIzNTk1OVowMzERMA8GA1UEAwwIa3VtYW1vdG8xETAPBgNV
 #> BAoMCE5hbm9uZXh0MQswCQYDVQQGEwJKUDCCAiIwDQYJKoZIhvcNAQEBBQADggIP
-#> ADCCAgoCggIBANcrvO9NOyYGtv4nBKuMXPTXDKO0CvYpdlecu+9i+9Pf+Jstz6Hy
-#> ND6Ij8mVaBPDkzPEkz52nelNAyk5upzRpeyHwQ707QdNR0S6LzFUGifoDtnyD16o
-#> 3A/fLlpl5G7pgb+W0vAuj0TzVD7loyOEnV2BAOLtxYOygCvjKTI8PFen6E5KwX6+
-#> sZgn0OfShHGtllcNoSfAOoDgcTzwpIqRAZXjnxX28+2y5xhs+VH4o33LRM6Mm7d0
-#> ltvaWQF7aceS3EeeAOMCwaB5XQWfQ6JM72fAo83XkhA5O6Y87cnUWNulnaA+eKCi
-#> SJjJIkJ6zRzQ7XG5BeqcwyazMMpAfRLwRiQ7AS9y9eEvuXgKv1HXWYkpKyFABzh8
-#> gu0m+IFtZULnpSyNAEJjTI9BVRul1jVzq9FJ8VpaY5u3WIXThq371WRPGv3DvIy+
-#> CeZg+b2x9tqLnlpJPeewz+yVW7KvW5v6UQ0OdVDmBHww+z4DJW97tkJ39s12Ktob
-#> gckZg7T24ZJmHGIxba2rWaVvV0P5/A1y8maP15gUxRzjNfcY/Ag31dsAPT8HZJUL
-#> wuCsuH8RujtZ//0RNHHwbd2xTaST/KdnXwzMyQFW2BD3MBs541Hs3tNdxcbt9sZx
-#> dR9z12zg+WLl9sv1AxtNDlw3aBZdqvqAfOMKWEfveELXxy0XvsJey00DAgMBAAGj
-#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFBGMgiRLBjkktvw3uVWG
-#> DlNVayJ+MB8GA1UdIwQYMBaAFBGMgiRLBjkktvw3uVWGDlNVayJ+MA0GCSqGSIb3
-#> DQEBCwUAA4ICAQBNtT3LMs7VR8bdvJkOX0CQ7Hq6xf9Q6QrAvlzEfD1BWwlH6R4R
-#> v+JAkgaHAPjB/8Tcs7g6Nb0cGDByoYm/F/AWKfwAYJpQQNSZNCpDzJSt+mc4MoeO
-#> Rlxz6tRIGTiIrcSznXwQ4lEObNralFIU9+EQdRvpvGSuR2KC/zDKTiatpXgJt5hL
-#> RIXTJJogwlqWleuPAhByklsmH1okDwaT519dF/QJdFYvJxqy8Wj3QJPYVL3WfFGP
-#> q1ONLQM+gukYJV3kAm7szUaS8mPQOvXhPbyebp3ni391BxbYKq17oC6CoWCPSiHL
-#> vvuxy1lu7w+TruRSyF3Vr32vCb0+wbf5IcFbVRATGSBaPt24gZVHK4lv6+EfoynM
-#> E1dRGUsAT7Lu4iOojwkOb8rZrMHpHewOWHa8yU6NNZin//5mNJJdg20kHedTxDps
-#> G0/L62e2xiHZq+nIYpqkiltZfEuigtEPc0jk+UzR/LF+d2v7DMyPw3kTyygZNNom
-#> LaNFdgbrz7RlS1JMyZaPLZ6Ef2SQ94cmXPu2TVD/Bi43X8B8G7mZBje630le1YOz
-#> Rfd+2UJndV9uIZZL0H7srjFXkB+fViZQN6z/uIyyqFgOYTGfmtnbfat4y3d2i0HN
-#> ttndC5IJS0Ykil5S/EaUp1Fj03rPe24ACU1ikl2jR3l7eredClv3UlLvCg==
+#> ADCCAgoCggIBAKnxe6ac4e8IfagZAUvS2hWwUNGtMDXLNe7LOGy53qlZ9KiXNk/d
+#> eNgPJxBlbTZURwGLLIv992gm3o0G8QEnKFyvbtil7GHfs5y3CF9pwLVZfD1FBvuL
+#> rNe/Ypt5BoTz1Zr4kgQJEHN5kYKfr+cCbTbXpRddm7xOkImy734mZaoMPengzfUu
+#> tgbQbbeZ9/mBeNJM5exdsFi48EmrStHf2qNdYr5exz0un8d6VIoh4HR/46sIJmtU
+#> DU3hkGj+0QhQf05EFWVd6R8EOlHy+xKC2QkUpm2W3Y0QbwjcS7f+g1v1BwNQM+Jx
+#> Yf6ytsD8KsMf4aDmfRvySjveLJZ+gVLTEYfK7T3ZQHQ///aVvDwtvonkd7KrZGzv
+#> x3lmKwri/5/9m3fRB/09oNjwxFPaDCbh8jdUjM8YcHsYz4PXwSrgIxvXkyhMBCEy
+#> kS1kyjz5TA3Hvu8xou1kPscPMLOtA+dgbhBVTfHMAyCnQsuppyn8GwRS2RaclCw7
+#> f+f1WwRCTNIuALm/sPIy6zkvdhVuxqf56w31tuKosTRAF03fhOl69JNcr00JzptA
+#> RublnNZbBV9Q2ZMUEJC7Ro5Vet8JLPsO9h2TRD+Cr8AArubD3XKsoXvUmTgWbk1e
+#> J+jlj3k8TA+Zcel3DLdbQUAjNcPqucf5BIupB8cvu0XHWDedH3Vxg1bZAgMBAAGj
+#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFFRIP5GPa7W2ryjxHLPB
+#> HIDSf9j2MB8GA1UdIwQYMBaAFFRIP5GPa7W2ryjxHLPBHIDSf9j2MA0GCSqGSIb3
+#> DQEBCwUAA4ICAQAgTXZwg+g2fO0ac2Ntd0CbzlVPnxQQb2hTl76468V9dDBHzi3S
+#> iTLLrcUVWefuWB9thAYiNr7JOS+R/iUOs68VcPmtiyCm8Od+9c5Q1/SUi66y/tdc
+#> fWY5SWjuBbfleVi/oZkbCbKm5TbFluf27JCrMuzIfC4LOMHthicdZ8uUyEW1MC0z
+#> vS4wcew0Y/n8toc1Y+tTHfe4sQXtXWVPtTi/Q6Lg9HxGdgD35FSU7PCqLcmnWIt6
+#> mxOolca2MyhenUuwssMZDyoU+7SFit/2PGTPRTJesTsIDVjkm5eADfmHLwfp7rv7
+#> RLSZTi8iMBaLOM4jpDD8a3T2LjzYb8JfSOqcqwB2yND8yg9I+KbzamvfJpgecvm7
+#> OmT4J9X5l4/aRwFgvZKRJ5JO42JcQ1dAm50ifWE6x98zqExvvXI0Xb6M/h/cvEHy
+#> L94WxsZFBVtgWkF3RviW4YewWIhEA/ZDNGR3vcoB/ordWxl+1UUZ4Czxdo1B/pbN
+#> vRMy+FaVTrpD1yZS6C2T5VAmPCSkwKeBFiJWSzk2GkopIIcHBodzkFuISP5I1kt8
+#> HbAtHtuwD1YAI9oz+EEZ+5yf10+h1gvOWNtFa5GoVLzeFDl05lNCjfve8s2m5trz
+#> iUOHXzqFhJtCkv72v1JxjAF9nQuaoFacXVdz9iXDBTpmvsZ076kLXXScxA==
 #> -----END CERTIFICATE-----
-#> ",""),rs=c(10407,-1270566338,-1974607449,-1770377796,-505074803,-1287190294,876610915))'
+#> ",""),rs=c(10407,-37167906,1240343495,1867170140,-1408597331,-809865846,1029945731),dispatcher=TRUE)'
 ```
 The printed value may be deployed directly on a remote machine.
 
@@ -641,8 +596,8 @@ Using the [`arrow`](https://arrow.apache.org/docs/r/) package as an example:
 
 ``` r
 library(arrow, warn.conflicts = FALSE)
-daemons(2)
-#> [1] 2
+daemons(1)
+#> [1] 1
 everywhere(library(arrow))
 
 x <- as_arrow_table(iris)
@@ -661,8 +616,6 @@ cfg <- serial_config(
   ufunc = function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)
 )
 
-daemons(2)
-#> [1] 2
 everywhere(library(arrow), .serial = cfg)
 
 m <- mirai(list(a = head(x), b = "some text"), x = x)
@@ -755,26 +708,26 @@ daemons(4)
 vec <- c(1, 1, 4, 4, 1, 1, 1, 1)
 system.time(mirai_map(vec, Sys.sleep)[])
 #>    user  system elapsed 
-#>   0.004   0.002   4.008
+#>   0.006   0.002   4.007
 system.time(parLapply(cl, vec, Sys.sleep))
 #>    user  system elapsed 
-#>   0.006   0.003   8.012
+#>   0.014   0.039   8.050
 ```
 `.args` is used to specify further constant arguments to `.f` - the 'mean' and 'sd' in the example below:
 
 ``` r
 with(
-  daemons(3, dispatcher = "none"),
+  daemons(3, dispatcher = FALSE),
   mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
 )
 #> [[1]]
-#> [1] 20.81024
+#> [1] 17.43985
 #> 
 #> [[2]]
-#> [1] 20.01379 15.56526
+#> [1] 20.10787 18.48464
 #> 
 #> [[3]]
-#> [1] 15.52601 19.23624 22.59422
+#> [1] 19.89101 20.29139 18.38212
 ```
 Use `...` to further specify objects referenced but not defined in `.f` - the 'do' in the anonymous function below:
 
@@ -786,16 +739,16 @@ ml <- mirai_map(
 )
 #> Warning: mirai is launching one local daemon for a map operation as none previously set
 ml
-#> < mirai map [2/3] >
+#> < mirai map [1/3] >
 ml[]
 #> $a
-#> [1] "be"
+#> [1] "3b"
 #> 
 #> $b
-#> [1] 7d e3
+#> [1] b4 e4
 #> 
 #> $c
-#> [1] "f82ed7"
+#> [1] "f2bb8a"
 ```
 Use of `mirai_map()` assumes that `daemons()` have previously been set. If not then one (non-dispatcher) daemon is set to allow the function to proceed. This ensures safe behaviour, but is unlikely to be optimal, so please ensure daemons are set beforehand.
 
@@ -818,7 +771,7 @@ tryCatch(
 #> <simpleError: Error in .Primitive("sum")("a"): invalid 'type' (character) of argument>
 
 with(
-  daemons(4, dispatcher = "none"),
+  daemons(4, dispatcher = FALSE),
   mirai_map(c(0.1, 0.2, 0.3), Sys.sleep)[.progress, .flat]
 )
 #> NULL
@@ -838,7 +791,7 @@ fruit <- c("melon", "grapes", "coconut")
 df <- data.frame(i = seq_along(fruit), fruit = fruit)
 
 with(
-  daemons(3, dispatcher = "none"),
+  daemons(3, dispatcher = FALSE),
   mirai_map(df, sprintf, .args = list(fmt = "%d. %s"))[.flat]
 )
 #> [1] "1. melon"   "2. grapes"  "3. coconut"
@@ -868,10 +821,10 @@ or
  mirai(my_func(), .args = list(myfunc = myfunc))
 ```
 
-- The shape and contents of the `status()` daemons matrix must not be relied upon, as this user interface is subject to change at any time. There is a developer interface `nextget()`, for querying values such as 'urls' described in the function documentation. Note: only the specifically-documented values are supported interfaces.
+- The shape and contents of a `status()` call must not be relied upon, as this user interface is subject to change at any time. There is a developer interface `nextget()`, for querying values such as 'urls' described in the function documentation. Note: only the specifically-documented values are supported interfaces.
 
 - This is recommended practice in any case, but especially relevant for package developers: the functions `unresolved()`, `is_error_value()`, `is_mirai_error()`, and `is_mirai_interrupt()` should be used to test for the relevant state of a mirai or its value. The characteristics of how they are currently implemented, e.g. as a logical NA for an 'unresolvedValue', should not be relied upon, as these are subject to change.
 
-- Testing on CRAN should respect it's 2-core usage limit. This practically means limiting tests to using one daemon (with `dispatcher = "none"`) to ensure that only one additional process is used. Always reset daemons when done and then allow at least a one-second sleep to ensure all background processes have properly exited. These limits apply only to tests run on CRAN machines and not those run elsewhere.
+- Testing on CRAN should respect it's 2-core usage limit. This practically means limiting tests to using one daemon (with `dispatcher = FALSE`) to ensure that only one additional process is used. Always reset daemons when done and then allow at least a one-second sleep to ensure all background processes have properly exited. These limits apply only to tests run on CRAN machines and not those run elsewhere.
 
 [&laquo; Back to ToC](#table-of-contents)

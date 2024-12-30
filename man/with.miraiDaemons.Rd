@@ -31,7 +31,7 @@ if (interactive()) {
 # Only run examples in interactive R sessions
 
 with(
-  daemons(2, dispatcher = "none"),
+  daemons(2, dispatcher = FALSE),
   {
     m1 <- mirai(Sys.getpid())
     m2 <- mirai(Sys.getpid())
