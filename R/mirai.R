@@ -595,12 +595,12 @@ print.miraiInterrupt <- function(x, ...) {
 #' @export
 #'
 `$.miraiError` <- function(x, name)
-  attr(x, name, exact = FALSE)
+  attr(x, name, exact = TRUE)
 
 #' @exportS3Method utils::.DollarNames
 #'
 .DollarNames.miraiError <- function(x, pattern = "")
-  if (startsWith("stack.trace", pattern)) "stack.trace" else character()
+  grep(pattern, names(attributes(x)), value = TRUE, fixed = TRUE)
 
 # internals --------------------------------------------------------------------
 
@@ -628,7 +628,7 @@ mk_mirai_error <- function(e, sc) {
   msg <- if (is.null(call) || call == "eval(._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = .GlobalEnv)")
     sprintf("Error: %s", .subset2(e, "message")) else
       sprintf("Error in %s: %s", call, .subset2(e, "message"))
-  cat(sprintf("%s\n", msg), file = stderr())
+  attributes(msg) <- e
   idx <- which(as.logical(lapply(sc, identical, quote(eval(._mirai_.[[".expr"]], envir = ._mirai_., enclos = .GlobalEnv)))))
   sc <- sc[(length(sc) - 1L):(idx + 1L)]
   if (sc[[1L]][[1L]] == ".handleSimpleError")
