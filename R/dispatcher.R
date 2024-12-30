@@ -70,7 +70,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
   n > 0L || stop(._[["missing_url"]])
 
   cv <- cv()
-  sock <- socket(protocol = "rep")
+  sock <- socket("rep")
   on.exit(reap(sock))
   pipe_notify(sock, cv = cv, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock, host)
@@ -95,7 +95,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
   }
   pass <- NULL
 
-  psock <- socket(protocol = "poly")
+  psock <- socket("poly")
   on.exit(reap(psock), add = TRUE, after = TRUE)
   `opt<-`(psock, "send-buffer", 1L)
   m <- monitor(psock, cv)
@@ -281,14 +281,14 @@ v1_dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE,
   n > 0L || stop(._[["missing_url"]])
 
   cv <- cv()
-  sock <- socket(protocol = "rep")
+  sock <- socket("rep")
   on.exit(reap(sock))
   pipe_notify(sock, cv = cv, remove = TRUE, flag = TRUE)
   dial_and_sync_socket(sock, host)
 
   ctrchannel <- is.character(monitor)
   if (ctrchannel) {
-    sockc <- socket(protocol = "rep")
+    sockc <- socket("rep")
     on.exit(reap(sockc), add = TRUE, after = FALSE)
     pipe_notify(sockc, cv = cv, remove = TRUE, flag = TRUE)
     dial_and_sync_socket(sockc, monitor)

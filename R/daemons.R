@@ -515,7 +515,7 @@ init_envir_stream <- function(seed) {
 tokenized_url <- function(url) sprintf("%s/%s", url, random(12L))
 
 req_socket <- function(url, tls = NULL, resend = 0L)
-  `opt<-`(socket(protocol = "req", listen = url, tls = tls), "req:resend-time", resend)
+  `opt<-`(socket("req", listen = url, tls = tls), "req:resend-time", resend)
 
 parse_dispatcher <- function(x) {
   x <- x[1L]

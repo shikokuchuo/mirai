@@ -97,7 +97,7 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
     )
   )
   cv <- cv()
-  sock <- socket(protocol = if (dispatcher) "poly" else "rep")
+  sock <- socket(if (dispatcher) "poly" else "rep")
   on.exit(reap(sock))
   `[[<-`(., "sock", sock)
   autoexit && pipe_notify(sock, cv = cv, remove = TRUE, flag = as.integer(autoexit))
@@ -239,7 +239,7 @@ v1_daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
                       timerstart = 0L, ..., tls = NULL, rs = NULL) {
 
   cv <- cv()
-  sock <- socket(protocol = "rep")
+  sock <- socket("rep")
   on.exit(reap(sock))
   `[[<-`(., "sock", sock)
   autoexit && pipe_notify(sock, cv = cv, remove = TRUE, flag = as.integer(autoexit))
@@ -309,7 +309,7 @@ v1_daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
 .daemon <- function(url) {
 
   cv <- cv()
-  sock <- socket(protocol = "rep")
+  sock <- socket("rep")
   on.exit(reap(sock))
   pipe_notify(sock, cv = cv, remove = TRUE)
   dial(sock, url = url, autostart = NA, error = TRUE)
