@@ -241,7 +241,7 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
 # TLS tests
 connection && Sys.getenv("NOT_CRAN") == "true" && {
   Sys.sleep(1L)
-  test_zero(daemons(url = c("tls+tcp://127.0.0.1:0", "wss://127.0.0.1:0"), pass = "test"))
+  test_zero(daemons(url = "tls+tcp://127.0.0.1:0", pass = "test"))
   test_equal(launch_local(1L), 1L)
   Sys.sleep(1L)
   test_true(grepl("CERTIFICATE", launch_remote(1L), fixed = TRUE))
@@ -304,7 +304,9 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
 connection && Sys.getenv("NOT_CRAN") == "true" && {
   Sys.sleep(1L)
   q <- vector(mode = "list", length = 10000L)
+  Sys.setenv(R_DEFAULT_PACKAGES = "stats,utils")
   test_equal(daemons(4), 4L)
+  Sys.unsetenv("R_DEFAULT_PACKAGES")
   for (i in seq_len(10000L)) {q[[i]] <- mirai(1L); attr(q[[i]], "status") <- status()}
   test_equal(sum(unlist(collect_mirai(q))), 10000L)
   test_true(all(as.logical(lapply(lapply(q, attr, "status"), is.list))))

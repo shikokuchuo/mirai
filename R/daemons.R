@@ -258,7 +258,6 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
           check_store_url(sock, envir)
         },
         {
-          url <- url[1L]
           tls <- configure_tls(url, tls, pass, envir, returnconfig = FALSE)
           cv <- cv()
           dots <- parse_dots(...)
@@ -516,10 +515,8 @@ tokenized_url <- function(url) sprintf("%s/%s", url, random(12L))
 req_socket <- function(url, tls = NULL, resend = 0L)
   `opt<-`(socket("req", listen = url, tls = tls), "req:resend-time", resend)
 
-parse_dispatcher <- function(x) {
-  x <- x[1L]
+parse_dispatcher <- function(x)
   if (is.logical(x)) 1L + (!is.na(x) && x) else if (x == "process" || x == "thread") 3L else if (x == "none") 1L else 4L
-}
 
 parse_dots <- function(...) {
   ...length() || return("")
