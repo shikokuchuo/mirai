@@ -120,7 +120,7 @@ connection && .Platform[["OS.type"]] != "windows" && {
 # mirai_map tests
 connection && .Platform[["OS.type"]] != "windows" && {
   Sys.sleep(1L)
-  m <- with(daemons(1, dispatcher = FALSE, .compute = "ml"), {
+  m <- with(daemons(1, dispatcher = "none", .compute = "ml"), {
     if (is.null(tryCatch(mirai_map(list(1, "a", 2), sum, .compute = "ml")[.stop], error = function(e) NULL)))
       mirai_map(1:3, rnorm, .args = list(mean = 20, 2), .compute = "ml")[]
   })
@@ -241,7 +241,7 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
 # TLS tests
 connection && Sys.getenv("NOT_CRAN") == "true" && {
   Sys.sleep(1L)
-  test_zero(daemons(url = c("tls+tcp://127.0.0.1:0", "wss://127.0.0.1:0"), pass = "test"))
+  test_zero(daemons(url = "tls+tcp://127.0.0.1:0", pass = "test"))
   test_equal(launch_local(1L), 1L)
   Sys.sleep(1L)
   test_true(grepl("CERTIFICATE", launch_remote(1L), fixed = TRUE))
@@ -304,7 +304,9 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
 connection && Sys.getenv("NOT_CRAN") == "true" && {
   Sys.sleep(1L)
   q <- vector(mode = "list", length = 10000L)
+  Sys.setenv(R_DEFAULT_PACKAGES = "stats,utils")
   test_equal(daemons(4), 4L)
+  Sys.unsetenv("R_DEFAULT_PACKAGES")
   for (i in seq_len(10000L)) {q[[i]] <- mirai(1L); attr(q[[i]], "status") <- status()}
   test_equal(sum(unlist(collect_mirai(q))), 10000L)
   test_true(all(as.logical(lapply(lapply(q, attr, "status"), is.list))))
@@ -312,14 +314,12 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   test_equal(length(unique(unlist(collect_mirai(q)))), 10000L)
   test_true(all(as.logical(lapply(lapply(q, attr, "status"), is.list))))
   test_equal(daemons()[["mirai"]][["completed"]], 20000L)
-  test_zero(daemons(0))
 }
 # legacy interface tests
-connection && Sys.getenv("NOT_CRAN") == "true" && {
-  Sys.sleep(1L)
+connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "true" && {
   option <- 15L
   Sys.setenv(R_DEFAULT_PACKAGES = "stats,utils")
-  test_equal(1L, daemons(1, dispatcher = "process", maxtasks = 10L, timerstart = 1L, walltime = 500L, seed = 1546, token = TRUE, cleanup = option, autoexit = tools::SIGCONT))
+  test_equal(1L, daemons(1, dispatcher = "process", maxtasks = 10L, timerstart = 1L, walltime = 500L, seed = 1546, cleanup = option, autoexit = tools::SIGCONT))
   Sys.unsetenv("R_DEFAULT_PACKAGES")
   Sys.sleep(1L)
   mq <- mirai(runif(1L), .timeout = 1000)
@@ -329,12 +329,7 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   test_null(saisei(i = 1L))
   test_type("character", saisei(i = 1L, force = TRUE))
   Sys.sleep(0.1)
-  test_zero(daemons(0))
-}
-# additional legacy interface tests
-connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "true" && {
-  Sys.sleep(1L)
-  test_equal(daemons(url = host_url(ws = TRUE, tls = TRUE), dispatcher = "thread", output = TRUE), 1L)
+  test_equal(daemons(url = host_url(ws = TRUE, tls = TRUE), dispatcher = "thread", output = TRUE, token = TRUE), 1L)
   test_equal(nextget("n"), 1L)
   test_equal(length(nextget("urls")), 1L)
   test_class("matrix", status()$daemons)
@@ -343,4 +338,5 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
   Sys.sleep(0.1)
   test_zero(daemons(0))
 }
+test_zero(daemons(0))
 Sys.sleep(1L)

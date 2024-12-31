@@ -61,11 +61,10 @@
 dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
                        rs = NULL, monitor = NULL) {
 
-  missing(monitor) || return(
-    v1_dispatcher(
-      host = host, url = url, n = n, ..., tls = tls, pass = pass, rs = rs, monitor = monitor
-    )
-  )
+  missing(monitor) ||
+    return(v1_dispatcher(host = host, url = url, n = n, ...,
+                         tls = tls, pass = pass, rs = rs, monitor = monitor))
+
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(._[["missing_url"]])
 
@@ -133,7 +132,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
       wait(cv) || break
 
       changes <- read_monitor(m)
-      if (length(changes)) {
+      length(changes) && {
         for (item in changes) {
           if (item > 0) {
             outq[[as.character(item)]] <- list(pipe = item, msgid = 0L, ctx = NULL)

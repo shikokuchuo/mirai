@@ -249,16 +249,15 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
 
     if (is.null(envir)) {
       envir <- init_envir_stream(seed)
+      launches <- 0L
       switch(
         parse_dispatcher(dispatcher),
         {
           tls <- configure_tls(url, tls, pass, envir)
           sock <- req_socket(url, tls = tls)
           check_store_url(sock, envir)
-          launches <- 0L
         },
         {
-          url <- url[1L]
           tls <- configure_tls(url, tls, pass, envir, returnconfig = FALSE)
           cv <- cv()
           dots <- parse_dots(...)
@@ -269,7 +268,6 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
           is.object(res) && stop(._[["sync_dispatcher"]])
           store_dispatcher(sock, res, cv, envir)
           `[[<-`(envir, "msgid", 0L)
-          launches <- 0L
         },
         {
           n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
@@ -517,10 +515,8 @@ tokenized_url <- function(url) sprintf("%s/%s", url, random(12L))
 req_socket <- function(url, tls = NULL, resend = 0L)
   `opt<-`(socket("req", listen = url, tls = tls), "req:resend-time", resend)
 
-parse_dispatcher <- function(x) {
-  x <- x[1L]
+parse_dispatcher <- function(x)
   if (is.logical(x)) 1L + (!is.na(x) && x) else if (x == "process" || x == "thread") 3L else if (x == "none") 1L else 4L
-}
 
 parse_dots <- function(...) {
   ...length() || return("")

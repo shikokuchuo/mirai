@@ -90,12 +90,10 @@
 daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = TRUE,
                    cleanup = TRUE, output = FALSE, tls = NULL, rs = NULL) {
 
-  missing(dispatcher) && return(
-    v1_daemon(
-      url = url, asyncdial = asyncdial, autoexit = autoexit, cleanup = cleanup,
-      output = output, ..., tls = tls, rs = rs
-    )
-  )
+  missing(dispatcher) &&
+    return(v1_daemon(url = url, asyncdial = asyncdial, autoexit = autoexit,
+                     cleanup = cleanup, output = output, ..., tls = tls, rs = rs))
+
   cv <- cv()
   sock <- socket(if (dispatcher) "poly" else "rep")
   on.exit(reap(sock))
