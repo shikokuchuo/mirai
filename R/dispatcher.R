@@ -61,11 +61,10 @@
 dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
                        rs = NULL, monitor = NULL) {
 
-  missing(monitor) || return(
-    v1_dispatcher(
-      host = host, url = url, n = n, ..., tls = tls, pass = pass, rs = rs, monitor = monitor
-    )
-  )
+  missing(monitor) ||
+    return(v1_dispatcher(host = host, url = url, n = n, ...,
+                         tls = tls, pass = pass, rs = rs, monitor = monitor))
+
   n <- if (is.numeric(n)) as.integer(n) else length(url)
   n > 0L || stop(._[["missing_url"]])
 

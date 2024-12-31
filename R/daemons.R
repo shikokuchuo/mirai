@@ -249,13 +249,13 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
 
     if (is.null(envir)) {
       envir <- init_envir_stream(seed)
+      launches <- 0L
       switch(
         parse_dispatcher(dispatcher),
         {
           tls <- configure_tls(url, tls, pass, envir)
           sock <- req_socket(url, tls = tls)
           check_store_url(sock, envir)
-          launches <- 0L
         },
         {
           url <- url[1L]
@@ -269,7 +269,6 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
           is.object(res) && stop(._[["sync_dispatcher"]])
           store_dispatcher(sock, res, cv, envir)
           `[[<-`(envir, "msgid", 0L)
-          launches <- 0L
         },
         {
           n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
