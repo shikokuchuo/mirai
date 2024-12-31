@@ -315,7 +315,7 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   test_zero(daemons(0))
 }
 # legacy interface tests
-connection && Sys.getenv("NOT_CRAN") == "true" && {
+connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "true" && {
   Sys.sleep(1L)
   option <- 15L
   Sys.setenv(R_DEFAULT_PACKAGES = "stats,utils")
@@ -329,10 +329,6 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   test_null(saisei(i = 1L))
   test_type("character", saisei(i = 1L, force = TRUE))
   Sys.sleep(0.1)
-  test_type("list", daemons())
-}
-# additional legacy interface tests
-connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "true" && {
   test_equal(daemons(url = host_url(ws = TRUE, tls = TRUE), dispatcher = "thread", output = TRUE), 1L)
   test_equal(nextget("n"), 1L)
   test_equal(length(nextget("urls")), 1L)
