@@ -120,7 +120,7 @@ connection && .Platform[["OS.type"]] != "windows" && {
 # mirai_map tests
 connection && .Platform[["OS.type"]] != "windows" && {
   Sys.sleep(1L)
-  m <- with(daemons(1, dispatcher = FALSE, .compute = "ml"), {
+  m <- with(daemons(1, dispatcher = "none", .compute = "ml"), {
     if (is.null(tryCatch(mirai_map(list(1, "a", 2), sum, .compute = "ml")[.stop], error = function(e) NULL)))
       mirai_map(1:3, rnorm, .args = list(mean = 20, 2), .compute = "ml")[]
   })
@@ -312,11 +312,9 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   test_equal(length(unique(unlist(collect_mirai(q)))), 10000L)
   test_true(all(as.logical(lapply(lapply(q, attr, "status"), is.list))))
   test_equal(daemons()[["mirai"]][["completed"]], 20000L)
-  test_zero(daemons(0))
 }
 # legacy interface tests
 connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "true" && {
-  Sys.sleep(1L)
   option <- 15L
   Sys.setenv(R_DEFAULT_PACKAGES = "stats,utils")
   test_equal(1L, daemons(1, dispatcher = "process", maxtasks = 10L, timerstart = 1L, walltime = 500L, seed = 1546, token = TRUE, cleanup = option, autoexit = tools::SIGCONT))
