@@ -132,7 +132,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
       wait(cv) || break
 
       changes <- read_monitor(m)
-      if (length(changes)) {
+      length(changes) && {
         for (item in changes) {
           if (item > 0) {
             outq[[as.character(item)]] <- list(pipe = item, msgid = 0L, ctx = NULL)
