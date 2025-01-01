@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2025 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of mirai.
 #
@@ -166,7 +166,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
   }
   data <- list(
     ._mirai_globals_. = globals,
-    .expr = if (is.symbol(expr) && exists(as.character(expr), parent.frame()) && is.language(.expr)) .expr else expr
+    .expr = if (is.symbol(expr) && exists(as.character(expr), envir = parent.frame()) && is.language(.expr)) .expr else expr
   )
   if (length(.args)) {
     if (is.environment(.args))
@@ -251,7 +251,7 @@ everywhere <- function(.expr, ..., .args = list(), .serial = NULL, .compute = "d
   expr <- substitute(.expr)
   .expr <- c(
     .snapshot,
-    as.expression(if (is.symbol(expr) && exists(as.character(expr), parent.frame()) && is.language(.expr)) .expr else expr)
+    as.expression(if (is.symbol(expr) && exists(as.character(expr), envir = parent.frame()) && is.language(.expr)) .expr else expr)
   )
 
   if (is.list(.serial)) {
