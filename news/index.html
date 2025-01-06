@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9022</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9023</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,28 +49,32 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.3.1.9022" id="mirai-1319022-development">mirai 1.3.1.9022 (development)<a class="anchor" aria-label="anchor" href="#mirai-1319022-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.3.1.9023" id="mirai-1319023-development">mirai 1.3.1.9023 (development)<a class="anchor" aria-label="anchor" href="#mirai-1319023-development"></a></h2>
 <div class="section level5">
-<h5 id="new-architecture-1-3-1-9022">New Architecture<a class="anchor" aria-label="anchor" href="#new-architecture-1-3-1-9022"></a></h5>
+<h5 id="new-architecture-1-3-1-9023">New Architecture<a class="anchor" aria-label="anchor" href="#new-architecture-1-3-1-9023"></a></h5>
 <ul><li>Distributed computing now uses a single URL at which all daemons connect (with or without dispatcher).</li>
-<li>Allows a more efficient <code>tcp://</code> or <code>tls+tcp://</code> connection in most cases instead of websockets.</li>
+<li>Allows a more efficient <code>tcp://</code> or <code>tls+tcp://</code> connection instead of websockets.</li>
 <li>Daemons may be added or removed at any time without limit.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="new-features-1-3-1-9022">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-3-1-9022"></a></h5>
+<h5 id="new-features-1-3-1-9023">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-3-1-9023"></a></h5>
 <ul><li>
 <code>daemons(dispatcher = TRUE)</code> provides a new and more efficient architecture for dispatcher. This argument reverts to a logical value, although ‘process’ is still accepted and retains the previous behaviour of the v1 dispatcher.</li>
+<li>
+<code><a href="../reference/daemons.html">daemons()</a></code> gains argument ‘serial’ to register serial configurations when using dispatcher. These automatically apply to all daemons that connect.</li>
 <li>Upgrades <code><a href="../reference/stop_mirai.html">stop_mirai()</a></code> to cancel remote mirai tasks when using the new dispatcher, returning a logical value indicating whether cancellation was successful.</li>
 <li>
 <code><a href="../reference/daemon.html">daemon()</a></code> gains the new argument ‘dispatcher’, which should be set to <code>TRUE</code> when connecting to dispatcher and <code>FALSE</code> when connecting directly to host.</li>
 <li>A ‘miraiError’ now preserves the original condition object. This means that <code><a href="https://rlang.r-lib.org/reference/abort.html" class="external-link">rlang::abort()</a></code> custom metadata may now be accessed using <code>$</code> on the ‘miraiError’ (thanks <a href="https://github.com/James-G-Hill" class="external-link">@James-G-Hill</a> <a href="https://github.com/shikokuchuo/mirai/issues/173" class="external-link">#173</a>).</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-1-3-1-9022">Updates<a class="anchor" aria-label="anchor" href="#updates-1-3-1-9022"></a></h5>
+<h5 id="updates-1-3-1-9023">Updates<a class="anchor" aria-label="anchor" href="#updates-1-3-1-9023"></a></h5>
 <ul><li>
 <code><a href="../reference/status.html">status()</a></code> using the new dispatcher is updated to provide more concise information.</li>
 <li>
 <code><a href="../reference/everywhere.html">everywhere()</a></code> now returns a list of mirai, which may be waited for and inspected (thanks <a href="https://github.com/dgkf" class="external-link">@dgkf</a> <a href="https://github.com/shikokuchuo/mirai/issues/164" class="external-link">#164</a>).</li>
+<li>
+<code><a href="../reference/everywhere.html">everywhere()</a></code> drops argument ‘.serial’ as serialization configurations are now registered via an argument at <code><a href="../reference/daemons.html">daemons()</a></code>.</li>
 <li>
 <code><a href="../reference/launch_local.html">launch_local()</a></code> and <code><a href="../reference/launch_local.html">launch_remote()</a></code> simplified to take the argument ‘n’ instead of ‘url’ for how many daemons to launch.</li>
 <li>
