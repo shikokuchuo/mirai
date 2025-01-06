@@ -93,6 +93,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
       tls <- tls_config(server = tls, pass = pass)
   }
   pass <- NULL
+  serial <- cmessage[[5L]]
 
   psock <- socket("poly")
   on.exit(reap(psock), add = TRUE, after = TRUE)
@@ -114,7 +115,10 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
 
     changes <- read_monitor(m)
     for (item in changes)
-      outq[[as.character(item)]] <- if (item > 0) list(pipe = item, msgid = 0L, ctx = NULL)
+      if (item > 0) {
+        outq[[as.character(item)]] <- list(pipe = item, msgid = 0L, ctx = NULL)
+        send(psock, serial, mode = 1L, block = TRUE, pipe = item)
+      }
 
   } else {
     url <- check_url(psock)
@@ -136,6 +140,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
         for (item in changes) {
           if (item > 0) {
             outq[[as.character(item)]] <- list(pipe = item, msgid = 0L, ctx = NULL)
+            send(psock, serial, mode = 1L, block = TRUE, pipe = item)
           } else {
             id <- as.character(-item)
             if (outq[[id]][["msgid"]])

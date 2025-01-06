@@ -54,7 +54,6 @@ Serialization is set up with the relevant serialization functions from the `arro
 
 ```{r arrow1}
 library(mirai)
-daemons(1)
 
 cfg <- serial_config(
   class = "nanoarrow_array_stream",
@@ -62,12 +61,13 @@ cfg <- serial_config(
   ufunc = function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)
 )
 
+daemons(1, serial = cfg)
+
 everywhere(
   {
     library(DBI) # `adbi` and `adbcsqlite` packages must also be installed
     con <<- dbConnect(adbi::adbi("adbcsqlite"), uri = ":memory:")
-  },
-  .serial = cfg
+  }
 )
 
 ```
@@ -151,8 +151,8 @@ server <- function(input, output, session) {
   # create unique session id by hashing current time with a random key
   id <- secretbase::siphash13(Sys.time(), key = nanonext::random(4L))
 
-  # create new (non-dispatcher) daemon for each session
-  daemons(1L, dispatcher = FALSE, .compute = id)
+  # create new daemon for each session
+  daemons(1L, serial = cfg, .compute = id)
 
   # tear down daemon when session ends
   session$onEnded(function() daemons(0L, .compute = id))
@@ -165,7 +165,6 @@ server <- function(input, output, session) {
       con <<- dbConnect(adbi::adbi("adbcsqlite"), uri = file)
     },
     file = file,
-    .serial = cfg,
     .compute = id
   )
 

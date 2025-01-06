@@ -472,7 +472,9 @@ x <- as_arrow_table(iris)
 m <- mirai(list(a = head(x), b = "some text"), x = x)
 m[]
 ```
-However, `serial_config()` can be used to create custom serialization configurations, specifying functions that hook into R's native serialization mechanism for reference objects ('refhooks'). This configuration can then be specified as part of an `everywhere()` call via its '.serial' argument.
+However, `serial_config()` can be used to create custom serialization configurations, specifying functions that hook into R's native serialization mechanism for reference objects ('refhooks').
+
+This configuration may then be passed to the 'serial' argument of a `daemons()` call.
 
 ```{r arrowpass}
 cfg <- serial_config(
@@ -481,35 +483,35 @@ cfg <- serial_config(
   ufunc = function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)
 )
 
-everywhere(library(arrow), .serial = cfg)
+daemons(1, serial = cfg)
+
+everywhere(library(arrow))
 
 m <- mirai(list(a = head(x), b = "some text"), x = x)
 m[]
 
+daemons(0)
 ```
 It can be seen that this time, the arrow table is seamlessly handled in the 'mirai' process. This is the case even when the object is deeply nested inside lists or other structures.
 
-To change registered serialization functions, just call `everywhere()` again supplying the new functions. As an example, we can switch to using [`polars`](https://pola-rs.github.io/r-polars/), a 'lightning fast' dataframe library written in Rust (requires `polars` >= 0.16.4).
+Different serialization functions may be registered for different compute profiles. As an example, the 'polars' profile can be set up to use [`polars`](https://pola-rs.github.io/r-polars/), a 'lightning fast' dataframe library written in Rust (requires `polars` >= 0.16.4).
 ```{r polars}
-everywhere(
-  {},
-  .serial = serial_config(
+daemons(
+  n = 1,
+  serial = serial_config(
     class = "RPolarsDataFrame",
     sfunc = function(x) polars::as_polars_df(x)$to_raw_ipc(),
     ufunc = polars::pl$read_ipc
-  )
+  ),
+  .compute = "polars"
 )
 
 x <- polars::as_polars_df(iris)
 
-m <- mirai(list(a = head(x), b = "some text"), x = x)
+m <- mirai(list(a = head(x), b = "some text"), x = x, .compute = "polars")
 m[]
-```
-To cancel serialization functions entirely, supply an empty list to the '.serial' argument of `everywhere()`:
-```{r teardown}
-everywhere({}, .serial = list())
 
-daemons(0)
+daemons(0, .compute = "polars")
 ```
 The 'vec' argument to `serialization()` may be specified as `TRUE` if the serialization functions are vectorized and take lists of objects, as is the case for [`safetensors`](https://mlverse.github.io/safetensors/), used for serialization in [`torch`](https://torch.mlverse.org/).
 

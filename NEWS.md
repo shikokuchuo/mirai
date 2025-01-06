@@ -9,6 +9,7 @@
 #### New Features
 
 * `daemons(dispatcher = TRUE)` provides a new and more efficient architecture for dispatcher. This argument reverts to a logical value, although 'process' is still accepted and retains the previous behaviour of the v1 dispatcher.
+* `daemons()` gains argument 'serial' to register serial configurations when using dispatcher. These automatically apply to all daemons that connect.
 * Upgrades `stop_mirai()` to cancel remote mirai tasks when using the new dispatcher, returning a logical value indicating whether cancellation was successful.
 * `daemon()` gains the new argument 'dispatcher', which should be set to `TRUE` when connecting to dispatcher and `FALSE` when connecting directly to host.
 * A 'miraiError' now preserves the original condition object. This means that `rlang::abort()` custom metadata may now be accessed using `$` on the 'miraiError' (thanks @James-G-Hill #173).
@@ -17,6 +18,7 @@
 
 * `status()` using the new dispatcher is updated to provide more concise information.
 * `everywhere()` now returns a list of mirai, which may be waited for and inspected (thanks @dgkf  #164).
+* `everywhere()` drops argument '.serial' as serialization configurations are now registered via an argument at `daemons()`.
 * `launch_local()` and `launch_remote()` simplified to take the argument 'n' instead of 'url' for how many daemons to launch.
 * `launch_local()` now returns the number of daemons launched rather than invisible NULL.
 * `ssh_config()` simplified to take the argument 'port' instead of 'host'. For SSH tunnelling, this is the port that will be used, and the hostname is now required to be '127.0.0.1' (no longer accepting 'localhost'). 

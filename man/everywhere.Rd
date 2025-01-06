@@ -4,7 +4,7 @@
 \alias{everywhere}
 \title{Evaluate Everywhere}
 \usage{
-everywhere(.expr, ..., .args = list(), .serial = NULL, .compute = "default")
+everywhere(.expr, ..., .args = list(), .compute = "default")
 }
 \arguments{
 \item{.expr}{an expression to evaluate asynchronously (of arbitrary length,
@@ -22,13 +22,6 @@ containing such objects. These objects will remain local to the evaluation
 environment as opposed to those supplied in \sQuote{...} above - see
 \sQuote{evaluation} section below.}
 
-\item{.serial}{[default NULL] (optional) a configuration created by
-\code{\link{serial_config}} to register serialization and unserialization
-functions for normally non-exportable reference objects, such as Arrow
-Tables or torch tensors. Updating with a new configuration replaces any
-existing registered functions. To remove the configuration, provide an
-empty list.}
-
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
 }
@@ -39,10 +32,10 @@ A list of mirai executed on each daemon. This may be waited for and
 \description{
 Evaluate an expression \sQuote{everywhere} on all connected daemons for the
 specified compute profile - this must be set prior to calling this function.
-Designed for performing setup operations across daemons by loading packages,
-exporting common data, or registering custom serialization functions.
-Resultant changes to the global environment, loaded packages and options are
-persisted regardless of a daemon's \sQuote{cleanup} setting.
+Designed for performing setup operations across daemons by loading packages
+or exporting common data. Resultant changes to the global environment, loaded
+packages and options are persisted regardless of a daemon's \sQuote{cleanup}
+setting.
 }
 \details{
 This function should be called when no other mirai operations are in
@@ -91,11 +84,9 @@ mlist <- everywhere(stop("error"))
 collect_mirai(mlist)
 daemons(0)
 
-# loading a package on all daemons and also
-# registering custom serialization functions:
-cfg <- serial_config("cls_name", function(x) serialize(x, NULL), unserialize)
+# loading a package on all daemons
 daemons(1, dispatcher = FALSE)
-everywhere(library(parallel), .serial = cfg)
+everywhere(library(parallel))
 m <- mirai("package:parallel" \%in\% search())
 m[]
 daemons(0)
