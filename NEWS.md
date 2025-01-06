@@ -14,6 +14,7 @@
 
 #### Updates
 
+* `mirai_map()` arguments '...' and '.args' are swapped such that '...' is used to pass in constant arguments to the function, similar to the purrr package.
 * `status()` using the new dispatcher is updated to provide more concise information.
 * `everywhere()` now returns a list of mirai, which may be waited for and inspected (thanks @dgkf  #164).
 * `everywhere()` drops argument '.serial' as serialization configurations are now registered via an argument at `daemons()`.

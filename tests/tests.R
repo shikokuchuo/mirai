@@ -128,10 +128,10 @@ connection && .Platform[["OS.type"]] != "windows" && {
   test_equal(length(m), 3L)
   test_true(all(as.logical(lapply(m, is.numeric))))
   Sys.sleep(1L)
-  test_print(suppressWarnings(mp <- mirai_map(list(x = "a"), function(...) do(...), do = function(x, y) sprintf("%s%s", x, y), .args = list("b"))))
+  test_print(suppressWarnings(mp <- mirai_map(list(x = "a"), function(...) do(...), "b", .args = list(do = function(x, y) sprintf("%s%s", x, y)))))
   test_identical(collect_mirai(mp)[["x"]], "ab")
   test_identical(call_mirai(mp)[["x"]][["data"]], "ab")
-  test_true(all(mirai_map(data.frame(1:3, 3:1), sum, .args = list(3L))[.flat] == 7L))
+  test_true(all(mirai_map(data.frame(1:3, 3:1), sum, 3L)[.flat] == 7L))
   test_true(all(mirai_map(list(c(a = 1, b = 1, c = 1), 3), sum)[.flat] == 3))
   test_zero(daemons(0L))
 }

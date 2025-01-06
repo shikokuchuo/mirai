@@ -13,11 +13,11 @@ which case multiple map is performed over its rows.}
 \item{.f}{a function to be applied to each element of \code{.x}, or row of
 \code{.x} as the case may be.}
 
-\item{...}{(optional) named arguments (name = value pairs) specifying objects
-referenced, but not defined, in \code{.f}.}
+\item{...}{(optional) further constant arguments to \code{.f}, provided as
+name = value pairs.}
 
-\item{.args}{(optional) further constant arguments to \code{.f}, provided as
-a list.}
+\item{.args}{(optional) a list of named arguments specifying objects
+referenced, but not defined, in \code{.f}.}
 
 \item{.promise}{(optional) if supplied, registers a promise against each
 mirai. Either a function, supplied to the \sQuote{onFulfilled} argument of
@@ -94,11 +94,15 @@ if (interactive()) {
 
 daemons(4)
 
-# map with constant args specified via '.args'
-mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
+# map with constant args specified via '...'
+mirai_map(1:3, rnorm, mean = 20, sd = 2)[]
 
-# flatmap with function definition passed via '...'
-mirai_map(1:3, function(x) func(1L, x, x + 1L), func = stats::runif)[.flat]
+# flatmap with function definition passed via '.args'
+mirai_map(
+  1:3,
+  function(x) func(1L, x, x + 1L),
+  .args = list(func = stats::runif)
+)[.flat]
 
 # sum rows of a dataframe
 (df <- data.frame(a = 1:3, b = c(4, 3, 2)))
@@ -117,15 +121,15 @@ v <- c("egg", "got", "ten", "nap", "pie")
 mirai_map(
   data.frame(1:length(v), v),
   sprintf,
-  .args = list(fmt = "\%d_\%s")
+  fmt = "\%d_\%s"
 )[.flat]
 
 # return a 'mirai_map' object, check for resolution, collect later
 mp <- mirai_map(
   c(a = 2, b = 3, c = 4),
   function(x, y) do(x, as.logical(x \%\% y)),
-  do = nanonext::random,
-  .args = list(y = 2)
+  y = 2,
+  .args = list(do = nanonext::random)
 )
 unresolved(mp)
 mp

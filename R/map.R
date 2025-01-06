@@ -39,10 +39,10 @@
 #'   which case multiple map is performed over its rows.
 #' @param .f a function to be applied to each element of \code{.x}, or row of
 #'   \code{.x} as the case may be.
-#' @param ... (optional) named arguments (name = value pairs) specifying objects
+#' @param ... (optional) further constant arguments to \code{.f}, provided as
+#'   name = value pairs.
+#' @param .args (optional) a list of named arguments specifying objects
 #'   referenced, but not defined, in \code{.f}.
-#' @param .args (optional) further constant arguments to \code{.f}, provided as
-#'   a list.
 #' @param .promise (optional) if supplied, registers a promise against each
 #'   mirai. Either a function, supplied to the \sQuote{onFulfilled} argument of
 #'   \code{promises::then()} or a list of 2 functions, supplied respectively to
@@ -92,11 +92,15 @@
 #'
 #' daemons(4)
 #'
-#' # map with constant args specified via '.args'
-#' mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
+#' # map with constant args specified via '...'
+#' mirai_map(1:3, rnorm, mean = 20, sd = 2)[]
 #'
-#' # flatmap with function definition passed via '...'
-#' mirai_map(1:3, function(x) func(1L, x, x + 1L), func = stats::runif)[.flat]
+#' # flatmap with function definition passed via '.args'
+#' mirai_map(
+#'   1:3,
+#'   function(x) func(1L, x, x + 1L),
+#'   .args = list(func = stats::runif)
+#' )[.flat]
 #'
 #' # sum rows of a dataframe
 #' (df <- data.frame(a = 1:3, b = c(4, 3, 2)))
@@ -115,15 +119,15 @@
 #' mirai_map(
 #'   data.frame(1:length(v), v),
 #'   sprintf,
-#'   .args = list(fmt = "%d_%s")
+#'   fmt = "%d_%s"
 #' )[.flat]
 #'
 #' # return a 'mirai_map' object, check for resolution, collect later
 #' mp <- mirai_map(
 #'   c(a = 2, b = 3, c = 4),
 #'   function(x, y) do(x, as.logical(x %% y)),
-#'   do = nanonext::random,
-#'   .args = list(y = 2)
+#'   y = 2,
+#'   .args = list(do = nanonext::random)
 #' )
 #' unresolved(mp)
 #' mp
@@ -175,13 +179,11 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
       seq_len(xilen),
       if (is.matrix(.x)) function(i) mirai(
         .expr = do.call(.f, c(as.list(.x), .args)),
-        ...,
-        .args = list(.f = .f, .x = .x[i, ], .args = .args),
+        .args = list(.f = .f, .x = .x[i, ], .args = list(...), ._mirai_globals_. = .args),
         .compute = .compute
       ) else function(i) mirai(
         .expr = do.call(.f, c(.x, .args)),
-        ...,
-        .args = list(.f = .f, .x = lapply(.x, .subset2, i), .args = .args),
+        .args = list(.f = .f, .x = lapply(.x, .subset2, i), .args = list(...), ._mirai_globals_. = .args),
         .compute = .compute
       )
     ) else `names<-`(
@@ -189,8 +191,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
         .x,
         function(x) mirai(
           .expr = do.call(.f, c(list(.x), .args)),
-          ...,
-          .args = list(.f = .f, .x = x, .args = .args),
+          .args = list(.f = .f, .x = x, .args = list(...), ._mirai_globals_. = .args),
           .compute = .compute
         )
       ),
@@ -286,5 +287,5 @@ print.mirai_map <- function(x, ...) {
 #' @export
 #'
 .stop <- compiler::compile(
-  quote(if (is_error_value(xi)) { lapply(x, stop_mirai); stop(xi, call. = FALSE) })
+  quote(if (is_error_value(xi)) { stop_mirai(x); stop(xi, call. = FALSE) })
 )
