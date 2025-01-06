@@ -1,4 +1,4 @@
-# Copyright (C) 2024 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2024-2025 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of mirai.
 #
@@ -175,17 +175,13 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
       seq_len(xilen),
       if (is.matrix(.x)) function(i) mirai(
         .expr = do.call(.f, c(as.list(.x), .args)),
-        .f = .f,
-        .x = .x[i, ],
         ...,
-        .args = list(.args = .args),
+        .args = list(.f = .f, .x = .x[i, ], .args = .args),
         .compute = .compute
       ) else function(i) mirai(
         .expr = do.call(.f, c(.x, .args)),
-        .f = .f,
-        .x = lapply(.x, .subset2, i),
         ...,
-        .args = list(.args = .args),
+        .args = list(.f = .f, .x = lapply(.x, .subset2, i), .args = .args),
         .compute = .compute
       )
     ) else `names<-`(
@@ -193,10 +189,8 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
         .x,
         function(x) mirai(
           .expr = do.call(.f, c(list(.x), .args)),
-          .f = .f,
-          .x = x,
           ...,
-          .args = list(.args = .args),
+          .args = list(.f = .f, .x = x, .args = .args),
           .compute = .compute
         )
       ),
