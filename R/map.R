@@ -178,8 +178,8 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
     lapply(
       seq_len(xilen),
       if (is.matrix(.x)) function(i) mirai(
-        .expr = do.call(.f, c(as.list(.x), .args)),
-        .args = list(.f = .f, .x = .x[i, ], .args = list(...), ._mirai_globals_. = .args),
+        .expr = do.call(.f, c(.x, .args)),
+        .args = list(.f = .f, .x = as.list(.x[i, ]), .args = list(...), ._mirai_globals_. = .args),
         .compute = .compute
       ) else function(i) mirai(
         .expr = do.call(.f, c(.x, .args)),
@@ -190,8 +190,8 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
       lapply(
         .x,
         function(x) mirai(
-          .expr = do.call(.f, c(list(.x), .args)),
-          .args = list(.f = .f, .x = x, .args = list(...), ._mirai_globals_. = .args),
+          .expr = do.call(.f, .x),
+          .args = list(.f = .f, .x = list(x, ...), ._mirai_globals_. = .args),
           .compute = .compute
         )
       ),
