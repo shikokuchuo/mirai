@@ -3,7 +3,7 @@
 #### New Architecture
 
 * Distributed computing now uses a single URL at which all daemons connect (with or without dispatcher).
- - Allows a more efficient `tcp://` or `tls+tcp://` connection in most cases instead of websockets.
+ - Allows a more efficient `tcp://` or `tls+tcp://` connection instead of websockets.
  - Daemons may be added or removed at any time without limit.
 
 #### New Features

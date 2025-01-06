@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2025 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of mirai.
 #
@@ -561,12 +561,11 @@ launch_daemon <- function(args, output)
 launch_sync_dispatcher <- function(sock, sockc, args, output, tls = NULL, pass = NULL) {
   pkgs <- Sys.getenv("R_DEFAULT_PACKAGES")
   system2(.command, args = c("--default-packages=NULL", "--vanilla", "-e", args), stdout = output, stderr = output, wait = FALSE)
-  vec <- c("p", pkgs,
-           "o", if (is.character(tls)) tls[1L] else "",
-           "s", if (is.character(tls) && length(tls) > 1L) tls[2L] else "",
-           "i", if (is.character(pass)) pass[1L] else "",
-           "t")
-  query_dispatcher(sockc, vec, mode = 2L, block = .limit_long)
+  vec <- list(pkgs,
+              if (is.character(tls)) tls[1L],
+              if (is.character(tls) && length(tls) > 1L) tls[2L],
+              if (is.character(pass)) pass[1L])
+  query_dispatcher(sockc, vec, send_mode = 1L, recv_mode = 2L, block = .limit_long)
 }
 
 launch_sync_daemons <- function(seq, sock, urld, dots, envir, output) {
