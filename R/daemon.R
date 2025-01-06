@@ -1,4 +1,4 @@
-# Copyright (C) 2022-2024 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2022-2025 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of mirai.
 #
@@ -115,7 +115,12 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
   }
   snapshot()
 
-  if (dispatcher)
+  if (dispatcher) {
+    aio <- recv_aio(sock, mode = 1L, cv = cv)
+    wait(cv) || return()
+    serial <- collect_aio(aio)
+    if (is.list(serial))
+      `opt<-`(sock, "serial", serial)
     repeat {
       aio <- recv_aio(sock, mode = 1L, cv = cv)
       wait(cv) || break
@@ -126,16 +131,18 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
       stop_aio(cancel)
       send(sock, data, mode = 1L, block = TRUE)
       if (cleanup) do_cleanup()
-    } else
-      repeat {
-        ctx <- .context(sock)
-        aio <- recv_aio(ctx, mode = 1L, cv = cv)
-        wait(cv) || break
-        m <- collect_aio(aio)
-        data <- eval_mirai(m)
-        send(ctx, data, mode = 1L, block = TRUE)
-        if (cleanup) do_cleanup()
-      }
+    }
+  } else {
+    repeat {
+      ctx <- .context(sock)
+      aio <- recv_aio(ctx, mode = 1L, cv = cv)
+      wait(cv) || break
+      m <- collect_aio(aio)
+      data <- eval_mirai(m)
+      send(ctx, data, mode = 1L, block = TRUE)
+      if (cleanup) do_cleanup()
+    }
+  }
 
 }
 
@@ -365,5 +372,4 @@ do_cleanup <- function() {
   options(.[["op"]])
 }
 
-register <- function(x) `opt<-`(.[["sock"]], "serial", x)
 snapshot <- function() `[[<-`(`[[<-`(`[[<-`(., "op", .Options), "se", search()), "vars", names(.GlobalEnv))

@@ -26,7 +26,7 @@ list of reference objects, e.g. \code{torch::torch_serialize} and
 }
 \value{
 A list comprising the configuration. This should be passed to the
-  \sQuote{.serial} argument of \code{\link{everywhere}}.
+  \sQuote{serial} argument of \code{\link{daemons}}.
 }
 \description{
 Returns a serialization configuration, which may be set to perform custom

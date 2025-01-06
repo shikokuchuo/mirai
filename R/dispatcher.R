@@ -1,4 +1,4 @@
-# Copyright (C) 2023-2024 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2023-2025 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of mirai.
 #
@@ -75,24 +75,25 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
   dial_and_sync_socket(sock, host)
 
   ctx <- .context(sock)
-  cmessage <- recv(ctx, mode = 2L, block = .limit_long)
+  cmessage <- recv(ctx, mode = 1L, block = .limit_long)
   is.object(cmessage) && stop(._[["sync_dispatcher"]])
-  if (nzchar(cmessage[2L]))
-    Sys.setenv(R_DEFAULT_PACKAGES = cmessage[2L]) else
+  if (nzchar(cmessage[[1L]]))
+    Sys.setenv(R_DEFAULT_PACKAGES = cmessage[[1L]]) else
       Sys.unsetenv("R_DEFAULT_PACKAGES")
 
   auto <- is.null(url)
   if (auto) {
     url <- local_url()
   } else {
-    if (nzchar(cmessage[4L]) && is.null(tls)) {
-      tls <- c(cmessage[4L], if (nzchar(cmessage[6L])) cmessage[6L])
-      pass <- if (nzchar(cmessage[8L])) cmessage[8L]
+    if (length(cmessage[[2L]]) && is.null(tls)) {
+      tls <- c(cmessage[[2L]], cmessage[[3L]])
+      pass <- cmessage[[4L]]
     }
     if (length(tls))
       tls <- tls_config(server = tls, pass = pass)
   }
   pass <- NULL
+  serial <- cmessage[[5L]]
 
   psock <- socket("poly")
   on.exit(reap(psock), add = TRUE, after = TRUE)
@@ -114,7 +115,10 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
 
     changes <- read_monitor(m)
     for (item in changes)
-      outq[[as.character(item)]] <- if (item > 0) list(pipe = item, msgid = 0L, ctx = NULL)
+      if (item > 0) {
+        outq[[as.character(item)]] <- list(pipe = item, msgid = 0L, ctx = NULL)
+        send(psock, serial, mode = 1L, block = TRUE, pipe = item)
+      }
 
   } else {
     url <- check_url(psock)
@@ -136,6 +140,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
         for (item in changes) {
           if (item > 0) {
             outq[[as.character(item)]] <- list(pipe = item, msgid = 0L, ctx = NULL)
+            send(psock, serial, mode = 1L, block = TRUE, pipe = item)
           } else {
             id <- as.character(-item)
             if (outq[[id]][["msgid"]])
@@ -285,10 +290,10 @@ v1_dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE,
     on.exit(reap(sockc), add = TRUE, after = FALSE)
     pipe_notify(sockc, cv = cv, remove = TRUE, flag = TRUE)
     dial_and_sync_socket(sockc, monitor)
-    cmessage <- recv(sockc, mode = 2L, block = .limit_long)
+    cmessage <- recv(sockc, mode = 1L, block = .limit_long)
     is.object(cmessage) && stop(._[["sync_dispatcher"]])
-    if (nzchar(cmessage[2L]))
-      Sys.setenv(R_DEFAULT_PACKAGES = cmessage[2L]) else
+    if (nzchar(cmessage[[1L]]))
+      Sys.setenv(R_DEFAULT_PACKAGES = cmessage[[1L]]) else
         Sys.unsetenv("R_DEFAULT_PACKAGES")
   }
 
@@ -305,9 +310,9 @@ v1_dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE,
   } else {
     ports <- get_ports(url, n)
     if (length(ports)) token <- FALSE
-    if (ctrchannel && nzchar(cmessage[4L]) && is.null(tls)) {
-      tls <- c(cmessage[4L], if (nzchar(cmessage[6L])) cmessage[6L])
-      pass <- if (nzchar(cmessage[8L])) cmessage[8L]
+    if (ctrchannel && length(cmessage[[2L]]) && is.null(tls)) {
+      tls <- c(cmessage[[2L]], cmessage[[3L]])
+      pass <- cmessage[[4L]]
     }
     if (length(tls))
       tls <- tls_config(server = tls, pass = pass)
@@ -501,7 +506,7 @@ saisei <- function(i, force = FALSE, .compute = "default") {
   length(envir[["msgid"]]) && return()
   i <- as.integer(i[1L])
   length(envir[["sockc"]]) && i > 0L && i <= envir[["n"]] && !startsWith(envir[["urls"]][i], "t") || return()
-  r <- query_dispatcher(envir[["sockc"]], if (force) -i else i, mode = 9L)
+  r <- query_dispatcher(envir[["sockc"]], if (force) -i else i, recv_mode = 9L)
   is.character(r) && nzchar(r) || return()
   envir[["urls"]][i] <- r
   r
@@ -527,9 +532,9 @@ check_url <- function(sock) {
   url
 }
 
-query_dispatcher <- function(sock, command, mode = 5L, block = .limit_short)
-  if (r <- send(sock, command, mode = 2L, block = block)) r else
-    recv(sock, mode = mode, block = block)
+query_dispatcher <- function(sock, command, send_mode = 2L, recv_mode = 5L, block = .limit_short)
+  if (r <- send(sock, command, mode = send_mode, block = block)) r else
+    recv(sock, mode = recv_mode, block = block)
 
 create_req <- function(ctx, cv)
   list(ctx = ctx, req = recv_aio(ctx, mode = 8L, cv = cv))

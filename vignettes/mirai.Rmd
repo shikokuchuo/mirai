@@ -62,7 +62,7 @@ To wait for and collect the return value, use the mirai's `[]` method:
 
 ``` r
 m[]
-#> [1] 4.959333 4.523168 3.586805 5.561632 4.328395
+#> [1] 3.702669 2.840914 4.154918 2.205035 2.881541
 ```
 As a mirai represents an async operation, it is never necessary to wait for it. Other code can continue to be run. Once it completes, the return value automatically becomes available at `$data`.
 
@@ -70,7 +70,7 @@ As a mirai represents an async operation, it is never necessary to wait for it. 
 m
 #> < mirai [$data] >
 m$data
-#> [1] 4.959333 4.523168 3.586805 5.561632 4.328395
+#> [1] 3.702669 2.840914 4.154918 2.205035 2.881541
 ```
 For easy programmatic use of `mirai()`, '.expr' accepts a pre-constructed language object, and also a list of named arguments passed via '.args'. So, the following would be equivalent to the above:
 
@@ -82,7 +82,7 @@ args <- list(time = x$time, mean = x$mean)
 
 m <- mirai(.expr = expr, .args = args)
 m[]
-#> [1] 4.366640 3.459097 4.067057 3.192160 5.188314
+#> [1] 3.647567 4.908089 2.331887 5.237860 4.285848
 ```
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -203,7 +203,7 @@ status()
 #> [1] 6
 #> 
 #> $daemons
-#> [1] "abstract://9c2d00d48879aaac760412ce"
+#> [1] "abstract://ac724b3ca06d2299e500051f"
 #> 
 #> $mirai
 #>  awaiting executing completed 
@@ -237,7 +237,7 @@ status()
 #> [1] 6
 #> 
 #> $daemons
-#> [1] "abstract://306347c8433950ce440fff72"
+#> [1] "abstract://c648c0f79caafc5be70dd999"
 ```
 This implementation sends tasks immediately, and ensures that tasks are evenly-distributed amongst daemons. This means that optimal scheduling is not guaranteed as the duration of tasks cannot be known *a priori*. As an example, tasks could be queued at a daemon behind a long-running task, whilst other daemons are idle having already completed their tasks.
 
@@ -265,11 +265,11 @@ m <- mirai(capture.output(str(con)))
 m[]
 #> [1] "Formal class 'SQLiteConnection' [package \"RSQLite\"] with 8 slots" 
 #> [2] "  ..@ ptr                :<externalptr> "                           
-#> [3] "  ..@ dbname             : chr \"/tmp/RtmpGd1teT/filefe9b5e5d439e\""
+#> [3] "  ..@ dbname             : chr \"/tmp/RtmpuLWOlE/filed5c36abd7bd4\""
 #> [4] "  ..@ loadable.extensions: logi TRUE"                               
 #> [5] "  ..@ flags              : int 70"                                  
 #> [6] "  ..@ vfs                : chr \"\""                                
-#> [7] "  ..@ ref                :<environment: 0x5f0036acbc20> "           
+#> [7] "  ..@ ref                :<environment: 0x5ac05331f128> "           
 #> [8] "  ..@ bigint             : chr \"integer64\""                       
 #> [9] "  ..@ extended_types     : logi FALSE"
 ```
@@ -323,7 +323,7 @@ status()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://hostname:34737"
+#> [1] "tcp://hostname:33701"
 #> 
 #> $mirai
 #>  awaiting executing completed 
@@ -417,10 +417,10 @@ daemons(url = host_url())
 #> [1] 0
 launch_remote(2)
 #> [1]
-#> Rscript -e 'mirai::daemon("tcp://hostname:33223",rs=c(10407,-1448320610,27079047,2011923484,-2123745683,1027481162,1351746371),dispatcher=TRUE)'
+#> Rscript -e 'mirai::daemon("tcp://hostname:39275",rs=c(10407,-89183690,-845182145,1309914228,979723493,1312189538,-780680069),dispatcher=TRUE)'
 #> 
 #> [2]
-#> Rscript -e 'mirai::daemon("tcp://hostname:33223",rs=c(10407,734329556,-965793925,-1645507988,9608480,-302228279,1996196426),dispatcher=TRUE)'
+#> Rscript -e 'mirai::daemon("tcp://hostname:39275",rs=c(10407,-179037495,-557882369,982602259,-1585551381,1314230620,-1648010427),dispatcher=TRUE)'
 daemons(0)
 #> [1] 0
 ```
@@ -447,37 +447,37 @@ The generated self-signed certificate is available via `launch_remote()`. This f
 ``` r
 launch_remote(1)
 #> [1]
-#> Rscript -e 'mirai::daemon("tls+tcp://hostname:42189",tls=c("-----BEGIN CERTIFICATE-----
+#> Rscript -e 'mirai::daemon("tls+tcp://hostname:43185",tls=c("-----BEGIN CERTIFICATE-----
 #> MIIFNzCCAx+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAzMREwDwYDVQQDDAhrdW1h
 #> bW90bzERMA8GA1UECgwITmFub25leHQxCzAJBgNVBAYTAkpQMB4XDTAxMDEwMTAw
 #> MDAwMFoXDTMwMTIzMTIzNTk1OVowMzERMA8GA1UEAwwIa3VtYW1vdG8xETAPBgNV
 #> BAoMCE5hbm9uZXh0MQswCQYDVQQGEwJKUDCCAiIwDQYJKoZIhvcNAQEBBQADggIP
-#> ADCCAgoCggIBAKnxe6ac4e8IfagZAUvS2hWwUNGtMDXLNe7LOGy53qlZ9KiXNk/d
-#> eNgPJxBlbTZURwGLLIv992gm3o0G8QEnKFyvbtil7GHfs5y3CF9pwLVZfD1FBvuL
-#> rNe/Ypt5BoTz1Zr4kgQJEHN5kYKfr+cCbTbXpRddm7xOkImy734mZaoMPengzfUu
-#> tgbQbbeZ9/mBeNJM5exdsFi48EmrStHf2qNdYr5exz0un8d6VIoh4HR/46sIJmtU
-#> DU3hkGj+0QhQf05EFWVd6R8EOlHy+xKC2QkUpm2W3Y0QbwjcS7f+g1v1BwNQM+Jx
-#> Yf6ytsD8KsMf4aDmfRvySjveLJZ+gVLTEYfK7T3ZQHQ///aVvDwtvonkd7KrZGzv
-#> x3lmKwri/5/9m3fRB/09oNjwxFPaDCbh8jdUjM8YcHsYz4PXwSrgIxvXkyhMBCEy
-#> kS1kyjz5TA3Hvu8xou1kPscPMLOtA+dgbhBVTfHMAyCnQsuppyn8GwRS2RaclCw7
-#> f+f1WwRCTNIuALm/sPIy6zkvdhVuxqf56w31tuKosTRAF03fhOl69JNcr00JzptA
-#> RublnNZbBV9Q2ZMUEJC7Ro5Vet8JLPsO9h2TRD+Cr8AArubD3XKsoXvUmTgWbk1e
-#> J+jlj3k8TA+Zcel3DLdbQUAjNcPqucf5BIupB8cvu0XHWDedH3Vxg1bZAgMBAAGj
-#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFFRIP5GPa7W2ryjxHLPB
-#> HIDSf9j2MB8GA1UdIwQYMBaAFFRIP5GPa7W2ryjxHLPBHIDSf9j2MA0GCSqGSIb3
-#> DQEBCwUAA4ICAQAgTXZwg+g2fO0ac2Ntd0CbzlVPnxQQb2hTl76468V9dDBHzi3S
-#> iTLLrcUVWefuWB9thAYiNr7JOS+R/iUOs68VcPmtiyCm8Od+9c5Q1/SUi66y/tdc
-#> fWY5SWjuBbfleVi/oZkbCbKm5TbFluf27JCrMuzIfC4LOMHthicdZ8uUyEW1MC0z
-#> vS4wcew0Y/n8toc1Y+tTHfe4sQXtXWVPtTi/Q6Lg9HxGdgD35FSU7PCqLcmnWIt6
-#> mxOolca2MyhenUuwssMZDyoU+7SFit/2PGTPRTJesTsIDVjkm5eADfmHLwfp7rv7
-#> RLSZTi8iMBaLOM4jpDD8a3T2LjzYb8JfSOqcqwB2yND8yg9I+KbzamvfJpgecvm7
-#> OmT4J9X5l4/aRwFgvZKRJ5JO42JcQ1dAm50ifWE6x98zqExvvXI0Xb6M/h/cvEHy
-#> L94WxsZFBVtgWkF3RviW4YewWIhEA/ZDNGR3vcoB/ordWxl+1UUZ4Czxdo1B/pbN
-#> vRMy+FaVTrpD1yZS6C2T5VAmPCSkwKeBFiJWSzk2GkopIIcHBodzkFuISP5I1kt8
-#> HbAtHtuwD1YAI9oz+EEZ+5yf10+h1gvOWNtFa5GoVLzeFDl05lNCjfve8s2m5trz
-#> iUOHXzqFhJtCkv72v1JxjAF9nQuaoFacXVdz9iXDBTpmvsZ076kLXXScxA==
+#> ADCCAgoCggIBAIe7kvCc1d0gARv6AamqizhNwILqjBjDZ34BJCyx7ifyP+SNqUfv
+#> XWUP8v6zolfC3LGVA+TOWyslYOROn3aKt5BWVJA0hmtyxHXeF+faaGvjcYjnzwsM
+#> FPNpPfk2EcS1GhBoCt+Y4P7TDe9UnqSIpt2YlMaeGhs8zS4UNZgoWqE+uCEynHQm
+#> 1s/1RLIUOuzJlatnoWoaS5zUzs3Yirt+pNoc/f7DQEFLgHGA8SsO+vzFMCtPdlzP
+#> F2zdd1O6dGzo/Ny1+pzot9Vm4kxGQWHJYkw31PRmrGeQkLDrxqpQTTn29CF0KB9e
+#> USjm17IiylU9sQ+0JOV4QqSs70R7M9gRPYsYnb94oaMX1MwixSGFJ3OclxhYSJhd
+#> k1z4Rr72pylB3DZzxET+q5jlVId8TAxK07P12jCB0/YovU2hXbMoUimlnGNMzAKq
+#> n5hEOtsekZ4ju01xRhAy4uM/tdAhM3iwrgqvrsD8nJHx3uOS3UjEGja4eTAzvnLw
+#> ptjwdzGl7SNcNDG+z4zgoCQS7W9NzKlCkhR2sXTIW2+Ss+fGRsH8JHJTqzjazn0m
+#> TXfNJg/tLDD7zNSQXiFFSOqK7nz4zXLKyTXUt+2XJLrZX3I8p7nFoBP/9vOKibaG
+#> JF3a+FaklnLO6bXyz4acCs07C6yyj/4rs6WWsiXcVjXBchCaomcBnm+LAgMBAAGj
+#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFKzn5UHNHEC+A5rtsgxu
+#> 9o3f/cPyMB8GA1UdIwQYMBaAFKzn5UHNHEC+A5rtsgxu9o3f/cPyMA0GCSqGSIb3
+#> DQEBCwUAA4ICAQARlLJ2uM3TKnWP+tJ1M8gOTUFcMGmqdaqI3/L7Lxpfzt0T7ICy
+#> WLdyEkvzK0OJSdzpXe22hurmnzI27hkCSdXAvRv2JtPTd6szkiN9dry1etKDKq6F
+#> NMNggQxzvpVRRaWfPUamYpy5+ZOlQMuZtWrzwSthPjlfLFqnNm437RoJcrIjO/Zb
+#> D+OfoOMo/3sT7xAhbHoKJaAnr1PBI9dnM3M7OTeTrYxWbM4Rybur1Iqi+bIn8tPN
+#> k/MUJ0FGxrYNR4WX88TXhnZmiY/tlRvi14mlTKOmx7lAIKyzx7HO00ch8hLUnbeO
+#> xawXY0M6Pi1DadRh1cXicZolK18Lh6/XRpdG2j947T8hdXEM++TK+JNTmvGihY9h
+#> Cs7zobshNOaOdJwMTQneMsfn0rgXgNnr2zmFEIVVeIkZ58K7T6OycqM+g2OgXZVM
+#> 4HNQe7sEy6ByDUn4QEQ2GH67wZhIMMhA/sYMWbhlsQYPZ0CEHRxtfujNDivBSwn/
+#> bbjULt/fnur66DJeNDyi4D0H+OSMUiAtAVTxAv1M9J4t5scQphVcV33wbjqwhvpG
+#> 27TzcZEs/OLejNNPNmqopqAWF9azxJdOxsBZqFhjt5M4QGbX0LBVsJRoI4TgfeZD
+#> 6Eou0phs0Fl4WkoUmnKezy9EYPXh41PM9rUZZW5+hBz93W9mUYvo29ZoPw==
 #> -----END CERTIFICATE-----
-#> ",""),rs=c(10407,-37167906,1240343495,1867170140,-1408597331,-809865846,1029945731),dispatcher=TRUE)'
+#> ",""),rs=c(10407,-142355864,-1197030071,450474102,1052658815,885306548,-211429339),dispatcher=TRUE)'
 ```
 The printed value may be deployed directly on a remote machine.
 
@@ -606,7 +606,9 @@ m <- mirai(list(a = head(x), b = "some text"), x = x)
 m[]
 #> 'miraiError' chr Error: Invalid <Table>, external pointer to null
 ```
-However, `serial_config()` can be used to create custom serialization configurations, specifying functions that hook into R's native serialization mechanism for reference objects ('refhooks'). This configuration can then be specified as part of an `everywhere()` call via its '.serial' argument.
+However, `serial_config()` can be used to create custom serialization configurations, specifying functions that hook into R's native serialization mechanism for reference objects ('refhooks').
+
+This configuration may then be passed to the 'serial' argument of a `daemons()` call.
 
 
 ``` r
@@ -616,7 +618,10 @@ cfg <- serial_config(
   ufunc = function(x) arrow::read_ipc_stream(x, as_data_frame = FALSE)
 )
 
-everywhere(library(arrow), .serial = cfg)
+daemons(1, serial = cfg)
+#> [1] 1
+
+everywhere(library(arrow))
 
 m <- mirai(list(a = head(x), b = "some text"), x = x)
 m[]
@@ -633,24 +638,29 @@ m[]
 #> 
 #> $b
 #> [1] "some text"
+
+daemons(0)
+#> [1] 0
 ```
 It can be seen that this time, the arrow table is seamlessly handled in the 'mirai' process. This is the case even when the object is deeply nested inside lists or other structures.
 
-To change registered serialization functions, just call `everywhere()` again supplying the new functions. As an example, we can switch to using [`polars`](https://pola-rs.github.io/r-polars/), a 'lightning fast' dataframe library written in Rust (requires `polars` >= 0.16.4).
+Different serialization functions may be registered for different compute profiles. As an example, the 'polars' profile can be set up to use [`polars`](https://pola-rs.github.io/r-polars/), a 'lightning fast' dataframe library written in Rust (requires `polars` >= 0.16.4).
 
 ``` r
-everywhere(
-  {},
-  .serial = serial_config(
+daemons(
+  n = 1,
+  serial = serial_config(
     class = "RPolarsDataFrame",
     sfunc = function(x) polars::as_polars_df(x)$to_raw_ipc(),
     ufunc = polars::pl$read_ipc
-  )
+  ),
+  .compute = "polars"
 )
+#> [1] 1
 
 x <- polars::as_polars_df(iris)
 
-m <- mirai(list(a = head(x), b = "some text"), x = x)
+m <- mirai(list(a = head(x), b = "some text"), x = x, .compute = "polars")
 m[]
 #> $a
 #> shape: (6, 5)
@@ -669,13 +679,8 @@ m[]
 #> 
 #> $b
 #> [1] "some text"
-```
-To cancel serialization functions entirely, supply an empty list to the '.serial' argument of `everywhere()`:
 
-``` r
-everywhere({}, .serial = list())
-
-daemons(0)
+daemons(0, .compute = "polars")
 #> [1] 0
 ```
 The 'vec' argument to `serialization()` may be specified as `TRUE` if the serialization functions are vectorized and take lists of objects, as is the case for [`safetensors`](https://mlverse.github.io/safetensors/), used for serialization in [`torch`](https://torch.mlverse.org/).
@@ -708,10 +713,10 @@ daemons(4)
 vec <- c(1, 1, 4, 4, 1, 1, 1, 1)
 system.time(mirai_map(vec, Sys.sleep)[])
 #>    user  system elapsed 
-#>   0.006   0.002   4.007
+#>   0.006   0.001   4.007
 system.time(parLapply(cl, vec, Sys.sleep))
 #>    user  system elapsed 
-#>   0.014   0.039   8.050
+#>   0.009   0.005   8.013
 ```
 `.args` is used to specify further constant arguments to `.f` - the 'mean' and 'sd' in the example below:
 
@@ -721,13 +726,13 @@ with(
   mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
 )
 #> [[1]]
-#> [1] 17.43985
+#> [1] 20.65667
 #> 
 #> [[2]]
-#> [1] 20.10787 18.48464
+#> [1] 23.78216 20.98726
 #> 
 #> [[3]]
-#> [1] 19.89101 20.29139 18.38212
+#> [1] 19.60887 20.12661 17.25017
 ```
 Use `...` to further specify objects referenced but not defined in `.f` - the 'do' in the anonymous function below:
 
@@ -739,16 +744,16 @@ ml <- mirai_map(
 )
 #> Warning: mirai is launching one local daemon for a map operation as none previously set
 ml
-#> < mirai map [1/3] >
+#> < mirai map [3/3] >
 ml[]
 #> $a
-#> [1] "3b"
+#> [1] "f7"
 #> 
 #> $b
-#> [1] b4 e4
+#> [1] 21 02
 #> 
 #> $c
-#> [1] "f2bb8a"
+#> [1] "eb7427"
 ```
 Use of `mirai_map()` assumes that `daemons()` have previously been set. If not then one (non-dispatcher) daemon is set to allow the function to proceed. This ensures safe behaviour, but is unlikely to be optimal, so please ensure daemons are set beforehand.
 

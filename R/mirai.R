@@ -186,10 +186,10 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #' Evaluate an expression \sQuote{everywhere} on all connected daemons for the
 #' specified compute profile - this must be set prior to calling this function.
-#' Designed for performing setup operations across daemons by loading packages,
-#' exporting common data, or registering custom serialization functions.
-#' Resultant changes to the global environment, loaded packages and options are
-#' persisted regardless of a daemon's \sQuote{cleanup} setting.
+#' Designed for performing setup operations across daemons by loading packages
+#' or exporting common data. Resultant changes to the global environment, loaded
+#' packages and options are persisted regardless of a daemon's \sQuote{cleanup}
+#' setting.
 #'
 #' This function should be called when no other mirai operations are in
 #' progress. If necessary, wait for all mirai operations to complete. This is as
@@ -198,12 +198,6 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' instructions will be received, or that they will be received on each daemon.
 #'
 #' @inheritParams mirai
-#' @param .serial [default NULL] (optional) a configuration created by
-#'   \code{\link{serial_config}} to register serialization and unserialization
-#'   functions for normally non-exportable reference objects, such as Arrow
-#'   Tables or torch tensors. Updating with a new configuration replaces any
-#'   existing registered functions. To remove the configuration, provide an
-#'   empty list.
 #'
 #' @return A list of mirai executed on each daemon. This may be waited for and
 #'   inspected using \code{\link{call_mirai}} or \code{\link{collect_mirai}}.
@@ -229,11 +223,9 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' collect_mirai(mlist)
 #' daemons(0)
 #'
-#' # loading a package on all daemons and also
-#' # registering custom serialization functions:
-#' cfg <- serial_config("cls_name", function(x) serialize(x, NULL), unserialize)
+#' # loading a package on all daemons
 #' daemons(1, dispatcher = FALSE)
-#' everywhere(library(parallel), .serial = cfg)
+#' everywhere(library(parallel))
 #' m <- mirai("package:parallel" %in% search())
 #' m[]
 #' daemons(0)
@@ -242,7 +234,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #' @export
 #'
-everywhere <- function(.expr, ..., .args = list(), .serial = NULL, .compute = "default") {
+everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 
   envir <- ..[[.compute]]
 
@@ -253,12 +245,6 @@ everywhere <- function(.expr, ..., .args = list(), .serial = NULL, .compute = "d
     .snapshot,
     as.expression(if (is.symbol(expr) && exists(as.character(expr), envir = parent.frame()) && is.language(.expr)) .expr else expr)
   )
-
-  if (is.list(.serial)) {
-    .expr <- c(.register, .expr)
-    .args <- c(.args, list(.serial = .serial))
-    `opt<-`(envir[["sock"]], "serial", .serial)
-  }
 
   if (is.null(envir[["sockc"]])) {
     vec <- vector(mode = "list", length = max(stat(envir[["sock"]], "pipes"), envir[["n"]]))
@@ -640,6 +626,5 @@ mk_mirai_error <- function(e, sc) {
 .miraiInterrupt <- `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))
 .connectionReset <- `class<-`(19L, c("errorValue", "try-error"))
 .cancelRequest <- `class<-`(0L, "c")
-.register <- expression(mirai:::register(.serial))
 .snapshot <- expression(on.exit(mirai:::snapshot(), add = TRUE))
 .block <- expression(on.exit(nanonext::msleep(500L), add = TRUE))

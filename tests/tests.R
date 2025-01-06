@@ -241,13 +241,13 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
 # TLS tests
 connection && Sys.getenv("NOT_CRAN") == "true" && {
   Sys.sleep(1L)
-  test_zero(daemons(url = "tls+tcp://127.0.0.1:0", pass = "test"))
+  cfg <- serial_config("custom", function(x) serialize(x, NULL), unserialize)
+  test_zero(daemons(url = "tls+tcp://127.0.0.1:0", pass = "test", serial = cfg))
   test_equal(launch_local(1L), 1L)
   Sys.sleep(1L)
   test_true(grepl("CERTIFICATE", launch_remote(1L), fixed = TRUE))
   q <- quote(list2env(list(b = 2), envir = .GlobalEnv))
-  cfg <- serial_config("custom", function(x) serialize(x, NULL), unserialize)
-  test_type("list", everywhere(q, .serial = cfg))
+  test_type("list", everywhere(q))
   m <- mirai(b, .timeout = 1000)
   if (!is_error_value(m[])) test_equal(m[], 2L)
   test_null(saisei(1))
