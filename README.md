@@ -75,7 +75,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 5.835207 7.043738 7.042160 7.768617 9.154654
+#> [1] 7.372513 6.518107 7.601174 4.788330 8.825420
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -89,7 +89,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 5.835207 7.043738 7.042160 7.768617 9.154654
+#> [1] 7.372513 6.518107 7.601174 4.788330 8.825420
 ```
 
 #### Daemons
@@ -125,7 +125,7 @@ df <- data.frame(
   fruit = c("melon", "grapes", "coconut"),
   price = c(3L, 5L, 2L)
 )
-m <- mirai_map(df, sprintf, .args = list(fmt = "%s: $%d"))
+m <- mirai_map(df, sprintf, fmt = "%s: $%d")
 ```
 
 A ‘mirai_map’ object is returned immediately. Other code can continue to

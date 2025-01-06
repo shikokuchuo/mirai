@@ -540,19 +540,19 @@ vec <- c(1, 1, 4, 4, 1, 1, 1, 1)
 system.time(mirai_map(vec, Sys.sleep)[])
 system.time(parLapply(cl, vec, Sys.sleep))
 ```
-`.args` is used to specify further constant arguments to `.f` - the 'mean' and 'sd' in the example below:
+`...` is used to specify further constant arguments to `.f` - the 'mean' and 'sd' in the example below:
 ```{r mmap}
 with(
   daemons(3, dispatcher = FALSE),
-  mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
+  mirai_map(1:3, rnorm, mean = 20, sd = 2)[]
 )
 ```
-Use `...` to further specify objects referenced but not defined in `.f` - the 'do' in the anonymous function below:
+Use `.args` to further specify objects referenced but not defined in `.f` - the 'do' in the anonymous function below:
 ```{r mmap2}
 ml <- mirai_map(
   c(a = 1, b = 2, c = 3),
   function(x) do(x, as.logical(x %% 2)),
-  do = nanonext::random
+  .args = list(do = nanonext::random)
 )
 ml
 ml[]
@@ -595,7 +595,7 @@ df <- data.frame(i = seq_along(fruit), fruit = fruit)
 
 with(
   daemons(3, dispatcher = FALSE),
-  mirai_map(df, sprintf, .args = list(fmt = "%d. %s"))[.flat]
+  mirai_map(df, sprintf, fmt = "%d. %s")[.flat]
 )
 ```
 As a dataframe often contains columns of differing type, it is unusual to want to map over the **columns**, however this is possible by simply transforming it beforehand into a list using `as.list()`.
