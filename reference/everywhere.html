@@ -123,18 +123,17 @@ instructions will be received, or that they will be received on each daemon.</p>
 
 <p>The expression ‘.expr’ will be evaluated in a separate R process in a
 clean environment (not the global environment), consisting only of the
-objects in the list or environment supplied to ‘.args’, with the named
-objects passed as ‘...’ (from the environment if one was supplied)
+objects supplied to ‘.args’, with the objects passed as ‘...’
 assigned to the global environment of that process.</p>
-<p>For evaluation to occur <em>as if</em> in your global environment, supply
-objects to ‘...’ rather than ‘.args’. For stricter scoping, use
-‘.args’, which limits, for example, where variables not explicitly
-passed as arguments to functions are found.</p>
 <p>As evaluation occurs in a clean environment, all undefined objects must be
 supplied though ‘...’ and/or ‘.args’, including self-defined
 functions. Functions from a package should use namespaced calls such as
 <code><a href="mirai.html">mirai::mirai()</a></code>, or else the package should be loaded beforehand as
 part of ‘.expr’.</p>
+<p>For evaluation to occur <em>as if</em> in your global environment, supply
+objects to ‘...’ rather than ‘.args’. This is important when
+supplying free variables defined in function bodies, as scoping rules may
+otherwise prevent them from being found.</p>
     </div>
 
     <div class="section level2">
