@@ -143,9 +143,11 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
             send(psock, serial, mode = 1L, block = TRUE, pipe = item)
           } else {
             id <- as.character(-item)
-            if (outq[[id]][["msgid"]])
-              send(outq[[id]][["ctx"]], .connectionReset, mode = 1L, block = TRUE)
-            outq[[id]] <- NULL
+            if (length(outq[[id]])) {
+              if (outq[[id]][["msgid"]])
+                send(outq[[id]][["ctx"]], .connectionReset, mode = 1L, block = TRUE)
+              outq[[id]] <- NULL
+            }
           }
         }
         next
@@ -199,6 +201,10 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
         }
         send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)
         outq[[id]][["msgid"]] <- 0L
+        if (value[4L]) {
+          send(psock, 0L, mode = 2L, pipe = outq[[id]][["pipe"]], block = TRUE)
+          outq[[id]] <- NULL
+        }
       }
 
       if (length(inq))

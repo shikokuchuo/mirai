@@ -12,6 +12,8 @@ daemon(
   autoexit = TRUE,
   cleanup = TRUE,
   output = FALSE,
+  maxtasks = Inf,
+  walltime = Inf,
   tls = NULL,
   rs = NULL
 )
@@ -48,6 +50,12 @@ stderr if TRUE, or else discard if FALSE. Specify as TRUE in the
 \sQuote{...} argument to \code{\link{daemons}} or
 \code{\link{launch_local}} to provide redirection of output to the host
 process (applicable only for local daemons).}
+
+\item{maxtasks}{[default Inf] integer maximum number of tasks to execute
+(task limit) before exiting.}
+
+\item{walltime}{[default Inf] integer milliseconds soft walltime (time limit)
+i.e. the minimum amount of real time elapsed before exiting.}
 
 \item{tls}{[default NULL] required for secure TLS connections over
 'tls+tcp://' or 'wss://'. \strong{Either} the character path to a file

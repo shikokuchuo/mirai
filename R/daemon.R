@@ -54,6 +54,10 @@
 #'   \sQuote{...} argument to \code{\link{daemons}} or
 #'   \code{\link{launch_local}} to provide redirection of output to the host
 #'   process (applicable only for local daemons).
+#' @param maxtasks [default Inf] integer maximum number of tasks to execute
+#'   (task limit) before exiting.
+#' @param walltime [default Inf] integer milliseconds soft walltime (time limit)
+#'   i.e. the minimum amount of real time elapsed before exiting.
 #' @param tls [default NULL] required for secure TLS connections over
 #'   'tls+tcp://' or 'wss://'. \strong{Either} the character path to a file
 #'   containing X.509 certificate(s) in PEM format, comprising the certificate
@@ -88,11 +92,13 @@
 #' @export
 #'
 daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = TRUE,
-                   cleanup = TRUE, output = FALSE, tls = NULL, rs = NULL) {
+                   cleanup = TRUE, output = FALSE, maxtasks = Inf, walltime = Inf,
+                   tls = NULL, rs = NULL) {
 
   missing(dispatcher) &&
     return(v1_daemon(url = url, asyncdial = asyncdial, autoexit = autoexit,
-                     cleanup = cleanup, output = output, ..., tls = tls, rs = rs))
+                     cleanup = cleanup, output = output, maxtasks = maxtasks,
+                     walltime = walltime, ..., tls = tls, rs = rs))
 
   cv <- cv()
   sock <- socket(if (dispatcher) "poly" else "rep")
@@ -107,13 +113,11 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
     devnull <- file(nullfile(), open = "w", blocking = FALSE)
     sink(file = devnull)
     sink(file = devnull, type = "message")
-    on.exit({
-      sink(type = "message")
-      sink()
-      close(devnull)
-    }, add = TRUE)
+    on.exit({ sink(type = "message"); sink(); close(devnull) }, add = TRUE)
   }
   snapshot()
+  task <- 1L
+  maxtime <- if (is.finite(walltime)) mclock() + walltime else FALSE
 
   if (dispatcher) {
     aio <- recv_aio(sock, mode = 1L, cv = cv)
@@ -129,8 +133,15 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
       cancel <- recv_aio(sock, mode = 8L, cv = NA)
       data <- eval_mirai(m)
       stop_aio(cancel)
+      exit <- task >= maxtasks || maxtime && mclock() >= maxtime && .mark()
       send(sock, data, mode = 1L, block = TRUE)
+      exit && {
+        aio <- recv_aio(sock, mode = 8L, cv = cv)
+        wait(cv)
+        break
+      }
       if (cleanup) do_cleanup()
+      task <- task + 1L
     }
   } else {
     repeat {
@@ -141,6 +152,8 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
       data <- eval_mirai(m)
       send(ctx, data, mode = 1L, block = TRUE)
       if (cleanup) do_cleanup()
+      { task >= maxtasks || maxtime && mclock() >= maxtime } && break
+      task <- task + 1L
     }
   }
 
