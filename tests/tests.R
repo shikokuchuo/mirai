@@ -89,7 +89,7 @@ connection && {
   test_error(launch_remote(3L, remote = remote_config(command = "echo", args = list(c("test", "."), c("test", ".")))), "must equal the length")
   test_zero(daemons(0L))
   Sys.sleep(1L)
-  test_equal(1L, daemons(1L, dispatcher = FALSE, maxtasks = 3L, walltime = 10000L, cleanup = FALSE, output = TRUE, .compute = "new"))
+  test_equal(1L, daemons(1L, dispatcher = FALSE, maxtasks = 10L, walltime = 10000L, cleanup = FALSE, output = TRUE, .compute = "new"))
   test_type("character", nextget("urls", .compute = "new"))
   test_type("integer", nextstream(.compute = "new"))
   Sys.sleep(1.5)
