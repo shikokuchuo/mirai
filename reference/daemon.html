@@ -15,7 +15,7 @@ directly, unless deploying manually on remote resources."><meta property="og:ima
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9024</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9025</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,6 +76,7 @@ directly, unless deploying manually on remote resources.</p>
 <span>  cleanup <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  output <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  maxtasks <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>  idletime <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  walltime <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rs <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -135,6 +136,11 @@ process (applicable only for local daemons).</p></dd>
 <dt id="arg-maxtasks">maxtasks<a class="anchor" aria-label="anchor" href="#arg-maxtasks"></a></dt>
 <dd><p>[default Inf] integer maximum number of tasks to execute
 (task limit) before exiting.</p></dd>
+
+
+<dt id="arg-idletime">idletime<a class="anchor" aria-label="anchor" href="#arg-idletime"></a></dt>
+<dd><p>[default Inf] integer milliseconds maximum time to wait for a
+task (idle time) before exiting.</p></dd>
 
 
 <dt id="arg-walltime">walltime<a class="anchor" aria-label="anchor" href="#arg-walltime"></a></dt>
