@@ -34,7 +34,7 @@ if (interactive()) {
 # Only run examples in interactive R sessions
 
 status()
-daemons(n = 2L, url = "wss://[::1]:0")
+daemons(url = "tcp://[::1]:0")
 status()
 daemons(0)
 

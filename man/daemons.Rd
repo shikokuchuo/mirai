@@ -24,7 +24,7 @@ daemons(
 \item{url}{[default NULL] if specified, a character string comprising a URL
 at which to listen for remote daemons, including a port accepting incoming
 connections, e.g. 'tcp://hostname:5555' or 'tcp://10.75.32.70:5555'.
-Specify a URL starting 'tls+tcp://' to use secure TLS connections (for
+Specify a URL with scheme 'tls+tcp://' to use secure TLS connections (for
 details see Distributed Computing section below). Auxiliary function
 \code{\link{host_url}} may be used to construct a valid host URL.}
 
@@ -149,21 +149,16 @@ Specifying \sQuote{url} as a character string allows tasks to be distributed
 across the network. \sQuote{n} is not required in this case, and disregarded
 if supplied.
 
-It is recommended to use a TCP URL such as \sQuote{tcp://10.75.32.70:5555}.
-The host / dispatcher listens at this address, utilising a single port.
-Alternatively a websocket URL such as \sQuote{ws://10.75.32.70:5555/path}
-allows a unique path after the port number, which may support sharing the
-port with other applications
+Supply a URL with a \sQuote{tcp://} scheme, such as
+\sQuote{tcp://10.75.32.70:5555}. The host / dispatcher listens at this
+address, utilising a single port. Individual daemons (started with
+\code{\link{daemon}}) may then dial in to this URL. Host / dispatcher
+automatically adjusts to the number of daemons actually connected, allowing
+dynamic upscaling or downscaling as required.
 
-Individual daemons (started with \code{\link{daemon}}) may then dial in to
-this URL. Host / dispatcher automatically adjusts to the number of daemons
-actually connected. Hence it is possible to dynamically scale up or down the
-number of daemons as required.
-
-Switching the URL scheme to \sQuote{tls+tcp://} or \sQuote{wss://}
-automatically upgrades the connection to use TLS. The auxiliary function
-\code{\link{host_url}} may be used to construct a valid host URL based on the
-computer's hostname.
+Switching the URL scheme to \sQuote{tls+tcp://} automatically upgrades the
+connection to use TLS. The auxiliary function \code{\link{host_url}} may be
+used to construct a valid host URL based on the computer's hostname.
 
 IPv6 addresses are also supported and must be enclosed in square brackets [ ]
 to avoid confusion with the final colon separating the port. For example,
@@ -171,9 +166,8 @@ port 5555 on the IPv6 loopback address ::1 would be specified as
 \sQuote{tcp://[::1]:5555}.
 
 Specifying the wildcard value zero for the port number e.g.
-\sQuote{tcp://[::1]:0} or \sQuote{ws://[::1]:0} will automatically assign a
-free ephemeral port. Use \code{\link{status}} to inspect the actual assigned
-port at any time.
+\sQuote{tcp://[::1]:0} will automatically assign a free ephemeral port. Use
+\code{\link{status}} to inspect the actual assigned port at any time.
 
 Specify \sQuote{remote} with a call to \code{\link{remote_config}} or
 \code{\link{ssh_config}} to launch daemons on remote machines. Otherwise,
@@ -224,8 +218,8 @@ status()
 # Reset to zero
 daemons(0)
 
-# 2 remote daemons via dispatcher using WebSockets
-daemons(2, url = host_url(ws = TRUE))
+# Set up dispatcher accepting TLS over TCP connections
+daemons(url = host_url(tls = TRUE))
 status()
 # Reset to zero
 daemons(0)
@@ -258,11 +252,11 @@ daemons(n = 1L,
         dispatcher = FALSE)
 
 # Launch 4 daemons on the remote machine 10.75.32.90 using SSH tunnelling
-# over port 5555 ('url' hostname must be 'localhost' or '127.0.0.1'):
+# over port 5555 ('url' hostname must be '127.0.0.1'):
 
 daemons(n = 4L,
-        url = 'ws://localhost:5555',
-        remote = ssh_config('ssh://10.75.32.90', tunnel = TRUE))
+        url = 'tcp://127.0.0.1:5555',
+        remote = ssh_config('ssh://10.75.32.90', tunnel = TRUE, port = 5555))
 
 }
 

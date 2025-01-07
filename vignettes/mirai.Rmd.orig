@@ -247,13 +247,11 @@ In the case of a Shiny app, all mirai calls will be executed before the app retu
 
 The daemons interface may also be used to send tasks for computation to remote daemon processes on the network.
 
-Call `daemons()` specifying 'url' as a character string such as: 'tcp://10.75.32.70:5555' at which daemon processes should connect to. Alternatively, use `host_url()` to automatically construct a valid URL.
+Call `daemons()` specifying 'url' as a character string such as: 'tcp://10.75.32.70:5555' at which daemon processes should connect to. Alternatively, use `host_url()` to automatically construct a valid URL. The host / dispatcher listens at this address, utilising a single port.
 
 IPv6 addresses are also supported and must be enclosed in square brackets `[]` to avoid confusion with the final colon separating the port. For example, port 5555 on the IPv6 address `::ffff:a6f:50d` would be specified as `tcp://[::ffff:a6f:50d]:5555`.
 
 For options on actually launching the daemons, please see the next section.
-
-It is recommended to use a TCP URL such as ‘tcp://10.75.32.70:5555’. The host / dispatcher listens at this address, utilising a single port. Alternatively a websocket URL such as ‘ws://10.75.32.70:5555/path’ allows a unique path after the port number, which may support sharing the port with other applications.
 
 Below, calling `host_url()` without a port value uses the default of '0'. This is a wildcard value that will automatically cause a free ephemeral port to be assigned:
 ```{r localqueue}
@@ -293,7 +291,7 @@ The second example below launches one daemon on each of 10.75.32.90 and 10.75.32
 ```{r ldmnd, eval=FALSE}
 daemons(
   n = 1L,
-  url = host_url(ws = TRUE, port = 5555),
+  url = host_url(port = 5555),
   remote = ssh_config(c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"))
 )
 ```
@@ -355,7 +353,7 @@ TLS is available as an option to secure communications from the local machine to
 
 #### Zero-configuration
 
-An automatic zero-configuration default is implemented. Simply specify a secure URL of the form `tls+tcp://` or `wss://` when setting daemons, or use `host_url(tls = TRUE)`, for example:
+An automatic zero-configuration default is implemented. Simply specify a secure URL using the scheme `tls+tcp://` when setting daemons, or use `host_url(tls = TRUE)`, for example:
 ```{r tlsremote}
 daemons(url = host_url(tls = TRUE))
 ```

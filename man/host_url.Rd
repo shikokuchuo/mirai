@@ -5,16 +5,13 @@
 \alias{local_url}
 \title{URL Constructors}
 \usage{
-host_url(ws = FALSE, tls = FALSE, port = 0)
+host_url(tls = FALSE, port = 0)
 
 local_url()
 }
 \arguments{
-\item{ws}{[default FALSE] logical value whether to use a WebSockets 'ws://'
-or else TCP 'tcp://' scheme.}
-
 \item{tls}{[default FALSE] logical value whether to use TLS in which case the
-scheme used will be either 'wss://' or 'tls+tcp://' accordingly.}
+scheme used will be 'tls+tcp://'.}
 
 \item{port}{[default 0] numeric port to use. This should be open to
 connections from the network addresses the daemons are connecting from.
@@ -44,9 +41,8 @@ named pipes on Windows.
 }
 \examples{
 host_url()
-host_url(ws = TRUE)
 host_url(tls = TRUE)
-host_url(ws = TRUE, tls = TRUE, port = 5555)
+host_url(tls = TRUE, port = 5555)
 
 local_url()
 

@@ -31,13 +31,12 @@
 #'
 #' @inheritParams daemon
 #' @param host the character host URL to dial (where tasks are sent from),
-#'   including the port to connect to (and optionally for websockets, a path),
-#'   e.g. 'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.
-#' @param url (optional) the character URL dispatcher should listen at,
-#'   including the port to connect to (and optionally for websockets, a path),
-#'   e.g. 'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.
-#'   Specify 'tls+tcp://' or 'wss://' to use secure TLS connections. Daemons
-#'   should dial in to this URL.
+#'   including the port to connect to e.g. 'tcp://hostname:5555' or
+#'   'tcp://10.75.32.70:5555'.
+#' @param url (optional) the character URL dispatcher should listen at (and
+#'   daemons should dial in to), including the port to connect to e.g.
+#'   'tcp://hostname:5555' or 'tcp://10.75.32.70:5555'. Specify 'tls+tcp://' to
+#'   use secure TLS connections.
 #' @param n (optional) if specified, the integer number of daemons to launch. In
 #'   this case, a local url is automatically generated.
 #' @param ... (optional) additional arguments passed through to
