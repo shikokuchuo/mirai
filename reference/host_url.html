@@ -64,7 +64,7 @@ based on the computer's hostname. This may be supplied directly to the
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">host_url</span><span class="op">(</span>ws <span class="op">=</span> <span class="cn">FALSE</span>, tls <span class="op">=</span> <span class="cn">FALSE</span>, port <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">host_url</span><span class="op">(</span>tls <span class="op">=</span> <span class="cn">FALSE</span>, port <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">local_url</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -73,14 +73,9 @@ based on the computer's hostname. This may be supplied directly to the
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-ws">ws<a class="anchor" aria-label="anchor" href="#arg-ws"></a></dt>
-<dd><p>[default FALSE] logical value whether to use a WebSockets 'ws://'
-or else TCP 'tcp://' scheme.</p></dd>
-
-
-<dt id="arg-tls">tls<a class="anchor" aria-label="anchor" href="#arg-tls"></a></dt>
+<dl><dt id="arg-tls">tls<a class="anchor" aria-label="anchor" href="#arg-tls"></a></dt>
 <dd><p>[default FALSE] logical value whether to use TLS in which case the
-scheme used will be either 'wss://' or 'tls+tcp://' accordingly.</p></dd>
+scheme used will be 'tls+tcp://'.</p></dd>
 
 
 <dt id="arg-port">port<a class="anchor" aria-label="anchor" href="#arg-port"></a></dt>
@@ -109,16 +104,14 @@ named pipes on Windows.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">host_url</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tcp://fv-az1986-199:0"</span>
-<span class="r-in"><span><span class="fu">host_url</span><span class="op">(</span>ws <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ws://fv-az1986-199:0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tcp://fv-az1024-834:0"</span>
 <span class="r-in"><span><span class="fu">host_url</span><span class="op">(</span>tls <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tls+tcp://fv-az1986-199:0"</span>
-<span class="r-in"><span><span class="fu">host_url</span><span class="op">(</span>ws <span class="op">=</span> <span class="cn">TRUE</span>, tls <span class="op">=</span> <span class="cn">TRUE</span>, port <span class="op">=</span> <span class="fl">5555</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "wss://fv-az1986-199:5555"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tls+tcp://fv-az1024-834:0"</span>
+<span class="r-in"><span><span class="fu">host_url</span><span class="op">(</span>tls <span class="op">=</span> <span class="cn">TRUE</span>, port <span class="op">=</span> <span class="fl">5555</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tls+tcp://fv-az1024-834:5555"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">local_url</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "abstract://1db0e3e909e51e70f3f7b12d"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "abstract://37cfce7b3c369db7b16bb05e"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

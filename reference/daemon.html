@@ -89,8 +89,8 @@ directly, unless deploying manually on remote resources.</p>
 
 <dl><dt id="arg-url">url<a class="anchor" aria-label="anchor" href="#arg-url"></a></dt>
 <dd><p>the character host or dispatcher URL to dial into, including the
-port to connect to (and optionally for websockets, a path), e.g.
-'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.</p></dd>
+port to connect to, e.g. 'tcp://hostname:5555' or
+'tls+tcp://10.75.32.70:5555'.</p></dd>
 
 
 <dt id="arg-dispatcher">dispatcher<a class="anchor" aria-label="anchor" href="#arg-dispatcher"></a></dt>
@@ -150,12 +150,11 @@ i.e. the minimum amount of real time elapsed before exiting.</p></dd>
 
 <dt id="arg-tls">tls<a class="anchor" aria-label="anchor" href="#arg-tls"></a></dt>
 <dd><p>[default NULL] required for secure TLS connections over
-'tls+tcp://' or 'wss://'. <strong>Either</strong> the character path to a file
-containing X.509 certificate(s) in PEM format, comprising the certificate
-authority certificate chain starting with the TLS certificate and ending
-with the CA certificate, <strong>or</strong> a length 2 character vector comprising
-[i] the certificate authority certificate chain and [ii] the empty string
-<code>''</code>.</p></dd>
+'tls+tcp://'. <strong>Either</strong> the character path to a file containing X.509
+certificate(s) in PEM format, comprising the certificate authority
+certificate chain starting with the TLS certificate and ending with the CA
+certificate, <strong>or</strong> a length 2 character vector comprising [i] the
+certificate authority certificate chain and [ii] the empty string <code>''</code>.</p></dd>
 
 
 <dt id="arg-rs">rs<a class="anchor" aria-label="anchor" href="#arg-rs"></a></dt>

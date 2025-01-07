@@ -97,7 +97,7 @@ configuration. By default, dispatcher ensures optimal scheduling.</p>
 <dd><p>[default NULL] if specified, a character string comprising a URL
 at which to listen for remote daemons, including a port accepting incoming
 connections, e.g. 'tcp://hostname:5555' or 'tcp://10.75.32.70:5555'.
-Specify a URL starting 'tls+tcp://' to use secure TLS connections (for
+Specify a URL with scheme 'tls+tcp://' to use secure TLS connections (for
 details see Distributed Computing section below). Auxiliary function
 <code><a href="host_url.html">host_url</a></code> may be used to construct a valid host URL.</p></dd>
 
@@ -230,27 +230,22 @@ available daemons.</p>
 <p>Specifying ‘url’ as a character string allows tasks to be distributed
 across the network. ‘n’ is not required in this case, and disregarded
 if supplied.</p>
-<p>It is recommended to use a TCP URL such as ‘tcp://10.75.32.70:5555’.
-The host / dispatcher listens at this address, utilising a single port.
-Alternatively a websocket URL such as ‘ws://10.75.32.70:5555/path’
-allows a unique path after the port number, which may support sharing the
-port with other applications</p>
-<p>Individual daemons (started with <code><a href="daemon.html">daemon</a></code>) may then dial in to
-this URL. Host / dispatcher automatically adjusts to the number of daemons
-actually connected. Hence it is possible to dynamically scale up or down the
-number of daemons as required.</p>
-<p>Switching the URL scheme to ‘tls+tcp://’ or ‘wss://’
-automatically upgrades the connection to use TLS. The auxiliary function
-<code><a href="host_url.html">host_url</a></code> may be used to construct a valid host URL based on the
-computer's hostname.</p>
+<p>Supply a URL with a ‘tcp://’ scheme, such as
+‘tcp://10.75.32.70:5555’. The host / dispatcher listens at this
+address, utilising a single port. Individual daemons (started with
+<code><a href="daemon.html">daemon</a></code>) may then dial in to this URL. Host / dispatcher
+automatically adjusts to the number of daemons actually connected, allowing
+dynamic upscaling or downscaling as required.</p>
+<p>Switching the URL scheme to ‘tls+tcp://’ automatically upgrades the
+connection to use TLS. The auxiliary function <code><a href="host_url.html">host_url</a></code> may be
+used to construct a valid host URL based on the computer's hostname.</p>
 <p>IPv6 addresses are also supported and must be enclosed in square brackets [ ]
 to avoid confusion with the final colon separating the port. For example,
 port 5555 on the IPv6 loopback address ::1 would be specified as
 ‘tcp://[::1]:5555’.</p>
 <p>Specifying the wildcard value zero for the port number e.g.
-‘tcp://[::1]:0’ or ‘ws://[::1]:0’ will automatically assign a
-free ephemeral port. Use <code><a href="status.html">status</a></code> to inspect the actual assigned
-port at any time.</p>
+‘tcp://[::1]:0’ will automatically assign a free ephemeral port. Use
+<code><a href="status.html">status</a></code> to inspect the actual assigned port at any time.</p>
 <p>Specify ‘remote’ with a call to <code><a href="remote_config.html">remote_config</a></code> or
 <code><a href="remote_config.html">ssh_config</a></code> to launch daemons on remote machines. Otherwise,
 <code><a href="launch_local.html">launch_remote</a></code> may be used to generate the shell commands to
@@ -299,8 +294,8 @@ be carried out with the desired ‘.compute’ argument specified.</p>
 <span class="r-in"><span><span class="co"># Reset to zero</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># 2 remote daemons via dispatcher using WebSockets</span></span></span>
-<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">2</span>, url <span class="op">=</span> <span class="fu"><a href="host_url.html">host_url</a></span><span class="op">(</span>ws <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Set up dispatcher accepting TLS over TCP connections</span></span></span>
+<span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span>url <span class="op">=</span> <span class="fu"><a href="host_url.html">host_url</a></span><span class="op">(</span>tls <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="status.html">status</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Reset to zero</span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
@@ -333,11 +328,11 @@ be carried out with the desired ‘.compute’ argument specified.</p>
 <span class="r-in"><span>        dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Launch 4 daemons on the remote machine 10.75.32.90 using SSH tunnelling</span></span></span>
-<span class="r-in"><span><span class="co"># over port 5555 ('url' hostname must be 'localhost' or '127.0.0.1'):</span></span></span>
+<span class="r-in"><span><span class="co"># over port 5555 ('url' hostname must be '127.0.0.1'):</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">daemons</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4L</span>,</span></span>
-<span class="r-in"><span>        url <span class="op">=</span> <span class="st">'ws://localhost:5555'</span>,</span></span>
-<span class="r-in"><span>        remote <span class="op">=</span> <span class="fu"><a href="remote_config.html">ssh_config</a></span><span class="op">(</span><span class="st">'ssh://10.75.32.90'</span>, tunnel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>        url <span class="op">=</span> <span class="st">'tcp://127.0.0.1:5555'</span>,</span></span>
+<span class="r-in"><span>        remote <span class="op">=</span> <span class="fu"><a href="remote_config.html">ssh_config</a></span><span class="op">(</span><span class="st">'ssh://10.75.32.90'</span>, tunnel <span class="op">=</span> <span class="cn">TRUE</span>, port <span class="op">=</span> <span class="fl">5555</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>

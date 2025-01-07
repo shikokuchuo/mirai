@@ -83,6 +83,8 @@
 <li>
 <code><a href="../reference/daemon.html">daemon()</a></code> ‘…’ argument has been moved up to prevent partial matching on any of the optional arguments.</li>
 <li>
+<code><a href="../reference/host_url.html">host_url()</a></code> argument ‘ws’ is removed as a TCP URL is now always recommended (although websocket URLs are still supported).</li>
+<li>
 <code><a href="../reference/saisei.html">saisei()</a></code> is defunct as no longer required, but still available for use with the old v1 dispatcher.</li>
 <li>
 <code>daemons(dispatcher = "thread")</code> (experimental threaded dispatcher) has been retired - as this was based on the old dispatcher architecture and future development will focus on the current design. Specifying ‘dispatcher = thread’ is defunct, but will point to ‘dispatcher = process’ for the time being.</li>
