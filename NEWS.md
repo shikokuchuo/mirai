@@ -2,16 +2,14 @@
 
 #### New Architecture
 
-* Distributed computing now uses a single URL at which all daemons connect (with or without dispatcher).
- - Allows a more efficient `tcp://` or `tls+tcp://` connection instead of websockets.
- - Daemons may be added or removed at any time without limit.
+* Distributed computing now uses a single URL at which all daemons connect (with or without dispatcher), allowing a more efficient `tcp://` or `tls+tcp://` connection instead of websockets.
+* Daemons may be added or removed at any time without limit.
 
 #### New Features
 
 * `daemons(dispatcher = TRUE)` provides a new and more efficient architecture for dispatcher. This argument reverts to a logical value, although 'process' is still accepted and retains the previous behaviour of the v1 dispatcher.
 * `daemons()` gains argument 'serial' to register serial configurations when using dispatcher. These automatically apply to all daemons that connect.
-* Upgrades `stop_mirai()` to cancel remote mirai tasks when using the new dispatcher, returning a logical value indicating whether cancellation was successful.
-* `daemon()` gains the new argument 'dispatcher', which should be set to `TRUE` when connecting to dispatcher and `FALSE` when connecting directly to host.
+* Upgrades `stop_mirai()` to cancel remote mirai tasks (when using dispatcher) returning a logical value indicating whether cancellation was successful.
 * A 'miraiError' now preserves the original condition object. This means that `rlang::abort()` custom metadata may now be accessed using `$` on the 'miraiError' (thanks @James-G-Hill #173).
 
 #### Updates
@@ -22,9 +20,10 @@
 * `launch_local()` and `launch_remote()` simplified to take the argument 'n' instead of 'url' for how many daemons to launch.
 * `launch_local()` now returns the number of daemons launched rather than invisible NULL.
 * `ssh_config()` simplified to take the argument 'port' instead of 'host'. For SSH tunnelling, this is the port that will be used, and the hostname is now required to be '127.0.0.1' (no longer accepting 'localhost'). 
+* `daemon()` gains the new argument 'dispatcher', which should be set to `TRUE` when connecting to dispatcher and `FALSE` when connecting directly to host.
 * `daemon()` '...' argument has been moved up to prevent partial matching on any of the optional arguments.
 * `saisei()` is defunct as no longer required, but still available for use with the old v1 dispatcher.
-* Experimental threaded dispatcher `daemons(dispatcher = "thread")` has been retired (as this was based on the old dispatcher architecture and future development will focus on the current design). Specifying 'dispatcher = thread' is defunct, but will point to 'dispatcher = process' for the time being.
+* `daemons(dispatcher = "thread")` (experimental threaded dispatcher) has been retired - as this was based on the old dispatcher architecture and future development will focus on the current design. Specifying 'dispatcher = thread' is defunct, but will point to 'dispatcher = process' for the time being.
 * Requires `nanonext` >= 1.4.0.
 
 # mirai 1.3.1
