@@ -2,14 +2,14 @@
 
 #### New Architecture
 
-* Distributed computing now uses a single URL at which all daemons connect (with or without dispatcher), allowing a more efficient `tcp://` or `tls+tcp://` connection instead of websockets.
-* Daemons may be added or removed at any time without limit.
+* Distributed computing now uses a single socket and URL at which all daemons connect (with or without dispatcher), allowing a more efficient `tcp://` or `tls+tcp://` connection in all cases (instead of websockets).
+* The number of connected daemons may be upscaled or downscaled at any time without limit.
 
 #### New Features
 
 * `daemons(dispatcher = TRUE)` provides a new and more efficient architecture for dispatcher. This argument reverts to a logical value, although 'process' is still accepted and retains the previous behaviour of the v1 dispatcher.
 * `daemons()` gains argument 'serial' to register serial configurations when using dispatcher. These automatically apply to all daemons that connect.
-* Upgrades `stop_mirai()` to cancel remote mirai tasks (when using dispatcher) returning a logical value indicating whether cancellation was successful.
+* `stop_mirai()` is now able to cancel remote mirai tasks (when using dispatcher), returning a logical value indicating whether cancellation was successful.
 * A 'miraiError' now preserves the original condition object. This means that `rlang::abort()` custom metadata may now be accessed using `$` on the 'miraiError' (thanks @James-G-Hill #173).
 
 #### Updates
