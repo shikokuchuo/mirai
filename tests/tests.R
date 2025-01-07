@@ -251,7 +251,7 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   m <- mirai(b, .timeout = 1000)
   if (!is_error_value(m[])) test_equal(m[], 2L)
   test_null(saisei(1))
-  Sys.sleep(1L)
+  test_zero(daemons(0))
   test_tls <- function(cert) {
     file <- tempfile()
     on.exit(unlink(file))
