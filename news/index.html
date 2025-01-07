@@ -52,8 +52,8 @@
 <h2 class="pkg-version" data-toc-text="1.3.1.9025" id="mirai-1319025-development">mirai 1.3.1.9025 (development)<a class="anchor" aria-label="anchor" href="#mirai-1319025-development"></a></h2>
 <div class="section level5">
 <h5 id="new-architecture-1-3-1-9025">New Architecture<a class="anchor" aria-label="anchor" href="#new-architecture-1-3-1-9025"></a></h5>
-<ul><li>Distributed computing now uses a single URL at which all daemons connect (with or without dispatcher), allowing a more efficient <code>tcp://</code> or <code>tls+tcp://</code> connection instead of websockets.</li>
-<li>Daemons may be added or removed at any time without limit.</li>
+<ul><li>Distributed computing now uses a single socket and URL at which all daemons connect (with or without dispatcher), allowing a more efficient <code>tcp://</code> or <code>tls+tcp://</code> connection in all cases (instead of websockets).</li>
+<li>The number of connected daemons may be upscaled or downscaled at any time without limit.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="new-features-1-3-1-9025">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-3-1-9025"></a></h5>
@@ -61,7 +61,8 @@
 <code>daemons(dispatcher = TRUE)</code> provides a new and more efficient architecture for dispatcher. This argument reverts to a logical value, although ‘process’ is still accepted and retains the previous behaviour of the v1 dispatcher.</li>
 <li>
 <code><a href="../reference/daemons.html">daemons()</a></code> gains argument ‘serial’ to register serial configurations when using dispatcher. These automatically apply to all daemons that connect.</li>
-<li>Upgrades <code><a href="../reference/stop_mirai.html">stop_mirai()</a></code> to cancel remote mirai tasks (when using dispatcher) returning a logical value indicating whether cancellation was successful.</li>
+<li>
+<code><a href="../reference/stop_mirai.html">stop_mirai()</a></code> is now able to cancel remote mirai tasks (when using dispatcher), returning a logical value indicating whether cancellation was successful.</li>
 <li>A ‘miraiError’ now preserves the original condition object. This means that <code><a href="https://rlang.r-lib.org/reference/abort.html" class="external-link">rlang::abort()</a></code> custom metadata may now be accessed using <code>$</code> on the ‘miraiError’ (thanks <a href="https://github.com/James-G-Hill" class="external-link">@James-G-Hill</a> <a href="https://github.com/shikokuchuo/mirai/issues/173" class="external-link">#173</a>).</li>
 </ul></div>
 <div class="section level5">
