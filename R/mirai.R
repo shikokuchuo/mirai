@@ -64,20 +64,26 @@
 #'
 #' The expression \sQuote{.expr} will be evaluated in a separate R process in a
 #' clean environment (not the global environment), consisting only of the
-#' objects in the list or environment supplied to \sQuote{.args}, with the named
-#' objects passed as \sQuote{...} (from the environment if one was supplied)
+#' objects supplied to \sQuote{.args}, with the objects passed as \sQuote{...}
 #' assigned to the global environment of that process.
-#'
-#' For evaluation to occur \emph{as if} in your global environment, supply
-#' objects to \sQuote{...} rather than \sQuote{.args}. For stricter scoping, use
-#' \sQuote{.args}, which limits, for example, where variables not explicitly
-#' passed as arguments to functions are found.
 #'
 #' As evaluation occurs in a clean environment, all undefined objects must be
 #' supplied though \sQuote{...} and/or \sQuote{.args}, including self-defined
 #' functions. Functions from a package should use namespaced calls such as
 #' \code{mirai::mirai()}, or else the package should be loaded beforehand as
 #' part of \sQuote{.expr}.
+#'
+#' For evaluation to occur \emph{as if} in your global environment, supply
+#' objects to \sQuote{...} rather than \sQuote{.args}. This is important when
+#' supplying free variables defined in function bodies, as scoping rules may
+#' otherwise prevent them from being found.
+#'
+#' @section Timeouts:
+#'
+#' Specifying the \sQuote{.timeout} argument ensures that the mirai always
+#' resolves. However, the task may not have completed and still be ongoing in
+#' the daemon process. Use \code{\link{stop_mirai}} instead to explicitly stop
+#' and interrupt a task.
 #'
 #' @section Errors:
 #'
@@ -380,12 +386,13 @@ collect_mirai <- collect_aio
 #' Using dispatcher allows cancellation of \sQuote{mirai}. In the case that the
 #' \sQuote{mirai} is awaiting execution, it is discarded from the queue and
 #' never evaluated. In the case it is already in execution, an interrupt will be
-#' sent. A successful cancellation request does not guarantee successful
-#' cancellation. Note that the task, or a portion of it, may have already
-#' completed before the interrupt is received. Even then it is not always
-#' possible to immediately interrupt, for example, compiled code. This should be
-#' noted particularly if the code carries out side effects during execution,
-#' such as writing to files, etc.
+#' sent.
+#'
+#' A successful cancellation request does not guarantee successful cancellation:
+#' the task, or a portion of it, may have already completed before the interrupt
+#' is received. Even then, compiled code is not always interruptible. This
+#' should be noted, particularly if the code carries out side effects during
+#' execution, such as writing to files, etc.
 #'
 #' @inheritParams call_mirai
 #'

@@ -49,20 +49,19 @@ instructions will be received, or that they will be received on each daemon.
 
 The expression \sQuote{.expr} will be evaluated in a separate R process in a
 clean environment (not the global environment), consisting only of the
-objects in the list or environment supplied to \sQuote{.args}, with the named
-objects passed as \sQuote{...} (from the environment if one was supplied)
+objects supplied to \sQuote{.args}, with the objects passed as \sQuote{...}
 assigned to the global environment of that process.
-
-For evaluation to occur \emph{as if} in your global environment, supply
-objects to \sQuote{...} rather than \sQuote{.args}. For stricter scoping, use
-\sQuote{.args}, which limits, for example, where variables not explicitly
-passed as arguments to functions are found.
 
 As evaluation occurs in a clean environment, all undefined objects must be
 supplied though \sQuote{...} and/or \sQuote{.args}, including self-defined
 functions. Functions from a package should use namespaced calls such as
 \code{mirai::mirai()}, or else the package should be loaded beforehand as
 part of \sQuote{.expr}.
+
+For evaluation to occur \emph{as if} in your global environment, supply
+objects to \sQuote{...} rather than \sQuote{.args}. This is important when
+supplying free variables defined in function bodies, as scoping rules may
+otherwise prevent them from being found.
 }
 
 \examples{

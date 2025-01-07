@@ -216,62 +216,35 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
 
 }
 
-#' Dispatcher (Legacy v1)
-#'
-#' Dispatches tasks from a host to daemons for processing, using FIFO
-#' scheduling, queuing tasks as required. Daemon / dispatcher settings may be
-#' controlled by \code{\link{daemons}} and this function should not need to be
-#' invoked directly.
-#'
-#' The network topology is such that a dispatcher acts as a gateway between the
-#' host and daemons, ensuring that tasks received from the host are dispatched
-#' on a FIFO basis for processing. Tasks are queued at the dispatcher to ensure
-#' tasks are only sent to daemons that can begin immediate execution of the
-#' task.
-#'
-#' @inheritParams daemon
-#' @param host the character host URL to dial (where tasks are sent from),
-#'   including the port to connect to (and optionally for websockets, a path),
-#'   e.g. 'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.
-#' @param url (optional) the character URL or vector of URLs dispatcher should
-#'   listen at, including the port to connect to (and optionally for websockets,
-#'   a path), e.g. 'tcp://hostname:5555' or 'ws://10.75.32.70:5555/path'.
-#'   Specify 'tls+tcp://' or 'wss://' to use secure TLS connections. Tasks are
-#'   sent to daemons dialled into these URLs. If not supplied, \sQuote{n} local
-#'   inter-process URLs will be assigned automatically.
-#' @param n (optional) if specified, the integer number of daemons to listen for.
-#'   Otherwise \sQuote{n} will be inferred from the number of URLs supplied in
-#'   \sQuote{url}. Where a single URL is supplied and \sQuote{n} > 1, \sQuote{n}
-#'   unique URLs will be automatically assigned for daemons to dial into.
-#' @param ... (optional) additional arguments passed through to
-#'   \code{\link{daemon}}. These include  \sQuote{asyncdial}, \sQuote{autoexit},
-#'   \sQuote{cleanup}, \sQuote{maxtasks}, \sQuote{idletime}, \sQuote{walltime}
-#'   and \sQuote{timerstart}.
-#' @param retry [default FALSE] logical value, whether to automatically retry
-#'   tasks where the daemon crashes or terminates unexpectedly on the next
-#'   daemon instance to connect. If TRUE, the mirai will remain unresolved but
-#'   \code{\link{status}} will show \sQuote{online} as 0 and \sQuote{assigned} >
-#'   \sQuote{complete}. To cancel a task in this case, use
-#'   \code{saisei(force = TRUE)}. If FALSE, such tasks will be returned as
-#'   \sQuote{errorValue} 19 (Connection reset).
-#' @param token [default FALSE] if TRUE, appends a unique 24-character token to
-#'   each URL path the dispatcher listens at (not applicable for TCP URLs which
-#'   do not accept a path).
-#' @param tls [default NULL] (required for secure TLS connections)
-#'   \strong{either} the character path to a file containing the PEM-encoded TLS
-#'   certificate and associated private key (may contain additional certificates
-#'   leading to a validation chain, with the TLS certificate first), \strong{or}
-#'   a length 2 character vector comprising [i] the TLS certificate (optionally
-#'   certificate chain) and [ii] the associated private key.
-#' @param pass [default NULL] (required only if the private key supplied to
-#'   \sQuote{tls} is encrypted with a password) For security, should be provided
-#'   through a function that returns this value, rather than directly.
-#' @param monitor (for package internal use only) do not set this parameter.
-#'
-#' @return Invisible NULL.
-#'
-#' @noRd
-#'
+# internals --------------------------------------------------------------------
+
+get_ports <- function(url, n) {
+  baseurl <- parse_url(url)
+  if (startsWith(baseurl[["scheme"]], "t")) {
+    if (baseurl[["port"]] == "0") integer(n) else seq.int(from = baseurl[["port"]], length.out = n)
+  }
+}
+
+sub_real_port <- function(port, url) sub("(?<=:)0(?![^/])", port, url, perl = TRUE)
+
+check_url <- function(sock) {
+  listener <- attr(sock, "listener")[[1L]]
+  url <- opt(listener, "url")
+  if (parse_url(url)[["port"]] == "0")
+    url <- sub_real_port(opt(listener, "tcp-bound-port"), url)
+  url
+}
+
+query_dispatcher <- function(sock, command, send_mode = 2L, recv_mode = 5L, block = .limit_short)
+  if (r <- send(sock, command, mode = send_mode, block = block)) r else
+    recv(sock, mode = recv_mode, block = block)
+
+create_req <- function(ctx, cv)
+  list(ctx = ctx, req = recv_aio(ctx, mode = 8L, cv = cv))
+
+
+# Legacy compatibility functions -----------------------------------------------
+
 v1_dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE,
                           token = FALSE, tls = NULL, pass = NULL, rs = NULL, monitor = NULL) {
 
@@ -450,19 +423,8 @@ v1_dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE,
 
 #' Saisei (Regenerate Token)
 #'
-#' When using daemons with the legacy v1 dispatcher, regenerates the token for
-#' the URL a dispatcher socket listens at.
-#'
-#' When a URL is regenerated, the listener at the specified socket is closed and
-#' replaced immediately, hence this function will only be successful if there
-#' are no existing connections at the socket (i.e. \sQuote{online} status shows
-#' 0), unless the argument \sQuote{force} is specified as TRUE.
-#'
-#' If \sQuote{force} is specified as TRUE, the socket is immediately closed and
-#' regenerated. If this happens while a mirai task is still ongoing, it will be
-#' returned as an \sQuote{errorValue} 7 (Object closed). This may be used to
-#' cancel a task that consistently hangs or crashes to prevent it from failing
-#' repeatedly when new daemons connect.
+#' [DEPRECATED] This is a legacy function used only with the legacy v1
+#' dispatcher, and will be removed in a future release.
 #'
 #' @inheritParams mirai
 #' @param i integer index number URL to regenerate at dispatcher.
@@ -470,32 +432,6 @@ v1_dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE,
 #'   when there is an existing active connection.
 #'
 #' @return The regenerated character URL upon success, or else NULL.
-#'
-#' @section Timeouts:
-#'
-#' Specifying the \sQuote{.timeout} argument to \code{\link{mirai}} ensures that
-#' the mirai always resolves. However, the task may not have completed and still
-#' be ongoing in the daemon process. In such situations, dispatcher ensures that
-#' queued tasks are not assigned to the busy process, however overall
-#' performance may still be degraded if they remain in use.
-#'
-#' If a process hangs and cannot be restarted otherwise, \code{saisei}
-#' specifying \code{force = TRUE} may be used to cancel the task and regenerate
-#' any particular URL for a new \code{\link{daemon}} to connect to.
-#'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
-#' daemons(1L, dispatcher = "process")
-#' Sys.sleep(1L)
-#' status()
-#' saisei(i = 1L, force = TRUE)
-#' status()
-#'
-#' daemons(0)
-#'
-#' }
 #'
 #' @keywords internal
 #' @export
@@ -512,29 +448,3 @@ saisei <- function(i, force = FALSE, .compute = "default") {
   r
 
 }
-
-# internals --------------------------------------------------------------------
-
-get_ports <- function(url, n) {
-  baseurl <- parse_url(url)
-  if (startsWith(baseurl[["scheme"]], "t")) {
-    if (baseurl[["port"]] == "0") integer(n) else seq.int(from = baseurl[["port"]], length.out = n)
-  }
-}
-
-sub_real_port <- function(port, url) sub("(?<=:)0(?![^/])", port, url, perl = TRUE)
-
-check_url <- function(sock) {
-  listener <- attr(sock, "listener")[[1L]]
-  url <- opt(listener, "url")
-  if (parse_url(url)[["port"]] == "0")
-    url <- sub_real_port(opt(listener, "tcp-bound-port"), url)
-  url
-}
-
-query_dispatcher <- function(sock, command, send_mode = 2L, recv_mode = 5L, block = .limit_short)
-  if (r <- send(sock, command, mode = send_mode, block = block)) r else
-    recv(sock, mode = recv_mode, block = block)
-
-create_req <- function(ctx, cv)
-  list(ctx = ctx, req = recv_aio(ctx, mode = 8L, cv = cv))

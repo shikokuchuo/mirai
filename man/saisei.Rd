@@ -19,48 +19,7 @@ to use (each compute profile has its own independent set of daemons).}
 The regenerated character URL upon success, or else NULL.
 }
 \description{
-When using daemons with the legacy v1 dispatcher, regenerates the token for
-the URL a dispatcher socket listens at.
-}
-\details{
-When a URL is regenerated, the listener at the specified socket is closed and
-replaced immediately, hence this function will only be successful if there
-are no existing connections at the socket (i.e. \sQuote{online} status shows
-0), unless the argument \sQuote{force} is specified as TRUE.
-
-If \sQuote{force} is specified as TRUE, the socket is immediately closed and
-regenerated. If this happens while a mirai task is still ongoing, it will be
-returned as an \sQuote{errorValue} 7 (Object closed). This may be used to
-cancel a task that consistently hangs or crashes to prevent it from failing
-repeatedly when new daemons connect.
-}
-\section{Timeouts}{
-
-
-Specifying the \sQuote{.timeout} argument to \code{\link{mirai}} ensures that
-the mirai always resolves. However, the task may not have completed and still
-be ongoing in the daemon process. In such situations, dispatcher ensures that
-queued tasks are not assigned to the busy process, however overall
-performance may still be degraded if they remain in use.
-
-If a process hangs and cannot be restarted otherwise, \code{saisei}
-specifying \code{force = TRUE} may be used to cancel the task and regenerate
-any particular URL for a new \code{\link{daemon}} to connect to.
-}
-
-\examples{
-if (interactive()) {
-# Only run examples in interactive R sessions
-
-daemons(1L, dispatcher = "process")
-Sys.sleep(1L)
-status()
-saisei(i = 1L, force = TRUE)
-status()
-
-daemons(0)
-
-}
-
+[DEPRECATED] This is a legacy function used only with the legacy v1
+dispatcher, and will be removed in a future release.
 }
 \keyword{internal}
