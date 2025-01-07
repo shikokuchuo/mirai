@@ -560,11 +560,7 @@ launch_daemon <- function(args, output)
 
 launch_sync_dispatcher <- function(sock, sockc, args, output, tls = NULL, pass = NULL, serial = NULL) {
   system2(.command, args = c("--default-packages=NULL", "--vanilla", "-e", args), stdout = output, stderr = output, wait = FALSE)
-  vec <- list(Sys.getenv("R_DEFAULT_PACKAGES"),
-              if (is.character(tls)) tls[1L],
-              if (is.character(tls) && length(tls) > 1L) tls[2L],
-              if (is.character(pass)) pass[1L],
-              serial)
+  vec <- list(Sys.getenv("R_DEFAULT_PACKAGES"), tls, pass, serial)
   if (is.list(serial))
     `opt<-`(sock, "serial", serial)
   query_dispatcher(sockc, vec, send_mode = 1L, recv_mode = 2L, block = .limit_long)

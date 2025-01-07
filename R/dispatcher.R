@@ -84,15 +84,15 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
   if (auto) {
     url <- local_url()
   } else {
-    if (length(cmessage[[2L]]) && is.null(tls)) {
-      tls <- c(cmessage[[2L]], cmessage[[3L]])
-      pass <- cmessage[[4L]]
+    if (is.character(cmessage[[2L]]) && is.null(tls)) {
+      tls <- cmessage[[2L]]
+      pass <- cmessage[[3L]]
     }
     if (length(tls))
       tls <- tls_config(server = tls, pass = pass)
   }
   pass <- NULL
-  serial <- cmessage[[5L]]
+  serial <- cmessage[[4L]]
 
   psock <- socket("poly")
   on.exit(reap(psock), add = TRUE, after = TRUE)
@@ -288,9 +288,9 @@ v1_dispatcher <- function(host, url = NULL, n = NULL, ..., retry = FALSE,
   } else {
     ports <- get_ports(url, n)
     if (length(ports)) token <- FALSE
-    if (ctrchannel && length(cmessage[[2L]]) && is.null(tls)) {
-      tls <- c(cmessage[[2L]], cmessage[[3L]])
-      pass <- cmessage[[4L]]
+    if (ctrchannel && is.character(cmessage[[2L]]) && is.null(tls)) {
+      tls <- cmessage[[2L]]
+      pass <- cmessage[[3L]]
     }
     if (length(tls))
       tls <- tls_config(server = tls, pass = pass)
