@@ -141,6 +141,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
           if (item > 0) {
             outq[[as.character(item)]] <- list(pipe = item, msgid = 0L, ctx = NULL)
             send(psock, serial, mode = 1L, block = TRUE, pipe = item)
+            cv_signal(cv)
           } else {
             id <- as.character(-item)
             if (length(outq[[id]])) {
@@ -247,7 +248,6 @@ query_dispatcher <- function(sock, command, send_mode = 2L, recv_mode = 5L, bloc
 
 create_req <- function(ctx, cv)
   list(ctx = ctx, req = recv_aio(ctx, mode = 8L, cv = cv))
-
 
 # Legacy compatibility functions -----------------------------------------------
 

@@ -116,7 +116,11 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
     devnull <- file(nullfile(), open = "w", blocking = FALSE)
     sink(file = devnull)
     sink(file = devnull, type = "message")
-    on.exit({ sink(type = "message"); sink(); close(devnull) }, add = TRUE)
+    on.exit({
+      sink(type = "message")
+      sink()
+      close(devnull)
+    }, add = TRUE)
   }
   snapshot()
   task <- 1L

@@ -243,7 +243,7 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   Sys.sleep(1L)
   cfg <- serial_config("custom", function(x) serialize(x, NULL), unserialize)
   test_zero(daemons(url = "tls+tcp://127.0.0.1:0", pass = "test", serial = cfg))
-  test_equal(launch_local(1L, maxtasks = 2L, walltime = 10000L, idletime = 2000L), 1L)
+  test_equal(launch_local(1L), 1L)
   Sys.sleep(1L)
   test_true(grepl("CERTIFICATE", launch_remote(1L), fixed = TRUE))
   q <- quote(list2env(list(b = 2), envir = .GlobalEnv))
@@ -276,6 +276,21 @@ connection && requireNamespace("promises", quietly = TRUE) && Sys.getenv("NOT_CR
   Sys.sleep(1L)
   getNamespace("later")[["run_now"]]()
   test_zero(daemons(NULL))
+}
+# mirai daemon limits tests
+connection && Sys.getenv("NOT_CRAN") == "true" && {
+  Sys.sleep(1L)
+  test_equal(daemons(1, cleanup = FALSE, maxtasks = 2L), 1L)
+  test_equal(mirai(1)[], mirai(1)[])
+  m <- mirai(0L)
+  Sys.sleep(1L)
+  test_zero(status()$connections)
+  test_equal(status()$mirai[["awaiting"]], 1L)
+  test_equal(launch_local(1, idletime = 5000L, walltime = 500L), 1L)
+  test_zero(m[])
+  Sys.sleep(1L)
+  test_zero(status()$connections)
+  test_zero(daemons(0))
 }
 # mirai cancellation tests
 connection && Sys.getenv("NOT_CRAN") == "true" && {
