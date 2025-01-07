@@ -39,7 +39,8 @@ section below).}
 
 \item{...}{(optional) additional arguments passed through to
 \code{\link{daemon}} if launching daemons. These include \sQuote{asyncdial},
-\sQuote{autoexit}, \sQuote{cleanup} and \sQuote{output}.}
+\sQuote{autoexit}, \sQuote{cleanup}, \sQuote{output}, \sQuote{maxtasks},
+\sQuote{idletime} and \sQuote{walltime}.}
 
 \item{force}{[default TRUE] logical value whether to always reset daemons and
 apply new settings for a compute profile, even if already set. If FALSE,

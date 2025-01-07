@@ -13,6 +13,7 @@ daemon(
   cleanup = TRUE,
   output = FALSE,
   maxtasks = Inf,
+  idletime = Inf,
   walltime = Inf,
   tls = NULL,
   rs = NULL
@@ -53,6 +54,9 @@ process (applicable only for local daemons).}
 
 \item{maxtasks}{[default Inf] integer maximum number of tasks to execute
 (task limit) before exiting.}
+
+\item{idletime}{[default Inf] integer milliseconds maximum time to wait for a
+task (idle time) before exiting.}
 
 \item{walltime}{[default Inf] integer milliseconds soft walltime (time limit)
 i.e. the minimum amount of real time elapsed before exiting.}

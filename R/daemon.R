@@ -56,6 +56,8 @@
 #'   process (applicable only for local daemons).
 #' @param maxtasks [default Inf] integer maximum number of tasks to execute
 #'   (task limit) before exiting.
+#' @param idletime [default Inf] integer milliseconds maximum time to wait for a
+#'   task (idle time) before exiting.
 #' @param walltime [default Inf] integer milliseconds soft walltime (time limit)
 #'   i.e. the minimum amount of real time elapsed before exiting.
 #' @param tls [default NULL] required for secure TLS connections over
@@ -92,13 +94,14 @@
 #' @export
 #'
 daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = TRUE,
-                   cleanup = TRUE, output = FALSE, maxtasks = Inf, walltime = Inf,
-                   tls = NULL, rs = NULL) {
+                   cleanup = TRUE, output = FALSE, maxtasks = Inf, idletime = Inf,
+                   walltime = Inf, tls = NULL, rs = NULL) {
 
-  missing(dispatcher) &&
-    return(v1_daemon(url = url, asyncdial = asyncdial, autoexit = autoexit,
-                     cleanup = cleanup, output = output, maxtasks = maxtasks,
-                     walltime = walltime, ..., tls = tls, rs = rs))
+  missing(dispatcher) && return(
+    v1_daemon(url = url, asyncdial = asyncdial, autoexit = autoexit,
+              cleanup = cleanup, output = output, maxtasks = maxtasks,
+              idletime = idletime, walltime = walltime, ..., tls = tls, rs = rs)
+  )
 
   cv <- cv()
   sock <- socket(if (dispatcher) "poly" else "rep")
@@ -117,6 +120,7 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
   }
   snapshot()
   task <- 1L
+  timeout <- if (idletime > walltime) walltime else if (is.finite(idletime)) idletime
   maxtime <- if (is.finite(walltime)) mclock() + walltime else FALSE
 
   if (dispatcher) {
@@ -126,10 +130,13 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
     if (is.list(serial))
       `opt<-`(sock, "serial", serial)
     repeat {
-      aio <- recv_aio(sock, mode = 1L, cv = cv)
+      aio <- recv_aio(sock, mode = 1L, timeout = timeout, cv = cv)
       wait(cv) || break
       m <- collect_aio(aio)
-      is.object(m) && next
+      is.integer(m) && {
+        m == 5L && break
+        next
+      }
       cancel <- recv_aio(sock, mode = 8L, cv = NA)
       data <- eval_mirai(m)
       stop_aio(cancel)
@@ -147,9 +154,10 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
   } else {
     repeat {
       ctx <- .context(sock)
-      aio <- recv_aio(ctx, mode = 1L, cv = cv)
+      aio <- recv_aio(ctx, mode = 1L, timeout = timeout, cv = cv)
       wait(cv) || break
       m <- collect_aio(aio)
+      is.integer(m) && break
       data <- eval_mirai(m)
       send(ctx, data, mode = 1L, block = TRUE)
       if (cleanup) do_cleanup()

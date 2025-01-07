@@ -632,6 +632,5 @@ mk_mirai_error <- function(e, sc) {
 
 .miraiInterrupt <- `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))
 .connectionReset <- `class<-`(19L, c("errorValue", "try-error"))
-.cancelRequest <- `class<-`(0L, "c")
 .snapshot <- expression(on.exit(mirai:::snapshot(), add = TRUE))
 .block <- expression(on.exit(nanonext::msleep(500L), add = TRUE))
