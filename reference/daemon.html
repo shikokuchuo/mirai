@@ -15,7 +15,7 @@ directly, unless deploying manually on remote resources."><meta property="og:ima
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9028</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9029</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,6 +78,7 @@ directly, unless deploying manually on remote resources.</p>
 <span>  maxtasks <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  idletime <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  walltime <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rs <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -146,6 +147,12 @@ task (idle time) before exiting.</p></dd>
 <dt id="arg-walltime">walltime<a class="anchor" aria-label="anchor" href="#arg-walltime"></a></dt>
 <dd><p>[default Inf] integer milliseconds soft walltime (time limit)
 i.e. the minimum amount of real time elapsed before exiting.</p></dd>
+
+
+<dt id="arg-id">id<a class="anchor" aria-label="anchor" href="#arg-id"></a></dt>
+<dd><p>[default NULL] (optional) integer daemon ID provided to dispatcher
+to track connection status. Causes <code><a href="status.html">status</a></code> to report this ID
+under <code>$events</code> when the daemon connects and disconnects.</p></dd>
 
 
 <dt id="arg-tls">tls<a class="anchor" aria-label="anchor" href="#arg-tls"></a></dt>

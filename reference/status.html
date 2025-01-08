@@ -9,7 +9,7 @@ current connections and daemons status."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9028</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1.9029</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,6 +82,16 @@ current connections and daemons status.</p>
     daemon for execution, and <strong>completed</strong> - number of tasks for which
     the result has been received (either completed or cancelled).</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="events">Events<a class="anchor" aria-label="anchor" href="#events"></a></h2>
+
+
+
+<p>If dispatcher is used combined with daemon IDs, an additional element
+  <strong>events</strong> will report the positive integer ID when the daemon
+  connects and the negative value when it disconnects. Only the events since
+  the previous status query are returned.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
