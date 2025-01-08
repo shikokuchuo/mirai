@@ -1,4 +1,4 @@
-# mirai 1.3.1.9026 (development)
+# mirai 1.3.1.9027 (development)
 
 #### New Architecture
 
@@ -15,6 +15,7 @@
 #### Updates
 
 * `status()` using the new dispatcher is updated to provide more concise information.
+* `collect_mirai()` is now interruptible and takes a '...' argument accepting the collection options provided to the 'mirai_map' `[]` method, such as `.flat` etc.
 * `everywhere()` now returns a list of mirai, which may be waited for and inspected (thanks @dgkf  #164).
 * `everywhere()` drops argument '.serial' as serialization configurations are now registered via an argument at `daemons()`.
 * `launch_local()` and `launch_remote()` simplified to take the argument 'n' instead of 'url' for how many daemons to launch.

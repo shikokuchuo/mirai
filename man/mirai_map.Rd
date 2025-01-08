@@ -50,7 +50,7 @@ only the failures to be re-run.
 Note: requires daemons to have previously been set. If not, then one local
 daemon is set before the function proceeds.
 }
-\section{Results}{
+\section{Collection Options}{
 
 
 \code{x[]} collects the results of a \sQuote{mirai_map} \code{x} and returns

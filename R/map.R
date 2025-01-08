@@ -52,7 +52,7 @@
 #'
 #' @return A \sQuote{mirai_map} (list of \sQuote{mirai} objects).
 #'
-#' @section Results:
+#' @section Collection Options:
 #'
 #' \code{x[]} collects the results of a \sQuote{mirai_map} \code{x} and returns
 #' a list. This will wait for all asynchronous operations to complete if still
@@ -215,21 +215,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
 `[.mirai_map` <- function(x, ...) {
 
   missing(..1) && return(collect_aio_(x))
-
-  dots <- eval(`[[<-`(substitute(alist(...)), 1L, quote(list)), envir = .)
-  expr <- if (length(dots) > 1L) do.call(expression, dots) else dots[[1L]]
-  xlen <- length(x)
-  i <- 0L
-  typ <- xi <- FALSE
-  collect_map <- function(i) {
-    xi <- collect_aio_(x[[i]])
-    eval(expr)
-    xi
-  }
-  eval(expr)
-  out <- `names<-`(lapply(seq_len(xlen), collect_map), names(x))
-  xi && return(unlist(out, recursive = FALSE))
-  out
+  map(x, ...)
 
 }
 
@@ -245,10 +231,10 @@ print.mirai_map <- function(x, ...) {
 
 #' mirai Map Options
 #'
-#' Expressions to insert into the \code{[]} method for \sQuote{mirai_map}
-#' objects.
+#' Expressions to be provided to the \code{[]} method for \sQuote{mirai_map}
+#' objects, or the \code{...} argument of \code{\link{collect_mirai}}.
 #'
-#' @inheritSection mirai_map Results
+#' @inheritSection mirai_map Collection Options
 #'
 #' @keywords internal
 #' @export
@@ -288,3 +274,24 @@ print.mirai_map <- function(x, ...) {
 .stop <- compiler::compile(
   quote(if (is_error_value(xi)) { lapply(x, stop_mirai); stop(xi, call. = FALSE) })
 )
+
+# internals --------------------------------------------------------------------
+
+map <- function(x, ...) {
+
+  dots <- eval(`[[<-`(substitute(alist(...)), 1L, quote(list)), envir = .)
+  expr <- if (length(dots) > 1L) do.call(expression, dots) else dots[[1L]]
+  xlen <- length(x)
+  i <- 0L
+  typ <- xi <- FALSE
+  collect_map <- function(i) {
+    xi <- collect_aio_(x[[i]])
+    eval(expr)
+    xi
+  }
+  eval(expr)
+  out <- `names<-`(lapply(seq_len(xlen), collect_map), names(x))
+  xi && return(unlist(out, recursive = FALSE))
+  out
+
+}

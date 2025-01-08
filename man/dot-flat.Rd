@@ -26,10 +26,10 @@ An object of class \code{bytecode} of length 1.
 .stop
 }
 \description{
-Expressions to insert into the \code{[]} method for \sQuote{mirai_map}
-objects.
+Expressions to be provided to the \code{[]} method for \sQuote{mirai_map}
+objects, or the \code{...} argument of \code{\link{collect_mirai}}.
 }
-\section{Results}{
+\section{Collection Options}{
 
 
 \code{x[]} collects the results of a \sQuote{mirai_map} \code{x} and returns

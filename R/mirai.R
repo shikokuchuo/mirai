@@ -341,17 +341,19 @@ call_mirai_ <- call_aio_
 
 #' mirai (Collect Value)
 #'
-#' \code{collect_mirai} waits for the \sQuote{mirai} to resolve if still in
-#' progress, and returns its value directly. It is a more efifcient version of
-#' and equivalent to \code{call_mirai(x)$data}.
+#' Waits for the \sQuote{mirai} to resolve if still in progress, and returns its
+#' value directly. It is a more efficient version of and equivalent to
+#' \code{call_mirai_(x)$data}.
 #'
 #' This function will wait for the asynchronous operation(s) to complete if
-#' still in progress (blocking), and is not interruptible.
+#' still in progress, blocking but interruptible.
 #'
-#' \code{x[]} may be used to wait for and return the value of a mirai \code{x},
-#' and is the user-interruptible counterpart to \code{collect_mirai(x)}.
+#' \code{x[]} may also be used to wait for and return the value of a mirai
+#' \code{x}, and is equivalent to \code{collect_mirai(x)}.
 #'
 #' @inheritParams call_mirai
+#' @param ... (if \sQuote{x} is a list of mirai) any of the collection options
+#'   for \code{\link{mirai_map}}, such as \code{\link{.flat}}.
 #'
 #' @return An object (the return value of the \sQuote{mirai}), or a list of such
 #'   objects (the same length as \sQuote{x}, preserving names).
@@ -372,11 +374,22 @@ call_mirai_ <- call_aio_
 #' # using x[]
 #' m[]
 #'
+#' # mirai_map with collection options
+#' daemons(1, dispatcher = FALSE)
+#' m <- mirai_map(1:3, rnorm)
+#' collect_mirai(m, .flat, .progress)
+#' daemons(0)
+#'
 #' }
 #'
 #' @export
 #'
-collect_mirai <- collect_aio
+collect_mirai <- function(x, ...) {
+
+  is.list(x) && ...length() && return(map(x, ...))
+  collect_aio_(x)
+
+}
 
 #' mirai (Stop)
 #'
