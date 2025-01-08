@@ -1,4 +1,4 @@
-# mirai 1.3.1.9029 (development)
+# mirai 2.0.0
 
 #### New Architecture
 
