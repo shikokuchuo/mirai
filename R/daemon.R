@@ -143,13 +143,7 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
       cancel <- recv_aio(sock, mode = 8L, cv = NA)
       data <- eval_mirai(m)
       stop_aio(cancel)
-      { task >= maxtasks || maxtime && mclock() >= maxtime } && {
-        .mark()
-        send(sock, data, mode = 1L, block = TRUE)
-        aio <- recv_aio(sock, mode = 8L, cv = cv)
-        wait(cv)
-        break
-      }
+      { task >= maxtasks || maxtime && mclock() >= maxtime } && .mark()
       send(sock, data, mode = 1L, block = TRUE)
       if (cleanup) do_cleanup()
       task <- task + 1L
