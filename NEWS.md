@@ -2,29 +2,35 @@
 
 #### New Architecture
 
-* Distributed computing now uses a single socket and URL at which all daemons connect (with or without dispatcher), allowing a more efficient `tcp://` or `tls+tcp://` connection in all cases (instead of websockets).
-* The number of connected daemons may be upscaled or downscaled at any time without limit.
+* Distributed computing now uses a single socket and URL at which all daemons connect (with or without dispatcher).
+  + Allows a more efficient `tcp://` or `tls+tcp://` connection in all cases.
+  + The number of connected daemons may be upscaled or downscaled at any time without limit.
 
 #### New Features
 
 * `daemons(dispatcher = TRUE)` provides a new and more efficient architecture for dispatcher. This argument reverts to a logical value, although 'process' is still accepted and retains the previous behaviour of the v1 dispatcher.
-* `daemons()` gains argument 'serial' to register serial configurations when using dispatcher. These automatically apply to all daemons that connect.
+* `daemons()` gains argument 'serial' to register serialization configurations when using dispatcher. These automatically apply to all daemons that connect.
 * `stop_mirai()` is now able to cancel remote mirai tasks (when using dispatcher), returning a logical value indicating whether cancellation was successful.
 * A 'miraiError' now preserves the original condition object. This means that `rlang::abort()` custom metadata may now be accessed using `$` on the 'miraiError' (thanks @James-G-Hill #173).
 
 #### Updates
 
-* `status()` using the new dispatcher is updated to provide more concise information.
+* `status()` using the new dispatcher is updated to provide more concise and insightful information.
+* `everywhere()` updates:
+  + Enhanced to return a list of mirai, which may be waited for and inspected (thanks @dgkf  #164).
+  + Drops argument '.serial' as serialization configurations are now registered via an argument at `daemons()`.
+* `daemon()` updates:
+  + Gains the new argument 'dispatcher', which should be set to `TRUE` when connecting to dispatcher and `FALSE` when connecting directly to host.
+  + Gains argument 'id' which accepts an integer value that allows `status()` to track connection and disconnection events.
+  + '...' has been moved up to prevent partial matching on any of the optional arguments.
+  + 'cleanup' argument simplified to a TRUE/FALSE value.
+  + 'timerstart' argument removed.
+* `launch_local()` and `launch_remote()` updates:
+  + Enhanced to now launch daemons with the originally-supplied arguments by default.
+  + Simplified to take the argument 'n' instead of 'url' for how many daemons to launch.
+  + `launch_local()` now returns the number of daemons launched rather than invisible NULL.
 * `collect_mirai()` is now interruptible and takes a '...' argument accepting the collection options provided to the 'mirai_map' `[]` method, such as `.flat` etc.
-* `everywhere()` now returns a list of mirai, which may be waited for and inspected (thanks @dgkf  #164).
-* `everywhere()` drops argument '.serial' as serialization configurations are now registered via an argument at `daemons()`.
-* `launch_local()` and `launch_remote()` simplified to take the argument 'n' instead of 'url' for how many daemons to launch.
-* `launch_local()` and `launch_remote()` now launch daemons with the originally-supplied arguments by default.
-* `launch_local()` now returns the number of daemons launched rather than invisible NULL.
-* `ssh_config()` simplified to take the argument 'port' instead of 'host'. For SSH tunnelling, this is the port that will be used, and the hostname is now required to be '127.0.0.1' (no longer accepting 'localhost'). 
-* `daemon()` gains the new argument 'dispatcher', which should be set to `TRUE` when connecting to dispatcher and `FALSE` when connecting directly to host.
-* `daemon()` '...' argument has been moved up to prevent partial matching on any of the optional arguments.
-* `daemon()` gains argument 'id' which accept an integer value that allows `status()` to track connection and disconnection events.
+* `ssh_config()` simplified to take the argument 'port' instead of 'host'. For SSH tunnelling, this is the port that will be used, and the hostname is now required to be '127.0.0.1' (no longer accepting 'localhost').
 * `host_url()` argument 'ws' is removed as a TCP URL is now always recommended (although websocket URLs are still supported).
 * `saisei()` is defunct as no longer required, but still available for use with the old v1 dispatcher.
 * `daemons(dispatcher = "thread")` (experimental threaded dispatcher) has been retired - as this was based on the old dispatcher architecture and future development will focus on the current design. Specifying 'dispatcher = thread' is defunct, but will point to 'dispatcher = process' for the time being.
