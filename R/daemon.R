@@ -109,7 +109,7 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
   sock <- socket(if (dispatcher) "poly" else "rep")
   on.exit(reap(sock))
   `[[<-`(., "sock", sock)
-  autoexit && pipe_notify(sock, cv = cv, remove = TRUE, flag = as.integer(autoexit))
+  autoexit && pipe_notify(sock, cv = cv, remove = TRUE, flag = autoexit)
   if (length(tls)) tls <- tls_config(client = tls)
   dial_and_sync_socket(sock, url, asyncdial = asyncdial, tls = tls)
 
@@ -254,7 +254,7 @@ v1_daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
   sock <- socket("rep")
   on.exit(reap(sock))
   `[[<-`(., "sock", sock)
-  autoexit && pipe_notify(sock, cv = cv, remove = TRUE, flag = as.integer(autoexit))
+  autoexit && pipe_notify(sock, cv = cv, remove = TRUE, flag = autoexit)
   if (length(tls)) tls <- tls_config(client = tls)
   dial_and_sync_socket(sock, url, asyncdial = asyncdial, tls = tls)
 
