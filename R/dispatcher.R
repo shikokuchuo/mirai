@@ -102,6 +102,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
 
   msgid <- 0L
   inq <- outq <- list()
+  events <- integer()
   envir <- new.env(hash = FALSE)
   if (is.numeric(rs)) `[[<-`(envir, "stream", as.integer(rs))
   if (auto) {
@@ -146,6 +147,8 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
             if (length(outq[[id]])) {
               if (outq[[id]][["msgid"]])
                 send(outq[[id]][["ctx"]], .connectionReset, mode = 1L, block = TRUE)
+              if (length(outq[[id]][["dmnid"]]))
+                events <- c(events, outq[[id]][["dmnid"]])
               outq[[id]] <- NULL
             }
           }
@@ -162,8 +165,10 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
             found <- c(
               length(outq),
               length(inq),
-              sum(as.logical(unlist(lapply(outq, .subset2, "msgid"), use.names = FALSE)))
+              sum(as.logical(unlist(lapply(outq, .subset2, "msgid"), use.names = FALSE))),
+              events
             )
+            events <- integer()
           } else {
             found <- FALSE
             for (i in seq_along(outq))
@@ -199,11 +204,21 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
           cv_signal(cv)
           next
         }
-        send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)
-        outq[[id]][["msgid"]] <- 0L
         if (value[4L]) {
+          if (value[4L] > 1L) {
+            dmnid <- readBin(value, "integer", n = 2L)[2L]
+            events <- c(events, dmnid)
+            outq[[id]][["dmnid"]] <- -dmnid
+            next
+          }
+          send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)
           send(psock, ._scm_., mode = 2L, pipe = outq[[id]][["pipe"]], block = TRUE)
+          if (length(outq[[id]][["dmnid"]]))
+            events <- c(events, outq[[id]][["dmnid"]])
           outq[[id]] <- NULL
+        } else {
+          send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)
+          outq[[id]][["msgid"]] <- 0L
         }
       }
 

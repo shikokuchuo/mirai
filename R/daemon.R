@@ -60,6 +60,9 @@
 #'   task (idle time) before exiting.
 #' @param walltime [default Inf] integer milliseconds soft walltime (time limit)
 #'   i.e. the minimum amount of real time elapsed before exiting.
+#' @param id [default NULL] (optional) integer daemon ID provided to dispatcher
+#'   to track connection status. Causes \code{\link{status}} to report this ID
+#'   under \code{$events} when the daemon connects and disconnects.
 #' @param tls [default NULL] required for secure TLS connections over
 #'   'tls+tcp://'. \strong{Either} the character path to a file containing X.509
 #'   certificate(s) in PEM format, comprising the certificate authority
@@ -94,7 +97,7 @@
 #'
 daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = TRUE,
                    cleanup = TRUE, output = FALSE, maxtasks = Inf, idletime = Inf,
-                   walltime = Inf, tls = NULL, rs = NULL) {
+                   walltime = Inf, id = NULL, tls = NULL, rs = NULL) {
 
   missing(dispatcher) && return(
     v1_daemon(url = url, asyncdial = asyncdial, autoexit = autoexit,
@@ -128,6 +131,8 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
 
   if (dispatcher) {
     aio <- recv_aio(sock, mode = 1L, cv = cv)
+    if (is.numeric(id))
+      send(sock, c(.intmax, as.integer(id)), mode = 2L, block = TRUE)
     wait(cv) || return()
     serial <- collect_aio(aio)
     if (is.list(serial))

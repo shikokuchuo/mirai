@@ -279,16 +279,20 @@ connection && requireNamespace("promises", quietly = TRUE) && Sys.getenv("NOT_CR
 # mirai daemon limits tests
 connection && Sys.getenv("NOT_CRAN") == "true" && {
   Sys.sleep(1L)
-  test_equal(daemons(1, cleanup = FALSE, maxtasks = 2L), 1L)
+  test_equal(daemons(1, cleanup = FALSE, maxtasks = 2L, id = 125L), 1L)
   test_equal(mirai(1)[], mirai(1)[])
   m <- mirai(0L)
   Sys.sleep(1L)
-  test_zero(status()$connections)
+  res <- status()
+  test_zero(res$connections)
+  test_identical(res$events, c(125L, -125L))
   test_equal(status()$mirai[["awaiting"]], 1L)
-  test_equal(launch_local(1, idletime = 5000L, walltime = 500L), 1L)
+  test_equal(launch_local(1, idletime = 5000L, walltime = 500L, id = 129L), 1L)
   test_zero(m[])
   Sys.sleep(1L)
-  test_zero(status()$connections)
+  res <- status()
+  test_zero(res$connections)
+  test_identical(res$events, c(129L, -129L))
   test_zero(daemons(0))
 }
 # mirai cancellation tests
