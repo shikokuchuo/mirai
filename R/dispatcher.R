@@ -199,24 +199,26 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
         value <- .subset2(res, "value")
         id <- as.character(.subset2(res, "aio"))
         res <- recv_aio(psock, mode = 8L, cv = cv)
-        if (value[1L] == 0L) {
-          dmnid <- readBin(value, "integer", n = 2L)[2L]
-          events <- c(events, dmnid)
-          outq[[id]][["dmnid"]] <- -dmnid
-          next
-        }
         if (outq[[id]][["msgid"]] < 0) {
           outq[[id]][["msgid"]] <- 0L
           cv_signal(cv)
           next
         }
-        send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)
-        outq[[id]][["msgid"]] <- 0L
         if (value[4L]) {
+          if (value[4L] > 1L) {
+            dmnid <- readBin(value, "integer", n = 2L)[2L]
+            events <- c(events, dmnid)
+            outq[[id]][["dmnid"]] <- -dmnid
+            next
+          }
+          send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)
           send(psock, ._scm_., mode = 2L, pipe = outq[[id]][["pipe"]], block = TRUE)
           if (length(outq[[id]][["dmnid"]]))
             events <- c(events, outq[[id]][["dmnid"]])
           outq[[id]] <- NULL
+        } else {
+          send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)
+          outq[[id]][["msgid"]] <- 0L
         }
       }
 

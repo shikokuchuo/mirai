@@ -132,7 +132,7 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
   if (dispatcher) {
     aio <- recv_aio(sock, mode = 1L, cv = cv)
     if (is.numeric(id))
-      send(sock, c(0L, as.integer(id)), mode = 2L, block = TRUE)
+      send(sock, c(.intmax, as.integer(id)), mode = 2L, block = TRUE)
     wait(cv) || return()
     serial <- collect_aio(aio)
     if (is.list(serial))
