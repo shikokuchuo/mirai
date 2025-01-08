@@ -250,6 +250,8 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
     if (is.null(envir)) {
       envir <- init_envir_stream(seed)
       launches <- 0L
+      dots <- parse_dots(...)
+      output <- attr(dots, "output")
       switch(
         parse_dispatcher(dispatcher),
         {
@@ -260,8 +262,6 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         {
           tls <- configure_tls(url, tls, pass, envir, returnconfig = FALSE)
           cv <- cv()
-          dots <- parse_dots(...)
-          output <- attr(dots, "output")
           urld <- local_url()
           sock <- req_socket(urld)
           res <- launch_sync_dispatcher(sock, sock, wa52(urld, dots, url), output, tls, pass, serial)
@@ -273,8 +273,6 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
           n <- if (missing(n)) length(url) else if (is.numeric(n) && n >= 1L) as.integer(n) else stop(._[["n_one"]])
           tls <- configure_tls(url, tls, pass, envir, returnconfig = FALSE)
           cv <- cv()
-          dots <- parse_dots(...)
-          output <- attr(dots, "output")
           urld <- local_url()
           urlc <- sprintf("%s%s", urld, "c")
           sock <- req_socket(urld)
@@ -286,7 +284,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         },
         stop(._[["dispatcher_args"]])
       )
-      `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", launches))
+      `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", launches), "dots", dots))
       if (length(remote))
         launch_remote(n = n, remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
     } else if (force) {
@@ -345,7 +343,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         },
         stop(._[["dispatcher_args"]])
       )
-      `[[<-`(.., .compute, `[[<-`(`[[<-`(envir, "sock", sock), "n", n))
+      `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "dots", dots))
     } else if (force) {
       daemons(0L, .compute = .compute)
       return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ...,
