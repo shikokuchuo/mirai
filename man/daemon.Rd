@@ -15,6 +15,7 @@ daemon(
   maxtasks = Inf,
   idletime = Inf,
   walltime = Inf,
+  id = NULL,
   tls = NULL,
   rs = NULL
 )
@@ -60,6 +61,10 @@ task (idle time) before exiting.}
 
 \item{walltime}{[default Inf] integer milliseconds soft walltime (time limit)
 i.e. the minimum amount of real time elapsed before exiting.}
+
+\item{id}{[default NULL] (optional) integer daemon ID provided to dispatcher
+to track connection status. Causes \code{\link{status}} to report this ID
+under \code{$events} when the daemon connects and disconnects.}
 
 \item{tls}{[default NULL] required for secure TLS connections over
 'tls+tcp://'. \strong{Either} the character path to a file containing X.509

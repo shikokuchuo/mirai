@@ -1,4 +1,4 @@
-# mirai 1.3.1.9028 (development)
+# mirai 1.3.1.9029 (development)
 
 #### New Architecture
 
@@ -24,6 +24,7 @@
 * `ssh_config()` simplified to take the argument 'port' instead of 'host'. For SSH tunnelling, this is the port that will be used, and the hostname is now required to be '127.0.0.1' (no longer accepting 'localhost'). 
 * `daemon()` gains the new argument 'dispatcher', which should be set to `TRUE` when connecting to dispatcher and `FALSE` when connecting directly to host.
 * `daemon()` '...' argument has been moved up to prevent partial matching on any of the optional arguments.
+* `daemon()` gains argument 'id' which accept an integer value that allows `status()` to track connection and disconnection events.
 * `host_url()` argument 'ws' is removed as a TCP URL is now always recommended (although websocket URLs are still supported).
 * `saisei()` is defunct as no longer required, but still available for use with the old v1 dispatcher.
 * `daemons(dispatcher = "thread")` (experimental threaded dispatcher) has been retired - as this was based on the old dispatcher architecture and future development will focus on the current design. Specifying 'dispatcher = thread' is defunct, but will point to 'dispatcher = process' for the time being.
