@@ -559,11 +559,11 @@ launch_daemon <- function(args, output)
   system2(.command, args = c("-e", args), stdout = output, stderr = output, wait = FALSE)
 
 launch_sync_dispatcher <- function(sock, sockc, args, output, tls = NULL, pass = NULL, serial = NULL) {
+  pkgs <- Sys.getenv("R_DEFAULT_PACKAGES")
   system2(.command, args = c("--default-packages=NULL", "--vanilla", "-e", args), stdout = output, stderr = output, wait = FALSE)
-  vec <- list(Sys.getenv("R_DEFAULT_PACKAGES"), tls, pass, serial)
   if (is.list(serial))
     `opt<-`(sock, "serial", serial)
-  query_dispatcher(sockc, vec, send_mode = 1L, recv_mode = 2L, block = .limit_long)
+  query_dispatcher(sockc, list(pkgs, tls, pass, serial), send_mode = 1L, recv_mode = 2L, block = .limit_long)
 }
 
 launch_sync_daemons <- function(seq, sock, urld, dots, envir, output) {
