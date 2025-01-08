@@ -614,10 +614,10 @@ query_status <- function(envir) {
 dispatcher_status <- function(envir) {
   status <- query_dispatcher(envir[["sock"]], c(0L, 0L))
   out <- list(connections = status[1L],
-       daemons = envir[["urls"]],
-       mirai = c(awaiting = status[2L],
-                 executing = status[3L],
-                 completed = envir[["msgid"]] - status[2L] - status[3L]))
+              daemons = envir[["urls"]],
+              mirai = c(awaiting = status[2L],
+                        executing = status[3L],
+                        completed = envir[["msgid"]] - status[2L] - status[3L]))
   if (length(status) > 3L)
     out <- c(out, list(events = status[4:length(status)]))
   out
