@@ -52,15 +52,17 @@
 <h2 class="pkg-version" data-toc-text="1.3.1.9029" id="mirai-1319029-development">mirai 1.3.1.9029 (development)<a class="anchor" aria-label="anchor" href="#mirai-1319029-development"></a></h2>
 <div class="section level5">
 <h5 id="new-architecture-1-3-1-9029">New Architecture<a class="anchor" aria-label="anchor" href="#new-architecture-1-3-1-9029"></a></h5>
-<ul><li>Distributed computing now uses a single socket and URL at which all daemons connect (with or without dispatcher), allowing a more efficient <code>tcp://</code> or <code>tls+tcp://</code> connection in all cases (instead of websockets).</li>
+<ul><li>Distributed computing now uses a single socket and URL at which all daemons connect (with or without dispatcher).
+<ul><li>Allows a more efficient <code>tcp://</code> or <code>tls+tcp://</code> connection in all cases.</li>
 <li>The number of connected daemons may be upscaled or downscaled at any time without limit.</li>
+</ul></li>
 </ul></div>
 <div class="section level5">
 <h5 id="new-features-1-3-1-9029">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-3-1-9029"></a></h5>
 <ul><li>
 <code>daemons(dispatcher = TRUE)</code> provides a new and more efficient architecture for dispatcher. This argument reverts to a logical value, although ‘process’ is still accepted and retains the previous behaviour of the v1 dispatcher.</li>
 <li>
-<code><a href="../reference/daemons.html">daemons()</a></code> gains argument ‘serial’ to register serial configurations when using dispatcher. These automatically apply to all daemons that connect.</li>
+<code><a href="../reference/daemons.html">daemons()</a></code> gains argument ‘serial’ to register serialization configurations when using dispatcher. These automatically apply to all daemons that connect.</li>
 <li>
 <code><a href="../reference/stop_mirai.html">stop_mirai()</a></code> is now able to cancel remote mirai tasks (when using dispatcher), returning a logical value indicating whether cancellation was successful.</li>
 <li>A ‘miraiError’ now preserves the original condition object. This means that <code><a href="https://rlang.r-lib.org/reference/abort.html" class="external-link">rlang::abort()</a></code> custom metadata may now be accessed using <code>$</code> on the ‘miraiError’ (thanks <a href="https://github.com/James-G-Hill" class="external-link">@James-G-Hill</a> <a href="https://github.com/shikokuchuo/mirai/issues/173" class="external-link">#173</a>).</li>
@@ -68,27 +70,31 @@
 <div class="section level5">
 <h5 id="updates-1-3-1-9029">Updates<a class="anchor" aria-label="anchor" href="#updates-1-3-1-9029"></a></h5>
 <ul><li>
-<code><a href="../reference/status.html">status()</a></code> using the new dispatcher is updated to provide more concise information.</li>
+<code><a href="../reference/status.html">status()</a></code> using the new dispatcher is updated to provide more concise and insightful information.</li>
+<li>
+<code><a href="../reference/everywhere.html">everywhere()</a></code> updates:
+<ul><li>Enhanced to return a list of mirai, which may be waited for and inspected (thanks <a href="https://github.com/dgkf" class="external-link">@dgkf</a> <a href="https://github.com/shikokuchuo/mirai/issues/164" class="external-link">#164</a>).</li>
+<li>Drops argument ‘.serial’ as serialization configurations are now registered via an argument at <code><a href="../reference/daemons.html">daemons()</a></code>.</li>
+</ul></li>
+<li>
+<code><a href="../reference/daemon.html">daemon()</a></code> updates:
+<ul><li>Gains the new argument ‘dispatcher’, which should be set to <code>TRUE</code> when connecting to dispatcher and <code>FALSE</code> when connecting directly to host.</li>
+<li>Gains argument ‘id’ which accepts an integer value that allows <code><a href="../reference/status.html">status()</a></code> to track connection and disconnection events.</li>
+<li>‘…’ has been moved up to prevent partial matching on any of the optional arguments.</li>
+<li>‘cleanup’ argument simplified to a TRUE/FALSE value.</li>
+<li>‘timerstart’ argument removed.</li>
+</ul></li>
+<li>
+<code><a href="../reference/launch_local.html">launch_local()</a></code> and <code><a href="../reference/launch_local.html">launch_remote()</a></code> updates:
+<ul><li>Enhanced to now launch daemons with the originally-supplied arguments by default.</li>
+<li>Simplified to take the argument ‘n’ instead of ‘url’ for how many daemons to launch.</li>
+<li>
+<code><a href="../reference/launch_local.html">launch_local()</a></code> now returns the number of daemons launched rather than invisible NULL.</li>
+</ul></li>
 <li>
 <code><a href="../reference/collect_mirai.html">collect_mirai()</a></code> is now interruptible and takes a ‘…’ argument accepting the collection options provided to the ‘mirai_map’ <code>[]</code> method, such as <code>.flat</code> etc.</li>
 <li>
-<code><a href="../reference/everywhere.html">everywhere()</a></code> now returns a list of mirai, which may be waited for and inspected (thanks <a href="https://github.com/dgkf" class="external-link">@dgkf</a> <a href="https://github.com/shikokuchuo/mirai/issues/164" class="external-link">#164</a>).</li>
-<li>
-<code><a href="../reference/everywhere.html">everywhere()</a></code> drops argument ‘.serial’ as serialization configurations are now registered via an argument at <code><a href="../reference/daemons.html">daemons()</a></code>.</li>
-<li>
-<code><a href="../reference/launch_local.html">launch_local()</a></code> and <code><a href="../reference/launch_local.html">launch_remote()</a></code> simplified to take the argument ‘n’ instead of ‘url’ for how many daemons to launch.</li>
-<li>
-<code><a href="../reference/launch_local.html">launch_local()</a></code> and <code><a href="../reference/launch_local.html">launch_remote()</a></code> now launch daemons with the originally-supplied arguments by default.</li>
-<li>
-<code><a href="../reference/launch_local.html">launch_local()</a></code> now returns the number of daemons launched rather than invisible NULL.</li>
-<li>
 <code><a href="../reference/remote_config.html">ssh_config()</a></code> simplified to take the argument ‘port’ instead of ‘host’. For SSH tunnelling, this is the port that will be used, and the hostname is now required to be ‘127.0.0.1’ (no longer accepting ‘localhost’).</li>
-<li>
-<code><a href="../reference/daemon.html">daemon()</a></code> gains the new argument ‘dispatcher’, which should be set to <code>TRUE</code> when connecting to dispatcher and <code>FALSE</code> when connecting directly to host.</li>
-<li>
-<code><a href="../reference/daemon.html">daemon()</a></code> ‘…’ argument has been moved up to prevent partial matching on any of the optional arguments.</li>
-<li>
-<code><a href="../reference/daemon.html">daemon()</a></code> gains argument ‘id’ which accept an integer value that allows <code><a href="../reference/status.html">status()</a></code> to track connection and disconnection events.</li>
 <li>
 <code><a href="../reference/host_url.html">host_url()</a></code> argument ‘ws’ is removed as a TCP URL is now always recommended (although websocket URLs are still supported).</li>
 <li>
