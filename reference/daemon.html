@@ -75,9 +75,9 @@ directly, unless deploying manually on remote resources.</p>
 <span>  autoexit <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  cleanup <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  output <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  maxtasks <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  idletime <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  walltime <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>  maxtasks <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rs <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -134,11 +134,6 @@ stderr if TRUE, or else discard if FALSE. Specify as TRUE in the
 process (applicable only for local daemons).</p></dd>
 
 
-<dt id="arg-maxtasks">maxtasks<a class="anchor" aria-label="anchor" href="#arg-maxtasks"></a></dt>
-<dd><p>[default Inf] integer maximum number of tasks to execute
-(task limit) before exiting.</p></dd>
-
-
 <dt id="arg-idletime">idletime<a class="anchor" aria-label="anchor" href="#arg-idletime"></a></dt>
 <dd><p>[default Inf] integer milliseconds maximum time to wait for a
 task (idle time) before exiting.</p></dd>
@@ -147,6 +142,11 @@ task (idle time) before exiting.</p></dd>
 <dt id="arg-walltime">walltime<a class="anchor" aria-label="anchor" href="#arg-walltime"></a></dt>
 <dd><p>[default Inf] integer milliseconds soft walltime (time limit)
 i.e. the minimum amount of real time elapsed before exiting.</p></dd>
+
+
+<dt id="arg-maxtasks">maxtasks<a class="anchor" aria-label="anchor" href="#arg-maxtasks"></a></dt>
+<dd><p>[default Inf] integer maximum number of tasks to execute
+(task limit) before exiting.</p></dd>
 
 
 <dt id="arg-id">id<a class="anchor" aria-label="anchor" href="#arg-id"></a></dt>
@@ -172,7 +172,9 @@ and should not be independently supplied.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Invisible NULL.</p>
+    <p>Invisibly, an integer exit code: 0L for normal termination, and a
+  positive value if a self-imposed limit was reached: 1L (idletime), 2L
+  (walltime), 3L (maxtasks).</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
