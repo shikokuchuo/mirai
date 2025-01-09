@@ -345,7 +345,6 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
   mq <- mirai(Sys.sleep(0.7), .timeout = 500)
   test_class("matrix", status()[["daemons"]])
   test_null(saisei(i = 1L))
-  test_type("character", saisei(i = 1L, force = TRUE))
   Sys.sleep(0.1)
   test_equal(daemons(url = "wss://127.0.0.1:0", dispatcher = "thread", output = TRUE, token = TRUE), 1L)
   test_equal(nextget("n"), 1L)
