@@ -286,7 +286,7 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   res <- status()
   test_zero(res$connections)
   test_identical(res$events, c(125L, -125L))
-  test_equal(status()$mirai[["awaiting"]], 1L)
+  test_equal(res$mirai[["awaiting"]], 1L)
   test_equal(launch_local(1, idletime = 5000L, walltime = 500L, id = 129L), 1L)
   test_zero(m[])
   Sys.sleep(1L)
