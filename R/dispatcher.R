@@ -96,7 +96,6 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
 
   psock <- socket("poly")
   on.exit(reap(psock), add = TRUE, after = TRUE)
-  `opt<-`(psock, "send-buffer", 1L)
   m <- monitor(psock, cv)
   listen(psock, url = url, tls = tls, error = TRUE)
 
