@@ -116,9 +116,9 @@ launch_remote <- function(n = 1L, remote = remote_config(), ..., tls = NULL, .co
   }
   n <- as.integer(n)
   envir <- ..[[.compute]]
-  write_args <- if (length(envir[["msgid"]])) wa32 else wa3
   is.null(envir) && stop(._[["daemons_unset"]])
   url <- envir[["urls"]][1L]
+  write_args <- if (length(envir[["msgid"]])) wa32 else wa3
   dots <- if (missing(..1)) envir[["dots"]] else parse_dots(...)
   if (is.null(tls)) tls <- envir[["tls"]]
 
@@ -323,7 +323,7 @@ ssh_config <- function(remotes, port, tunnel = FALSE, timeout = 10, command = "s
   premotes <- lapply(remotes, parse_url)
   hostnames <- lapply(premotes, .subset2, "hostname")
   ports <- lapply(premotes, .subset2, "port")
-  tun <- if (tunnel) sprintf("-R %d:%s:%d", as.integer(port), "127.0.0.1", as.integer(port))
+  tun <- if (tunnel) sprintf("-R %d:127.0.0.1:%d", as.integer(port), as.integer(port))
 
   rlen <- length(remotes)
   args <- vector(mode = "list", length = rlen)

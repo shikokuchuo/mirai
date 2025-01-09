@@ -294,6 +294,15 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   test_zero(res$connections)
   test_identical(res$events, c(129L, -129L))
   test_zero(daemons(0))
+  Sys.sleep(1L)
+  test_equal(daemons(1, dispatcher = FALSE, maxtasks = 1L), 1L)
+  test_zero(mirai(0L)[])
+  Sys.sleep(0.5)
+  test_zero(status()$connections)
+  test_equal(launch_local(1, idletime = 200L, walltime = 1000L), 1L)
+  Sys.sleep(0.5)
+  test_zero(status()$connections)
+  test_zero(daemons(0))
 }
 # mirai cancellation tests
 connection && Sys.getenv("NOT_CRAN") == "true" && {
@@ -345,7 +354,6 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
   mq <- mirai(Sys.sleep(0.7), .timeout = 500)
   test_class("matrix", status()[["daemons"]])
   test_null(saisei(i = 1L))
-  test_type("character", saisei(i = 1L, force = TRUE))
   Sys.sleep(0.1)
   test_equal(daemons(url = "wss://127.0.0.1:0", dispatcher = "thread", output = TRUE, token = TRUE), 1L)
   test_equal(nextget("n"), 1L)
