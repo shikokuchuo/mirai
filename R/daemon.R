@@ -158,7 +158,7 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
         .mark()
         send(sock, data, mode = 1L, block = TRUE)
         aio <- recv_aio(sock, mode = 8L, cv = cv)
-        xc <- 2L + task >= maxtasks
+        xc <- 2L + (task >= maxtasks)
         wait(cv)
         break
       }
@@ -180,7 +180,7 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
       send(ctx, data, mode = 1L, block = TRUE)
       if (cleanup) do_cleanup()
       { task >= maxtasks || maxtime && mclock() >= maxtime } && {
-        xc <- 2L + task >= maxtasks
+        xc <- 2L + (task >= maxtasks)
         break
       }
       task <- task + 1L
