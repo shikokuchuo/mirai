@@ -205,17 +205,17 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
           next
         }
         if (value[4L]) {
-          if (value[4L] > 1L) {
+          if (value[4L] == 1L) {
+            send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)
+            send(psock, 0L, mode = 2L, pipe = outq[[id]][["pipe"]], block = TRUE)
+            if (length(outq[[id]][["dmnid"]]))
+              events <- c(events, outq[[id]][["dmnid"]])
+            outq[[id]] <- NULL
+          } else {
             dmnid <- readBin(value, "integer", n = 2L)[2L]
             events <- c(events, dmnid)
             outq[[id]][["dmnid"]] <- -dmnid
-            next
           }
-          send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)
-          send(psock, 0L, mode = 2L, pipe = outq[[id]][["pipe"]], block = TRUE)
-          if (length(outq[[id]][["dmnid"]]))
-            events <- c(events, outq[[id]][["dmnid"]])
-          outq[[id]] <- NULL
           next
         } else {
           send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)
