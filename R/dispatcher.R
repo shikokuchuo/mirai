@@ -116,7 +116,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
     changes <- read_monitor(m)
     for (item in changes)
       if (item > 0) {
-        outq[[as.character(item)]] <- list(pipe = item, msgid = 0L, ctx = NULL)
+        outq[[as.character(item)]] <- list2env(list(pipe = item, msgid = 0L, ctx = NULL))
         send(psock, serial, mode = 1L, block = TRUE, pipe = item)
       }
 
@@ -139,7 +139,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
       length(changes) && {
         for (item in changes) {
           if (item > 0) {
-            outq[[as.character(item)]] <- list(pipe = item, msgid = 0L, ctx = NULL)
+            outq[[as.character(item)]] <- list2env(list(pipe = item, msgid = 0L, ctx = NULL))
             send(psock, serial, mode = 1L, block = TRUE, pipe = item)
             cv_signal(cv)
           } else {
@@ -171,10 +171,10 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
             events <- integer()
           } else {
             found <- FALSE
-            for (i in seq_along(outq))
-              if (outq[[i]][["msgid"]] == id) {
-                send(psock, 0L, mode = 1L, pipe = outq[[i]][["pipe"]], block = TRUE)
-                outq[[i]][["msgid"]] <- -1L
+            for (item in outq)
+              if (item[["msgid"]] == id) {
+                send(psock, 0L, mode = 1L, pipe = item[["pipe"]], block = TRUE)
+                `[[<-`(item, "msgid", -1L)
                 found <- TRUE
                 break
               }
@@ -200,7 +200,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
         id <- as.character(.subset2(res, "aio"))
         res <- recv_aio(psock, mode = 8L, cv = cv)
         if (outq[[id]][["msgid"]] < 0) {
-          outq[[id]][["msgid"]] <- 0L
+          `[[<-`(outq[[id]], "msgid", 0L)
           cv_signal(cv)
           next
         }
@@ -214,21 +214,21 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
           } else {
             dmnid <- readBin(value, "integer", n = 2L)[2L]
             events <- c(events, dmnid)
-            outq[[id]][["dmnid"]] <- -dmnid
+            `[[<-`(outq[[id]], "dmnid", -dmnid)
           }
           next
         } else {
           send(outq[[id]][["ctx"]], value, mode = 2L, block = TRUE)
-          outq[[id]][["msgid"]] <- 0L
+          `[[<-`(outq[[id]], "msgid", 0L)
         }
       }
 
       if (length(inq))
-        for (i in seq_along(outq))
-          if (!outq[[i]][["msgid"]]) {
-            send(psock, inq[[1L]][["req"]], mode = 2L, pipe = outq[[i]][["pipe"]], block = TRUE)
-            outq[[i]][["ctx"]] <- inq[[1L]][["ctx"]]
-            outq[[i]][["msgid"]] <- inq[[1L]][["msgid"]]
+        for (item in outq)
+          if (!item[["msgid"]]) {
+            send(psock, inq[[1L]][["req"]], mode = 2L, pipe = item[["pipe"]], block = TRUE)
+            `[[<-`(item, "ctx", inq[[1L]][["ctx"]])
+            `[[<-`(item, "msgid", inq[[1L]][["msgid"]])
             inq[[1L]] <- NULL
             break
           }
