@@ -294,6 +294,15 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   test_zero(res$connections)
   test_identical(res$events, c(129L, -129L))
   test_zero(daemons(0))
+  Sys.sleep(1L)
+  test_equal(daemons(1, dispatcher = FALSE, maxtasks = 1L), 1L)
+  test_zero(mirai(0L)[])
+  Sys.sleep(0.5)
+  test_zero(status()$connections)
+  test_equal(launch_local(1, idletime = 200L, walltime = 1000L), 1L)
+  Sys.sleep(0.5)
+  test_zero(status()$connections)
+  test_zero(daemons(0))
 }
 # mirai cancellation tests
 connection && Sys.getenv("NOT_CRAN") == "true" && {
