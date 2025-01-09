@@ -1,5 +1,9 @@
 # mirai 2.0.0.9000 (development)
 
+#### Updates
+
+* `daemon()` now returns an integer exit value to indicate the reason for termination.
+
 # mirai 2.0.0
 
 #### New Architecture
