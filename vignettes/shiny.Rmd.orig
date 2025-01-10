@@ -48,13 +48,13 @@ server <- function(input, output, session) {
     format(Sys.time(), "%H:%M:%S %p")
   })
 
-  extended_task <- ExtendedTask$new(
+  task <- ExtendedTask$new(
     function(...) mirai({Sys.sleep(y); runif(x)}, ...)
   ) |> bind_task_button("btn")
 
-  observeEvent(input$btn, extended_task$invoke(x = input$n, y = input$delay))
+  observeEvent(input$btn, task$invoke(x = input$n, y = input$delay))
 
-  output$plot <- renderPlot(hist(extended_task$result()))
+  output$plot <- renderPlot(hist(task$result()))
 
 }
 
@@ -79,21 +79,21 @@ input_task_button("btn", "Plot uniform distribution")
 2. In the server, create an ExtendedTask object by calling `ExtendedTask$new()` on an anonymous function passing `...` arguments to `mirai()`, and bind it to the button created in (1).
 
 ```{r shinystep2, eval=FALSE}
-extended_task <- ExtendedTask$new(
-    function(...) mirai({Sys.sleep(y); runif(x)}, ...)
-  ) |> bind_task_button("btn")
+task <- ExtendedTask$new(
+  function(...) mirai({Sys.sleep(y); runif(x)}, ...)
+) |> bind_task_button("btn")
 ```
 
 3. In the server, create an observer on the input button, which invokes the ExtendedTask, passing in named arguments to the anonymous function (and hence the mirai) above.
 
 ```{r shinystep3, eval=FALSE}
-observeEvent(input$btn, extended_task$invoke(x = input$n, y = input$delay))
+observeEvent(input$btn, task$invoke(x = input$n, y = input$delay))
 ```
 
 4. In the server, create a render function for the output, which consumes the result of the ExtendedTask.
 
 ```{r shinystep4, eval=FALSE}
-output$plot <- renderPlot(hist(extended_task$result()))
+output$plot <- renderPlot(hist(task$result()))
 ```
 
 #### Shiny ExtendedTask: Cancellation Example
@@ -119,7 +119,7 @@ ui <- page_fluid(
   hr(),
   p("Click 'block' to suspend execution, and 'cancel' to resume"),
   input_task_button("block", "Block"),
-  input_task_button("cancel", "Cancel block"),
+  actionButton("cancel", "Cancel block"),
   hr(),
   plotOutput("plot")
 )
@@ -130,20 +130,23 @@ server <- function(input, output, session) {
     format(Sys.time(), "%H:%M:%S %p")
   })
 
-  extended_task <- ExtendedTask$new(
+  task <- ExtendedTask$new(
     function(...) mirai({Sys.sleep(y); runif(x)}, ...)
   ) |> bind_task_button("btn")
 
   m <- NULL
-  block_task <- ExtendedTask$new(
+  block <- ExtendedTask$new(
     function() m <<- mirai(Sys.sleep(Inf))
   ) |> bind_task_button("block")
 
-  observeEvent(input$btn, extended_task$invoke(x = input$n, y = input$delay))
-  observeEvent(input$block, block_task$invoke())
+  observeEvent(input$btn, task$invoke(x = input$n, y = input$delay))
+  observeEvent(input$block, block$invoke())
   observeEvent(input$cancel, stop_mirai(m))
+  observe({
+    updateActionButton(session, "cancel", disabled = block$status() != "running")
+  })
 
-  output$plot <- renderPlot(hist(extended_task$result()))
+  output$plot <- renderPlot(hist(task$result()))
 
 }
 
@@ -208,14 +211,14 @@ plotServer <- function(id, calc_time) {
   moduleServer(
     id,
     function(input, output, session) {
-      extended_task <- ExtendedTask$new(
+
+      task <- ExtendedTask$new(
         function(time, run) mirai(run(time), environment())
       ) |> bind_task_button("resample")
 
-      observeEvent(input$resample,
-                   extended_task$invoke(calc_time, run_task))
+      observeEvent(input$resample, task$invoke(calc_time, run_task))
 
-      output$plot <- renderPlot(plot_result(extended_task$result()))
+      output$plot <- renderPlot(plot_result(task$result()))
 
     }
   )
@@ -260,7 +263,7 @@ input_task_button(ns("resample"), "Resample")
 2. In the server, create an ExtendedTask object by calling `ExtendedTask$new()` on an anonymous function passing _named_ arguments to `mirai()`, and bind it to the button created in (1). These are passed through to the mirai by the use of `environment()`.
 
 ```{r shinystep22, eval=FALSE}
-extended_task <- ExtendedTask$new(
+task <- ExtendedTask$new(
   function(time, run) mirai(run(time), environment())
 ) |> bind_task_button("resample")
 ```
@@ -268,13 +271,13 @@ extended_task <- ExtendedTask$new(
 3. In the server, create an observer on the input button, which invokes the ExtendedTask, supplying the arguments to the anonymous function above.
 
 ```{r shinystep23, eval=FALSE}
-observeEvent(input$resample, extended_task$invoke(calc_time, run_task))
+observeEvent(input$resample, task$invoke(calc_time, run_task))
 ```
 
 4. In the server, create a render function for the output, which consumes the result of the ExtendedTask.
 
 ```{r shinystep24, eval=FALSE}
-output$plot <- renderPlot(plot_result(extended_task$result()))
+output$plot <- renderPlot(plot_result(task$result()))
 ```
 
 #### Advanced Promises Example: Coin Flips
