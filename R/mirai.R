@@ -114,7 +114,7 @@
 #' df1 <- data.frame(a = 1, b = 2)
 #' df2 <- data.frame(a = 3, b = 1)
 #' m <- mirai(as.matrix(rbind(df1, df2)), environment(), .timeout = 1000)
-#' call_mirai(m)$data
+#' m[]
 #'
 #' # using unresolved()
 #' m <- mirai(
@@ -135,7 +135,7 @@
 #' file <- tempfile()
 #' cat("r <- rnorm(n)", file = file)
 #' m <- mirai({source(file); r}, file = file, n = n)
-#' call_mirai(m)[["data"]]
+#' call_mirai(m)$data
 #' unlink(file)
 #'
 #' # use source(local = TRUE) when passing in local variables via '.args'
@@ -143,14 +143,14 @@
 #' file <- tempfile()
 #' cat("r <- rnorm(n)", file = file)
 #' m <- mirai({source(file, local = TRUE); r}, .args = list(file = file, n = n))
-#' call_mirai(m)[["data"]]
+#' call_mirai(m)$data
 #' unlink(file)
 #'
 #' # passing a language object to '.expr' and a named list to '.args'
 #' expr <- quote(a + b + 2)
 #' args <- list(a = 2, b = 3)
 #' m <- mirai(.expr = expr, .args = args)
-#' call_mirai(m)$data
+#' collect_mirai(m)
 #'
 #' }
 #'
