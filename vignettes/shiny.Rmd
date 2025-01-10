@@ -22,7 +22,7 @@ mirai natively supports Shiny ExtendedTask to create scalable Shiny apps, which 
 
 'mirai' may be used anywhere a 'promise' or 'future_promise' would be accepted (with `promises` >= 1.3.0).
 
-#### Shiny ExtendedTask Example: Plot with Clock
+#### Shiny ExtendedTask: Introductory Example
 
 In the example below, the app remains responsive, with the clock continuing to tick whilst the simulated expensive computation is running asynchronously in a parallel process. Also the button is disabled and the plot greyed out until the computation is complete.
 
@@ -59,8 +59,8 @@ server <- function(input, output, session) {
 
 }
 
-# run app using 2 local daemons
-daemons(2)
+# run app using 1 local daemon
+daemons(1)
 
 # automatically shutdown daemons when app exits
 onStop(function() daemons(0))
@@ -101,8 +101,70 @@ observeEvent(input$btn, extended_task$invoke(x = input$n, y = input$delay))
 output$plot <- renderPlot(hist(extended_task$result()))
 ```
 
+#### Shiny ExtendedTask: Cancellation Example
 
-#### Shiny ExtendedTask Example: Generative Art
+The app below is a demonstration of the cancellation capability added in mirai v2.
+
+It builds on the introductory app by adding a button that sends an infinite sleep extendedTask. This will block execution as we are using a single daemon - any new extendedTasks will be queued behind this never-ending task.
+There is also a button to cancel that blocking task and allow any queued plots to continue processing.
+
+It works by assigning a reference to the mirai created in the `extendedTask$new()` method, which can then be passed to `stop_mirai()`.
+
+
+``` r
+library(shiny)
+library(bslib)
+library(mirai)
+
+ui <- page_fluid(
+  p("The time is ", textOutput("current_time", inline = TRUE)),
+  hr(),
+  numericInput("n", "Sample size (n)", 100),
+  numericInput("delay", "Seconds to take for plot", 5),
+  input_task_button("btn", "Plot uniform distribution"),
+  hr(),
+  p("Click 'block' to suspend execution, and 'cancel' to resume"),
+  input_task_button("block", "Block"),
+  input_task_button("cancel", "Cancel block"),
+  hr(),
+  plotOutput("plot")
+)
+
+server <- function(input, output, session) {
+  output$current_time <- renderText({
+    invalidateLater(1000)
+    format(Sys.time(), "%H:%M:%S %p")
+  })
+
+  extended_task <- ExtendedTask$new(
+    function(...) mirai({Sys.sleep(y); runif(x)}, ...)
+  ) |> bind_task_button("btn")
+
+  m <- NULL
+  block_task <- ExtendedTask$new(
+    function() m <<- mirai(Sys.sleep(Inf))
+  ) |> bind_task_button("block")
+
+  observeEvent(input$btn, extended_task$invoke(x = input$n, y = input$delay))
+  observeEvent(input$block, block_task$invoke())
+  observeEvent(input$cancel, stop_mirai(m))
+
+  output$plot <- renderPlot(hist(extended_task$result()))
+
+}
+
+# run app using 1 local daemon
+daemons(1)
+
+# automatically shutdown daemons when app exits
+onStop(function() daemons(0))
+
+shinyApp(ui = ui, server = server)
+```
+*Thanks to Joe Cheng for providing examples on which the above is based.*
+
+
+#### Shiny ExtendedTask: Generative Art Example
 
 The following app produces pretty spiral patterns.
 
