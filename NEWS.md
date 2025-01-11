@@ -2,7 +2,8 @@
 
 #### Updates
 
-* `daemon()` now returns an integer exit value to indicate the reason for termination.
+* `daemon()` now returns an integer exit code to indicate the reason for termination.
+* Adds `nextcode()` to provide a human-readable translation of the exit codes returned by `daemon()`.
 
 # mirai 2.0.0
 

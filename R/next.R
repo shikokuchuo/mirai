@@ -74,6 +74,34 @@ nextstream <- function(.compute = "default") next_stream(..[[.compute]])
 #'
 nextget <- function(x, .compute = "default") ..[[.compute]][[x]]
 
+#' Next >> Developer Interface
+#'
+#' \code{nextcode} translates integer exit codes returned by
+#' \code{\link{daemon}}.
+#'
+#' @param xc integer value.
+#'
+#' @return For \code{nextcode}: character string.
+#' 
+#' @examples
+#' nextcode(0L)
+#' nextcode(1L)
+#'
+#' @keywords internal
+#' @rdname nextstream
+#' @export
+#'
+nextcode <- function(xc) {
+  str <- switch(xc + 1L,
+    "0 | Daemon connection terminated",
+    "1 | Daemon idletime limit reached",
+    "2 | Daemon walltime limit reached",
+    "3 | Daemon task limit reached"
+  )
+  is.null(str) && return("")
+  str
+} 
+
 # internals --------------------------------------------------------------------
 
 next_stream <- function(envir) {

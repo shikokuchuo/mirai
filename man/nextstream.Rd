@@ -3,11 +3,14 @@
 \name{nextstream}
 \alias{nextstream}
 \alias{nextget}
+\alias{nextcode}
 \title{Next >> Developer Interface}
 \usage{
 nextstream(.compute = "default")
 
 nextget(x, .compute = "default")
+
+nextcode(xc)
 }
 \arguments{
 \item{.compute}{[default 'default'] character value for the compute profile
@@ -17,6 +20,8 @@ to use (each compute profile has its own independent set of daemons).}
 dispatcher daemons), \sQuote{pid} (dispatcher process ID), \sQuote{urls}
 (URLs dispatcher is listening at) or \sQuote{tls} (the stored client TLS
 configuration for use by daemons).}
+
+\item{xc}{integer value.}
 }
 \value{
 For \code{nextstream}: a length 7 integer vector, as given by
@@ -25,6 +30,8 @@ For \code{nextstream}: a length 7 integer vector, as given by
   NULL if a stream has not yet been created.
 
 For \code{nextget}: the requested item, or else NULL if not present.
+
+For \code{nextcode}: character string.
 }
 \description{
 \code{nextstream} retrieves the currently stored L'Ecuyer-CMRG RNG stream
@@ -32,6 +39,9 @@ for the specified compute profile and advances it to the next stream.
 
 \code{nextget} retrieves the specified item from the specified compute
 profile.
+
+\code{nextcode} translates integer exit codes returned by
+\code{\link{daemon}}.
 }
 \details{
 These functions are exported for use by packages extending \pkg{mirai} with
@@ -56,6 +66,9 @@ nextget("urls")
 daemons(0)
 
 }
+
+nextcode(0L)
+nextcode(1L)
 
 }
 \keyword{internal}
