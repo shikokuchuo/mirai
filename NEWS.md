@@ -2,6 +2,7 @@
 
 #### Updates
 
+* `mirai_map()[.stop]` now reports the index number that errored.
 * `daemon()` now returns an integer exit code to indicate the reason for termination.
 * Adds `nextcode()` to provide a human-readable translation of the exit codes returned by `daemon()`.
 

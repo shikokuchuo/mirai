@@ -634,13 +634,23 @@ mk_mirai_error <- function(e, sc) {
   msg <- if (is.null(call) || call == "eval(._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = .GlobalEnv)")
     sprintf("Error: %s", .subset2(e, "message")) else
       sprintf("Error in %s: %s", call, .subset2(e, "message"))
-  attributes(msg) <- e
-  idx <- which(as.logical(lapply(sc, identical, quote(eval(._mirai_.[[".expr"]], envir = ._mirai_., enclos = .GlobalEnv)))))
+  idx <- which(
+    as.logical(
+      lapply(
+        sc,
+        identical,
+        quote(eval(._mirai_.[[".expr"]], envir = ._mirai_., enclos = .GlobalEnv))
+      )
+    )
+  )
   sc <- sc[(length(sc) - 1L):(idx + 1L)]
   if (sc[[1L]][[1L]] == ".handleSimpleError")
     sc <- sc[-1L]
   sc <- lapply(sc, deparse_call)
-  `class<-`(`attr<-`(msg, "stack.trace", sc), c("miraiError", "errorValue", "try-error"))
+  `class<-`(
+    `attributes<-`(msg, `[[<-`(e, "stack.trace", sc)),
+    c("miraiError", "errorValue", "try-error")
+  )
 }
 
 .miraiInterrupt <- `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))

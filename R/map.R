@@ -272,7 +272,7 @@ print.mirai_map <- function(x, ...) {
 #' @export
 #'
 .stop <- compiler::compile(
-  quote(if (is_error_value(xi)) { stop_mirai(x); stop(xi, call. = FALSE) })
+  quote(if (is_error_value(xi)) { stop_mirai(x); stop(sprintf("In index %d:\n%s", i, xi), call. = FALSE) })
 )
 
 # internals --------------------------------------------------------------------
