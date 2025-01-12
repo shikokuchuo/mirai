@@ -285,6 +285,11 @@ print.mirai_map <- function(x, ...) {
 
 map <- function(x, ...) {
 
+  if (is.null(.[[".progress"]]))
+    if (requireNamespace("cli", quietly = TRUE))
+      `[[<-`(`[[<-`(., ".progress", .progress_cli), ".stop", .stop_cli) else
+        `[[<-`(`[[<-`(., ".progress", .progress), ".stop", .stop)
+
   dots <- eval(`[[<-`(substitute(alist(...)), 1L, quote(list)), envir = .)
   expr <- if (length(dots) > 1L) do.call(expression, dots) else dots[[1L]]
   xlen <- length(x)

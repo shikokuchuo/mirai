@@ -74,11 +74,6 @@
     }
   )
 
-  if (requireNamespace("cli", quietly = TRUE)) {
-    .progress <<- .progress_cli
-    .stop <<- .stop_cli
-  }
-
 }
 
 # nocov end
