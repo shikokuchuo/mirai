@@ -353,7 +353,7 @@ call_mirai_ <- call_aio_
 #'
 #' @inheritParams call_mirai
 #' @param ... (if \sQuote{x} is a list of mirai) any of the collection options
-#'   for \code{\link{mirai_map}}, such as \code{\link{.flat}}.
+#'   for \code{\link{mirai_map}}, such as \code{.flat}.
 #'
 #' @return An object (the return value of the \sQuote{mirai}), or a list of such
 #'   objects (the same length as \sQuote{x}, preserving names).
