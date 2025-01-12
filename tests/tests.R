@@ -45,6 +45,8 @@ test_true(mirai:::is.promising.mirai())
 test_error(everywhere({}), "not found")
 test_null(nextstream())
 test_null(nextget("pid"))
+for (i in 0:4)
+  test_type("character", nextcode(i))
 # mirai and daemons tests
 connection && {
   Sys.sleep(1L)
