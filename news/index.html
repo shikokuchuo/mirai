@@ -53,7 +53,9 @@
 <div class="section level5">
 <h5 id="updates-2-0-0-9000">Updates<a class="anchor" aria-label="anchor" href="#updates-2-0-0-9000"></a></h5>
 <ul><li>
-<code>mirai_map()[.stop]</code> now reports the index number that errored.</li>
+<code>mirai_map()[.stop]</code> now reports the index number that errored, and uses the cli package, if available, for richer formatting of the error message.</li>
+<li>
+<code>mirai_map()[.progress]</code> now automatically uses <code>cli</code> progress bars (over a simple text alternative) if the cli package is installed.</li>
 <li>
 <code><a href="../reference/daemon.html">daemon()</a></code> now returns an integer exit code to indicate the reason for termination.</li>
 <li>Adds <code><a href="../reference/nextstream.html">nextcode()</a></code> to provide a human-readable translation of the exit codes returned by <code><a href="../reference/daemon.html">daemon()</a></code>.</li>
