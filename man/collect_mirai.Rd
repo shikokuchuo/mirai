@@ -10,7 +10,7 @@ collect_mirai(x, ...)
 \item{x}{a \sQuote{mirai} object, or list of \sQuote{mirai} objects.}
 
 \item{...}{(if \sQuote{x} is a list of mirai) any of the collection options
-for \code{\link{mirai_map}}, such as \code{\link{.flat}}.}
+for \code{\link{mirai_map}}, such as \code{.flat}.}
 }
 \value{
 An object (the return value of the \sQuote{mirai}), or a list of such
