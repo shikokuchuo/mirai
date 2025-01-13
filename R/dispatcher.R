@@ -74,25 +74,25 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
   dial_and_sync_socket(sock, host)
 
   ctx <- .context(sock)
-  cmessage <- recv(ctx, mode = 1L, block = .limit_long)
-  is.object(cmessage) && stop(._[["sync_dispatcher"]])
-  if (nzchar(cmessage[[1L]]))
-    Sys.setenv(R_DEFAULT_PACKAGES = cmessage[[1L]]) else
+  sync <- recv(ctx, mode = 1L, block = .limit_long)
+  is.object(sync) && stop(._[["sync_dispatcher"]])
+  if (nzchar(sync[[1L]]))
+    Sys.setenv(R_DEFAULT_PACKAGES = sync[[1L]]) else
       Sys.unsetenv("R_DEFAULT_PACKAGES")
 
   auto <- is.null(url)
   if (auto) {
     url <- local_url()
   } else {
-    if (is.character(cmessage[[2L]]) && is.null(tls)) {
-      tls <- cmessage[[2L]]
-      pass <- cmessage[[3L]]
+    if (is.character(sync[[2L]]) && is.null(tls)) {
+      tls <- sync[[2L]]
+      pass <- sync[[3L]]
     }
     if (length(tls))
       tls <- tls_config(server = tls, pass = pass)
   }
   pass <- NULL
-  serial <- cmessage[[4L]]
+  serial <- sync[[4L]]
 
   psock <- socket("poly")
   on.exit(reap(psock), add = TRUE, after = TRUE)

@@ -8,6 +8,7 @@
   + `[.stop]` now reports the index number that errored.
 * `daemon()` now returns an integer exit code to indicate the reason for termination.
 * Adds `nextcode()` to provide a human-readable translation of the exit codes returned by `daemon()`.
+* `everywhere()` now returns a list of at least one mirai regardless of the number of actual connections.
 
 # mirai 2.0.0
 

@@ -258,7 +258,7 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
       vec[[i]] <- mirai(.expr, ..., .args = .args, .compute = .compute)
   } else {
     .expr <- c(.block, .expr)
-    vec <- vector(mode = "list", length = status(.compute)[["connections"]])
+    vec <- vector(mode = "list", length = max(status(.compute)[["connections"]], 1L))
     for (i in seq_along(vec))
       vec[[i]] <- mirai(.expr, ..., .args = .args, .compute = .compute)
   }
