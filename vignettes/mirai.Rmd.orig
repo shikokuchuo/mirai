@@ -568,11 +568,8 @@ When collecting the results, optionally specify arguments to `[]`:
 - `x[.stop]` collects the results applying early stopping, which stops at the first failure and cancels remaining computations. If the `cli` package is available, it will be used for displaying the error message.
 
 Combinations of the above may be supplied in the fashion of `x[.stop, .progress]`.
-```{r mmapadv}
-tryCatch(
-  mirai_map(list(a = 1, b = "a", c = 3), sum)[.stop],
-  error = identity
-)
+```{r mmapadv, error=TRUE}
+mirai_map(list(a = 1, b = "a", c = 3), sum)[.stop]
 
 with(
   daemons(4, dispatcher = FALSE),
