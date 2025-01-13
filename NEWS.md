@@ -3,7 +3,7 @@
 #### Updates
 
 * `mirai_map()[.stop]` now reports the index number that errored, and uses the cli package, if available, for richer formatting of the error message.
-* `mirai_map()[.progress]` now automatically uses `cli` progress bars (over a simple text alternative) if the cli package is installed.
+* `mirai_map()[.progress]` now automatically uses `cli` progress bars if the cli package is installed, and `[.progress_cli]` is no longer a separate option.
 * `daemon()` now returns an integer exit code to indicate the reason for termination.
 * Adds `nextcode()` to provide a human-readable translation of the exit codes returned by `daemon()`.
 

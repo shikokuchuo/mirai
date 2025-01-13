@@ -226,12 +226,48 @@ print.mirai_map <- function(x, ...) {
 
 }
 
+#' mirai Map Options
+#'
+#' Expressions to be provided to the \code{[]} method for \sQuote{mirai_map}
+#' objects, or the \code{...} argument of \code{\link{collect_mirai}}.
+#'
+#' @inheritSection mirai_map Collection Options
+#'
+#' @keywords internal
+#' @export
+#'
+.flat <- compiler::compile(
+  quote(
+    if (i == 0L) xi <- TRUE else
+      if (i == 1L) typ <<- typeof(xi) else
+        if (i <= xlen) is_error_value(xi) && stop(xi, call. = FALSE) || typeof(xi) == typ || stop(sprintf("[.flat]: cannot flatten outputs of differing type: %s / %s", typ, typeof(xi)), call. = FALSE)
+  )
+)
+
+#' @rdname dot-flat
+#' @export
+#'
+.progress <- compiler::compile(
+  quote(
+    if (i == 0L) cat(sprintf("\r[ 0 / %d .... ]", xlen), file = stderr()) else
+      if (i < xlen) cat(sprintf("\r[ %d / %d .... ]", i, xlen), file = stderr()) else
+        if (i == xlen) cat(sprintf("\r[ %d / %d done ]\n", i, xlen), file = stderr())
+  )
+)
+
+#' @rdname dot-flat
+#' @export
+#'
+.stop <- compiler::compile(
+  quote(if (is_error_value(xi)) { stop_mirai(x); stop(sprintf("In index %d:\n%s", i, xi), call. = FALSE) })
+)
+
 # internals --------------------------------------------------------------------
 
 map <- function(x, ...) {
 
   if (is.null(.[[".progress"]]) && requireNamespace("cli", quietly = TRUE))
-    `[[<-`(`[[<-`(., ".progress", .progress_cli), ".stop", .stop_cli)
+    `[[<-`(`[[<-`(., ".progress", progress_cli), ".stop", stop_cli)
 
   dots <- eval(`[[<-`(substitute(alist(...)), 1L, quote(list)), envir = .)
   expr <- if (length(dots) > 1L) do.call(expression, dots) else dots[[1L]]
@@ -250,34 +286,14 @@ map <- function(x, ...) {
 
 }
 
-.flat <- compiler::compile(
-  quote(
-    if (i == 0L) xi <- TRUE else
-      if (i == 1L) typ <<- typeof(xi) else
-        if (i <= xlen) is_error_value(xi) && stop(xi, call. = FALSE) || typeof(xi) == typ || stop(sprintf("[.flat]: cannot flatten outputs of differing type: %s / %s", typ, typeof(xi)), call. = FALSE)
-  )
-)
-
-.progress <- compiler::compile(
-  quote(
-    if (i == 0L) cat(sprintf("\r[ 0 / %d .... ]", xlen), file = stderr()) else
-      if (i < xlen) cat(sprintf("\r[ %d / %d .... ]", i, xlen), file = stderr()) else
-        if (i == xlen) cat(sprintf("\r[ %d / %d done ]\n", i, xlen), file = stderr())
-  )
-)
-
-.progress_cli <- compiler::compile(
+progress_cli <- compiler::compile(
   quote(
     if (i == 0L) cli::cli_progress_bar(type = NULL, total = xlen, auto_terminate = TRUE, .envir = .) else
       if (i <= xlen) cli::cli_progress_update(.envir = .)
   )
 )
 
-.stop <- compiler::compile(
-  quote(if (is_error_value(xi)) { stop_mirai(x); stop(sprintf("In index %d:\n%s", i, xi), call. = FALSE) })
-)
-
-.stop_cli <- compiler::compile(
+stop_cli <- compiler::compile(
   quote(
     if (is_error_value(xi)) {
       stop_mirai(x)
