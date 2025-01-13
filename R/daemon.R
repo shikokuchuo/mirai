@@ -145,11 +145,9 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
       wait(cv) || break
       m <- collect_aio(aio)
       is.integer(m) && {
-        m == 5L && {
-          xc <- 1L
-          break
-        }
-        next
+        m == 5L || next
+        xc <- 1L
+        break
       }
       cancel <- recv_aio(sock, mode = 8L, cv = NA)
       data <- eval_mirai(m)
@@ -280,7 +278,7 @@ v1_daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
   dial_and_sync_socket(sock, url, asyncdial = asyncdial, tls = tls)
 
   if (is.numeric(rs)) `[[<-`(.GlobalEnv, ".Random.seed", as.integer(rs))
-  if (idletime > walltime) idletime <- walltime else if (idletime == Inf) idletime <- NULL
+  idletime <- if (idletime > walltime) walltime else if (is.finite(idletime)) idletime
   cleanup <- parse_cleanup(cleanup)
   if (!output) {
     devnull <- file(nullfile(), open = "w", blocking = FALSE)

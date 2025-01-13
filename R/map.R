@@ -268,10 +268,10 @@ print.mirai_map <- function(x, ...) {
 
 map <- function(x, ...) {
 
-  if (is.null(.[[".flat"]]))
-    if (requireNamespace("cli", quietly = TRUE))
-      `[[<-`(`[[<-`(`[[<-`(., ".flat", flat_cli), ".progress", progress_cli), ".stop", stop_cli) else
-        `[[<-`(`[[<-`(`[[<-`(., ".flat", .flat), ".progress", .progress), ".stop", .stop)
+  if (is.null(.[[".flat"]])) {
+    cli <- requireNamespace("cli", quietly = TRUE)
+    `[[<-`(`[[<-`(`[[<-`(., ".flat", if (cli) flat_cli else .flat),".progress", if (cli) progress_cli else .progress), ".stop", if (cli) stop_cli else .stop)
+  }
 
   dots <- eval(`[[<-`(substitute(alist(...)), 1L, quote(list)), envir = .)
   expr <- if (length(dots) > 1L) do.call(expression, dots) else dots[[1L]]
