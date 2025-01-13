@@ -240,7 +240,9 @@ print.mirai_map <- function(x, ...) {
   quote(
     if (i == 0L) xi <- TRUE else
       if (i == 1L) typ <<- typeof(xi) else
-        if (i <= xlen) is_error_value(xi) && stop(xi, call. = FALSE) || typeof(xi) == typ || stop(sprintf("[.flat]: cannot flatten outputs of differing type: %s / %s", typ, typeof(xi)), call. = FALSE)
+        if (i <= xlen)
+          is_error_value(xi) && stop(sprintf("In index %d:\n%s", i, xi), call. = FALSE) ||
+            typeof(xi) != typ && stop(sprintf("Cannot flatten outputs of differing type: %s / %s", typ, typeof(xi)), call. = FALSE)
   )
 )
 
@@ -266,8 +268,9 @@ print.mirai_map <- function(x, ...) {
 
 map <- function(x, ...) {
 
-  if (is.null(.[[".progress"]]) && requireNamespace("cli", quietly = TRUE))
-    `[[<-`(`[[<-`(., ".progress", progress_cli), ".stop", stop_cli)
+  if (is.null(.[[".flat"]]) && requireNamespace("cli", quietly = TRUE))
+    `[[<-`(`[[<-`(`[[<-`(., ".flat", flat_cli), ".progress", progress_cli), ".stop", stop_cli) else
+      `[[<-`(`[[<-`(`[[<-`(., ".flat", .flat), ".progress", .progress), ".stop", .stop)
 
   dots <- eval(`[[<-`(substitute(alist(...)), 1L, quote(list)), envir = .)
   expr <- if (length(dots) > 1L) do.call(expression, dots) else dots[[1L]]
@@ -286,6 +289,16 @@ map <- function(x, ...) {
 
 }
 
+flat_cli <- compiler::compile(
+  quote(
+    if (i == 0L) xi <- TRUE else
+      if (i == 1L) typ <<- typeof(xi) else
+        if (i <= xlen)
+          is_error_value(xi) && cli::cli_abort(c(i = "In index {i}.", x = xi), call = quote(mirai::mirai_map())) ||
+            typeof(xi) != typ && cli::cli_abort("cannot flatten outputs of differing type: {typ} / {typeof(xi)}", call = quote(mirai::mirai_map()))
+  )
+)
+
 progress_cli <- compiler::compile(
   quote(
     if (i == 0L) cli::cli_progress_bar(type = NULL, total = xlen, auto_terminate = TRUE, .envir = .) else
@@ -297,10 +310,7 @@ stop_cli <- compiler::compile(
   quote(
     if (is_error_value(xi)) {
       stop_mirai(x)
-      cli::cli_abort(
-        c(i = "In index {i}.", x = xi),
-        call = quote(mirai::mirai_map())
-      )
+      cli::cli_abort(c(i = "In index {i}.", x = xi), call = quote(mirai::mirai_map()))
     }
   )
 )
