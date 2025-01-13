@@ -3,7 +3,7 @@
 #### Updates
 
 * `mirai_map()` collection option improvements:
-  + All options now use the the cli package (if installed) for richer progress bars and error messages.
+  + The cli package is used, if installed, for richer progress bars and error messages.
   + `[.progress_cli]` is no longer a separate option.
   + `[.stop]` now reports the index number that errored.
 * `daemon()` now returns an integer exit code to indicate the reason for termination.
