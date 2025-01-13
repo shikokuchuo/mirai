@@ -348,7 +348,7 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
 connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "true" && {
   option <- 15L
   Sys.setenv(R_DEFAULT_PACKAGES = "stats,utils")
-  test_equal(1L, daemons(1, dispatcher = "process", maxtasks = 10L, timerstart = 1L, walltime = 500L, seed = 1546, cleanup = option, autoexit = tools::SIGCONT))
+  test_equal(1L, daemons(1, dispatcher = "process", maxtasks = 10L, timerstart = 1L, walltime = 500L, idletime = 500L, seed = 1546, cleanup = option, autoexit = tools::SIGCONT))
   Sys.unsetenv("R_DEFAULT_PACKAGES")
   Sys.sleep(1L)
   mq <- mirai(runif(1L), .timeout = 1000)
@@ -356,13 +356,14 @@ connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "
   mq <- mirai(Sys.sleep(0.7), .timeout = 500)
   test_class("matrix", status()[["daemons"]])
   test_null(saisei(i = 1L))
-  Sys.sleep(0.1)
+  Sys.sleep(1L)
   test_equal(daemons(url = "wss://127.0.0.1:0", dispatcher = "thread", output = TRUE, token = TRUE), 1L)
   test_equal(nextget("n"), 1L)
   test_equal(length(nextget("urls")), 1L)
   test_class("matrix", status()$daemons)
   test_null(saisei(i = 0L))
   test_print(saisei(i = 1L))
+  test_print(saisei(i = 1L, force = TRUE))
   Sys.sleep(0.1)
   test_zero(daemons(0))
 }
