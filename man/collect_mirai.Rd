@@ -4,13 +4,15 @@
 \alias{collect_mirai}
 \title{mirai (Collect Value)}
 \usage{
-collect_mirai(x, ...)
+collect_mirai(x, options)
 }
 \arguments{
 \item{x}{a \sQuote{mirai} object, or list of \sQuote{mirai} objects.}
 
-\item{...}{(if \sQuote{x} is a list of mirai) any of the collection options
-for \code{\link{mirai_map}}, such as \code{.flat}.}
+\item{options}{(if \sQuote{x} is a list of mirai) a character vector
+comprising any combination of collection options for
+\code{\link{mirai_map}}, such as \code{".flat"} or
+\code{c(".progress", ".stop")}.}
 }
 \value{
 An object (the return value of the \sQuote{mirai}), or a list of such
@@ -71,7 +73,7 @@ m[]
 # mirai_map with collection options
 daemons(1, dispatcher = FALSE)
 m <- mirai_map(1:3, rnorm)
-collect_mirai(m, .flat, .progress)
+collect_mirai(m, c(".flat", ".progress"))
 daemons(0)
 
 }

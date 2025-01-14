@@ -352,8 +352,10 @@ call_mirai_ <- call_aio_
 #' \code{x}, and is equivalent to \code{collect_mirai(x)}.
 #'
 #' @inheritParams call_mirai
-#' @param ... (if \sQuote{x} is a list of mirai) any of the collection options
-#'   for \code{\link{mirai_map}}, such as \code{.flat}.
+#' @param options (if \sQuote{x} is a list of mirai) a character vector
+#'   comprising any combination of collection options for
+#'   \code{\link{mirai_map}}, such as \code{".flat"} or
+#'   \code{c(".progress", ".stop")}.
 #'
 #' @return An object (the return value of the \sQuote{mirai}), or a list of such
 #'   objects (the same length as \sQuote{x}, preserving names).
@@ -377,17 +379,24 @@ call_mirai_ <- call_aio_
 #' # mirai_map with collection options
 #' daemons(1, dispatcher = FALSE)
 #' m <- mirai_map(1:3, rnorm)
-#' collect_mirai(m, .flat, .progress)
+#' collect_mirai(m, c(".flat", ".progress"))
 #' daemons(0)
 #'
 #' }
 #'
 #' @export
 #'
-collect_mirai <- function(x, ...) {
+collect_mirai <- function(x, options = NULL) {
 
-  is.list(x) && ...length() && return(map(x, ...))
-  collect_aio_(x)
+  is.list(x) && length(options) || return(collect_aio_(x))
+
+  if (is.null(.[[".flat"]])) {
+    cli <- requireNamespace("cli", quietly = TRUE)
+    `[[<-`(`[[<-`(`[[<-`(., ".flat", if (cli) flat_cli else .flat),".progress", if (cli) progress_cli else .progress), ".stop", if (cli) stop_cli else .stop)
+  }
+
+  dots <- mget(options, envir = .)
+  map(x, dots)
 
 }
 
