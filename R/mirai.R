@@ -390,11 +390,7 @@ collect_mirai <- function(x, options = NULL) {
 
   is.list(x) && length(options) || return(collect_aio_(x))
 
-  if (is.null(.[[".flat"]])) {
-    cli <- requireNamespace("cli", quietly = TRUE)
-    `[[<-`(`[[<-`(`[[<-`(., ".flat", if (cli) flat_cli else .flat),".progress", if (cli) progress_cli else .progress), ".stop", if (cli) stop_cli else .stop)
-  }
-
+  ensure_cli_initialized()
   dots <- mget(options, envir = .)
   map(x, dots)
 

@@ -6,7 +6,7 @@
   + The cli package is used, if installed, for richer progress bars and error messages.
   + `[.progress_cli]` is no longer a separate option.
   + `[.stop]` now reports the index number that errored.
-* `collect_mirai()` now takes an 'options' argument, to which collection options should be supplied as a character vector. This avoids non-standard evaluation in this function.
+* `collect_mirai()` replaces '...' with an 'options' argument, to which collection options should be supplied as a character vector. This avoids non-standard evaluation in this function.
 * `daemon()` now returns an integer exit code to indicate the reason for termination.
 * Adds `nextcode()` to provide a human-readable translation of the exit codes returned by `daemon()`.
 * `everywhere()` now returns a list of at least one mirai regardless of the number of actual connections.

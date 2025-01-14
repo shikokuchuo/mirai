@@ -4,7 +4,7 @@
 \alias{collect_mirai}
 \title{mirai (Collect Value)}
 \usage{
-collect_mirai(x, options)
+collect_mirai(x, options = NULL)
 }
 \arguments{
 \item{x}{a \sQuote{mirai} object, or list of \sQuote{mirai} objects.}

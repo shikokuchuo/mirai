@@ -213,11 +213,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
 
   missing(..1) && return(collect_aio_(x))
 
-  if (is.null(.[[".flat"]])) {
-    cli <- requireNamespace("cli", quietly = TRUE)
-    `[[<-`(`[[<-`(`[[<-`(., ".flat", if (cli) flat_cli else .flat),".progress", if (cli) progress_cli else .progress), ".stop", if (cli) stop_cli else .stop)
-  }
-
+  ensure_cli_initialized()
   dots <- eval(`[[<-`(substitute(alist(...)), 1L, quote(list)), envir = .)
   map(x, dots)
 
@@ -272,6 +268,12 @@ print.mirai_map <- function(x, ...) {
 )
 
 # internals --------------------------------------------------------------------
+
+ensure_cli_initialized <- function()
+  if (is.null(.[[".flat"]])) {
+    cli <- requireNamespace("cli", quietly = TRUE)
+    `[[<-`(`[[<-`(`[[<-`(., ".flat", if (cli) flat_cli else .flat), ".progress", if (cli) progress_cli else .progress), ".stop", if (cli) stop_cli else .stop)
+  }
 
 map <- function(x, dots) {
 
