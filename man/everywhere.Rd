@@ -59,8 +59,8 @@ functions. Functions from a package should use namespaced calls such as
 part of \sQuote{.expr}.
 
 For evaluation to occur \emph{as if} in your global environment, supply
-objects to \sQuote{...} rather than \sQuote{.args}. This is important when
-supplying free variables defined in function bodies, as scoping rules may
+objects to \sQuote{...} rather than \sQuote{.args}, e.g. for free variables
+or helper functions defined in function bodies, as scoping rules may
 otherwise prevent them from being found.
 }
 

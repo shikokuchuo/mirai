@@ -249,7 +249,7 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   q <- quote({ list2env(list(b = 2), envir = .GlobalEnv); 0L})
   mm <- everywhere(q)
   test_type("list", mm)
-  test_zero(collect_mirai(mm, .flat))
+  test_zero(collect_mirai(mm, ".flat"))
   m <- mirai(b, .timeout = 1000)
   if (!is_error_value(m[])) test_equal(m[], 2L)
   test_null(saisei(1))
