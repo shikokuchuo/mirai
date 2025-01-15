@@ -88,9 +88,10 @@
 #' @section Errors:
 #'
 #' If an error occurs in evaluation, the error message is returned as a
-#' character string of class \sQuote{miraiError} and \sQuote{errorValue} (the
-#' stack trace is available at \code{$stack.trace} on the error object).
-#' \code{\link{is_mirai_error}} may be used to test for this.
+#' character string of class \sQuote{miraiError} and \sQuote{errorValue}.
+#' \code{\link{is_mirai_error}} may be used to test for this. The elements of
+#' the original condition are accessible via \code{$} on the error object. A
+#' stack trace is also available at \code{$stack.trace}.
 #'
 #' If a daemon crashes or terminates unexpectedly during evaluation, an
 #' \sQuote{errorValue} 19 (Connection reset) is returned.
@@ -524,8 +525,9 @@ is_mirai_map <- function(x) inherits(x, "mirai_map")
 #'
 #' Is the object a \sQuote{miraiError}. When execution in a \sQuote{mirai}
 #' process fails, the error message is returned as a character string of class
-#' \sQuote{miraiError} and \sQuote{errorValue}. The stack trace is available at
-#' \code{$stack.trace} on the error object.
+#' \sQuote{miraiError} and \sQuote{errorValue}. The elements of the original
+#' condition are accessible via \code{$} on the error object. A stack trace is
+#' also available at \code{$stack.trace}.
 #'
 #' Is the object a \sQuote{miraiInterrupt}. When an ongoing \sQuote{mirai} is
 #' sent a user interrupt, it will resolve to an empty character string classed

@@ -37,7 +37,8 @@ they are of the same type to avoid coercion. Note: errors if an
 
 \code{x[.progress]} collects map results whilst showing a progress bar from
 the \CRANpkg{cli} package, if installed, with completion percentage and ETA,
-or else a simple text progress indicator.
+or else a simple text progress indicator. Note: if the map operation
+completes too quickly then the progress bar may not show at all.
 
 \code{x[.stop]} collects map results applying early stopping, which stops at
 the first failure and cancels remaining operations. Note: operations already
