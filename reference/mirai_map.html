@@ -145,9 +145,9 @@ progress indicator.</p>
 
 <p>If <code>.x</code> is a matrix or dataframe (or other object with ‘dim’
 attributes), <em>multiple</em> map is performed over its <strong>rows</strong>.</p>
-<p>In this case, <code>.f</code> should accept at least as many arguments as the
-length of each row. If the dataframe has names, or the matrix column
-dimnames, named arguments are provided to <code>.f</code>.</p>
+<p>This allows map over 2 or more arguments, and <code>.f</code> should accept at
+least as many arguments as there are columns. If the dataframe has names, or
+the matrix column dimnames, named arguments are provided to <code>.f</code>.</p>
 <p>To map over <strong>columns</strong> instead, first wrap a dataframe in
 <code><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></code>, or transpose a matrix using <code><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></code>.</p>
     </div>
