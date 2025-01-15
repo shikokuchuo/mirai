@@ -80,9 +80,9 @@
 #' If \code{.x} is a matrix or dataframe (or other object with \sQuote{dim}
 #' attributes), \emph{multiple} map is performed over its \strong{rows}.
 #'
-#' In this case, \code{.f} should accept at least as many arguments as the
-#' length of each row. If the dataframe has names, or the matrix column
-#' dimnames, named arguments are provided to \code{.f}.
+#' This allows map over 2 or more arguments, and \code{.f} should accept at
+#' least as many arguments as there are columns. If the dataframe has names, or
+#' the matrix column dimnames, named arguments are provided to \code{.f}.
 #'
 #' To map over \strong{columns} instead, first wrap a dataframe in
 #' \code{\link{as.list}}, or transpose a matrix using \code{\link{t}}.

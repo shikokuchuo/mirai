@@ -322,16 +322,20 @@ server <- function(input, output, session) {
   # Button to submit a batch of coin flips
   observeEvent(input$task, {
     flips$flips <- flips$flips + 1000
-    m <- mirai_map(1:1000, flip_coin, .promise = \(x)
-      if (x) flips$heads <- flips$heads + 1 else flips$tails <- flips$tails + 1)
+    mirai_map(
+      1:1000,
+      flip_coin,
+      .promise = \(x) {
+        if (x) flips$heads <- flips$heads + 1 else flips$tails <- flips$tails + 1
+      }
+    )
   })
 
   # Print time and task status
   output$status <- renderText({
-    input$task
     invalidateLater(millis = 1000)
     time <- format(Sys.time(), "%H:%M:%S")
-    sprintf("%s %s flips submitted", time, flips$flips)
+    sprintf("%s | %s flips submitted", time, flips$flips)
   })
 
   # Print number of heads and tails

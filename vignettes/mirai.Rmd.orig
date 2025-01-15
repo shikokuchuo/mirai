@@ -436,6 +436,15 @@ m3[]
 
 m3$data$stack.trace
 ```
+Elements of the original error condition are also accessible via `$` on the error object. For example, additional metadata recorded by `rlang::abort()` is preserved:
+```{r metaexample}
+f <- function(x) if (x > 0) stop("positive")
+
+m4 <- mirai(rlang::abort("aborted", meta_uid = "UID001"))
+m4[]
+
+m4$data$meta_uid
+```
 If a daemon instance is sent a user interrupt, the mirai will resolve to an object of class 'miraiInterrupt' and 'errorValue'. `is_mirai_interrupt()` may be used to test for such interrupts.
 ```{r interruptexample}
 m4 <- mirai(rlang::interrupt()) # simulates a user interrupt
@@ -443,12 +452,12 @@ is_mirai_interrupt(m4[])
 ```
 If execution of a mirai surpasses the timeout set via the '.timeout' argument, the mirai will resolve to an 'errorValue' of 5L (timed out). This can, amongst other things, guard against mirai processes that have the potential to hang and never return.
 ```{r timeouts}
-m4 <- mirai(nanonext::msleep(1000), .timeout = 500)
-m4[]
+m5 <- mirai(nanonext::msleep(1000), .timeout = 500)
+m5[]
 
-is_mirai_error(m4$data)
-is_mirai_interrupt(m4$data)
-is_error_value(m4$data)
+is_mirai_error(m5$data)
+is_mirai_interrupt(m5$data)
+is_error_value(m5$data)
 ```
 `is_error_value()` tests for all mirai execution errors, user interrupts and timeouts.
 
@@ -564,7 +573,7 @@ Use of `mirai_map()` assumes that `daemons()` have previously been set. If not t
 When collecting the results, optionally specify arguments to `[]`:
 
 - `x[.flat]` collects and flattens the results, checking that they are of the same type to avoid coercion.
-- `x[.progress]` collects results using a `cli` progress bar, if available, showing completion percentage and ETA, or else a simple text progress indicator of parts completed of the total.
+- `x[.progress]` collects results using a `cli` progress bar, if available, showing completion percentage and ETA, or else a simple text progress indicator of parts completed of the total. If the map operation completes quickly, the `cli` progress bar may not show at all, and this is by design.
 - `x[.stop]` collects the results applying early stopping, which stops at the first failure and cancels remaining computations. If the `cli` package is available, it will be used for displaying the error message.
 
 Combinations of the above may be supplied in the fashion of `x[.stop, .progress]`.
@@ -582,6 +591,8 @@ with(
 Multiple map is performed over the **rows** of a dataframe or matrix, as this is most often the desired behaviour.
 
 This allows map over 2 or more arguments by specifying a dataframe. One of those may be an index value for indexed map.
+
+The function `.f` must take as many arguments as there are columns, either explicitly or via `...`.
 
 ```{r mmapmulti}
 fruit <- c("melon", "grapes", "coconut")
