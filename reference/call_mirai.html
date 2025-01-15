@@ -112,9 +112,10 @@ flow statements such as <code>while</code> or <code>if</code>.</p>
 
 
 <p>If an error occurs in evaluation, the error message is returned as a
-character string of class ‘miraiError’ and ‘errorValue’ (the
-stack trace is available at <code>$stack.trace</code> on the error object).
-<code><a href="is_mirai_error.html">is_mirai_error</a></code> may be used to test for this.</p>
+character string of class ‘miraiError’ and ‘errorValue’.
+<code><a href="is_mirai_error.html">is_mirai_error</a></code> may be used to test for this. The elements of
+the original condition are accessible via <code>$</code> on the error object. A
+stack trace is also available at <code>$stack.trace</code>.</p>
 <p>If a daemon crashes or terminates unexpectedly during evaluation, an
 ‘errorValue’ 19 (Connection reset) is returned.</p>
 <p><code><a href="is_mirai_error.html">is_error_value</a></code> tests for all error conditions including

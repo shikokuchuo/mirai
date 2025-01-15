@@ -130,7 +130,8 @@ they are of the same type to avoid coercion. Note: errors if an
 ‘errorValue’ has been returned or results are of differing type.</p>
 <p><code>x[.progress]</code> collects map results whilst showing a progress bar from
 the <a href="https://CRAN.R-project.org/package=cli" class="external-link"><span class="pkg">cli</span></a> package, if installed, with completion percentage and ETA,
-or else a simple text progress indicator.</p>
+or else a simple text progress indicator. Note: if the map operation
+completes too quickly then the progress bar may not show at all.</p>
 <p><code>x[.stop]</code> collects map results applying early stopping, which stops at
 the first failure and cancels remaining operations. Note: operations already
 in progress continue to completion, although their results are not collected.</p>
