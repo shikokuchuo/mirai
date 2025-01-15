@@ -77,9 +77,12 @@ progress indicator.
 \section{Multiple Map}{
 
 
-Multiple map is performed automatically over the \strong{rows} of an object
-with \sQuote{dim} attributes such as a matrix or dataframe. This is most
-often the desired behaviour in these cases.
+If \code{.x} is a matrix or dataframe (or other object with \sQuote{dim}
+attributes), \emph{multiple} map is performed over its \strong{rows}.
+
+In this case, \code{.f} should accept at least as many arguments as the
+length of each row. If the dataframe has names, or the matrix column
+dimnames, named arguments are provided to \code{.f}.
 
 To map over \strong{columns} instead, first wrap a dataframe in
 \code{\link{as.list}}, or transpose a matrix using \code{\link{t}}.
@@ -91,25 +94,34 @@ if (interactive()) {
 
 daemons(4)
 
+# perform and collect mirai map
+mm <- mirai_map(c(a = 1, b = 2, c = 3), rnorm)
+mm
+mm[]
+
 # map with constant args specified via '.args'
-mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
+mirai_map(1:3, rnorm, .args = list(n = 5, sd = 2))[]
 
-# flatmap with function definition passed via '...'
-mirai_map(1:3, function(x) func(1L, x, x + 1L), func = stats::runif)[.flat]
+# flatmap with helper function passed via '...'
+mirai_map(
+  10^(0:9),
+  function(x) rnorm(1L, valid(x)),
+  valid = function(x) min(max(x, 0L), 100L)
+)[.flat]
 
-# sum rows of a dataframe
-(df <- data.frame(a = 1:3, b = c(4, 3, 2)))
-mirai_map(df, sum)[.flat]
-
-# sum rows of a matrix
+# unnamed matrix multiple map: arguments passed to function by position
 (mat <- matrix(1:4, nrow = 2L))
-mirai_map(mat, sum)[.flat]
+mirai_map(mat, function(x = 10, y = 0, z = 0) x + y + z)[.flat]
 
-# map over rows of a dataframe
+# named matrix multiple map: arguments passed to function by name
+dimnames(mat)[[2L]] <- c("y", "z")
+mirai_map(mat, function(x = 10, y = 0, z = 0) x + y + z)[.flat]
+
+# dataframe multiple map: using a function taking '...' arguments
 df <- data.frame(a = c("Aa", "Bb"), b = c(1L, 4L))
 mirai_map(df, function(...) sprintf("\%s: \%d", ...))[.flat]
 
-# indexed map over a vector
+# indexed map over a vector (using a dataframe)
 v <- c("egg", "got", "ten", "nap", "pie")
 mirai_map(
   data.frame(1:length(v), v),
@@ -118,15 +130,10 @@ mirai_map(
 )[.flat]
 
 # return a 'mirai_map' object, check for resolution, collect later
-mp <- mirai_map(
-  c(a = 2, b = 3, c = 4),
-  function(x, y) do(x, as.logical(x \%\% y)),
-  do = nanonext::random,
-  .args = list(y = 2)
-)
+mp <- mirai_map(2:4, function(x) runif(1L, x, x + 1))
 unresolved(mp)
 mp
-mp[]
+mp[.flat]
 unresolved(mp)
 
 # progress indicator counts up from 0 to 4 seconds
@@ -136,17 +143,14 @@ daemons(0)
 
 # generates warning as daemons not set
 # stops early when second element returns an error
-tryCatch(
-  mirai_map(list(1, "a", 3), sum)[.stop],
-  error = identity
-)
+tryCatch(mirai_map(list(1, "a", 3), sum)[.stop], error = identity)
 
 # promises example that outputs the results, including errors, to the console
 if (requireNamespace("promises", quietly = TRUE)) {
 daemons(1, dispatcher = FALSE)
 ml <- mirai_map(
   1:30,
-  function(x) {Sys.sleep(0.1); if (x == 30) stop(x) else x},
+  function(i) {Sys.sleep(0.1); if (i == 30) stop(i) else i},
   .promise = list(
     function(x) cat(paste(x, "")),
     function(x) { cat(conditionMessage(x), "\n"); daemons(0) }
