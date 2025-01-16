@@ -1,4 +1,4 @@
-# mirai 2.0.0.9000 (development)
+# mirai 2.0.1
 
 #### Updates
 
