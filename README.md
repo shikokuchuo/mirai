@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![CRAN
-status](https://www.r-pkg.org/badges/version/mirai?color=00184a)](https://CRAN.R-project.org/package=mirai)
+status](https://www.r-pkg.org/badges/version/mirai)](https://CRAN.R-project.org/package=mirai)
 [![R-multiverse
 status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcommunity.r-multiverse.org%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=r-multiverse)](https://community.r-multiverse.org/mirai)
 [![R-universe
@@ -75,7 +75,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 7.418942 6.510695 6.620885 5.488792 8.438980
+#> [1] 7.256055 6.071805 5.928672 8.942775 6.980399
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -89,7 +89,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 7.418942 6.510695 6.620885 5.488792 8.438980
+#> [1] 7.256055 6.071805 5.928672 8.942775 6.980399
 ```
 
 #### Daemons
