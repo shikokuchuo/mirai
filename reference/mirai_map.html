@@ -11,7 +11,7 @@ over the rows of a dataframe or matrix."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,7 +108,8 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Sends each application of function <code>.f</code> on an element of <code>.x</code>
-(or row of <code>.x</code>) for computation in a separate <code><a href="mirai.html">mirai</a></code> call.</p>
+(or row of <code>.x</code>) for computation in a separate <code><a href="mirai.html">mirai</a></code> call.
+If <code>.x</code> is named, names are preserved.</p>
 <p>This simple and transparent behaviour is designed to make full use of
 <span class="pkg">mirai</span> scheduling to minimise overall execution time.</p>
 <p>Facilitates recovery from partial failure by returning all
@@ -144,7 +145,8 @@ progress indicator.</p>
 
 
 <p>If <code>.x</code> is a matrix or dataframe (or other object with ‘dim’
-attributes), <em>multiple</em> map is performed over its <strong>rows</strong>.</p>
+attributes), <em>multiple</em> map is performed over its <strong>rows</strong>.
+Character row names are preserved as names of the output.</p>
 <p>This allows map over 2 or more arguments, and <code>.f</code> should accept at
 least as many arguments as there are columns. If the dataframe has names, or
 the matrix column dimnames, named arguments are provided to <code>.f</code>.</p>
@@ -179,7 +181,7 @@ the matrix column dimnames, named arguments are provided to <code>.f</code>.</p>
 <span class="r-in"><span><span class="fu">mirai_map</span><span class="op">(</span><span class="va">mat</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span> <span class="op">=</span> <span class="fl">10</span>, <span class="va">y</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">z</span> <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="va">x</span> <span class="op">+</span> <span class="va">y</span> <span class="op">+</span> <span class="va">z</span><span class="op">)</span><span class="op">[</span><span class="va">.flat</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># named matrix multiple map: arguments passed to function by name</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dimnames.html" class="external-link">dimnames</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span><span class="op">[[</span><span class="fl">2L</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"y"</span>, <span class="st">"z"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dimnames.html" class="external-link">dimnames</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"y"</span>, <span class="st">"z"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">mirai_map</span><span class="op">(</span><span class="va">mat</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span> <span class="op">=</span> <span class="fl">10</span>, <span class="va">y</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">z</span> <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="va">x</span> <span class="op">+</span> <span class="va">y</span> <span class="op">+</span> <span class="va">z</span><span class="op">)</span><span class="op">[</span><span class="va">.flat</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># dataframe multiple map: using a function taking '...' arguments</span></span></span>
