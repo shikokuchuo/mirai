@@ -115,7 +115,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
     changes <- read_monitor(m)
     for (item in changes)
       if (item > 0) {
-        outq[[as.character(item)]] <- list2env(list(pipe = item, msgid = 0L, ctx = NULL))
+        outq[[as.character(item)]] <- as.environment(list(pipe = item, msgid = 0L, ctx = NULL))
         send(psock, serial, mode = 1L, block = TRUE, pipe = item)
       }
 
@@ -138,7 +138,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
       length(changes) && {
         for (item in changes) {
           if (item > 0) {
-            outq[[as.character(item)]] <- list2env(list(pipe = item, msgid = 0L, ctx = NULL))
+            outq[[as.character(item)]] <- as.environment(list(pipe = item, msgid = 0L, ctx = NULL))
             send(psock, serial, mode = 1L, block = TRUE, pipe = item)
             cv_signal(cv)
           } else {

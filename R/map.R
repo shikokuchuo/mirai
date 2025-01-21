@@ -24,6 +24,7 @@
 #'
 #' Sends each application of function \code{.f} on an element of \code{.x}
 #' (or row of \code{.x}) for computation in a separate \code{\link{mirai}} call.
+#' If \code{.x} is named, names are preserved.
 #'
 #' This simple and transparent behaviour is designed to make full use of
 #' \pkg{mirai} scheduling to minimise overall execution time.
@@ -79,6 +80,7 @@
 #'
 #' If \code{.x} is a matrix or dataframe (or other object with \sQuote{dim}
 #' attributes), \emph{multiple} map is performed over its \strong{rows}.
+#' Character row names are preserved as names of the output.
 #'
 #' This allows map over 2 or more arguments, and \code{.f} should accept at
 #' least as many arguments as there are columns. If the dataframe has names, or
@@ -113,7 +115,7 @@
 #' mirai_map(mat, function(x = 10, y = 0, z = 0) x + y + z)[.flat]
 #'
 #' # named matrix multiple map: arguments passed to function by name
-#' dimnames(mat)[[2L]] <- c("y", "z")
+#' dimnames(mat) <- list(c("a", "b"), c("y", "z"))
 #' mirai_map(mat, function(x = 10, y = 0, z = 0) x + y + z)[.flat]
 #'
 #' # dataframe multiple map: using a function taking '...' arguments
@@ -174,14 +176,18 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
   xilen <- dim(.x)[1L]
   vec <- if (length(xilen)) {
     is_matrix <- is.matrix(.x)
-    lapply(
-      seq_len(xilen),
-      function(i) mirai(
-        .expr = do.call(.f, c(.x, .args)),
-        ...,
-        .args = list(.f = .f, .x = if (is_matrix) as.list(.x[i, ]) else lapply(.x, .subset2, i), .args = .args),
-        .compute = .compute
-      )
+    names <- if (is_matrix) dimnames(.x)[[1L]] else if (is.character(rn <- attr(.x, "row.names"))) rn
+    `names<-`(
+      lapply(
+        seq_len(xilen),
+        function(i) mirai(
+          .expr = do.call(.f, c(.x, .args)),
+          ...,
+          .args = list(.f = .f, .x = if (is_matrix) as.list(.x[i, ]) else lapply(.x, .subset2, i), .args = .args),
+          .compute = .compute
+        )
+      ),
+      names
     )
   } else {
     `names<-`(
