@@ -578,7 +578,7 @@ When collecting the results, optionally specify arguments to `[]`:
 
 Combinations of the above may be supplied in the fashion of `x[.stop, .progress]`.
 ```{r mmapadv, error=TRUE}
-mirai_map(list(a = 1, b = "a", c = 3), sum)[.stop]
+mirai_map(list(a = 1, b = "a", c = 3), function(x) exp(x))[.stop]
 
 with(
   daemons(4, dispatcher = FALSE),
