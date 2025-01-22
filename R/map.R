@@ -183,7 +183,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
         function(i) mirai(
           .expr = do.call(.f, c(.x, .args), quote = TRUE),
           ...,
-          .args = list(.f = .f, .x = if (is_matrix) as.list(.x[i, ]) else lapply(.x, .subset2, i), .args = .args),
+          .args = list(.f = .f, .x = if (is_matrix) as.list(.x[i, ]) else lapply(.x, `[[`, i), .args = .args),
           .compute = .compute
         )
       ),
