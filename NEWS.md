@@ -1,8 +1,9 @@
-# mirai 2.0.1.9001 (development)
+# mirai 2.0.1.9002 (development)
 
 #### Updates
 
 * `mirai_map()` multiple map on a dataframe or matrix now correctly preserves the row names of the input as the names of the output.
+* Fixes language objects passed to `mirai_map()` being evaluated before the map function is applied (#194).
 
 # mirai 2.0.1
 
