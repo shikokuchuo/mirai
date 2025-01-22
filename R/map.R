@@ -253,9 +253,16 @@ print.mirai_map <- function(x, ...) {
   quote(
     if (i == 0L) xi <- TRUE else
       if (i == 1L) typ <<- typeof(xi) else
-        if (i <= xlen)
-          is_error_value(xi) && stop(sprintf("In index %d:\n%s", i, xi), call. = FALSE) ||
-            typeof(xi) != typ && stop(sprintf("Cannot flatten outputs of differing type: %s / %s", typ, typeof(xi)), call. = FALSE)
+        if (i <= xlen) {
+          is_error_value(xi) && {
+            stop_mirai(x)
+            stop(sprintf("In index %d:\n%s", i, xi), call. = FALSE)
+          }
+          typeof(xi) != typ && {
+            stop_mirai(x)
+            stop(sprintf("Cannot flatten outputs of differing type: %s / %s", typ, typeof(xi)), call. = FALSE)
+          }
+        }
   )
 )
 
@@ -307,13 +314,31 @@ flat_cli <- compiler::compile(
   quote(
     if (i == 0L) xi <- TRUE else
       if (i == 1L) typ <<- typeof(xi) else
-        if (i <= xlen)
-          is_error_value(xi) && cli::cli_abort(c(i = "In index {i}.", x = xi), call = quote(mirai::mirai_map())) ||
-            typeof(xi) != typ && cli::cli_abort(
-              "cannot flatten outputs of differing type: {typ} / {typeof(xi)}",
+        if (i <= xlen) {
+          is_error_value(xi) && {
+            stop_mirai(x)
+            iname <- names(x)[i]
+            cli::cli_abort(
+              c(i = "In index: {i}.",
+                i = if (length(iname) && nzchar(iname)) "With name: {iname}.",
+                `!` = xi),
               location = i,
+              name = iname,
               call = quote(mirai::mirai_map())
             )
+          }
+          typeof(xi) != typ && {
+            stop_mirai(x)
+            iname <- names(x)[i]
+            cli::cli_abort(
+              "cannot flatten outputs of differing type: {typ} / {typeof(xi)}",
+              location = i,
+              name = iname,
+              call = quote(mirai::mirai_map())
+            )
+          }
+        }
+
   )
 )
 
@@ -328,9 +353,13 @@ stop_cli <- compiler::compile(
   quote(
     if (is_error_value(xi)) {
       stop_mirai(x)
+      iname <- names(x)[i]
       cli::cli_abort(
-        c(i = "In index {i}.", x = xi),
+        c(i = "In index: {i}.",
+          i = if (length(iname) && nzchar(iname)) "With name: {iname}.",
+          `!` = xi),
         location = i,
+        name = iname,
         call = quote(mirai::mirai_map())
       )
     }
