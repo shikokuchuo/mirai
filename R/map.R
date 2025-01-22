@@ -309,7 +309,11 @@ flat_cli <- compiler::compile(
       if (i == 1L) typ <<- typeof(xi) else
         if (i <= xlen)
           is_error_value(xi) && cli::cli_abort(c(i = "In index {i}.", x = xi), call = quote(mirai::mirai_map())) ||
-            typeof(xi) != typ && cli::cli_abort("cannot flatten outputs of differing type: {typ} / {typeof(xi)}", call = quote(mirai::mirai_map()))
+            typeof(xi) != typ && cli::cli_abort(
+              "cannot flatten outputs of differing type: {typ} / {typeof(xi)}",
+              location = i,
+              call = quote(mirai::mirai_map())
+            )
   )
 )
 
@@ -324,7 +328,11 @@ stop_cli <- compiler::compile(
   quote(
     if (is_error_value(xi)) {
       stop_mirai(x)
-      cli::cli_abort(c(i = "In index {i}.", x = xi), call = quote(mirai::mirai_map()))
+      cli::cli_abort(
+        c(i = "In index {i}.", x = xi),
+        location = i,
+        call = quote(mirai::mirai_map())
+      )
     }
   )
 )
