@@ -256,7 +256,7 @@ print.mirai_map <- function(x, ...) {
         if (i <= xlen) {
           is_error_value(xi) && {
             stop_mirai(x)
-            stop(sprintf("In index %d:\n%s", i, xi), call. = FALSE)
+            stop(sprintf("In index %d:\n%s", i, attr(xi, "message")), call. = FALSE)
           }
           typeof(xi) != typ && {
             stop_mirai(x)
@@ -281,7 +281,7 @@ print.mirai_map <- function(x, ...) {
 #' @export
 #'
 .stop <- compiler::compile(
-  quote(if (is_error_value(xi)) { stop_mirai(x); stop(sprintf("In index %d:\n%s", i, xi), call. = FALSE) })
+  quote(if (is_error_value(xi)) { stop_mirai(x); stop(sprintf("In index %d:\n%s", i, attr(xi, "message")), call. = FALSE) })
 )
 
 # internals --------------------------------------------------------------------
@@ -321,10 +321,10 @@ flat_cli <- compiler::compile(
             cli::cli_abort(
               c(i = "In index: {i}.",
                 i = if (length(iname) && nzchar(iname)) "With name: {iname}.",
-                `!` = xi),
+                `!` = attr(xi, "message")),
               location = i,
               name = iname,
-              call = quote(mirai::mirai_map())
+              call = attr(xi, "call")
             )
           }
           typeof(xi) != typ && {
@@ -357,10 +357,10 @@ stop_cli <- compiler::compile(
       cli::cli_abort(
         c(i = "In index: {i}.",
           i = if (length(iname) && nzchar(iname)) "With name: {iname}.",
-          `!` = xi),
+          `!` = attr(xi, "message")),
         location = i,
         name = iname,
-        call = quote(mirai::mirai_map())
+        call = attr(xi, "call")
       )
     }
   )
