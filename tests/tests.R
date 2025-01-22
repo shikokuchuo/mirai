@@ -137,6 +137,7 @@ connection && .Platform[["OS.type"]] != "windows" && {
   test_true(all(mres == 7L))
   test_null(names(mres))
   test_true(all(mirai_map(list(c(a = 1, b = 1, c = 1), 3), sum)[.flat] == 3))
+  test_type("language", mirai_map(list(quote(1+2)), identity)[][[1]])
   test_zero(daemons(0L))
 }
 # parallel cluster tests
