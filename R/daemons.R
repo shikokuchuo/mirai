@@ -613,6 +613,7 @@ query_status <- function(envir) {
 
 dispatcher_status <- function(envir) {
   status <- query_dispatcher(envir[["sock"]], c(0L, 0L))
+  is.object(status) && return(status)
   out <- list(connections = status[1L],
               daemons = envir[["urls"]],
               mirai = c(awaiting = status[2L],

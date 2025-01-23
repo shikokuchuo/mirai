@@ -6,6 +6,7 @@
 * Fixes language objects passed to `mirai_map()` being evaluated before the map function is applied (#194).
 * Fixes classes of objects in a dataframe being dropped by `mirai_map()` multiple map (#196).
 * Improvements in the display of `cli` errors when collecting a 'mirai_map'.
+* A failed `status()` call when using dispatcher now returns the appropriate 'errorValue'.
 
 # mirai 2.0.1
 
