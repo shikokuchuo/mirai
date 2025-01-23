@@ -320,21 +320,21 @@ flat_cli <- compiler::compile(
             iname <- names(x)[i]
             cli::cli_abort(
               c(i = "In index: {i}.",
-                i = if (length(iname) && nzchar(iname)) "With name: {iname}.",
-                `!` = attr(xi, "message")),
+                i = if (length(iname) && nzchar(iname)) "With name: {iname}."),
               location = i,
               name = iname,
-              call = attr(xi, "call")
+              parent = `class<-`(attributes(xi), c("error", "condition")),
+              call = quote(mirai_map())
             )
           }
           typeof(xi) != typ && {
             stop_mirai(x)
             iname <- names(x)[i]
             cli::cli_abort(
-              "cannot flatten outputs of differing type: {typ} / {typeof(xi)}",
+              c(`!` = "cannot flatten outputs of differing type: {typ} / {typeof(xi)}"),
               location = i,
               name = iname,
-              call = quote(mirai::mirai_map())
+              call = quote(mirai_map())
             )
           }
         }
@@ -356,11 +356,11 @@ stop_cli <- compiler::compile(
       iname <- names(x)[i]
       cli::cli_abort(
         c(i = "In index: {i}.",
-          i = if (length(iname) && nzchar(iname)) "With name: {iname}.",
-          `!` = attr(xi, "message")),
+          i = if (length(iname) && nzchar(iname)) "With name: {iname}."),
         location = i,
         name = iname,
-        call = attr(xi, "call")
+        parent = `class<-`(attributes(xi), c("error", "condition")),
+        call = quote(mirai_map())
       )
     }
   )
