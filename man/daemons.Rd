@@ -130,16 +130,15 @@ connecting back to the host process, either directly or via dispatcher.
 
 By default \code{dispatcher = TRUE} launches a background process running
 \code{\link{dispatcher}}. Dispatcher connects to daemons on behalf of
-the host and ensures optimal FIFO scheduling of tasks.
+the host, queues tasks, and ensures optimal scheduling.
 
-Specifying \code{dispatcher = FALSE}, uses the default behaviour without
-additional dispatcher logic. In this case daemons connect directly to the
-host and tasks are distributed in a round-robin fashion. Optimal scheduling
-is not guaranteed as the duration of tasks cannot be known \emph{a priori},
-hence tasks can be queued at one daemon while other daemons remain idle.
-However, this provides the most resource-light approach, suited to working
-with similar-length tasks, or where concurrent tasks typically do not exceed
-available daemons.
+Specifying \code{dispatcher = FALSE}, daemons connect directly to the
+host and tasks are distributed in a round-robin fashion. As tasks are queued
+at each daemon, optimal scheduling is not guaranteed as the duration of each
+task cannot be known \emph{a priori}. Tasks can be queued at one daemon while
+others remain idle. However, this provides the most resource-light approach,
+suited to working with similar-length tasks, or where concurrent tasks
+typically do not exceed available daemons.
 }
 
 \section{Distributed Computing}{
