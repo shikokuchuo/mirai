@@ -32,9 +32,9 @@
 #'   background process for each request.
 #'   \item Any unresolved \sQuote{mirai} will return an \sQuote{errorValue} 19
 #'   (Connection reset) after a reset.
-#'   \item Calling \code{daemons} with revised (or even the same) settings for the
-#'   same compute profile resets daemons before applying the new settings if
-#'   \code{force = TRUE}.
+#'   \item Calling \code{daemons} with revised (or even the same) settings for
+#'   the same compute profile resets daemons before applying the new settings if
+#'   \code{force = TRUE}. This is accompanied by a warning.
 #' }
 #'
 #' If the host session ends, all connected dispatcher and daemon processes
@@ -46,8 +46,8 @@
 #' \code{daemons(NULL)} instead, which also sends exit signals to all connected
 #' daemons prior to resetting.
 #'
-#' For historical reasons, \code{daemons()} with no arguments returns the value
-#' of \code{\link{status}}.
+#' For historical reasons, \code{daemons()} with no arguments (other than
+#' optionally \sQuote{.compute}) returns the value of \code{\link{status}}.
 #'
 #' @inheritParams mirai
 #' @inheritParams dispatcher
@@ -289,6 +289,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         launch_remote(n = n, remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
     } else if (force) {
       daemons(0L, .compute = .compute)
+      warning(sprintf(._[["daemons_reset"]], .compute), call. = FALSE, immediate. = TRUE)
       return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ...,
                      seed = seed, serial = serial, tls = tls, pass = pass, .compute = .compute))
     }
@@ -346,6 +347,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "dots", dots))
     } else if (force) {
       daemons(0L, .compute = .compute)
+      warning(sprintf(._[["daemons_reset"]], .compute), call. = FALSE, immediate. = TRUE)
       return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ...,
                      seed = seed, serial = serial, tls = tls, pass = pass, .compute = .compute))
     }

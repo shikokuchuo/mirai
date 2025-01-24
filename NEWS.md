@@ -7,6 +7,7 @@
 * Fixes classes of objects in a dataframe being dropped by `mirai_map()` multiple map (#196).
 * Improvements in the display of `cli` errors when collecting a 'mirai_map'.
 * A failed `status()` call when using dispatcher now returns the appropriate 'errorValue'.
+* `daemons()` now warns when it resets and revises settings for a compute profile, when `daemons(0)` has not been explicitly called beforehand.
 
 # mirai 2.0.1
 
