@@ -53,10 +53,16 @@
 <div class="section level5">
 <h5 id="updates-2-0-1-9005">Updates<a class="anchor" aria-label="anchor" href="#updates-2-0-1-9005"></a></h5>
 <ul><li>
-<code><a href="../reference/mirai_map.html">mirai_map()</a></code> multiple map on a dataframe or matrix now correctly preserves the row names of the input as the names of the output.</li>
-<li>Fixes language objects passed to <code><a href="../reference/mirai_map.html">mirai_map()</a></code> being evaluated before the map function is applied (<a href="https://github.com/shikokuchuo/mirai/issues/194" class="external-link">#194</a>).</li>
-<li>Fixes classes of objects in a dataframe being dropped by <code><a href="../reference/mirai_map.html">mirai_map()</a></code> multiple map (<a href="https://github.com/shikokuchuo/mirai/issues/196" class="external-link">#196</a>).</li>
-<li>Improvements in the display of <code>cli</code> errors when collecting a ‘mirai_map’.</li>
+<code><a href="../reference/mirai_map.html">mirai_map()</a></code> behavioural change:
+<ul><li>Now errors if daemons have not yet been set (rather than warn and launch one local daemon).</li>
+</ul></li>
+<li>
+<code><a href="../reference/mirai_map.html">mirai_map()</a></code> improvements:
+<ul><li>Multiple map on a dataframe or matrix now correctly preserves the row names of the input as the names of the output.</li>
+<li>Fixes language objects being evaluated before the map function is applied (<a href="https://github.com/shikokuchuo/mirai/issues/194" class="external-link">#194</a>).</li>
+<li>Fixes classes of objects in a dataframe being dropped during a multiple map (<a href="https://github.com/shikokuchuo/mirai/issues/196" class="external-link">#196</a>).</li>
+<li>Better <code>cli</code> errors when collecting a ‘mirai_map’.</li>
+</ul></li>
 <li>A failed <code><a href="../reference/status.html">status()</a></code> call when using dispatcher now returns the appropriate ‘errorValue’.</li>
 <li>
 <code><a href="../reference/daemons.html">daemons()</a></code> now warns when it resets and revises settings for a compute profile, when <code>daemons(0)</code> has not been explicitly called beforehand.</li>
