@@ -180,9 +180,9 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
   background process for each request.</p></li>
 <li><p>Any unresolved ‘mirai’ will return an ‘errorValue’ 19
   (Connection reset) after a reset.</p></li>
-<li><p>Calling <code>daemons</code> with revised (or even the same) settings for the
-  same compute profile resets daemons before applying the new settings if
-  <code>force = TRUE</code>.</p></li>
+<li><p>Calling <code>daemons</code> with revised (or even the same) settings for
+  the same compute profile resets daemons before applying the new settings if
+  <code>force = TRUE</code>. This is accompanied by a warning.</p></li>
 </ul><p>If the host session ends, all connected dispatcher and daemon processes
 automatically exit as soon as their connections are dropped (unless the
 daemons were started with <code>autoexit = FALSE</code>). If a daemon is processing
@@ -190,8 +190,8 @@ a task, it will exit as soon as the task is complete.</p>
 <p>To reset persistent daemons started with <code>autoexit = FALSE</code>, use
 <code>daemons(NULL)</code> instead, which also sends exit signals to all connected
 daemons prior to resetting.</p>
-<p>For historical reasons, <code>daemons()</code> with no arguments returns the value
-of <code><a href="status.html">status</a></code>.</p>
+<p>For historical reasons, <code>daemons()</code> with no arguments (other than
+optionally ‘.compute’) returns the value of <code><a href="status.html">status</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="local-daemons">Local Daemons<a class="anchor" aria-label="anchor" href="#local-daemons"></a></h2>
