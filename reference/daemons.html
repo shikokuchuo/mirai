@@ -212,15 +212,14 @@ connecting back to the host process, either directly or via dispatcher.</p>
 
 <p>By default <code>dispatcher = TRUE</code> launches a background process running
 <code><a href="dispatcher.html">dispatcher</a></code>. Dispatcher connects to daemons on behalf of
-the host and ensures optimal FIFO scheduling of tasks.</p>
-<p>Specifying <code>dispatcher = FALSE</code>, uses the default behaviour without
-additional dispatcher logic. In this case daemons connect directly to the
-host and tasks are distributed in a round-robin fashion. Optimal scheduling
-is not guaranteed as the duration of tasks cannot be known <em>a priori</em>,
-hence tasks can be queued at one daemon while other daemons remain idle.
-However, this provides the most resource-light approach, suited to working
-with similar-length tasks, or where concurrent tasks typically do not exceed
-available daemons.</p>
+the host, queues tasks, and ensures optimal scheduling.</p>
+<p>Specifying <code>dispatcher = FALSE</code>, daemons connect directly to the
+host and tasks are distributed in a round-robin fashion. As tasks are queued
+at each daemon, optimal scheduling is not guaranteed as the duration of each
+task cannot be known <em>a priori</em>. Tasks can be queued at one daemon while
+others remain idle. However, this provides the most resource-light approach,
+suited to working with similar-length tasks, or where concurrent tasks
+typically do not exceed available daemons.</p>
     </div>
     <div class="section level2">
     <h2 id="distributed-computing">Distributed Computing<a class="anchor" aria-label="anchor" href="#distributed-computing"></a></h2>
