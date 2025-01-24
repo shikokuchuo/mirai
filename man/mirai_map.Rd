@@ -48,8 +48,8 @@ Facilitates recovery from partial failure by returning all
 \sQuote{miraiError} / \sQuote{errorValue} as the case may be, thus allowing
 only the failures to be re-run.
 
-Note: requires daemons to have previously been set. If not, then one local
-daemon is set before the function proceeds.
+This function requires daemons to have previously been set, and will error if
+not.
 }
 \section{Collection Options}{
 
@@ -142,11 +142,10 @@ unresolved(mp)
 # progress indicator counts up from 0 to 4 seconds
 res <- mirai_map(1:4, Sys.sleep)[.progress]
 
-daemons(0)
-
-# generates warning as daemons not set
 # stops early when second element returns an error
 tryCatch(mirai_map(list(1, "a", 3), sum)[.stop], error = identity)
+
+daemons(0)
 
 # promises example that outputs the results, including errors, to the console
 if (requireNamespace("promises", quietly = TRUE)) {

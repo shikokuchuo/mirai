@@ -478,6 +478,8 @@ x <- as_arrow_table(iris)
 
 m <- mirai(list(a = head(x), b = "some text"), x = x)
 m[]
+
+daemons(0)
 ```
 However, `serial_config()` can be used to create custom serialization configurations, specifying functions that hook into R's native serialization mechanism for reference objects ('refhooks').
 
@@ -548,6 +550,7 @@ daemons(4)
 vec <- c(1, 1, 4, 4, 1, 1, 1, 1)
 system.time(mirai_map(vec, Sys.sleep)[])
 system.time(parLapply(cl, vec, Sys.sleep))
+daemons(0)
 ```
 `.args` is used to specify further constant arguments to `.f` - the 'mean' and 'sd' in the example below:
 ```{r mmap}
@@ -558,6 +561,7 @@ with(
 ```
 Use `...` to further specify objects referenced but not defined in `.f` - the 'do' in the anonymous function below:
 ```{r mmap2}
+daemons(4)
 ml <- mirai_map(
   c(a = 1, b = 2, c = 3),
   function(x) do(x, as.logical(x %% 2)),
@@ -566,7 +570,7 @@ ml <- mirai_map(
 ml
 ml[]
 ```
-Use of `mirai_map()` assumes that `daemons()` have previously been set. If not then one (non-dispatcher) daemon is set to allow the function to proceed. This ensures safe behaviour, but is unlikely to be optimal, so please ensure daemons are set beforehand.
+Use of `mirai_map()` requires that `daemons()` have previously been set, and will error if not.
 
 #### Collecting Results
 
@@ -581,9 +585,11 @@ Combinations of the above may be supplied in the fashion of `x[.stop, .progress]
 mirai_map(list(a = 1, b = "a", c = 3), function(x) exp(x))[.stop]
 
 with(
-  daemons(4, dispatcher = FALSE),
-  mirai_map(c(0.1, 0.2, 0.3), Sys.sleep)[.progress, .flat]
+  daemons(4, dispatcher = FALSE, .compute = "sleep"),
+  mirai_map(c(0.1, 0.2, 0.3), Sys.sleep, .compute = "sleep")[.progress, .flat]
 )
+
+daemons(0)
 ```
 
 #### Multiple Map

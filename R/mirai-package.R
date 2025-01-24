@@ -101,7 +101,7 @@
     not_found = "compute profile '%s' not found",
     numeric_n = "'n' must be numeric, did you mean to provide 'url'?",
     register_cluster = "this function requires a more recent version of R",
-    requires_daemons = "mirai is launching one local daemon for a map operation as none previously set",
+    requires_daemons = "daemons must be set prior to a map operation",
     sync_daemons = "initial sync with daemon(s) timed out after 10s",
     sync_dispatcher = "initial sync with dispatcher timed out after 10s"
   ),

@@ -33,8 +33,8 @@
 #' \sQuote{miraiError} / \sQuote{errorValue} as the case may be, thus allowing
 #' only the failures to be re-run.
 #'
-#' Note: requires daemons to have previously been set. If not, then one local
-#' daemon is set before the function proceeds.
+#' This function requires daemons to have previously been set, and will error if
+#' not.
 #'
 #' @param .x a list or atomic vector. Also accepts a matrix or dataframe, in
 #'   which case multiple map is performed over its rows.
@@ -140,11 +140,10 @@
 #' # progress indicator counts up from 0 to 4 seconds
 #' res <- mirai_map(1:4, Sys.sleep)[.progress]
 #'
-#' daemons(0)
-#'
-#' # generates warning as daemons not set
 #' # stops early when second element returns an error
 #' tryCatch(mirai_map(list(1, "a", 3), sum)[.stop], error = identity)
+#'
+#' daemons(0)
 #'
 #' # promises example that outputs the results, including errors, to the console
 #' if (requireNamespace("promises", quietly = TRUE)) {
@@ -165,14 +164,10 @@
 #'
 mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "default") {
 
-  is.function(.f) || stop(sprintf(._[["function_required"]], typeof(.f)))
   envir <- ..[[.compute]]
-  is.null(envir) && {
-    .x
-    warning(._[["requires_daemons"]], call. = FALSE, immediate. = TRUE)
-    daemons(1L, dispatcher = FALSE, .compute = .compute)
-    return(mirai_map(.x = .x, .f = .f, ..., .args = .args, .promise = .promise, .compute = .compute))
-  }
+  is.null(envir) && stop(._[["requires_daemons"]])
+  is.function(.f) || stop(sprintf(._[["function_required"]], typeof(.f)))
+
   xilen <- dim(.x)[1L]
   vec <- if (length(xilen)) {
     is_matrix <- is.matrix(.x)

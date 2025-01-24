@@ -21,7 +21,7 @@ test_zero(daemons(0L))
 test_error(mirai(), "missing expression, perhaps wrap in {}?")
 test_error(mirai(a, 1), "all '...' arguments must be named")
 test_error(mirai(a, .args = list(1)), "all items in '.args' must be named")
-test_error(mirai_map(1:2, "a function"), "must be of type function, not character")
+test_error(mirai_map(1:2, identity), "daemons must be set")
 test_error(daemons(url = "URL"), "Invalid argument")
 test_error(daemons(-1), "zero or greater")
 test_error(daemons(raw(0L)), "must be numeric")
@@ -102,6 +102,7 @@ connection && {
   if (!unresolved(mp$data)) test_equal(mp$data, 3)
   Sys.sleep(1L)
   test_type("integer", status(.compute = "new")[["connections"]])
+  test_error(mirai_map(1:2, "a function", .compute = "new"), "must be of type function, not character")
   test_zero(daemons(0L, .compute = "new"))
 }
 # additional daemons tests
@@ -130,7 +131,8 @@ connection && .Platform[["OS.type"]] != "windows" && {
   test_equal(length(m), 3L)
   test_true(all(as.logical(lapply(m, is.numeric))))
   Sys.sleep(1L)
-  test_print(suppressWarnings(mp <- mirai_map(list(x = "a"), function(...) do(...), do = function(x, y) sprintf("%s%s", x, y), .args = list("b"))))
+  daemons(1, dispatcher = FALSE)
+  mp <- mirai_map(list(x = "a"), function(...) do(...), do = function(x, y) sprintf("%s%s", x, y), .args = list("b"))
   test_identical(collect_mirai(mp)[["x"]], "ab")
   test_identical(call_mirai(mp)[["x"]][["data"]], "ab")
   mres <- mirai_map(data.frame(1:3, 3:1), sum, .args = list(3L))[.flat]
