@@ -133,6 +133,7 @@ connection && .Platform[["OS.type"]] != "windows" && {
   Sys.sleep(1L)
   daemons(1, dispatcher = FALSE)
   mp <- mirai_map(list(x = "a"), function(...) do(...), do = function(x, y) sprintf("%s%s", x, y), .args = list("b"))
+  test_print(mp)
   test_identical(collect_mirai(mp)[["x"]], "ab")
   test_identical(call_mirai(mp)[["x"]][["data"]], "ab")
   mres <- mirai_map(data.frame(1:3, 3:1), sum, .args = list(3L))[.flat]
