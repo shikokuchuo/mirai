@@ -32,9 +32,10 @@
 #'   background process for each request.
 #'   \item Any unresolved \sQuote{mirai} will return an \sQuote{errorValue} 19
 #'   (Connection reset) after a reset.
-#'   \item Calling \code{daemons} with revised (or even the same) settings for
-#'   the same compute profile resets daemons before applying the new settings if
-#'   \code{force = TRUE}. This is accompanied by a warning.
+#'   \item Daemons must be reset before calling \code{daemons} with revised
+#'   settings for a compute profile. Daemons may be added at any time by using
+#'   \code{\link{launch_local}} or \code{\link{launch_remote}} without needing
+#'   to revise daemons settings.
 #' }
 #'
 #' If the host session ends, all connected dispatcher and daemon processes
@@ -69,10 +70,6 @@
 #'   \code{\link{daemon}} if launching daemons. These include \sQuote{asyncdial},
 #'   \sQuote{autoexit}, \sQuote{cleanup}, \sQuote{output}, \sQuote{maxtasks},
 #'   \sQuote{idletime} and \sQuote{walltime}.
-#' @param force [default TRUE] logical value whether to always reset daemons and
-#'   apply new settings for a compute profile, even if already set. If FALSE,
-#'   applying new settings requires daemons to be explicitly reset first using
-#'   \code{daemons(0)}.
 #' @param seed [default NULL] (optional) supply a random seed (single value,
 #'   interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
 #'   RNG streams sent to each daemon. Note that reproducible results can be
@@ -237,8 +234,8 @@
 #' @export
 #'
 daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
-                    force = TRUE, seed = NULL, serial = NULL,
-                    tls = NULL, pass = NULL, .compute = "default") {
+                    seed = NULL, serial = NULL, tls = NULL, pass = NULL,
+                    .compute = "default") {
 
   missing(n) && missing(url) && return(status(.compute))
 
@@ -286,11 +283,8 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", launches), "dots", dots))
       if (length(remote))
         launch_remote(n = n, remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
-    } else if (force) {
-      daemons(0L, .compute = .compute)
-      warning(sprintf(._[["daemons_reset"]], .compute), call. = FALSE, immediate. = TRUE)
-      return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ...,
-                     seed = seed, serial = serial, tls = tls, pass = pass, .compute = .compute))
+    } else {
+      stop(sprintf(._[["daemons_set"]], .compute))
     }
 
   } else {
@@ -344,11 +338,8 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         stop(._[["dispatcher_args"]])
       )
       `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "dots", dots))
-    } else if (force) {
-      daemons(0L, .compute = .compute)
-      warning(sprintf(._[["daemons_reset"]], .compute), call. = FALSE, immediate. = TRUE)
-      return(daemons(n = n, url = url, remote = remote, dispatcher = dispatcher, ...,
-                     seed = seed, serial = serial, tls = tls, pass = pass, .compute = .compute))
+    } else {
+      stop(sprintf(._[["daemons_set"]], .compute))
     }
 
   }

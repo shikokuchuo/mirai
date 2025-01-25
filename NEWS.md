@@ -1,16 +1,18 @@
 # mirai 2.0.1.9005 (development)
 
+#### Behavioural Changes
+
+* `daemons()` now requires an explicit reset before providing revised settings for a compute profile, and will error otherwise.
+* `mirai_map()` now errors if daemons have not yet been set (rather than warn and launch one local daemon).
+
 #### Updates
 
-* `mirai_map()` behavioural change:
-  + Now errors if daemons have not yet been set (rather than warn and launch one local daemon).
 * `mirai_map()` improvements:
   + Multiple map on a dataframe or matrix now correctly preserves the row names of the input as the names of the output.
   + Fixes language objects being evaluated before the map function is applied (#194).
   + Fixes classes of objects in a dataframe being dropped during a multiple map (#196).
   + Better `cli` errors when collecting a 'mirai_map'.
-* A failed `status()` call when using dispatcher now returns the appropriate 'errorValue'.
-* `daemons()` now warns when it resets and revises settings for a compute profile, when `daemons(0)` has not been explicitly called beforehand.
+* `status()` call failures when using dispatcher now return the appropriate 'errorValue'.
 
 # mirai 2.0.1
 
