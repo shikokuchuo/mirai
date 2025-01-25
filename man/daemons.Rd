@@ -10,7 +10,6 @@ daemons(
   remote = NULL,
   dispatcher = TRUE,
   ...,
-  force = TRUE,
   seed = NULL,
   serial = NULL,
   tls = NULL,
@@ -41,11 +40,6 @@ section below).}
 \code{\link{daemon}} if launching daemons. These include \sQuote{asyncdial},
 \sQuote{autoexit}, \sQuote{cleanup}, \sQuote{output}, \sQuote{maxtasks},
 \sQuote{idletime} and \sQuote{walltime}.}
-
-\item{force}{[default TRUE] logical value whether to always reset daemons and
-apply new settings for a compute profile, even if already set. If FALSE,
-applying new settings requires daemons to be explicitly reset first using
-\code{daemons(0)}.}
 
 \item{seed}{[default NULL] (optional) supply a random seed (single value,
 interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
@@ -96,9 +90,10 @@ Use \code{daemons(0)} to reset daemon connections:
   background process for each request.
   \item Any unresolved \sQuote{mirai} will return an \sQuote{errorValue} 19
   (Connection reset) after a reset.
-  \item Calling \code{daemons} with revised (or even the same) settings for
-  the same compute profile resets daemons before applying the new settings if
-  \code{force = TRUE}. This is accompanied by a warning.
+  \item Daemons must be reset before calling \code{daemons} with revised
+  settings for a compute profile. Daemons may be added at any time by using
+  \code{\link{launch_local}} or \code{\link{launch_remote}} without needing
+  to revise daemons settings.
 }
 
 If the host session ends, all connected dispatcher and daemon processes
