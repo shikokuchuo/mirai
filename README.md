@@ -21,16 +21,19 @@ status](https://shikokuchuo.r-universe.dev/badges/mirai)](https://shikokuchuo.r-
 <br /> みらい 未来 <br /><br /> Minimalist Async Evaluation Framework
 for R <br /><br /> Designed for simplicity, a ‘mirai’ evaluates an R
 expression asynchronously in a parallel process, locally or distributed
-over the network, with the result automatically available upon
-completion. <br /><br /> Modern networking and concurrency built on
+over the network. The result is automatically available upon completion.
+
+Modern networking and concurrency, built on
 [nanonext](https://github.com/shikokuchuo/nanonext/) and
-[NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen) ensure reliable and
-efficient scheduling, over fast inter-process communications or TCP/IP
-secured by TLS. <br /><br /> Advantages include being inherently queued
-thus handling many more tasks than available processes, no storage on
-the file system, support for otherwise non-exportable reference objects,
-an event-driven promises implementation, and built-in asynchronous
-parallel map. <br /><br />
+[NNG](https://nng.nanomsg.org/) (Nanomsg Next Gen), ensures reliable and
+efficient scheduling over fast inter-process communications or TCP/IP
+secured by TLS. Distributed computing can launch remote resources via
+SSH or cluster managers.
+
+An inherently queued architecture handles many more tasks than available
+processes, and requires no storage on the file system. Innovative
+features include support for otherwise non-exportable reference objects,
+event-driven promises, and asynchronous parallel map. <br /><br />
 
 ### Quick Start
 
@@ -75,7 +78,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 7.256055 6.071805 5.928672 8.942775 6.980399
+#> [1] 7.048859 7.102751 7.849110 9.330095 7.536337
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -89,7 +92,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 7.256055 6.071805 5.928672 8.942775 6.980399
+#> [1] 7.048859 7.102751 7.849110 9.330095 7.536337
 ```
 
 #### Daemons
