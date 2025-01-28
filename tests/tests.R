@@ -107,7 +107,7 @@ connection && {
   test_zero(daemons(0L, .compute = "new"))
 }
 # additional daemons tests
-connection && .Platform[["OS.type"]] != "windows" && {
+connection && {
   Sys.sleep(1L)
   test_zero(daemons(url = value <- local_url(), dispatcher = FALSE))
   test_identical(status()$daemons, value)
@@ -121,7 +121,7 @@ connection && .Platform[["OS.type"]] != "windows" && {
   test_zero(daemons(0L))
 }
 # mirai_map tests
-connection && .Platform[["OS.type"]] != "windows" && {
+connection && {
   Sys.sleep(1L)
   m <- with(daemons(1, dispatcher = "none", .compute = "ml"), {
     if (is.null(tryCatch(mirai_map(list(1, "a", 2), sum, .compute = "ml")[.stop], error = function(e) NULL)))
@@ -213,7 +213,7 @@ connection && {
   test_null(stopCluster(cl))
 }
 # advanced daemons and dispatcher tests
-connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "true" && {
+connection && Sys.getenv("NOT_CRAN") == "true" && {
   Sys.sleep(0.5)
   test_zero(daemons(url = "ws://:0", correctype = 0L, token = TRUE))
   test_zero(daemons(0L))
@@ -357,7 +357,7 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   test_zero(daemons(0))
 }
 # legacy interface tests
-connection && .Platform[["OS.type"]] != "windows" && Sys.getenv("NOT_CRAN") == "true" && {
+connection && Sys.getenv("NOT_CRAN") == "true" && {
   Sys.sleep(0.5)
   option <- 15L
   Sys.setenv(R_DEFAULT_PACKAGES = "stats,utils")

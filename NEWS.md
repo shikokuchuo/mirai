@@ -1,4 +1,4 @@
-# mirai 2.0.1.9005 (development)
+# mirai 2.0.1.9006 (development)
 
 #### Behavioural Changes
 
@@ -13,6 +13,7 @@
   + Fixes classes of objects in a dataframe being dropped during a multiple map (#196).
   + Better `cli` errors when collecting a 'mirai_map'.
 * `status()` call failures when using dispatcher now return the appropriate 'errorValue'.
+* Requires nanonext >= 1.5.0.
 
 # mirai 2.0.1
 
