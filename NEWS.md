@@ -7,6 +7,7 @@
 
 #### Updates
 
+* 'miraiError' evaluation errors now return the call stack at `$stack.trace` as a list of calls (with srcrefs removed) without deparsing to character strings.
 * `mirai_map()` improvements:
   + Multiple map on a dataframe or matrix now correctly preserves the row names of the input as the names of the output.
   + Fixes language objects being evaluated before the map function is applied (#194).

@@ -49,7 +49,8 @@ If an error occurs in evaluation, the error message is returned as a
 character string of class \sQuote{miraiError} and \sQuote{errorValue}.
 \code{\link{is_mirai_error}} may be used to test for this. The elements of
 the original condition are accessible via \code{$} on the error object. A
-stack trace is also available at \code{$stack.trace}.
+stack trace comprising a list of calls is also available at
+\code{$stack.trace}.
 
 If a daemon crashes or terminates unexpectedly during evaluation, an
 \sQuote{errorValue} 19 (Connection reset) is returned.

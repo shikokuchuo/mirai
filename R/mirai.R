@@ -91,7 +91,8 @@
 #' character string of class \sQuote{miraiError} and \sQuote{errorValue}.
 #' \code{\link{is_mirai_error}} may be used to test for this. The elements of
 #' the original condition are accessible via \code{$} on the error object. A
-#' stack trace is also available at \code{$stack.trace}.
+#' stack trace comprising a list of calls is also available at
+#' \code{$stack.trace}.
 #'
 #' If a daemon crashes or terminates unexpectedly during evaluation, an
 #' \sQuote{errorValue} 19 (Connection reset) is returned.
@@ -629,11 +630,6 @@ ephemeral_daemon <- function(data, timeout) {
 deparse_safe <- function(x) if (length(x))
   deparse(x, width.cutoff = 500L, backtick = TRUE, control = NULL, nlines = 1L)
 
-deparse_call <- function(call) {
-  srcref <- attr(call, "srcref")
-  if (is.null(srcref)) deparse_safe(call) else as.character(srcref)
-}
-
 mk_interrupt_error <- function() .miraiInterrupt
 
 mk_mirai_error <- function(e, sc) {
@@ -653,10 +649,9 @@ mk_mirai_error <- function(e, sc) {
   sc <- sc[(length(sc) - 1L):(idx + 1L)]
   if (sc[[1L]][[1L]] == ".handleSimpleError")
     sc <- sc[-1L]
-  `class<-`(
-    `attributes<-`(msg, `[[<-`(e, "stack.trace", lapply(sc, deparse_call))),
-    c("miraiError", "errorValue", "try-error")
-  )
+  sc <- lapply(sc, `attributes<-`, NULL)
+  out <- `attributes<-`(msg, `[[<-`(e, "stack.trace", sc))
+  `class<-`(out, c("miraiError", "errorValue", "try-error"))
 }
 
 .miraiInterrupt <- `class<-`("", c("miraiInterrupt", "errorValue", "try-error"))

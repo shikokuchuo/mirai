@@ -72,7 +72,7 @@ connection && {
   if (!is_mirai_error(me)) test_true(is_error_value(me))
   if (is_mirai_error(me)) test_type("list", me$stack.trace)
   if (is_mirai_error(me)) test_true(length(me$stack.trace) >= 2L)
-  if (is_mirai_error(me)) test_true(all(as.logical(lapply(me$stack.trace, is.character))))
+  if (is_mirai_error(me)) test_true(all(as.logical(lapply(me$stack.trace, is.language))))
   test_true(!is_mirai_interrupt(me))
   test_class("errorValue", me)
   test_print(me)
