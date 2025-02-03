@@ -260,7 +260,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
           cv <- cv()
           urld <- local_url()
           sock <- req_socket(urld)
-          res <- launch_sync_dispatcher(sock, wa52(urld, dots, url), output, tls, pass, serial)
+          res <- launch_sync_dispatcher(sock, wa5(urld, dots, url), output, tls, pass, serial)
           is.object(res) && stop(._[["sync_dispatcher"]])
           store_dispatcher(sock, res, cv, envir)
           `[[<-`(envir, "msgid", 0L)
@@ -305,7 +305,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         {
           cv <- cv()
           sock <- req_socket(urld)
-          res <- launch_sync_dispatcher(sock, wa42(urld, dots, envir[["stream"]], n), output, serial = serial)
+          res <- launch_sync_dispatcher(sock, wa4(urld, dots, envir[["stream"]], n), output, serial = serial)
           is.object(res) && stop(._[["sync_dispatcher"]])
           store_dispatcher(sock, res, cv, envir)
           for (i in seq_len(n)) next_stream(envir)
@@ -504,16 +504,16 @@ parse_tls <- function(tls)
 
 libp <- function(lp = .libPaths()) lp[file.exists(file.path(lp, "mirai"))][1L]
 
-wa3 <- function(url, dots, rs, tls = NULL)
+wa2 <- function(url, dots, rs, tls = NULL)
   shQuote(sprintf("mirai::daemon(\"%s\"%s%s,rs=c(%s),dispatcher=FALSE)", url, dots, parse_tls(tls), paste0(rs, collapse = ",")))
 
-wa32 <- function(url, dots, rs, tls = NULL)
+wa3 <- function(url, dots, rs, tls = NULL)
   shQuote(sprintf("mirai::daemon(\"%s\"%s%s,rs=c(%s),dispatcher=TRUE)", url, dots, parse_tls(tls), paste0(rs, collapse = ",")))
 
-wa42 <- function(urld, dots, rs, n)
+wa4 <- function(urld, dots, rs, n)
   shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher(\"%s\",n=%d,rs=c(%s)%s)", libp(), urld, n, paste0(rs, collapse= ","), dots))
 
-wa52 <- function(urld, dots, url)
+wa5 <- function(urld, dots, url)
   shQuote(sprintf(".libPaths(c(\"%s\",.libPaths()));mirai::dispatcher(\"%s\",url=\"%s\"%s)", libp(), urld, url, dots))
 
 launch_daemon <- function(args, output)
@@ -535,7 +535,7 @@ launch_sync_daemons <- function(seq, sock, urld, dots, envir, output) {
   cv <- cv()
   pipe_notify(sock, cv = cv, add = TRUE)
   for (i in seq)
-    launch_daemon(wa3(urld, dots, next_stream(envir)), output)
+    launch_daemon(wa2(urld, dots, next_stream(envir)), output)
   for (i in seq)
     until(cv, .limit_long) || return(pipe_notify(sock, cv = NULL, add = TRUE))
   !pipe_notify(sock, cv = NULL, add = TRUE)

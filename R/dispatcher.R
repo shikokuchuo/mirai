@@ -103,7 +103,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
     dots <- parse_dots(...)
     output <- attr(dots, "output")
     for (i in seq_len(n))
-      launch_daemon(wa32(url, dots, next_stream(envir)), output)
+      launch_daemon(wa3(url, dots, next_stream(envir)), output)
     for (i in seq_len(n))
       until(cv, .limit_long) || stop(._[["sync_daemons"]])
 
