@@ -1,9 +1,13 @@
-# mirai 2.0.1.9006 (development)
+# mirai 2.0.1.9007 (development)
 
 #### Behavioural Changes
 
 * `daemons()` now requires an explicit reset before providing revised settings for a compute profile, and will error otherwise.
 * `mirai_map()` now errors if daemons have not yet been set (rather than warn and launch one local daemon).
+* Removal of mirai v1 compatibility features:
+  + `saisei()` is now removed as no longer required.
+  + `daemons()` dispatcher argument "thread" is removed.
+  + `daemons()` dispatcher arguments "process" and "thread" are formally deprecated and will be removed in a future version.
 
 #### Updates
 
