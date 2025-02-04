@@ -17,7 +17,7 @@
   + Fixes language objects being evaluated before the map function is applied (#194).
   + Fixes classes of objects in a dataframe being dropped during a multiple map (#196).
   + Better `cli` errors when collecting a 'mirai_map'.
-* `status()` call failures when using dispatcher now return the appropriate 'errorValue'.
+* Fixes `daemons(NULL)` not causing all daemons started with `autoexit = FALSE` to quit, regression introduced in mirai v2.0.0.
 * Requires nanonext >= 1.5.0.
 
 # mirai 2.0.1

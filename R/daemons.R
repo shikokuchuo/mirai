@@ -555,7 +555,8 @@ check_store_url <- function(sock, envir) {
 }
 
 send_signal <- function(envir) {
-  signals <- max(length(envir[["urls"]]), stat(envir[["sock"]], "pipes"))
+  signals <- if (is.null(envir[["msgid"]])) stat(envir[["sock"]], "pipes") else
+    query_dispatcher(envir[["sock"]], c(0L, 0L))[1L]
   for (i in seq_len(signals)) {
     send(envir[["sock"]], ._scm_., mode = 2L)
     msleep(10L)
