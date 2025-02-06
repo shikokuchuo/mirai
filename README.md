@@ -7,8 +7,6 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/mirai)](https://CRAN.R-project.org/package=mirai)
-[![R-multiverse
-status](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcommunity.r-multiverse.org%2Fapi%2Fpackages%2Fmirai&query=%24.Version&label=r-multiverse)](https://community.r-multiverse.org/mirai)
 [![R-universe
 status](https://shikokuchuo.r-universe.dev/badges/mirai)](https://shikokuchuo.r-universe.dev/mirai)
 [![R-CMD-check](https://github.com/shikokuchuo/mirai/workflows/R-CMD-check/badge.svg)](https://github.com/shikokuchuo/mirai/actions)
@@ -78,7 +76,7 @@ To wait for and collect the return value, use the mirai’s `[]` method:
 
 ``` r
 m[]
-#> [1] 7.048859 7.102751 7.849110 9.330095 7.536337
+#> [1] 6.318813 6.082929 7.058028 7.869515 7.154402
 ```
 
 As a mirai represents an async operation, it is never necessary to wait
@@ -92,7 +90,7 @@ while (unresolved(m)) {
 m
 #> < mirai [$data] >
 m$data
-#> [1] 7.048859 7.102751 7.849110 9.330095 7.536337
+#> [1] 6.318813 6.082929 7.058028 7.869515 7.154402
 ```
 
 #### Daemons
@@ -151,7 +149,7 @@ over alternative map implementations.
 
 ### Design Concepts
 
-`mirai` is designed from the ground up to provide a production-grade
+mirai is designed from the ground up to provide a production-grade
 experience.
 
 - Fast
@@ -177,14 +175,14 @@ experience.
 
 ### Integrations
 
-The following core integrations are documented, with usage examples in
+mirai features the following core integrations, with usage examples in
 the linked vignettes:
 
 [<img alt="R parallel" src="https://www.r-project.org/logo/Rlogo.png" width="40" height="31" />](https://shikokuchuo.net/mirai/articles/parallel.html)
   Provides an alternative communications backend for R, implementing a
 new parallel cluster type, a feature request by R-Core at R Project
-Sprint 2023. ‘miraiCluster’ may also be used with `foreach` via
-`doParallel`.
+Sprint 2023. ‘miraiCluster’ may also be used with ‘foreach’ via
+‘doParallel’.
 
 [<img alt="promises" src="https://docs.posit.co/images/posit-ball.png" width="40" height="36" />](https://shikokuchuo.net/mirai/articles/promises.html)
   Implements the next generation of completely event-driven, non-polling
@@ -212,21 +210,21 @@ to be used seamlessly across parallel processes.
 
 [<img alt="targets" src="https://github.com/ropensci/targets/raw/main/man/figures/logo.png" width="40" height="46" />](https://docs.ropensci.org/targets/)
   Targets, a Make-like pipeline tool for statistics and data science,
-has integrated and adopted `crew` as its default high-performance
-computing backend.
+has integrated and adopted the crew package as its default
+high-performance computing backend.
 
 [<img alt="crew" src="https://github.com/wlandau/crew/raw/main/man/figures/logo.png" width="40" height="46" />](https://wlandau.github.io/crew/)
-  Crew is a distributed worker-launcher extending `mirai` to different
+  Crew is a distributed worker-launcher extending mirai to different
 distributed computing platforms, from traditional clusters to cloud
 services.
 
 [<img alt="crew.cluster" src="https://github.com/wlandau/crew.cluster/raw/main/man/figures/logo.png" width="40" height="46" />](https://wlandau.github.io/crew.cluster/)
-  `crew.cluster` enables mirai-based workflows on traditional
+  ‘crew.cluster’ enables mirai-based workflows on traditional
 high-performance computing clusters using LFS, PBS/TORQUE, SGE and
 Slurm.
 
 [<img alt="crew.aws.batch" src="https://github.com/wlandau/crew.aws.batch/raw/main/man/figures/logo.png" width="40" height="46" />](https://wlandau.github.io/crew.aws.batch/)
-  `crew.aws.batch` extends `mirai` to cloud computing using AWS Batch.
+  ‘crew.aws.batch’ extends mirai to cloud computing using AWS Batch.
 
 ### Thanks
 
@@ -235,29 +233,29 @@ We would like to thank in particular:
 [Will Landau](https://github.com/wlandau/) for being instrumental in
 shaping development of the package, from initiating the original request
 for persistent daemons, through to orchestrating robustness testing for
-the high performance computing requirements of `crew` and `targets`.
+the high performance computing requirements of crew and targets.
 
-[Joe Cheng](https://github.com/jcheng5/) for integrating the `promises`
+[Joe Cheng](https://github.com/jcheng5/) for integrating the ‘promises’
 method to work seamlessly within Shiny, and prototyping event-driven
 promises.
 
 [Luke Tierney](https://github.com/ltierney/) of R Core, for discussion
 on L’Ecuyer-CMRG streams to ensure statistical independence in parallel
-processing, and making it possible for `mirai` to be the first
+processing, and making it possible for mirai to be the first
 ‘alternative communications backend for R’.
 
 [Henrik Bengtsson](https://github.com/HenrikBengtsson/) for valuable
 insights leading to the interface accepting broader usage patterns.
 
 [Daniel Falbel](https://github.com/dfalbel/) for discussion around an
-efficient solution to serialization and transmission of `torch` tensors.
+efficient solution to serialization and transmission of torch tensors.
 
 [Kirill Müller](https://github.com/krlmlr/) for discussion on using
-‘daemons’ to host Arrow database connections.
+parallel processes to host Arrow database connections.
 
 [<img alt="R Consortium" src="https://r-consortium.org/images/RConsortium_Horizontal_Pantone.webp" width="100" height="22" />](https://r-consortium.org/) 
-for funding work on the TLS implementation in `nanonext`, used to
-provide secure connections in `mirai`.
+for funding work on the TLS implementation in nanonext, used to provide
+secure connections in mirai.
 
 ### Installation
 

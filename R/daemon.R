@@ -101,12 +101,6 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
                    cleanup = TRUE, output = FALSE, idletime = Inf, walltime = Inf,
                    maxtasks = Inf, id = NULL, tls = NULL, rs = NULL) {
 
-  missing(dispatcher) && return(
-    v1_daemon(url = url, asyncdial = asyncdial, autoexit = autoexit,
-              cleanup = cleanup, output = output, idletime = idletime,
-              walltime = walltime, maxtasks = maxtasks, ..., tls = tls, rs = rs)
-  )
-
   cv <- cv()
   sock <- socket(if (dispatcher) "poly" else "rep")
   on.exit(reap(sock))
@@ -243,18 +237,6 @@ dial_and_sync_socket <- function(sock, url, asyncdial = FALSE, tls = NULL) {
   pipe_notify(sock, cv = NULL, add = TRUE)
 }
 
-parse_cleanup <- function(cleanup)
-  if (is.logical(cleanup))
-    c(cleanup, cleanup, cleanup, FALSE) else
-      c(as.integer(cleanup) %% 2L, (clr <- as.raw(cleanup)) & as.raw(2L), clr & as.raw(4L), clr & as.raw(8L))
-
-perform_cleanup <- function(cleanup) {
-  if (cleanup[1L]) rm(list = (vars <- names(.GlobalEnv))[!vars %in% .[["vars"]]], envir = .GlobalEnv)
-  if (cleanup[2L]) lapply((new <- search())[!new %in% .[["se"]]], detach, character.only = TRUE)
-  if (cleanup[3L]) options(.[["op"]])
-  if (cleanup[4L]) gc(verbose = FALSE)
-}
-
 do_cleanup <- function() {
   rm(list = (vars <- names(.GlobalEnv))[!vars %in% .[["vars"]]], envir = .GlobalEnv)
   lapply((new <- search())[!new %in% .[["se"]]], detach, character.only = TRUE)
@@ -262,66 +244,3 @@ do_cleanup <- function() {
 }
 
 snapshot <- function() `[[<-`(`[[<-`(`[[<-`(., "op", .Options), "se", search()), "vars", names(.GlobalEnv))
-
-# Legacy compatibility functions  ----------------------------------------------
-
-v1_daemon <- function(url, asyncdial = FALSE, autoexit = TRUE, cleanup = TRUE,
-                      output = FALSE, maxtasks = Inf, idletime = Inf, walltime = Inf,
-                      timerstart = 0L, ..., tls = NULL, rs = NULL) {
-
-  cv <- cv()
-  sock <- socket("rep")
-  on.exit(reap(sock))
-  `[[<-`(., "sock", sock)
-  autoexit && pipe_notify(sock, cv = cv, remove = TRUE, flag = autoexit)
-  if (length(tls)) tls <- tls_config(client = tls)
-  dial_and_sync_socket(sock, url, asyncdial = asyncdial, tls = tls)
-
-  if (is.numeric(rs)) `[[<-`(.GlobalEnv, ".Random.seed", as.integer(rs))
-  idletime <- if (idletime > walltime) walltime else if (is.finite(idletime)) idletime
-  cleanup <- parse_cleanup(cleanup)
-  if (!output) {
-    devnull <- file(nullfile(), open = "w", blocking = FALSE)
-    sink(file = devnull)
-    sink(file = devnull, type = "message")
-    on.exit({
-      sink(type = "message")
-      sink()
-      close(devnull)
-    }, add = TRUE)
-  }
-  snapshot()
-  count <- 0L
-  start <- mclock()
-
-  repeat {
-
-    ctx <- .context(sock)
-    aio <- recv_aio(ctx, mode = 1L, timeout = idletime, cv = cv)
-    wait(cv) || break
-    m <- collect_aio(aio)
-    is.object(m) && {
-      count < timerstart && {
-        start <- mclock()
-        next
-      }
-      break
-    }
-    data <- eval_mirai(m)
-    count <- count + 1L
-
-    (count >= maxtasks || count > timerstart && mclock() - start >= walltime) && {
-      .mark()
-      send(ctx, data, mode = 1L, block = TRUE)
-      aio <- recv_aio(ctx, mode = 8L, cv = cv)
-      wait(cv)
-      break
-    }
-
-    send(ctx, data, mode = 1L, block = TRUE)
-    perform_cleanup(cleanup)
-    if (count <= timerstart) start <- mclock()
-
-  }
-
-}

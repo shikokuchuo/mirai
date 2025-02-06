@@ -254,7 +254,7 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
     as.expression(if (is.symbol(expr) && exists(as.character(expr), envir = parent.frame()) && is.language(.expr)) .expr else expr)
   )
 
-  if (is.null(envir[["sockc"]])) {
+  if (is.null(envir[["msgid"]])) {
     vec <- vector(mode = "list", length = max(stat(envir[["sock"]], "pipes"), envir[["n"]]))
     for (i in seq_along(vec))
       vec[[i]] <- mirai(.expr, ..., .args = .args, .compute = .compute)

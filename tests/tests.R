@@ -104,6 +104,7 @@ connection && {
   Sys.sleep(1L)
   test_type("integer", status(.compute = "new")[["connections"]])
   test_error(mirai_map(1:2, "a function", .compute = "new"), "must be of type function, not character")
+  test_error(daemons(url = local_url(), .compute = "new"), "daemons already set")
   test_zero(daemons(0L, .compute = "new"))
 }
 # additional daemons tests
@@ -123,7 +124,7 @@ connection && {
 # mirai_map tests
 connection && {
   Sys.sleep(1L)
-  m <- with(daemons(1, dispatcher = "none", .compute = "ml"), {
+  m <- with(daemons(1, dispatcher = FALSE, .compute = "ml"), {
     if (is.null(tryCatch(mirai_map(list(1, "a", 2), sum, .compute = "ml")[.stop], error = function(e) NULL)))
       mirai_map(1:3, rnorm, .args = list(mean = 20, 2), .compute = "ml")[]
   })
@@ -260,7 +261,6 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   test_zero(collect_mirai(mm, ".flat"))
   m <- mirai(b, .timeout = 1000)
   if (!is_error_value(m[])) test_equal(m[], 2L)
-  test_null(saisei(1))
   test_zero(daemons(0))
   test_tls <- function(cert) {
     file <- tempfile()
@@ -354,35 +354,6 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   test_equal(length(unique(unlist(collect_mirai(q)))), 10000L)
   test_true(all(as.logical(lapply(lapply(q, attr, "status"), is.list))))
   test_equal(daemons()[["mirai"]][["completed"]], 20000L)
-  test_zero(daemons(0))
-}
-# legacy interface tests
-connection && Sys.getenv("NOT_CRAN") == "true" && {
-  Sys.sleep(0.5)
-  option <- 15L
-  Sys.setenv(R_DEFAULT_PACKAGES = "stats,utils")
-  test_equal(1L, daemons(1, dispatcher = "process", maxtasks = 10L, timerstart = 1L, walltime = 500L, idletime = 500L, seed = 1546, cleanup = option, autoexit = tools::SIGCONT))
-  Sys.unsetenv("R_DEFAULT_PACKAGES")
-  Sys.sleep(1L)
-  mq <- mirai(runif(1L), .timeout = 1000)
-  test_true(is.numeric(mq[]))
-  mq <- mirai(Sys.sleep(0.7), .timeout = 500)
-  test_class("matrix", status()[["daemons"]])
-  test_null(saisei(i = 1L))
-  Sys.sleep(1L)
-  test_zero(daemons(0))
-  test_equal(daemons(url = "wss://127.0.0.1:0", dispatcher = "process", output = TRUE, token = TRUE, walltime = 500L, idletime = 505L), 1L)
-  test_equal(nextget("n"), 1L)
-  test_equal(length(nextget("urls")), 1L)
-  test_class("matrix", status()$daemons)
-  test_null(saisei(i = 0L))
-  test_print(saisei(i = 1L))
-  test_print(saisei(i = 1L, force = TRUE))
-  Sys.sleep(0.1)
-  test_zero(daemons(0))
-  test_equal(daemons(n = 2L, url = "tls+tcp://127.0.0.1:0", dispatcher = "thread", token = TRUE, idletime = Inf), 2L)
-  test_class("matrix", status()$daemons)
-  Sys.sleep(0.1)
   test_zero(daemons(0))
 }
 test_zero(daemons(0))
