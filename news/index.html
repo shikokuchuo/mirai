@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,16 +49,24 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.0.1.9006" id="mirai-2019006-development">mirai 2.0.1.9006 (development)<a class="anchor" aria-label="anchor" href="#mirai-2019006-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="2.0.1.9007" id="mirai-2019007-development">mirai 2.0.1.9007 (development)<a class="anchor" aria-label="anchor" href="#mirai-2019007-development"></a></h2>
 <div class="section level5">
-<h5 id="behavioural-changes-2-0-1-9006">Behavioural Changes<a class="anchor" aria-label="anchor" href="#behavioural-changes-2-0-1-9006"></a></h5>
+<h5 id="behavioural-changes-2-0-1-9007">Behavioural Changes<a class="anchor" aria-label="anchor" href="#behavioural-changes-2-0-1-9007"></a></h5>
 <ul><li>
 <code><a href="../reference/daemons.html">daemons()</a></code> now requires an explicit reset before providing revised settings for a compute profile, and will error otherwise.</li>
 <li>
 <code><a href="../reference/mirai_map.html">mirai_map()</a></code> now errors if daemons have not yet been set (rather than warn and launch one local daemon).</li>
+<li>Removal of mirai v1 compatibility features:
+<ul><li>
+<code>saisei()</code> is now removed as no longer required.</li>
+<li>
+<code><a href="../reference/daemons.html">daemons()</a></code> dispatcher argument “thread” is removed.</li>
+<li>
+<code><a href="../reference/daemons.html">daemons()</a></code> dispatcher arguments “process” and “thread” are formally deprecated and will be removed in a future version.</li>
+</ul></li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-2-0-1-9006">Updates<a class="anchor" aria-label="anchor" href="#updates-2-0-1-9006"></a></h5>
+<h5 id="updates-2-0-1-9007">Updates<a class="anchor" aria-label="anchor" href="#updates-2-0-1-9007"></a></h5>
 <ul><li>‘miraiError’ evaluation errors now return the call stack at <code>$stack.trace</code> as a list of calls (with srcrefs removed) without deparsing to character strings.</li>
 <li>
 <code><a href="../reference/mirai_map.html">mirai_map()</a></code> improvements:
@@ -67,8 +75,7 @@
 <li>Fixes classes of objects in a dataframe being dropped during a multiple map (<a href="https://github.com/shikokuchuo/mirai/issues/196" class="external-link">#196</a>).</li>
 <li>Better <code>cli</code> errors when collecting a ‘mirai_map’.</li>
 </ul></li>
-<li>
-<code><a href="../reference/status.html">status()</a></code> call failures when using dispatcher now return the appropriate ‘errorValue’.</li>
+<li>Fixes <code>daemons(NULL)</code> not causing all daemons started with <code>autoexit = FALSE</code> to quit, regression introduced in mirai v2.0.0.</li>
 <li>Requires nanonext &gt;= 1.5.0.</li>
 </ul></div>
 </div>
@@ -143,7 +150,7 @@
 <li>
 <code><a href="../reference/host_url.html">host_url()</a></code> argument ‘ws’ is removed as a TCP URL is now always recommended (although websocket URLs are still supported).</li>
 <li>
-<code><a href="../reference/saisei.html">saisei()</a></code> is defunct as no longer required, but still available for use with the old v1 dispatcher.</li>
+<code>saisei()</code> is defunct as no longer required, but still available for use with the old v1 dispatcher.</li>
 <li>
 <code>daemons(dispatcher = "thread")</code> (experimental threaded dispatcher) has been retired - as this was based on the old dispatcher architecture and future development will focus on the current design. Specifying ‘dispatcher = thread’ is defunct, but will point to ‘dispatcher = process’ for the time being.</li>
 <li>Requires <code>nanonext</code> &gt;= 1.4.0.</li>
@@ -424,13 +431,13 @@
 <li>Fixes edge cases of <code><a href="../reference/status.html">status()</a></code> occasionally failing to communicate with dispatcher.</li>
 <li>Fixes edge cases of ending a session with unresolved mirai resulting in a crash rather than a clean exit.</li>
 </ul></li>
-<li>Tweaks to <code><a href="../reference/saisei.html">saisei()</a></code>:
+<li>Tweaks to <code>saisei()</code>:
 <ul><li>specifying argument ‘force’ as TRUE now immediately regenerates the socket and returns any ongoing mirai as an ‘errorValue’. This allows tasks that consistently hang or crash to be cancelled rather than repeated when a new daemon connects.</li>
 <li>argument ‘i’ is now required and no longer defaults to 1L.</li>
 </ul></li>
 <li>Tweaks to <code><a href="../reference/status.html">status()</a></code>:
-<ul><li>The daemons status matrix adds a column ‘i’ for ease of use with functions such as <code><a href="../reference/saisei.html">saisei()</a></code> or <code><a href="../reference/launch_local.html">launch_local()</a></code>.</li>
-<li>The ‘instance’ column is now always cumulative - regenerating a URL with <code><a href="../reference/saisei.html">saisei()</a></code> no longer resets the counter but instead turns it negative until a new daemon connects.</li>
+<ul><li>The daemons status matrix adds a column ‘i’ for ease of use with functions such as <code>saisei()</code> or <code><a href="../reference/launch_local.html">launch_local()</a></code>.</li>
+<li>The ‘instance’ column is now always cumulative - regenerating a URL with <code>saisei()</code> no longer resets the counter but instead turns it negative until a new daemon connects.</li>
 </ul></li>
 <li>Improves shell quoting of daemon launch commands, making it easier to deploy manually via <code><a href="../reference/launch_local.html">launch_remote()</a></code>.</li>
 <li>
@@ -463,7 +470,7 @@
 </ul></li>
 <li>Redirection of stdout and stderr from local daemons to the host process is now possible (when running without dispatcher) by specifying <code>output=TRUE</code> for <code><a href="../reference/daemons.html">daemons()</a></code> or <code><a href="../reference/launch_local.html">launch_local()</a></code>. <code><a href="../reference/daemon.html">daemon()</a></code> accepts a new ‘output’ argument.</li>
 <li>
-<code><a href="../reference/saisei.html">saisei()</a></code> argument validation now happens prior to sending a request to dispatcher rather than on dispatcher.</li>
+<code>saisei()</code> argument validation now happens prior to sending a request to dispatcher rather than on dispatcher.</li>
 <li>A ‘miraiError’ now includes the trailing line break at the end of the character vector.</li>
 <li>Requires nanonext &gt;= 0.9.1, with R requirement relaxed back to &gt;= 2.12.</li>
 </ul></div>
@@ -477,7 +484,7 @@
 <li>
 <code><a href="../reference/daemons.html">daemons()</a></code> status requests have been rendered more robust.</li>
 </ul></li>
-<li>Ensures <code><a href="../reference/saisei.html">saisei()</a></code> always returns <code>NULL</code> if ‘tcp://’ URLs are being used as they do not support tokens.</li>
+<li>Ensures <code>saisei()</code> always returns <code>NULL</code> if ‘tcp://’ URLs are being used as they do not support tokens.</li>
 <li>Daemons status matrix ‘assigned’ and ‘complete’ are now cumulative statistics, and not reset upon new instances.</li>
 <li>Requires nanonext &gt;= 0.9.0 and R &gt;= 3.5.0.</li>
 <li>Internal performance enhancements.</li>
@@ -517,7 +524,7 @@
 <code>lock</code> for locking sockets to prevent more than one server connecting at a unique URL.</li>
 </ul></li>
 <li>
-<code><a href="../reference/saisei.html">saisei()</a></code> implemented to regenerate the token used by a given dispatcher socket.</li>
+<code>saisei()</code> implemented to regenerate the token used by a given dispatcher socket.</li>
 <li>
 <code>launch_server()</code> replaces <code>launch()</code> for launching local instances, with a simpler interface directly mapping to <code>server()</code>.</li>
 <li>Automatically-launched local daemons revised to use unique tokens in their URLs.</li>
