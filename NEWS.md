@@ -7,7 +7,7 @@
 * Removal of mirai v1 compatibility features:
   + `saisei()` is now removed as no longer required.
   + `daemons()` dispatcher argument "thread" is removed.
-  + `daemons()` dispatcher arguments "process" and "thread" are formally deprecated and will be removed in a future version.
+  + `daemons()` dispatcher arguments "process" and "none" are formally deprecated and will be removed in a future version.
 
 #### Updates
 
