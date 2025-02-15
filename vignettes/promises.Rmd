@@ -66,7 +66,7 @@ r <- 0
 start <- Sys.time()
 m <- mirai_map(1:10000, \(x) x, .promise = \(x) r <<- r + x)
 Sys.time() - start
-#> Time difference of 2.722618 secs
+#> Time difference of 2.767478 secs
 later::run_now()
 r
 #> [1] 50005000
