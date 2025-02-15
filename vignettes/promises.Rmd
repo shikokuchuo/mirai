@@ -17,7 +17,7 @@ These are next-generation, event-driven promises, developed in collaboration wit
 - Instead, promise actions are automatically queued for execution as soon as each 'mirai' resolves.
 - Allows for much higher responsiveness (lower latency) and massive scalability (situations with thousand of promises or more).
 
-A 'mirai' may be piped directly using the promise pipe `&...>%`, which implicitly calls `as.promise()` on the 'mirai'. Similarly all promise-aware functions such as `promises::then()` or `shiny::ExtendedTask$new()` which take a promise can also take a 'mirai' (using `promises` >= 1.3.0).
+A 'mirai' may be piped directly using the promise pipe `%...>%`, which implicitly calls `as.promise()` on the 'mirai'. Similarly all promise-aware functions such as `promises::then()` or `shiny::ExtendedTask$new()` which take a promise can also take a 'mirai' (using `promises` >= 1.3.0).
 
 Alternatively, a 'mirai' may be explicitly converted into a promise by `as.promise()`, which then allows using the methods `$then()`, `$finally()` etc.
 
