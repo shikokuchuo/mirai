@@ -104,11 +104,11 @@ soon as each ‘mirai’ resolves.</li>
 scalability (situations with thousand of promises or more).</li>
 </ul>
 <p>A ‘mirai’ may be piped directly using the promise pipe
-<code>&amp;...&gt;%</code>, which implicitly calls
-<code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code> on the ‘mirai’. Similarly all promise-aware
-functions such as <code><a href="https://rstudio.github.io/promises/reference/then.html" class="external-link">promises::then()</a></code> or
-<code>shiny::ExtendedTask$new()</code> which take a promise can also
-take a ‘mirai’ (using <code>promises</code> &gt;= 1.3.0).</p>
+<code>%...&gt;%</code>, which implicitly calls <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code>
+on the ‘mirai’. Similarly all promise-aware functions such as
+<code><a href="https://rstudio.github.io/promises/reference/then.html" class="external-link">promises::then()</a></code> or <code>shiny::ExtendedTask$new()</code>
+which take a promise can also take a ‘mirai’ (using
+<code>promises</code> &gt;= 1.3.0).</p>
 <p>Alternatively, a ‘mirai’ may be explicitly converted into a promise
 by <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code>, which then allows using the methods
 <code>$then()</code>, <code>$finally()</code> etc.</p>
