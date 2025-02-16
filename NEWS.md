@@ -2,9 +2,8 @@
 
 #### Updates
 
-* `call_mirai()` has been made user-interruptible, which is now consistent with all other functions in the package.
+* `call_mirai()` is now user-interruptible, consistent with all other functions in the package.
   + `call_mirai_()` is hence redundant and now deprecated.
-  + Should there be a need for blocking behaviour, see `nanonext::call_aio()`.
   
 # mirai 2.1.0
 
