@@ -48,7 +48,7 @@
 #'
 #' @importFrom nanonext .advance call_aio call_aio_ collect_aio collect_aio_
 #'   .context cv cv_signal cv_value dial .interrupt is_error_value .keep listen
-#'   lock .mark mclock monitor msleep nng_error opt opt<- parse_url pipe_notify
+#'   .mark mclock monitor msleep nng_error opt opt<- parse_url pipe_notify
 #'   random read_monitor reap recv recv_aio request send serial_config socket
 #'   stat stop_aio tls_config unresolved .unresolved until wait write_cert
 #'
