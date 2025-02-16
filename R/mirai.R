@@ -275,14 +275,14 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #' progress, storing the value at \code{$data}, and returns the \sQuote{mirai}
 #' object.
 #'
-#' Both functions accept a list of \sQuote{mirai} objects, such as that returned
-#' by \code{\link{mirai_map}} as well as individual \sQuote{mirai}.
+#' Accepts a list of \sQuote{mirai} objects, such as that returned by
+#' \code{\link{mirai_map}} as well as individual \sQuote{mirai}.
 #'
-#' They will wait for the asynchronous operation(s) to complete if still in
-#' progress (blocking).
+#' Waits for the asynchronous operation(s) to complete if still in progress,
+#' blocking but user-interruptible.
 #'
 #' \code{x[]} may also be used to wait for and return the value of a mirai
-#' \code{x}, and is the equivalent of \code{call_mirai_(x)$data}.
+#' \code{x}, and is the equivalent of \code{call_mirai(x)$data}.
 #'
 #' @param x a \sQuote{mirai} object, or list of \sQuote{mirai} objects.
 #'
@@ -300,6 +300,10 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #' flow statements such as \code{while} or \code{if}.
 #'
 #' @inheritSection mirai Errors
+#'
+#' @note
+#' \code{call_mirai_} is deprecated and exported for historical compatibility
+#' only. It will be removed in a future package version.
 #'
 #' @examples
 #' if (interactive()) {
@@ -329,23 +333,18 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #'
 #' @export
 #'
-call_mirai <- call_aio
+call_mirai <- call_aio_
 
-#' mirai (Call Value)
-#'
-#' \code{call_mirai_} is a variant of \code{call_mirai} that allows user
-#' interrupts, suitable for interactive use.
-#'
 #' @rdname call_mirai
 #' @export
 #'
-call_mirai_ <- call_aio_
+call_mirai_ <- call_mirai
 
 #' mirai (Collect Value)
 #'
 #' Waits for the \sQuote{mirai} to resolve if still in progress, and returns its
 #' value directly. It is a more efficient version of and equivalent to
-#' \code{call_mirai_(x)$data}.
+#' \code{call_mirai(x)$data}.
 #'
 #' This function will wait for the asynchronous operation(s) to complete if
 #' still in progress, blocking but interruptible.
