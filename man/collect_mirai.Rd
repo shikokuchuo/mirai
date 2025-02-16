@@ -21,7 +21,7 @@ An object (the return value of the \sQuote{mirai}), or a list of such
 \description{
 Waits for the \sQuote{mirai} to resolve if still in progress, and returns its
 value directly. It is a more efficient version of and equivalent to
-\code{call_mirai_(x)$data}.
+\code{call_mirai(x)$data}.
 }
 \details{
 This function will wait for the asynchronous operation(s) to complete if

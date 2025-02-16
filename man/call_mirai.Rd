@@ -17,22 +17,22 @@ The passed object (invisibly). For a \sQuote{mirai}, the retrieved
   value is stored at \code{$data}.
 }
 \description{
-\code{call_mirai} waits for the \sQuote{mirai} to resolve if still in
-progress, storing the value at \code{$data}, and returns the \sQuote{mirai}
-object.
-
-\code{call_mirai_} is a variant of \code{call_mirai} that allows user
-interrupts, suitable for interactive use.
+Waits for the \sQuote{mirai} to resolve if still in progress, storing the
+value at \code{$data}, and returns the \sQuote{mirai} object.
 }
 \details{
-Both functions accept a list of \sQuote{mirai} objects, such as that returned
-by \code{\link{mirai_map}} as well as individual \sQuote{mirai}.
+Accepts a list of \sQuote{mirai} objects, such as that returned by
+\code{\link{mirai_map}} as well as individual \sQuote{mirai}.
 
-They will wait for the asynchronous operation(s) to complete if still in
-progress (blocking).
+Waits for the asynchronous operation(s) to complete if still in progress,
+blocking but user-interruptible.
 
 \code{x[]} may also be used to wait for and return the value of a mirai
-\code{x}, and is the equivalent of \code{call_mirai_(x)$data}.
+\code{x}, and is the equivalent of \code{call_mirai(x)$data}.
+}
+\note{
+\code{call_mirai_} is deprecated and exported for historical compatibility
+only. It will be removed in a future package version.
 }
 \section{Alternatively}{
 

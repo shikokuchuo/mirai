@@ -1,5 +1,10 @@
 # mirai (development version)
 
+#### Updates
+
+* `call_mirai()` is now user-interruptible, consistent with all other functions in the package.
+  + `call_mirai_()` is hence redundant and now deprecated.
+  
 # mirai 2.1.0
 
 #### Behavioural Changes
