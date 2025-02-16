@@ -17,9 +17,8 @@ The passed object (invisibly). For a \sQuote{mirai}, the retrieved
   value is stored at \code{$data}.
 }
 \description{
-\code{call_mirai} waits for the \sQuote{mirai} to resolve if still in
-progress, storing the value at \code{$data}, and returns the \sQuote{mirai}
-object.
+Waits for the \sQuote{mirai} to resolve if still in progress, storing the
+value at \code{$data}, and returns the \sQuote{mirai} object.
 }
 \details{
 Accepts a list of \sQuote{mirai} objects, such as that returned by
