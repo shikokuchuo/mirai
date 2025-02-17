@@ -168,35 +168,52 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
   is.null(envir) && stop(._[["requires_daemons"]])
   is.function(.f) || stop(sprintf(._[["function_required"]], typeof(.f)))
 
-  xilen <- dim(.x)[1L]
-  vec <- if (length(xilen)) {
-    is_matrix <- is.matrix(.x)
-    names <- if (is_matrix) dimnames(.x)[[1L]] else if (is.character(rn <- attr(.x, "row.names"))) rn
-    `names<-`(
-      lapply(
-        seq_len(xilen),
-        function(i) mirai(
-          .expr = do.call(.f, c(.x, .args), quote = TRUE),
-          ...,
-          .args = list(.f = .f, .x = if (is_matrix) as.list(.x[i, ]) else lapply(.x, `[[`, i), .args = .args),
-          .compute = .compute
-        )
-      ),
-      names
-    )
-  } else {
+  dx <- dim(.x)
+  vec <- if (is.null(dx)) {
     `names<-`(
       lapply(
         .x,
-        function(x) mirai(
-          .expr = do.call(.f, c(list(.x), .args), quote = TRUE),
-          ...,
-          .args = list(.f = .f, .x = x, .args = .args),
-          .compute = .compute
-        )
+        function(x)
+          mirai(
+            .expr = do.call(.f, c(list(.x), .args), quote = TRUE),
+            ...,
+            .args = list(.f = .f, .x = x, .args = .args),
+            .compute = .compute
+          )
       ),
       names(.x)
     )
+  } else {
+    if (is.matrix(.x)) {
+      `names<-`(
+        lapply(
+          seq_len(dx[1L]),
+          function(i)
+            mirai(
+              .expr = do.call(.f, c(.x, .args), quote = TRUE),
+              ...,
+              .args = list(.f = .f, .x = as.vector(.x[i, ], mode = "list"), .args = .args),
+              .compute = .compute
+            )
+        ),
+        dimnames(.x)[[1L]]
+      )
+    } else {
+      rn <- attr(.x, "row.names")
+      `names<-`(
+        lapply(
+          seq_len(dx[1L]),
+          function(i)
+            mirai(
+              .expr = do.call(.f, c(.x, .args), quote = TRUE),
+              ...,
+              .args = list(.f = .f, .x = lapply(.x, `[[`, i), .args = .args),
+              .compute = .compute
+            )
+        ),
+        if (is.character(rn)) rn
+      )
+    }
   }
 
   if (length(.promise))
