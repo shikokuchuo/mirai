@@ -50,10 +50,10 @@ for (i in 0:4)
 # mirai and daemons tests
 connection && {
   Sys.sleep(1L)
-  n <- function() m
+  .n <- function() m
   m <- mirai({
     Sys.sleep(0.1)
-    q <- m + n() + 2L
+    q <- m + .n() + 2L
     q / m
   }, m = 2L, .args = environment(), .timeout = 2000L)
   test_identical(call_mirai(m), m)

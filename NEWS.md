@@ -4,6 +4,7 @@
 
 * `call_mirai()` is now user-interruptible, consistent with all other functions in the package.
   + `call_mirai_()` is hence redundant and now deprecated.
+* `mirai()` arguments `...` and `.args` now accept environments containing variables beginning with a dot `.` (#207).
   
 # mirai 2.1.0
 
