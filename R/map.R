@@ -190,9 +190,9 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
           seq_len(dx[1L]),
           function(i)
             mirai(
-              .expr = do.call(.f, c(.x, .args), quote = TRUE),
+              .expr = do.call(.f, c(as.vector(.x, mode = "list"), .args), quote = TRUE),
               ...,
-              .args = list(.f = .f, .x = as.vector(.x[i, ], mode = "list"), .args = .args),
+              .args = list(.f = .f, .x = .x[i, ], .args = .args),
               .compute = .compute
             )
         ),
