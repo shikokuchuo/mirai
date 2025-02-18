@@ -227,7 +227,7 @@
 #'
 #' daemons(n = 4L,
 #'         url = 'tcp://127.0.0.1:5555',
-#'         remote = ssh_config('ssh://10.75.32.90', tunnel = TRUE, port = 5555))
+#'         remote = ssh_config('ssh://10.75.32.90', tunnel = 5555))
 #'
 #' }
 #'

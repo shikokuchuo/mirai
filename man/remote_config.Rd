@@ -14,11 +14,11 @@ remote_config(
 
 ssh_config(
   remotes,
-  port,
-  tunnel = FALSE,
+  tunnel = NULL,
   timeout = 10,
   command = "ssh",
-  rscript = "Rscript"
+  rscript = "Rscript",
+  ...
 )
 }
 \arguments{
@@ -47,16 +47,14 @@ required for \sQuote{ssh} or Slurm \sQuote{sbatch}).}
 'ssh://' scheme and including the port open for SSH connections (defaults
 to 22 if not specified), e.g. 'ssh://10.75.32.90:22' or 'ssh://nodename'.}
 
-\item{port}{(required only if using SSH tunnelling) integer local port number
-to use on 127.0.0.1.}
-
-\item{tunnel}{[default FALSE] logical value whether to use SSH reverse
-tunnelling. If TRUE, a tunnel is created between the same ports on the
-local and remote machines. See the \sQuote{SSH Tunnelling} section below
-for how to correctly specify required settings.}
+\item{tunnel}{[default NULL] (only if using SSH tunnelling) integer local
+port number to use. A tunnel is created using this port on each machine.
+See the \sQuote{SSH Tunnelling} section below for further details.}
 
 \item{timeout}{[default 10] maximum time allowed for connection setup in
 seconds.}
+
+\item{...}{reserved but not used.}
 }
 \value{
 A list in the required format to be supplied to the \sQuote{remote}
@@ -91,14 +89,18 @@ accept outside connections.
 
 In these cases SSH tunnelling offers a solution by creating a tunnel once the
 initial SSH connection is made. For simplicity, this SSH tunnelling
-implementation uses the same port on both the side of the host and that of
-the daemon. SSH key-based authentication must also already be in place.
+implementation uses the same port on both host and daemon. SSH key-based
+authentication must already be in place, but no other configuration is
+required.
 
-Tunnelling requires the hostname for the the \sQuote{url} argument to
-\code{\link{daemons}} be \sQuote{127.0.0.1}. This is as the tunnel is created
-between \code{127.0.0.1:port} on each machine. The host listens to
-\code{port} on its machine and the remotes each dial into \code{port} on
-their own respective machines.
+For tunnelling, use \sQuote{127.0.0.1} as the hostname for the \sQuote{url}
+argument to \code{\link{daemons}}. This is as the tunnel is created between
+\code{127.0.0.1:port} on each machine. The host listens to \code{port} on its
+side and the remotes each dial into \code{port} on their own respective
+sides.
+
+This provides a means of launching daemons on any machine you are able to
+access via SSH, be it on the local network or the cloud.
 }
 
 \examples{
@@ -139,8 +141,7 @@ ssh_config(
 # SSH tunnelling example
 ssh_config(
   remotes = c("ssh://10.75.32.90:222", "ssh://nodename"),
-  port = 5555,
-  tunnel = TRUE
+  tunnel = 5555
 )
 
 \dontrun{
@@ -163,8 +164,7 @@ cl <- make_cluster(
   url = "tcp://127.0.0.1:5555",
   remote = ssh_config(
     remotes = c("ssh://10.75.32.90", "ssh://10.75.32.90"),
-    port = 5555,
-    tunnel = TRUE,
+    tunnel = 5555,
     timeout = 1
   )
 )

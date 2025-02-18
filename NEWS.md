@@ -7,6 +7,8 @@
 
 #### Updates
 
+* `ssh_config()` simplified to allow supplying a port to the 'tunnel' argument to employ SSH tunnelling.
+  + The separate 'port' argument is retired, but using this will continue to be supported for the time being.
 * `call_mirai()` is now user-interruptible, consistent with all other functions in the package.
   + `call_mirai_()` is hence redundant and now deprecated.
 * `mirai()` arguments `...` and `.args` now accept environments containing variables beginning with a dot `.` (#207).

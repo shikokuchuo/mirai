@@ -238,14 +238,12 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #' @param remotes the character URL or vector of URLs to SSH into, using the
 #'   'ssh://' scheme and including the port open for SSH connections (defaults
 #'   to 22 if not specified), e.g. 'ssh://10.75.32.90:22' or 'ssh://nodename'.
-#' @param port (required only if using SSH tunnelling) integer local port number
-#'   to use on 127.0.0.1.
-#' @param tunnel [default FALSE] logical value whether to use SSH reverse
-#'   tunnelling. If TRUE, a tunnel is created between the same ports on the
-#'   local and remote machines. See the \sQuote{SSH Tunnelling} section below
-#'   for how to correctly specify required settings.
+#' @param tunnel [default NULL] (only if using SSH tunnelling) integer local
+#'   port number to use. A tunnel is created using this port on each machine.
+#'   See the \sQuote{SSH Tunnelling} section below for further details.
 #' @param timeout [default 10] maximum time allowed for connection setup in
 #'   seconds.
+#' @param ... reserved but not used.
 #'
 #' @section SSH Direct Connections:
 #'
@@ -265,14 +263,18 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #'
 #' In these cases SSH tunnelling offers a solution by creating a tunnel once the
 #' initial SSH connection is made. For simplicity, this SSH tunnelling
-#' implementation uses the same port on both the side of the host and that of
-#' the daemon. SSH key-based authentication must also already be in place.
+#' implementation uses the same port on both host and daemon. SSH key-based
+#' authentication must already be in place, but no other configuration is
+#' required.
 #'
-#' Tunnelling requires the hostname for the the \sQuote{url} argument to
-#' \code{\link{daemons}} be \sQuote{127.0.0.1}. This is as the tunnel is created
-#' between \code{127.0.0.1:port} on each machine. The host listens to
-#' \code{port} on its machine and the remotes each dial into \code{port} on
-#' their own respective machines.
+#' For tunnelling, use \sQuote{127.0.0.1} as the hostname for the \sQuote{url}
+#' argument to \code{\link{daemons}}. This is as the tunnel is created between
+#' \code{127.0.0.1:port} on each machine. The host listens to \code{port} on its
+#' side and the remotes each dial into \code{port} on their own respective
+#' sides.
+#'
+#' This provides a means of launching daemons on any machine you are able to
+#' access via SSH, be it on the local network or the cloud.
 #'
 #' @examples
 #' # simple SSH example
@@ -284,8 +286,7 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #' # SSH tunnelling example
 #' ssh_config(
 #'   remotes = c("ssh://10.75.32.90:222", "ssh://nodename"),
-#'   port = 5555,
-#'   tunnel = TRUE
+#'   tunnel = 5555
 #' )
 #'
 #' \dontrun{
@@ -308,8 +309,7 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #'   url = "tcp://127.0.0.1:5555",
 #'   remote = ssh_config(
 #'     remotes = c("ssh://10.75.32.90", "ssh://10.75.32.90"),
-#'     port = 5555,
-#'     tunnel = TRUE,
+#'     tunnel = 5555,
 #'     timeout = 1
 #'   )
 #' )
@@ -318,12 +318,19 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #' @rdname remote_config
 #' @export
 #'
-ssh_config <- function(remotes, port, tunnel = FALSE, timeout = 10, command = "ssh", rscript = "Rscript") {
+ssh_config <- function(remotes, tunnel = NULL, timeout = 10, command = "ssh", rscript = "Rscript", ...) {
 
   premotes <- lapply(remotes, parse_url)
   hostnames <- lapply(premotes, .subset2, "hostname")
   ports <- lapply(premotes, .subset2, "port")
-  tun <- if (tunnel) sprintf("-R %d:127.0.0.1:%d", as.integer(port), as.integer(port))
+  # compat with previous "ports" argument
+  if (...length()) {
+    dots <- list(...)
+    if ("ports" %in% names(dots)) tunnel <- dots[["ports"]]
+  }
+  tun <- if (length(tunnel)) {
+    sprintf("-R %d:127.0.0.1:%d", as.integer(tunnel), as.integer(tunnel))
+  }
 
   rlen <- length(remotes)
   args <- vector(mode = "list", length = rlen)
