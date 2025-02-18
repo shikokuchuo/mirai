@@ -245,12 +245,11 @@ daemons(n = 1L,
         remote = ssh_config(c('ssh://nodeone', 'ssh://nodetwo')),
         dispatcher = FALSE)
 
-# Launch 4 daemons on the remote machine 10.75.32.90 using SSH tunnelling
-# over port 5555 ('url' hostname must be '127.0.0.1'):
+# Launch 4 daemons on the remote machine 10.75.32.90 using SSH tunnelling:
 
 daemons(n = 4L,
-        url = 'tcp://127.0.0.1:5555',
-        remote = ssh_config('ssh://10.75.32.90', tunnel = 5555))
+        url = 'tcp://127.0.0.1:0',
+        remote = ssh_config('ssh://10.75.32.90', tunnel = TRUE))
 
 }
 

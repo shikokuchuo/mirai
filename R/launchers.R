@@ -78,7 +78,7 @@ launch_local <- function(n = 1L, ..., tls = NULL, .compute = "default") {
 
   envir <- ..[[.compute]]
   is.null(envir) && stop(._[["daemons_unset"]])
-  url <- envir[["urls"]][1L]
+  url <- envir[["urls"]]
   write_args <- if (length(envir[["msgid"]])) wa3 else wa2
   dots <- if (missing(..1)) envir[["dots"]] else parse_dots(...)
   output <- attr(dots, "output")
@@ -117,7 +117,7 @@ launch_remote <- function(n = 1L, remote = remote_config(), ..., tls = NULL, .co
   n <- as.integer(n)
   envir <- ..[[.compute]]
   is.null(envir) && stop(._[["daemons_unset"]])
-  url <- envir[["urls"]][1L]
+  url <- envir[["urls"]]
   write_args <- if (length(envir[["msgid"]])) wa3 else wa2
   dots <- if (missing(..1)) envir[["dots"]] else parse_dots(...)
   if (is.null(tls)) tls <- envir[["tls"]]
@@ -125,12 +125,21 @@ launch_remote <- function(n = 1L, remote = remote_config(), ..., tls = NULL, .co
   command <- remote[["command"]]
   rscript <- remote[["rscript"]]
   quote <- remote[["quote"]]
+  tunnel <- remote[["tunnel"]]
 
   if (length(command)) {
 
     args <- remote[["args"]]
 
     if (is.list(args)) {
+
+      if (tunnel) {
+        parse_url(url)[["hostname"]] == "127.0.0.1" || stop(._[["localhost"]])
+        port <- parse_url(url)[["port"]]
+        prefix <- sprintf("-R %s:127.0.0.1:%s", port, port)
+        for (i in seq_along(args))
+          args[[i]][1L] <- sprintf("%s %s", prefix, args[[i]][1L])
+      }
 
       if (length(args) == 1L) {
         args <- args[[1L]]
@@ -226,7 +235,7 @@ launch_remote <- function(n = 1L, remote = remote_config(), ..., tls = NULL, .co
 remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript", quote = FALSE) {
 
   if (is.list(args)) lapply(args, find_dot) else find_dot(args)
-  list(command = command, args = args, rscript = rscript, quote = quote)
+  list(command = command, args = args, rscript = rscript, quote = quote, tunnel = FALSE)
 
 }
 
@@ -238,12 +247,12 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #' @param remotes the character URL or vector of URLs to SSH into, using the
 #'   'ssh://' scheme and including the port open for SSH connections (defaults
 #'   to 22 if not specified), e.g. 'ssh://10.75.32.90:22' or 'ssh://nodename'.
-#' @param tunnel [default NULL] (optional, to use SSH tunnelling) integer local
-#'   port number e.g. '5555'. A tunnel is created using this port on each
-#'   machine. See the \sQuote{SSH Tunnelling} section below for further details.
+#' @param tunnel [default FALSE] logical value, whether to use SSH tunnelling.
+#'   If TRUE, requires the \code{\link{daemons}} \sQuote{url} hostname to be
+#'   '127.0.0.1'. See the \sQuote{SSH Tunnelling} section below for further
+#'   details.
 #' @param timeout [default 10] maximum time allowed for connection setup in
 #'   seconds.
-#' @param ... reserved but not used.
 #'
 #' @section SSH Direct Connections:
 #'
@@ -252,7 +261,7 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #'
 #' It is assumed that SSH key-based authentication is already in place. The
 #' relevant port on the host must also be open to inbound connections from the
-#' remote machine.
+#' remote machine, and is hence suitable for use within trusted networks.
 #'
 #' @section SSH Tunnelling:
 #'
@@ -267,17 +276,18 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #' authentication must already be in place, but no other configuration is
 #' required.
 #'
-#' For tunnelling, use \sQuote{127.0.0.1} as the hostname for the \sQuote{url}
-#' argument to \code{\link{daemons}}. If \sQuote{tunnel} is specified as '5555',
-#' the tunnel is created using this port on each machine. The host listens to
-#' \code{127.0.0.1:5555} on its machine and the remotes each dial into
-#' \code{127.0.0.1:5555} on their own respective machines.
+#' To use tunnelling, set the hostname of the \code{\link{daemons}} \sQuote{url}
+#' argument to be \sQuote{127.0.0.1}. Specify a specific port, or use '0' to
+#' assign a free ephemeral port. For example, specifying 'tcp://127.0.0.1:5555'
+#' uses the local port '5555' to create the tunnel on each machine. The host
+#' listens to \code{127.0.0.1:5555} on its side and the remotes each dial
+#' into \code{127.0.0.1:5555} on their own respective sides.
 #'
 #' This provides a means of launching daemons on any machine you are able to
 #' access via SSH, be it on the local network or the cloud.
 #'
 #' @examples
-#' # simple SSH example
+#' # direct SSH example
 #' ssh_config(
 #'   remotes = c("ssh://10.75.32.90:222", "ssh://nodename"),
 #'   timeout = 5
@@ -286,7 +296,7 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #' # SSH tunnelling example
 #' ssh_config(
 #'   remotes = c("ssh://10.75.32.90:222", "ssh://nodename"),
-#'   tunnel = 5555
+#'   tunnel = TRUE
 #' )
 #'
 #' \dontrun{
@@ -309,7 +319,7 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #'   url = "tcp://127.0.0.1:5555",
 #'   remote = ssh_config(
 #'     remotes = c("ssh://10.75.32.90", "ssh://10.75.32.90"),
-#'     tunnel = 5555,
+#'     tunnel = TRUE,
 #'     timeout = 1
 #'   )
 #' )
@@ -318,33 +328,22 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #' @rdname remote_config
 #' @export
 #'
-ssh_config <- function(remotes, tunnel = NULL, timeout = 10, command = "ssh", rscript = "Rscript", ...) {
+ssh_config <- function(remotes, tunnel = TRUE, timeout = 10, command = "ssh", rscript = "Rscript") {
 
   premotes <- lapply(remotes, parse_url)
   hostnames <- lapply(premotes, .subset2, "hostname")
   ports <- lapply(premotes, .subset2, "port")
-  # compat with previous "ports" argument
-  if (...length()) {
-    dots <- list(...)
-    if ("port" %in% names(dots)) tunnel <- dots[["port"]]
-  }
-  tun <- if (length(tunnel)) {
-    sprintf("-R %d:127.0.0.1:%d", as.integer(tunnel), as.integer(tunnel))
-  }
 
-  rlen <- length(remotes)
-  args <- vector(mode = "list", length = rlen)
-
+  args <- vector(mode = "list", length = length(remotes))
   for (i in seq_along(args)) {
     args[[i]] <- c(
-      tun,
-      sprintf("-o ConnectTimeout=%s -fTp %s", as.character(timeout), ports[[min(i, rlen)]]),
-      hostnames[[min(i, rlen)]],
+      sprintf("-o ConnectTimeout=%s -fTp %s", as.character(timeout), ports[[i]]),
+      hostnames[[i]],
       "."
     )
   }
 
-  list(command = command, args = args, rscript = rscript, quote = TRUE)
+  list(command = command, args = args, rscript = rscript, quote = TRUE, tunnel = isTRUE(tunnel))
 
 }
 

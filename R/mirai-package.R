@@ -93,6 +93,7 @@
     dispatcher_args = "`dispatcher` must be either TRUE or FALSE",
     dot_required = "`.` must be an element of the character vector(s) supplied to `args`",
     function_required = "`.f` must be of type function, not %s",
+    localhost = "SSH tunnelling requires daemons URL hostname to be '127.0.0.1'",
     missing_expression = "missing expression, perhaps wrap in {}?",
     missing_url = "`n` must be 1 or greater, or else `url` must be supplied",
     named_args = "all items in `.args` must be named, unless supplying an environment",

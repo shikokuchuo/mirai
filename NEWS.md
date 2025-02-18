@@ -7,12 +7,14 @@
 
 #### Updates
 
-* `ssh_config()` simplified to allow supplying a port to the 'tunnel' argument to employ SSH tunnelling.
-  + The separate 'port' argument is retired, but using this will continue to be supported for the time being.
+* Simplification of distributed computing using `ssh_config()`:
+  + Argument 'port' is removed.
+  + The tunnel port is now automatically inferred at the time of launch, and no longer set by the configuration.
+  + Allows use of an automatic localhost URL `tcp://127.0.0.1:0` when setting `daemons()` for SSH tunnelling.
 * `call_mirai()` is now user-interruptible, consistent with all other functions in the package.
   + `call_mirai_()` is hence redundant and now deprecated.
 * `mirai()` arguments `...` and `.args` now accept environments containing variables beginning with a dot `.` (#207).
-  
+
 # mirai 2.1.0
 
 #### Behavioural Changes
