@@ -303,18 +303,18 @@ Use of SSH tunnelling provides a convenient way to launch remote daemons without
 
 In these cases, SSH tunnelling offers a solution by creating a tunnel once the initial SSH connection is made. For simplicity, this SSH tunnelling implementation uses the same port on both the host and daemon. SSH key-based authentication must already be in place, but no other configuration is required.
 
-In this case, specify the 'url' for the `daemons()` call to be '127.0.0.1'. This is as the tunnel is created between `127.0.0.1:tunnel` on each machine. If 'tunnel' is specified as '5555', the host listens to its `127.0.0.1:5555` and the remotes each dial into `127.0.0.1:5555` on their own respective machines.
+To use tunnelling, specify the 'url' for the `daemons()` call as '127.0.0.1' with either a specific port or a port of '0' to use a free ephemeral port. For example, if 'tcp://127.0.0.1:5555' is specified, the tunnel is created using port 5555 on each machine. The host listens to its `127.0.0.1:5555`, and the remotes each dial into `127.0.0.1:5555` on their respective machines.
 
 This provides a means of launching daemons on any machine you are able to access via SSH, be it on the local network or the cloud.
 
-The below example launches 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling over port 5555 ('url' hostname is specified as '127.0.0.1'):
+The below example launches 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling ('url' hostname is specified as '127.0.0.1'):
 ```{r sshrevtun, eval=FALSE}
 daemons(
   n = 1L,
-  url = "tcp://127.0.0.1:5555",
+  url = "tcp://127.0.0.1:0",
   remote = ssh_config(
     remotes = c("ssh://10.75.32.90", "ssh://10.75.32.90"),
-    tunnel = 5555
+    tunnel = TRUE
   )
 )
 ```
