@@ -326,7 +326,7 @@ ssh_config <- function(remotes, tunnel = NULL, timeout = 10, command = "ssh", rs
   # compat with previous "ports" argument
   if (...length()) {
     dots <- list(...)
-    if ("ports" %in% names(dots)) tunnel <- dots[["ports"]]
+    if ("port" %in% names(dots)) tunnel <- dots[["port"]]
   }
   tun <- if (length(tunnel)) {
     sprintf("-R %d:127.0.0.1:%d", as.integer(tunnel), as.integer(tunnel))
