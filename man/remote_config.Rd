@@ -47,9 +47,9 @@ required for \sQuote{ssh} or Slurm \sQuote{sbatch}).}
 'ssh://' scheme and including the port open for SSH connections (defaults
 to 22 if not specified), e.g. 'ssh://10.75.32.90:22' or 'ssh://nodename'.}
 
-\item{tunnel}{[default NULL] (only if using SSH tunnelling) integer local
-port number to use. A tunnel is created using this port on each machine.
-See the \sQuote{SSH Tunnelling} section below for further details.}
+\item{tunnel}{[default NULL] (optional, to use SSH tunnelling) integer local
+port number e.g. '5555'. A tunnel is created using this port on each
+machine. See the \sQuote{SSH Tunnelling} section below for further details.}
 
 \item{timeout}{[default 10] maximum time allowed for connection setup in
 seconds.}
@@ -94,10 +94,10 @@ authentication must already be in place, but no other configuration is
 required.
 
 For tunnelling, use \sQuote{127.0.0.1} as the hostname for the \sQuote{url}
-argument to \code{\link{daemons}}. This is as the tunnel is created between
-\code{127.0.0.1:port} on each machine. The host listens to \code{port} on its
-side and the remotes each dial into \code{port} on their own respective
-sides.
+argument to \code{\link{daemons}}. If \sQuote{tunnel} is specified as '5555',
+the tunnel is created using this port on each machine. The host listens to
+\code{127.0.0.1:5555} on its machine and the remotes each dial into
+\code{127.0.0.1:5555} on their own respective machines.
 
 This provides a means of launching daemons on any machine you are able to
 access via SSH, be it on the local network or the cloud.
