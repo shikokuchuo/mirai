@@ -76,7 +76,7 @@ connection && {
   test_true(!is_mirai_interrupt(me))
   test_class("errorValue", me)
   test_print(me)
-  df <- data.frame(a = 1, b = 2)
+  df <- data.frame(a = 1, b = 2, .Random.seed = 0)
   dm <- mirai(as.matrix(df), .args = list(df = df), .timeout = 2000L)
   test_true(is_mirai(call_mirai(dm)))
   test_true(!unresolved(dm))
