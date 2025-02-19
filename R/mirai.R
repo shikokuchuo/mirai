@@ -169,6 +169,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
     if (is.null(gn)) {
       is.environment(globals[[1L]]) || stop(._[["named_dots"]])
       globals <- as.list.environment(globals[[1L]], all.names = TRUE)
+      if (".Random.seed" %in% names(globals))
+        globals[[".Random.seed"]] <- NULL
     }
     all(nzchar(gn)) || stop(._[["named_dots"]])
   }
