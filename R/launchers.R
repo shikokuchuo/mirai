@@ -125,7 +125,6 @@ launch_remote <- function(n = 1L, remote = remote_config(), ..., tls = NULL, .co
   command <- remote[["command"]]
   rscript <- remote[["rscript"]]
   quote <- remote[["quote"]]
-  tunnel <- remote[["tunnel"]]
 
   if (length(command)) {
 
@@ -133,10 +132,12 @@ launch_remote <- function(n = 1L, remote = remote_config(), ..., tls = NULL, .co
 
     if (is.list(args)) {
 
+      tunnel <- remote[["tunnel"]]
+
       if (tunnel) {
-        parse_url(url)[["hostname"]] == "127.0.0.1" || stop(._[["localhost"]])
-        port <- parse_url(url)[["port"]]
-        prefix <- sprintf("-R %s:127.0.0.1:%s", port, port)
+        purl <- parse_url(url)
+        purl[["hostname"]] == "127.0.0.1" || stop(._[["localhost"]])
+        prefix <- sprintf("-R %s:127.0.0.1:%s", purl[["port"]], purl[["port"]])
         for (i in seq_along(args))
           args[[i]][1L] <- sprintf("%s %s", prefix, args[[i]][1L])
       }
