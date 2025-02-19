@@ -40,7 +40,8 @@ x <- list(time = 2L, mean = 4)
 
 m <- mirai({Sys.sleep(time); rnorm(5L, mean)}, time = x$time, mean = x$mean)
 ```
-The mirai expression is evaluated in another process and hence must be self-contained, not referring to variables that do not already exist there. Above, the variables `time` and `mean` are passed as part of the `mirai()` call.
+The mirai expression is evaluated in another process and hence must be self-contained, not referring to variables that do not already exist there.
+Above, the variables `time` and `mean` are passed as part of the `mirai()` call.
 
 A 'mirai' object is returned immediately - creating a mirai never blocks the session.
 
@@ -62,17 +63,19 @@ To wait for and collect the return value, use the mirai's `[]` method:
 
 ``` r
 m[]
-#> [1] 3.090949 5.491539 4.761512 3.061476 3.913778
+#> [1] 5.616084 3.837460 2.470005 3.859600 3.039492
 ```
-As a mirai represents an async operation, it is never necessary to wait for it. Other code can continue to be run. Once it completes, the return value automatically becomes available at `$data`.
+As a mirai represents an async operation, it is never necessary to wait for it - other code can continue to be run.
+Once it completes, the return value automatically becomes available at `$data`.
 
 ``` r
 m
 #> < mirai [$data] >
 m$data
-#> [1] 3.090949 5.491539 4.761512 3.061476 3.913778
+#> [1] 5.616084 3.837460 2.470005 3.859600 3.039492
 ```
-For easy programmatic use of `mirai()`, '.expr' accepts a pre-constructed language object, and also a list of named arguments passed via '.args'. So, the following would be equivalent to the above:
+For easy programmatic use of `mirai()`, '.expr' accepts a pre-constructed language object, and also a list of named arguments passed via '.args'.
+So, the following would be equivalent to the above:
 
 
 ``` r
@@ -82,7 +85,7 @@ args <- list(time = x$time, mean = x$mean)
 
 m <- mirai(.expr = expr, .args = args)
 m[]
-#> [1] 4.098618 3.684135 3.733703 5.165438 3.954965
+#> [1] 3.686021 2.845752 4.865508 4.382394 4.664075
 ```
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -95,7 +98,8 @@ High-frequency real-time data cannot be written to file/database synchronously w
 
 Cache data in memory and use `mirai()` to perform periodic write operations concurrently in a separate process.
 
-Below, '.args' is used to pass `environment()`, which is the calling environment. This provides a convenient method of passing in existing objects.
+Below, '.args' is used to pass `environment()`, which is the calling environment.
+This provides a convenient method of passing in existing objects.
 
 
 ``` r
@@ -168,7 +172,8 @@ for (i in 1:10) {
 #> iteration 9 successful
 #> iteration 10 successful
 ```
-Further, by testing the return value of each 'mirai' for errors, error-handling code is then able to automate recovery and re-attempts, as in the above example. Further details on [error handling](#errors-interrupts-and-timeouts) can be found in the section below.
+Further, by testing the return value of each 'mirai' for errors, error-handling code is then able to automate recovery and re-attempts, as in the above example.
+Further details on [error handling](#errors-interrupts-and-timeouts) can be found in the section below.
 
 The end result is a resilient and fault-tolerant pipeline that minimises downtime by eliminating interruptions of long computes.
 
@@ -180,7 +185,9 @@ Daemons, or persistent background processes, may be set to receive 'mirai' reque
 
 This is potentially more efficient as new processes no longer need to be created on an *ad hoc* basis.
 
-Daemons inherit the default system configuration and read in the relevant '.Renviron' and '.Rprofile' etc. on startup. They also load the default packages. To instead only load the `base` package (which cuts out more than half of R's startup time), the environment variable `R_SCRIPT_DEFAULT_PACKAGES=NULL` may be set prior to launching daemons.
+Daemons inherit the default system configuration and read in the relevant '.Renviron' and '.Rprofile' etc. on startup.
+They also load the default packages.
+To instead only load the `base` package (which cuts out more than half of R's startup time), the environment variable `R_SCRIPT_DEFAULT_PACKAGES=NULL` may be set prior to launching daemons.
 
 #### With Dispatcher (default)
 
@@ -203,13 +210,15 @@ status()
 #> [1] 6
 #> 
 #> $daemons
-#> [1] "abstract://b5e12d724925b4c38fafcdd6"
+#> [1] "abstract://de4ef9a0f6a31bb7caace15f"
 #> 
 #> $mirai
 #>  awaiting executing completed 
 #>         0         0         0
 ```
-The default `dispatcher = TRUE` creates a `dispatcher()` background process that connects to individual daemon processes on the local machine. This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to daemons for processing. Tasks are queued at dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.
+The default `dispatcher = TRUE` creates a `dispatcher()` background process that connects to individual daemon processes on the local machine.
+This ensures that tasks are dispatched efficiently on a first-in first-out (FIFO) basis to daemons for processing.
+Tasks are queued at dispatcher and sent to a daemon as soon as it can accept the task for immediate execution.
 
 Dispatcher uses synchronisation primitives from [`nanonext`](https://doi.org/10.5281/zenodo.7903429), waiting upon rather than polling at intervals for tasks, which is efficient both in terms of consuming no resources while waiting, and also being fully synchronised with events (having no latency).
 
@@ -218,7 +227,8 @@ Dispatcher uses synchronisation primitives from [`nanonext`](https://doi.org/10.
 daemons(0)
 #> [1] 0
 ```
-Set the number of daemons to zero to reset. This reverts to the default of creating a new background process for each 'mirai' request.
+Set the number of daemons to zero to reset.
+This reverts to the default of creating a new background process for each 'mirai' request.
 
 #### Without Dispatcher
 
@@ -237,11 +247,14 @@ status()
 #> [1] 6
 #> 
 #> $daemons
-#> [1] "abstract://08377b5769709d30e4390dc8"
+#> [1] "abstract://f02b641543c3d6b7cad7a659"
 ```
-This implementation sends tasks immediately, and ensures that tasks are evenly-distributed amongst daemons. This means that optimal scheduling is not guaranteed as the duration of tasks cannot be known *a priori*. As an example, tasks could be queued at a daemon behind a long-running task, whilst other daemons are idle having already completed their tasks.
+This implementation sends tasks immediately, and ensures that tasks are evenly-distributed amongst daemons.
+This means that optimal scheduling is not guaranteed as the duration of tasks cannot be known *a priori*.
+As an example, tasks could be queued at a daemon behind a long-running task, whilst other daemons are idle having already completed their tasks.
 
-The advantage of this approach is that it is low-level and does not require an additional dispatcher process. It is well-suited to working with similar-length tasks, or where the number of concurrent tasks typically does not exceed available daemons.
+The advantage of this approach is that it is low-level and does not require an additional dispatcher process.
+It is well-suited to working with similar-length tasks, or where the number of concurrent tasks typically does not exceed available daemons.
 
 #### Everywhere
 
@@ -250,14 +263,16 @@ The advantage of this approach is that it is low-level and does not require an a
 ``` r
 everywhere(library(DBI))
 ```
-The above keeps the [`DBI`](https://dbi.r-dbi.org/) package loaded for all evaluations. Other types of setup task may also be performed, including making a common resource available, such as a database connection:
+The above keeps the [`DBI`](https://dbi.r-dbi.org/) package loaded for all evaluations.
+Other types of setup task may also be performed, including making a common resource available, such as a database connection:
 
 
 ``` r
 file <- tempfile()
 everywhere(con <<- dbConnect(RSQLite::SQLite(), file), file = file)
 ```
-By super-assignment, the conenction 'con' will be available in the global environment of all daemon instances. Subsequent mirai calls may then make use of 'con'.
+By super-assignment, the conenction 'con' will be available in the global environment of all daemon instances.
+Subsequent mirai calls may then make use of 'con'.
 
 
 ``` r
@@ -265,11 +280,11 @@ m <- mirai(capture.output(str(con)))
 m[]
 #> [1] "Formal class 'SQLiteConnection' [package \"RSQLite\"] with 8 slots" 
 #> [2] "  ..@ ptr                :<externalptr> "                           
-#> [3] "  ..@ dbname             : chr \"/tmp/Rtmpdmaaal/file31371a96db13\""
+#> [3] "  ..@ dbname             : chr \"/tmp/Rtmp0k7sa7/file971132277d1b\""
 #> [4] "  ..@ loadable.extensions: logi TRUE"                               
 #> [5] "  ..@ flags              : int 70"                                  
 #> [6] "  ..@ vfs                : chr \"\""                                
-#> [7] "  ..@ ref                :<environment: 0x58e5dc2aff70> "           
+#> [7] "  ..@ ref                :<environment: 0x5e0d461ace60> "           
 #> [8] "  ..@ bigint             : chr \"integer64\""                       
 #> [9] "  ..@ extended_types     : logi FALSE"
 ```
@@ -285,15 +300,18 @@ daemons(0)
 
 #### With Method
 
-`daemons()` has a `with()` method, which evaluates an expression with daemons created for the duration of the expression and automatically torn down upon completion. It was designed for the use case of running a Shiny app with the desired number of daemons.
+`daemons()` has a `with()` method, which evaluates an expression with daemons created for the duration of the expression and automatically torn down upon completion.
+It was designed for the use case of running a Shiny app with the desired number of daemons.
 
 
 ``` r
 with(daemons(4), shiny::runApp(app))
 ```
-Note: in the above case, it is assumed the app is already created. Wrapping a call to `shiny::shinyApp()` would not work as `runApp()` is implicitly called when the app is printed, however printing occurs only after `with()` has returned, hence the app would run outside of the scope of the `with()` statement.
+Note: in the above case, it is assumed the app is already created.
+Wrapping a call to `shiny::shinyApp()` would not work as `runApp()` is implicitly called when the app is printed, however printing occurs only after `with()` has returned, hence the app would run outside of the scope of the `with()` statement.
 
-In the case of a Shiny app, all mirai calls will be executed before the app returns. In the case of other expressions, be sure to call the results (or collect the values) of all mirai within the expression so that daemons are not reset before they have all completed.
+In the case of a Shiny app, all mirai calls will be executed before the app returns.
+In the case of other expressions, be sure to call the results (or collect the values) of all mirai within the expression so that daemons are not reset before they have all completed.
 
 [&laquo; Back to ToC](#table-of-contents)
 
@@ -301,13 +319,17 @@ In the case of a Shiny app, all mirai calls will be executed before the app retu
 
 The daemons interface may also be used to send tasks for computation to remote daemon processes on the network.
 
-Call `daemons()` specifying 'url' as a character string such as: 'tcp://10.75.32.70:5555' at which daemon processes should connect to. Alternatively, use `host_url()` to automatically construct a valid URL. The host / dispatcher listens at this address, utilising a single port.
+Call `daemons()` specifying 'url' as a character string such as: 'tcp://10.75.32.70:5555' at which daemon processes should connect.
+Alternatively, use `host_url()` to automatically construct a valid URL.
+The host / dispatcher listens at this address, utilising a single port.
 
-IPv6 addresses are also supported and must be enclosed in square brackets `[]` to avoid confusion with the final colon separating the port. For example, port 5555 on the IPv6 address `::ffff:a6f:50d` would be specified as `tcp://[::ffff:a6f:50d]:5555`.
+IPv6 addresses are also supported and must be enclosed in square brackets `[]` to avoid confusion with the final colon separating the port.
+For example, port 5555 on the IPv6 address `::ffff:a6f:50d` would be specified as `tcp://[::ffff:a6f:50d]:5555`.
 
 For options on actually launching the daemons, please see the next section.
 
-Below, calling `host_url()` without a port value uses the default of '0'. This is a wildcard value that will automatically cause a free ephemeral port to be assigned:
+Below, calling `host_url()` without a port value uses the default of '0'.
+This is a wildcard value that will automatically cause a free ephemeral port to be assigned:
 
 ``` r
 daemons(url = host_url())
@@ -321,13 +343,14 @@ status()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://hostname:36643"
+#> [1] "tcp://hostname:41287"
 #> 
 #> $mirai
 #>  awaiting executing completed 
 #>         0         0         0
 ```
-Dispatcher automatically adjusts to the number of daemons actually connected. Hence it is possible to dynamically scale up or down the number of daemons according to requirements.
+Dispatcher automatically adjusts to the number of daemons actually connected.
+Hence it is possible to dynamically scale up or down the number of daemons according to requirements.
 
 To reset all connections and revert to default behaviour:
 
@@ -343,16 +366,22 @@ Closing the connection causes the dispatcher to exit automatically, and in turn 
 
 To launch remote daemons, supply a remote launch configuration to the 'remote' argument of `daemons()` when setting up daemons, or `launch_remote()` at any time afterwards.
 
-`ssh_config()` may be used to generate a remote launch configuration if there is SSH access to the remote machine, or else `remote_config()` provides a flexible method for generating a configuration involving a custom resource manager / application.
+`ssh_config()` may be used to generate a remote launch configuration if there is SSH access to the remote machine.
+Otherwise `remote_config()` provides a flexible method for generating a configuration involving a custom resource manager / application.
 
 #### SSH Direct Connection
 
-The first example below launches 4 daemons on the machine 10.75.32.90 (using the default SSH port of 22 as this was not specified), connecting back to the dispatcher URLs:
+This method is appropriate for internal networks and in trusted, properly-configured environments where it is safe for your machine to accept incoming connections on certain ports.
+In the examples below, the remote daemons connect back directly to port 5555 on the local machine.
+
+In these cases, using TLS is often desirable to provide additional security to the connections.
+
+The first example below launches 4 daemons on the machine 10.75.32.90 (using the default SSH port of 22 as this was not specified), connecting back to the host URL:
 
 ``` r
 daemons(
   n = 4,
-  url = host_url(port = 5555),
+  url = host_url(tls = TRUE, port = 5555),
   remote = ssh_config("ssh://10.75.32.90")
 )
 ```
@@ -361,21 +390,26 @@ The second example below launches one daemon on each of 10.75.32.90 and 10.75.32
 ``` r
 daemons(
   n = 1,
-  url = host_url(port = 5555),
+  url = host_url(tls = TRUE, port = 5555),
   remote = ssh_config(c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"))
 )
 ```
-In the above examples, as the remote daemons connect back directly, port 5555 on the local machine must be open to incoming connections from the remote addresses.
 
 #### SSH Tunnelling
 
-Use of SSH tunnelling provides a convenient way to launch remote daemons without requiring the remote machine to be able to access the host. Often firewall configurations or security policies may prevent opening a port to accept outside connections.
+This allows you to launch daemons on any machine you are able to access via SSH, be it on the local network or the cloud.
 
-In these cases, SSH tunnelling offers a solution by creating a tunnel once the initial SSH connection is made. For simplicity, this SSH tunnelling implementation uses the same port on both the host and daemon. SSH key-based authentication must already be in place, but no other configuration is required.
+Use of SSH tunnelling provides a convenient way to launch remote daemons without requiring the remote machine to be able to access the host.
+Often firewall configurations or security policies may prevent opening a port to accept outside connections.
 
-To use tunnelling, supply a URL with hostname of '127.0.0.1' to 'url' for the `daemons()` call. `local_url(tcp = TRUE)` does this for you. For example, if 'local_url(tcp = TRUE, port = 5555)' is specified, the tunnel is created using port 5555 on each machine. The host listens to its `127.0.0.1:5555`, and the daemons each dial into `127.0.0.1:5555` on their own respective machines.
+In these cases, SSH tunnelling offers a solution by creating a tunnel once the initial SSH connection is made.
+For simplicity, this SSH tunnelling implementation uses the same port on both the host and daemon.
+SSH key-based authentication must already be in place, but no other configuration is required.
 
-This provides a means of launching daemons on any machine you are able to access via SSH, be it on the local network or the cloud.
+To use tunnelling, supply a URL with hostname of '127.0.0.1' to 'url' for the `daemons()` call.
+`local_url(tcp = TRUE)` does this for you.
+For example, if 'local_url(tcp = TRUE, port = 5555)' is specified, the tunnel is created using port 5555 on each machine.
+The host listens to its `127.0.0.1:5555`, and the daemons each dial into `127.0.0.1:5555` on their own respective machines.
 
 The below example launches 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling:
 
@@ -407,21 +441,21 @@ daemons(
 
 #### Manual Deployment
 
-As an alternative to automated launches, calling `launch_remote()` without specifying 'remote' may be used to return the shell commands for deploying daemons manually. The printed return values may be copy / pasted directly to a remote machine.
+As an alternative to automated launches, calling `launch_remote()` without specifying 'remote' may be used to return the shell commands for deploying daemons manually.
+The printed return values may be copy / pasted directly to a remote machine.
 
 ``` r
 daemons(url = host_url())
 #> [1] 0
 launch_remote(2)
 #> [1]
-#> Rscript -e 'mirai::daemon("tcp://hostname:44035",dispatcher=TRUE,rs=c(10407,667515964,-1813805043,-2094425238,-1063266845,868077000,-533139159))'
+#> Rscript -e 'mirai::daemon("tcp://hostname:38249",dispatcher=TRUE,rs=c(10407,966067154,-1319651029,819033712,825198513,1420076478,-905879769))'
 #> 
 #> [2]
-#> Rscript -e 'mirai::daemon("tcp://hostname:44035",dispatcher=TRUE,rs=c(10407,-530506672,2133572169,771037010,-1572233094,640780345,-588342701))'
+#> Rscript -e 'mirai::daemon("tcp://hostname:38249",dispatcher=TRUE,rs=c(10407,826884020,-1302214037,1820922739,551627967,1671841030,-972302688))'
 daemons(0)
 #> [1] 0
 ```
-Note that `daemons()` should be set up on the host machine before launching `daemon()` on remote resources, otherwise the daemon instances will exit if a connection is not immediately available. Alternatively, specifying the argument `autoexit = FALSE` will allow daemons to wait (indefinitely) for a connection to become available.
 
 [&laquo; Back to ToC](#table-of-contents)
 
@@ -431,50 +465,53 @@ TLS is available as an option to secure communications from the local machine to
 
 #### Zero-configuration
 
-An automatic zero-configuration default is implemented. Simply specify a secure URL using the scheme `tls+tcp://` when setting daemons, or use `host_url(tls = TRUE)`, for example:
+An automatic zero-configuration default is implemented.
+Simply specify a secure URL using the scheme `tls+tcp://` when setting daemons, or use `host_url(tls = TRUE)`, for example:
 
 ``` r
 daemons(url = host_url(tls = TRUE))
 #> [1] 0
 ```
-Single-use keys and certificates are automatically generated and configured, without requiring any further intervention. The private key is always retained on the host machine and never transmitted.
+Single-use keys and certificates are automatically generated and configured, without requiring any further intervention.
+The private key is always retained on the host machine and never transmitted.
 
-The generated self-signed certificate is available via `launch_remote()`. This function conveniently constructs the full shell command to launch a daemon, including the correctly specified 'tls' argument to `daemon()`.
+The generated self-signed certificate is available via `launch_remote()`.
+This function conveniently constructs the full shell command to launch a daemon, including the correctly specified 'tls' argument to `daemon()`.
 
 ``` r
 launch_remote(1)
 #> [1]
-#> Rscript -e 'mirai::daemon("tls+tcp://hostname:40659",dispatcher=TRUE,tls=c("-----BEGIN CERTIFICATE-----
+#> Rscript -e 'mirai::daemon("tls+tcp://hostname:46365",dispatcher=TRUE,tls=c("-----BEGIN CERTIFICATE-----
 #> MIIFNzCCAx+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAzMREwDwYDVQQDDAhrdW1h
 #> bW90bzERMA8GA1UECgwITmFub25leHQxCzAJBgNVBAYTAkpQMB4XDTAxMDEwMTAw
 #> MDAwMFoXDTMwMTIzMTIzNTk1OVowMzERMA8GA1UEAwwIa3VtYW1vdG8xETAPBgNV
 #> BAoMCE5hbm9uZXh0MQswCQYDVQQGEwJKUDCCAiIwDQYJKoZIhvcNAQEBBQADggIP
-#> ADCCAgoCggIBAK4cYjB9vwEwKH5sDyuQet6HPnFeuS9m6tC1tiuLW9CPfwrZ6b/u
-#> xUG1/W9hazbVqScsa1Zrdoh2kNIprg32sJeCAiWBShLpwSHX5Ma9DOwa55OOaBZ9
-#> AFBXIcYe8a2e5cRn9/ynID3uV5uw0jE97NO5blQEtBpUB3r1s6+C/mYub3ssjwp6
-#> v4BPaaibliUPUoYpxTItLtYxufC/TMiVGEti5JzmAMxkyVzevzpzsbyYezPU8UqR
-#> bhN1ZLQ8KPbDbTyehnV1/6c7VJFbOkE/QzU+CH/3emy/BNpSQrniYpFRg3VgSlrK
-#> K9PjxwNpl+XbPxqPPoIpOA1YZ1+7uKWEIVN1ipIttw/POGlh3IsJDbnZ1apTVXGj
-#> DBvAn9cB2HAiv6JKxgWGhhHoakAXrpWEi58xZR3e+rQw/4XIl/lMQnfF+oq93E94
-#> zdjYeMn1+eCaN6W5HId0NNl+U0hgnI8t0Gp5NKFxKWFihCwCNRsiT+SmgqytweNo
-#> f4JZBRv5FZvd5eR5DUPvRxc2F39FEu5v9hxVVUa94dptkc84uuwkorucUwq3VtEG
-#> RFKkGZ1GuACgQElYTM/+Dicrb7WgHyo9G5pd5IFq0+MV/STLUtIg0SkUBIm4Pruq
-#> DN2MMBRgee0HMvjhyIIwK+IkuV1aLyPAW2KBWwBFK/K5lDaHvXwKzFSdAgMBAAGj
-#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFIQ8mOLbalGMkzh/vaq7
-#> 0jW+w4W1MB8GA1UdIwQYMBaAFIQ8mOLbalGMkzh/vaq70jW+w4W1MA0GCSqGSIb3
-#> DQEBCwUAA4ICAQCNnHCVNKHEtFgz3OQqB+t7EujBGU8qIwA6/5bsUY3424kN+D0V
-#> 6G+lNukTp1R78Gt6bh6SkK4LuNl2UlQMPt2jYUjOTbektIghkt8TCB0kp0KKa0Cb
-#> AWTku2tiQJgh+Q5+RQ0lXo8XsAcs/fL8LTYx2DrCnrdd1AG/1yicUsmqrqFkNXei
-#> QX50zMrQ+ZYCHoZR7OBQ+MPajEwLEXTwNtO7bm7lr52fds4ntFyxzkVddFKLOPUN
-#> qmZtk4txsvPglEJbmvoQqxAyZK6qOGq9K/laqY2Fo8Nvdxtfi3aF9bnaeEa2A052
-#> I5RrLvRiZrFk2pwhS/tfd+2Ff9SwshmKj61kPq9OGZODBqX25ghizYQDx6q+wXKS
-#> 7edOhH96E61Y1uA91SWsgFGmXU1atS/EU8dhYTSGLFaVjJ7FqvbslEqsf83i08l7
-#> QGuW4e258k2uOo4XAQ2hgpCKfkIm3pOZ+oy+GmJL63AlGrgKN6LaDTx9VrKDWStA
-#> mRmIijHyvMRwUH8qRGQwzgfVipcotAlQobWKAjMbh3nNkuTavittSTyZTTK8BNTe
-#> 7f2GcBe4RfD2wWhlx07Ir5qnunk6jnB0owCvzGYsDnZwvSfF1go+RImjHxO6PK7C
-#> Xt5SkO8mjulf0e7mmloDwNuzoseUls0XF06r78Xg3i75JCcWzux9JY5dmw==
+#> ADCCAgoCggIBAKFvCtx/+V6pypflFbeHq62/CQH4L/BGq21z8pODxAJ0WWRtH7rD
+#> oRQ33d9SMu9nQxbcCIYId5DJmyFazl71dLEaIkWUyc85Gy6vVP7OB7Z2VJeg8Yz3
+#> tQtia7K7FuBfMzx2Zyn52pqH1yx+PbH+4Wxk+zP52rMmbz5H+yYp9ZGWiBCiEW9Z
+#> M6YKzo1Tj7YDnybsgzW+4avXBc2cQ8Yi1tX+FM8Ze626CkGQyTSIfINO60Jmwfv0
+#> 4SxkszbFhw2/sucm/76OWce5KK74GUEuJVyuPq9IgabszANAYRtSG1dC1B9XaUMM
+#> QZibdyyJIjnT+KoZvAhEroBpSRZ8olg+IbXHsYC5gMuK6WHtYow1UthDI+J97UI4
+#> jdE58r2Dg/Nez/ESGwHgDNeFQ0AbU3X0zXC7Fiz9TQtgrPGyo0oVrZB0ImDXMQPl
+#> YnAvriVOTxDtsFyePGxbyGwdCpq4DfxfZyeKCiwjucdiLCR673kjxj/NjasirqcK
+#> 0c6XjnWjEB121HACRw9/vpC5Mu1l1qU0g9DxMwk8HlALstItzJM8KuPM/KW1/GBZ
+#> DCmtzxkmP0ahNKpzBW8L7iwr2yzdbVzxsA5VzXavv3wE70TpL46+eEsf3QqwQJtx
+#> zr7guXag5eH1s9CSGtNBmRszCp0K1SRsEPWN/3nXLdLVWYWkOfN64y7ZAgMBAAGj
+#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFDnLVewDlAGUGWn4WjJU
+#> BnCIjBnKMB8GA1UdIwQYMBaAFDnLVewDlAGUGWn4WjJUBnCIjBnKMA0GCSqGSIb3
+#> DQEBCwUAA4ICAQCcLQILXuQF1trJ8tYdcRw+AFXT+y8pkxAGboTFFfLLqABLYwV/
+#> BO7W9iIIU6BHy95gxOjnwX0MBkWdU0zUE5/JbUA+qqN01BtmjIKIaf5LjrTWL4dQ
+#> 8c3MBpyTla2tDEqu7diVG6xL7X97lr1lJvyWD6ROWTLGzl2Nl3GKLgKJNBRvaDjj
+#> jVHVAjRxIallXzieR10fL2G2nk7r7fPXzU5KnuEP8ukXYKmJ3mPLIBmnZhXygY7G
+#> Xpg0hOYBdyAcZ92D/InjCtavMtkVtKwvZ1dmYJzAec1KqBg+e+vDufagvGSmpRRw
+#> clVzrO82f+NR0oTz1oFxe0Jq0gFFVZvfIGDmAm0p1LCwY+UfEJ2nx0VKFwm+qUZY
+#> vcAxCfrDIeNXglUL/i8TtlIZM8konLRB0LN2xr0Eru6zq3PAjdih/Vm48UWe2oV2
+#> 5Qc36iJFHQrNX6znYhp1fDwTXtvxZC2Gxm+ZVZEfIz+NCOZa3UQg0q+Wzgfc7Cmt
+#> Wv8sABKxZdc49z/n3XHMlxhOlt76LI6XF8xWQ86BcEbDStdjBVeNrPh0IWHonEAH
+#> zpSe5k6P8lnoVJiVeIZjMm8dxOSxe/ZZ1Jo3CI3jxh7IY5+54FRh5cKwfcapjhrI
+#> 6LC3R/WOu4X1etOU54FUpNIB80B/p6D897gZfVrb8L3NRiDmyT/u0ItqzQ==
 #> -----END CERTIFICATE-----
-#> ",""),rs=c(10407,-37763752,-1259438215,2129541350,-158515665,-646828380,460434773))'
+#> ",""),rs=c(10407,-1239802900,1111447549,-1674686822,-1179860141,949395576,-1757636583))'
 ```
 The printed value may be deployed directly on a remote machine.
 
@@ -483,7 +520,8 @@ The printed value may be deployed directly on a remote machine.
 
 #### CA Signed Certificates
 
-As an alternative to the zero-configuration default, a certificate may also be generated via a Certificate Signing Request (CSR) to a Certificate Authority (CA), which may be a public CA or a CA internal to an organisation.
+As an alternative to the zero-configuration default, a certificate may also be generated via a Certificate Signing Request (CSR) to a Certificate Authority (CA).
+The CA may be a public CA or internal to an organisation.
 
 1. Generate a private key and CSR. The following resources describe how to do so:
 
@@ -517,7 +555,8 @@ The `daemons()` interface also allows the specification of compute profiles for 
 - send tasks to different daemons or clusters of daemons with the appropriate specifications (in terms of CPUs / memory / GPU / accelerators etc.)
 - split tasks between local and remote computation
 
-Simply specify the argument `.compute` when calling `daemons()` with a profile name (which is 'default' for the default profile). The daemons settings are saved under the named profile.
+Simply specify the argument `.compute` when calling `daemons()` with a profile name (which is 'default' for the default profile).
+The daemons settings are saved under the named profile.
 
 To create a 'mirai' task using a specific compute profile, specify the '.compute' argument to `mirai()`, which defaults to the 'default' compute profile.
 
@@ -527,7 +566,8 @@ Similarly, functions such as `status()`, `launch_local()` or `launch_remote()` s
 
 ### Errors, Interrupts and Timeouts
 
-If execution in a mirai fails, the error message is returned as a character string of class 'miraiError' and 'errorValue' to facilitate debugging. `is_mirai_error()` may be used to test for mirai execution errors.
+If execution in a mirai fails, the error message is returned as a character string of class 'miraiError' and 'errorValue' to facilitate debugging.
+`is_mirai_error()` may be used to test for mirai execution errors.
 
 ``` r
 m1 <- mirai(stop("occurred with a custom message", call. = FALSE))
@@ -559,7 +599,8 @@ m3$data$stack.trace
 #> [[2]]
 #> f(1)
 ```
-Elements of the original error condition are also accessible via `$` on the error object. For example, additional metadata recorded by `rlang::abort()` is preserved:
+Elements of the original error condition are also accessible via `$` on the error object.
+For example, additional metadata recorded by `rlang::abort()` is preserved:
 
 ``` r
 f <- function(x) if (x > 0) stop("positive")
@@ -571,14 +612,16 @@ m4[]
 m4$data$meta_uid
 #> [1] "UID001"
 ```
-If a daemon instance is sent a user interrupt, the mirai will resolve to an object of class 'miraiInterrupt' and 'errorValue'. `is_mirai_interrupt()` may be used to test for such interrupts.
+If a daemon instance is sent a user interrupt, the mirai will resolve to an object of class 'miraiInterrupt' and 'errorValue'.
+`is_mirai_interrupt()` may be used to test for such interrupts.
 
 ``` r
 m4 <- mirai(rlang::interrupt()) # simulates a user interrupt
 is_mirai_interrupt(m4[])
 #> [1] TRUE
 ```
-If execution of a mirai surpasses the timeout set via the '.timeout' argument, the mirai will resolve to an 'errorValue' of 5L (timed out). This can, amongst other things, guard against mirai processes that have the potential to hang and never return.
+If execution of a mirai surpasses the timeout set via the '.timeout' argument, the mirai will resolve to an 'errorValue' of 5L (timed out).
+This can, amongst other things, guard against mirai processes that have the potential to hang and never return.
 
 ``` r
 m5 <- mirai(nanonext::msleep(1000), .timeout = 500)
@@ -598,7 +641,9 @@ is_error_value(m5$data)
 
 ### Serialization: Arrow, polars and beyond
 
-Native R serialization is used for sending data between host and daemons. Some R objects by their nature cannot be serialized, such as those accessed via an external pointer. In these cases, performing 'mirai' operations on them would normally error.
+Native R serialization is used for sending data between host and daemons.
+Some R objects by their nature cannot be serialized, such as those accessed via an external pointer.
+In these cases, performing 'mirai' operations on them would normally error.
 
 Using the [`arrow`](https://arrow.apache.org/docs/r/) package as an example:
 
@@ -654,9 +699,11 @@ m[]
 daemons(0)
 #> [1] 0
 ```
-It can be seen that this time, the arrow table is seamlessly handled in the 'mirai' process. This is the case even when the object is deeply nested inside lists or other structures.
+It can be seen that this time, the arrow table is seamlessly handled in the 'mirai' process.
+This is the case even when the object is deeply nested inside lists or other structures.
 
-Different serialization functions may be registered for different compute profiles. As an example, the 'polars' profile can be set up to use [`polars`](https://pola-rs.github.io/r-polars/), a 'lightning fast' dataframe library written in Rust (requires `polars` >= 0.16.4).
+Different serialization functions may be registered for different compute profiles.
+As an example, the 'polars' profile can be set up to use [`polars`](https://pola-rs.github.io/r-polars/), a 'lightning fast' dataframe library written in Rust (requires `polars` >= 0.16.4).
 
 ``` r
 daemons(
@@ -705,9 +752,11 @@ Please refer to the [torch vignette](https://shikokuchuo.net/mirai/articles/torc
 
 `mirai_map()` performs asynchronous parallel/distributed map using `mirai`.
 
-This function is similar to `purrr::map()`, but returns a 'mirai_map' object. It is also more advanced as it allows multiple map over the rows of a dataframe or matrix.
+This function is similar to `purrr::map()`, but returns a 'mirai_map' object.
+It is also more advanced as it allows multiple map over the rows of a dataframe or matrix - and can in fact be used to implement all map variations from that package.
 
-The results of a mirai_map `x` may be collected using `x[]`. This waits for all asynchronous operations to complete if still in progress.
+The results of a mirai_map `x` may be collected using `x[]`.
+This waits for all asynchronous operations to complete if still in progress.
 
 #### Key advantages:
 
@@ -740,13 +789,13 @@ with(
   mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
 )
 #> [[1]]
-#> [1] 18.33139
+#> [1] 16.95101
 #> 
 #> [[2]]
-#> [1] 18.95894 20.15813
+#> [1] 21.15871 19.98244
 #> 
 #> [[3]]
-#> [1] 20.82372 18.99975 18.25256
+#> [1] 20.14680 19.08980 21.09536
 ```
 Use `...` to further specify objects referenced but not defined in `.f` - the 'do' in the anonymous function below:
 
@@ -762,13 +811,13 @@ ml
 #> < mirai map [0/3] >
 ml[]
 #> $a
-#> [1] "6c"
+#> [1] "cb"
 #> 
 #> $b
-#> [1] 56 1a
+#> [1] 64 17
 #> 
 #> $c
-#> [1] "f285bc"
+#> [1] "67a687"
 ```
 Use of `mirai_map()` requires that `daemons()` have previously been set, and will error if not.
 
@@ -804,7 +853,8 @@ daemons(0)
 
 Multiple map is performed over the **rows** of a dataframe or matrix, as this is most often the desired behaviour.
 
-This allows map over 2 or more arguments by specifying a dataframe. One of those may be an index value for indexed map.
+This allows map over 2 or more arguments by specifying a dataframe.
+One of those may be an index value for indexed map.
 
 The function `.f` must take as many arguments as there are columns, either explicitly or via `...`.
 
@@ -823,21 +873,24 @@ with(
 ```
 As a dataframe often contains columns of differing type, it is unusual to want to map over the **columns**, however this is possible by simply transforming it beforehand into a list using `as.list()`.
 
-Similarly, the behaviour of `lapply()` or `purrr::map()` on a matrix is the same as that for a vector. `mirai_map()` on the other hand does take into account the fact that the matrix has dimensions, and maps over its **rows**, consistent with the behaviour for dataframes. If instead, mapping over the columns is desired, simply take the transpose of the matrix beforehand using `t()`.
+Similarly, the behaviour of `lapply()` or `purrr::map()` on a matrix is the same as that for a vector.
+`mirai_map()` on the other hand does take into account the fact that the matrix has dimensions, and maps over its **rows**, consistent with the behaviour for dataframes.
+If instead, mapping over the columns is desired, simply take the transpose of the matrix beforehand using `t()`.
 
 [&laquo; Back to ToC](#table-of-contents)
 
 ### Using mirai in a Package
 
-mirai as a framework is designed to support completely transparent and inter-operable use within packages. A core design precept of not relying on global options or environment variables minimises the likelihood of conflict between use by different packages.
+mirai as a framework is designed to support completely transparent and inter-operable use within packages.
+A core design precept of not relying on global options or environment variables minimises the likelihood of conflict between use by different packages.
 
 There are hence few requirements of package authors.
 
 The following points may, however, be useful:
 
-- `daemons()` settings should usually be left to end-users, and you may consider re-exporting `daemons()` in your package as a convenience.
+- `daemons()` settings should almost always be left to end-users, and it may be convenient to re-export `daemons()` in your package.
 
-- Calling package functions in a mirai requires namespacing the call, or alternatively exporting the function, i.e.
+- Calling functions in a mirai requires namespacing the call if from a package, or alternatively exporting the function, i.e.
 ```r
  mirai(mypkg::my_func())
 ```
@@ -850,6 +903,6 @@ or
 
 - This is recommended practice in any case, but especially relevant for package developers: the functions `unresolved()`, `is_error_value()`, `is_mirai_error()`, and `is_mirai_interrupt()` should be used to test for the relevant state of a mirai or its value. The characteristics of how they are currently implemented, e.g. as a logical NA for an 'unresolvedValue', should not be relied upon, as these are subject to change.
 
-- Testing on CRAN should respect it's 2-core usage limit. This practically means limiting tests to using one daemon (with `dispatcher = FALSE`) to ensure that only one additional process is used. Always reset daemons when done and then allow at least a one-second sleep to ensure all background processes have properly exited. These limits apply only to tests run on CRAN machines and not those run elsewhere.
+- Testing on CRAN should respect it's 2-core usage limit. This practically means limiting tests to using one daemon (with `dispatcher = FALSE`) to ensure that only one additional process is used. Always reset daemons when done and then allow at least a one-second sleep to ensure all background processes have properly exited. These limits apply only to tests on CRAN, and more complex tests may be run elsewhere.
 
 [&laquo; Back to ToC](#table-of-contents)
