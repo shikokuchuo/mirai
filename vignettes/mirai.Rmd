@@ -62,7 +62,7 @@ To wait for and collect the return value, use the mirai's `[]` method:
 
 ``` r
 m[]
-#> [1] 3.942299 4.734870 2.252801 4.822258 5.029710
+#> [1] 3.090949 5.491539 4.761512 3.061476 3.913778
 ```
 As a mirai represents an async operation, it is never necessary to wait for it. Other code can continue to be run. Once it completes, the return value automatically becomes available at `$data`.
 
@@ -70,7 +70,7 @@ As a mirai represents an async operation, it is never necessary to wait for it. 
 m
 #> < mirai [$data] >
 m$data
-#> [1] 3.942299 4.734870 2.252801 4.822258 5.029710
+#> [1] 3.090949 5.491539 4.761512 3.061476 3.913778
 ```
 For easy programmatic use of `mirai()`, '.expr' accepts a pre-constructed language object, and also a list of named arguments passed via '.args'. So, the following would be equivalent to the above:
 
@@ -82,7 +82,7 @@ args <- list(time = x$time, mean = x$mean)
 
 m <- mirai(.expr = expr, .args = args)
 m[]
-#> [1] 4.285993 2.431517 5.693451 3.078171 2.425170
+#> [1] 4.098618 3.684135 3.733703 5.165438 3.954965
 ```
 
 [&laquo; Back to ToC](#table-of-contents)
@@ -203,7 +203,7 @@ status()
 #> [1] 6
 #> 
 #> $daemons
-#> [1] "abstract://8a28621b4649957c5a50857c"
+#> [1] "abstract://b5e12d724925b4c38fafcdd6"
 #> 
 #> $mirai
 #>  awaiting executing completed 
@@ -237,7 +237,7 @@ status()
 #> [1] 6
 #> 
 #> $daemons
-#> [1] "abstract://053711fa47d356238360f0fd"
+#> [1] "abstract://08377b5769709d30e4390dc8"
 ```
 This implementation sends tasks immediately, and ensures that tasks are evenly-distributed amongst daemons. This means that optimal scheduling is not guaranteed as the duration of tasks cannot be known *a priori*. As an example, tasks could be queued at a daemon behind a long-running task, whilst other daemons are idle having already completed their tasks.
 
@@ -265,11 +265,11 @@ m <- mirai(capture.output(str(con)))
 m[]
 #> [1] "Formal class 'SQLiteConnection' [package \"RSQLite\"] with 8 slots" 
 #> [2] "  ..@ ptr                :<externalptr> "                           
-#> [3] "  ..@ dbname             : chr \"/tmp/Rtmpt7pdkd/filedb8751152173\""
+#> [3] "  ..@ dbname             : chr \"/tmp/Rtmpdmaaal/file31371a96db13\""
 #> [4] "  ..@ loadable.extensions: logi TRUE"                               
 #> [5] "  ..@ flags              : int 70"                                  
 #> [6] "  ..@ vfs                : chr \"\""                                
-#> [7] "  ..@ ref                :<environment: 0x60c22819c400> "           
+#> [7] "  ..@ ref                :<environment: 0x58e5dc2aff70> "           
 #> [8] "  ..@ bigint             : chr \"integer64\""                       
 #> [9] "  ..@ extended_types     : logi FALSE"
 ```
@@ -321,7 +321,7 @@ status()
 #> [1] 0
 #> 
 #> $daemons
-#> [1] "tcp://hostname:41393"
+#> [1] "tcp://hostname:36643"
 #> 
 #> $mirai
 #>  awaiting executing completed 
@@ -351,16 +351,16 @@ The first example below launches 4 daemons on the machine 10.75.32.90 (using the
 
 ``` r
 daemons(
-  n = 4L,
+  n = 4,
   url = host_url(port = 5555),
-  remote = ssh_config(remotes = "ssh://10.75.32.90")
+  remote = ssh_config("ssh://10.75.32.90")
 )
 ```
 The second example below launches one daemon on each of 10.75.32.90 and 10.75.32.91 using the custom SSH port of 222:
 
 ``` r
 daemons(
-  n = 1L,
+  n = 1,
   url = host_url(port = 5555),
   remote = ssh_config(c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"))
 )
@@ -373,22 +373,20 @@ Use of SSH tunnelling provides a convenient way to launch remote daemons without
 
 In these cases, SSH tunnelling offers a solution by creating a tunnel once the initial SSH connection is made. For simplicity, this SSH tunnelling implementation uses the same port on both the host and daemon. SSH key-based authentication must already be in place, but no other configuration is required.
 
-To use tunnelling, specify the 'url' for the `daemons()` call as '127.0.0.1' with either a specific port or a port of '0' to use a free ephemeral port. For example, if 'tcp://127.0.0.1:5555' is specified, the tunnel is created using port 5555 on each machine. The host listens to its `127.0.0.1:5555`, and the remotes each dial into `127.0.0.1:5555` on their respective machines.
+To use tunnelling, supply a URL with hostname of '127.0.0.1' to 'url' for the `daemons()` call. `local_url(tcp = TRUE)` does this for you. For example, if 'local_url(tcp = TRUE, port = 5555)' is specified, the tunnel is created using port 5555 on each machine. The host listens to its `127.0.0.1:5555`, and the daemons each dial into `127.0.0.1:5555` on their own respective machines.
 
 This provides a means of launching daemons on any machine you are able to access via SSH, be it on the local network or the cloud.
 
-The below example launches 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling ('url' hostname is specified as '127.0.0.1'):
+The below example launches 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling:
 
 ``` r
 daemons(
-  n = 1L,
-  url = "tcp://127.0.0.1:0",
-  remote = ssh_config(
-    remotes = c("ssh://10.75.32.90", "ssh://10.75.32.90"),
-    tunnel = TRUE
-  )
+  n = 2,
+  url = local_url(tcp = TRUE),
+  remote = ssh_config("ssh://10.75.32.90", tunnel = TRUE)
 )
 ```
+
 #### Cluster Resource Managers
 
 `remote_config()` may be used to run a command to deploy daemons using a resource manager.
@@ -416,10 +414,10 @@ daemons(url = host_url())
 #> [1] 0
 launch_remote(2)
 #> [1]
-#> Rscript -e 'mirai::daemon("tcp://hostname:44913",dispatcher=TRUE,rs=c(10407,1458549102,2069998359,1845308524,459935357,1697051418,-308085293))'
+#> Rscript -e 'mirai::daemon("tcp://hostname:44035",dispatcher=TRUE,rs=c(10407,667515964,-1813805043,-2094425238,-1063266845,868077000,-533139159))'
 #> 
 #> [2]
-#> Rscript -e 'mirai::daemon("tcp://hostname:44913",dispatcher=TRUE,rs=c(10407,-1015969887,2145712568,1333102764,1134273637,1284257239,1790437869))'
+#> Rscript -e 'mirai::daemon("tcp://hostname:44035",dispatcher=TRUE,rs=c(10407,-530506672,2133572169,771037010,-1572233094,640780345,-588342701))'
 daemons(0)
 #> [1] 0
 ```
@@ -446,37 +444,37 @@ The generated self-signed certificate is available via `launch_remote()`. This f
 ``` r
 launch_remote(1)
 #> [1]
-#> Rscript -e 'mirai::daemon("tls+tcp://hostname:34875",dispatcher=TRUE,tls=c("-----BEGIN CERTIFICATE-----
+#> Rscript -e 'mirai::daemon("tls+tcp://hostname:40659",dispatcher=TRUE,tls=c("-----BEGIN CERTIFICATE-----
 #> MIIFNzCCAx+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAzMREwDwYDVQQDDAhrdW1h
 #> bW90bzERMA8GA1UECgwITmFub25leHQxCzAJBgNVBAYTAkpQMB4XDTAxMDEwMTAw
 #> MDAwMFoXDTMwMTIzMTIzNTk1OVowMzERMA8GA1UEAwwIa3VtYW1vdG8xETAPBgNV
 #> BAoMCE5hbm9uZXh0MQswCQYDVQQGEwJKUDCCAiIwDQYJKoZIhvcNAQEBBQADggIP
-#> ADCCAgoCggIBALR2YKq6LHECbwLTCohtKAd/JAc5Q86x0vRswG4/hFOyLEQKnoIc
-#> YOw3qf3MmN8bzsUPNP8PAW2NMK9JnH7HHjNPjL7xERK8grstjjJ8s6KSWQj9mDsd
-#> 0sx8ynBHwppDva29gXlDwCMrV8xztxRuBa6AcrlN6EqKrKidnCHng8r7o3QqcwbQ
-#> yDaSgglBTCAVVSGRGHUQfkx/UwXG+9B9AinAoZ3JCTGjvuOOnEEnBbSBf0lLSwYn
-#> CAwMrqO5ujSRpsZtMIYffEibAF7kWu/nAK/8qRiR96ZG3JAkZSzg4apfTCEkzqyC
-#> NpWL10lCoZDveBAWU6Il9qM8bZNY8bAZjjCmtqAqtKaq0Ljpr2hTVaLgEZAi3Pg0
-#> l4Cqao1s6JydhELxU9aEydrVGbkYCSwcHCERe1/F47u3OBe23jTYkD94jjcEEEIH
-#> B/mLUvKXv2ufa/Sidew6ukiol0Gkf+Y5Roxb4+QZamkqO5dbnM9a1L9dXguUiBYK
-#> rwFvTUteAUNtPJ9CE52AYerYcU6MbwVefNTCcKsRI6SkPWyJKP4Xl12cX3ili+Xv
-#> xNVv3tY4C/4d7XJrs589Bp0xJDtGo2G36BjECw/8Hpj5M67+N/5g2j2VkhsqgFdN
-#> Yua06mDHPRqRkIeJ5ShNNqkOB/PMlF9KMoq21m+rBr2I15Q64reF5FBLAgMBAAGj
-#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFDEMFU3BIxu37mjBk8RC
-#> 9WC7gy0FMB8GA1UdIwQYMBaAFDEMFU3BIxu37mjBk8RC9WC7gy0FMA0GCSqGSIb3
-#> DQEBCwUAA4ICAQBeBkNQGTJYN0UBwr61w4fd8ZI4J/FkqZ+SrTMOho8vwD3R8zEz
-#> YQGz0fCJ2G8jUAZiuYHKHCUWzozPO9qkGAjFRnzwN9N1aDRrZvxxlY/AAn2enjvb
-#> qSatSnPNMPBHL4BuewdvJWSMzwWHq5ak2GPKXcrDxlAFsTaueCLm+rydZ45e1JhA
-#> E5YhGAxmtvrFu7wgzc/UIDXbMhjbQP3J6FoV/VsuyHa6m3wbCSxjjhY/TSHmBsIf
-#> Ln+WgEvuGa+P+gKA4Okgn01uxc9eSCClgbHBmUz0ZgqepHtGHb2oKiIq7S75CxWF
-#> cJYYQyTws+2OBMB6IQLTBPDQaAM3E/EwTMtIRq/sm9aCq5sutiGUqbfEONwoD+AY
-#> f29M49LLKEpcudRkOgv0clJfiDNqHJqGw8ytgexcp9X0mDMWivsthi6GvsQtvQvW
-#> ixIa+bLAaaQlKeQx1hw/WB2cecjinHN3K8j7iLo9lOKB3C4ool46i+ettYAA4n9R
-#> sHmAPV5NioEUYQB9xFfix3dK9LI3nksb61xJOKqZ3TunUKCdcQVJf7DxYX9uwQP/
-#> iaGnYMDhy9B4iQnfm70qmDGZliRLvHck+s9awpet+ijbtBuXZKeBlbvaEA6cAC20
-#> gqzWywjiPU41iblsmxGVH24kFxBo4BYR6H3lNQka8JjI0qKcL8UygR+6IA==
+#> ADCCAgoCggIBAK4cYjB9vwEwKH5sDyuQet6HPnFeuS9m6tC1tiuLW9CPfwrZ6b/u
+#> xUG1/W9hazbVqScsa1Zrdoh2kNIprg32sJeCAiWBShLpwSHX5Ma9DOwa55OOaBZ9
+#> AFBXIcYe8a2e5cRn9/ynID3uV5uw0jE97NO5blQEtBpUB3r1s6+C/mYub3ssjwp6
+#> v4BPaaibliUPUoYpxTItLtYxufC/TMiVGEti5JzmAMxkyVzevzpzsbyYezPU8UqR
+#> bhN1ZLQ8KPbDbTyehnV1/6c7VJFbOkE/QzU+CH/3emy/BNpSQrniYpFRg3VgSlrK
+#> K9PjxwNpl+XbPxqPPoIpOA1YZ1+7uKWEIVN1ipIttw/POGlh3IsJDbnZ1apTVXGj
+#> DBvAn9cB2HAiv6JKxgWGhhHoakAXrpWEi58xZR3e+rQw/4XIl/lMQnfF+oq93E94
+#> zdjYeMn1+eCaN6W5HId0NNl+U0hgnI8t0Gp5NKFxKWFihCwCNRsiT+SmgqytweNo
+#> f4JZBRv5FZvd5eR5DUPvRxc2F39FEu5v9hxVVUa94dptkc84uuwkorucUwq3VtEG
+#> RFKkGZ1GuACgQElYTM/+Dicrb7WgHyo9G5pd5IFq0+MV/STLUtIg0SkUBIm4Pruq
+#> DN2MMBRgee0HMvjhyIIwK+IkuV1aLyPAW2KBWwBFK/K5lDaHvXwKzFSdAgMBAAGj
+#> VjBUMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFIQ8mOLbalGMkzh/vaq7
+#> 0jW+w4W1MB8GA1UdIwQYMBaAFIQ8mOLbalGMkzh/vaq70jW+w4W1MA0GCSqGSIb3
+#> DQEBCwUAA4ICAQCNnHCVNKHEtFgz3OQqB+t7EujBGU8qIwA6/5bsUY3424kN+D0V
+#> 6G+lNukTp1R78Gt6bh6SkK4LuNl2UlQMPt2jYUjOTbektIghkt8TCB0kp0KKa0Cb
+#> AWTku2tiQJgh+Q5+RQ0lXo8XsAcs/fL8LTYx2DrCnrdd1AG/1yicUsmqrqFkNXei
+#> QX50zMrQ+ZYCHoZR7OBQ+MPajEwLEXTwNtO7bm7lr52fds4ntFyxzkVddFKLOPUN
+#> qmZtk4txsvPglEJbmvoQqxAyZK6qOGq9K/laqY2Fo8Nvdxtfi3aF9bnaeEa2A052
+#> I5RrLvRiZrFk2pwhS/tfd+2Ff9SwshmKj61kPq9OGZODBqX25ghizYQDx6q+wXKS
+#> 7edOhH96E61Y1uA91SWsgFGmXU1atS/EU8dhYTSGLFaVjJ7FqvbslEqsf83i08l7
+#> QGuW4e258k2uOo4XAQ2hgpCKfkIm3pOZ+oy+GmJL63AlGrgKN6LaDTx9VrKDWStA
+#> mRmIijHyvMRwUH8qRGQwzgfVipcotAlQobWKAjMbh3nNkuTavittSTyZTTK8BNTe
+#> 7f2GcBe4RfD2wWhlx07Ir5qnunk6jnB0owCvzGYsDnZwvSfF1go+RImjHxO6PK7C
+#> Xt5SkO8mjulf0e7mmloDwNuzoseUls0XF06r78Xg3i75JCcWzux9JY5dmw==
 #> -----END CERTIFICATE-----
-#> ",""),rs=c(10407,605837864,-1250936311,937029174,-1194164417,809834612,1107720421))'
+#> ",""),rs=c(10407,-37763752,-1259438215,2129541350,-158515665,-646828380,460434773))'
 ```
 The printed value may be deployed directly on a remote machine.
 
@@ -727,10 +725,10 @@ daemons(4)
 vec <- c(1, 1, 4, 4, 1, 1, 1, 1)
 system.time(mirai_map(vec, Sys.sleep)[])
 #>    user  system elapsed 
-#>   0.052   0.252   4.008
+#>   0.006   0.004   4.008
 system.time(parLapply(cl, vec, Sys.sleep))
 #>    user  system elapsed 
-#>   0.010   0.004   8.011
+#>   0.012   0.007   8.016
 daemons(0)
 #> [1] 0
 ```
@@ -742,13 +740,13 @@ with(
   mirai_map(1:3, rnorm, .args = list(mean = 20, sd = 2))[]
 )
 #> [[1]]
-#> [1] 19.93468
+#> [1] 18.33139
 #> 
 #> [[2]]
-#> [1] 16.56807 18.91964
+#> [1] 18.95894 20.15813
 #> 
 #> [[3]]
-#> [1] 19.70716 17.43041 17.10532
+#> [1] 20.82372 18.99975 18.25256
 ```
 Use `...` to further specify objects referenced but not defined in `.f` - the 'do' in the anonymous function below:
 
@@ -761,16 +759,16 @@ ml <- mirai_map(
   do = nanonext::random
 )
 ml
-#> < mirai map [3/3] >
+#> < mirai map [0/3] >
 ml[]
 #> $a
-#> [1] "20"
+#> [1] "6c"
 #> 
 #> $b
-#> [1] 7b da
+#> [1] 56 1a
 #> 
 #> $c
-#> [1] "b9ab58"
+#> [1] "f285bc"
 ```
 Use of `mirai_map()` requires that `daemons()` have previously been set, and will error if not.
 

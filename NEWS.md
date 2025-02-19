@@ -5,12 +5,14 @@
 * `daemons()` providing revised settings for a compute profile, now warns and has no effect rather than error (amending the change made in mirai 2.1.0).
   + This protects against errors when automated systems attempt to run a script multiple times in the same session.
 
+#### New Features
+
+* Simplification of distributed computing:
+  + `ssh_config()` argument 'port' is removed, with the tunnel port now inferred at the time of launch, and is no longer set by the configuration.
+  + `local_url()` adds logical argument 'tcp' for easily constructing an automatic local TCP URL when setting `daemons()` for SSH tunnelling.
+
 #### Updates
 
-* Simplification of distributed computing using `ssh_config()`:
-  + Argument 'port' is removed.
-  + The tunnel port is now automatically inferred at the time of launch, and no longer set by the configuration.
-  + Allows use of an automatic localhost URL `tcp://127.0.0.1:0` when setting `daemons()` for SSH tunnelling.
 * `call_mirai()` is now user-interruptible, consistent with all other functions in the package.
   + `call_mirai_()` is hence redundant and now deprecated.
 * `mirai()` arguments `...` and `.args` now accept environments containing variables beginning with a dot `.` (#207).

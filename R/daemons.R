@@ -214,19 +214,20 @@
 #' }
 #'
 #' \dontrun{
+#'
 #' # Launch daemons on remotes 'nodeone' and 'nodetwo' using SSH
 #' # connecting back directly to the host URL over a TLS connection:
-#'
-#' daemons(n = 1L,
-#'         url = host_url(tls = TRUE),
-#'         remote = ssh_config(c('ssh://nodeone', 'ssh://nodetwo')),
-#'         dispatcher = FALSE)
+#' daemons(
+#'   url = host_url(tls = TRUE),
+#'   remote = ssh_config(c('ssh://nodeone', 'ssh://nodetwo'))
+#' )
 #'
 #' # Launch 4 daemons on the remote machine 10.75.32.90 using SSH tunnelling:
-#'
-#' daemons(n = 4L,
-#'         url = 'tcp://127.0.0.1:0',
-#'         remote = ssh_config('ssh://10.75.32.90', tunnel = TRUE))
+#' daemons(
+#'   n = 4,
+#'   url = local_url(tcp = TRUE),
+#'   remote = ssh_config('ssh://10.75.32.90', tunnel = TRUE)
+#' )
 #'
 #' }
 #'

@@ -95,11 +95,13 @@ authentication must already be in place, but no other configuration is
 required.
 
 To use tunnelling, set the hostname of the \code{\link{daemons}} \sQuote{url}
-argument to be \sQuote{127.0.0.1}. Specify a specific port, or use '0' to
-assign a free ephemeral port. For example, specifying 'tcp://127.0.0.1:5555'
-uses the local port '5555' to create the tunnel on each machine. The host
-listens to \code{127.0.0.1:5555} on its side and the remotes each dial
-into \code{127.0.0.1:5555} on their own respective sides.
+argument to be \sQuote{127.0.0.1}. Using \code{\link{local_url}} with
+\code{tcp = TRUE} also does this for you. Specifying a specific port to use
+is optional, with a random ephemeral port assigned otherwise. For example,
+specifying 'tcp://127.0.0.1:5555' uses the local port '5555' to create the
+tunnel on each machine. The host listens to \code{127.0.0.1:5555} on its
+machine and the remotes each dial into \code{127.0.0.1:5555} on their own
+respective machines.
 
 This provides a means of launching daemons on any machine you are able to
 access via SSH, be it on the local network or the cloud.
@@ -135,40 +137,25 @@ remote_config(
 )
 
 # direct SSH example
-ssh_config(
-  remotes = c("ssh://10.75.32.90:222", "ssh://nodename"),
-  timeout = 5
-)
+ssh_config(c("ssh://10.75.32.90:222", "ssh://nodename"), timeout = 5)
 
 # SSH tunnelling example
-ssh_config(
-  remotes = c("ssh://10.75.32.90:222", "ssh://nodename"),
-  tunnel = TRUE
-)
+ssh_config(c("ssh://10.75.32.90:222", "ssh://nodename"), tunnel = TRUE)
 
 \dontrun{
 
 # launch 2 daemons on the remote machines 10.75.32.90 and 10.75.32.91 using
 # SSH, connecting back directly to the host URL over a TLS connection:
-
 daemons(
   url = host_url(tls = TRUE),
-  remote = ssh_config(
-    remotes = c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"),
-    timeout = 1
-  )
+  remote = ssh_config(c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"))
 )
 
-# launch 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling over
-# port 5555 ('url' hostname must be '127.0.0.1'):
-
-cl <- make_cluster(
-  url = "tcp://127.0.0.1:5555",
-  remote = ssh_config(
-    remotes = c("ssh://10.75.32.90", "ssh://10.75.32.90"),
-    tunnel = TRUE,
-    timeout = 1
-  )
+# launch 2 daemons on the remote machine 10.75.32.90 using SSH tunnelling:
+daemons(
+  n = 2,
+  url = local_url(tcp = TRUE),
+  remote = ssh_config("ssh://10.75.32.90", tunnel = TRUE)
 )
 }
 
