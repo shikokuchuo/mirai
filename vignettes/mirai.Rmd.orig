@@ -337,8 +337,13 @@ For simplicity, this SSH tunnelling implementation uses the same port on both th
 SSH key-based authentication must already be in place, but no other configuration is required.
 
 To use tunnelling, supply a URL with hostname of '127.0.0.1' to 'url' for the `daemons()` call.
-`local_url(tcp = TRUE)` does this for you.
-For example, if 'local_url(tcp = TRUE, port = 5555)' is specified, the tunnel is created using port 5555 on each machine.
+
+- `local_url(tcp = TRUE)` does this for you.
+- The default uses the wildcard port of '0', which assigns a free ephemeral port.
+- Whilst convenient, there is a small possibility that this port may not be available on all daemons.
+- It is hence preferable to specify a specific port that has been whitelisted for use, where possible.
+
+For example, if `local_url(tcp = TRUE, port = 5555)` is specified, the tunnel is created using port 5555 on each machine.
 The host listens to its `127.0.0.1:5555`, and the daemons each dial into `127.0.0.1:5555` on their own respective machines.
 
 The below example launches 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling:
