@@ -1,5 +1,10 @@
 # mirai (development version)
 
+#### Behavioural Changes
+
+* `daemons()` providing revised settings for a compute profile, now warns and has no effect rather than error (amending the change made in mirai 2.1.0).
+  + This protects against errors when automated systems attempt to run a script multiple times in the same session.
+
 #### Updates
 
 * `call_mirai()` is now user-interruptible, consistent with all other functions in the package.

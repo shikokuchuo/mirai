@@ -271,7 +271,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       if (length(remote))
         launch_remote(n = n, remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
     } else {
-      stop(sprintf(._[["daemons_set"]], .compute))
+      warning(sprintf(._[["daemons_set"]], .compute), immediate. = TRUE)
     }
 
   } else {
@@ -315,7 +315,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
       )
       `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", n), "dots", dots))
     } else {
-      stop(sprintf(._[["daemons_set"]], .compute))
+      warning(sprintf(._[["daemons_set"]], .compute), immediate. = TRUE)
     }
 
   }
