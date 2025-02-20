@@ -51,6 +51,13 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="mirai-development-version">mirai (development version)<a class="anchor" aria-label="anchor" href="#mirai-development-version"></a></h2>
 <div class="section level5">
+<h5 id="behavioural-changes-development-version">Behavioural Changes<a class="anchor" aria-label="anchor" href="#behavioural-changes-development-version"></a></h5>
+<ul><li>
+<code><a href="../reference/daemons.html">daemons()</a></code> providing revised settings for a compute profile, now warns and has no effect rather than error (amending the change made in mirai 2.1.0).
+<ul><li>This protects against errors when automated systems attempt to run a script multiple times in the same session.</li>
+</ul></li>
+</ul></div>
+<div class="section level5">
 <h5 id="updates-development-version">Updates<a class="anchor" aria-label="anchor" href="#updates-development-version"></a></h5>
 <ul><li>
 <code><a href="../reference/call_mirai.html">call_mirai()</a></code> is now user-interruptible, consistent with all other functions in the package.
