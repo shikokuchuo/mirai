@@ -59,19 +59,20 @@
 </ul></div>
 <div class="section level5">
 <h5 id="updates-development-version">Updates<a class="anchor" aria-label="anchor" href="#updates-development-version"></a></h5>
-<ul><li>
+<ul><li>Removes <code>register_cluster()</code> added in v0.13.2.
+<ul><li>mirai (in R &gt;= 4.5) is now one of the official base R parallel cluster types, and registration is no longer required.</li>
+<li>Directly use <code>parallel::makeCluster(type = "MIRAI")</code> to create a ‘miraiCluster’.</li>
+</ul></li>
+<li>
 <code><a href="../reference/call_mirai.html">call_mirai()</a></code> is now user-interruptible, consistent with all other functions in the package.
 <ul><li>
 <code><a href="../reference/call_mirai.html">call_mirai_()</a></code> is hence redundant and now deprecated.</li>
 </ul></li>
 <li>
-<code><a href="../reference/mirai.html">mirai()</a></code> arguments <code>...</code> and <code>.args</code> now accept environments containing variables beginning with a dot <code>.</code> (<a href="https://github.com/shikokuchuo/mirai/issues/207" class="external-link">#207</a>).</li>
+<code><a href="../reference/mirai.html">mirai()</a></code> arguments <code>...</code> and <code>.args</code> now accept environments containing variables beginning with a dot <code>.</code> (<a href="https://github.com/shikokuchuo/mirai/issues/207" class="external-link">#207</a>). # mirai 2.1.0</li>
 </ul></div>
-</div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.1.0" id="mirai-210">mirai 2.1.0<a class="anchor" aria-label="anchor" href="#mirai-210"></a></h2><p class="text-muted">CRAN release: 2025-02-07</p>
 <div class="section level5">
-<h5 id="behavioural-changes-2-1-0">Behavioural Changes<a class="anchor" aria-label="anchor" href="#behavioural-changes-2-1-0"></a></h5>
+<h5 id="behavioural-changes-development-version-1">Behavioural Changes<a class="anchor" aria-label="anchor" href="#behavioural-changes-development-version-1"></a></h5>
 <ul><li>
 <code><a href="../reference/daemons.html">daemons()</a></code> now requires an explicit reset before providing revised settings for a compute profile, and will error otherwise.</li>
 <li>
@@ -86,7 +87,7 @@
 </ul></li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-2-1-0">Updates<a class="anchor" aria-label="anchor" href="#updates-2-1-0"></a></h5>
+<h5 id="updates-development-version-1">Updates<a class="anchor" aria-label="anchor" href="#updates-development-version-1"></a></h5>
 <ul><li>‘miraiError’ evaluation errors now return the call stack at <code>$stack.trace</code> as a list of calls (with srcrefs removed) without deparsing to character strings.</li>
 <li>
 <code><a href="../reference/mirai_map.html">mirai_map()</a></code> improvements:
@@ -308,7 +309,7 @@
 <ul><li>
 <code><a href="../reference/mirai.html">mirai()</a></code> and <code><a href="../reference/everywhere.html">everywhere()</a></code> behaviour changed such that ‘…’ args are now assigned to the global environment of the daemon process.</li>
 <li>Adds <code><a href="https://rdrr.io/r/base/with.html" class="external-link">with()</a></code> method for mirai daemons, allowing for example: <code>with(daemons(4), {expr})</code>, where the daemons last for the duration of ‘expr’.</li>
-<li>Adds <code><a href="../reference/register_cluster.html">register_cluster()</a></code> for registering ‘miraiCluster’ as a parallel Cluster type (requires R &gt;= 4.4).</li>
+<li>Adds <code>register_cluster()</code> for registering ‘miraiCluster’ as a parallel Cluster type (requires R &gt;= 4.4).</li>
 <li>Adds <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">is.promising()</a></code> method for ‘mirai’ for the promises package.</li>
 <li>A ‘miraiError’ now includes the full call stack, which may be accessed at <code>$stack.trace</code>, and includes the trailing line break for consistency with ‘as.character.error()’.</li>
 <li>mirai promises now preserve deep stacks when a ‘miraiError’ occurs within a Shiny app (thanks <a href="https://github.com/jcheng5" class="external-link">@jcheng5</a> <a href="https://github.com/shikokuchuo/mirai/issues/104" class="external-link">#104</a>).</li>
