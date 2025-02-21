@@ -23,6 +23,9 @@
 #' package such as \code{\link[parallel]{clusterApply}} or
 #' \code{\link[parallel]{parLapply}}.
 #'
+#' For R4.5 or newer, \code{\link[parallel]{makeCluster}} specifying
+#' \code{type = "MIRAI"} is equivalent to this function.
+#'
 #' @param n integer number of nodes (automatically launched on the local machine
 #'   unless \sQuote{url} is supplied).
 #' @param url [default NULL] (specify for remote nodes) the character URL on the
@@ -197,33 +200,6 @@ print.miraiNode <- function(x, ...) {
 
   cat(sprintf("< miraiNode | node: %d cluster ID: %s >\n", attr(x, "node"), attr(x, "id")), file = stdout())
   invisible(x)
-
-}
-
-#' Register Mirai Cluster
-#'
-#' Registers 'miraiCluster' with the \pkg{parallel} package as cluster type
-#' 'MIRAI' and (optionally) makes it the default cluster type.
-#'
-#' @param default [default TRUE] logical value whether to also register
-#'   'miraiCluster' as the default cluster type.
-#'
-#' @return Invisible NULL
-#'
-#' @note The underlying implementation in the \pkg{parallel} package this
-#'   function relies on iis currently only available in R-devel (4.5).
-#'
-#' @examples
-#' tryCatch(mirai::register_cluster(), error = identity)
-#'
-#' @keywords internal
-#' @export
-#'
-register_cluster <- function(default = TRUE) {
-
-  register <- .getNamespace("parallel")[["registerClusterType"]]
-  is.null(register) && stop(._[["register_cluster"]])
-  register("MIRAI", make_cluster, make.default = isTRUE(default)) # nocov
 
 }
 

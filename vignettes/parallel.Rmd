@@ -9,9 +9,11 @@ vignette: >
 
 ### Parallel Integration
 
-`mirai` provides an alternative communications backend for R. This functionality was developed to fulfil a request by R Core at R Project Sprint 2023.
+`mirai` provides an alternative communications backend for R.
+This functionality was developed to fulfil a request by R Core at R Project Sprint 2023.
 
 `make_cluster()` creates a cluster object of class 'miraiCluster', which is fully-compatible with `parallel` cluster types.
+From R 4.5 onwards, mirai is recognised as one of the official cluster types and can also be created by `parallel::makeCluster(type = "MIRAI")`.
 
   + Specify 'n' to launch nodes on the local machine.
   + Specify 'url' for receiving connections from remote nodes.
@@ -50,7 +52,7 @@ status(cl)
 #> [1] 4
 #> 
 #> $daemons
-#> [1] "abstract://72b4711d6bfb3c594b8ae7c5"
+#> [1] "abstract://c54f0592af1ba381bcfbde74"
 stop_cluster(cl)
 ```
 Making a cluster specifying 'url' without 'remote' causes the shell commands for manual deployment of nodes to be printed to the console.
@@ -60,10 +62,10 @@ cl <- make_cluster(n = 2, url = host_url())
 #> Shell commands for deployment on nodes:
 #> 
 #> [1]
-#> Rscript -e 'mirai::daemon("tcp://hostname:35425",rs=c(10407,1574004307,691283832,-868437223,1422700550,-52477233,402391748),dispatcher=FALSE)'
+#> Rscript -e 'mirai::daemon("tcp://hostname:44599",dispatcher=FALSE,cleanup=FALSE,rs=c(10407,-1275635401,97598476,-2069515875,1414607802,-664740365,248124056))'
 #> 
 #> [2]
-#> Rscript -e 'mirai::daemon("tcp://hostname:35425",rs=c(10407,-1692002656,-1630451687,1587440942,-263728274,705149078,1834787885),dispatcher=FALSE)'
+#> Rscript -e 'mirai::daemon("tcp://hostname:44599",dispatcher=FALSE,cleanup=FALSE,rs=c(10407,-1197809085,136434206,-501206156,1499687871,-1941970059,-2049706599))'
 stop_cluster(cl)
 ```
 
@@ -85,10 +87,10 @@ doParallel::registerDoParallel(cl)
 m <- matrix(rnorm(9), 3, 3)
 foreach(i = 1:nrow(m), .combine = rbind) %dopar%
   (m[i, ] / mean(m[i, ]))
-#>              [,1]      [,2]      [,3]
-#> result.1 1.015448 1.8510261 0.1335260
-#> result.2 1.360749 0.3420212 1.2972295
-#> result.3 1.064388 0.9857044 0.9499077
+#>                [,1]       [,2]       [,3]
+#> result.1  1.9419991  2.9336232 -1.8756223
+#> result.2 -0.4692218  3.1719796  0.2972422
+#> result.3 -0.8612108 -0.8675435  4.7287543
 # simple parallel matrix multiply
 a <- matrix(1:16, 4, 4)
 b <- t(a)
