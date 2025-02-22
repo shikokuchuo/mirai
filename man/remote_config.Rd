@@ -14,8 +14,7 @@ remote_config(
 
 ssh_config(
   remotes,
-  port,
-  tunnel = FALSE,
+  tunnel = TRUE,
   timeout = 10,
   command = "ssh",
   rscript = "Rscript"
@@ -47,13 +46,10 @@ required for \sQuote{ssh} or Slurm \sQuote{sbatch}).}
 'ssh://' scheme and including the port open for SSH connections (defaults
 to 22 if not specified), e.g. 'ssh://10.75.32.90:22' or 'ssh://nodename'.}
 
-\item{port}{(required only if using SSH tunnelling) integer local port number
-to use on 127.0.0.1.}
-
-\item{tunnel}{[default FALSE] logical value whether to use SSH reverse
-tunnelling. If TRUE, a tunnel is created between the same ports on the
-local and remote machines. See the \sQuote{SSH Tunnelling} section below
-for how to correctly specify required settings.}
+\item{tunnel}{[default FALSE] logical value, whether to use SSH tunnelling.
+If TRUE, requires the \code{\link{daemons}} \sQuote{url} hostname to be
+'127.0.0.1'. See the \sQuote{SSH Tunnelling} section below for further
+details.}
 
 \item{timeout}{[default 10] maximum time allowed for connection setup in
 seconds.}
@@ -78,7 +74,7 @@ machine, for it to dial back to the host / dispatcher URL.
 
 It is assumed that SSH key-based authentication is already in place. The
 relevant port on the host must also be open to inbound connections from the
-remote machine.
+remote machine, and is hence suitable for use within trusted networks.
 }
 
 \section{SSH Tunnelling}{
@@ -91,14 +87,21 @@ accept outside connections.
 
 In these cases SSH tunnelling offers a solution by creating a tunnel once the
 initial SSH connection is made. For simplicity, this SSH tunnelling
-implementation uses the same port on both the side of the host and that of
-the daemon. SSH key-based authentication must also already be in place.
+implementation uses the same port on both host and daemon. SSH key-based
+authentication must already be in place, but no other configuration is
+required.
 
-Tunnelling requires the hostname for the the \sQuote{url} argument to
-\code{\link{daemons}} be \sQuote{127.0.0.1}. This is as the tunnel is created
-between \code{127.0.0.1:port} on each machine. The host listens to
-\code{port} on its machine and the remotes each dial into \code{port} on
-their own respective machines.
+To use tunnelling, set the hostname of the \code{\link{daemons}} \sQuote{url}
+argument to be \sQuote{127.0.0.1}. Using \code{\link{local_url}} with
+\code{tcp = TRUE} also does this for you. Specifying a specific port to use
+is optional, with a random ephemeral port assigned otherwise. For example,
+specifying 'tcp://127.0.0.1:5555' uses the local port '5555' to create the
+tunnel on each machine. The host listens to \code{127.0.0.1:5555} on its
+machine and the remotes each dial into \code{127.0.0.1:5555} on their own
+respective machines.
+
+This provides a means of launching daemons on any machine you are able to
+access via SSH, be it on the local network or the cloud.
 }
 
 \examples{
@@ -130,43 +133,26 @@ remote_config(
   rscript = "--default-packages=NULL --vanilla"
 )
 
-# simple SSH example
-ssh_config(
-  remotes = c("ssh://10.75.32.90:222", "ssh://nodename"),
-  timeout = 5
-)
+# direct SSH example
+ssh_config(c("ssh://10.75.32.90:222", "ssh://nodename"), timeout = 5)
 
 # SSH tunnelling example
-ssh_config(
-  remotes = c("ssh://10.75.32.90:222", "ssh://nodename"),
-  port = 5555,
-  tunnel = TRUE
-)
+ssh_config(c("ssh://10.75.32.90:222", "ssh://nodename"), tunnel = TRUE)
 
 \dontrun{
 
 # launch 2 daemons on the remote machines 10.75.32.90 and 10.75.32.91 using
 # SSH, connecting back directly to the host URL over a TLS connection:
-
 daemons(
   url = host_url(tls = TRUE),
-  remote = ssh_config(
-    remotes = c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"),
-    timeout = 1
-  )
+  remote = ssh_config(c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"))
 )
 
-# launch 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling over
-# port 5555 ('url' hostname must be '127.0.0.1'):
-
-cl <- make_cluster(
-  url = "tcp://127.0.0.1:5555",
-  remote = ssh_config(
-    remotes = c("ssh://10.75.32.90", "ssh://10.75.32.90"),
-    port = 5555,
-    tunnel = TRUE,
-    timeout = 1
-  )
+# launch 2 daemons on the remote machine 10.75.32.90 using SSH tunnelling:
+daemons(
+  n = 2,
+  url = local_url(tcp = TRUE),
+  remote = ssh_config("ssh://10.75.32.90", tunnel = TRUE)
 )
 }
 

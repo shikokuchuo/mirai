@@ -7,16 +7,20 @@
 \usage{
 host_url(tls = FALSE, port = 0)
 
-local_url()
+local_url(tcp = FALSE, port = 0)
 }
 \arguments{
 \item{tls}{[default FALSE] logical value whether to use TLS in which case the
 scheme used will be 'tls+tcp://'.}
 
-\item{port}{[default 0] numeric port to use. This should be open to
-connections from the network addresses the daemons are connecting from.
-\sQuote{0} is a wildcard value that automatically assigns a free ephemeral
-port.}
+\item{port}{[default 0] numeric port to use. \sQuote{0} is a wildcard value
+that automatically assigns a free ephemeral port. For \code{host_url}, this
+port should be open to connections from the network addresses the daemons
+are connecting from. For \code{local_url}, is only taken into account if
+\code{tcp = TRUE}.}
+
+\item{tcp}{[default FALSE] logical value whether to use a TCP connection.
+This must be used for SSH tunnelling.}
 }
 \value{
 A character string comprising a valid URL.
@@ -26,7 +30,9 @@ A character string comprising a valid URL.
 based on the computer's hostname. This may be supplied directly to the
 \sQuote{url} argument of \code{\link{daemons}}.
 
-\code{local_url} constructs a random URL suitable for local daemons.
+\code{local_url} constructs a URL suitable for local daemons, or for use with
+SSH tunnelling. This may be supplied directly to the \sQuote{url} argument of
+\code{\link{daemons}}.
 }
 \details{
 \code{host_url} relies on using the host name of the computer rather than an
@@ -45,5 +51,7 @@ host_url(tls = TRUE)
 host_url(tls = TRUE, port = 5555)
 
 local_url()
+local_url(tcp = TRUE)
+local_url(tcp = TRUE, port = 5555)
 
 }

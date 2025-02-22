@@ -78,7 +78,7 @@ launch_local <- function(n = 1L, ..., tls = NULL, .compute = "default") {
 
   envir <- ..[[.compute]]
   is.null(envir) && stop(._[["daemons_unset"]])
-  url <- envir[["urls"]][1L]
+  url <- envir[["urls"]]
   write_args <- if (length(envir[["msgid"]])) wa3 else wa2
   dots <- if (missing(..1)) envir[["dots"]] else parse_dots(...)
   output <- attr(dots, "output")
@@ -117,7 +117,7 @@ launch_remote <- function(n = 1L, remote = remote_config(), ..., tls = NULL, .co
   n <- as.integer(n)
   envir <- ..[[.compute]]
   is.null(envir) && stop(._[["daemons_unset"]])
-  url <- envir[["urls"]][1L]
+  url <- envir[["urls"]]
   write_args <- if (length(envir[["msgid"]])) wa3 else wa2
   dots <- if (missing(..1)) envir[["dots"]] else parse_dots(...)
   if (is.null(tls)) tls <- envir[["tls"]]
@@ -131,6 +131,16 @@ launch_remote <- function(n = 1L, remote = remote_config(), ..., tls = NULL, .co
     args <- remote[["args"]]
 
     if (is.list(args)) {
+
+      tunnel <- remote[["tunnel"]]
+
+      if (tunnel) {
+        purl <- parse_url(url)
+        purl[["hostname"]] == "127.0.0.1" || stop(._[["localhost"]])
+        prefix <- sprintf("-R %s:127.0.0.1:%s", purl[["port"]], purl[["port"]])
+        for (i in seq_along(args))
+          args[[i]][1L] <- sprintf("%s %s", prefix, args[[i]][1L])
+      }
 
       if (length(args) == 1L) {
         args <- args[[1L]]
@@ -226,7 +236,7 @@ launch_remote <- function(n = 1L, remote = remote_config(), ..., tls = NULL, .co
 remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript", quote = FALSE) {
 
   if (is.list(args)) lapply(args, find_dot) else find_dot(args)
-  list(command = command, args = args, rscript = rscript, quote = quote)
+  list(command = command, args = args, rscript = rscript, quote = quote, tunnel = FALSE)
 
 }
 
@@ -238,12 +248,10 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #' @param remotes the character URL or vector of URLs to SSH into, using the
 #'   'ssh://' scheme and including the port open for SSH connections (defaults
 #'   to 22 if not specified), e.g. 'ssh://10.75.32.90:22' or 'ssh://nodename'.
-#' @param port (required only if using SSH tunnelling) integer local port number
-#'   to use on 127.0.0.1.
-#' @param tunnel [default FALSE] logical value whether to use SSH reverse
-#'   tunnelling. If TRUE, a tunnel is created between the same ports on the
-#'   local and remote machines. See the \sQuote{SSH Tunnelling} section below
-#'   for how to correctly specify required settings.
+#' @param tunnel [default FALSE] logical value, whether to use SSH tunnelling.
+#'   If TRUE, requires the \code{\link{daemons}} \sQuote{url} hostname to be
+#'   '127.0.0.1'. See the \sQuote{SSH Tunnelling} section below for further
+#'   details.
 #' @param timeout [default 10] maximum time allowed for connection setup in
 #'   seconds.
 #'
@@ -254,7 +262,7 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #'
 #' It is assumed that SSH key-based authentication is already in place. The
 #' relevant port on the host must also be open to inbound connections from the
-#' remote machine.
+#' remote machine, and is hence suitable for use within trusted networks.
 #'
 #' @section SSH Tunnelling:
 #'
@@ -265,79 +273,65 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #'
 #' In these cases SSH tunnelling offers a solution by creating a tunnel once the
 #' initial SSH connection is made. For simplicity, this SSH tunnelling
-#' implementation uses the same port on both the side of the host and that of
-#' the daemon. SSH key-based authentication must also already be in place.
+#' implementation uses the same port on both host and daemon. SSH key-based
+#' authentication must already be in place, but no other configuration is
+#' required.
 #'
-#' Tunnelling requires the hostname for the the \sQuote{url} argument to
-#' \code{\link{daemons}} be \sQuote{127.0.0.1}. This is as the tunnel is created
-#' between \code{127.0.0.1:port} on each machine. The host listens to
-#' \code{port} on its machine and the remotes each dial into \code{port} on
-#' their own respective machines.
+#' To use tunnelling, set the hostname of the \code{\link{daemons}} \sQuote{url}
+#' argument to be \sQuote{127.0.0.1}. Using \code{\link{local_url}} with
+#' \code{tcp = TRUE} also does this for you. Specifying a specific port to use
+#' is optional, with a random ephemeral port assigned otherwise. For example,
+#' specifying 'tcp://127.0.0.1:5555' uses the local port '5555' to create the
+#' tunnel on each machine. The host listens to \code{127.0.0.1:5555} on its
+#' machine and the remotes each dial into \code{127.0.0.1:5555} on their own
+#' respective machines.
+#'
+#' This provides a means of launching daemons on any machine you are able to
+#' access via SSH, be it on the local network or the cloud.
 #'
 #' @examples
-#' # simple SSH example
-#' ssh_config(
-#'   remotes = c("ssh://10.75.32.90:222", "ssh://nodename"),
-#'   timeout = 5
-#' )
+#' # direct SSH example
+#' ssh_config(c("ssh://10.75.32.90:222", "ssh://nodename"), timeout = 5)
 #'
 #' # SSH tunnelling example
-#' ssh_config(
-#'   remotes = c("ssh://10.75.32.90:222", "ssh://nodename"),
-#'   port = 5555,
-#'   tunnel = TRUE
-#' )
+#' ssh_config(c("ssh://10.75.32.90:222", "ssh://nodename"), tunnel = TRUE)
 #'
 #' \dontrun{
 #'
 #' # launch 2 daemons on the remote machines 10.75.32.90 and 10.75.32.91 using
 #' # SSH, connecting back directly to the host URL over a TLS connection:
-#'
 #' daemons(
 #'   url = host_url(tls = TRUE),
-#'   remote = ssh_config(
-#'     remotes = c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"),
-#'     timeout = 1
-#'   )
+#'   remote = ssh_config(c("ssh://10.75.32.90:222", "ssh://10.75.32.91:222"))
 #' )
 #'
-#' # launch 2 nodes on the remote machine 10.75.32.90 using SSH tunnelling over
-#' # port 5555 ('url' hostname must be '127.0.0.1'):
-#'
-#' cl <- make_cluster(
-#'   url = "tcp://127.0.0.1:5555",
-#'   remote = ssh_config(
-#'     remotes = c("ssh://10.75.32.90", "ssh://10.75.32.90"),
-#'     port = 5555,
-#'     tunnel = TRUE,
-#'     timeout = 1
-#'   )
+#' # launch 2 daemons on the remote machine 10.75.32.90 using SSH tunnelling:
+#' daemons(
+#'   n = 2,
+#'   url = local_url(tcp = TRUE),
+#'   remote = ssh_config("ssh://10.75.32.90", tunnel = TRUE)
 #' )
 #' }
 #'
 #' @rdname remote_config
 #' @export
 #'
-ssh_config <- function(remotes, port, tunnel = FALSE, timeout = 10, command = "ssh", rscript = "Rscript") {
+ssh_config <- function(remotes, tunnel = TRUE, timeout = 10, command = "ssh", rscript = "Rscript") {
 
   premotes <- lapply(remotes, parse_url)
   hostnames <- lapply(premotes, .subset2, "hostname")
   ports <- lapply(premotes, .subset2, "port")
-  tun <- if (tunnel) sprintf("-R %d:127.0.0.1:%d", as.integer(port), as.integer(port))
 
-  rlen <- length(remotes)
-  args <- vector(mode = "list", length = rlen)
-
+  args <- vector(mode = "list", length = length(remotes))
   for (i in seq_along(args)) {
     args[[i]] <- c(
-      tun,
-      sprintf("-o ConnectTimeout=%s -fTp %s", as.character(timeout), ports[[min(i, rlen)]]),
-      hostnames[[min(i, rlen)]],
+      sprintf("-o ConnectTimeout=%s -fTp %s", as.character(timeout), ports[[i]]),
+      hostnames[[i]],
       "."
     )
   }
 
-  list(command = command, args = args, rscript = rscript, quote = TRUE)
+  list(command = command, args = args, rscript = rscript, quote = TRUE, tunnel = isTRUE(tunnel))
 
 }
 
@@ -359,10 +353,11 @@ ssh_config <- function(remotes, port, tunnel = FALSE, timeout = 10, command = "s
 #'
 #' @param tls [default FALSE] logical value whether to use TLS in which case the
 #'   scheme used will be 'tls+tcp://'.
-#' @param port [default 0] numeric port to use. This should be open to
-#'   connections from the network addresses the daemons are connecting from.
-#'   \sQuote{0} is a wildcard value that automatically assigns a free ephemeral
-#'   port.
+#' @param port [default 0] numeric port to use. \sQuote{0} is a wildcard value
+#'   that automatically assigns a free ephemeral port. For \code{host_url}, this
+#'   port should be open to connections from the network addresses the daemons
+#'   are connecting from. For \code{local_url}, is only taken into account if
+#'   \code{tcp = TRUE}.
 #'
 #' @return A character string comprising a valid URL.
 #'
@@ -381,15 +376,25 @@ host_url <- function(tls = FALSE, port = 0)
 
 #' URL Constructors
 #'
-#' \code{local_url} constructs a random URL suitable for local daemons.
+#' \code{local_url} constructs a URL suitable for local daemons, or for use with
+#' SSH tunnelling. This may be supplied directly to the \sQuote{url} argument of
+#' \code{\link{daemons}}.
+#'
+#' @param tcp [default FALSE] logical value whether to use a TCP connection.
+#'   This must be used for SSH tunnelling.
 #'
 #' @examples
 #' local_url()
+#' local_url(tcp = TRUE)
+#' local_url(tcp = TRUE, port = 5555)
 #'
 #' @rdname host_url
 #' @export
 #'
-local_url <- function() sprintf("%s%s", .urlscheme, random(12L))
+local_url <- function(tcp = FALSE, port = 0)
+  if (tcp)
+    sprintf("tcp://127.0.0.1:%d", as.integer(port)) else
+      sprintf("%s%s", .urlscheme, random(12L))
 
 #' @export
 #'
