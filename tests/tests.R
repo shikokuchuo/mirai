@@ -150,7 +150,6 @@ connection && {
 }
 # parallel cluster tests
 library(parallel)
-test_null(tryCatch(mirai::register_cluster(), error = function(e) NULL))
 connection && {
   Sys.sleep(1L)
   cluster <- make_cluster(1)

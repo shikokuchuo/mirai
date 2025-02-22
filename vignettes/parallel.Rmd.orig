@@ -15,9 +15,11 @@ knitr::opts_chunk$set(
 ```
 ### Parallel Integration
 
-`mirai` provides an alternative communications backend for R. This functionality was developed to fulfil a request by R Core at R Project Sprint 2023.
+`mirai` provides an alternative communications backend for R.
+This functionality was developed to fulfil a request by R Core at R Project Sprint 2023.
 
 `make_cluster()` creates a cluster object of class 'miraiCluster', which is fully-compatible with `parallel` cluster types.
+From R 4.5 onwards, mirai is recognised as one of the official cluster types and can also be created by `parallel::makeCluster(type = "MIRAI")`.
 
   + Specify 'n' to launch nodes on the local machine.
   + Specify 'url' for receiving connections from remote nodes.

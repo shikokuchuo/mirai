@@ -2,7 +2,7 @@
 
 #### Behavioural Changes
 
-* Simplification of distributed computing using SSH tunnelling:
+* Simplification SSH tunnelling for distributed computing:
   + `ssh_config()` argument 'port' is removed, with the tunnel port now inferred at the time of launch, and is no longer set by the configuration.
   + `local_url()` adds logical argument 'tcp' for easily constructing an automatic local TCP URL when setting `daemons()` for SSH tunnelling.
 * `daemons()` providing revised settings for a compute profile, now warns and has no effect rather than error (amending the change made in mirai 2.1.0).
@@ -10,6 +10,9 @@
 
 #### Updates
 
+* Removes `register_cluster()` added in v0.13.2.
+  + mirai (in R >= 4.5) is now one of the official base R parallel cluster types, and registration is no longer required.
+  + Directly use `parallel::makeCluster(type = "MIRAI")` to create a 'miraiCluster'.
 * `call_mirai()` is now user-interruptible, consistent with all other functions in the package.
   + `call_mirai_()` is hence redundant and now deprecated.
 * `mirai()` arguments `...` and `.args` now accept environments containing variables beginning with a dot `.` (#207).

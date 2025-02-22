@@ -44,6 +44,10 @@ package such as \code{\link[parallel]{clusterApply}} or
 
 \code{stop_cluster} stops a cluster created by \code{make_cluster}.
 }
+\details{
+For R4.5 or newer, \code{\link[parallel]{makeCluster}} specifying
+\code{type = "MIRAI"} is equivalent to this function.
+}
 \note{
 The default behaviour of clusters created by this function is designed
   to map as closely as possible to clusters created by the \pkg{parallel}
