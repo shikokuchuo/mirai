@@ -2,7 +2,7 @@
 
 #### Behavioural Changes
 
-* Simplification SSH tunnelling for distributed computing:
+* Simplifies SSH tunnelling for distributed computing:
   + `ssh_config()` argument 'port' is removed, with the tunnel port now inferred at the time of launch, and is no longer set by the configuration.
   + `local_url()` adds logical argument 'tcp' for easily constructing an automatic local TCP URL when setting `daemons()` for SSH tunnelling.
 * `daemons()` providing revised settings for a compute profile, now warns and has no effect rather than error (amending the change made in mirai 2.1.0).
