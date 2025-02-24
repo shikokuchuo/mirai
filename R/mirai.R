@@ -638,13 +638,7 @@ mk_mirai_error <- function(e, sc) {
     sprintf("Error: %s", .subset2(e, "message")) else
       sprintf("Error in %s: %s", call, .subset2(e, "message"))
   idx <- which(
-    as.logical(
-      lapply(
-        sc,
-        identical,
-        quote(eval(._mirai_.[[".expr"]], envir = ._mirai_., enclos = .GlobalEnv))
-      )
-    )
+    as.logical(lapply(sc, `==`, "eval(._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = .GlobalEnv)"))
   )
   sc <- sc[(length(sc) - 1L):(idx + 1L)]
   if (sc[[1L]][[1L]] == ".handleSimpleError")
