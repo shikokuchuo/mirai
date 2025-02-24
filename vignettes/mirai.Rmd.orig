@@ -677,25 +677,25 @@ If instead, mapping over the columns is desired, simply take the transpose of th
 mirai as a framework is designed to support completely transparent and inter-operable use within packages.
 A core design precept of not relying on global options or environment variables minimises the likelihood of conflict between use by different packages.
 
-There are hence few requirements of package authors.
+There are hence few requirements of package authors, but a few important points to note nevertheless:
 
-The following points may, however, be useful:
+1. `daemons()` settings should almost always be left to end-users.
+  Consider re-exporting `daemons()` in your package as a convenience.
+- Do not include a call to `daemons()` if you use `mirai_map()` or a function that wraps it such as `purrr::map(.paralellel = TRUE)`.
+  This is important to ensure that there is no unintentional recursive creation of daemons on the same machine.
+- Where a `daemons()` call may be appropriate is for async operation using only one dedicated daemon.
+  A representative examaple of this usage pattern is `logger::appender_async()`, where the logger package's 'namespace' concept maps directly to mirai's 'compute profile'.
 
-- `daemons()` settings should almost always be left to end-users, and it may be convenient to re-export `daemons()` in your package.
+2. The shape and contents of a `status()` call must not be relied upon, as this user interface is subject to change at any time.
+- There is a developer interface `nextget()`, for querying values such as 'urls' described in the function documentation.
+  Note: only the specifically-documented values are supported interfaces.
 
-- Calling functions in a mirai requires namespacing the call if from a package, or alternatively exporting the function, i.e.
-```r
- mirai(mypkg::my_func())
-```
-or
-```r
- mirai(my_func(), .args = list(myfunc = myfunc))
-```
+3. The functions `unresolved()`, `is_error_value()`, `is_mirai_error()`, and `is_mirai_interrupt()` should be used to test for the relevant state of a mirai or its value.
+- The characteristics of how they are currently implemented, e.g. as a logical NA for an 'unresolvedValue', should not be relied upon, as these are subject to change at any time.
 
-- The shape and contents of a `status()` call must not be relied upon, as this user interface is subject to change at any time. There is a developer interface `nextget()`, for querying values such as 'urls' described in the function documentation. Note: only the specifically-documented values are supported interfaces.
-
-- This is recommended practice in any case, but especially relevant for package developers: the functions `unresolved()`, `is_error_value()`, `is_mirai_error()`, and `is_mirai_interrupt()` should be used to test for the relevant state of a mirai or its value. The characteristics of how they are currently implemented, e.g. as a logical NA for an 'unresolvedValue', should not be relied upon, as these are subject to change.
-
-- Testing on CRAN should respect it's 2-core usage limit. This practically means limiting tests to using one daemon (with `dispatcher = FALSE`) to ensure that only one additional process is used. Always reset daemons when done and then allow at least a one-second sleep to ensure all background processes have properly exited. These limits apply only to tests on CRAN, and more complex tests may be run elsewhere.
+4. Testing on CRAN should respect it's 2-core usage limit.
+  These limits apply only to tests on CRAN, and more complex tests may be run elsewhere.
+- This practically means limiting tests to using one daemon (with `dispatcher = FALSE`) to ensure that only one additional process is used.
+- Always reset daemons when done and then allow at least a one-second sleep to ensure all background processes have properly exited.
 
 [&laquo; Back to ToC](#table-of-contents)
