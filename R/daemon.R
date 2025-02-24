@@ -208,9 +208,9 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
 
 # internals --------------------------------------------------------------------
 
-handle_mirai_error <- function(e) invokeRestart("mirai_error", e, sys.calls())
+handle_mirai_error <- function(cnd) invokeRestart("mirai_error", cnd, sys.calls())
 
-handle_mirai_interrupt <- function(e) invokeRestart("mirai_interrupt")
+handle_mirai_interrupt <- function(cnd) invokeRestart("mirai_interrupt")
 
 eval_mirai <- function(._mirai_.) {
   withRestarts(
