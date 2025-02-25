@@ -10,20 +10,20 @@ mirai_map(.x, .f, ..., .args = list(), .promise = NULL, .compute = "default")
 \item{.x}{a list or atomic vector. Also accepts a matrix or dataframe, in
 which case multiple map is performed over its rows.}
 
-\item{.f}{a function to be applied to each element of \code{.x}, or row of
-\code{.x} as the case may be.}
+\item{.f}{a function to be applied to each element of \code{.x}, or row of \code{.x} as
+the case may be.}
 
 \item{...}{(optional) named arguments (name = value pairs) specifying objects
 referenced, but not defined, in \code{.f}.}
 
-\item{.args}{(optional) further constant arguments to \code{.f}, provided as
-a list.}
+\item{.args}{(optional) further constant arguments to \code{.f}, provided as a
+list.}
 
 \item{.promise}{(optional) if supplied, registers a promise against each
-mirai. Either a function, supplied to the \sQuote{onFulfilled} argument of
+mirai. Either a function, supplied to the \code{onFulfilled} argument of
 \code{promises::then()} or a list of 2 functions, supplied respectively to
-\sQuote{onFulfilled} and \sQuote{onRejected} for \code{promises::then()}.
-Using this argument requires the \CRANpkg{promises} package.}
+\code{onFulfilled} and \code{onRejected} for \code{promises::then()}. Using this argument
+requires the \CRANpkg{promises} package.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
@@ -37,9 +37,9 @@ Asynchronous parallel map of a function over a list or vector using
 over the rows of a dataframe or matrix.
 }
 \details{
-Sends each application of function \code{.f} on an element of \code{.x}
-(or row of \code{.x}) for computation in a separate \code{\link{mirai}} call.
-If \code{.x} is named, names are preserved.
+Sends each application of function \code{.f} on an element of \code{.x} (or row of
+\code{.x}) for computation in a separate \code{\link[=mirai]{mirai()}} call. If \code{.x} is named, names
+are preserved.
 
 This simple and transparent behaviour is designed to make full use of
 \pkg{mirai} scheduling to minimise overall execution time.
@@ -80,15 +80,15 @@ progress indicator.
 
 
 If \code{.x} is a matrix or dataframe (or other object with \sQuote{dim}
-attributes), \emph{multiple} map is performed over its \strong{rows}.
-Character row names are preserved as names of the output.
+attributes), \emph{multiple} map is performed over its \strong{rows}. Character row
+names are preserved as names of the output.
 
-This allows map over 2 or more arguments, and \code{.f} should accept at
-least as many arguments as there are columns. If the dataframe has names, or
-the matrix column dimnames, named arguments are provided to \code{.f}.
+This allows map over 2 or more arguments, and \code{.f} should accept at least as
+many arguments as there are columns. If the dataframe has names, or the
+matrix column dimnames, named arguments are provided to \code{.f}.
 
-To map over \strong{columns} instead, first wrap a dataframe in
-\code{\link{as.list}}, or transpose a matrix using \code{\link{t}}.
+To map over \strong{columns} instead, first wrap a dataframe in \code{\link[=as.list]{as.list()}}, or
+transpose a matrix using \code{\link[=t]{t()}}.
 }
 
 \examples{

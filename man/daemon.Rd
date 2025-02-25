@@ -25,20 +25,20 @@ daemon(
 port to connect to, e.g. 'tcp://hostname:5555' or
 'tls+tcp://10.75.32.70:5555'.}
 
-\item{dispatcher}{[default FALSE] logical value, which should be set to TRUE
-if using dispatcher and FALSE otherwise.}
+\item{dispatcher}{[default FALSE] logical value, which should be set to
+TRUE if using dispatcher and FALSE otherwise.}
 
 \item{...}{reserved but not currently used.}
 
-\item{asyncdial}{[default FALSE] whether to perform dials asynchronously. The
-default FALSE will error if a connection is not immediately possible (for
-instance if \code{\link{daemons}} has yet to be called on the host, or the
+\item{asyncdial}{[default FALSE] whether to perform dials asynchronously.
+The default FALSE will error if a connection is not immediately possible
+(for instance if \code{\link[=daemons]{daemons()}} has yet to be called on the host, or the
 specified port is not open etc.). Specifying TRUE continues retrying
 (indefinitely) if not immediately successful, which is more resilient but
 can mask potential connection issues.}
 
-\item{autoexit}{[default TRUE] logical value, whether the daemon should exit
-automatically when its socket connection ends. If a signal from the
+\item{autoexit}{[default TRUE] logical value, whether the daemon should
+exit automatically when its socket connection ends. If a signal from the
 \pkg{tools} package, such as \code{tools::SIGINT}, or an equivalent integer
 value is supplied, this signal is additionally raised on exit (see
 'Persistence' section below).}
@@ -48,23 +48,22 @@ the global environment and restore attached packages and options to an
 initial state after each evaluation.}
 
 \item{output}{[default FALSE] logical value, to output generated stdout /
-stderr if TRUE, or else discard if FALSE. Specify as TRUE in the
-\sQuote{...} argument to \code{\link{daemons}} or
-\code{\link{launch_local}} to provide redirection of output to the host
-process (applicable only for local daemons).}
+stderr if TRUE, or else discard if FALSE. Specify as TRUE in the \code{...}
+argument to \code{\link[=daemons]{daemons()}} or \code{\link[=launch_local]{launch_local()}} to provide redirection of
+output to the host process (applicable only for local daemons).}
 
-\item{idletime}{[default Inf] integer milliseconds maximum time to wait for a
-task (idle time) before exiting.}
+\item{idletime}{[default Inf] integer milliseconds maximum time to wait for
+a task (idle time) before exiting.}
 
-\item{walltime}{[default Inf] integer milliseconds soft walltime (time limit)
-i.e. the minimum amount of real time elapsed before exiting.}
+\item{walltime}{[default Inf] integer milliseconds soft walltime (time
+limit) i.e. the minimum amount of real time elapsed before exiting.}
 
 \item{maxtasks}{[default Inf] integer maximum number of tasks to execute
 (task limit) before exiting.}
 
-\item{id}{[default NULL] (optional) integer daemon ID provided to dispatcher
-to track connection status. Causes \code{\link{status}} to report this ID
-under \code{$events} when the daemon connects and disconnects.}
+\item{id}{[default NULL] (optional) integer daemon ID provided to
+dispatcher to track connection status. Causes \code{\link[=status]{status()}} to report this ID
+under \verb{$events} when the daemon connects and disconnects.}
 
 \item{tls}{[default NULL] required for secure TLS connections over
 'tls+tcp://'. \strong{Either} the character path to a file containing X.509
@@ -79,27 +78,27 @@ and should not be independently supplied.}
 }
 \value{
 Invisibly, an integer exit code: 0L for normal termination, and a
-  positive value if a self-imposed limit was reached: 1L (idletime), 2L
-  (walltime), 3L (maxtasks).
+positive value if a self-imposed limit was reached: 1L (idletime), 2L
+(walltime), 3L (maxtasks).
 }
 \description{
-Starts up an execution daemon to receive \code{\link{mirai}} requests. Awaits
-data, evaluates an expression in an environment containing the supplied data,
+Starts up an execution daemon to receive \code{\link[=mirai]{mirai()}} requests. Awaits data,
+evaluates an expression in an environment containing the supplied data,
 and returns the value to the host caller. Daemon settings may be controlled
-by \code{\link{daemons}} and this function should not need to be invoked
-directly, unless deploying manually on remote resources.
+by \code{\link[=daemons]{daemons()}} and this function should not need to be invoked directly,
+unless deploying manually on remote resources.
 }
 \details{
 The network topology is such that daemons dial into the host or dispatcher,
-which listens at the \sQuote{url} address. In this way, network resources may
-be added or removed dynamically and the host or dispatcher automatically
+which listens at the \code{url} address. In this way, network resources may be
+added or removed dynamically and the host or dispatcher automatically
 distributes tasks to all available daemons.
 }
 \section{Persistence}{
 
 
-The \sQuote{autoexit} argument governs persistence settings for the daemon.
-The default TRUE ensures that it will exit cleanly once its socket connection
+The \code{autoexit} argument governs persistence settings for the daemon. The
+default TRUE ensures that it will exit cleanly once its socket connection
 has ended.
 
 Instead of TRUE, supplying a signal from the \pkg{tools} package, such as

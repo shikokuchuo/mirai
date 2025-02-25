@@ -26,7 +26,7 @@ Is the object a \sQuote{miraiError}. When execution in a \sQuote{mirai}
 process fails, the error message is returned as a character string of class
 \sQuote{miraiError} and \sQuote{errorValue}. The elements of the original
 condition are accessible via \code{$} on the error object. A stack trace is
-also available at \code{$stack.trace}.
+also available at \verb{$stack.trace}.
 
 Is the object a \sQuote{miraiInterrupt}. When an ongoing \sQuote{mirai} is
 sent a user interrupt, it will resolve to an empty character string classed

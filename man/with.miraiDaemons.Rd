@@ -7,14 +7,14 @@
 \method{with}{miraiDaemons}(data, expr, ...)
 }
 \arguments{
-\item{data}{a call to \code{\link{daemons}}.}
+\item{data}{a call to \code{\link[=daemons]{daemons()}}.}
 
 \item{expr}{an expression to evaluate.}
 
 \item{...}{not used.}
 }
 \value{
-The return value of \sQuote{expr}.
+The return value of \code{expr}.
 }
 \description{
 Evaluate an expression with daemons that last for the duration of the
@@ -23,8 +23,8 @@ their values collected) so that daemons are not reset before they have all
 completed.
 }
 \details{
-This function is an S3 method for the generic \code{with} for class
-'miraiDaemons'.
+This function is an S3 method for the generic \code{\link[=with]{with()}} for class
+\sQuote{miraiDaemons}.
 }
 \examples{
 if (interactive()) {

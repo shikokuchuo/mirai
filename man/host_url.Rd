@@ -10,13 +10,13 @@ host_url(tls = FALSE, port = 0)
 local_url(tcp = FALSE, port = 0)
 }
 \arguments{
-\item{tls}{[default FALSE] logical value whether to use TLS in which case the
-scheme used will be 'tls+tcp://'.}
+\item{tls}{[default FALSE] logical value whether to use TLS in which case
+the scheme used will be 'tls+tcp://'.}
 
-\item{port}{[default 0] numeric port to use. \sQuote{0} is a wildcard value
-that automatically assigns a free ephemeral port. For \code{host_url}, this
-port should be open to connections from the network addresses the daemons
-are connecting from. For \code{local_url}, is only taken into account if
+\item{port}{[default 0] numeric port to use. \code{0} is a wildcard value that
+automatically assigns a free ephemeral port. For \code{host_url}, this port
+should be open to connections from the network addresses the daemons are
+connecting from. For \code{local_url}, is only taken into account if
 \code{tcp = TRUE}.}
 
 \item{tcp}{[default FALSE] logical value whether to use a TCP connection.
@@ -27,23 +27,23 @@ A character string comprising a valid URL.
 }
 \description{
 \code{host_url} constructs a valid host URL (at which daemons may connect)
-based on the computer's hostname. This may be supplied directly to the
-\sQuote{url} argument of \code{\link{daemons}}.
+based on the computer's hostname. This may be supplied directly to the \code{url}
+argument of \code{\link[=daemons]{daemons()}}.
 
 \code{local_url} constructs a URL suitable for local daemons, or for use with
-SSH tunnelling. This may be supplied directly to the \sQuote{url} argument of
-\code{\link{daemons}}.
+SSH tunnelling. This may be supplied directly to the \code{url} argument of
+\code{\link[=daemons]{daemons()}}.
 }
 \details{
-\code{host_url} relies on using the host name of the computer rather than an
-IP address and typically works on local networks, although this is not always
+\code{host_url} relies on using the host name of the computer rather than an IP
+address and typically works on local networks, although this is not always
 guaranteed. If unsuccessful, substitute an IPv4 or IPv6 address in place of
 the hostname.
 
-\code{local_url} generates a random URL for the platform's default
-inter-process communications transport: abstract Unix domain sockets on
-Linux, Unix domain sockets on MacOS, Solaris and other POSIX platforms, and
-named pipes on Windows.
+\code{local_url} generates a random URL for the platform's default inter-process
+communications transport: abstract Unix domain sockets on Linux, Unix domain
+sockets on MacOS, Solaris and other POSIX platforms, and named pipes on
+Windows.
 }
 \examples{
 host_url()

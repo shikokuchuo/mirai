@@ -18,58 +18,57 @@
 
 #' Daemon Instance
 #'
-#' Starts up an execution daemon to receive \code{\link{mirai}} requests. Awaits
-#' data, evaluates an expression in an environment containing the supplied data,
+#' Starts up an execution daemon to receive [mirai()] requests. Awaits data,
+#' evaluates an expression in an environment containing the supplied data,
 #' and returns the value to the host caller. Daemon settings may be controlled
-#' by \code{\link{daemons}} and this function should not need to be invoked
-#' directly, unless deploying manually on remote resources.
+#' by [daemons()] and this function should not need to be invoked directly,
+#' unless deploying manually on remote resources.
 #'
 #' The network topology is such that daemons dial into the host or dispatcher,
-#' which listens at the \sQuote{url} address. In this way, network resources may
-#' be added or removed dynamically and the host or dispatcher automatically
+#' which listens at the `url` address. In this way, network resources may be
+#' added or removed dynamically and the host or dispatcher automatically
 #' distributes tasks to all available daemons.
 #'
 #' @param url the character host or dispatcher URL to dial into, including the
 #'   port to connect to, e.g. 'tcp://hostname:5555' or
 #'   'tls+tcp://10.75.32.70:5555'.
 #' @param ... reserved but not currently used.
-#' @param dispatcher [default FALSE] logical value, which should be set to TRUE
-#'   if using dispatcher and FALSE otherwise.
-#' @param asyncdial [default FALSE] whether to perform dials asynchronously. The
-#'   default FALSE will error if a connection is not immediately possible (for
-#'   instance if \code{\link{daemons}} has yet to be called on the host, or the
+#' @param dispatcher \[default FALSE\] logical value, which should be set to
+#'   TRUE if using dispatcher and FALSE otherwise.
+#' @param asyncdial \[default FALSE\] whether to perform dials asynchronously.
+#'   The default FALSE will error if a connection is not immediately possible
+#'   (for instance if [daemons()] has yet to be called on the host, or the
 #'   specified port is not open etc.). Specifying TRUE continues retrying
 #'   (indefinitely) if not immediately successful, which is more resilient but
 #'   can mask potential connection issues.
-#' @param autoexit [default TRUE] logical value, whether the daemon should exit
-#'   automatically when its socket connection ends. If a signal from the
-#'   \pkg{tools} package, such as \code{tools::SIGINT}, or an equivalent integer
+#' @param autoexit \[default TRUE\] logical value, whether the daemon should
+#'   exit automatically when its socket connection ends. If a signal from the
+#'   \pkg{tools} package, such as `tools::SIGINT`, or an equivalent integer
 #'   value is supplied, this signal is additionally raised on exit (see
 #'   'Persistence' section below).
-#' @param cleanup [default TRUE] logical value, whether to perform cleanup of
+#' @param cleanup \[default TRUE\] logical value, whether to perform cleanup of
 #'   the global environment and restore attached packages and options to an
 #'   initial state after each evaluation.
-#' @param output [default FALSE] logical value, to output generated stdout /
-#'   stderr if TRUE, or else discard if FALSE. Specify as TRUE in the
-#'   \sQuote{...} argument to \code{\link{daemons}} or
-#'   \code{\link{launch_local}} to provide redirection of output to the host
-#'   process (applicable only for local daemons).
-#' @param idletime [default Inf] integer milliseconds maximum time to wait for a
-#'   task (idle time) before exiting.
-#' @param walltime [default Inf] integer milliseconds soft walltime (time limit)
-#'   i.e. the minimum amount of real time elapsed before exiting.
-#' @param maxtasks [default Inf] integer maximum number of tasks to execute
+#' @param output \[default FALSE\] logical value, to output generated stdout /
+#'   stderr if TRUE, or else discard if FALSE. Specify as TRUE in the `...`
+#'   argument to [daemons()] or [launch_local()] to provide redirection of
+#'   output to the host process (applicable only for local daemons).
+#' @param idletime \[default Inf\] integer milliseconds maximum time to wait for
+#'   a task (idle time) before exiting.
+#' @param walltime \[default Inf\] integer milliseconds soft walltime (time
+#'   limit) i.e. the minimum amount of real time elapsed before exiting.
+#' @param maxtasks \[default Inf\] integer maximum number of tasks to execute
 #'   (task limit) before exiting.
-#' @param id [default NULL] (optional) integer daemon ID provided to dispatcher
-#'   to track connection status. Causes \code{\link{status}} to report this ID
-#'   under \code{$events} when the daemon connects and disconnects.
-#' @param tls [default NULL] required for secure TLS connections over
-#'   'tls+tcp://'. \strong{Either} the character path to a file containing X.509
+#' @param id \[default NULL\] (optional) integer daemon ID provided to
+#'   dispatcher to track connection status. Causes [status()] to report this ID
+#'   under `$events` when the daemon connects and disconnects.
+#' @param tls \[default NULL\] required for secure TLS connections over
+#'   'tls+tcp://'. **Either** the character path to a file containing X.509
 #'   certificate(s) in PEM format, comprising the certificate authority
 #'   certificate chain starting with the TLS certificate and ending with the CA
-#'   certificate, \strong{or} a length 2 character vector comprising [i] the
-#'   certificate authority certificate chain and [ii] the empty string \code{''}.
-#' @param rs [default NULL] the initial value of .Random.seed. This is set
+#'   certificate, **or** a length 2 character vector comprising \[i\] the
+#'   certificate authority certificate chain and \[ii\] the empty string `''`.
+#' @param rs \[default NULL\] the initial value of .Random.seed. This is set
 #'   automatically using L'Ecuyer-CMRG RNG streams generated by the host process
 #'   and should not be independently supplied.
 #'
@@ -79,12 +78,12 @@
 #'
 #' @section Persistence:
 #'
-#' The \sQuote{autoexit} argument governs persistence settings for the daemon.
-#' The default TRUE ensures that it will exit cleanly once its socket connection
+#' The `autoexit` argument governs persistence settings for the daemon. The
+#' default TRUE ensures that it will exit cleanly once its socket connection
 #' has ended.
 #'
 #' Instead of TRUE, supplying a signal from the \pkg{tools} package, such as
-#' \code{tools::SIGINT}, or an equivalent integer value, sets this signal to be
+#' `tools::SIGINT`, or an equivalent integer value, sets this signal to be
 #' raised when the socket connection ends. For instance, supplying SIGINT allows
 #' a potentially more immediate exit by interrupting any ongoing evaluation
 #' rather than letting it complete.
@@ -92,7 +91,7 @@
 #' Setting to FALSE allows the daemon to persist indefinitely even when there is
 #' no longer a socket connection. This allows a host session to end and a new
 #' session to connect at the URL where the daemon is dialled in. Daemons must be
-#' terminated with \code{daemons(NULL)} in this case, which sends explicit exit
+#' terminated with `daemons(NULL)` in this case, which sends explicit exit
 #' signals to all connected daemons.
 #'
 #' @export
@@ -186,7 +185,7 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
 #' dot Daemon
 #'
 #' Ephemeral executor for the remote process. User code must not call this.
-#' Consider \code{daemon(maxtasks = 1L)} instead.
+#' Consider `daemon(maxtasks = 1L)` instead.
 #'
 #' @inheritParams daemon
 #'

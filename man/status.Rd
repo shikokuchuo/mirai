@@ -8,22 +8,22 @@ status(.compute = "default")
 }
 \arguments{
 \item{.compute}{[default 'default'] character compute profile (each compute
-  profile has its own set of daemons for connecting to different resources).
+profile has its own set of daemons for connecting to different resources).
 
-  \strong{or} a \sQuote{miraiCluster} to obtain its status.}
+\strong{or} a \sQuote{miraiCluster} to obtain its status.}
 }
 \value{
 A named list comprising:
-  \itemize{
-    \item \strong{connections} - integer number of active daemon connections.
-    \item \strong{daemons} - character URL at which host / dispatcher is
-    listening, or else \code{0L} if daemons have not yet been set.
-    \item \strong{mirai} (present only if using dispatcher) - a named integer
-    vector comprising: \strong{awaiting} - number of tasks queued for
-    execution at dispatcher, \strong{executing} - number of tasks sent to a
-    daemon for execution, and \strong{completed} - number of tasks for which
-    the result has been received (either completed or cancelled).
-  }
+\itemize{
+\item \strong{connections} - integer number of active daemon connections.
+\item \strong{daemons} - character URL at which host / dispatcher is
+listening, or else \code{0L} if daemons have not yet been set.
+\item \strong{mirai} (present only if using dispatcher) - a named integer
+vector comprising: \strong{awaiting} - number of tasks queued for execution at
+dispatcher, \strong{executing} - number of tasks sent to a daemon for
+execution, and \strong{completed} - number of tasks for which the result has
+been received (either completed or cancelled).
+}
 }
 \description{
 Retrieve status information for the specified compute profile, comprising
@@ -32,10 +32,10 @@ current connections and daemons status.
 \section{Events}{
 
 
-  If dispatcher is used combined with daemon IDs, an additional element
-  \strong{events} will report the positive integer ID when the daemon
-  connects and the negative value when it disconnects. Only the events since
-  the previous status query are returned.
+If dispatcher is used combined with daemon IDs, an additional element
+\strong{events} will report the positive integer ID when the daemon connects and
+the negative value when it disconnects. Only the events since the previous
+status query are returned.
 }
 
 \examples{

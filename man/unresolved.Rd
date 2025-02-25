@@ -8,16 +8,16 @@ unresolved(x)
 }
 \arguments{
 \item{x}{a \sQuote{mirai} object or list of \sQuote{mirai} objects, or a
-\sQuote{mirai} value stored at \code{$data}.}
+\sQuote{mirai} value stored at \verb{$data}.}
 }
 \value{
 Logical TRUE if \sQuote{aio} is an unresolved \sQuote{mirai} or
-  \sQuote{mirai} value or the list contains at least one unresolved
-  \sQuote{mirai}, or FALSE otherwise.
+\sQuote{mirai} value or the list contains at least one unresolved
+\sQuote{mirai}, or FALSE otherwise.
 }
 \description{
 Query whether a \sQuote{mirai}, \sQuote{mirai} value or list of
-\sQuote{mirai} remains unresolved. Unlike \code{\link{call_mirai}}, this
+\sQuote{mirai} remains unresolved. Unlike \code{\link[=call_mirai]{call_mirai()}}, this
 function does not wait for completion.
 }
 \details{
