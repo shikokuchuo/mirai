@@ -16,6 +16,8 @@
 * `call_mirai()` is now user-interruptible, consistent with all other functions in the package.
   + `call_mirai_()` is hence redundant and now deprecated.
 * `mirai()` arguments `...` and `.args` now accept environments containing variables beginning with a dot `.` (#207).
+* 'miraiError' stack traces no longer sometimes contain an additional (internal) call (#216).
+* 'miraiError' condition `$call` objects are now stripped of 'srcref' attributes (thanks @lionel-, #218).
 
 # mirai 2.1.0
 
@@ -71,7 +73,7 @@
 
 * `status()` using the new dispatcher is updated to provide more concise and insightful information.
 * `everywhere()` updates:
-  + Enhanced to return a list of mirai, which may be waited for and inspected (thanks @dgkf  #164).
+  + Enhanced to return a list of mirai, which may be waited for and inspected (thanks @dgkf, #164).
   + Drops argument '.serial' as serialization configurations are now registered via an argument at `daemons()`.
 * `daemon()` updates:
   + Gains the new argument 'dispatcher', which should be set to `TRUE` when connecting to dispatcher and `FALSE` when connecting directly to host.

@@ -633,6 +633,7 @@ deparse_safe <- function(x) if (length(x))
 mk_interrupt_error <- function() .miraiInterrupt
 
 mk_mirai_error <- function(cnd, sc) {
+  cnd[["call"]] <- `attributes<-`(.subset2(cnd, "call"), NULL)
   call <- deparse_safe(.subset2(cnd, "call"))
   msg <- if (is.null(call) || call == "eval(._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = .GlobalEnv)")
     sprintf("Error: %s", .subset2(cnd, "message")) else
