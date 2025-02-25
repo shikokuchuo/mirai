@@ -76,6 +76,8 @@
 </ul></li>
 <li>
 <code><a href="../reference/mirai.html">mirai()</a></code> arguments <code>...</code> and <code>.args</code> now accept environments containing variables beginning with a dot <code>.</code> (<a href="https://github.com/shikokuchuo/mirai/issues/207" class="external-link">#207</a>).</li>
+<li>‘miraiError’ stack traces no longer sometimes contain an additional (internal) call (<a href="https://github.com/shikokuchuo/mirai/issues/216" class="external-link">#216</a>).</li>
+<li>‘miraiError’ condition <code>$call</code> objects are now stripped of ‘srcref’ attributes (thanks <a href="https://github.com/lionel-" class="external-link">@lionel-</a>, <a href="https://github.com/shikokuchuo/mirai/issues/218" class="external-link">#218</a>).</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -155,7 +157,7 @@
 <code><a href="../reference/status.html">status()</a></code> using the new dispatcher is updated to provide more concise and insightful information.</li>
 <li>
 <code><a href="../reference/everywhere.html">everywhere()</a></code> updates:
-<ul><li>Enhanced to return a list of mirai, which may be waited for and inspected (thanks <a href="https://github.com/dgkf" class="external-link">@dgkf</a> <a href="https://github.com/shikokuchuo/mirai/issues/164" class="external-link">#164</a>).</li>
+<ul><li>Enhanced to return a list of mirai, which may be waited for and inspected (thanks <a href="https://github.com/dgkf" class="external-link">@dgkf</a>, <a href="https://github.com/shikokuchuo/mirai/issues/164" class="external-link">#164</a>).</li>
 <li>Drops argument ‘.serial’ as serialization configurations are now registered via an argument at <code><a href="../reference/daemons.html">daemons()</a></code>.</li>
 </ul></li>
 <li>
