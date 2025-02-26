@@ -22,7 +22,7 @@ list.}
 \item{.promise}{(optional) if supplied, registers a promise against each
 mirai. Either a function, supplied to the \code{onFulfilled} argument of
 \code{promises::then()} or a list of 2 functions, supplied respectively to
-\code{onFulfilled} and \code{onRejected} for \code{promises::then()}. Using this argument
+\code{onFulfilled} and \code{onRejected} of \code{promises::then()}. Using this argument
 requires the \CRANpkg{promises} package.}
 
 \item{.compute}{[default 'default'] character value for the compute profile

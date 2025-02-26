@@ -67,19 +67,18 @@ functions. Functions from a package should use namespaced calls such as
 \code{mirai::mirai()}, or else the package should be loaded beforehand as
 part of \sQuote{.expr}.
 
-For evaluation to occur \emph{as if} in your global environment, supply
-objects to \sQuote{...} rather than \sQuote{.args}, e.g. for free variables
-or helper functions defined in function bodies, as scoping rules may
-otherwise prevent them from being found.
+For evaluation to occur \emph{as if} in your global environment, supply objects to
+\code{...} rather than \code{.args}, e.g. for free variables or helper functions
+defined in function bodies, as scoping rules may otherwise prevent them from
+being found.
 }
 
 \section{Timeouts}{
 
 
-Specifying the \sQuote{.timeout} argument ensures that the mirai always
-resolves. However, the task may not have completed and still be ongoing in
-the daemon process. Use \code{\link[=stop_mirai]{stop_mirai()}} instead to explicitly stop
-and interrupt a task.
+Specifying the \code{.timeout} argument ensures that the mirai always resolves.
+However, the task may not have completed and still be ongoing in the daemon
+process. Use \code{\link[=stop_mirai]{stop_mirai()}} instead to explicitly stop and interrupt a task.
 }
 
 \section{Errors}{
@@ -87,10 +86,9 @@ and interrupt a task.
 
 If an error occurs in evaluation, the error message is returned as a
 character string of class \sQuote{miraiError} and \sQuote{errorValue}.
-\code{\link[=is_mirai_error]{is_mirai_error()}} may be used to test for this. The elements of
-the original condition are accessible via \code{$} on the error object. A
-stack trace comprising a list of calls is also available at
-\verb{$stack.trace}.
+\code{\link[=is_mirai_error]{is_mirai_error()}} may be used to test for this. The elements of the original
+condition are accessible via \code{$} on the error object. A stack trace
+comprising a list of calls is also available at \verb{$stack.trace}.
 
 If a daemon crashes or terminates unexpectedly during evaluation, an
 \sQuote{errorValue} 19 (Connection reset) is returned.

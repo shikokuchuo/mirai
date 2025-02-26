@@ -70,26 +70,24 @@
 #' `mirai::mirai()`, or else the package should be loaded beforehand as
 #' part of \sQuote{.expr}.
 #'
-#' For evaluation to occur *as if* in your global environment, supply
-#' objects to \sQuote{...} rather than \sQuote{.args}, e.g. for free variables
-#' or helper functions defined in function bodies, as scoping rules may
-#' otherwise prevent them from being found.
+#' For evaluation to occur *as if* in your global environment, supply objects to
+#' `...` rather than `.args`, e.g. for free variables or helper functions
+#' defined in function bodies, as scoping rules may otherwise prevent them from
+#' being found.
 #'
 #' @section Timeouts:
 #'
-#' Specifying the \sQuote{.timeout} argument ensures that the mirai always
-#' resolves. However, the task may not have completed and still be ongoing in
-#' the daemon process. Use [stop_mirai()] instead to explicitly stop
-#' and interrupt a task.
+#' Specifying the `.timeout` argument ensures that the mirai always resolves.
+#' However, the task may not have completed and still be ongoing in the daemon
+#' process. Use [stop_mirai()] instead to explicitly stop and interrupt a task.
 #'
 #' @section Errors:
 #'
 #' If an error occurs in evaluation, the error message is returned as a
 #' character string of class \sQuote{miraiError} and \sQuote{errorValue}.
-#' [is_mirai_error()] may be used to test for this. The elements of
-#' the original condition are accessible via `$` on the error object. A
-#' stack trace comprising a list of calls is also available at
-#' `$stack.trace`.
+#' [is_mirai_error()] may be used to test for this. The elements of the original
+#' condition are accessible via `$` on the error object. A stack trace
+#' comprising a list of calls is also available at `$stack.trace`.
 #'
 #' If a daemon crashes or terminates unexpectedly during evaluation, an
 #' \sQuote{errorValue} 19 (Connection reset) is returned.

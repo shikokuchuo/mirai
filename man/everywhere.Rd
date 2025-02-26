@@ -57,10 +57,10 @@ functions. Functions from a package should use namespaced calls such as
 \code{mirai::mirai()}, or else the package should be loaded beforehand as
 part of \sQuote{.expr}.
 
-For evaluation to occur \emph{as if} in your global environment, supply
-objects to \sQuote{...} rather than \sQuote{.args}, e.g. for free variables
-or helper functions defined in function bodies, as scoping rules may
-otherwise prevent them from being found.
+For evaluation to occur \emph{as if} in your global environment, supply objects to
+\code{...} rather than \code{.args}, e.g. for free variables or helper functions
+defined in function bodies, as scoping rules may otherwise prevent them from
+being found.
 }
 
 \examples{

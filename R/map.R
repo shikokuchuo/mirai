@@ -47,7 +47,7 @@
 #' @param .promise (optional) if supplied, registers a promise against each
 #'   mirai. Either a function, supplied to the `onFulfilled` argument of
 #'   `promises::then()` or a list of 2 functions, supplied respectively to
-#'   `onFulfilled` and `onRejected` for `promises::then()`. Using this argument
+#'   `onFulfilled` and `onRejected` of `promises::then()`. Using this argument
 #'   requires the \CRANpkg{promises} package.
 #' @inheritParams mirai
 #'

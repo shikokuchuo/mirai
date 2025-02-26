@@ -45,10 +45,9 @@ flow statements such as \code{while} or \code{if}.
 
 If an error occurs in evaluation, the error message is returned as a
 character string of class \sQuote{miraiError} and \sQuote{errorValue}.
-\code{\link[=is_mirai_error]{is_mirai_error()}} may be used to test for this. The elements of
-the original condition are accessible via \code{$} on the error object. A
-stack trace comprising a list of calls is also available at
-\verb{$stack.trace}.
+\code{\link[=is_mirai_error]{is_mirai_error()}} may be used to test for this. The elements of the original
+condition are accessible via \code{$} on the error object. A stack trace
+comprising a list of calls is also available at \verb{$stack.trace}.
 
 If a daemon crashes or terminates unexpectedly during evaluation, an
 \sQuote{errorValue} 19 (Connection reset) is returned.
