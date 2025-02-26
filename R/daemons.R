@@ -133,18 +133,17 @@
 #' construct a valid host URL based on the computer's hostname.
 #'
 #' IPv6 addresses are also supported and must be enclosed in square brackets
-#' `[ ]` to avoid confusion with the final colon separating the port. For
+#' \sQuote{\[ \]} to avoid confusion with the final colon separating the port. For
 #' example, port 5555 on the IPv6 loopback address ::1 would be specified as
-#' \sQuote{tcp://[::1]:5555}.
+#' \sQuote{tcp://\[::1\]:5555}.
 #'
 #' Specifying the wildcard value zero for the port number e.g.
-#' \sQuote{tcp://[::1]:0} will automatically assign a free ephemeral port. Use
+#' \sQuote{tcp://\[::1\]:0} will automatically assign a free ephemeral port. Use
 #' [status()] to inspect the actual assigned port at any time.
 #'
-#' Specify \sQuote{remote} with a call to [remote_config()] or [ssh_config()] to
-#' launch daemons on remote machines. Otherwise, [launch_remote()] may be used
-#' to generate the shell commands to deploy daemons manually on remote
-#' resources.
+#' Specify `remote` with a call to [remote_config()] or [ssh_config()] to launch
+#' daemons on remote machines. Otherwise, [launch_remote()] may be used to
+#' generate the shell commands to deploy daemons manually on remote resources.
 #'
 #' @section Compute Profiles:
 #'
