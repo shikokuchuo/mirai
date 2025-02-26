@@ -38,8 +38,8 @@
 #'
 #' Requires the \CRANpkg{promises} package.
 #'
-#' Allows a \sQuote{mirai} to be used with the promise pipe `\%...>\%`,
-#' which schedules a function to run upon resolution of the \sQuote{mirai}.
+#' Allows a \sQuote{mirai} to be used with the promise pipe `%...>%`, which
+#' schedules a function to run upon resolution of the \sQuote{mirai}.
 #'
 #' @param x an object of class \sQuote{mirai}.
 #'

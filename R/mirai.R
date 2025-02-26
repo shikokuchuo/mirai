@@ -195,7 +195,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' specified compute profile - this must be set prior to calling this function.
 #' Designed for performing setup operations across daemons by loading packages
 #' or exporting common data. Resultant changes to the global environment, loaded
-#' packages and options are persisted regardless of a daemon's \sQuote{cleanup}
+#' packages and options are persisted regardless of a daemon's `cleanup`
 #' setting.
 #'
 #' This function should be called when no other mirai operations are in
@@ -270,7 +270,7 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 
 #' mirai (Call Value)
 #'
-#' Waits for the \sQuote{mirai} to resolve if still in progress, storing the
+#' Waits for the \sQuote{mirai} to resolve if still in progress, stores the
 #' value at `$data`, and returns the \sQuote{mirai} object.
 #'
 #' Accepts a list of \sQuote{mirai} objects, such as that returned by
@@ -347,14 +347,12 @@ call_mirai_ <- call_mirai
 #' This function will wait for the asynchronous operation(s) to complete if
 #' still in progress, blocking but interruptible.
 #'
-#' `x[]` may also be used to wait for and return the value of a mirai
-#' `x`, and is equivalent to `collect_mirai(x)`.
+#' `x[]` is an equivalent way to wait for and return the value of a mirai `x`.
 #'
 #' @inheritParams call_mirai
 #' @param options (if \sQuote{x} is a list of mirai) a character vector
-#'   comprising any combination of collection options for
-#'   [mirai_map()], such as `".flat"` or
-#'   `c(".progress", ".stop")`.
+#'   comprising any combination of collection options for [mirai_map()], such as
+#'   `".flat"` or `c(".progress", ".stop")`.
 #'
 #' @return An object (the return value of the \sQuote{mirai}), or a list of such
 #'   objects (the same length as \sQuote{x}, preserving names).
@@ -413,10 +411,9 @@ collect_mirai <- function(x, options = NULL) {
 #'
 #' @inheritParams call_mirai
 #'
-#' @return Logical `TRUE` if the cancellation request was successful (was
-#'   awaiting execution or in execution), or else `FALSE` (if already
-#'   completed or previously cancelled). Will always return `FALSE` if not
-#'   using dispatcher.
+#' @return Logical TRUE if the cancellation request was successful (was awaiting
+#'   execution or in execution), or else FALSE (if already completed or
+#'   previously cancelled). Will always return FALSE if not using dispatcher.
 #'
 #'   Or a vector of logical values if supplying a list of \sQuote{mirai}, such
 #'   as those returned by [mirai_map()].

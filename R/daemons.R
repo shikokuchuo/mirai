@@ -30,7 +30,7 @@
 #'   \item All connected daemons and/or dispatchers exit automatically.
 #'   \item \pkg{mirai} reverts to the default behaviour of creating a new
 #'   background process for each request.
-#'   \item Any unresolved \sQuote{mirai} will return an `errorValue` 19
+#'   \item Any unresolved \sQuote{mirai} will return an \sQuote{errorValue} 19
 #'   (Connection reset) after a reset.
 #'   \item Daemons must be reset before calling `daemons()` with revised
 #'   settings for a compute profile. Daemons may be added at any time by using
@@ -72,10 +72,10 @@
 #' @param seed \[default NULL\] (optional) supply a random seed (single value,
 #'   interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
 #'   RNG streams sent to each daemon. Note that reproducible results can be
-#'   expected only for `dispatcher = 'none'`, as the unpredictable timing of
-#'   task completions would otherwise influence the tasks sent to each daemon.
-#'   Even for `dispatcher = 'none'`, reproducibility is not guaranteed if the
-#'   order in which tasks are sent is not deterministic.
+#'   expected only for `dispatcher = FALSE`, as the unpredictable timing of task
+#'   completions would otherwise influence the tasks sent to each daemon. Even
+#'   for `dispatcher = FALSE`, reproducibility is not guaranteed if the order in
+#'   which tasks are sent is not deterministic.
 #' @param serial \[default NULL\] (optional, requires dispatcher) a
 #'   configuration created by [serial_config()] to register serialization and
 #'   unserialization functions for normally non-exportable reference objects,
@@ -119,23 +119,22 @@
 #' @section Distributed Computing:
 #'
 #' Specifying `url` as a character string allows tasks to be distributed across
-#' the network. \sQuote{n} is not required in this case, and disregarded if
-#' supplied.
+#' the network. `n` is not required in this case, and disregarded if supplied.
 #'
 #' Supply a URL with a \sQuote{tcp://} scheme, such as
 #' \sQuote{tcp://10.75.32.70:5555}. The host / dispatcher listens at this
 #' address, utilising a single port. Individual daemons (started with
-#' [daemon()]) may then dial in to this URL. Host / dispatcher
-#' automatically adjusts to the number of daemons actually connected, allowing
-#' dynamic upscaling or downscaling as required.
+#' [daemon()]) may then dial in to this URL. Host / dispatcher automatically
+#' adjusts to the number of daemons actually connected, allowing dynamic
+#' upscaling or downscaling as required.
 #'
 #' Switching the URL scheme to \sQuote{tls+tcp://} automatically upgrades the
-#' connection to use TLS. The auxiliary function [host_url()] may be
-#' used to construct a valid host URL based on the computer's hostname.
+#' connection to use TLS. The auxiliary function [host_url()] may be used to
+#' construct a valid host URL based on the computer's hostname.
 #'
-#' IPv6 addresses are also supported and must be enclosed in square brackets [ ]
-#' to avoid confusion with the final colon separating the port. For example,
-#' port 5555 on the IPv6 loopback address ::1 would be specified as
+#' IPv6 addresses are also supported and must be enclosed in square brackets
+#' `[ ]` to avoid confusion with the final colon separating the port. For
+#' example, port 5555 on the IPv6 loopback address ::1 would be specified as
 #' \sQuote{tcp://[::1]:5555}.
 #'
 #' Specifying the wildcard value zero for the port number e.g.

@@ -10,9 +10,8 @@ collect_mirai(x, options = NULL)
 \item{x}{a \sQuote{mirai} object, or list of \sQuote{mirai} objects.}
 
 \item{options}{(if \sQuote{x} is a list of mirai) a character vector
-comprising any combination of collection options for
-\code{\link[=mirai_map]{mirai_map()}}, such as \code{".flat"} or
-\code{c(".progress", ".stop")}.}
+comprising any combination of collection options for \code{\link[=mirai_map]{mirai_map()}}, such as
+\code{".flat"} or \code{c(".progress", ".stop")}.}
 }
 \value{
 An object (the return value of the \sQuote{mirai}), or a list of such
@@ -27,8 +26,7 @@ value directly. It is a more efficient version of and equivalent to
 This function will wait for the asynchronous operation(s) to complete if
 still in progress, blocking but interruptible.
 
-\code{x[]} may also be used to wait for and return the value of a mirai
-\code{x}, and is equivalent to \code{collect_mirai(x)}.
+\code{x[]} is an equivalent way to wait for and return the value of a mirai \code{x}.
 }
 \section{Alternatively}{
 

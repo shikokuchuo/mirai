@@ -33,7 +33,7 @@ Evaluate an expression \sQuote{everywhere} on all connected daemons for the
 specified compute profile - this must be set prior to calling this function.
 Designed for performing setup operations across daemons by loading packages
 or exporting common data. Resultant changes to the global environment, loaded
-packages and options are persisted regardless of a daemon's \sQuote{cleanup}
+packages and options are persisted regardless of a daemon's \code{cleanup}
 setting.
 }
 \details{

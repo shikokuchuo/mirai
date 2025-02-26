@@ -17,7 +17,7 @@ The passed object (invisibly). For a \sQuote{mirai}, the retrieved
 value is stored at \verb{$data}.
 }
 \description{
-Waits for the \sQuote{mirai} to resolve if still in progress, storing the
+Waits for the \sQuote{mirai} to resolve if still in progress, stores the
 value at \verb{$data}, and returns the \sQuote{mirai} object.
 }
 \details{
