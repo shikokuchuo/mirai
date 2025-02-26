@@ -71,12 +71,11 @@ immediately to an ‘errorValue’ 20 (Operation canceled).</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Logical <code>TRUE</code> if the cancellation request was successful (was
-  awaiting execution or in execution), or else <code>FALSE</code> (if already
-  completed or previously cancelled). Will always return <code>FALSE</code> if not
-  using dispatcher.</p>
+    <p>Logical TRUE if the cancellation request was successful (was awaiting
+execution or in execution), or else FALSE (if already completed or
+previously cancelled). Will always return FALSE if not using dispatcher.</p>
 <p>Or a vector of logical values if supplying a list of ‘mirai’, such
-  as those returned by <code><a href="mirai_map.html">mirai_map</a></code>.</p>
+as those returned by <code><a href="mirai_map.html">mirai_map()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

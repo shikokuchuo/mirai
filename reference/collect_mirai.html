@@ -74,22 +74,20 @@ value directly. It is a more efficient version of and equivalent to
 
 <dt id="arg-options">options<a class="anchor" aria-label="anchor" href="#arg-options"></a></dt>
 <dd><p>(if ‘x’ is a list of mirai) a character vector
-comprising any combination of collection options for
-<code><a href="mirai_map.html">mirai_map</a></code>, such as <code>".flat"</code> or
-<code>c(".progress", ".stop")</code>.</p></dd>
+comprising any combination of collection options for <code><a href="mirai_map.html">mirai_map()</a></code>, such as
+<code>".flat"</code> or <code>c(".progress", ".stop")</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An object (the return value of the ‘mirai’), or a list of such
-  objects (the same length as ‘x’, preserving names).</p>
+objects (the same length as ‘x’, preserving names).</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function will wait for the asynchronous operation(s) to complete if
 still in progress, blocking but interruptible.</p>
-<p><code>x[]</code> may also be used to wait for and return the value of a mirai
-<code>x</code>, and is equivalent to <code>collect_mirai(x)</code>.</p>
+<p><code>x[]</code> is an equivalent way to wait for and return the value of a mirai <code>x</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="alternatively">Alternatively<a class="anchor" aria-label="anchor" href="#alternatively"></a></h2>
@@ -99,7 +97,7 @@ still in progress, blocking but interruptible.</p>
 <p>The value of a ‘mirai’ may be accessed at any time at <code>$data</code>,
 and if yet to resolve, an ‘unresolved’ logical NA will be returned
 instead.</p>
-<p>Using <code><a href="unresolved.html">unresolved</a></code> on a ‘mirai’ returns TRUE only if it
+<p>Using <code><a href="unresolved.html">unresolved()</a></code> on a ‘mirai’ returns TRUE only if it
 has yet to resolve and FALSE otherwise. This is suitable for use in control
 flow statements such as <code>while</code> or <code>if</code>.</p>
     </div>
@@ -110,13 +108,12 @@ flow statements such as <code>while</code> or <code>if</code>.</p>
 
 <p>If an error occurs in evaluation, the error message is returned as a
 character string of class ‘miraiError’ and ‘errorValue’.
-<code><a href="is_mirai_error.html">is_mirai_error</a></code> may be used to test for this. The elements of
-the original condition are accessible via <code>$</code> on the error object. A
-stack trace comprising a list of calls is also available at
-<code>$stack.trace</code>.</p>
+<code><a href="is_mirai_error.html">is_mirai_error()</a></code> may be used to test for this. The elements of the original
+condition are accessible via <code>$</code> on the error object. A stack trace
+comprising a list of calls is also available at <code>$stack.trace</code>.</p>
 <p>If a daemon crashes or terminates unexpectedly during evaluation, an
 ‘errorValue’ 19 (Connection reset) is returned.</p>
-<p><code><a href="is_mirai_error.html">is_error_value</a></code> tests for all error conditions including
+<p><code><a href="is_mirai_error.html">is_error_value()</a></code> tests for all error conditions including
 ‘mirai’ errors, interrupts, and timeouts.</p>
     </div>
 

@@ -67,7 +67,7 @@ current connections and daemons status.</p>
 
 <dl><dt id="arg--compute">.compute<a class="anchor" aria-label="anchor" href="#arg--compute"></a></dt>
 <dd><p>[default 'default'] character compute profile (each compute
-  profile has its own set of daemons for connecting to different resources).</p>
+profile has its own set of daemons for connecting to different resources).</p>
 <p><strong>or</strong> a ‘miraiCluster’ to obtain its status.</p></dd>
 
 </dl></div>
@@ -75,12 +75,12 @@ current connections and daemons status.</p>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list comprising:</p><ul><li><p><strong>connections</strong> - integer number of active daemon connections.</p></li>
 <li><p><strong>daemons</strong> - character URL at which host / dispatcher is
-    listening, or else <code>0L</code> if daemons have not yet been set.</p></li>
+listening, or else <code>0L</code> if daemons have not yet been set.</p></li>
 <li><p><strong>mirai</strong> (present only if using dispatcher) - a named integer
-    vector comprising: <strong>awaiting</strong> - number of tasks queued for
-    execution at dispatcher, <strong>executing</strong> - number of tasks sent to a
-    daemon for execution, and <strong>completed</strong> - number of tasks for which
-    the result has been received (either completed or cancelled).</p></li>
+vector comprising: <strong>awaiting</strong> - number of tasks queued for execution at
+dispatcher, <strong>executing</strong> - number of tasks sent to a daemon for
+execution, and <strong>completed</strong> - number of tasks for which the result has
+been received (either completed or cancelled).</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="events">Events<a class="anchor" aria-label="anchor" href="#events"></a></h2>
@@ -88,9 +88,9 @@ current connections and daemons status.</p>
 
 
 <p>If dispatcher is used combined with daemon IDs, an additional element
-  <strong>events</strong> will report the positive integer ID when the daemon
-  connects and the negative value when it disconnects. Only the events since
-  the previous status query are returned.</p>
+<strong>events</strong> will report the positive integer ID when the daemon connects and
+the negative value when it disconnects. Only the events since the previous
+status query are returned.</p>
     </div>
 
     <div class="section level2">

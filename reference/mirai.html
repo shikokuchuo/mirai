@@ -73,23 +73,22 @@ complete.</p>
 
 <dl><dt id="arg--expr">.expr<a class="anchor" aria-label="anchor" href="#arg--expr"></a></dt>
 <dd><p>an expression to evaluate asynchronously (of arbitrary length,
-wrapped in { } where necessary), <strong>or else</strong> a pre-constructed
-language object.</p></dd>
+wrapped in { } where necessary), <strong>or else</strong> a pre-constructed language
+object.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>(optional) <strong>either</strong> named arguments (name = value pairs)
-specifying objects referenced, but not defined, in ‘.expr’,
-<strong>or</strong> an environment containing such objects. See ‘evaluation’
-section below.</p></dd>
+specifying objects referenced, but not defined, in <code>.expr</code>, <strong>or</strong> an
+environment containing such objects. See ‘evaluation’ section below.</p></dd>
 
 
 <dt id="arg--args">.args<a class="anchor" aria-label="anchor" href="#arg--args"></a></dt>
 <dd><p>(optional) <strong>either</strong> a named list specifying objects
-referenced, but not defined, in ‘.expr’, <strong>or</strong> an environment
-containing such objects. These objects will remain local to the evaluation
-environment as opposed to those supplied in ‘...’ above - see
-‘evaluation’ section below.</p></dd>
+referenced, but not defined, in <code>.expr</code>, <strong>or</strong> an environment containing
+such objects. These objects will remain local to the evaluation environment
+as opposed to those supplied in <code>...</code> above - see ‘evaluation’
+section below.</p></dd>
 
 
 <dt id="arg--timeout">.timeout<a class="anchor" aria-label="anchor" href="#arg--timeout"></a></dt>
@@ -112,44 +111,41 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
     <p>This function will return a ‘mirai’ object immediately.</p>
 <p>The value of a mirai may be accessed at any time at <code>$data</code>, and if yet
 to resolve, an ‘unresolved’ logical NA will be returned instead.</p>
-<p><code><a href="unresolved.html">unresolved</a></code> may be used on a mirai, returning TRUE if a
-‘mirai’ has yet to resolve and FALSE otherwise. This is suitable for
-use in control flow statements such as <code>while</code> or <code>if</code>.</p>
-<p>Alternatively, to call (and wait for) the result, use
-<code><a href="call_mirai.html">call_mirai</a></code> on the returned ‘mirai’. This will block
-until the result is returned.</p>
-<p>Specify ‘.compute’ to send the mirai using a specific compute profile
-(if previously created by <code><a href="daemons.html">daemons</a></code>), otherwise leave as
-‘default’.</p>
+<p><code><a href="unresolved.html">unresolved()</a></code> may be used on a mirai, returning TRUE if a ‘mirai’ has
+yet to resolve and FALSE otherwise. This is suitable for use in control flow
+statements such as <code>while</code> or <code>if</code>.</p>
+<p>Alternatively, to call (and wait for) the result, use <code><a href="call_mirai.html">call_mirai()</a></code> on the
+returned ‘mirai’. This will block until the result is returned.</p>
+<p>Specify <code>.compute</code> to send the mirai using a specific compute profile (if
+previously created by <code><a href="daemons.html">daemons()</a></code>), otherwise leave as ‘default’.</p>
     </div>
     <div class="section level2">
     <h2 id="evaluation">Evaluation<a class="anchor" aria-label="anchor" href="#evaluation"></a></h2>
 
 
 
-<p>The expression ‘.expr’ will be evaluated in a separate R process in a
-clean environment (not the global environment), consisting only of the
-objects supplied to ‘.args’, with the objects passed as ‘...’
-assigned to the global environment of that process.</p>
+<p>The expression <code>.expr</code> will be evaluated in a separate R process in a clean
+environment (not the global environment), consisting only of the objects
+supplied to <code>.args</code>, with the objects passed as <code>...</code> assigned to the global
+environment of that process.</p>
 <p>As evaluation occurs in a clean environment, all undefined objects must be
-supplied though ‘...’ and/or ‘.args’, including self-defined
-functions. Functions from a package should use namespaced calls such as
-<code>mirai::mirai()</code>, or else the package should be loaded beforehand as
-part of ‘.expr’.</p>
-<p>For evaluation to occur <em>as if</em> in your global environment, supply
-objects to ‘...’ rather than ‘.args’, e.g. for free variables
-or helper functions defined in function bodies, as scoping rules may
-otherwise prevent them from being found.</p>
+supplied through <code>...</code> and/or <code>.args</code>, including self-defined functions.
+Functions from a package should use namespaced calls such as
+<code>mirai::mirai()</code>, or else the package should be loaded beforehand as part of
+<code>.expr</code>.</p>
+<p>For evaluation to occur <em>as if</em> in your global environment, supply objects to
+<code>...</code> rather than <code>.args</code>, e.g. for free variables or helper functions
+defined in function bodies, as scoping rules may otherwise prevent them from
+being found.</p>
     </div>
     <div class="section level2">
     <h2 id="timeouts">Timeouts<a class="anchor" aria-label="anchor" href="#timeouts"></a></h2>
 
 
 
-<p>Specifying the ‘.timeout’ argument ensures that the mirai always
-resolves. However, the task may not have completed and still be ongoing in
-the daemon process. Use <code><a href="stop_mirai.html">stop_mirai</a></code> instead to explicitly stop
-and interrupt a task.</p>
+<p>Specifying the <code>.timeout</code> argument ensures that the mirai always resolves.
+However, the task may not have completed and still be ongoing in the daemon
+process. Use <code><a href="stop_mirai.html">stop_mirai()</a></code> instead to explicitly stop and interrupt a task.</p>
     </div>
     <div class="section level2">
     <h2 id="errors">Errors<a class="anchor" aria-label="anchor" href="#errors"></a></h2>
@@ -158,13 +154,12 @@ and interrupt a task.</p>
 
 <p>If an error occurs in evaluation, the error message is returned as a
 character string of class ‘miraiError’ and ‘errorValue’.
-<code><a href="is_mirai_error.html">is_mirai_error</a></code> may be used to test for this. The elements of
-the original condition are accessible via <code>$</code> on the error object. A
-stack trace comprising a list of calls is also available at
-<code>$stack.trace</code>.</p>
+<code><a href="is_mirai_error.html">is_mirai_error()</a></code> may be used to test for this. The elements of the original
+condition are accessible via <code>$</code> on the error object. A stack trace
+comprising a list of calls is also available at <code>$stack.trace</code>.</p>
 <p>If a daemon crashes or terminates unexpectedly during evaluation, an
 ‘errorValue’ 19 (Connection reset) is returned.</p>
-<p><code><a href="is_mirai_error.html">is_error_value</a></code> tests for all error conditions including
+<p><code><a href="is_mirai_error.html">is_error_value()</a></code> tests for all error conditions including
 ‘mirai’ errors, interrupts, and timeouts.</p>
     </div>
 

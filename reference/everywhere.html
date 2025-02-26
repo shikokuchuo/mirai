@@ -3,12 +3,12 @@
 specified compute profile - this must be set prior to calling this function.
 Designed for performing setup operations across daemons by loading packages
 or exporting common data. Resultant changes to the global environment, loaded
-packages and options are persisted regardless of a daemon's &amp;#8216;cleanup&amp;#8217;
+packages and options are persisted regardless of a daemon's cleanup
 setting."><meta property="og:description" content="Evaluate an expression &amp;#8216;everywhere&amp;#8217; on all connected daemons for the
 specified compute profile - this must be set prior to calling this function.
 Designed for performing setup operations across daemons by loading packages
 or exporting common data. Resultant changes to the global environment, loaded
-packages and options are persisted regardless of a daemon's &amp;#8216;cleanup&amp;#8217;
+packages and options are persisted regardless of a daemon's cleanup
 setting."><meta property="og:image" content="https://shikokuchuo.net/mirai/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -64,7 +64,7 @@ setting."><meta property="og:image" content="https://shikokuchuo.net/mirai/logo.
 specified compute profile - this must be set prior to calling this function.
 Designed for performing setup operations across daemons by loading packages
 or exporting common data. Resultant changes to the global environment, loaded
-packages and options are persisted regardless of a daemon's ‘cleanup’
+packages and options are persisted regardless of a daemon's <code>cleanup</code>
 setting.</p>
     </div>
 
@@ -79,23 +79,22 @@ setting.</p>
 
 <dl><dt id="arg--expr">.expr<a class="anchor" aria-label="anchor" href="#arg--expr"></a></dt>
 <dd><p>an expression to evaluate asynchronously (of arbitrary length,
-wrapped in { } where necessary), <strong>or else</strong> a pre-constructed
-language object.</p></dd>
+wrapped in { } where necessary), <strong>or else</strong> a pre-constructed language
+object.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>(optional) <strong>either</strong> named arguments (name = value pairs)
-specifying objects referenced, but not defined, in ‘.expr’,
-<strong>or</strong> an environment containing such objects. See ‘evaluation’
-section below.</p></dd>
+specifying objects referenced, but not defined, in <code>.expr</code>, <strong>or</strong> an
+environment containing such objects. See ‘evaluation’ section below.</p></dd>
 
 
 <dt id="arg--args">.args<a class="anchor" aria-label="anchor" href="#arg--args"></a></dt>
 <dd><p>(optional) <strong>either</strong> a named list specifying objects
-referenced, but not defined, in ‘.expr’, <strong>or</strong> an environment
-containing such objects. These objects will remain local to the evaluation
-environment as opposed to those supplied in ‘...’ above - see
-‘evaluation’ section below.</p></dd>
+referenced, but not defined, in <code>.expr</code>, <strong>or</strong> an environment containing
+such objects. These objects will remain local to the evaluation environment
+as opposed to those supplied in <code>...</code> above - see ‘evaluation’
+section below.</p></dd>
 
 
 <dt id="arg--compute">.compute<a class="anchor" aria-label="anchor" href="#arg--compute"></a></dt>
@@ -106,7 +105,7 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A list of mirai executed on each daemon. This may be waited for and
-  inspected using <code><a href="call_mirai.html">call_mirai</a></code> or <code><a href="collect_mirai.html">collect_mirai</a></code>.</p>
+inspected using <code><a href="call_mirai.html">call_mirai()</a></code> or <code><a href="collect_mirai.html">collect_mirai()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -121,19 +120,19 @@ instructions will be received, or that they will be received on each daemon.</p>
 
 
 
-<p>The expression ‘.expr’ will be evaluated in a separate R process in a
-clean environment (not the global environment), consisting only of the
-objects supplied to ‘.args’, with the objects passed as ‘...’
-assigned to the global environment of that process.</p>
+<p>The expression <code>.expr</code> will be evaluated in a separate R process in a clean
+environment (not the global environment), consisting only of the objects
+supplied to <code>.args</code>, with the objects passed as <code>...</code> assigned to the global
+environment of that process.</p>
 <p>As evaluation occurs in a clean environment, all undefined objects must be
-supplied though ‘...’ and/or ‘.args’, including self-defined
-functions. Functions from a package should use namespaced calls such as
-<code><a href="mirai.html">mirai::mirai()</a></code>, or else the package should be loaded beforehand as
-part of ‘.expr’.</p>
-<p>For evaluation to occur <em>as if</em> in your global environment, supply
-objects to ‘...’ rather than ‘.args’, e.g. for free variables
-or helper functions defined in function bodies, as scoping rules may
-otherwise prevent them from being found.</p>
+supplied through <code>...</code> and/or <code>.args</code>, including self-defined functions.
+Functions from a package should use namespaced calls such as
+<code><a href="mirai.html">mirai::mirai()</a></code>, or else the package should be loaded beforehand as part of
+<code>.expr</code>.</p>
+<p>For evaluation to occur <em>as if</em> in your global environment, supply objects to
+<code>...</code> rather than <code>.args</code>, e.g. for free variables or helper functions
+defined in function bodies, as scoping rules may otherwise prevent them from
+being found.</p>
     </div>
 
     <div class="section level2">

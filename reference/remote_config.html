@@ -88,16 +88,16 @@ SSH, with the option of SSH tunnelling.</p>
 <dd><p>the command used to effect the daemon launch on the remote
 machine as a character string (e.g. <code>'ssh'</code>). Defaults to ‘ssh’
 for <code>ssh_config</code>, although may be substituted for the full path to a
-specific SSH application. The default NULL for <code>remote_config</code> does
-not effect any launches, but causes <code><a href="launch_local.html">launch_remote</a></code> to return
-the shell commands for manual deployment on remote machines.</p></dd>
+specific SSH application. The default NULL for <code>remote_config</code> does not
+effect any launches, but causes <code><a href="launch_local.html">launch_remote()</a></code> to return the shell
+commands for manual deployment on remote machines.</p></dd>
 
 
 <dt id="arg-args">args<a class="anchor" aria-label="anchor" href="#arg-args"></a></dt>
-<dd><p>(optional) arguments passed to ‘command’, as a character
-vector that must include <code>"."</code> as an element, which will be
-substituted for the daemon launch command. Alternatively, a list of such
-character vectors to effect multiple launches (one for each list element).</p></dd>
+<dd><p>(optional) arguments passed to <code>command</code>, as a character vector
+that must include <code>"."</code> as an element, which will be substituted for the
+daemon launch command. Alternatively, a list of such character vectors to
+effect multiple launches (one for each list element).</p></dd>
 
 
 <dt id="arg-rscript">rscript<a class="anchor" aria-label="anchor" href="#arg-rscript"></a></dt>
@@ -108,9 +108,9 @@ path. Prepend the full path if necessary. If launching on Windows,
 
 
 <dt id="arg-quote">quote<a class="anchor" aria-label="anchor" href="#arg-quote"></a></dt>
-<dd><p>[default FALSE] logical value whether or not to quote the daemon
-launch command (not required for Slurm ‘srun’ for example, but
-required for ‘ssh’ or Slurm ‘sbatch’).</p></dd>
+<dd><p>[default FALSE] logical value whether or not to quote the
+daemon launch command (not required for Slurm ‘srun’ for example,
+but required for ‘ssh’ or Slurm ‘sbatch’).</p></dd>
 
 
 <dt id="arg-remotes">remotes<a class="anchor" aria-label="anchor" href="#arg-remotes"></a></dt>
@@ -121,9 +121,8 @@ to 22 if not specified), e.g. 'ssh://10.75.32.90:22' or 'ssh://nodename'.</p></d
 
 <dt id="arg-tunnel">tunnel<a class="anchor" aria-label="anchor" href="#arg-tunnel"></a></dt>
 <dd><p>[default FALSE] logical value, whether to use SSH tunnelling.
-If TRUE, requires the <code><a href="daemons.html">daemons</a></code> ‘url’ hostname to be
-'127.0.0.1'. See the ‘SSH Tunnelling’ section below for further
-details.</p></dd>
+If TRUE, requires the <code><a href="daemons.html">daemons()</a></code> <code>url</code> hostname to be '127.0.0.1'. See the
+‘SSH Tunnelling’ section below for further details.</p></dd>
 
 
 <dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>
@@ -133,9 +132,8 @@ seconds.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list in the required format to be supplied to the ‘remote’
-  argument of <code><a href="launch_local.html">launch_remote</a></code>, <code><a href="daemons.html">daemons</a></code>, or
-  <code><a href="make_cluster.html">make_cluster</a></code>.</p>
+    <p>A list in the required format to be supplied to the <code>remote</code> argument
+of <code><a href="launch_local.html">launch_remote()</a></code>, <code><a href="daemons.html">daemons()</a></code>, or <code><a href="make_cluster.html">make_cluster()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="ssh-direct-connections">SSH Direct Connections<a class="anchor" aria-label="anchor" href="#ssh-direct-connections"></a></h2>
@@ -162,14 +160,13 @@ initial SSH connection is made. For simplicity, this SSH tunnelling
 implementation uses the same port on both host and daemon. SSH key-based
 authentication must already be in place, but no other configuration is
 required.</p>
-<p>To use tunnelling, set the hostname of the <code><a href="daemons.html">daemons</a></code> ‘url’
-argument to be ‘127.0.0.1’. Using <code><a href="host_url.html">local_url</a></code> with
-<code>tcp = TRUE</code> also does this for you. Specifying a specific port to use
-is optional, with a random ephemeral port assigned otherwise. For example,
-specifying 'tcp://127.0.0.1:5555' uses the local port '5555' to create the
-tunnel on each machine. The host listens to <code>127.0.0.1:5555</code> on its
-machine and the remotes each dial into <code>127.0.0.1:5555</code> on their own
-respective machines.</p>
+<p>To use tunnelling, set the hostname of the <code><a href="daemons.html">daemons()</a></code> <code>url</code> argument to be
+‘127.0.0.1’. Using <code><a href="host_url.html">local_url()</a></code> with <code>tcp = TRUE</code> also does this for
+you. Specifying a specific port to use is optional, with a random ephemeral
+port assigned otherwise. For example, specifying 'tcp://127.0.0.1:5555' uses
+the local port '5555' to create the tunnel on each machine. The host listens
+to <code>127.0.0.1:5555</code> on its machine and the remotes each dial into
+<code>127.0.0.1:5555</code> on their own respective machines.</p>
 <p>This provides a means of launching daemons on any machine you are able to
 access via SSH, be it on the local network or the cloud.</p>
     </div>

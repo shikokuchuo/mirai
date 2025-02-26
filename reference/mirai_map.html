@@ -74,8 +74,8 @@ which case multiple map is performed over its rows.</p></dd>
 
 
 <dt id="arg--f">.f<a class="anchor" aria-label="anchor" href="#arg--f"></a></dt>
-<dd><p>a function to be applied to each element of <code>.x</code>, or row of
-<code>.x</code> as the case may be.</p></dd>
+<dd><p>a function to be applied to each element of <code>.x</code>, or row of <code>.x</code> as
+the case may be.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -84,16 +84,16 @@ referenced, but not defined, in <code>.f</code>.</p></dd>
 
 
 <dt id="arg--args">.args<a class="anchor" aria-label="anchor" href="#arg--args"></a></dt>
-<dd><p>(optional) further constant arguments to <code>.f</code>, provided as
-a list.</p></dd>
+<dd><p>(optional) further constant arguments to <code>.f</code>, provided as a
+list.</p></dd>
 
 
 <dt id="arg--promise">.promise<a class="anchor" aria-label="anchor" href="#arg--promise"></a></dt>
 <dd><p>(optional) if supplied, registers a promise against each
-mirai. Either a function, supplied to the ‘onFulfilled’ argument of
+mirai. Either a function, supplied to the <code>onFulfilled</code> argument of
 <code><a href="https://rstudio.github.io/promises/reference/then.html" class="external-link">promises::then()</a></code> or a list of 2 functions, supplied respectively to
-‘onFulfilled’ and ‘onRejected’ for <code><a href="https://rstudio.github.io/promises/reference/then.html" class="external-link">promises::then()</a></code>.
-Using this argument requires the <a href="https://CRAN.R-project.org/package=promises" class="external-link"><span class="pkg">promises</span></a> package.</p></dd>
+<code>onFulfilled</code> and <code>onRejected</code> of <code><a href="https://rstudio.github.io/promises/reference/then.html" class="external-link">promises::then()</a></code>. Using this argument
+requires the <a href="https://CRAN.R-project.org/package=promises" class="external-link"><span class="pkg">promises</span></a> package.</p></dd>
 
 
 <dt id="arg--compute">.compute<a class="anchor" aria-label="anchor" href="#arg--compute"></a></dt>
@@ -107,9 +107,9 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Sends each application of function <code>.f</code> on an element of <code>.x</code>
-(or row of <code>.x</code>) for computation in a separate <code><a href="mirai.html">mirai</a></code> call.
-If <code>.x</code> is named, names are preserved.</p>
+    <p>Sends each application of function <code>.f</code> on an element of <code>.x</code> (or row of
+<code>.x</code>) for computation in a separate <code><a href="mirai.html">mirai()</a></code> call. If <code>.x</code> is named, names
+are preserved.</p>
 <p>This simple and transparent behaviour is designed to make full use of
 <span class="pkg">mirai</span> scheduling to minimise overall execution time.</p>
 <p>Facilitates recovery from partial failure by returning all
@@ -145,13 +145,13 @@ progress indicator.</p>
 
 
 <p>If <code>.x</code> is a matrix or dataframe (or other object with ‘dim’
-attributes), <em>multiple</em> map is performed over its <strong>rows</strong>.
-Character row names are preserved as names of the output.</p>
-<p>This allows map over 2 or more arguments, and <code>.f</code> should accept at
-least as many arguments as there are columns. If the dataframe has names, or
-the matrix column dimnames, named arguments are provided to <code>.f</code>.</p>
-<p>To map over <strong>columns</strong> instead, first wrap a dataframe in
-<code><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></code>, or transpose a matrix using <code><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></code>.</p>
+attributes), <em>multiple</em> map is performed over its <strong>rows</strong>. Character row
+names are preserved as names of the output.</p>
+<p>This allows map over 2 or more arguments, and <code>.f</code> should accept at least as
+many arguments as there are columns. If the dataframe has names, or the
+matrix column dimnames, named arguments are provided to <code>.f</code>.</p>
+<p>To map over <strong>columns</strong> instead, first wrap a dataframe in <code><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list()</a></code>, or
+transpose a matrix using <code><a href="https://rdrr.io/r/base/t.html" class="external-link">t()</a></code>.</p>
     </div>
 
     <div class="section level2">
