@@ -11,18 +11,17 @@ unresolved(x)
 \sQuote{mirai} value stored at \verb{$data}.}
 }
 \value{
-Logical TRUE if \sQuote{aio} is an unresolved \sQuote{mirai} or
-\sQuote{mirai} value or the list contains at least one unresolved
-\sQuote{mirai}, or FALSE otherwise.
+Logical TRUE if \code{x} is an unresolved \sQuote{mirai} or \sQuote{mirai}
+value or the list contains at least one unresolved \sQuote{mirai}, or FALSE
+otherwise.
 }
 \description{
 Query whether a \sQuote{mirai}, \sQuote{mirai} value or list of
-\sQuote{mirai} remains unresolved. Unlike \code{\link[=call_mirai]{call_mirai()}}, this
-function does not wait for completion.
+\sQuote{mirai} remains unresolved. Unlike \code{\link[=call_mirai]{call_mirai()}}, this function does
+not wait for completion.
 }
 \details{
-Suitable for use in control flow statements such as \code{while} or
-\code{if}.
+Suitable for use in control flow statements such as \code{while} or \code{if}.
 
 Note: querying resolution may cause a previously unresolved \sQuote{mirai} to
 resolve.

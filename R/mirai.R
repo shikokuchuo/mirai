@@ -65,10 +65,10 @@
 #' environment of that process.
 #'
 #' As evaluation occurs in a clean environment, all undefined objects must be
-#' supplied though \sQuote{...} and/or \sQuote{.args}, including self-defined
-#' functions. Functions from a package should use namespaced calls such as
-#' `mirai::mirai()`, or else the package should be loaded beforehand as
-#' part of \sQuote{.expr}.
+#' supplied through `...` and/or `.args`, including self-defined functions.
+#' Functions from a package should use namespaced calls such as
+#' `mirai::mirai()`, or else the package should be loaded beforehand as part of
+#' `.expr`.
 #'
 #' For evaluation to occur *as if* in your global environment, supply objects to
 #' `...` rather than `.args`, e.g. for free variables or helper functions
@@ -446,11 +446,10 @@ stop_mirai <- function(x) {
 #' Query if a mirai is Unresolved
 #'
 #' Query whether a \sQuote{mirai}, \sQuote{mirai} value or list of
-#' \sQuote{mirai} remains unresolved. Unlike [call_mirai()], this
-#' function does not wait for completion.
+#' \sQuote{mirai} remains unresolved. Unlike [call_mirai()], this function does
+#' not wait for completion.
 #'
-#' Suitable for use in control flow statements such as `while` or
-#' `if`.
+#' Suitable for use in control flow statements such as `while` or `if`.
 #'
 #' Note: querying resolution may cause a previously unresolved \sQuote{mirai} to
 #' resolve.
@@ -458,9 +457,9 @@ stop_mirai <- function(x) {
 #' @param x a \sQuote{mirai} object or list of \sQuote{mirai} objects, or a
 #'   \sQuote{mirai} value stored at `$data`.
 #'
-#' @return Logical TRUE if \sQuote{aio} is an unresolved \sQuote{mirai} or
-#'   \sQuote{mirai} value or the list contains at least one unresolved
-#'   \sQuote{mirai}, or FALSE otherwise.
+#' @return Logical TRUE if `x` is an unresolved \sQuote{mirai} or \sQuote{mirai}
+#'   value or the list contains at least one unresolved \sQuote{mirai}, or FALSE
+#'   otherwise.
 #'
 #' @examples
 #' if (interactive()) {
@@ -483,8 +482,8 @@ unresolved <- unresolved
 #'
 #' @param x an object.
 #'
-#' @return Logical TRUE if \sQuote{x} is of class \sQuote{mirai} or
-#'   \sQuote{mirai_map} respectively, FALSE otherwise.
+#' @return Logical TRUE if `x` is of class \sQuote{mirai} or \sQuote{mirai_map}
+#'   respectively, FALSE otherwise.
 #'
 #' @examples
 #' if (interactive()) {

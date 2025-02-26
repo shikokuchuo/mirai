@@ -69,8 +69,8 @@
 #'
 #' Errors are thrown by the \sQuote{parallel} mechanism if one or more nodes
 #' failed (quit unexpectedly). The resulting \sQuote{errorValue} returned is 19
-#' (Connection reset). Other types of error, e.g. in evaluation, should result
-#' in the usual \sQuote{miraiError} being returned.
+#' (Connection reset). Other types of error, e.g. in evaluation, result in the
+#' usual \sQuote{miraiError} being returned.
 #'
 #' @note The default behaviour of clusters created by this function is designed
 #'   to map as closely as possible to clusters created by the \pkg{parallel}

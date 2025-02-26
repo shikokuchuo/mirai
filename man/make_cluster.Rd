@@ -83,8 +83,8 @@ active connections as well as the host URL.
 
 Errors are thrown by the \sQuote{parallel} mechanism if one or more nodes
 failed (quit unexpectedly). The resulting \sQuote{errorValue} returned is 19
-(Connection reset). Other types of error, e.g. in evaluation, should result
-in the usual \sQuote{miraiError} being returned.
+(Connection reset). Other types of error, e.g. in evaluation, result in the
+usual \sQuote{miraiError} being returned.
 }
 
 \examples{

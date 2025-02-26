@@ -52,10 +52,10 @@ supplied to \code{.args}, with the objects passed as \code{...} assigned to the 
 environment of that process.
 
 As evaluation occurs in a clean environment, all undefined objects must be
-supplied though \sQuote{...} and/or \sQuote{.args}, including self-defined
-functions. Functions from a package should use namespaced calls such as
-\code{mirai::mirai()}, or else the package should be loaded beforehand as
-part of \sQuote{.expr}.
+supplied through \code{...} and/or \code{.args}, including self-defined functions.
+Functions from a package should use namespaced calls such as
+\code{mirai::mirai()}, or else the package should be loaded beforehand as part of
+\code{.expr}.
 
 For evaluation to occur \emph{as if} in your global environment, supply objects to
 \code{...} rather than \code{.args}, e.g. for free variables or helper functions
