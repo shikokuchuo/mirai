@@ -13,8 +13,8 @@ is_mirai_map(x)
 \item{x}{an object.}
 }
 \value{
-Logical TRUE if \sQuote{x} is of class \sQuote{mirai} or
-  \sQuote{mirai_map} respectively, FALSE otherwise.
+Logical TRUE if \code{x} is of class \sQuote{mirai} or \sQuote{mirai_map}
+respectively, FALSE otherwise.
 }
 \description{
 Is the object a \sQuote{mirai} or \sQuote{mirai_map}.

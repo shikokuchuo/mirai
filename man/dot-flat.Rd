@@ -21,8 +21,7 @@ An object of class \code{bytecode} of length 1.
 .stop
 }
 \description{
-Expressions to be provided to the \code{[]} method for \sQuote{mirai_map}
-objects, or the \code{...} argument of \code{\link{collect_mirai}}.
+Expressions to be provided to the \verb{[]} method for \sQuote{mirai_map} objects.
 }
 \section{Collection Options}{
 

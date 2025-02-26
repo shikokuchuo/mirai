@@ -8,19 +8,18 @@ mirai(.expr, ..., .args = list(), .timeout = NULL, .compute = "default")
 }
 \arguments{
 \item{.expr}{an expression to evaluate asynchronously (of arbitrary length,
-wrapped in \{ \} where necessary), \strong{or else} a pre-constructed
-language object.}
+wrapped in \{ \} where necessary), \strong{or else} a pre-constructed language
+object.}
 
 \item{...}{(optional) \strong{either} named arguments (name = value pairs)
-specifying objects referenced, but not defined, in \sQuote{.expr},
-\strong{or} an environment containing such objects. See \sQuote{evaluation}
-section below.}
+specifying objects referenced, but not defined, in \code{.expr}, \strong{or} an
+environment containing such objects. See \sQuote{evaluation} section below.}
 
 \item{.args}{(optional) \strong{either} a named list specifying objects
-referenced, but not defined, in \sQuote{.expr}, \strong{or} an environment
-containing such objects. These objects will remain local to the evaluation
-environment as opposed to those supplied in \sQuote{...} above - see
-\sQuote{evaluation} section below.}
+referenced, but not defined, in \code{.expr}, \strong{or} an environment containing
+such objects. These objects will remain local to the evaluation environment
+as opposed to those supplied in \code{...} above - see \sQuote{evaluation}
+section below.}
 
 \item{.timeout}{[default NULL] for no timeout, or an integer value in
 milliseconds. A mirai will resolve to an \sQuote{errorValue} 5 (timed out)
@@ -41,48 +40,45 @@ complete.
 \details{
 This function will return a \sQuote{mirai} object immediately.
 
-The value of a mirai may be accessed at any time at \code{$data}, and if yet
+The value of a mirai may be accessed at any time at \verb{$data}, and if yet
 to resolve, an \sQuote{unresolved} logical NA will be returned instead.
 
-\code{\link{unresolved}} may be used on a mirai, returning TRUE if a
-\sQuote{mirai} has yet to resolve and FALSE otherwise. This is suitable for
-use in control flow statements such as \code{while} or \code{if}.
+\code{\link[=unresolved]{unresolved()}} may be used on a mirai, returning TRUE if a \sQuote{mirai} has
+yet to resolve and FALSE otherwise. This is suitable for use in control flow
+statements such as \code{while} or \code{if}.
 
-Alternatively, to call (and wait for) the result, use
-\code{\link{call_mirai}} on the returned \sQuote{mirai}. This will block
-until the result is returned.
+Alternatively, to call (and wait for) the result, use \code{\link[=call_mirai]{call_mirai()}} on the
+returned \sQuote{mirai}. This will block until the result is returned.
 
-Specify \sQuote{.compute} to send the mirai using a specific compute profile
-(if previously created by \code{\link{daemons}}), otherwise leave as
-\sQuote{default}.
+Specify \code{.compute} to send the mirai using a specific compute profile (if
+previously created by \code{\link[=daemons]{daemons()}}), otherwise leave as \sQuote{default}.
 }
 \section{Evaluation}{
 
 
-The expression \sQuote{.expr} will be evaluated in a separate R process in a
-clean environment (not the global environment), consisting only of the
-objects supplied to \sQuote{.args}, with the objects passed as \sQuote{...}
-assigned to the global environment of that process.
+The expression \code{.expr} will be evaluated in a separate R process in a clean
+environment (not the global environment), consisting only of the objects
+supplied to \code{.args}, with the objects passed as \code{...} assigned to the global
+environment of that process.
 
 As evaluation occurs in a clean environment, all undefined objects must be
-supplied though \sQuote{...} and/or \sQuote{.args}, including self-defined
-functions. Functions from a package should use namespaced calls such as
-\code{mirai::mirai()}, or else the package should be loaded beforehand as
-part of \sQuote{.expr}.
+supplied through \code{...} and/or \code{.args}, including self-defined functions.
+Functions from a package should use namespaced calls such as
+\code{mirai::mirai()}, or else the package should be loaded beforehand as part of
+\code{.expr}.
 
-For evaluation to occur \emph{as if} in your global environment, supply
-objects to \sQuote{...} rather than \sQuote{.args}, e.g. for free variables
-or helper functions defined in function bodies, as scoping rules may
-otherwise prevent them from being found.
+For evaluation to occur \emph{as if} in your global environment, supply objects to
+\code{...} rather than \code{.args}, e.g. for free variables or helper functions
+defined in function bodies, as scoping rules may otherwise prevent them from
+being found.
 }
 
 \section{Timeouts}{
 
 
-Specifying the \sQuote{.timeout} argument ensures that the mirai always
-resolves. However, the task may not have completed and still be ongoing in
-the daemon process. Use \code{\link{stop_mirai}} instead to explicitly stop
-and interrupt a task.
+Specifying the \code{.timeout} argument ensures that the mirai always resolves.
+However, the task may not have completed and still be ongoing in the daemon
+process. Use \code{\link[=stop_mirai]{stop_mirai()}} instead to explicitly stop and interrupt a task.
 }
 
 \section{Errors}{
@@ -90,15 +86,14 @@ and interrupt a task.
 
 If an error occurs in evaluation, the error message is returned as a
 character string of class \sQuote{miraiError} and \sQuote{errorValue}.
-\code{\link{is_mirai_error}} may be used to test for this. The elements of
-the original condition are accessible via \code{$} on the error object. A
-stack trace comprising a list of calls is also available at
-\code{$stack.trace}.
+\code{\link[=is_mirai_error]{is_mirai_error()}} may be used to test for this. The elements of the original
+condition are accessible via \code{$} on the error object. A stack trace
+comprising a list of calls is also available at \verb{$stack.trace}.
 
 If a daemon crashes or terminates unexpectedly during evaluation, an
 \sQuote{errorValue} 19 (Connection reset) is returned.
 
-\code{\link{is_error_value}} tests for all error conditions including
+\code{\link[=is_error_value]{is_error_value()}} tests for all error conditions including
 \sQuote{mirai} errors, interrupts, and timeouts.
 }
 

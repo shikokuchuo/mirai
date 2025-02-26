@@ -10,13 +10,12 @@ stop_mirai(x)
 \item{x}{a \sQuote{mirai} object, or list of \sQuote{mirai} objects.}
 }
 \value{
-Logical \code{TRUE} if the cancellation request was successful (was
-  awaiting execution or in execution), or else \code{FALSE} (if already
-  completed or previously cancelled). Will always return \code{FALSE} if not
-  using dispatcher.
+Logical TRUE if the cancellation request was successful (was awaiting
+execution or in execution), or else FALSE (if already completed or
+previously cancelled). Will always return FALSE if not using dispatcher.
 
-  Or a vector of logical values if supplying a list of \sQuote{mirai}, such
-  as those returned by \code{\link{mirai_map}}.
+Or a vector of logical values if supplying a list of \sQuote{mirai}, such
+as those returned by \code{\link[=mirai_map]{mirai_map()}}.
 }
 \description{
 Stops a \sQuote{mirai} if still in progress, causing it to resolve

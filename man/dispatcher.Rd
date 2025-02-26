@@ -19,15 +19,14 @@ use secure TLS connections.}
 \item{n}{(optional) if specified, the integer number of daemons to launch. In
 this case, a local url is automatically generated.}
 
-\item{...}{(optional) additional arguments passed through to
-\code{\link{daemon}}. These include \sQuote{asyncdial}, \sQuote{autoexit},
-and \sQuote{cleanup}.}
+\item{...}{(optional) additional arguments passed through to \code{\link[=daemon]{daemon()}}.
+These include \sQuote{asyncdial}, \sQuote{autoexit}, and \sQuote{cleanup}.}
 
-\item{tls}{[default NULL] (required for secure TLS connections)
-\strong{either} the character path to a file containing the PEM-encoded TLS
-certificate and associated private key (may contain additional certificates
-leading to a validation chain, with the TLS certificate first), \strong{or}
-a length 2 character vector comprising [i] the TLS certificate (optionally
+\item{tls}{[default NULL] (required for secure TLS connections) \strong{either}
+the character path to a file containing the PEM-encoded TLS certificate and
+associated private key (may contain additional certificates leading to a
+validation chain, with the TLS certificate first), \strong{or} a length 2
+character vector comprising [i] the TLS certificate (optionally
 certificate chain) and [ii] the associated private key.}
 
 \item{pass}{[default NULL] (required only if the private key supplied to
@@ -44,8 +43,8 @@ Invisible NULL.
 \description{
 Dispatches tasks from a host to daemons for processing, using FIFO
 scheduling, queuing tasks as required. Daemon / dispatcher settings may be
-controlled by \code{\link{daemons}} and this function should not need to be
-invoked directly.
+controlled by \code{\link[=daemons]{daemons()}} and this function should not need to be invoked
+directly.
 }
 \details{
 The network topology is such that a dispatcher acts as a gateway between the

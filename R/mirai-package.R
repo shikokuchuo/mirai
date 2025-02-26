@@ -35,16 +35,16 @@
 #'  pipes on Windows.
 #'
 #'  This may be overriden, if desired, by specifying 'url' in the
-#'  \code{\link{daemons}} interface and launching daemons using
-#'  \code{\link{launch_local}}.
+#'  [daemons()] interface and launching daemons using
+#'  [launch_local()].
 #'
 #' @section Reference Manual:
 #'
-#' \code{vignette("mirai", package = "mirai")}
+#' `vignette("mirai", package = "mirai")`
 #'
 #' @encoding UTF-8
 #' @author Charlie Gao \email{charlie.gao@@shikokuchuo.net}
-#'   (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
+#'   ([ORCID](https://orcid.org/0000-0002-0750-061X))
 #'
 #' @importFrom nanonext .advance call_aio call_aio_ collect_aio collect_aio_
 #'   .context cv cv_signal cv_value dial .interrupt is_error_value .keep listen

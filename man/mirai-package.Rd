@@ -20,14 +20,14 @@ event-driven promises, and asynchronous parallel map.
 \section{Notes}{
 
 
- For local mirai requests, the default transport for inter-process
- communications is platform-dependent: abstract Unix domain sockets on Linux,
- Unix domain sockets on MacOS, Solaris and other POSIX platforms, and named
- pipes on Windows.
+For local mirai requests, the default transport for inter-process
+communications is platform-dependent: abstract Unix domain sockets on Linux,
+Unix domain sockets on MacOS, Solaris and other POSIX platforms, and named
+pipes on Windows.
 
- This may be overriden, if desired, by specifying 'url' in the
- \code{\link{daemons}} interface and launching daemons using
- \code{\link{launch_local}}.
+This may be overriden, if desired, by specifying 'url' in the
+\code{\link[=daemons]{daemons()}} interface and launching daemons using
+\code{\link[=launch_local]{launch_local()}}.
 }
 
 \section{Reference Manual}{
@@ -47,5 +47,5 @@ Useful links:
 }
 \author{
 Charlie Gao \email{charlie.gao@shikokuchuo.net}
-  (\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
+(\href{https://orcid.org/0000-0002-0750-061X}{ORCID})
 }

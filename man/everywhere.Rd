@@ -8,33 +8,32 @@ everywhere(.expr, ..., .args = list(), .compute = "default")
 }
 \arguments{
 \item{.expr}{an expression to evaluate asynchronously (of arbitrary length,
-wrapped in \{ \} where necessary), \strong{or else} a pre-constructed
-language object.}
+wrapped in \{ \} where necessary), \strong{or else} a pre-constructed language
+object.}
 
 \item{...}{(optional) \strong{either} named arguments (name = value pairs)
-specifying objects referenced, but not defined, in \sQuote{.expr},
-\strong{or} an environment containing such objects. See \sQuote{evaluation}
-section below.}
+specifying objects referenced, but not defined, in \code{.expr}, \strong{or} an
+environment containing such objects. See \sQuote{evaluation} section below.}
 
 \item{.args}{(optional) \strong{either} a named list specifying objects
-referenced, but not defined, in \sQuote{.expr}, \strong{or} an environment
-containing such objects. These objects will remain local to the evaluation
-environment as opposed to those supplied in \sQuote{...} above - see
-\sQuote{evaluation} section below.}
+referenced, but not defined, in \code{.expr}, \strong{or} an environment containing
+such objects. These objects will remain local to the evaluation environment
+as opposed to those supplied in \code{...} above - see \sQuote{evaluation}
+section below.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
 }
 \value{
 A list of mirai executed on each daemon. This may be waited for and
-  inspected using \code{\link{call_mirai}} or \code{\link{collect_mirai}}.
+inspected using \code{\link[=call_mirai]{call_mirai()}} or \code{\link[=collect_mirai]{collect_mirai()}}.
 }
 \description{
 Evaluate an expression \sQuote{everywhere} on all connected daemons for the
 specified compute profile - this must be set prior to calling this function.
 Designed for performing setup operations across daemons by loading packages
 or exporting common data. Resultant changes to the global environment, loaded
-packages and options are persisted regardless of a daemon's \sQuote{cleanup}
+packages and options are persisted regardless of a daemon's \code{cleanup}
 setting.
 }
 \details{
@@ -47,21 +46,21 @@ instructions will be received, or that they will be received on each daemon.
 \section{Evaluation}{
 
 
-The expression \sQuote{.expr} will be evaluated in a separate R process in a
-clean environment (not the global environment), consisting only of the
-objects supplied to \sQuote{.args}, with the objects passed as \sQuote{...}
-assigned to the global environment of that process.
+The expression \code{.expr} will be evaluated in a separate R process in a clean
+environment (not the global environment), consisting only of the objects
+supplied to \code{.args}, with the objects passed as \code{...} assigned to the global
+environment of that process.
 
 As evaluation occurs in a clean environment, all undefined objects must be
-supplied though \sQuote{...} and/or \sQuote{.args}, including self-defined
-functions. Functions from a package should use namespaced calls such as
-\code{mirai::mirai()}, or else the package should be loaded beforehand as
-part of \sQuote{.expr}.
+supplied through \code{...} and/or \code{.args}, including self-defined functions.
+Functions from a package should use namespaced calls such as
+\code{mirai::mirai()}, or else the package should be loaded beforehand as part of
+\code{.expr}.
 
-For evaluation to occur \emph{as if} in your global environment, supply
-objects to \sQuote{...} rather than \sQuote{.args}, e.g. for free variables
-or helper functions defined in function bodies, as scoping rules may
-otherwise prevent them from being found.
+For evaluation to occur \emph{as if} in your global environment, supply objects to
+\code{...} rather than \code{.args}, e.g. for free variables or helper functions
+defined in function bodies, as scoping rules may otherwise prevent them from
+being found.
 }
 
 \examples{

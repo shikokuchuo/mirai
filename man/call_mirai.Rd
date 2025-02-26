@@ -14,15 +14,15 @@ call_mirai_(x)
 }
 \value{
 The passed object (invisibly). For a \sQuote{mirai}, the retrieved
-  value is stored at \code{$data}.
+value is stored at \verb{$data}.
 }
 \description{
-Waits for the \sQuote{mirai} to resolve if still in progress, storing the
-value at \code{$data}, and returns the \sQuote{mirai} object.
+Waits for the \sQuote{mirai} to resolve if still in progress, stores the
+value at \verb{$data}, and returns the \sQuote{mirai} object.
 }
 \details{
 Accepts a list of \sQuote{mirai} objects, such as that returned by
-\code{\link{mirai_map}} as well as individual \sQuote{mirai}.
+\code{\link[=mirai_map]{mirai_map()}} as well as individual \sQuote{mirai}.
 
 Waits for the asynchronous operation(s) to complete if still in progress,
 blocking but user-interruptible.
@@ -37,11 +37,11 @@ only. It will be removed in a future package version.
 \section{Alternatively}{
 
 
-The value of a \sQuote{mirai} may be accessed at any time at \code{$data},
+The value of a \sQuote{mirai} may be accessed at any time at \verb{$data},
 and if yet to resolve, an \sQuote{unresolved} logical NA will be returned
 instead.
 
-Using \code{\link{unresolved}} on a \sQuote{mirai} returns TRUE only if it
+Using \code{\link[=unresolved]{unresolved()}} on a \sQuote{mirai} returns TRUE only if it
 has yet to resolve and FALSE otherwise. This is suitable for use in control
 flow statements such as \code{while} or \code{if}.
 }
@@ -51,15 +51,14 @@ flow statements such as \code{while} or \code{if}.
 
 If an error occurs in evaluation, the error message is returned as a
 character string of class \sQuote{miraiError} and \sQuote{errorValue}.
-\code{\link{is_mirai_error}} may be used to test for this. The elements of
-the original condition are accessible via \code{$} on the error object. A
-stack trace comprising a list of calls is also available at
-\code{$stack.trace}.
+\code{\link[=is_mirai_error]{is_mirai_error()}} may be used to test for this. The elements of the original
+condition are accessible via \code{$} on the error object. A stack trace
+comprising a list of calls is also available at \verb{$stack.trace}.
 
 If a daemon crashes or terminates unexpectedly during evaluation, an
 \sQuote{errorValue} 19 (Connection reset) is returned.
 
-\code{\link{is_error_value}} tests for all error conditions including
+\code{\link[=is_error_value]{is_error_value()}} tests for all error conditions including
 \sQuote{mirai} errors, interrupts, and timeouts.
 }
 

@@ -20,8 +20,8 @@
 #'
 #' Dispatches tasks from a host to daemons for processing, using FIFO
 #' scheduling, queuing tasks as required. Daemon / dispatcher settings may be
-#' controlled by \code{\link{daemons}} and this function should not need to be
-#' invoked directly.
+#' controlled by [daemons()] and this function should not need to be invoked
+#' directly.
 #'
 #' The network topology is such that a dispatcher acts as a gateway between the
 #' host and daemons, ensuring that tasks received from the host are dispatched
@@ -39,16 +39,15 @@
 #'   use secure TLS connections.
 #' @param n (optional) if specified, the integer number of daemons to launch. In
 #'   this case, a local url is automatically generated.
-#' @param ... (optional) additional arguments passed through to
-#'   \code{\link{daemon}}. These include \sQuote{asyncdial}, \sQuote{autoexit},
-#'   and \sQuote{cleanup}.
-#' @param tls [default NULL] (required for secure TLS connections)
-#'   \strong{either} the character path to a file containing the PEM-encoded TLS
-#'   certificate and associated private key (may contain additional certificates
-#'   leading to a validation chain, with the TLS certificate first), \strong{or}
-#'   a length 2 character vector comprising [i] the TLS certificate (optionally
-#'   certificate chain) and [ii] the associated private key.
-#' @param pass [default NULL] (required only if the private key supplied to
+#' @param ... (optional) additional arguments passed through to [daemon()].
+#'   These include \sQuote{asyncdial}, \sQuote{autoexit}, and \sQuote{cleanup}.
+#' @param tls \[default NULL\] (required for secure TLS connections) **either**
+#'   the character path to a file containing the PEM-encoded TLS certificate and
+#'   associated private key (may contain additional certificates leading to a
+#'   validation chain, with the TLS certificate first), **or** a length 2
+#'   character vector comprising \[i\] the TLS certificate (optionally
+#'   certificate chain) and \[ii\] the associated private key.
+#' @param pass \[default NULL\] (required only if the private key supplied to
 #'   \sQuote{tls} is encrypted with a password) For security, should be provided
 #'   through a function that returns this value, rather than directly.
 #'

@@ -25,9 +25,9 @@ configuration for use by daemons).}
 }
 \value{
 For \code{nextstream}: a length 7 integer vector, as given by
-  \code{.Random.seed} when the L'Ecuyer-CMRG RNG is in use (may be passed
-  directly to the \sQuote{rs} argument of \code{\link{daemon}}), or else
-  NULL if a stream has not yet been created.
+\code{.Random.seed} when the L'Ecuyer-CMRG RNG is in use (may be passed directly
+to the \code{rs} argument of \code{\link[=daemon]{daemon()}}), or else NULL if a stream has not yet
+been created.
 
 For \code{nextget}: the requested item, or else NULL if not present.
 
@@ -37,15 +37,13 @@ For \code{nextcode}: character string.
 \code{nextstream} retrieves the currently stored L'Ecuyer-CMRG RNG stream
 for the specified compute profile and advances it to the next stream.
 
-\code{nextget} retrieves the specified item from the specified compute
-profile.
+\code{nextget} retrieves the specified item from the specified compute profile.
 
-\code{nextcode} translates integer exit codes returned by
-\code{\link{daemon}}.
+\code{nextcode} translates integer exit codes returned by \code{\link[=daemon]{daemon()}}.
 }
 \details{
 These functions are exported for use by packages extending \pkg{mirai} with
-alternative launchers of \code{\link{daemon}} processes.
+alternative launchers of \code{\link[=daemon]{daemon()}} processes.
 
 For \code{nextstream}: This function should be called for its return value
 when required. The function also has the side effect of automatically

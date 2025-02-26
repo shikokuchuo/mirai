@@ -1,4 +1,4 @@
-# Copyright (C) 2023-2024 Hibiki AI Limited <info@hibiki-ai.com>
+# Copyright (C) 2023-2025 Hibiki AI Limited <info@hibiki-ai.com>
 #
 # This file is part of mirai.
 #
@@ -33,13 +33,13 @@
 #'
 #' Creates a \sQuote{promise} from a \sQuote{mirai}.
 #'
-#' This function is an S3 method for the generic \code{as.promise} for class
+#' This function is an S3 method for the generic `as.promise` for class
 #' \sQuote{mirai}.
 #'
 #' Requires the \CRANpkg{promises} package.
 #'
-#' Allows a \sQuote{mirai} to be used with the promise pipe \code{\%...>\%},
-#' which schedules a function to run upon resolution of the \sQuote{mirai}.
+#' Allows a \sQuote{mirai} to be used with the promise pipe `%...>%`, which
+#' schedules a function to run upon resolution of the \sQuote{mirai}.
 #'
 #' @param x an object of class \sQuote{mirai}.
 #'

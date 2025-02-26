@@ -21,8 +21,8 @@ This function is an S3 method for the generic \code{as.promise} for class
 
 Requires the \CRANpkg{promises} package.
 
-Allows a \sQuote{mirai} to be used with the promise pipe \code{\%...>\%},
-which schedules a function to run upon resolution of the \sQuote{mirai}.
+Allows a \sQuote{mirai} to be used with the promise pipe \verb{\%...>\%}, which
+schedules a function to run upon resolution of the \sQuote{mirai}.
 }
 \examples{
 if (interactive() && requireNamespace("promises", quietly = TRUE)) {
