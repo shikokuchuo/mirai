@@ -79,7 +79,7 @@
 
 # nocov end
 
-. <- new.env()
+. <- `[[<-`(new.env(), "cp", "default")
 .. <- new.env()
 .command <- NULL
 .urlscheme <- NULL

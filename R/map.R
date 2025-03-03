@@ -164,7 +164,7 @@
 #'
 mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "default") {
 
-  envir <- ..[[.compute]]
+  envir <- ..[[if (missing(.compute)) .[["cp"]] else .compute]]
   is.null(envir) && stop(._[["requires_daemons"]])
   is.function(.f) || stop(sprintf(._[["function_required"]], typeof(.f)))
 
