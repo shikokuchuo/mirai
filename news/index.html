@@ -75,6 +75,8 @@
 <code><a href="../reference/call_mirai.html">call_mirai_()</a></code> is hence redundant and now deprecated.</li>
 </ul></li>
 <li>
+<code><a href="https://rdrr.io/r/base/with.html" class="external-link">with()</a></code> method for <code><a href="../reference/daemons.html">daemons()</a></code> now propagates “.compute” so that this does not need to be specified in functions such as <code><a href="../reference/mirai.html">mirai()</a></code> within the <code><a href="https://rdrr.io/r/base/with.html" class="external-link">with()</a></code> clause.</li>
+<li>
 <code><a href="../reference/mirai.html">mirai()</a></code> arguments <code>...</code> and <code>.args</code> now accept environments containing variables beginning with a dot <code>.</code> (<a href="https://github.com/shikokuchuo/mirai/issues/207" class="external-link">#207</a>).</li>
 <li>‘miraiError’ stack traces no longer sometimes contain an additional (internal) call (<a href="https://github.com/shikokuchuo/mirai/issues/216" class="external-link">#216</a>).</li>
 <li>‘miraiError’ condition <code>$call</code> objects are now stripped of ‘srcref’ attributes (thanks <a href="https://github.com/lionel-" class="external-link">@lionel-</a>, <a href="https://github.com/shikokuchuo/mirai/issues/218" class="external-link">#218</a>).</li>
