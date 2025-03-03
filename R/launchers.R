@@ -74,7 +74,7 @@
 #'
 launch_local <- function(n = 1L, ..., tls = NULL, .compute = "default") {
 
-  envir <- if (missing(.compute)) ..[[.subset2(., "cp")]] else ..[[.compute]]
+  envir <- ..[[if (missing(.compute)) .[["cp"]] else .compute]]
   is.null(envir) && stop(._[["daemons_unset"]])
   url <- envir[["urls"]]
   write_args <- if (length(envir[["msgid"]])) wa3 else wa2
@@ -113,7 +113,7 @@ launch_remote <- function(n = 1L, remote = remote_config(), ..., tls = NULL, .co
     n <- max(length(n), 1L)
   }
   n <- as.integer(n)
-  envir <- if (missing(.compute)) ..[[.subset2(., "cp")]] else ..[[.compute]]
+  envir <- ..[[if (missing(.compute)) .[["cp"]] else .compute]]
   is.null(envir) && stop(._[["daemons_unset"]])
   url <- envir[["urls"]]
   write_args <- if (length(envir[["msgid"]])) wa3 else wa2

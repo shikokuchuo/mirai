@@ -234,7 +234,7 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
 
   missing(n) && missing(url) && return(status(.compute))
 
-  envir <- if (missing(.compute)) ..[[.subset2(., "cp")]] else ..[[.compute]]
+  envir <- ..[[if (missing(.compute)) .[["cp"]] else .compute]]
 
   if (is.character(url)) {
 
@@ -416,7 +416,7 @@ with.miraiDaemons <- function(data, expr, ...) {
 status <- function(.compute = "default") {
 
   is.list(.compute) && return(status(attr(.compute, "id")))
-  envir <- if (missing(.compute)) ..[[.subset2(., "cp")]] else ..[[.compute]]
+  envir <- ..[[if (missing(.compute)) .[["cp"]] else .compute]]
   is.null(envir) && return(list(connections = 0L, daemons = 0L))
   length(envir[["msgid"]]) && return(dispatcher_status(envir))
   list(connections = as.integer(stat(envir[["sock"]], "pipes")), daemons = envir[["urls"]])
