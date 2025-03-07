@@ -88,7 +88,7 @@
   list(
     arglen = "`n` must equal the length of `args`, or either must be 1",
     cluster_inactive = "cluster is no longer active",
-    daemons_set = "ignored as daemons already set for `%s`",
+    daemons_set = "daemons already set for `%s` compute profile",
     daemons_unset = "daemons must be set to use launchers",
     dispatcher_args = "`dispatcher` should be either TRUE or FALSE",
     dot_required = "`.` must be an element of the character vector(s) supplied to `args`",

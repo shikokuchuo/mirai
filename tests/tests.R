@@ -69,7 +69,7 @@ connection && {
   Sys.sleep(1L)
   test_equal(1L, d <- daemons(1L, dispatcher = FALSE, asyncdial = FALSE, seed = 1546L))
   test_print(d)
-  test_equal(1L, suppressWarnings(daemons(1L)))
+  test_error(daemons(1L), "daemons already set")
   me <- mirai(mirai::mirai(), .timeout = 2000L)[]
   if (!is_mirai_error(me)) test_true(is_error_value(me))
   if (is_mirai_error(me)) test_type("list", me$stack.trace)
@@ -106,7 +106,7 @@ connection && {
   Sys.sleep(1L)
   test_type("integer", status(.compute = "new")[["connections"]])
   test_error(mirai_map(1:2, "a function", .compute = "new"), "must be of type function, not character")
-  test_equal(1L, suppressWarnings(daemons(url = local_url(), .compute = "new")))
+  test_error(daemons(url = local_url(), .compute = "new"), "daemons already set")
   test_zero(daemons(0L, .compute = "new"))
 }
 # additional daemons tests
