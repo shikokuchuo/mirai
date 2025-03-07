@@ -29,7 +29,7 @@
 # within a `later::later` callback. So this code is factored to isolate that
 # `later::later` code
 
-#' Make Mirai Promise
+#' Make mirai Promise
 #'
 #' Creates a \sQuote{promise} from a \sQuote{mirai}.
 #'
@@ -91,7 +91,7 @@ as.promise.mirai <- function(x) {
 
 }
 
-#' Make Mirai Map Promise
+#' Make mirai_map Promise
 #'
 #' Creates a \sQuote{promise} from a \sQuote{mirai_map}.
 #'
@@ -116,12 +116,11 @@ as.promise.mirai <- function(x) {
 #' library(promises)
 #'
 #' with(daemons(1), {
-#'   mp <- mirai_map(1:2, Sys.sleep)
+#'   mp <- mirai_map(1:3, function(x) { Sys.sleep(1); x })
 #'   p <- as.promise(mp)
 #'   print(p)
-#'   is.promise(p)
 #'   p %...>% print
-#'   mp[]
+#'   mp[.flat]
 #' })
 #'
 #' @exportS3Method promises::as.promise

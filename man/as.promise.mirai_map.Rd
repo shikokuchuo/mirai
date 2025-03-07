@@ -2,7 +2,7 @@
 % Please edit documentation in R/promises.R
 \name{as.promise.mirai_map}
 \alias{as.promise.mirai_map}
-\title{Make Mirai Map Promise}
+\title{Make mirai_map Promise}
 \usage{
 \method{as.promise}{mirai_map}(x)
 }
@@ -34,12 +34,11 @@ promise.
 library(promises)
 
 with(daemons(1), {
-  mp <- mirai_map(1:2, Sys.sleep)
+  mp <- mirai_map(1:3, function(x) { Sys.sleep(1); x })
   p <- as.promise(mp)
   print(p)
-  is.promise(p)
   p \%...>\% print
-  mp[]
+  mp[.flat]
 })
 \dontshow{\}) # examplesIf}
 }
