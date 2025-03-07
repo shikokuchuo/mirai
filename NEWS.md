@@ -8,8 +8,8 @@
 
 #### Updates
 
-* Removes `register_cluster()` added in v0.13.2.
-  + mirai (in R >= 4.5) is now one of the official base R parallel cluster types, and registration is no longer required.
+* mirai (in R >= 4.5) is now one of the official base R parallel cluster types, and `register_cluster()` is no longer required.
+  + Removes `register_cluster()` added in v0.13.2.
   + Directly use `parallel::makeCluster(type = "MIRAI")` to create a 'miraiCluster'.
 * `call_mirai()` is now user-interruptible, consistent with all other functions in the package.
   + `call_mirai_()` is hence redundant and now deprecated.
