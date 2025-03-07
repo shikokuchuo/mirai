@@ -115,7 +115,7 @@
 <p>To wait for and collect the return value, use the mirai’s <code>[]</code> method:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span><span class="op">[</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 6.318813 6.082929 7.058028 7.869515 7.154402</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 6.462480 6.787032 7.122861 7.407724 6.275112</span></span></code></pre></div>
 <p>As a mirai represents an async operation, it is never necessary to wait for it. Other code can continue to run. Once it completes, the return value automatically becomes available at <code>$data</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="reference/unresolved.html">unresolved</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -124,7 +124,7 @@
 <span><span class="va">m</span></span>
 <span><span class="co">#&gt; &lt; mirai [$data] &gt;</span></span>
 <span><span class="va">m</span><span class="op">$</span><span class="va">data</span></span>
-<span><span class="co">#&gt; [1] 6.318813 6.082929 7.058028 7.869515 7.154402</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 6.462480 6.787032 7.122861 7.407724 6.275112</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="daemons">Daemons<a class="anchor" aria-label="anchor" href="#daemons"></a>
 </h4>
@@ -189,7 +189,7 @@
 </h3>
 <p>mirai features the following core integrations, with usage examples in the linked vignettes:</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/parallel.html"><img alt="R parallel" src="https://www.r-project.org/logo/Rlogo.png" width="40" height="31"></a>   Provides an alternative communications backend for R, implementing a new parallel cluster type, a feature request by R-Core at R Project Sprint 2023. ‘miraiCluster’ may also be used with ‘foreach’ via ‘doParallel’.</p>
-<p><a href="https://shikokuchuo.net/mirai/articles/promises.html"><img alt="promises" src="https://docs.posit.co/images/posit-ball.png" width="40" height="36"></a>   Implements the next generation of completely event-driven, non-polling promises. ‘mirai’ may be used interchageably with ‘promises’, including with the promise pipe <code>%...&gt;%</code>.</p>
+<p><a href="https://shikokuchuo.net/mirai/articles/promises.html"><img alt="promises" src="https://docs.posit.co/images/posit-ball.png" width="40" height="36"></a>   Implements the next generation of completely event-driven, non-polling promises. ‘mirai’ and ‘mirai_map’ objects may be used interchageably with ‘promises’, including with the promise pipe <code>%...&gt;%</code>.</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/shiny.html"><img alt="Shiny" src="https://github.com/rstudio/shiny/raw/main/man/figures/logo.png" width="40" height="46"></a>   Asynchronous parallel / distributed backend, supporting the next level of responsiveness and scalability within Shiny, with native support for ExtendedTask.</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/plumber.html"><img alt="Plumber" src="https://rstudio.github.io/cheatsheets/html/images/logo-plumber.png" width="40" height="46"></a>   Asynchronous parallel / distributed backend for scaling Plumber applications in production.</p>
 <p><a href="https://shikokuchuo.net/mirai/articles/databases.html"><img alt="Arrow" src="https://arrow.apache.org/img/arrow-logo_hex_black-txt_white-bg.png" width="40" height="46"></a>   Allows queries using the Apache Arrow format to be handled seamlessly over ADBC database connections hosted in background processes.</p>

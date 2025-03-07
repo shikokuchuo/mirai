@@ -96,12 +96,12 @@ package.</p>
 <p>These are next-generation, event-driven promises, developed in
 collaboration with Joe Cheng.</p>
 <ul>
-<li>Do not require each promise to be polled for completion by a
+<li>Does not require each promise to be polled for completion by a
 <code>later</code> loop like other promises.</li>
 <li>Instead, promise actions are automatically queued for execution as
 soon as each ‘mirai’ resolves.</li>
 <li>Allows for much higher responsiveness (lower latency) and massive
-scalability (situations with thousand of promises or more).</li>
+scalability (thousands or even millions of promises).</li>
 </ul>
 <p>A ‘mirai’ may be piped directly using the promise pipe
 <code>%...&gt;%</code>, which implicitly calls <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code>
@@ -142,12 +142,41 @@ an environment in the example below).</p>
 <span><span class="co">#&gt; [1] "hello"</span></span></code></pre></div>
 </div>
 <div class="section level3">
+<h3 id="mirai_map-promises-integration">mirai_map Promises Integration<a class="anchor" aria-label="anchor" href="#mirai_map-promises-integration"></a>
+</h3>
+<p>A <code>mirai_map</code> also has an <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code>
+method, which allows it to be used directly in a Shiny ExtendedTask.</p>
+<p>The implementation uses <code><a href="https://rstudio.github.io/promises/reference/promise_all.html" class="external-link">promises::promise_all()</a></code>, and
+will resolve when the entire map operation completes or at least one
+mirai in the map is rejected.</p>
+<p>The following example prints the list 1, 2, 3 to the console after
+the flatmap returns a vector of the same values.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/promises/" class="external-link">promises</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, <span class="op">{</span></span>
+<span>  <span class="va">mp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai_map.html">mirai_map</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>; <span class="va">x</span> <span class="op">}</span><span class="op">)</span></span>
+<span>  <span class="va">mp</span> <span class="op"><a href="https://rstudio.github.io/promises/reference/pipes.html" class="external-link">%...&gt;%</a></span> <span class="va">print</span></span>
+<span>  <span class="va">mp</span><span class="op">[</span><span class="va">.flat</span><span class="op">]</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1 2 3</span></span>
+<span><span class="co">#&gt; [[1]]</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[2]]</span></span>
+<span><span class="co">#&gt; [1] 2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[3]]</span></span>
+<span><span class="co">#&gt; [1] 3</span></span></code></pre></div>
+</div>
+<div class="section level3">
 <h3 id="the-one-million-promises-challenge">The One Million Promises Challenge<a class="anchor" aria-label="anchor" href="#the-one-million-promises-challenge"></a>
 </h3>
 <p>The code below is taken from the challenge to launch and collect one
 million promises. For illustration, the example is scaled down to ten
 thousand.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">8</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 8</span></span>
@@ -155,7 +184,7 @@ thousand.</p>
 <span><span class="va">start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mirai_map.html">mirai_map</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10000</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span>, .promise <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">r</span> <span class="op">&lt;&lt;-</span> <span class="va">r</span> <span class="op">+</span> <span class="va">x</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="va">start</span></span>
-<span><span class="co">#&gt; Time difference of 2.767478 secs</span></span>
+<span><span class="co">#&gt; Time difference of 3.441591 secs</span></span>
 <span><span class="fu">later</span><span class="fu">::</span><span class="fu"><a href="https://r-lib.github.io/later/reference/run_now.html" class="external-link">run_now</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">r</span></span>
 <span><span class="co">#&gt; [1] 50005000</span></span>

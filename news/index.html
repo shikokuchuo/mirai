@@ -52,12 +52,13 @@
 <h2 class="pkg-version" data-toc-text="development version" id="mirai-development-version">mirai (development version)<a class="anchor" aria-label="anchor" href="#mirai-development-version"></a></h2>
 <div class="section level5">
 <h5 id="new-features-development-version">New Features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h5>
-<ul><li>Simplifies SSH tunnelling for distributed computing:
+<ul><li>Simplified SSH tunnelling for distributed computing:
 <ul><li>
 <code><a href="../reference/remote_config.html">ssh_config()</a></code> argument ‘port’ is removed, with the tunnel port now inferred at the time of launch, and no longer set by the configuration.</li>
 <li>
 <code><a href="../reference/host_url.html">local_url()</a></code> adds logical argument ‘tcp’ for easily constructing an automatic local TCP URL when setting <code><a href="../reference/daemons.html">daemons()</a></code> for SSH tunnelling.</li>
 </ul></li>
+<li>Adds <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code> method for ‘mirai_map’ objects. This will resolve upon completion of the entire map operation.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-development-version">Updates<a class="anchor" aria-label="anchor" href="#updates-development-version"></a></h5>
