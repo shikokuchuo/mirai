@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,22 +51,18 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="mirai-development-version">mirai (development version)<a class="anchor" aria-label="anchor" href="#mirai-development-version"></a></h2>
 <div class="section level5">
-<h5 id="behavioural-changes-development-version">Behavioural Changes<a class="anchor" aria-label="anchor" href="#behavioural-changes-development-version"></a></h5>
+<h5 id="new-features-development-version">New Features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h5>
 <ul><li>Simplifies SSH tunnelling for distributed computing:
 <ul><li>
-<code><a href="../reference/remote_config.html">ssh_config()</a></code> argument ‘port’ is removed, with the tunnel port now inferred at the time of launch, and is no longer set by the configuration.</li>
+<code><a href="../reference/remote_config.html">ssh_config()</a></code> argument ‘port’ is removed, with the tunnel port now inferred at the time of launch, and no longer set by the configuration.</li>
 <li>
 <code><a href="../reference/host_url.html">local_url()</a></code> adds logical argument ‘tcp’ for easily constructing an automatic local TCP URL when setting <code><a href="../reference/daemons.html">daemons()</a></code> for SSH tunnelling.</li>
-</ul></li>
-<li>
-<code><a href="../reference/daemons.html">daemons()</a></code> providing revised settings for a compute profile, now warns and has no effect rather than error (amending the change made in mirai 2.1.0).
-<ul><li>This protects against errors when automated systems attempt to run a script multiple times in the same session.</li>
 </ul></li>
 </ul></div>
 <div class="section level5">
 <h5 id="updates-development-version">Updates<a class="anchor" aria-label="anchor" href="#updates-development-version"></a></h5>
-<ul><li>Removes <code>register_cluster()</code> added in v0.13.2.
-<ul><li>mirai (in R &gt;= 4.5) is now one of the official base R parallel cluster types, and registration is no longer required.</li>
+<ul><li>mirai (in R &gt;= 4.5) is now one of the official base R parallel cluster types, and <code>register_cluster()</code> is no longer required.
+<ul><li>Removes <code>register_cluster()</code> added in v0.13.2.</li>
 <li>Directly use <code>parallel::makeCluster(type = "MIRAI")</code> to create a ‘miraiCluster’.</li>
 </ul></li>
 <li>
