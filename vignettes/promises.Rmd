@@ -13,9 +13,9 @@ vignette: >
 
 These are next-generation, event-driven promises, developed in collaboration with Joe Cheng.
 
-- Do not require each promise to be polled for completion by a `later` loop like other promises.
+- Does not require each promise to be polled for completion by a `later` loop like other promises.
 - Instead, promise actions are automatically queued for execution as soon as each 'mirai' resolves.
-- Allows for much higher responsiveness (lower latency) and massive scalability (situations with thousand of promises or more).
+- Allows for much higher responsiveness (lower latency) and massive scalability (thousands or even millions of promises).
 
 A 'mirai' may be piped directly using the promise pipe `%...>%`, which implicitly calls `as.promise()` on the 'mirai'. Similarly all promise-aware functions such as `promises::then()` or `shiny::ExtendedTask$new()` which take a promise can also take a 'mirai' (using `promises` >= 1.3.0).
 
@@ -53,6 +53,35 @@ After returning to the top level prompt:
 env$res
 #> [1] "hello"
 ```
+### mirai_map Promises Integration
+
+A `mirai_map` also has an `as.promise()` method, which allows it to be used directly in a Shiny ExtendedTask.
+
+The implementation uses `promises::promise_all()`, and will resolve when the entire map operation completes or at least one mirai in the map is rejected.
+
+The following example prints the list 1, 2, 3 to the console after the flatmap returns a vector of the same values.
+
+
+``` r
+library(mirai)
+library(promises)
+
+with(daemons(2), {
+  mp <- mirai_map(1:3, function(x) { Sys.sleep(x); x })
+  mp %...>% print
+  mp[.flat]
+})
+#> [1] 1 2 3
+#> [[1]]
+#> [1] 1
+#> 
+#> [[2]]
+#> [1] 2
+#> 
+#> [[3]]
+#> [1] 3
+```
+
 ### The One Million Promises Challenge
 
 The code below is taken from the challenge to launch and collect one million promises. For illustration, the example is scaled down to ten thousand.
@@ -66,7 +95,7 @@ r <- 0
 start <- Sys.time()
 m <- mirai_map(1:10000, \(x) x, .promise = \(x) r <<- r + x)
 Sys.time() - start
-#> Time difference of 2.767478 secs
+#> Time difference of 3.441591 secs
 later::run_now()
 r
 #> [1] 50005000

@@ -2,9 +2,10 @@
 
 #### New Features
 
-* Simplifies SSH tunnelling for distributed computing:
+* Simplified SSH tunnelling for distributed computing:
   + `ssh_config()` argument 'port' is removed, with the tunnel port now inferred at the time of launch, and no longer set by the configuration.
   + `local_url()` adds logical argument 'tcp' for easily constructing an automatic local TCP URL when setting `daemons()` for SSH tunnelling.
+* Adds `as.promise()` method for 'mirai_map' objects. This will resolve upon completion of the entire map operation.
 
 #### Updates
 
