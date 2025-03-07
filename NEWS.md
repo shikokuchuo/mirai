@@ -1,9 +1,9 @@
 # mirai (development version)
 
-#### Behavioural Changes
+#### New Features
 
 * Simplifies SSH tunnelling for distributed computing:
-  + `ssh_config()` argument 'port' is removed, with the tunnel port now inferred at the time of launch, and is no longer set by the configuration.
+  + `ssh_config()` argument 'port' is removed, with the tunnel port now inferred at the time of launch, and no longer set by the configuration.
   + `local_url()` adds logical argument 'tcp' for easily constructing an automatic local TCP URL when setting `daemons()` for SSH tunnelling.
 
 #### Updates
