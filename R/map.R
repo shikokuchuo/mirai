@@ -200,7 +200,7 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
         dimnames(.x)[[1L]]
       )
     } else {
-      rn <- attr(.x, "row.names")
+      rn <- attr(.x, "row.names", exact = TRUE)
       `names<-`(
         lapply(
           seq_len(dx[1L]),
