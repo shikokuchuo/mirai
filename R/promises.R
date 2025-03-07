@@ -33,7 +33,7 @@
 #'
 #' Creates a \sQuote{promise} from a \sQuote{mirai}.
 #'
-#' This function is an S3 method for the generic `as.promise` for class
+#' This function is an S3 method for the generic `as.promise()` for class
 #' \sQuote{mirai}.
 #'
 #' Requires the \CRANpkg{promises} package.
@@ -45,9 +45,7 @@
 #'
 #' @return A \sQuote{promise} object.
 #'
-#' @examples
-#' if (interactive() && requireNamespace("promises", quietly = TRUE)) {
-#'
+#' @examplesIf interactive() && requireNamespace("promises", quietly = TRUE)
 #' library(promises)
 #'
 #' p <- as.promise(mirai("example"))
@@ -57,8 +55,6 @@
 #' p2 <- mirai("completed") %...>% identity()
 #' p2$then(cat)
 #' is.promise(p2)
-#'
-#' }
 #'
 #' @exportS3Method promises::as.promise
 #'
@@ -95,6 +91,58 @@ as.promise.mirai <- function(x) {
 
 }
 
+#' Make Mirai Map Promise
+#'
+#' Creates a \sQuote{promise} from a \sQuote{mirai_map}.
+#'
+#' This function is an S3 method for the generic `as.promise()` for class
+#' \sQuote{mirai_map}.
+#'
+#' Requires the \CRANpkg{promises} package.
+#'
+#' Allows a \sQuote{mirai_map} to be used with the promise pipe `%...>%`, which
+#' schedules a function to run upon resolution of the entire \sQuote{mirai_map}.
+#'
+#' Uses `promises::promise_all()`. If all of the promises were successful, the
+#' returned promise will resolve to a list of the promise values; if any promise
+#' fails, the first error to be encountered will be used to reject the returned
+#' promise.
+#'
+#' @param x an object of class \sQuote{mirai_map}.
+#'
+#' @return A \sQuote{promise} object.
+#'
+#' @examplesIf interactive() && requireNamespace("promises", quietly = TRUE)
+#' library(promises)
+#'
+#' with(daemons(1), {
+#'   mp <- mirai_map(1:2, Sys.sleep)
+#'   p <- as.promise(mp)
+#'   print(p)
+#'   is.promise(p)
+#'   p %...>% print
+#'   mp[]
+#' })
+#'
+#' @exportS3Method promises::as.promise
+#'
+as.promise.mirai_map <- function(x) {
+
+  promise <- attr(x, "promise")
+
+  if (is.null(promise)) {
+    promise <- promises::promise_all(.list = lapply(x, promises::as.promise))
+    attr(x, "promise") <- promise
+  }
+
+  promise
+
+}
+
 #' @exportS3Method promises::is.promising
 #'
 is.promising.mirai <- function(x) TRUE
+
+#' @exportS3Method promises::is.promising
+#'
+is.promising.mirai_map <- function(x) TRUE
