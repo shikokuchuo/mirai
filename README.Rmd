@@ -129,7 +129,7 @@ mirai features the following core integrations, with usage examples in the linke
 
 [<img alt="R parallel" src="https://www.r-project.org/logo/Rlogo.png" width="40" height="31" />](https://shikokuchuo.net/mirai/articles/parallel.html) &nbsp; Provides an alternative communications backend for R, implementing a new parallel cluster type, a feature request by R-Core at R Project Sprint 2023. 'miraiCluster' may also be used with 'foreach' via 'doParallel'.
 
-[<img alt="promises" src="https://docs.posit.co/images/posit-ball.png" width="40" height="36" />](https://shikokuchuo.net/mirai/articles/promises.html) &nbsp; Implements the next generation of completely event-driven, non-polling promises. 'mirai' may be used interchageably with 'promises', including with the promise pipe `%...>%`.
+[<img alt="promises" src="https://docs.posit.co/images/posit-ball.png" width="40" height="36" />](https://shikokuchuo.net/mirai/articles/promises.html) &nbsp; Implements the next generation of completely event-driven, non-polling promises. 'mirai' and 'mirai_map' objects may be used interchageably with 'promises', including with the promise pipe `%...>%`.
 
 [<img alt="Shiny" src="https://github.com/rstudio/shiny/raw/main/man/figures/logo.png" width="40" height="46" />](https://shikokuchuo.net/mirai/articles/shiny.html) &nbsp; Asynchronous parallel / distributed backend, supporting the next level of responsiveness and scalability within Shiny, with native support for ExtendedTask.
 
