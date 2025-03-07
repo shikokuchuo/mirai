@@ -180,7 +180,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
     data <- c(.args, data)
   }
 
-  envir <- ..[[if (missing(.compute)) .[["cp"]] else .compute]]
+  if (missing(.compute)) .compute <- .[["cp"]]
+  envir <- ..[[.compute]]
   is.null(envir) && return(ephemeral_daemon(data, .timeout))
   r <- request(.context(envir[["sock"]]), data, send_mode = 1L, recv_mode = 1L, timeout = .timeout, cv = envir[["cv"]])
   `attr<-`(`attr<-`(r, "msgid", next_msgid(envir)), "profile", .compute)
@@ -241,7 +242,8 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 
-  envir <- ..[[if (missing(.compute)) .[["cp"]] else .compute]]
+  if (missing(.compute)) .compute <- .[["cp"]]
+  envir <- ..[[.compute]]
 
   is.null(envir) && stop(sprintf(._[["not_found"]], .compute))
 

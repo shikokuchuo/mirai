@@ -74,7 +74,8 @@
 #'
 launch_local <- function(n = 1L, ..., tls = NULL, .compute = "default") {
 
-  envir <- ..[[if (missing(.compute)) .[["cp"]] else .compute]]
+  if (missing(.compute)) .compute <- .[["cp"]]
+  envir <- ..[[.compute]]
   is.null(envir) && stop(._[["daemons_unset"]])
   url <- envir[["urls"]]
   write_args <- if (length(envir[["msgid"]])) wa3 else wa2
@@ -108,12 +109,13 @@ launch_local <- function(n = 1L, ..., tls = NULL, .compute = "default") {
 #'
 launch_remote <- function(n = 1L, remote = remote_config(), ..., tls = NULL, .compute = "default") {
 
+  if (missing(.compute)) .compute <- .[["cp"]]
   if (!is.numeric(n) && inherits(n, c("miraiCluster", "miraiNode"))) {
     .compute <- attr(n, "id")
     n <- max(length(n), 1L)
   }
   n <- as.integer(n)
-  envir <- ..[[if (missing(.compute)) .[["cp"]] else .compute]]
+  envir <- ..[[.compute]]
   is.null(envir) && stop(._[["daemons_unset"]])
   url <- envir[["urls"]]
   write_args <- if (length(envir[["msgid"]])) wa3 else wa2
