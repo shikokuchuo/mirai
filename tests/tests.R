@@ -275,12 +275,21 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
 }
 # promises tests
 connection && requireNamespace("promises", quietly = TRUE) && Sys.getenv("NOT_CRAN") == "true" && {
+  run_now <- getNamespace("later")[["run_now"]]
   Sys.sleep(0.5)
   test_equal(daemons(1, notused = "wrongtype"), 1L)
   test_true(grepl("://", launch_remote(1L), fixed = TRUE))
   test_true(promises::is.promise(p1 <- promises::as.promise(mirai("completed"))))
   test_true(promises::is.promise(p2 <- promises::`%...>%`(mirai("completed"), identity())))
   test_true(promises::is.promise(p3 <- promises::as.promise(call_mirai(mirai("completed")))))
+  test_true(promises::is.promise(promises::then(mirai(stop()), identity, function(x) test_true(inherits(x, "simpleError")))))
+  run_now(1L)
+  test_true(promises::is.promise(promises::then(mirai(Sys.sleep(0.1), .timeout = 10), identity, function(x) test_true(inherits(x, "simpleError")))))
+  run_now(1L)
+  test_true(promises::is.promise(promises::then(call_mirai(mirai(stop())), identity, function(x) test_true(inherits(x, "simpleError")))))
+  run_now(1L)
+  test_true(promises::is.promise(promises::then(call_mirai(mirai(Sys.sleep(0.1), .timeout = 10)), identity, function(x) test_true(inherits(x, "simpleError")))))
+  run_now(1L)
   test_zero(mirai_map(0:1, function(x) x, .promise = identity)[][[1L]])
   mat <- matrix(1:4, nrow = 2L)
   dimnames(mat) <- list(c("a", "b"), c("y", "x"))
@@ -289,8 +298,7 @@ connection && requireNamespace("promises", quietly = TRUE) && Sys.getenv("NOT_CR
   test_true(all(mp[.flat, .stop] == 2L))
   test_identical(names(mp[]), c("a", "b"))
   test_class("errorValue", mirai_map(1, function(x) stop(x), .promise = list(identity, identity))[][[1L]])
-  Sys.sleep(1L)
-  getNamespace("later")[["run_now"]]()
+  run_now(1L)
   test_zero(daemons(NULL))
 }
 # mirai daemon limits tests

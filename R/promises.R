@@ -77,9 +77,11 @@ as.promise.mirai <- function(x) {
       value <- .subset2(x, "value")
       promises::promise(
         function(resolve, reject)
-          if (is_error_value(value) && !is_mirai_interrupt(value))
-            reject(value) else
-              resolve(value)
+          resolve(
+            if (is_error_value(value) && !is_mirai_interrupt(value))
+              stop(if (is_mirai_error(value)) value else nng_error(value)) else
+                value
+          )
       )
     }
 
