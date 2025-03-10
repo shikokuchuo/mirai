@@ -218,13 +218,9 @@ mirai_map <- function(.x, .f, ..., .args = list(), .promise = NULL, .compute = "
   }
 
   if (length(.promise))
-    if (is.list(.promise)) {
-      if (length(.promise) > 1L)
-        lapply(vec, promises::then, .promise[[1L]], .promise[[2L]]) else
-          lapply(vec, promises::then, .promise[[1L]])
-    } else {
-      lapply(vec, promises::then, .promise)
-    }
+    if (is.list(.promise))
+      lapply(vec, promises::then, .promise[[1L]], .promise[2L][[1L]]) else
+        lapply(vec, promises::then, .promise)
 
   `class<-`(vec, "mirai_map")
 
