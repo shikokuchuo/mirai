@@ -18,6 +18,8 @@
 * `mirai()` arguments `...` and `.args` now accept environments containing variables beginning with a dot `.` (#207).
 * 'miraiError' stack traces no longer sometimes contain an additional (internal) call (#216).
 * 'miraiError' condition `$call` objects are now stripped of 'srcref' attributes (thanks @lionel-, #218).
+* A mirai promise now rejects in exactly the same way whether or not the mirai was already resolved at time of creation.
+  This avoids Shiny deep stack trace errors when the mirai had already resolved (#229).
 
 # mirai 2.1.0
 
