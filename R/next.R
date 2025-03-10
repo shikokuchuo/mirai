@@ -77,7 +77,7 @@ nextget <- function(x, .compute = "default") ..[[.compute]][[x]]
 #'
 #' `nextcode` translates integer exit codes returned by [daemon()].
 #'
-#' @param xc integer value.
+#' @param xc integer return value of [daemon()].
 #'
 #' @return For `nextcode`: character string.
 #'
@@ -89,16 +89,8 @@ nextget <- function(x, .compute = "default") ..[[.compute]][[x]]
 #' @rdname nextstream
 #' @export
 #'
-nextcode <- function(xc) {
-  str <- switch(xc + 1L,
-    "0 | Daemon connection terminated",
-    "1 | Daemon idletime limit reached",
-    "2 | Daemon walltime limit reached",
-    "3 | Daemon task limit reached"
-  )
-  is.null(str) && return("")
-  str
-}
+nextcode <- function(xc)
+  sprintf("%d | Daemon %s", xc, switch(xc + 1L, "connection terminated", "idletime limit reached", "walltime limit reached", "task limit reached"))
 
 # internals --------------------------------------------------------------------
 

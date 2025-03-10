@@ -21,7 +21,7 @@ dispatcher daemons), \sQuote{pid} (dispatcher process ID), \sQuote{urls}
 (URLs dispatcher is listening at) or \sQuote{tls} (the stored client TLS
 configuration for use by daemons).}
 
-\item{xc}{integer value.}
+\item{xc}{integer return value of \code{\link[=daemon]{daemon()}}.}
 }
 \value{
 For \code{nextstream}: a length 7 integer vector, as given by
