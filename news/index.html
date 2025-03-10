@@ -77,6 +77,7 @@
 <code><a href="../reference/mirai.html">mirai()</a></code> arguments <code>...</code> and <code>.args</code> now accept environments containing variables beginning with a dot <code>.</code> (<a href="https://github.com/shikokuchuo/mirai/issues/207" class="external-link">#207</a>).</li>
 <li>‘miraiError’ stack traces no longer sometimes contain an additional (internal) call (<a href="https://github.com/shikokuchuo/mirai/issues/216" class="external-link">#216</a>).</li>
 <li>‘miraiError’ condition <code>$call</code> objects are now stripped of ‘srcref’ attributes (thanks <a href="https://github.com/lionel-" class="external-link">@lionel-</a>, <a href="https://github.com/shikokuchuo/mirai/issues/218" class="external-link">#218</a>).</li>
+<li>A mirai promise now rejects in exactly the same way whether or not the mirai was already resolved at time of creation. This avoids Shiny deep stack trace errors when the mirai had already resolved (<a href="https://github.com/shikokuchuo/mirai/issues/229" class="external-link">#229</a>).</li>
 </ul></div>
 </div>
     <div class="section level2">
