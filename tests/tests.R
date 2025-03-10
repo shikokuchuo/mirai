@@ -282,22 +282,19 @@ connection && requireNamespace("promises", quietly = TRUE) && Sys.getenv("NOT_CR
   test_true(promises::is.promise(p1 <- promises::as.promise(mirai("completed"))))
   test_true(promises::is.promise(p2 <- promises::`%...>%`(mirai("completed"), identity())))
   test_true(promises::is.promise(p3 <- promises::as.promise(call_mirai(mirai("completed")))))
-  value <- NULL
-  test_true(promises::is.promise(promises::then(mirai(stop()), identity, function(x) value <<- x)))
+  value1 <- value2 <- value3 <- value4 <- NULL
+  test_true(promises::is.promise(promises::then(mirai(stop()), identity, function(x) value1 <<- x)))
   run_now(1L)
-  test_true(inherits(value, "simpleError"))
-  value <- NULL
-  test_true(promises::is.promise(promises::then(mirai(Sys.sleep(0.1), .timeout = 10), identity, function(x) value <<- x)))
+  test_true(inherits(value1, "simpleError"))
+  test_true(promises::is.promise(promises::then(mirai(Sys.sleep(0.1), .timeout = 10), identity, function(x) value2 <<- x)))
   run_now(1L)
-  test_true(inherits(value, "simpleError"))
-  value <- NULL
-  test_true(promises::is.promise(promises::then(call_mirai(mirai(stop())), identity, function(x) value <<- x)))
+  test_true(inherits(value2, "simpleError"))
+  test_true(promises::is.promise(promises::then(call_mirai(mirai(stop())), identity, function(x) value3 <<- x)))
   run_now(1L)
-  test_true(inherits(value, "simpleError"))
-  value <- NULL
-  test_true(promises::is.promise(promises::then(call_mirai(mirai(Sys.sleep(0.1), .timeout = 10)), identity, function(x) value <<- x)))
+  test_true(inherits(value3, "simpleError"))
+  test_true(promises::is.promise(promises::then(call_mirai(mirai(Sys.sleep(0.1), .timeout = 10)), identity, function(x) value4 <<- x)))
   run_now(1L)
-  test_true(inherits(value, "simpleError"))
+  test_true(inherits(value4, "simpleError"))
   test_zero(mirai_map(0:1, function(x) x, .promise = identity)[][[1L]])
   mat <- matrix(1:4, nrow = 2L)
   dimnames(mat) <- list(c("a", "b"), c("y", "x"))
