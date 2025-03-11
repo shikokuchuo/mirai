@@ -280,7 +280,7 @@ connection && requireNamespace("promises", quietly = TRUE) && Sys.getenv("NOT_CR
   test_equal(daemons(1, notused = "wrongtype"), 1L)
   test_true(grepl("://", launch_remote(1L), fixed = TRUE))
   test_true(promises::is.promise(p1 <- promises::as.promise(mirai("completed"))))
-  test_true(promises::is.promise(p2 <- promises::`%...>%`(mirai("completed"), identity())))
+  test_true(promises::is.promise(p2 <- promises::`%...>%`(mirai(Sys.sleep(0.1)), identity())))
   test_true(promises::is.promise(p3 <- promises::as.promise(call_mirai(mirai("completed")))))
   test_true(promises::is.promise(promises::then(mirai(stop()), identity, function(x) test_true(inherits(x, "simpleError")))))
   run_now(1L)
@@ -332,6 +332,7 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
 # mirai cancellation tests
 connection && Sys.getenv("NOT_CRAN") == "true" && {
   Sys.sleep(0.5)
+  Sys.unsetenv("R_DEFAULT_PACKAGES")
   test_equal(daemons(1, dispatcher = TRUE, cleanup = FALSE), 1L)
   m1 <- mirai({ Sys.sleep(1); res <<- "m1 done" })
   m2 <- mirai({ Sys.sleep(1); res <<- "m2 done" })
