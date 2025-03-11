@@ -98,9 +98,7 @@ If a daemon crashes or terminates unexpectedly during evaluation, an
 }
 
 \examples{
-if (interactive()) {
-# Only run examples in interactive R sessions
-
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # specifying objects via '...'
 n <- 3
 m <- mirai(x + y + 2, x = 2, y = n)
@@ -150,7 +148,5 @@ expr <- quote(a + b + 2)
 args <- list(a = 2, b = 3)
 m <- mirai(.expr = expr, .args = args)
 collect_mirai(m)
-
-}
-
+\dontshow{\}) # examplesIf}
 }

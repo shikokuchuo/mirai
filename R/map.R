@@ -89,10 +89,7 @@
 #' To map over **columns** instead, first wrap a dataframe in [as.list()], or
 #' transpose a matrix using [t()].
 #'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
+#' @examplesIf interactive()
 #' daemons(4)
 #'
 #' # perform and collect mirai map
@@ -145,8 +142,8 @@
 #'
 #' daemons(0)
 #'
+#' @examplesIf interactive() && requireNamespace("promises", quietly = TRUE)
 #' # promises example that outputs the results, including errors, to the console
-#' if (requireNamespace("promises", quietly = TRUE)) {
 #' daemons(1, dispatcher = FALSE)
 #' ml <- mirai_map(
 #'   1:30,
@@ -156,9 +153,6 @@
 #'     function(x) { cat(conditionMessage(x), "\n"); daemons(0) }
 #'   )
 #' )
-#' }
-#'
-#' }
 #'
 #' @export
 #'

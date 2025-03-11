@@ -37,9 +37,7 @@ Is the object an \sQuote{errorValue}, such as a \sQuote{mirai} timeout, a
 condition that includes all returned error values.
 }
 \examples{
-if (interactive()) {
-# Only run examples in interactive R sessions
-
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 m <- mirai(stop())
 call_mirai(m)
 is_mirai_error(m$data)
@@ -52,7 +50,5 @@ call_mirai(m2)
 is_mirai_error(m2$data)
 is_mirai_interrupt(m2$data)
 is_error_value(m2$data)
-
-}
-
+\dontshow{\}) # examplesIf}
 }

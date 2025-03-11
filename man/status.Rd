@@ -39,14 +39,10 @@ status query are returned.
 }
 
 \examples{
-if (interactive()) {
-# Only run examples in interactive R sessions
-
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 status()
 daemons(url = "tcp://[::1]:0")
 status()
 daemons(0)
-
-}
-
+\dontshow{\}) # examplesIf}
 }

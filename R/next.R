@@ -36,10 +36,7 @@
 #'   to the `rs` argument of [daemon()]), or else NULL if a stream has not yet
 #'   been created.
 #'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
+#' @examplesIf interactive()
 #' daemons(1L)
 #' nextstream()
 #' nextstream()
@@ -48,8 +45,6 @@
 #' nextget("urls")
 #'
 #' daemons(0)
-#'
-#' }
 #'
 #' @keywords internal
 #' @export

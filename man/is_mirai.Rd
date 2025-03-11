@@ -20,9 +20,7 @@ respectively, FALSE otherwise.
 Is the object a \sQuote{mirai} or \sQuote{mirai_map}.
 }
 \examples{
-if (interactive()) {
-# Only run examples in interactive R sessions
-
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 daemons(1, dispatcher = FALSE)
 df <- data.frame()
 m <- mirai(as.matrix(df), df = df)
@@ -33,7 +31,5 @@ mp <- mirai_map(1:3, runif)
 is_mirai_map(mp)
 is_mirai_map(mp[])
 daemons(0)
-
-}
-
+\dontshow{\}) # examplesIf}
 }

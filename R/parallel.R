@@ -78,10 +78,7 @@
 #'   additional customisation if desired, although resultant behaviour may not
 #'   always be supported.
 #'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
+#' @examplesIf interactive()
 #' cl <- make_cluster(2)
 #' cl
 #' cl[[1L]]
@@ -90,8 +87,6 @@
 #' status(cl)
 #'
 #' stop_cluster(cl)
-#'
-#' }
 #'
 #' @export
 #'

@@ -95,10 +95,7 @@
 #' [is_error_value()] tests for all error conditions including
 #' \sQuote{mirai} errors, interrupts, and timeouts.
 #'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
+#' @examplesIf interactive()
 #' # specifying objects via '...'
 #' n <- 3
 #' m <- mirai(x + y + 2, x = 2, y = n)
@@ -148,8 +145,6 @@
 #' args <- list(a = 2, b = 3)
 #' m <- mirai(.expr = expr, .args = args)
 #' collect_mirai(m)
-#'
-#' }
 #'
 #' @export
 #'
@@ -209,10 +204,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #'
 #' @inheritSection mirai Evaluation
 #'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
+#' @examplesIf interactive()
 #' daemons(1)
 #' # export common data by a super-assignment expression:
 #' everywhere(y <<- 3)
@@ -234,8 +226,6 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 #' m <- mirai("package:parallel" %in% search())
 #' m[]
 #' daemons(0)
-#'
-#' }
 #'
 #' @export
 #'
@@ -302,10 +292,7 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #' `call_mirai_` is deprecated and exported for historical compatibility
 #' only. It will be removed in a future package version.
 #'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
+#' @examplesIf interactive()
 #' # using call_mirai()
 #' df1 <- data.frame(a = 1, b = 2)
 #' df2 <- data.frame(a = 3, b = 1)
@@ -325,8 +312,6 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #'   Sys.sleep(0.1)
 #' }
 #' str(m$data)
-#'
-#' }
 #'
 #' @export
 #'
@@ -359,10 +344,7 @@ call_mirai_ <- call_mirai
 #' @inheritSection call_mirai Alternatively
 #' @inheritSection mirai Errors
 #'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
+#' @examplesIf interactive()
 #' # using collect_mirai()
 #' df1 <- data.frame(a = 1, b = 2)
 #' df2 <- data.frame(a = 3, b = 1)
@@ -377,8 +359,6 @@ call_mirai_ <- call_mirai
 #' m <- mirai_map(1:3, rnorm)
 #' collect_mirai(m, c(".flat", ".progress"))
 #' daemons(0)
-#'
-#' }
 #'
 #' @export
 #'
@@ -417,15 +397,10 @@ collect_mirai <- function(x, options = NULL) {
 #'   Or a vector of logical values if supplying a list of \sQuote{mirai}, such
 #'   as those returned by [mirai_map()].
 #'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
+#' @examplesIf interactive()
 #' m <- mirai(Sys.sleep(n), n = 5)
 #' stop_mirai(m)
 #' m$data
-#'
-#' }
 #'
 #' @export
 #'
@@ -462,16 +437,11 @@ stop_mirai <- function(x) {
 #'   value or the list contains at least one unresolved \sQuote{mirai}, or FALSE
 #'   otherwise.
 #'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
+#' @examplesIf interactive()
 #' m <- mirai(Sys.sleep(0.1))
 #' unresolved(m)
 #' Sys.sleep(0.3)
 #' unresolved(m)
-#'
-#' }
 #'
 #' @export
 #'
@@ -486,10 +456,7 @@ unresolved <- unresolved
 #' @return Logical TRUE if `x` is of class \sQuote{mirai} or \sQuote{mirai_map}
 #'   respectively, FALSE otherwise.
 #'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
+#' @examplesIf interactive()
 #' daemons(1, dispatcher = FALSE)
 #' df <- data.frame()
 #' m <- mirai(as.matrix(df), df = df)
@@ -500,8 +467,6 @@ unresolved <- unresolved
 #' is_mirai_map(mp)
 #' is_mirai_map(mp[])
 #' daemons(0)
-#'
-#' }
 #'
 #' @export
 #'
@@ -534,10 +499,7 @@ is_mirai_map <- function(x) inherits(x, "mirai_map")
 #'
 #' @return Logical value TRUE or FALSE.
 #'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
+#' @examplesIf interactive()
 #' m <- mirai(stop())
 #' call_mirai(m)
 #' is_mirai_error(m$data)
@@ -550,8 +512,6 @@ is_mirai_map <- function(x) inherits(x, "mirai_map")
 #' is_mirai_error(m2$data)
 #' is_mirai_interrupt(m2$data)
 #' is_error_value(m2$data)
-#'
-#' }
 #'
 #' @export
 #'

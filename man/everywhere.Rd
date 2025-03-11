@@ -64,9 +64,7 @@ being found.
 }
 
 \examples{
-if (interactive()) {
-# Only run examples in interactive R sessions
-
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 daemons(1)
 # export common data by a super-assignment expression:
 everywhere(y <<- 3)
@@ -88,7 +86,5 @@ everywhere(library(parallel))
 m <- mirai("package:parallel" \%in\% search())
 m[]
 daemons(0)
-
-}
-
+\dontshow{\}) # examplesIf}
 }

@@ -168,10 +168,7 @@
 #' Note: further actions such as resetting daemons via `daemons(0)` should
 #' be carried out with the desired `.compute` argument specified.
 #'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
+#' @examplesIf interactive()
 #' # Create 2 local daemons (using dispatcher)
 #' daemons(2)
 #' status()
@@ -205,8 +202,6 @@
 #'     cat(m1[], m2[], "\n")
 #'   }
 #' )
-#'
-#' }
 #'
 #' \dontrun{
 #'
@@ -341,10 +336,7 @@ print.miraiDaemons <- function(x, ...) print(unclass(x))
 #'
 #' @return The return value of `expr`.
 #'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
+#' @examplesIf interactive()
 #' with(
 #'   daemons(2, dispatcher = FALSE),
 #'   {
@@ -355,8 +347,6 @@ print.miraiDaemons <- function(x, ...) print(unclass(x))
 #' )
 #'
 #' status()
-#'
-#' }
 #'
 #' @export
 #'
@@ -401,16 +391,11 @@ with.miraiDaemons <- function(data, expr, ...) {
 #'   the negative value when it disconnects. Only the events since the previous
 #'   status query are returned.
 #'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
+#' @examplesIf interactive()
 #' status()
 #' daemons(url = "tcp://[::1]:0")
 #' status()
 #' daemons(0)
-#'
-#' }
 #'
 #' @export
 #'

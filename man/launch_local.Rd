@@ -69,9 +69,7 @@ L'Ecuyer-CMRG random seed supplied to the daemon. The values will be
 different each time the function is called.
 }
 \examples{
-if (interactive()) {
-# Only run examples in interactive R sessions
-
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 daemons(url = host_url(), dispatcher = FALSE)
 status()
 launch_local(1L, cleanup = FALSE)
@@ -86,7 +84,5 @@ launch_local(2L, output = TRUE)
 Sys.sleep(1)
 status()
 daemons(0)
-
-}
-
+\dontshow{\}) # examplesIf}
 }

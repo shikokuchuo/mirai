@@ -49,10 +49,7 @@
 #'
 #' @return For **launch_local**: Integer number of daemons launched.
 #'
-#' @examples
-#' if (interactive()) {
-#' # Only run examples in interactive R sessions
-#'
+#' @examplesIf interactive()
 #' daemons(url = host_url(), dispatcher = FALSE)
 #' status()
 #' launch_local(1L, cleanup = FALSE)
@@ -67,8 +64,6 @@
 #' Sys.sleep(1)
 #' status()
 #' daemons(0)
-#'
-#' }
 #'
 #' @export
 #'

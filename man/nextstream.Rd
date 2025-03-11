@@ -51,9 +51,7 @@ advancing the stream stored within the compute profile. This ensures that the
 next recursive stream is returned when the function is called again.
 }
 \examples{
-if (interactive()) {
-# Only run examples in interactive R sessions
-
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 daemons(1L)
 nextstream()
 nextstream()
@@ -62,9 +60,7 @@ nextget("pid")
 nextget("urls")
 
 daemons(0)
-
-}
-
+\dontshow{\}) # examplesIf}
 nextcode(0L)
 nextcode(1L)
 

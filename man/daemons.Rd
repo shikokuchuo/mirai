@@ -192,9 +192,7 @@ be carried out with the desired \code{.compute} argument specified.
 }
 
 \examples{
-if (interactive()) {
-# Only run examples in interactive R sessions
-
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # Create 2 local daemons (using dispatcher)
 daemons(2)
 status()
@@ -229,8 +227,6 @@ with(
   }
 )
 
-}
-
 \dontrun{
 
 # Launch daemons on remotes 'nodeone' and 'nodetwo' using SSH
@@ -248,5 +244,5 @@ daemons(
 )
 
 }
-
+\dontshow{\}) # examplesIf}
 }

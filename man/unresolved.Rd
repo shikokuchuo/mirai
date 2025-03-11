@@ -27,14 +27,10 @@ Note: querying resolution may cause a previously unresolved \sQuote{mirai} to
 resolve.
 }
 \examples{
-if (interactive()) {
-# Only run examples in interactive R sessions
-
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 m <- mirai(Sys.sleep(0.1))
 unresolved(m)
 Sys.sleep(0.3)
 unresolved(m)
-
-}
-
+\dontshow{\}) # examplesIf}
 }

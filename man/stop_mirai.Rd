@@ -34,13 +34,9 @@ should be noted, particularly if the code carries out side effects during
 execution, such as writing to files, etc.
 }
 \examples{
-if (interactive()) {
-# Only run examples in interactive R sessions
-
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 m <- mirai(Sys.sleep(n), n = 5)
 stop_mirai(m)
 m$data
-
-}
-
+\dontshow{\}) # examplesIf}
 }

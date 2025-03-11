@@ -57,9 +57,7 @@ If a daemon crashes or terminates unexpectedly during evaluation, an
 }
 
 \examples{
-if (interactive()) {
-# Only run examples in interactive R sessions
-
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # using collect_mirai()
 df1 <- data.frame(a = 1, b = 2)
 df2 <- data.frame(a = 3, b = 1)
@@ -74,7 +72,5 @@ daemons(1, dispatcher = FALSE)
 m <- mirai_map(1:3, rnorm)
 collect_mirai(m, c(".flat", ".progress"))
 daemons(0)
-
-}
-
+\dontshow{\}) # examplesIf}
 }

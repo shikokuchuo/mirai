@@ -88,9 +88,7 @@ usual \sQuote{miraiError} being returned.
 }
 
 \examples{
-if (interactive()) {
-# Only run examples in interactive R sessions
-
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 cl <- make_cluster(2)
 cl
 cl[[1L]]
@@ -99,7 +97,5 @@ Sys.sleep(0.5)
 status(cl)
 
 stop_cluster(cl)
-
-}
-
+\dontshow{\}) # examplesIf}
 }
