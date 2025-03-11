@@ -68,20 +68,21 @@ as.promise.mirai <- function(x) {
       promises::promise(
         function(resolve, reject) .keep(x, environment())
       )$then(
-        onFulfilled = function(value, .visible)
-          if (is_error_value(value) && !is_mirai_interrupt(value))
-            stop(if (is_mirai_error(value)) value else nng_error(value)) else
-              value
+        onFulfilled = function(value, .visible) {
+          is_error_value(value) && !is_mirai_interrupt(value) &&
+            stop(if (is_mirai_error(value)) value else nng_error(value))
+          value
+        }
       )
     } else {
       value <- .subset2(x, "value")
       promises::promise(
         function(resolve, reject)
-          resolve(
-            if (is_error_value(value) && !is_mirai_interrupt(value))
-              stop(if (is_mirai_error(value)) value else nng_error(value)) else
-                value
-          )
+          resolve({
+            is_error_value(value) && !is_mirai_interrupt(value) &&
+              stop(if (is_mirai_error(value)) value else nng_error(value))
+            value
+          })
       )
     }
 
@@ -131,10 +132,8 @@ as.promise.mirai_map <- function(x) {
 
   promise <- attr(x, "promise")
 
-  if (is.null(promise)) {
-    promise <- promises::promise_all(.list = x)
-    attr(x, "promise") <- promise
-  }
+  if (is.null(promise))
+    attr(x, "promise") <- promise <- promises::promise_all(.list = x)
 
   promise
 
