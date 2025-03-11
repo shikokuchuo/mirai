@@ -62,8 +62,9 @@
 </ul></div>
 <div class="section level5">
 <h5 id="updates-development-version">Updates<a class="anchor" aria-label="anchor" href="#updates-development-version"></a></h5>
-<ul><li>mirai (in R &gt;= 4.5) is now one of the official base R parallel cluster types, and <code>register_cluster()</code> is no longer required.
-<ul><li>Removes <code>register_cluster()</code> added in v0.13.2.</li>
+<ul><li>mirai (in R &gt;= 4.5) is now one of the official base R parallel cluster types.
+<ul><li>
+<code>register_cluster()</code> is removed as no longer required.</li>
 <li>Directly use <code>parallel::makeCluster(type = "MIRAI")</code> to create a ‘miraiCluster’.</li>
 </ul></li>
 <li>

@@ -156,9 +156,7 @@ transpose a matrix using <code><a href="https://rdrr.io/r/base/t.html" class="ex
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co"># Only run examples in interactive R sessions</span></span></span>
-<span class="r-in"><span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># interactive()</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="daemons.html">daemons</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># perform and collect mirai map</span></span></span>
@@ -210,9 +208,9 @@ transpose a matrix using <code><a href="https://rdrr.io/r/base/t.html" class="ex
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="fu">mirai_map</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span>, <span class="st">"a"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="va">sum</span><span class="op">)</span><span class="op">[</span><span class="va">.stop</span><span class="op">]</span>, error <span class="op">=</span> <span class="va">identity</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="daemons.html">daemons</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># interactive() &amp;&amp; requireNamespace("promises", quietly = TRUE)</span></span></span>
 <span class="r-in"><span><span class="co"># promises example that outputs the results, including errors, to the console</span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"promises"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="daemons.html">daemons</a></span><span class="op">(</span><span class="fl">1</span>, dispatcher <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu">mirai_map</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>,</span></span>
@@ -223,9 +221,6 @@ transpose a matrix using <code><a href="https://rdrr.io/r/base/t.html" class="ex
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
