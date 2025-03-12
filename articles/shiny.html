@@ -109,9 +109,10 @@ apps, which remain responsive intra-session for each user, as well as
 inter-session for multiple concurrent users.</p>
 <p>‘mirai’ may be used anywhere a ‘promise’ or ‘future_promise’ would be
 accepted (with the promises package versions &gt;= 1.3.0).</p>
-<div class="section level4">
-<h4 id="shiny-extendedtask-introductory-example">Shiny ExtendedTask: Introductory Example<a class="anchor" aria-label="anchor" href="#shiny-extendedtask-introductory-example"></a>
-</h4>
+</div>
+<div class="section level3">
+<h3 id="shiny-extendedtask-introduction">Shiny ExtendedTask: Introduction<a class="anchor" aria-label="anchor" href="#shiny-extendedtask-introduction"></a>
+</h3>
 <p>In the example below, the app remains responsive, with the clock
 continuing to tick whilst the simulated expensive computation is running
 asynchronously in a parallel process. Also the button is disabled and
@@ -190,9 +191,9 @@ consumes the result of the ExtendedTask.</li>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">output</span><span class="op">$</span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu">renderPlot</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">task</span><span class="op">$</span><span class="fu">result</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="shiny-extendedtask-cancellation-example">Shiny ExtendedTask: Cancellation Example<a class="anchor" aria-label="anchor" href="#shiny-extendedtask-cancellation-example"></a>
-</h4>
+<div class="section level3">
+<h3 id="shiny-extendedtask-cancellation">Shiny ExtendedTask: Cancellation<a class="anchor" aria-label="anchor" href="#shiny-extendedtask-cancellation"></a>
+</h3>
 <p>The app below is a demonstration of the cancellation capability added
 in mirai v2.</p>
 <p>It builds on the introductory app by adding a button that sends an
@@ -258,9 +259,9 @@ and allow any queued plots to continue processing.</p>
 <p><em>Thanks to Joe Cheng for providing examples on which the above is
 based.</em></p>
 </div>
-<div class="section level4">
-<h4 id="shiny-extendedtask-generative-art-example">Shiny ExtendedTask: Generative Art Example<a class="anchor" aria-label="anchor" href="#shiny-extendedtask-generative-art-example"></a>
-</h4>
+<div class="section level3">
+<h3 id="shiny-extendedtask-generative-art">Shiny ExtendedTask: Generative Art<a class="anchor" aria-label="anchor" href="#shiny-extendedtask-generative-art"></a>
+</h3>
 <p>The following app produces pretty spiral patterns.</p>
 <p>The user can add multiple plots, making use of Shiny modules, each
 having a different calculation time.</p>
@@ -385,11 +386,12 @@ consumes the result of the ExtendedTask.</li>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">output</span><span class="op">$</span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu">renderPlot</span><span class="op">(</span><span class="fu">plot_result</span><span class="op">(</span><span class="va">task</span><span class="op">$</span><span class="fu">result</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="advanced-promises-example-coin-flips">Advanced Promises Example: Coin Flips<a class="anchor" aria-label="anchor" href="#advanced-promises-example-coin-flips"></a>
-</h4>
+<div class="section level3">
+<h3 id="advanced-promises-coin-flips">Advanced Promises: Coin Flips<a class="anchor" aria-label="anchor" href="#advanced-promises-coin-flips"></a>
+</h3>
 <p>The below example demonstrates how to integrate a
-<code><a href="../reference/mirai_map.html">mirai_map()</a></code> operation into a Shiny app.</p>
+<code><a href="../reference/mirai_map.html">mirai_map()</a></code> operation into a Shiny app in an observer,
+without using ExtendedTask.</p>
 <p>By specifying the ‘.promise’ argument, this registers a promise
 action against each mapped operation. These can then be used to update
 reactive values or otherwise interact with the Shiny app.</p>
@@ -424,7 +426,7 @@ reactive values or otherwise interact with the Shiny app.</p>
 <span>      <span class="op">}</span></span>
 <span>    <span class="op">)</span></span>
 <span>    <span class="co"># Ensure there is something after mirai_map() in the observer, as it is</span></span>
-<span>    <span class="co"># convertible to a promise, and will otherwise be waited for</span></span>
+<span>    <span class="co"># convertible to a promise, and will otherwise be waited for before returning</span></span>
 <span>    <span class="va">flips</span><span class="op">$</span><span class="va">flips</span> <span class="op">&lt;-</span> <span class="va">flips</span><span class="op">$</span><span class="va">flips</span> <span class="op">+</span> <span class="fl">1000</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span></span>
@@ -453,6 +455,71 @@ reactive values or otherwise interact with the Shiny app.</p>
 <p><em>This is an adaptation of an original example provided by Will
 Landau for use of <code>crew</code> with Shiny. Please see <a href="https://wlandau.github.io/crew/articles/shiny.html" class="external-link uri">https://wlandau.github.io/crew/articles/shiny.html</a>.</em></p>
 </div>
+<div class="section level3">
+<h3 id="advanced-promises-progress-bar">Advanced Promises: Progress Bar<a class="anchor" aria-label="anchor" href="#advanced-promises-progress-bar"></a>
+</h3>
+<p>The below example uses a <code><a href="../reference/mirai_map.html">mirai_map()</a></code> operation in an
+observer to update a Shiny progress bar with custom messages, and also
+to update a reactive value once the entire map operation has completed
+(asynchronously).</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/promises/" class="external-link">promises</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">slow_squared</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">x</span><span class="op">^</span><span class="fl">2</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu">fluidPage</span><span class="op">(</span></span>
+<span>  <span class="fu">titlePanel</span><span class="op">(</span><span class="st">"Asynchronous Squares Calculator"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">p</span><span class="op">(</span><span class="st">"The time is "</span>, <span class="fu">textOutput</span><span class="op">(</span><span class="st">"current_time"</span>, inline <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu">hr</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  <span class="fu">actionButton</span><span class="op">(</span><span class="st">"start"</span>, <span class="st">"Start Calculation"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">br</span><span class="op">(</span><span class="op">)</span>, <span class="fu">br</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  <span class="fu">uiOutput</span><span class="op">(</span><span class="st">"progress_ui"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">verbatimTextOutput</span><span class="op">(</span><span class="st">"result"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">100</span></span>
+<span>  <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">reactiveVal</span><span class="op">(</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">start</span>, <span class="op">{</span></span>
+<span>    </span>
+<span>    <span class="va">progress</span> <span class="op">&lt;-</span> <span class="va">Progress</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">session</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">progress</span><span class="op">$</span><span class="fu">set</span><span class="op">(</span>message <span class="op">=</span> <span class="st">"Parallel calculation in progress"</span>, detail <span class="op">=</span> <span class="st">"Starting..."</span><span class="op">)</span></span>
+<span>    <span class="va">completed</span> <span class="op">&lt;-</span> <span class="fu">reactiveVal</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="../reference/mirai_map.html">mirai_map</a></span><span class="op">(</span></span>
+<span>      <span class="va">x</span>,</span>
+<span>      <span class="va">slow_squared</span>,</span>
+<span>      slow_squared <span class="op">=</span> <span class="va">slow_squared</span>,</span>
+<span>      .promise <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">result</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="va">new_val</span> <span class="op">&lt;-</span> <span class="fu">completed</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span></span>
+<span>        <span class="fu">completed</span><span class="op">(</span><span class="va">new_val</span><span class="op">)</span>  <span class="co"># Increment completed counter</span></span>
+<span>        <span class="va">progress</span><span class="op">$</span><span class="fu">inc</span><span class="op">(</span><span class="fl">1</span>, detail <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Completed"</span>, <span class="va">new_val</span><span class="op">)</span><span class="op">)</span>  <span class="co"># Update progress</span></span>
+<span>      <span class="op">}</span></span>
+<span>    <span class="op">)</span> <span class="op"><a href="https://rstudio.github.io/promises/reference/pipes.html" class="external-link">%...&gt;%</a></span> <span class="op">{</span></span>
+<span>      <span class="fu">y</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span></span>
+<span>      <span class="va">progress</span><span class="op">$</span><span class="fu">close</span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="co"># Ensure there is something after mirai_map() in the observer, as otherwise</span></span>
+<span>    <span class="co"># the created promise will be waited for before returning</span></span>
+<span>    <span class="fu">y</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">current_time</span> <span class="op">&lt;-</span> <span class="fu">renderText</span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="fu">invalidateLater</span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"%H:%M:%S %p"</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">renderPrint</span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Sum of squares calculated: "</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu">y</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">shinyApp</span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">8</span><span class="op">)</span>, <span class="fu">runApp</span><span class="op">(</span><span class="va">app</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><em>This example adapts a contribution from Davide Magno.</em></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
