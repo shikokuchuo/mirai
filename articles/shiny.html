@@ -90,26 +90,25 @@
 <div class="section level3">
 <h3 id="shiny-integration">Shiny Integration<a class="anchor" aria-label="anchor" href="#shiny-integration"></a>
 </h3>
-<p><code>mirai</code> may be used as an asynchronous backend to scale <a href="https://shiny.posit.co/" class="external-link">Shiny</a> applications.</p>
+<p>mirai may be used as an asynchronous backend to scale <a href="https://shiny.posit.co/" class="external-link">Shiny</a> applications.</p>
 <p>Depending on the options suppled to <code><a href="../reference/daemons.html">daemons()</a></code>, mirai
-tasks may be distributed across local background processes or multiple
-networked servers in an efficient and performant manner.</p>
-<p>For use with Shiny, <code>mirai</code> implements truly event-driven
-promises, developed in collaboration with Joe Cheng (creator of
-Shiny).</p>
+tasks may be distributed across local background processes or networked
+servers in an efficient and performant manner.</p>
+<p>For use with Shiny, mirai implements truly event-driven promises,
+developed in collaboration with Joe Cheng (creator of Shiny).</p>
 <ul>
 <li>Each promise is not polled in a loop for completion (as for other
 types of promise).</li>
 <li>Instead, promise actions are triggered for execution as soon as each
 ‘mirai’ completes (asynchronously).</li>
 <li>Allows for much higher responsiveness (lower latency) and massive
-scalability (situations with thousand of promises or more).</li>
+scalability (thousands of simultaneous promises or more).</li>
 </ul>
 <p>mirai natively supports Shiny ExtendedTask to create scalable Shiny
 apps, which remain responsive intra-session for each user, as well as
 inter-session for multiple concurrent users.</p>
 <p>‘mirai’ may be used anywhere a ‘promise’ or ‘future_promise’ would be
-accepted (with <code>promises</code> &gt;= 1.3.0).</p>
+accepted (with the promises package versions &gt;= 1.3.0).</p>
 <div class="section level4">
 <h4 id="shiny-extendedtask-introductory-example">Shiny ExtendedTask: Introductory Example<a class="anchor" aria-label="anchor" href="#shiny-extendedtask-introductory-example"></a>
 </h4>
@@ -417,7 +416,6 @@ reactive values or otherwise interact with the Shiny app.</p>
 <span></span>
 <span>  <span class="co"># Button to submit a batch of coin flips</span></span>
 <span>  <span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">task</span>, <span class="op">{</span></span>
-<span>    <span class="va">flips</span><span class="op">$</span><span class="va">flips</span> <span class="op">&lt;-</span> <span class="va">flips</span><span class="op">$</span><span class="va">flips</span> <span class="op">+</span> <span class="fl">1000</span></span>
 <span>    <span class="fu"><a href="../reference/mirai_map.html">mirai_map</a></span><span class="op">(</span></span>
 <span>      <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span>,</span>
 <span>      <span class="va">flip_coin</span>,</span>
@@ -425,6 +423,9 @@ reactive values or otherwise interact with the Shiny app.</p>
 <span>        <span class="kw">if</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">flips</span><span class="op">$</span><span class="va">heads</span> <span class="op">&lt;-</span> <span class="va">flips</span><span class="op">$</span><span class="va">heads</span> <span class="op">+</span> <span class="fl">1</span> <span class="kw">else</span> <span class="va">flips</span><span class="op">$</span><span class="va">tails</span> <span class="op">&lt;-</span> <span class="va">flips</span><span class="op">$</span><span class="va">tails</span> <span class="op">+</span> <span class="fl">1</span></span>
 <span>      <span class="op">}</span></span>
 <span>    <span class="op">)</span></span>
+<span>    <span class="co"># Ensure there is something after mirai_map() in the observer, as it is</span></span>
+<span>    <span class="co"># convertible to a promise, and will otherwise be waited for</span></span>
+<span>    <span class="va">flips</span><span class="op">$</span><span class="va">flips</span> <span class="op">&lt;-</span> <span class="va">flips</span><span class="op">$</span><span class="va">flips</span> <span class="op">+</span> <span class="fl">1000</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Print time and task status</span></span>
