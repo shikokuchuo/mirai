@@ -201,7 +201,7 @@ daemon <- function(url, dispatcher = FALSE, ..., asyncdial = FALSE, autoexit = T
   pipe_notify(sock, cv = cv, remove = TRUE)
   dial(sock, url = url, autostart = NA, error = TRUE)
   data <- eval_mirai(recv(sock, mode = 1L, block = TRUE))
-  send(sock, data, mode = 1L) || until(cv, .limit_short)
+  send(sock, data, mode = 1L, block = TRUE) || until(cv, .limit_short)
 
 }
 
