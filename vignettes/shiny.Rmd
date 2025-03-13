@@ -290,6 +290,54 @@ observeEvent(input$resample, task$invoke(calc_time, run_task))
 ``` r
 output$plot <- renderPlot(plot_result(task$result()))
 ```
+### Shiny ExtendedTask: mirai map
+
+This example, uses `mirai_map()` to perform multiple calculations simultaneously in multiple daemons, returning the results asynchronously.
+
+```r
+library(shiny)
+library(bslib)
+library(mirai)
+
+ui <- page_fluid(
+  titlePanel("ExtendedTask Map Demo"),
+  hr(),
+  p("The time is ", textOutput("current_time", inline = TRUE)),
+  p("Perform 4 calculations that each take between 1 and 4 secs to complete:"),
+  input_task_button("calculate", "Calculate"),
+  p(textOutput("result")),
+  tags$style(type="text/css", "#result {white-space: pre-wrap;}")
+)
+
+server <- function(input, output) {
+  task <- ExtendedTask$new(function() {
+    mirai_map(1:4, function(i) {
+      # simulated long calculation
+      Sys.sleep(i)
+      sprintf(
+        "Calc %d | PID %d | Finished at %s.", i, Sys.getpid(), format(Sys.time())
+      )
+    })
+  }) |> bind_task_button("calculate")
+  
+  observeEvent(input$calculate, {
+    task$invoke()
+  })
+  
+  output$result <- renderText({
+    # result of mirai_map() is a list
+    as.character(task$result())
+  }, sep = "\n")
+  
+  output$current_time <- renderText({
+    invalidateLater(1000)
+    format(Sys.time(), "%H:%M:%S %p")
+  })
+}
+
+app <- shinyApp(ui, server)
+with(daemons(4), runApp(app))
+```
 
 ### Advanced Promises: Coin Flips
 
