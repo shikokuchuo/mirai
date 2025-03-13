@@ -387,6 +387,56 @@ consumes the result of the ExtendedTask.</li>
 <code class="sourceCode R"><span><span class="va">output</span><span class="op">$</span><span class="va">plot</span> <span class="op">&lt;-</span> <span class="fu">renderPlot</span><span class="op">(</span><span class="fu">plot_result</span><span class="op">(</span><span class="va">task</span><span class="op">$</span><span class="fu">result</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
+<h3 id="shiny-extendedtask-mirai-map">Shiny ExtendedTask: mirai map<a class="anchor" aria-label="anchor" href="#shiny-extendedtask-mirai-map"></a>
+</h3>
+<p>This example, uses <code><a href="../reference/mirai_map.html">mirai_map()</a></code> to perform multiple
+calculations simultaneously in multiple daemons, returning the results
+asynchronously.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/bslib/" class="external-link">bslib</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rstudio.github.io/bslib/reference/page.html" class="external-link">page_fluid</a></span><span class="op">(</span></span>
+<span>  <span class="fu">titlePanel</span><span class="op">(</span><span class="st">"ExtendedTask Map Demo"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">hr</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  <span class="fu">p</span><span class="op">(</span><span class="st">"The time is "</span>, <span class="fu">textOutput</span><span class="op">(</span><span class="st">"current_time"</span>, inline <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu">p</span><span class="op">(</span><span class="st">"Perform 4 calculations that each take between 1 and 4 secs to complete:"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/bslib/reference/input_task_button.html" class="external-link">input_task_button</a></span><span class="op">(</span><span class="st">"calculate"</span>, <span class="st">"Calculate"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">p</span><span class="op">(</span><span class="fu">textOutput</span><span class="op">(</span><span class="st">"result"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="va">tags</span><span class="op">$</span><span class="fu">style</span><span class="op">(</span>type<span class="op">=</span><span class="st">"text/css"</span>, <span class="st">"#result {white-space: pre-wrap;}"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">task</span> <span class="op">&lt;-</span> <span class="va">ExtendedTask</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="../reference/mirai_map.html">mirai_map</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="co"># simulated long calculation</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span></span>
+<span>        <span class="st">"Calc %d | PID %d | Finished at %s."</span>, <span class="va">i</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.getpid.html" class="external-link">Sys.getpid</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>      <span class="op">)</span></span>
+<span>    <span class="op">}</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rstudio.github.io/bslib/reference/bind_task_button.html" class="external-link">bind_task_button</a></span><span class="op">(</span><span class="st">"calculate"</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="fu">observeEvent</span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">calculate</span>, <span class="op">{</span></span>
+<span>    <span class="va">task</span><span class="op">$</span><span class="fu">invoke</span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">renderText</span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="co"># result of mirai_map() is a list</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">task</span><span class="op">$</span><span class="fu">result</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>, sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">current_time</span> <span class="op">&lt;-</span> <span class="fu">renderText</span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="fu">invalidateLater</span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"%H:%M:%S %p"</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">shinyApp</span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/daemons.html">daemons</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span>, <span class="fu">runApp</span><span class="op">(</span><span class="va">app</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
 <h3 id="advanced-promises-coin-flips">Advanced Promises: Coin Flips<a class="anchor" aria-label="anchor" href="#advanced-promises-coin-flips"></a>
 </h3>
 <p>The below example demonstrates how to integrate a
@@ -395,7 +445,7 @@ without using ExtendedTask.</p>
 <p>By specifying the ‘.promise’ argument, this registers a promise
 action against each mapped operation. These can then be used to update
 reactive values or otherwise interact with the Shiny app.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span></span>
@@ -462,7 +512,7 @@ Landau for use of <code>crew</code> with Shiny. Please see <a href="https://wlan
 observer to update a Shiny progress bar with custom messages, and also
 to update a reactive value once the entire map operation has completed
 (asynchronously).</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/" class="external-link">shiny</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shikokuchuo.net/mirai/">mirai</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/promises/" class="external-link">promises</a></span><span class="op">)</span></span>
