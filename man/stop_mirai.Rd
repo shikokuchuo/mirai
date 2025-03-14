@@ -7,25 +7,24 @@
 stop_mirai(x)
 }
 \arguments{
-\item{x}{a \sQuote{mirai} object, or list of \sQuote{mirai} objects.}
+\item{x}{a 'mirai' object, or list of 'mirai' objects.}
 }
 \value{
 Logical TRUE if the cancellation request was successful (was awaiting
 execution or in execution), or else FALSE (if already completed or
 previously cancelled). Will always return FALSE if not using dispatcher.
 
-Or a vector of logical values if supplying a list of \sQuote{mirai}, such
-as those returned by \code{\link[=mirai_map]{mirai_map()}}.
+\strong{Or} a vector of logical values if supplying a list of 'mirai', such as
+those returned by \code{\link[=mirai_map]{mirai_map()}}.
 }
 \description{
-Stops a \sQuote{mirai} if still in progress, causing it to resolve
-immediately to an \sQuote{errorValue} 20 (Operation canceled).
+Stops a 'mirai' if still in progress, causing it to resolve immediately to an
+'errorValue' 20 (Operation canceled).
 }
 \details{
-Using dispatcher allows cancellation of \sQuote{mirai}. In the case that the
-\sQuote{mirai} is awaiting execution, it is discarded from the queue and
-never evaluated. In the case it is already in execution, an interrupt will be
-sent.
+Using dispatcher allows cancellation of 'mirai'. In the case that the 'mirai'
+is awaiting execution, it is discarded from the queue and never evaluated. In
+the case it is already in execution, an interrupt will be sent.
 
 A successful cancellation request does not guarantee successful cancellation:
 the task, or a portion of it, may have already completed before the interrupt

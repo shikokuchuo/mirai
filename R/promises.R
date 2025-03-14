@@ -31,19 +31,19 @@
 
 #' Make mirai Promise
 #'
-#' Creates a \sQuote{promise} from a \sQuote{mirai}.
+#' Creates a 'promise' from a 'mirai'.
 #'
 #' This function is an S3 method for the generic `as.promise()` for class
-#' \sQuote{mirai}.
+#' 'mirai'.
 #'
 #' Requires the \CRANpkg{promises} package.
 #'
-#' Allows a \sQuote{mirai} to be used with the promise pipe `%...>%`, which
-#' schedules a function to run upon resolution of the \sQuote{mirai}.
+#' Allows a 'mirai' to be used with the promise pipe `%...>%`, which schedules a
+#' function to run upon resolution of the 'mirai'.
 #'
-#' @param x an object of class \sQuote{mirai}.
+#' @param x an object of class 'mirai'.
 #'
-#' @return A \sQuote{promise} object.
+#' @return A 'promise' object.
 #'
 #' @examplesIf interactive() && requireNamespace("promises", quietly = TRUE)
 #' library(promises)
@@ -96,24 +96,24 @@ as.promise.mirai <- function(x) {
 
 #' Make mirai_map Promise
 #'
-#' Creates a \sQuote{promise} from a \sQuote{mirai_map}.
+#' Creates a 'promise' from a 'mirai_map'.
 #'
 #' This function is an S3 method for the generic `as.promise()` for class
-#' \sQuote{mirai_map}.
+#' 'mirai_map'.
 #'
 #' Requires the \CRANpkg{promises} package.
 #'
-#' Allows a \sQuote{mirai_map} to be used with the promise pipe `%...>%`, which
-#' schedules a function to run upon resolution of the entire \sQuote{mirai_map}.
+#' Allows a 'mirai_map' to be used with the promise pipe `%...>%`, which
+#' schedules a function to run upon resolution of the entire 'mirai_map'.
 #'
-#' Uses `promises::promise_all()`. If all of the promises were successful, the
-#' returned promise will resolve to a list of the promise values; if any promise
-#' fails, the first error to be encountered will be used to reject the returned
-#' promise.
+#' The implementation internally uses `promises::promise_all()`. If all of the
+#' promises were successful, the returned promise will resolve to a list of the
+#' promise values; if any promise fails, the first error to be encountered will
+#' be used to reject the returned promise.
 #'
-#' @param x an object of class \sQuote{mirai_map}.
+#' @param x an object of class 'mirai_map'.
 #'
-#' @return A \sQuote{promise} object.
+#' @return A 'promise' object.
 #'
 #' @examplesIf interactive() && requireNamespace("promises", quietly = TRUE)
 #' library(promises)

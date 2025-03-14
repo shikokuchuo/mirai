@@ -7,27 +7,27 @@
 \method{as.promise}{mirai_map}(x)
 }
 \arguments{
-\item{x}{an object of class \sQuote{mirai_map}.}
+\item{x}{an object of class 'mirai_map'.}
 }
 \value{
-A \sQuote{promise} object.
+A 'promise' object.
 }
 \description{
-Creates a \sQuote{promise} from a \sQuote{mirai_map}.
+Creates a 'promise' from a 'mirai_map'.
 }
 \details{
 This function is an S3 method for the generic \code{as.promise()} for class
-\sQuote{mirai_map}.
+'mirai_map'.
 
 Requires the \CRANpkg{promises} package.
 
-Allows a \sQuote{mirai_map} to be used with the promise pipe \verb{\%...>\%}, which
-schedules a function to run upon resolution of the entire \sQuote{mirai_map}.
+Allows a 'mirai_map' to be used with the promise pipe \verb{\%...>\%}, which
+schedules a function to run upon resolution of the entire 'mirai_map'.
 
-Uses \code{promises::promise_all()}. If all of the promises were successful, the
-returned promise will resolve to a list of the promise values; if any promise
-fails, the first error to be encountered will be used to reject the returned
-promise.
+The implementation internally uses \code{promises::promise_all()}. If all of the
+promises were successful, the returned promise will resolve to a list of the
+promise values; if any promise fails, the first error to be encountered will
+be used to reject the returned promise.
 }
 \examples{
 \dontshow{if (interactive() && requireNamespace("promises", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

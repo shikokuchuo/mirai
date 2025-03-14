@@ -22,19 +22,18 @@ Logical value TRUE or FALSE.
 Validator functions for error value types created by \pkg{mirai}.
 }
 \details{
-Is the object a \sQuote{miraiError}. When execution in a \sQuote{mirai}
-process fails, the error message is returned as a character string of class
-\sQuote{miraiError} and \sQuote{errorValue}. The elements of the original
-condition are accessible via \code{$} on the error object. A stack trace is
-also available at \verb{$stack.trace}.
+Is the object a 'miraiError'. When execution in a 'mirai' process fails, the
+error message is returned as a character string of class 'miraiError' and
+'errorValue'. The elements of the original condition are accessible via \code{$}
+on the error object. A stack trace is also available at \verb{$stack.trace}.
 
-Is the object a \sQuote{miraiInterrupt}. When an ongoing \sQuote{mirai} is
-sent a user interrupt, it will resolve to an empty character string classed
-as \sQuote{miraiInterrupt} and \sQuote{errorValue}.
+Is the object a 'miraiInterrupt'. When an ongoing 'mirai' is sent a user
+interrupt, it will resolve to an empty character string classed as
+'miraiInterrupt' and 'errorValue'.
 
-Is the object an \sQuote{errorValue}, such as a \sQuote{mirai} timeout, a
-\sQuote{miraiError} or a \sQuote{miraiInterrupt}. This is a catch-all
-condition that includes all returned error values.
+Is the object an 'errorValue', such as a 'mirai' timeout, a 'miraiError' or a
+'miraiInterrupt'. This is a catch-all condition that includes all returned
+error values.
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

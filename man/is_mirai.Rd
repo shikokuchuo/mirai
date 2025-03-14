@@ -13,11 +13,11 @@ is_mirai_map(x)
 \item{x}{an object.}
 }
 \value{
-Logical TRUE if \code{x} is of class \sQuote{mirai} or \sQuote{mirai_map}
-respectively, FALSE otherwise.
+Logical TRUE if \code{x} is of class 'mirai' or 'mirai_map' respectively,
+FALSE otherwise.
 }
 \description{
-Is the object a \sQuote{mirai} or \sQuote{mirai_map}.
+Is the object a 'mirai' or 'mirai_map'.
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

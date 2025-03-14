@@ -13,45 +13,44 @@ object.}
 
 \item{...}{(optional) \strong{either} named arguments (name = value pairs)
 specifying objects referenced, but not defined, in \code{.expr}, \strong{or} an
-environment containing such objects. See \sQuote{evaluation} section below.}
+environment containing such objects. See 'evaluation' section below.}
 
 \item{.args}{(optional) \strong{either} a named list specifying objects
 referenced, but not defined, in \code{.expr}, \strong{or} an environment containing
 such objects. These objects will remain local to the evaluation environment
-as opposed to those supplied in \code{...} above - see \sQuote{evaluation}
-section below.}
+as opposed to those supplied in \code{...} above - see 'evaluation' section
+below.}
 
 \item{.timeout}{[default NULL] for no timeout, or an integer value in
-milliseconds. A mirai will resolve to an \sQuote{errorValue} 5 (timed out)
-if evaluation exceeds this limit.}
+milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
+evaluation exceeds this limit.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
 }
 \value{
-A \sQuote{mirai} object.
+A 'mirai' object.
 }
 \description{
 Evaluate an expression asynchronously in a new background R process or
 persistent daemon (local or remote). This function will return immediately
-with a \sQuote{mirai}, which will resolve to the evaluated result once
-complete.
+with a 'mirai', which will resolve to the evaluated result once complete.
 }
 \details{
-This function will return a \sQuote{mirai} object immediately.
+This function will return a 'mirai' object immediately.
 
 The value of a mirai may be accessed at any time at \verb{$data}, and if yet
-to resolve, an \sQuote{unresolved} logical NA will be returned instead.
+to resolve, an 'unresolved' logical NA will be returned instead.
 
-\code{\link[=unresolved]{unresolved()}} may be used on a mirai, returning TRUE if a \sQuote{mirai} has
-yet to resolve and FALSE otherwise. This is suitable for use in control flow
+\code{\link[=unresolved]{unresolved()}} may be used on a mirai, returning TRUE if a 'mirai' has yet to
+resolve and FALSE otherwise. This is suitable for use in control flow
 statements such as \code{while} or \code{if}.
 
 Alternatively, to call (and wait for) the result, use \code{\link[=call_mirai]{call_mirai()}} on the
-returned \sQuote{mirai}. This will block until the result is returned.
+returned 'mirai'. This will block until the result is returned.
 
 Specify \code{.compute} to send the mirai using a specific compute profile (if
-previously created by \code{\link[=daemons]{daemons()}}), otherwise leave as \sQuote{default}.
+previously created by \code{\link[=daemons]{daemons()}}), otherwise leave as \code{"default"}.
 }
 \section{Evaluation}{
 
@@ -85,16 +84,16 @@ process. Use \code{\link[=stop_mirai]{stop_mirai()}} instead to explicitly stop 
 
 
 If an error occurs in evaluation, the error message is returned as a
-character string of class \sQuote{miraiError} and \sQuote{errorValue}.
-\code{\link[=is_mirai_error]{is_mirai_error()}} may be used to test for this. The elements of the original
-condition are accessible via \code{$} on the error object. A stack trace
-comprising a list of calls is also available at \verb{$stack.trace}.
+character string of class 'miraiError' and 'errorValue'. \code{\link[=is_mirai_error]{is_mirai_error()}}
+may be used to test for this. The elements of the original condition are
+accessible via \code{$} on the error object. A stack trace comprising a list of
+calls is also available at \verb{$stack.trace}.
 
 If a daemon crashes or terminates unexpectedly during evaluation, an
-\sQuote{errorValue} 19 (Connection reset) is returned.
+'errorValue' 19 (Connection reset) is returned.
 
-\code{\link[=is_error_value]{is_error_value()}} tests for all error conditions including
-\sQuote{mirai} errors, interrupts, and timeouts.
+\code{\link[=is_error_value]{is_error_value()}} tests for all error conditions including 'mirai' errors,
+interrupts, and timeouts.
 }
 
 \examples{

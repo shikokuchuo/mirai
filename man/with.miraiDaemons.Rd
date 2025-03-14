@@ -24,7 +24,7 @@ completed.
 }
 \details{
 This function is an S3 method for the generic \code{\link[=with]{with()}} for class
-\sQuote{miraiDaemons}.
+'miraiDaemons'.
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

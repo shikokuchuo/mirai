@@ -20,42 +20,41 @@
 #'
 #' Evaluate an expression asynchronously in a new background R process or
 #' persistent daemon (local or remote). This function will return immediately
-#' with a \sQuote{mirai}, which will resolve to the evaluated result once
-#' complete.
+#' with a 'mirai', which will resolve to the evaluated result once complete.
 #'
-#' This function will return a \sQuote{mirai} object immediately.
+#' This function will return a 'mirai' object immediately.
 #'
 #' The value of a mirai may be accessed at any time at `$data`, and if yet
-#' to resolve, an \sQuote{unresolved} logical NA will be returned instead.
+#' to resolve, an 'unresolved' logical NA will be returned instead.
 #'
-#' [unresolved()] may be used on a mirai, returning TRUE if a \sQuote{mirai} has
-#' yet to resolve and FALSE otherwise. This is suitable for use in control flow
+#' [unresolved()] may be used on a mirai, returning TRUE if a 'mirai' has yet to
+#' resolve and FALSE otherwise. This is suitable for use in control flow
 #' statements such as `while` or `if`.
 #'
 #' Alternatively, to call (and wait for) the result, use [call_mirai()] on the
-#' returned \sQuote{mirai}. This will block until the result is returned.
+#' returned 'mirai'. This will block until the result is returned.
 #'
 #' Specify `.compute` to send the mirai using a specific compute profile (if
-#' previously created by [daemons()]), otherwise leave as \sQuote{default}.
+#' previously created by [daemons()]), otherwise leave as `"default"`.
 #'
 #' @param .expr an expression to evaluate asynchronously (of arbitrary length,
 #'   wrapped in \{ \} where necessary), **or else** a pre-constructed language
 #'   object.
 #' @param ... (optional) **either** named arguments (name = value pairs)
 #'   specifying objects referenced, but not defined, in `.expr`, **or** an
-#'   environment containing such objects. See \sQuote{evaluation} section below.
+#'   environment containing such objects. See 'evaluation' section below.
 #' @param .args (optional) **either** a named list specifying objects
 #'   referenced, but not defined, in `.expr`, **or** an environment containing
 #'   such objects. These objects will remain local to the evaluation environment
-#'   as opposed to those supplied in `...` above - see \sQuote{evaluation}
-#'   section below.
+#'   as opposed to those supplied in `...` above - see 'evaluation' section
+#'   below.
 #' @param .timeout \[default NULL\] for no timeout, or an integer value in
-#'   milliseconds. A mirai will resolve to an \sQuote{errorValue} 5 (timed out)
-#'   if evaluation exceeds this limit.
+#'   milliseconds. A mirai will resolve to an 'errorValue' 5 (timed out) if
+#'   evaluation exceeds this limit.
 #' @param .compute \[default 'default'\] character value for the compute profile
 #'   to use (each compute profile has its own independent set of daemons).
 #'
-#' @return A \sQuote{mirai} object.
+#' @return A 'mirai' object.
 #'
 #' @section Evaluation:
 #'
@@ -84,16 +83,16 @@
 #' @section Errors:
 #'
 #' If an error occurs in evaluation, the error message is returned as a
-#' character string of class \sQuote{miraiError} and \sQuote{errorValue}.
-#' [is_mirai_error()] may be used to test for this. The elements of the original
-#' condition are accessible via `$` on the error object. A stack trace
-#' comprising a list of calls is also available at `$stack.trace`.
+#' character string of class 'miraiError' and 'errorValue'. [is_mirai_error()]
+#' may be used to test for this. The elements of the original condition are
+#' accessible via `$` on the error object. A stack trace comprising a list of
+#' calls is also available at `$stack.trace`.
 #'
 #' If a daemon crashes or terminates unexpectedly during evaluation, an
-#' \sQuote{errorValue} 19 (Connection reset) is returned.
+#' 'errorValue' 19 (Connection reset) is returned.
 #'
-#' [is_error_value()] tests for all error conditions including
-#' \sQuote{mirai} errors, interrupts, and timeouts.
+#' [is_error_value()] tests for all error conditions including 'mirai' errors,
+#' interrupts, and timeouts.
 #'
 #' @examplesIf interactive()
 #' # specifying objects via '...'
@@ -184,7 +183,7 @@ mirai <- function(.expr, ..., .args = list(), .timeout = NULL, .compute = "defau
 
 #' Evaluate Everywhere
 #'
-#' Evaluate an expression \sQuote{everywhere} on all connected daemons for the
+#' Evaluate an expression 'everywhere' on all connected daemons for the
 #' specified compute profile - this must be set prior to calling this function.
 #' Designed for performing setup operations across daemons by loading packages
 #' or exporting common data. Resultant changes to the global environment, loaded
@@ -259,32 +258,31 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 
 #' mirai (Call Value)
 #'
-#' Waits for the \sQuote{mirai} to resolve if still in progress, stores the
-#' value at `$data`, and returns the \sQuote{mirai} object.
+#' Waits for the 'mirai' to resolve if still in progress, stores the value at
+#' `$data`, and returns the 'mirai' object.
 #'
-#' Accepts a list of \sQuote{mirai} objects, such as that returned by
-#' [mirai_map()] as well as individual \sQuote{mirai}.
+#' Accepts a list of 'mirai' objects, such as those returned by [mirai_map()],
+#' as well as individual 'mirai'.
 #'
 #' Waits for the asynchronous operation(s) to complete if still in progress,
 #' blocking but user-interruptible.
 #'
-#' `x[]` may also be used to wait for and return the value of a mirai
-#' `x`, and is the equivalent of `call_mirai(x)$data`.
+#' `x[]` may also be used to wait for and return the value of a mirai `x`, and
+#' is the equivalent of `call_mirai(x)$data`.
 #'
-#' @param x a \sQuote{mirai} object, or list of \sQuote{mirai} objects.
+#' @param x a 'mirai' object, or list of 'mirai' objects.
 #'
-#' @return The passed object (invisibly). For a \sQuote{mirai}, the retrieved
-#'   value is stored at `$data`.
+#' @return The passed object (invisibly). For a 'mirai', the retrieved value is
+#'   stored at `$data`.
 #'
 #' @section Alternatively:
 #'
-#' The value of a \sQuote{mirai} may be accessed at any time at `$data`,
-#' and if yet to resolve, an \sQuote{unresolved} logical NA will be returned
-#' instead.
+#' The value of a 'mirai' may be accessed at any time at `$data`, and if yet to
+#' resolve, an 'unresolved' logical NA will be returned instead.
 #'
-#' Using [unresolved()] on a \sQuote{mirai} returns TRUE only if it
-#' has yet to resolve and FALSE otherwise. This is suitable for use in control
-#' flow statements such as `while` or `if`.
+#' Using [unresolved()] on a 'mirai' returns TRUE only if it has yet to resolve
+#' and FALSE otherwise. This is suitable for use in control flow statements such
+#' as `while` or `if`.
 #'
 #' @inheritSection mirai Errors
 #'
@@ -324,8 +322,8 @@ call_mirai_ <- call_mirai
 
 #' mirai (Collect Value)
 #'
-#' Waits for the \sQuote{mirai} to resolve if still in progress, and returns its
-#' value directly. It is a more efficient version of and equivalent to
+#' Waits for the 'mirai' to resolve if still in progress, and returns its value
+#' directly. It is a more efficient version of and equivalent to
 #' `call_mirai(x)$data`.
 #'
 #' This function will wait for the asynchronous operation(s) to complete if
@@ -334,12 +332,12 @@ call_mirai_ <- call_mirai
 #' `x[]` is an equivalent way to wait for and return the value of a mirai `x`.
 #'
 #' @inheritParams call_mirai
-#' @param options (if \sQuote{x} is a list of mirai) a character vector
-#'   comprising any combination of collection options for [mirai_map()], such as
-#'   `".flat"` or `c(".progress", ".stop")`.
+#' @param options (if `x` is a list of mirai) a character vector comprising any
+#'   combination of collection options for [mirai_map()], such as `".flat"` or
+#'   `c(".progress", ".stop")`.
 #'
-#' @return An object (the return value of the \sQuote{mirai}), or a list of such
-#'   objects (the same length as \sQuote{x}, preserving names).
+#' @return An object (the return value of the 'mirai'), or a list of such
+#'   objects (the same length as `x`, preserving names).
 #'
 #' @inheritSection call_mirai Alternatively
 #' @inheritSection mirai Errors
@@ -374,13 +372,12 @@ collect_mirai <- function(x, options = NULL) {
 
 #' mirai (Stop)
 #'
-#' Stops a \sQuote{mirai} if still in progress, causing it to resolve
-#' immediately to an \sQuote{errorValue} 20 (Operation canceled).
+#' Stops a 'mirai' if still in progress, causing it to resolve immediately to an
+#' 'errorValue' 20 (Operation canceled).
 #'
-#' Using dispatcher allows cancellation of \sQuote{mirai}. In the case that the
-#' \sQuote{mirai} is awaiting execution, it is discarded from the queue and
-#' never evaluated. In the case it is already in execution, an interrupt will be
-#' sent.
+#' Using dispatcher allows cancellation of 'mirai'. In the case that the 'mirai'
+#' is awaiting execution, it is discarded from the queue and never evaluated. In
+#' the case it is already in execution, an interrupt will be sent.
 #'
 #' A successful cancellation request does not guarantee successful cancellation:
 #' the task, or a portion of it, may have already completed before the interrupt
@@ -394,8 +391,8 @@ collect_mirai <- function(x, options = NULL) {
 #'   execution or in execution), or else FALSE (if already completed or
 #'   previously cancelled). Will always return FALSE if not using dispatcher.
 #'
-#'   Or a vector of logical values if supplying a list of \sQuote{mirai}, such
-#'   as those returned by [mirai_map()].
+#'   **Or** a vector of logical values if supplying a list of 'mirai', such as
+#'   those returned by [mirai_map()].
 #'
 #' @examplesIf interactive()
 #' m <- mirai(Sys.sleep(n), n = 5)
@@ -421,21 +418,19 @@ stop_mirai <- function(x) {
 
 #' Query if a mirai is Unresolved
 #'
-#' Query whether a \sQuote{mirai}, \sQuote{mirai} value or list of
-#' \sQuote{mirai} remains unresolved. Unlike [call_mirai()], this function does
-#' not wait for completion.
+#' Query whether a 'mirai', 'mirai' value or list of 'mirai' remains unresolved.
+#' Unlike [call_mirai()], this function does not wait for completion.
 #'
 #' Suitable for use in control flow statements such as `while` or `if`.
 #'
-#' Note: querying resolution may cause a previously unresolved \sQuote{mirai} to
+#' Note: querying resolution may cause a previously unresolved 'mirai' to
 #' resolve.
 #'
-#' @param x a \sQuote{mirai} object or list of \sQuote{mirai} objects, or a
-#'   \sQuote{mirai} value stored at `$data`.
+#' @param x a 'mirai' object or list of 'mirai' objects, or a 'mirai' value
+#'   stored at `$data`.
 #'
-#' @return Logical TRUE if `x` is an unresolved \sQuote{mirai} or \sQuote{mirai}
-#'   value or the list contains at least one unresolved \sQuote{mirai}, or FALSE
-#'   otherwise.
+#' @return Logical TRUE if `x` is an unresolved 'mirai' or 'mirai' value or the
+#'   list contains at least one unresolved 'mirai', or FALSE otherwise.
 #'
 #' @examplesIf interactive()
 #' m <- mirai(Sys.sleep(0.1))
@@ -449,12 +444,12 @@ unresolved <- unresolved
 
 #' Is mirai / mirai_map
 #'
-#' Is the object a \sQuote{mirai} or \sQuote{mirai_map}.
+#' Is the object a 'mirai' or 'mirai_map'.
 #'
 #' @param x an object.
 #'
-#' @return Logical TRUE if `x` is of class \sQuote{mirai} or \sQuote{mirai_map}
-#'   respectively, FALSE otherwise.
+#' @return Logical TRUE if `x` is of class 'mirai' or 'mirai_map' respectively,
+#'   FALSE otherwise.
 #'
 #' @examplesIf interactive()
 #' daemons(1, dispatcher = FALSE)
@@ -481,19 +476,18 @@ is_mirai_map <- function(x) inherits(x, "mirai_map")
 #'
 #' Validator functions for error value types created by \pkg{mirai}.
 #'
-#' Is the object a \sQuote{miraiError}. When execution in a \sQuote{mirai}
-#' process fails, the error message is returned as a character string of class
-#' \sQuote{miraiError} and \sQuote{errorValue}. The elements of the original
-#' condition are accessible via `$` on the error object. A stack trace is
-#' also available at `$stack.trace`.
+#' Is the object a 'miraiError'. When execution in a 'mirai' process fails, the
+#' error message is returned as a character string of class 'miraiError' and
+#' 'errorValue'. The elements of the original condition are accessible via `$`
+#' on the error object. A stack trace is also available at `$stack.trace`.
 #'
-#' Is the object a \sQuote{miraiInterrupt}. When an ongoing \sQuote{mirai} is
-#' sent a user interrupt, it will resolve to an empty character string classed
-#' as \sQuote{miraiInterrupt} and \sQuote{errorValue}.
+#' Is the object a 'miraiInterrupt'. When an ongoing 'mirai' is sent a user
+#' interrupt, it will resolve to an empty character string classed as
+#' 'miraiInterrupt' and 'errorValue'.
 #'
-#' Is the object an \sQuote{errorValue}, such as a \sQuote{mirai} timeout, a
-#' \sQuote{miraiError} or a \sQuote{miraiInterrupt}. This is a catch-all
-#' condition that includes all returned error values.
+#' Is the object an 'errorValue', such as a 'mirai' timeout, a 'miraiError' or a
+#' 'miraiInterrupt'. This is a catch-all condition that includes all returned
+#' error values.
 #'
 #' @param x an object.
 #'

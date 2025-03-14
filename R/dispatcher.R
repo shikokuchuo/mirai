@@ -40,7 +40,7 @@
 #' @param n (optional) if specified, the integer number of daemons to launch. In
 #'   this case, a local url is automatically generated.
 #' @param ... (optional) additional arguments passed through to [daemon()].
-#'   These include \sQuote{asyncdial}, \sQuote{autoexit}, and \sQuote{cleanup}.
+#'   These include `asyncdial`, `autoexit`, and `cleanup`.
 #' @param tls \[default NULL\] (required for secure TLS connections) **either**
 #'   the character path to a file containing the PEM-encoded TLS certificate and
 #'   associated private key (may contain additional certificates leading to a
@@ -48,7 +48,7 @@
 #'   character vector comprising \[i\] the TLS certificate (optionally
 #'   certificate chain) and \[ii\] the associated private key.
 #' @param pass \[default NULL\] (required only if the private key supplied to
-#'   \sQuote{tls} is encrypted with a password) For security, should be provided
+#'   `tls` is encrypted with a password) For security, should be provided
 #'   through a function that returns this value, rather than directly.
 #'
 #' @return Invisible NULL.

@@ -16,10 +16,10 @@ nextcode(xc)
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
 
-\item{x}{character value of item to retrieve. One of \sQuote{n} (number of
-dispatcher daemons), \sQuote{pid} (dispatcher process ID), \sQuote{urls}
-(URLs dispatcher is listening at) or \sQuote{tls} (the stored client TLS
-configuration for use by daemons).}
+\item{x}{character value of item to retrieve. One of \code{"n"} (number of
+dispatcher daemons), \code{"pid"} (dispatcher process ID), \code{"urls"} (URLs
+dispatcher is listening at) or \code{"tls"} (the stored client TLS configuration
+for use by daemons).}
 
 \item{xc}{integer return value of \code{\link[=daemon]{daemon()}}.}
 }
