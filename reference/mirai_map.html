@@ -103,7 +103,7 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A ‘mirai_map’ (list of ‘mirai’ objects).</p>
+    <p>A 'mirai_map' (list of 'mirai' objects).</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -112,23 +112,22 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
 are preserved.</p>
 <p>This simple and transparent behaviour is designed to make full use of
 <span class="pkg">mirai</span> scheduling to minimise overall execution time.</p>
-<p>Facilitates recovery from partial failure by returning all
-‘miraiError’ / ‘errorValue’ as the case may be, thus allowing
-only the failures to be re-run.</p>
-<p>This function requires daemons to have previously been set, and will error if
-not.</p>
+<p>Facilitates recovery from partial failure by returning all 'miraiError' /
+'errorValue' as the case may be, thus allowing only failures to be re-run.</p>
+<p>This function requires daemons to have previously been set, and will error
+otherwise.</p>
     </div>
     <div class="section level2">
     <h2 id="collection-options">Collection Options<a class="anchor" aria-label="anchor" href="#collection-options"></a></h2>
 
 
 
-<p><code>x[]</code> collects the results of a ‘mirai_map’ <code>x</code> and returns
-a list. This will wait for all asynchronous operations to complete if still
-in progress, blocking but user-interruptible.</p>
+<p><code>x[]</code> collects the results of a 'mirai_map' <code>x</code> and returns a list. This will
+wait for all asynchronous operations to complete if still in progress,
+blocking but user-interruptible.</p>
 <p><code>x[.flat]</code> collects and flattens map results to a vector, checking that
-they are of the same type to avoid coercion. Note: errors if an
-‘errorValue’ has been returned or results are of differing type.</p>
+they are of the same type to avoid coercion. Note: errors if an 'errorValue'
+has been returned or results are of differing type.</p>
 <p><code>x[.progress]</code> collects map results whilst showing a progress bar from
 the <a href="https://CRAN.R-project.org/package=cli" class="external-link"><span class="pkg">cli</span></a> package, if installed, with completion percentage and ETA,
 or else a simple text progress indicator. Note: if the map operation
@@ -144,9 +143,9 @@ progress indicator.</p>
 
 
 
-<p>If <code>.x</code> is a matrix or dataframe (or other object with ‘dim’
-attributes), <em>multiple</em> map is performed over its <strong>rows</strong>. Character row
-names are preserved as names of the output.</p>
+<p>If <code>.x</code> is a matrix or dataframe (or other object with 'dim' attributes),
+<em>multiple</em> map is performed over its <strong>rows</strong>. Character row names are
+preserved as names of the output.</p>
 <p>This allows map over 2 or more arguments, and <code>.f</code> should accept at least as
 many arguments as there are columns. If the dataframe has names, or the
 matrix column dimnames, named arguments are provided to <code>.f</code>.</p>

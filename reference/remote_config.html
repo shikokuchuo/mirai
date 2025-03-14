@@ -86,11 +86,11 @@ SSH, with the option of SSH tunnelling.</p>
 
 <dl><dt id="arg-command">command<a class="anchor" aria-label="anchor" href="#arg-command"></a></dt>
 <dd><p>the command used to effect the daemon launch on the remote
-machine as a character string (e.g. <code>'ssh'</code>). Defaults to ‘ssh’
-for <code>ssh_config</code>, although may be substituted for the full path to a
-specific SSH application. The default NULL for <code>remote_config</code> does not
-effect any launches, but causes <code><a href="launch_local.html">launch_remote()</a></code> to return the shell
-commands for manual deployment on remote machines.</p></dd>
+machine as a character string (e.g. <code>"ssh"</code>). Defaults to <code>"ssh"</code> for
+<code>ssh_config</code>, although may be substituted for the full path to a specific
+SSH application. The default NULL for <code>remote_config</code> does not carry out
+any launches, but causes <code><a href="launch_local.html">launch_remote()</a></code> to return the shell commands for
+manual deployment on remote machines.</p></dd>
 
 
 <dt id="arg-args">args<a class="anchor" aria-label="anchor" href="#arg-args"></a></dt>
@@ -102,15 +102,15 @@ effect multiple launches (one for each list element).</p></dd>
 
 <dt id="arg-rscript">rscript<a class="anchor" aria-label="anchor" href="#arg-rscript"></a></dt>
 <dd><p>(optional) name / path of the Rscript executable on the remote
-machine. The default assumes ‘Rscript’ is on the executable search
+machine. The default assumes <code>"Rscript"</code> is on the executable search
 path. Prepend the full path if necessary. If launching on Windows,
-‘Rscript’ should be replaced with ‘Rscript.exe’.</p></dd>
+<code>"Rscript"</code> should be replaced with <code>"Rscript.exe"</code>.</p></dd>
 
 
 <dt id="arg-quote">quote<a class="anchor" aria-label="anchor" href="#arg-quote"></a></dt>
 <dd><p>[default FALSE] logical value whether or not to quote the
-daemon launch command (not required for Slurm ‘srun’ for example,
-but required for ‘ssh’ or Slurm ‘sbatch’).</p></dd>
+daemon launch command (not required for Slurm <code>"srun"</code> for example, but
+required for Slurm <code>"sbatch"</code> or <code>"ssh"</code>).</p></dd>
 
 
 <dt id="arg-remotes">remotes<a class="anchor" aria-label="anchor" href="#arg-remotes"></a></dt>
@@ -121,8 +121,8 @@ to 22 if not specified), e.g. 'ssh://10.75.32.90:22' or 'ssh://nodename'.</p></d
 
 <dt id="arg-tunnel">tunnel<a class="anchor" aria-label="anchor" href="#arg-tunnel"></a></dt>
 <dd><p>[default FALSE] logical value, whether to use SSH tunnelling.
-If TRUE, requires the <code><a href="daemons.html">daemons()</a></code> <code>url</code> hostname to be '127.0.0.1'. See the
-‘SSH Tunnelling’ section below for further details.</p></dd>
+If TRUE, requires the <code><a href="daemons.html">daemons()</a></code> <code>url</code> hostname to be '127.0.0.1'. See
+the 'SSH Tunnelling' section below for further details.</p></dd>
 
 
 <dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>
@@ -161,12 +161,12 @@ implementation uses the same port on both host and daemon. SSH key-based
 authentication must already be in place, but no other configuration is
 required.</p>
 <p>To use tunnelling, set the hostname of the <code><a href="daemons.html">daemons()</a></code> <code>url</code> argument to be
-‘127.0.0.1’. Using <code><a href="host_url.html">local_url()</a></code> with <code>tcp = TRUE</code> also does this for
-you. Specifying a specific port to use is optional, with a random ephemeral
-port assigned otherwise. For example, specifying 'tcp://127.0.0.1:5555' uses
-the local port '5555' to create the tunnel on each machine. The host listens
-to <code>127.0.0.1:5555</code> on its machine and the remotes each dial into
-<code>127.0.0.1:5555</code> on their own respective machines.</p>
+'127.0.0.1'. Using <code><a href="host_url.html">local_url()</a></code> with <code>tcp = TRUE</code> also does this for you.
+Specifying a specific port to use is optional, with a random ephemeral port
+assigned otherwise. For example, specifying 'tcp://127.0.0.1:5555' uses the
+local port '5555' to create the tunnel on each machine. The host listens
+to '127.0.0.1:5555' on its machine and the remotes each dial into
+'127.0.0.1:5555' on their own respective machines.</p>
 <p>This provides a means of launching daemons on any machine you are able to
 access via SSH, be it on the local network or the cloud.</p>
     </div>

@@ -115,9 +115,8 @@ section below).</p></dd>
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>(optional) additional arguments passed through to
-<code><a href="daemon.html">daemon()</a></code> if launching daemons. These include ‘asyncdial’,
-‘autoexit’, ‘cleanup’, ‘output’, ‘maxtasks’,
-‘idletime’ and ‘walltime’.</p></dd>
+<code><a href="daemon.html">daemon()</a></code> if launching daemons. These include <code>asyncdial</code>, <code>autoexit</code>,
+<code>cleanup</code>, <code>output</code>, <code>maxtasks</code>, <code>idletime</code> and <code>walltime</code>.</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
@@ -150,7 +149,7 @@ comprising [i] the TLS certificate (optionally certificate chain) and
 
 <dt id="arg-pass">pass<a class="anchor" aria-label="anchor" href="#arg-pass"></a></dt>
 <dd><p>[default NULL] (required only if the private key supplied to
-‘tls’ is encrypted with a password) For security, should be provided
+<code>tls</code> is encrypted with a password) For security, should be provided
 through a function that returns this value, rather than directly.</p></dd>
 
 
@@ -169,8 +168,8 @@ to use (each compute profile has its own independent set of daemons).</p></dd>
     <p>Use <code>daemons(0)</code> to reset daemon connections:</p><ul><li><p>All connected daemons and/or dispatchers exit automatically.</p></li>
 <li><p><span class="pkg">mirai</span> reverts to the default behaviour of creating a new
 background process for each request.</p></li>
-<li><p>Any unresolved ‘mirai’ will return an ‘errorValue’ 19
-(Connection reset) after a reset.</p></li>
+<li><p>Any unresolved 'mirai' will return an 'errorValue' 19 (Connection
+reset) after a reset.</p></li>
 <li><p>Daemons must be reset before calling <code>daemons()</code> with revised
 settings for a compute profile. Daemons may be added at any time by using
 <code><a href="launch_local.html">launch_local()</a></code> or <code><a href="launch_local.html">launch_remote()</a></code> without needing to revise daemons
@@ -183,7 +182,7 @@ a task, it will exit as soon as the task is complete.</p>
 <code>daemons(NULL)</code> instead, which also sends exit signals to all connected
 daemons prior to resetting.</p>
 <p>For historical reasons, <code>daemons()</code> with no arguments (other than
-optionally ‘.compute’) returns the value of <code><a href="status.html">status()</a></code>.</p>
+optionally <code>.compute</code>) returns the value of <code><a href="status.html">status()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="local-daemons">Local Daemons<a class="anchor" aria-label="anchor" href="#local-daemons"></a></h2>
@@ -220,22 +219,21 @@ not exceed available daemons.</p>
 
 <p>Specifying <code>url</code> as a character string allows tasks to be distributed across
 the network. <code>n</code> is not required in this case, and disregarded if supplied.</p>
-<p>Supply a URL with a ‘tcp://’ scheme, such as
-‘tcp://10.75.32.70:5555’. The host / dispatcher listens at this
-address, utilising a single port. Individual daemons (started with
-<code><a href="daemon.html">daemon()</a></code>) may then dial in to this URL. Host / dispatcher automatically
-adjusts to the number of daemons actually connected, allowing dynamic
-upscaling or downscaling as required.</p>
-<p>Switching the URL scheme to ‘tls+tcp://’ automatically upgrades the
+<p>Supply a URL with a 'tcp://' scheme, such as 'tcp://10.75.32.70:5555'. The
+host / dispatcher listens at this address, utilising a single port.
+Individual daemons (started with <code><a href="daemon.html">daemon()</a></code>) may then dial in to this URL.
+Host / dispatcher automatically adjusts to the number of daemons actually
+connected, allowing dynamic upscaling or downscaling as required.</p>
+<p>Switching the URL scheme to 'tls+tcp://' automatically upgrades the
 connection to use TLS. The auxiliary function <code><a href="host_url.html">host_url()</a></code> may be used to
 construct a valid host URL based on the computer's hostname.</p>
 <p>IPv6 addresses are also supported and must be enclosed in square brackets
-‘[ ]’ to avoid confusion with the final colon separating the port. For
+<code>[]</code> to avoid confusion with the final colon separating the port. For
 example, port 5555 on the IPv6 loopback address ::1 would be specified as
-‘tcp://[::1]:5555’.</p>
-<p>Specifying the wildcard value zero for the port number e.g.
-‘tcp://[::1]:0’ will automatically assign a free ephemeral port. Use
-<code><a href="status.html">status()</a></code> to inspect the actual assigned port at any time.</p>
+'tcp://[::1]:5555'.</p>
+<p>Specifying the wildcard value zero for the port number e.g. 'tcp://[::1]:0'
+will automatically assign a free ephemeral port. Use <code><a href="status.html">status()</a></code> to inspect
+the actual assigned port at any time.</p>
 <p>Specify <code>remote</code> with a call to <code><a href="remote_config.html">remote_config()</a></code> or <code><a href="remote_config.html">ssh_config()</a></code> to launch
 daemons on remote machines. Otherwise, <code><a href="launch_local.html">launch_remote()</a></code> may be used to
 generate the shell commands to deploy daemons manually on remote resources.</p>
@@ -245,21 +243,21 @@ generate the shell commands to deploy daemons manually on remote resources.</p>
 
 
 
-<p>By default, the ‘default’ compute profile is used. Providing a
-character value for <code>.compute</code> creates a new compute profile with the
-name specified. Each compute profile retains its own daemons settings, and
-may be operated independently of each other. Some usage examples follow:</p>
+<p>By default, the <code>"default"</code> compute profile is used. Providing a character
+value for <code>.compute</code> creates a new compute profile with the name specified.
+Each compute profile retains its own daemons settings, and may be operated
+independently of each other. Some usage examples follow:</p>
 <p><strong>local / remote</strong> daemons may be set with a host URL and specifying
-<code>.compute</code> as ‘remote’, which creates a new compute profile.
-Subsequent <code><a href="mirai.html">mirai()</a></code> calls may then be sent for local computation by not
-specifying the <code>.compute</code> argument, or for remote computation to connected
-daemons by specifying the <code>.compute</code> argument as ‘remote’.</p>
+<code>.compute</code> as <code>"remote"</code>, which creates a new compute profile. Subsequent
+<code><a href="mirai.html">mirai()</a></code> calls may then be sent for local computation by not specifying the
+<code>.compute</code> argument, or for remote computation to connected daemons by
+specifying the <code>.compute</code> argument as <code>"remote"</code>.</p>
 <p><strong>cpu / gpu</strong> some tasks may require access to different types of daemon,
 such as those with GPUs. In this case, <code>daemons()</code> may be called to set up
 host URLs for CPU-only daemons and for those with GPUs, specifying the
-<code>.compute</code> argument as ‘cpu’ and ‘gpu’ respectively. By
-supplying the ‘.compute’ argument to subsequent <code><a href="mirai.html">mirai()</a></code> calls, tasks
-may be sent to either ‘cpu’ or ‘gpu’ daemons as appropriate.</p>
+<code>.compute</code> argument as <code>"cpu"</code> and <code>"gpu"</code> respectively. By supplying the
+<code>.compute</code> argument to subsequent <code><a href="mirai.html">mirai()</a></code> calls, tasks may be sent to
+either <code>cpu</code> or <code>gpu</code> daemons as appropriate.</p>
 <p>Note: further actions such as resetting daemons via <code>daemons(0)</code> should
 be carried out with the desired <code>.compute</code> argument specified.</p>
     </div>

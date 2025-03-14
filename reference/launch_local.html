@@ -87,15 +87,14 @@ remote machine.</p>
 
 <dl><dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
 <dd><p>integer number of daemons.</p>
-<p><strong>or</strong> for <code>launch_remote</code> only, a ‘miraiCluster’ or
-‘miraiNode’.</p></dd>
+<p><strong>or</strong> for <code>launch_remote</code> only, a 'miraiCluster' or 'miraiNode'.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>(optional) arguments passed through to <code><a href="daemon.html">daemon()</a></code>. These include
-‘autoexit’, ‘cleanup’, ‘output’, ‘maxtasks’,
-‘idletime’ and ‘walltime’. Only supply to override arguments
-originally provided to <code><a href="daemons.html">daemons()</a></code>, otherwise those will be used instead.</p></dd>
+<code>autoexit</code>, <code>cleanup</code>, <code>output</code>, <code>maxtasks</code>, <code>idletime</code> and <code>walltime</code>.
+Only supply to override arguments originally provided to <code><a href="daemons.html">daemons()</a></code>,
+otherwise those will be used instead.</p></dd>
 
 
 <dt id="arg-tls">tls<a class="anchor" aria-label="anchor" href="#arg-tls"></a></dt>
@@ -105,7 +104,7 @@ are automatically passed to the daemon, without requiring to be specified
 here. Otherwise, supply <strong>either</strong> the character path to a file containing
 X.509 certificate(s) in PEM format, comprising the certificate authority
 certificate chain, <strong>or</strong> a length 2 character vector comprising [i] the
-certificate authority certificate chain and [ii] the empty string <code>''</code>.</p></dd>
+certificate authority certificate chain and [ii] the empty string <code>""</code>.</p></dd>
 
 
 <dt id="arg--compute">.compute<a class="anchor" aria-label="anchor" href="#arg--compute"></a></dt>
@@ -124,7 +123,7 @@ commands for deploying manually on remote machines.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>For <strong>launch_local</strong>: Integer number of daemons launched.</p>
 <p>For <strong>launch_remote</strong>: A character vector of daemon launch commands,
-classed as ‘miraiLaunchCmd’. The printed output may be copy / pasted
+classed as 'miraiLaunchCmd'. The printed output may be copy / pasted
 directly to the remote machine.</p>
     </div>
     <div class="section level2">
