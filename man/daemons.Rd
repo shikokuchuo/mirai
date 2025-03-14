@@ -36,9 +36,8 @@ although this may not always be required (for details see Dispatcher
 section below).}
 
 \item{...}{(optional) additional arguments passed through to
-\code{\link[=daemon]{daemon()}} if launching daemons. These include \sQuote{asyncdial},
-\sQuote{autoexit}, \sQuote{cleanup}, \sQuote{output}, \sQuote{maxtasks},
-\sQuote{idletime} and \sQuote{walltime}.}
+\code{\link[=daemon]{daemon()}} if launching daemons. These include \code{asyncdial}, \code{autoexit},
+\code{cleanup}, \code{output}, \code{maxtasks}, \code{idletime} and \code{walltime}.}
 
 \item{seed}{[default NULL] (optional) supply a random seed (single value,
 interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
@@ -63,7 +62,7 @@ comprising [i] the TLS certificate (optionally certificate chain) and
 [ii] the associated private key.}
 
 \item{pass}{[default NULL] (required only if the private key supplied to
-\sQuote{tls} is encrypted with a password) For security, should be provided
+\code{tls} is encrypted with a password) For security, should be provided
 through a function that returns this value, rather than directly.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
@@ -87,8 +86,8 @@ Use \code{daemons(0)} to reset daemon connections:
 \item All connected daemons and/or dispatchers exit automatically.
 \item \pkg{mirai} reverts to the default behaviour of creating a new
 background process for each request.
-\item Any unresolved \sQuote{mirai} will return an \sQuote{errorValue} 19
-(Connection reset) after a reset.
+\item Any unresolved 'mirai' will return an 'errorValue' 19 (Connection
+reset) after a reset.
 \item Daemons must be reset before calling \code{daemons()} with revised
 settings for a compute profile. Daemons may be added at any time by using
 \code{\link[=launch_local]{launch_local()}} or \code{\link[=launch_remote]{launch_remote()}} without needing to revise daemons
@@ -105,7 +104,7 @@ To reset persistent daemons started with \code{autoexit = FALSE}, use
 daemons prior to resetting.
 
 For historical reasons, \code{daemons()} with no arguments (other than
-optionally \sQuote{.compute}) returns the value of \code{\link[=status]{status()}}.
+optionally \code{.compute}) returns the value of \code{\link[=status]{status()}}.
 }
 \section{Local Daemons}{
 
@@ -141,25 +140,24 @@ not exceed available daemons.
 Specifying \code{url} as a character string allows tasks to be distributed across
 the network. \code{n} is not required in this case, and disregarded if supplied.
 
-Supply a URL with a \sQuote{tcp://} scheme, such as
-\sQuote{tcp://10.75.32.70:5555}. The host / dispatcher listens at this
-address, utilising a single port. Individual daemons (started with
-\code{\link[=daemon]{daemon()}}) may then dial in to this URL. Host / dispatcher automatically
-adjusts to the number of daemons actually connected, allowing dynamic
-upscaling or downscaling as required.
+Supply a URL with a 'tcp://' scheme, such as 'tcp://10.75.32.70:5555'. The
+host / dispatcher listens at this address, utilising a single port.
+Individual daemons (started with \code{\link[=daemon]{daemon()}}) may then dial in to this URL.
+Host / dispatcher automatically adjusts to the number of daemons actually
+connected, allowing dynamic upscaling or downscaling as required.
 
-Switching the URL scheme to \sQuote{tls+tcp://} automatically upgrades the
+Switching the URL scheme to 'tls+tcp://' automatically upgrades the
 connection to use TLS. The auxiliary function \code{\link[=host_url]{host_url()}} may be used to
 construct a valid host URL based on the computer's hostname.
 
 IPv6 addresses are also supported and must be enclosed in square brackets
-\sQuote{[ ]} to avoid confusion with the final colon separating the port. For
+\verb{[]} to avoid confusion with the final colon separating the port. For
 example, port 5555 on the IPv6 loopback address ::1 would be specified as
-\sQuote{tcp://[::1]:5555}.
+'tcp://[::1]:5555'.
 
-Specifying the wildcard value zero for the port number e.g.
-\sQuote{tcp://[::1]:0} will automatically assign a free ephemeral port. Use
-\code{\link[=status]{status()}} to inspect the actual assigned port at any time.
+Specifying the wildcard value zero for the port number e.g. 'tcp://[::1]:0'
+will automatically assign a free ephemeral port. Use \code{\link[=status]{status()}} to inspect
+the actual assigned port at any time.
 
 Specify \code{remote} with a call to \code{\link[=remote_config]{remote_config()}} or \code{\link[=ssh_config]{ssh_config()}} to launch
 daemons on remote machines. Otherwise, \code{\link[=launch_remote]{launch_remote()}} may be used to
@@ -169,23 +167,23 @@ generate the shell commands to deploy daemons manually on remote resources.
 \section{Compute Profiles}{
 
 
-By default, the \sQuote{default} compute profile is used. Providing a
-character value for \code{.compute} creates a new compute profile with the
-name specified. Each compute profile retains its own daemons settings, and
-may be operated independently of each other. Some usage examples follow:
+By default, the \code{"default"} compute profile is used. Providing a character
+value for \code{.compute} creates a new compute profile with the name specified.
+Each compute profile retains its own daemons settings, and may be operated
+independently of each other. Some usage examples follow:
 
 \strong{local / remote} daemons may be set with a host URL and specifying
-\code{.compute} as \sQuote{remote}, which creates a new compute profile.
-Subsequent \code{\link[=mirai]{mirai()}} calls may then be sent for local computation by not
-specifying the \code{.compute} argument, or for remote computation to connected
-daemons by specifying the \code{.compute} argument as \sQuote{remote}.
+\code{.compute} as \code{"remote"}, which creates a new compute profile. Subsequent
+\code{\link[=mirai]{mirai()}} calls may then be sent for local computation by not specifying the
+\code{.compute} argument, or for remote computation to connected daemons by
+specifying the \code{.compute} argument as \code{"remote"}.
 
 \strong{cpu / gpu} some tasks may require access to different types of daemon,
 such as those with GPUs. In this case, \code{daemons()} may be called to set up
 host URLs for CPU-only daemons and for those with GPUs, specifying the
-\code{.compute} argument as \sQuote{cpu} and \sQuote{gpu} respectively. By
-supplying the \sQuote{.compute} argument to subsequent \code{\link[=mirai]{mirai()}} calls, tasks
-may be sent to either \sQuote{cpu} or \sQuote{gpu} daemons as appropriate.
+\code{.compute} argument as \code{"cpu"} and \code{"gpu"} respectively. By supplying the
+\code{.compute} argument to subsequent \code{\link[=mirai]{mirai()}} calls, tasks may be sent to
+either \code{cpu} or \code{gpu} daemons as appropriate.
 
 Note: further actions such as resetting daemons via \code{daemons(0)} should
 be carried out with the desired \code{.compute} argument specified.

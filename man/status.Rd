@@ -10,7 +10,7 @@ status(.compute = "default")
 \item{.compute}{[default 'default'] character compute profile (each compute
 profile has its own set of daemons for connecting to different resources).
 
-\strong{or} a \sQuote{miraiCluster} to obtain its status.}
+\strong{or} a 'miraiCluster' to obtain its status.}
 }
 \value{
 A named list comprising:

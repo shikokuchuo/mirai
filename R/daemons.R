@@ -30,8 +30,8 @@
 #'   \item All connected daemons and/or dispatchers exit automatically.
 #'   \item \pkg{mirai} reverts to the default behaviour of creating a new
 #'   background process for each request.
-#'   \item Any unresolved \sQuote{mirai} will return an \sQuote{errorValue} 19
-#'   (Connection reset) after a reset.
+#'   \item Any unresolved 'mirai' will return an 'errorValue' 19 (Connection
+#'   reset) after a reset.
 #'   \item Daemons must be reset before calling `daemons()` with revised
 #'   settings for a compute profile. Daemons may be added at any time by using
 #'   [launch_local()] or [launch_remote()] without needing to revise daemons
@@ -48,7 +48,7 @@
 #' daemons prior to resetting.
 #'
 #' For historical reasons, `daemons()` with no arguments (other than
-#' optionally \sQuote{.compute}) returns the value of [status()].
+#' optionally `.compute`) returns the value of [status()].
 #'
 #' @inheritParams mirai
 #' @inheritParams dispatcher
@@ -66,9 +66,8 @@
 #'   although this may not always be required (for details see Dispatcher
 #'   section below).
 #' @param ... (optional) additional arguments passed through to
-#'   [daemon()] if launching daemons. These include \sQuote{asyncdial},
-#'   \sQuote{autoexit}, \sQuote{cleanup}, \sQuote{output}, \sQuote{maxtasks},
-#'   \sQuote{idletime} and \sQuote{walltime}.
+#'   [daemon()] if launching daemons. These include `asyncdial`, `autoexit`,
+#'   `cleanup`, `output`, `maxtasks`, `idletime` and `walltime`.
 #' @param seed \[default NULL\] (optional) supply a random seed (single value,
 #'   interpreted as an integer). This is used to inititalise the L'Ecuyer-CMRG
 #'   RNG streams sent to each daemon. Note that reproducible results can be
@@ -121,25 +120,24 @@
 #' Specifying `url` as a character string allows tasks to be distributed across
 #' the network. `n` is not required in this case, and disregarded if supplied.
 #'
-#' Supply a URL with a \sQuote{tcp://} scheme, such as
-#' \sQuote{tcp://10.75.32.70:5555}. The host / dispatcher listens at this
-#' address, utilising a single port. Individual daemons (started with
-#' [daemon()]) may then dial in to this URL. Host / dispatcher automatically
-#' adjusts to the number of daemons actually connected, allowing dynamic
-#' upscaling or downscaling as required.
+#' Supply a URL with a 'tcp://' scheme, such as 'tcp://10.75.32.70:5555'. The
+#' host / dispatcher listens at this address, utilising a single port.
+#' Individual daemons (started with [daemon()]) may then dial in to this URL.
+#' Host / dispatcher automatically adjusts to the number of daemons actually
+#' connected, allowing dynamic upscaling or downscaling as required.
 #'
-#' Switching the URL scheme to \sQuote{tls+tcp://} automatically upgrades the
+#' Switching the URL scheme to 'tls+tcp://' automatically upgrades the
 #' connection to use TLS. The auxiliary function [host_url()] may be used to
 #' construct a valid host URL based on the computer's hostname.
 #'
 #' IPv6 addresses are also supported and must be enclosed in square brackets
-#' \sQuote{\[ \]} to avoid confusion with the final colon separating the port. For
+#' `[]` to avoid confusion with the final colon separating the port. For
 #' example, port 5555 on the IPv6 loopback address ::1 would be specified as
-#' \sQuote{tcp://\[::1\]:5555}.
+#' 'tcp://\[::1\]:5555'.
 #'
-#' Specifying the wildcard value zero for the port number e.g.
-#' \sQuote{tcp://\[::1\]:0} will automatically assign a free ephemeral port. Use
-#' [status()] to inspect the actual assigned port at any time.
+#' Specifying the wildcard value zero for the port number e.g. 'tcp://\[::1\]:0'
+#' will automatically assign a free ephemeral port. Use [status()] to inspect
+#' the actual assigned port at any time.
 #'
 #' Specify `remote` with a call to [remote_config()] or [ssh_config()] to launch
 #' daemons on remote machines. Otherwise, [launch_remote()] may be used to
@@ -147,23 +145,23 @@
 #'
 #' @section Compute Profiles:
 #'
-#' By default, the \sQuote{default} compute profile is used. Providing a
-#' character value for `.compute` creates a new compute profile with the
-#' name specified. Each compute profile retains its own daemons settings, and
-#' may be operated independently of each other. Some usage examples follow:
+#' By default, the `"default"` compute profile is used. Providing a character
+#' value for `.compute` creates a new compute profile with the name specified.
+#' Each compute profile retains its own daemons settings, and may be operated
+#' independently of each other. Some usage examples follow:
 #'
 #' **local / remote** daemons may be set with a host URL and specifying
-#' `.compute` as \sQuote{remote}, which creates a new compute profile.
-#' Subsequent [mirai()] calls may then be sent for local computation by not
-#' specifying the `.compute` argument, or for remote computation to connected
-#' daemons by specifying the `.compute` argument as \sQuote{remote}.
+#' `.compute` as `"remote"`, which creates a new compute profile. Subsequent
+#' [mirai()] calls may then be sent for local computation by not specifying the
+#' `.compute` argument, or for remote computation to connected daemons by
+#' specifying the `.compute` argument as `"remote"`.
 #'
 #' **cpu / gpu** some tasks may require access to different types of daemon,
 #' such as those with GPUs. In this case, `daemons()` may be called to set up
 #' host URLs for CPU-only daemons and for those with GPUs, specifying the
-#' `.compute` argument as \sQuote{cpu} and \sQuote{gpu} respectively. By
-#' supplying the \sQuote{.compute} argument to subsequent [mirai()] calls, tasks
-#' may be sent to either \sQuote{cpu} or \sQuote{gpu} daemons as appropriate.
+#' `.compute` argument as `"cpu"` and `"gpu"` respectively. By supplying the
+#' `.compute` argument to subsequent [mirai()] calls, tasks may be sent to
+#' either `cpu` or `gpu` daemons as appropriate.
 #'
 #' Note: further actions such as resetting daemons via `daemons(0)` should
 #' be carried out with the desired `.compute` argument specified.
@@ -328,7 +326,7 @@ print.miraiDaemons <- function(x, ...) print(unclass(x))
 #' completed.
 #'
 #' This function is an S3 method for the generic [with()] for class
-#' \sQuote{miraiDaemons}.
+#' 'miraiDaemons'.
 #'
 #' @param data a call to [daemons()].
 #' @param expr an expression to evaluate.
@@ -370,7 +368,7 @@ with.miraiDaemons <- function(data, expr, ...) {
 #' @param .compute \[default 'default'\] character compute profile (each compute
 #'   profile has its own set of daemons for connecting to different resources).
 #'
-#'   **or** a \sQuote{miraiCluster} to obtain its status.
+#'   **or** a 'miraiCluster' to obtain its status.
 #'
 #' @return A named list comprising:
 #'   \itemize{
@@ -420,8 +418,7 @@ status <- function(.compute = "default") {
 #' profile.
 #'
 #' @param class character string of the class of object custom serialization
-#'   functions are applied to, e.g. \sQuote{ArrowTabular} or
-#'   \sQuote{torch_tensor}.
+#'   functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor'.
 #' @param sfunc a function that accepts a reference object inheriting from
 #'   `class` (or a list of such objects) and returns a raw vector.
 #' @param ufunc a function that accepts a raw vector and returns a reference

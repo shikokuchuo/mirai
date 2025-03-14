@@ -13,13 +13,13 @@ object.}
 
 \item{...}{(optional) \strong{either} named arguments (name = value pairs)
 specifying objects referenced, but not defined, in \code{.expr}, \strong{or} an
-environment containing such objects. See \sQuote{evaluation} section below.}
+environment containing such objects. See 'evaluation' section below.}
 
 \item{.args}{(optional) \strong{either} a named list specifying objects
 referenced, but not defined, in \code{.expr}, \strong{or} an environment containing
 such objects. These objects will remain local to the evaluation environment
-as opposed to those supplied in \code{...} above - see \sQuote{evaluation}
-section below.}
+as opposed to those supplied in \code{...} above - see 'evaluation' section
+below.}
 
 \item{.compute}{[default 'default'] character value for the compute profile
 to use (each compute profile has its own independent set of daemons).}
@@ -29,7 +29,7 @@ A list of mirai executed on each daemon. This may be waited for and
 inspected using \code{\link[=call_mirai]{call_mirai()}} or \code{\link[=collect_mirai]{collect_mirai()}}.
 }
 \description{
-Evaluate an expression \sQuote{everywhere} on all connected daemons for the
+Evaluate an expression 'everywhere' on all connected daemons for the
 specified compute profile - this must be set prior to calling this function.
 Designed for performing setup operations across daemons by loading packages
 or exporting common data. Resultant changes to the global environment, loaded

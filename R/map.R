@@ -29,12 +29,11 @@
 #' This simple and transparent behaviour is designed to make full use of
 #' \pkg{mirai} scheduling to minimise overall execution time.
 #'
-#' Facilitates recovery from partial failure by returning all
-#' \sQuote{miraiError} / \sQuote{errorValue} as the case may be, thus allowing
-#' only the failures to be re-run.
+#' Facilitates recovery from partial failure by returning all 'miraiError' /
+#' 'errorValue' as the case may be, thus allowing only failures to be re-run.
 #'
-#' This function requires daemons to have previously been set, and will error if
-#' not.
+#' This function requires daemons to have previously been set, and will error
+#' otherwise.
 #'
 #' @param .x a list or atomic vector. Also accepts a matrix or dataframe, in
 #'   which case multiple map is performed over its rows.
@@ -51,17 +50,17 @@
 #'   requires the \CRANpkg{promises} package.
 #' @inheritParams mirai
 #'
-#' @return A \sQuote{mirai_map} (list of \sQuote{mirai} objects).
+#' @return A 'mirai_map' (list of 'mirai' objects).
 #'
 #' @section Collection Options:
 #'
-#' `x[]` collects the results of a \sQuote{mirai_map} `x` and returns
-#' a list. This will wait for all asynchronous operations to complete if still
-#' in progress, blocking but user-interruptible.
+#' `x[]` collects the results of a 'mirai_map' `x` and returns a list. This will
+#' wait for all asynchronous operations to complete if still in progress,
+#' blocking but user-interruptible.
 #'
 #' `x[.flat]` collects and flattens map results to a vector, checking that
-#' they are of the same type to avoid coercion. Note: errors if an
-#' \sQuote{errorValue} has been returned or results are of differing type.
+#' they are of the same type to avoid coercion. Note: errors if an 'errorValue'
+#' has been returned or results are of differing type.
 #'
 #' `x[.progress]` collects map results whilst showing a progress bar from
 #' the \CRANpkg{cli} package, if installed, with completion percentage and ETA,
@@ -78,9 +77,9 @@
 #'
 #' @section Multiple Map:
 #'
-#' If `.x` is a matrix or dataframe (or other object with \sQuote{dim}
-#' attributes), *multiple* map is performed over its **rows**. Character row
-#' names are preserved as names of the output.
+#' If `.x` is a matrix or dataframe (or other object with 'dim' attributes),
+#' *multiple* map is performed over its **rows**. Character row names are
+#' preserved as names of the output.
 #'
 #' This allows map over 2 or more arguments, and `.f` should accept at least as
 #' many arguments as there are columns. If the dataframe has names, or the
@@ -244,7 +243,7 @@ print.mirai_map <- function(x, ...) {
 
 #' mirai Map Options
 #'
-#' Expressions to be provided to the `[]` method for \sQuote{mirai_map} objects.
+#' Expressions to be provided to the `[]` method for 'mirai_map' objects.
 #'
 #' @inheritSection mirai_map Collection Options
 #'

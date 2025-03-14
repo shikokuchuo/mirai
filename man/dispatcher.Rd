@@ -20,7 +20,7 @@ use secure TLS connections.}
 this case, a local url is automatically generated.}
 
 \item{...}{(optional) additional arguments passed through to \code{\link[=daemon]{daemon()}}.
-These include \sQuote{asyncdial}, \sQuote{autoexit}, and \sQuote{cleanup}.}
+These include \code{asyncdial}, \code{autoexit}, and \code{cleanup}.}
 
 \item{tls}{[default NULL] (required for secure TLS connections) \strong{either}
 the character path to a file containing the PEM-encoded TLS certificate and
@@ -30,7 +30,7 @@ character vector comprising [i] the TLS certificate (optionally
 certificate chain) and [ii] the associated private key.}
 
 \item{pass}{[default NULL] (required only if the private key supplied to
-\sQuote{tls} is encrypted with a password) For security, should be provided
+\code{tls} is encrypted with a password) For security, should be provided
 through a function that returns this value, rather than directly.}
 
 \item{rs}{[default NULL] the initial value of .Random.seed. This is set

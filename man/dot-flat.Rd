@@ -21,18 +21,18 @@ An object of class \code{bytecode} of length 1.
 .stop
 }
 \description{
-Expressions to be provided to the \verb{[]} method for \sQuote{mirai_map} objects.
+Expressions to be provided to the \verb{[]} method for 'mirai_map' objects.
 }
 \section{Collection Options}{
 
 
-\code{x[]} collects the results of a \sQuote{mirai_map} \code{x} and returns
-a list. This will wait for all asynchronous operations to complete if still
-in progress, blocking but user-interruptible.
+\code{x[]} collects the results of a 'mirai_map' \code{x} and returns a list. This will
+wait for all asynchronous operations to complete if still in progress,
+blocking but user-interruptible.
 
 \code{x[.flat]} collects and flattens map results to a vector, checking that
-they are of the same type to avoid coercion. Note: errors if an
-\sQuote{errorValue} has been returned or results are of differing type.
+they are of the same type to avoid coercion. Note: errors if an 'errorValue'
+has been returned or results are of differing type.
 
 \code{x[.progress]} collects map results whilst showing a progress bar from
 the \CRANpkg{cli} package, if installed, with completion percentage and ETA,

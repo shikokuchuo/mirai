@@ -8,8 +8,7 @@ serial_config(class, sfunc, ufunc, vec = FALSE)
 }
 \arguments{
 \item{class}{character string of the class of object custom serialization
-functions are applied to, e.g. \sQuote{ArrowTabular} or
-\sQuote{torch_tensor}.}
+functions are applied to, e.g. 'ArrowTabular' or 'torch_tensor'.}
 
 \item{sfunc}{a function that accepts a reference object inheriting from
 \code{class} (or a list of such objects) and returns a raw vector.}
