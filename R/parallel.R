@@ -152,7 +152,7 @@ sendData.miraiNode <- function(node, data) {
   if (tagged) set_cv(envir) else unset_cv(envir)
 
   m <- mirai(do.call(node, data, quote = TRUE), node = value[["fun"]], data = value[["args"]], .compute = id)
-  if (tagged) assign("tag", value[["tag"]], envir = m)
+  if (tagged) `[[<-`(m, "tag", value[["tag"]])
   `[[<-`(node, "mirai", m)
 
 }
