@@ -247,7 +247,6 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #'   \sQuote{SSH Tunnelling} section below for further details.
 #' @param timeout \[default 10\] maximum time allowed for connection setup in
 #'   seconds.
-#' @param ... unused.
 #'
 #' @section SSH Direct Connections:
 #'
@@ -309,7 +308,7 @@ remote_config <- function(command = NULL, args = c("", "."), rscript = "Rscript"
 #' @rdname remote_config
 #' @export
 #'
-ssh_config <- function(remotes, tunnel = TRUE, timeout = 10, command = "ssh", rscript = "Rscript", ...) {
+ssh_config <- function(remotes, tunnel = TRUE, timeout = 10, command = "ssh", rscript = "Rscript") {
 
   premotes <- lapply(remotes, parse_url)
   hostnames <- lapply(premotes, .subset2, "hostname")

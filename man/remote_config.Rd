@@ -17,8 +17,7 @@ ssh_config(
   tunnel = TRUE,
   timeout = 10,
   command = "ssh",
-  rscript = "Rscript",
-  ...
+  rscript = "Rscript"
 )
 }
 \arguments{
@@ -53,8 +52,6 @@ If TRUE, requires the \code{\link[=daemons]{daemons()}} \code{url} hostname to b
 
 \item{timeout}{[default 10] maximum time allowed for connection setup in
 seconds.}
-
-\item{...}{unused.}
 }
 \value{
 A list in the required format to be supplied to the \code{remote} argument
