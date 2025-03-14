@@ -108,7 +108,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
 
     changes <- read_monitor(m)
     for (item in changes)
-      if (item > 0) {
+      item > 0 && {
         outq[[as.character(item)]] <- as.environment(list(pipe = item, msgid = 0L, ctx = NULL))
         send(psock, serial, mode = 1L, block = TRUE, pipe = item)
       }
@@ -141,7 +141,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
           } else {
             id <- as.character(-item)
             if (length(outq[[id]])) {
-              if (outq[[id]][["msgid"]])
+              outq[[id]][["msgid"]] &&
                 send(outq[[id]][["ctx"]], .connectionReset, mode = 1L, block = TRUE)
               if (length(outq[[id]][["dmnid"]]))
                 events <- c(events, outq[[id]][["dmnid"]])
@@ -168,7 +168,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
           } else {
             found <- FALSE
             for (item in outq)
-              if (item[["msgid"]] == id) {
+              item[["msgid"]] == id && {
                 send(psock, 0L, mode = 1L, pipe = item[["pipe"]], block = TRUE)
                 `[[<-`(item, "msgid", -1L)
                 found <- TRUE
@@ -176,7 +176,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
               }
             if (!found)
               for (i in seq_along(inq))
-                if (inq[[i]][["msgid"]] == id) {
+                inq[[i]][["msgid"]] == id && {
                   inq[[i]] <- NULL
                   found <- TRUE
                   break
@@ -195,7 +195,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
         value <- .subset2(res, "value")
         id <- as.character(.subset2(res, "aio"))
         res <- recv_aio(psock, mode = 8L, cv = cv)
-        if (outq[[id]][["msgid"]] < 0) {
+        outq[[id]][["msgid"]] < 0 && {
           `[[<-`(outq[[id]], "msgid", 0L)
           cv_signal(cv)
           next
@@ -221,7 +221,7 @@ dispatcher <- function(host, url = NULL, n = NULL, ..., tls = NULL, pass = NULL,
 
       if (length(inq))
         for (item in outq)
-          if (!item[["msgid"]]) {
+          item[["msgid"]] || {
             send(psock, inq[[1L]][["req"]], mode = 2L, pipe = item[["pipe"]], block = TRUE)
             `[[<-`(item, "ctx", inq[[1L]][["ctx"]])
             `[[<-`(item, "msgid", inq[[1L]][["msgid"]])
