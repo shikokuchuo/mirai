@@ -86,7 +86,7 @@ as.promise.mirai <- function(x) {
       )
     }
 
-    assign("promise", promise, envir = x)
+    `[[<-`(x, "promise", promise)
 
   }
 
