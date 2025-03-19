@@ -2,12 +2,9 @@
 % Please edit documentation in R/mirai.R
 \name{call_mirai}
 \alias{call_mirai}
-\alias{call_mirai_}
 \title{mirai (Call Value)}
 \usage{
 call_mirai(x)
-
-call_mirai_(x)
 }
 \arguments{
 \item{x}{a 'mirai' object, or list of 'mirai' objects.}
@@ -29,10 +26,6 @@ blocking but user-interruptible.
 
 \code{x[]} may also be used to wait for and return the value of a mirai \code{x}, and
 is the equivalent of \code{call_mirai(x)$data}.
-}
-\note{
-\code{call_mirai_} is deprecated and exported for historical compatibility
-only. It will be removed in a future package version.
 }
 \section{Alternatively}{
 

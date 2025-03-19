@@ -112,3 +112,16 @@
 .intmax <- .Machine[["integer.max"]]
 .limit_short <- 5000L
 .limit_long <- 10000L
+
+# Deprecated  ------------------------------------------------------------------
+
+#' Call mirai
+#'
+#' `call_mirai_` is deprecated and exported for historical compatibility only.
+#' It will be removed in a future package version. Use [call_mirai()] instead.
+#'
+#' @inheritParams call_mirai
+#'
+#' @export
+#'
+call_mirai_ <- call_aio_

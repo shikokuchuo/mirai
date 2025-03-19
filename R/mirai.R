@@ -286,10 +286,6 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #'
 #' @inheritSection mirai Errors
 #'
-#' @note
-#' `call_mirai_` is deprecated and exported for historical compatibility
-#' only. It will be removed in a future package version.
-#'
 #' @examplesIf interactive()
 #' # using call_mirai()
 #' df1 <- data.frame(a = 1, b = 2)
@@ -314,11 +310,6 @@ everywhere <- function(.expr, ..., .args = list(), .compute = "default") {
 #' @export
 #'
 call_mirai <- call_aio_
-
-#' @rdname call_mirai
-#' @export
-#'
-call_mirai_ <- call_mirai
 
 #' mirai (Collect Value)
 #'
