@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,9 +49,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="mirai-development-version">mirai (development version)<a class="anchor" aria-label="anchor" href="#mirai-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="2.2.0" id="mirai-220">mirai 2.2.0<a class="anchor" aria-label="anchor" href="#mirai-220"></a></h2>
 <div class="section level5">
-<h5 id="behavioural-changes-development-version">Behavioural Changes<a class="anchor" aria-label="anchor" href="#behavioural-changes-development-version"></a></h5>
+<h5 id="behavioural-changes-2-2-0">Behavioural Changes<a class="anchor" aria-label="anchor" href="#behavioural-changes-2-2-0"></a></h5>
 <ul><li>Simplified SSH tunnelling for distributed computing:
 <ul><li>
 <code><a href="../reference/remote_config.html">ssh_config()</a></code> argument ‘port’ is removed, with the tunnel port now inferred at the time of launch, and no longer set by the configuration.</li>
@@ -60,11 +60,11 @@
 </ul></li>
 </ul></div>
 <div class="section level5">
-<h5 id="new-features-development-version">New Features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h5>
+<h5 id="new-features-2-2-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-2-2-0"></a></h5>
 <ul><li>Adds <code><a href="https://rstudio.github.io/promises/reference/is.promise.html" class="external-link">as.promise()</a></code> method for ‘mirai_map’ objects. This will resolve upon completion of the entire map operation.</li>
 </ul></div>
 <div class="section level5">
-<h5 id="updates-development-version">Updates<a class="anchor" aria-label="anchor" href="#updates-development-version"></a></h5>
+<h5 id="updates-2-2-0">Updates<a class="anchor" aria-label="anchor" href="#updates-2-2-0"></a></h5>
 <ul><li>mirai (in R &gt;= 4.5) is now one of the official base R parallel cluster types.
 <ul><li>
 <code>register_cluster()</code> is removed as no longer required.</li>
@@ -83,7 +83,7 @@
 <li>‘miraiError’ condition <code>$call</code> objects are now stripped of ‘srcref’ attributes (thanks <a href="https://github.com/lionel-" class="external-link">@lionel-</a>, <a href="https://github.com/shikokuchuo/mirai/issues/218" class="external-link">#218</a>).</li>
 <li>A mirai promise now rejects in exactly the same way whether or not the mirai was already resolved at time of creation. This avoids Shiny deep stack trace errors when the mirai had already resolved (<a href="https://github.com/shikokuchuo/mirai/issues/229" class="external-link">#229</a>).</li>
 <li>
-<code><a href="../reference/daemons.html">daemons()</a></code> calls that error due to the remote launcher specified as ‘remote’ no longer leave the compute profile set up (<a href="https://github.com/shikokuchuo/mirai/issues/237" class="external-link">#237</a>).</li>
+<code><a href="../reference/daemons.html">daemons()</a></code> calls that error due to the remote launcher no longer leave the compute profile set up (<a href="https://github.com/shikokuchuo/mirai/issues/237" class="external-link">#237</a>).</li>
 </ul></div>
 </div>
     <div class="section level2">
