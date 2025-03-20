@@ -1,4 +1,4 @@
-# mirai (development version)
+# mirai 2.2.0
 
 #### Behavioural Changes
 
@@ -23,7 +23,7 @@
 * 'miraiError' condition `$call` objects are now stripped of 'srcref' attributes (thanks @lionel-, #218).
 * A mirai promise now rejects in exactly the same way whether or not the mirai was already resolved at time of creation.
   This avoids Shiny deep stack trace errors when the mirai had already resolved (#229).
-* `daemons()` calls that error due to the remote launcher specified as 'remote' no longer leave the compute profile set up (#237).
+* `daemons()` calls that error due to the remote launcher no longer leave the compute profile set up (#237).
 
 # mirai 2.1.0
 

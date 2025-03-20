@@ -40,7 +40,7 @@ This may be overriden, if desired, by specifying 'url' in the
 Useful links:
 \itemize{
   \item \url{https://shikokuchuo.net/mirai/}
-  \item \url{https://github.com/shikokuchuo/mirai/}
+  \item \url{https://github.com/shikokuchuo/mirai}
   \item Report bugs at \url{https://github.com/shikokuchuo/mirai/issues}
 }
 
