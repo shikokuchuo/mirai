@@ -82,6 +82,8 @@
 <li>‘miraiError’ stack traces no longer sometimes contain an additional (internal) call (<a href="https://github.com/shikokuchuo/mirai/issues/216" class="external-link">#216</a>).</li>
 <li>‘miraiError’ condition <code>$call</code> objects are now stripped of ‘srcref’ attributes (thanks <a href="https://github.com/lionel-" class="external-link">@lionel-</a>, <a href="https://github.com/shikokuchuo/mirai/issues/218" class="external-link">#218</a>).</li>
 <li>A mirai promise now rejects in exactly the same way whether or not the mirai was already resolved at time of creation. This avoids Shiny deep stack trace errors when the mirai had already resolved (<a href="https://github.com/shikokuchuo/mirai/issues/229" class="external-link">#229</a>).</li>
+<li>
+<code><a href="../reference/daemons.html">daemons()</a></code> calls that error due to the remote launcher specified as ‘remote’ no longer leave the compute profile set up (<a href="https://github.com/shikokuchuo/mirai/issues/237" class="external-link">#237</a>).</li>
 </ul></div>
 </div>
     <div class="section level2">
