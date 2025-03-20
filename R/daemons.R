@@ -118,7 +118,8 @@
 #' @section Distributed Computing:
 #'
 #' Specifying `url` as a character string allows tasks to be distributed across
-#' the network. `n` is not required in this case, and disregarded if supplied.
+#' the network. `n` is only required in this case if providing a launch
+#' configuration to `remote` to launch remote daemons.
 #'
 #' Supply a URL with a 'tcp://' scheme, such as 'tcp://10.75.32.70:5555'. The
 #' host / dispatcher listens at this address, utilising a single port.
@@ -257,8 +258,11 @@ daemons <- function(n, url = NULL, remote = NULL, dispatcher = TRUE, ...,
         stop(._[["dispatcher_args"]])
       )
       `[[<-`(.., .compute, `[[<-`(`[[<-`(`[[<-`(envir, "sock", sock), "n", launches), "dots", dots))
-      if (length(remote))
+      if (length(remote)) {
+        on.exit(daemons(0L, .compute = .compute))
         launch_remote(n = n, remote = remote, tls = envir[["tls"]], ..., .compute = .compute)
+        on.exit()
+      }
     } else {
       stop(sprintf(._[["daemons_set"]], .compute))
     }
