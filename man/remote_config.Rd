@@ -14,7 +14,7 @@ remote_config(
 
 ssh_config(
   remotes,
-  tunnel = TRUE,
+  tunnel = FALSE,
   timeout = 10,
   command = "ssh",
   rscript = "Rscript"
