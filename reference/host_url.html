@@ -17,7 +17,7 @@ daemons()."><meta property="og:image" content="https://shikokuchuo.net/mirai/log
 
     <a class="navbar-brand me-2" href="../index.html">mirai</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +55,7 @@ daemons()."><meta property="og:image" content="https://shikokuchuo.net/mirai/log
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>URL Constructors</h1>
-      <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/mirai/blob/v2.2.0/R/launchers.R" class="external-link"><code>R/launchers.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/mirai/blob/main/R/launchers.R" class="external-link"><code>R/launchers.R</code></a></small>
       <div class="d-none name"><code>host_url.Rd</code></div>
     </div>
 
@@ -116,14 +116,14 @@ Windows.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">host_url</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tcp://fv-az1692-967:0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tcp://fv-az1390-567:0"</span>
 <span class="r-in"><span><span class="fu">host_url</span><span class="op">(</span>tls <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tls+tcp://fv-az1692-967:0"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tls+tcp://fv-az1390-567:0"</span>
 <span class="r-in"><span><span class="fu">host_url</span><span class="op">(</span>tls <span class="op">=</span> <span class="cn">TRUE</span>, port <span class="op">=</span> <span class="fl">5555</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tls+tcp://fv-az1692-967:5555"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tls+tcp://fv-az1390-567:5555"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">local_url</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "abstract://83f9df017bce152ea69a4bdf"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "abstract://ca409f39d7ed95e9ede3cac6"</span>
 <span class="r-in"><span><span class="fu">local_url</span><span class="op">(</span>tcp <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tcp://127.0.0.1:0"</span>
 <span class="r-in"><span><span class="fu">local_url</span><span class="op">(</span>tcp <span class="op">=</span> <span class="cn">TRUE</span>, port <span class="op">=</span> <span class="fl">5555</span><span class="op">)</span></span></span>
