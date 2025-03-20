@@ -138,7 +138,8 @@ not exceed available daemons.
 
 
 Specifying \code{url} as a character string allows tasks to be distributed across
-the network. \code{n} is not required in this case, and disregarded if supplied.
+the network. \code{n} is only required in this case if providing a launch
+configuration to \code{remote} to launch remote daemons.
 
 Supply a URL with a 'tcp://' scheme, such as 'tcp://10.75.32.70:5555'. The
 host / dispatcher listens at this address, utilising a single port.
