@@ -198,10 +198,7 @@ print.miraiNode <- function(x, ...) {
 # internals --------------------------------------------------------------------
 
 create_node <- function(node, id)
-  `attributes<-`(
-    new.env(hash = FALSE, parent = emptyenv()),
-    list(class = "miraiNode", node = node, id = id)
-  )
+  `attributes<-`(new.env(hash = FALSE, parent = emptyenv()), list(class = "miraiNode", node = node, id = id))
 
 set_cv <- function(envir) `[[<-`(envir, "cv", envir[["cvs"]])
 
