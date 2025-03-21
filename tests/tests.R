@@ -343,6 +343,7 @@ connection && Sys.getenv("NOT_CRAN") == "true" && {
   test_equal(m1$data, 20L)
   test_class("errorValue", mirai(res)[])
   m <- mirai_map(1:10, function(x) { Sys.sleep(2); y <<- TRUE })
+  Sys.sleep(0.1)
   s <- stop_mirai(m)
   test_equal(sum(unlist(m[])), 200L)
   test_class("errorValue", mirai(y)[])
