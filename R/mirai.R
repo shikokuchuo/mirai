@@ -394,7 +394,7 @@ collect_mirai <- function(x, options = NULL) {
 #'
 stop_mirai <- function(x) {
 
-  is.list(x) && return(as.logical(lapply(length(x):1, function(i) stop_mirai(.subset2(x, i)))))
+  is.list(x) && return(invisible(as.logical(lapply(length(x):1, function(i) stop_mirai(.subset2(x, i))))))
 
   .compute <- attr(x, "profile")
   envir <- if (is.character(.compute)) ..[[.compute]]
@@ -571,13 +571,7 @@ mk_mirai_error <- function(cnd, sc) {
   msg <- if (is.null(call) || call == "eval(._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = .GlobalEnv)")
     sprintf("Error: %s", .subset2(cnd, "message")) else
       sprintf("Error in %s: %s", call, .subset2(cnd, "message"))
-  idx <- max(
-    which(
-      as.logical(
-        lapply(sc, `==`, "eval(._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = .GlobalEnv)")
-      )
-    )
-  )
+  idx <- max(which(as.logical(lapply(sc, `==`, "eval(._mirai_.[[\".expr\"]], envir = ._mirai_., enclos = .GlobalEnv)"))))
   sc <- sc[(length(sc) - 1L):(idx + 1L)]
   if (sc[[1L]][[1L]] == ".handleSimpleError")
     sc <- sc[-1L]

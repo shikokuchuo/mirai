@@ -360,10 +360,7 @@ ssh_config <- function(remotes, tunnel = FALSE, timeout = 10, command = "ssh", r
 #' @export
 #'
 host_url <- function(tls = FALSE, port = 0)
-  sprintf(
-    "%s://%s:%s",
-    if (tls) "tls+tcp" else "tcp", Sys.info()[["nodename"]], as.character(port)
-  )
+  sprintf("%s://%s:%s", if (tls) "tls+tcp" else "tcp", Sys.info()[["nodename"]], as.character(port))
 
 #' URL Constructors
 #'
