@@ -393,18 +393,14 @@ collect_mirai <- function(x, options = NULL) {
 #' @export
 #'
 stop_mirai <- function(x) {
-  is.list(x) && {
-    xlen <- length(x)
-    vec <- logical(xlen)
-    if (xlen)
-      for (i in xlen:1)
-        vec[i] <- stop_mirai(x[[i]])
-    return(vec)
-  }
+
+  is.list(x) && return(as.logical(lapply(length(x):1, function(i) stop_mirai(.subset2(x, i)))))
+
   .compute <- attr(x, "profile")
   envir <- if (is.character(.compute)) ..[[.compute]]
   stop_aio(x)
   invisible(length(envir[["msgid"]]) && query_dispatcher(envir[["sock"]], c(0L, attr(x, "msgid"))))
+
 }
 
 #' Query if a mirai is Unresolved
