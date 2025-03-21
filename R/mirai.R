@@ -394,7 +394,7 @@ collect_mirai <- function(x, options = NULL) {
 #'
 stop_mirai <- function(x) {
 
-  is.list(x) && return(invisible(as.logical(lapply(length(x):1, function(i) stop_mirai(.subset2(x, i))))))
+  is.list(x) && return(invisible(rev(as.logical(lapply(rev(unclass(x)), stop_mirai)))))
 
   .compute <- attr(x, "profile")
   envir <- if (is.character(.compute)) ..[[.compute]]
